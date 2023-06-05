@@ -258,12 +258,12 @@ bool AdHocVisibilityModel::setData(const QModelIndex& index, const QVariant& val
         if (dataSourceDiagram)
         {
             visibilityCommand = QSharedPointer<QUndoCommand>(new TopAdHocVisibilityChangeCommand(
-                dataSourceDiagram, table_->at(index.row())->name().toStdString(), value == Qt::Checked));
+                dataSourceDiagram, table_->at(index.row())->name(), value == Qt::Checked));
         }
         else
         {
             visibilityCommand = QSharedPointer<QUndoCommand>(new AdHocVisibilityChangeCommand(
-                dataSource, table_->at(index.row())->name().toStdString(), value == Qt::Checked));
+                dataSource, table_->at(index.row())->name(), value == Qt::Checked));
         }
 
         editProvider_->addCommand(visibilityCommand);

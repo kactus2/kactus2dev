@@ -111,7 +111,7 @@ bool ComponentInstantiationInterface::setName(std::string const& currentName, st
     QSharedPointer<ComponentInstantiation> editedItem = getComponentInstantiation(currentName);
     if (editedItem && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, COMPONENT_INSTANTIATION_TYPE);
+        QString uniqueNewName = getUniqueName(newName, COMPONENT_INSTANTIATION_TYPE);
 
         editedItem->setName(uniqueNewName);
         return true;

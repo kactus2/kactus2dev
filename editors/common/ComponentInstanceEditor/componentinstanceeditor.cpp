@@ -152,7 +152,6 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 	vlnvDisplayer_->show();
 
 	nameGroup_->setName(componentItem->name());
-	nameGroup_->setName(QString::fromStdString(componentItem->name()));
 	nameGroup_->setDisplayName(componentItem->displayName());
 
     disconnect(nameGroup_, SIGNAL(descriptionChanged()),

@@ -100,7 +100,7 @@ private:
      *
      *      @return List of sub item name value pairs.
      */
-    QVector<QPair<std::string, std::string> > getSeparatedSubItems(QString& subItemDeclarations) const;
+    QVector<QPair<QString, QString> > getSeparatedSubItems(QString& subItemDeclarations) const;
 
     /*!
      *  Create a vendor extension group for the contained sub items.
@@ -111,8 +111,8 @@ private:
      *
      *      @return The created sub item vendor extension group.
      */
-    QSharedPointer<Kactus2Group> createSubItemGroup(std::string const& groupName, std::string const& itemType,
-        QVector<QPair<std::string, std::string> > const& subItems) const;
+    QSharedPointer<Kactus2Group> createSubItemGroup(QString const& groupName, QString const& itemType,
+        QVector<QPair<QString, QString> > const& subItems) const;
 
     //-----------------------------------------------------------------------------
     // Data.

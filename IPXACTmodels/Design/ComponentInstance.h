@@ -37,8 +37,8 @@ public:
 
     struct PowerDomainLink
     {
-        std::string externalReference_;
-        std::string internalReference_;
+        QString externalReference_;
+        QString internalReference_;
 
         PowerDomainLink* clone() const { return new PowerDomainLink({ externalReference_, internalReference_ }); };
     };
@@ -54,7 +54,7 @@ public:
      *      @param [in] instanceName    The name of the component instance.
      *      @param [in] componentRef    The referenced component.
      */
-    ComponentInstance(std::string const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef);
+    ComponentInstance(QString const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef);
 
     /*!
      *  Copy constructor.
@@ -76,12 +76,12 @@ public:
      *
      *      @param [in] name The name to set.
      */
-    void setInstanceName(std::string const& name);
+    void setInstanceName(QString const& name);
    
     /*!
      *  Returns the name of the instance.
      */
-    std::string getInstanceName() const;
+    QString getInstanceName() const;
 
     /*!
      *  Sets the component reference.
@@ -98,16 +98,16 @@ public:
     /*!
      *  Get the presence of the instance.
      *
-     *      @return A std::string containing the presence.
+     *      @return A QString containing the presence.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the presence of the instance.
      *
      *      @param [in] newIsPresent    The new value for the presence.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Sets the configurable element values.
@@ -135,14 +135,14 @@ public:
      *
      *      @param [in] nameRef The name of the import source instance.
      */
-    void setImportRef(std::string const& nameRef);
+    void setImportRef(QString const& nameRef);
 
     /*!
      *  Sets the property values.
      *
      *      @param [in] values The property values.
      */
-    void setPropertyValues(QMap<std::string, std::string> const& values);
+    void setPropertyValues(QMap<QString, QString> const& values);
 
     /*!
      *  Updates the position of the bus interface with the given name.
@@ -150,14 +150,14 @@ public:
      *      @param [in] name The name of the bus interface.
      *      @param [in] pos  The local position of the bus interface.
      */
-    void updateBusInterfacePosition(std::string_view name, QPointF const& pos);
+    void updateBusInterfacePosition(QString const& name, QPointF const& pos);
 
     /*!
      *  Remove bus interface position.
      *
      *      @param [in] interfaceName    Name of the removed bus interface.
      */
-    void removeBusInterfacePosition(std::string_view interfaceName);
+    void removeBusInterfacePosition(QString const& interfaceName);
 
     /*!
      *  Updates the position of the ad-hoc port with the given name.
@@ -165,7 +165,7 @@ public:
      *      @param [in] name The name of the ad-hoc port.
      *      @param [in] pos  The local position of the ad-hoc port.
      */
-    void updateAdHocPortPosition(std::string const& name, QPointF const& pos);
+    void updateAdHocPortPosition(QString const& name, QPointF const& pos);
 
     /*!
      *  Updates the position of the API interface with the given name.
@@ -173,14 +173,14 @@ public:
      *      @param [in] name The name of the API interface.
      *      @param [in] pos  The local position of the API interface.
      */
-    void updateApiInterfacePosition(std::string const& name, QPointF const& pos);
+    void updateApiInterfacePosition(QString const& name, QPointF const& pos);
 
     /*!
      *  Remove API interface position.
      *
      *      @param [in] name    Name of the selected API interface.
      */
-    void removeApiInterfacePosition(std::string const& name);
+    void removeApiInterfacePosition(QString const& name);
 
     /*!
      *  Updates the position of the API interface with the given name.
@@ -188,14 +188,14 @@ public:
      *      @param [in] name The name of the API interface.
      *      @param [in] pos  The local position of the API interface.
      */
-    void updateComInterfacePosition(std::string const& name, QPointF const& pos);
+    void updateComInterfacePosition(QString const& name, QPointF const& pos);
 
     /*!
      *  Remove COM interface position.
      *
      *      @param [in] name    Name of the selected COM interface.
      */
-    void removeComInterfacePosition(std::string const& name);
+    void removeComInterfacePosition(QString const& name);
 
     /*!
      *  Returns the global position of the instance in the design.
@@ -219,51 +219,51 @@ public:
     /*!
      *  Returns the name of the import source instance.
      */
-    std::string getImportRef() const;
+    QString getImportRef() const;
 
     /*!
      *  Returns the property values.
      */
-    QMap<std::string, std::string> getPropertyValues() const;
+    QMap<QString, QString> getPropertyValues() const;
 
     /*!
      *  Returns the local bus interface positions of the instance in the design.
      */
-    QMap<std::string, QPointF> getBusInterfacePositions() const;
+    QMap<QString, QPointF> getBusInterfacePositions() const;
 
     /*!
      *  Returns the local ad-hoc port positions of the instance in the design.
      */
-    QMap<std::string, QPointF> getAdHocPortPositions() const;
+    QMap<QString, QPointF> getAdHocPortPositions() const;
 
     /*!
      *  Returns the local API interface positions of the instance in the design.
      */
-    QMap<std::string, QPointF> getApiInterfacePositions() const;
+    QMap<QString, QPointF> getApiInterfacePositions() const;
 
     /*!
      *  Returns the local COM interface positions of the instance in the design.
      */
-    QMap<std::string, QPointF> getComInterfacePositions() const;
+    QMap<QString, QPointF> getComInterfacePositions() const;
 
     /*!
      *  Returns the port ad-hoc visibilities.
      */
-    QMap<std::string, bool> getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
     
     /*!
      *  Get the Uuid of the instance.
 	 *
-     *     @return The instance uuid.
+     *     @return QString containing the uuid.
 	 */
-    std::string getUuid() const;
+    QString getUuid() const;
         
     /*!
      *  Set the universally unique identifier (Kactus2 extension).
      *
      *      @param [in] newUuid     The new unique identifier.
      */
-    void setUuid(std::string const& newUuid);
+    void setUuid(QString const& newUuid);
 
     /*!
      *  Checks if the component instance is a draft.
@@ -284,31 +284,31 @@ public:
      *
      *      @param [in] portName   The name of the port to hide.
      */
-    void hideAdHocPort(std::string const& portName);
+    void hideAdHocPort(QString const& portName);
 
     /*!
      *  Sets the file set reference.
      *
      *      @param [in] fileSetName The name of the referenced file set in the top-level component.
      */
-    void setFileSetRef(std::string const& fileSetName);
+    void setFileSetRef(QString const& fileSetName);
 
     /*!
      *  Sets the HW mapping information for the SW instance.
      *
      *      @param [in] hwRef The name of the HW component instance to which the SW instance is mapped.
      */
-    void setMapping(std::string const& hwRef);
+    void setMapping(QString const& hwRef);
 
     /*!
      *  Returns the file set reference (i.e. the name of the referenced file set).
      */
-    std::string getFileSetRef() const;
+    QString getFileSetRef() const;
 
     /*!
      *  Returns the name of the referenced HW component instance onto which the SW instance is mapped.
      */
-    std::string getMapping() const;
+    QString getMapping() const;
 
 private:
 
@@ -321,12 +321,11 @@ private:
      *      @param [in] itemIdentifier          The identifier for the item.
      *      @param [in] referenceIdentifier     The identifier for the reference.
      */
-    void updatePositionsMap(std::string_view newReferenceName, QPointF const& newPosition,
-        std::string const& groupIdentifier, std::string const& itemIdentifier, 
-        std::string const& referenceIdentifier) const;
+    void updatePositionsMap(QString const& newReferenceName, QPointF const& newPosition,
+        QString const& groupIdentifier, QString const& itemIdentifier, QString const& referenceIdentifier) const;
  
-    void removePosition(std::string_view interfaceName, std::string const& groupIdentifier, 
-        std::string const& itemIdentifier, std::string const& referenceIdentifier);
+    void removePosition(QString const& interfaceName, QString const& groupIdentifier, QString const& itemIdentifier,
+        QString const& referenceIdentifier);
 
     /*!
      *  Get a map of positions (Kactus2 extension).
@@ -335,9 +334,8 @@ private:
      *      @param [in] itemIdentifier          The identifier of the position item.
      *      @param [in] referenceIdentifier     The identifier of the position reference.
      */
-    QMap<std::string, QPointF> getPositionMap(std::string const& groupIdentifier, 
-        std::string const& itemIdentifier,
-        std::string const& referenceIdentifier) const;
+    QMap<QString, QPointF> getPositionMap(QString const& groupIdentifier, QString const& itemIdentifier,
+        QString const& referenceIdentifier) const;
     
 
     /*!
@@ -346,14 +344,14 @@ private:
      *     @param [in] value            The value to set.
      *     @param [in] extensionType    The type of the vendor extension.
      */
-    void setValueExtension(std::string const& value, std::string const& extensionType);
+    void setValueExtension(QString const& value, QString const& extensionType);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The presence.
-    std::string isPresent_;
+    QString isPresent_;
 
     //! The referenced component.
     QSharedPointer<ConfigurableVLNVReference> componentRef_;

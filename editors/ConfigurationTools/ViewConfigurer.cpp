@@ -264,6 +264,7 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 //-----------------------------------------------------------------------------
 // Function: ViewConfigurer::parseExistingInstanceView()
 //-----------------------------------------------------------------------------
+void ViewConfigurer::parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, QMap<QString, QString> viewOverrides)
 {
     QString treeItemOverrideView = viewOverrides.value(currentTreeItem->text(ViewConfigurerColumns::INSTANCE_ID));
 

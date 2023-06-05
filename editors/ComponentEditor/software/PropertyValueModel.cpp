@@ -76,17 +76,17 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::setData()
 //-----------------------------------------------------------------------------
-void PropertyValueModel::setData(QMap<std::string, std::string> const& propertyValues)
+void PropertyValueModel::setData(QMap<QString, QString> const& propertyValues)
 {
     beginResetModel();
 
     table_.clear();
 
-    QMapIterator<std::string, std::string> iter(propertyValues);
+    QMapIterator<QString, QString> iter(propertyValues);
     while (iter.hasNext())
     {
         iter.next();
-        table_.append(NameValuePair(QString::fromStdString(iter.key()), QString::fromStdString(iter.value())));
+        table_.append(NameValuePair(iter.key(), iter.value()));
     }
 
     endResetModel();
@@ -95,13 +95,13 @@ void PropertyValueModel::setData(QMap<std::string, std::string> const& propertyV
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::getData()
 //-----------------------------------------------------------------------------
-QMap<std::string, std::string> PropertyValueModel::getData() const
+QMap<QString, QString> PropertyValueModel::getData() const
 {
-    QMap<std::string, std::string> values;
+    QMap<QString, QString> values;
 
-    for (auto const& pair : table_)
+    foreach (NameValuePair const& pair, table_)
     {
-        values.insert(pair.first.toStdString(), pair.second.toStdString());
+        values[pair.first] = pair.second;
     }
 
     return values;

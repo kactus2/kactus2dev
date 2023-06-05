@@ -191,28 +191,28 @@ public:
     /*! 
      *  Returns the name of the endpoint.
      */
-    virtual std::string name() const = 0;
+    virtual QString name() const = 0;
 
 	/*! Set the name of the endpoint.
 	 *
 	 * \param name The name to set for the endpoint.
 	 *
 	*/
-	virtual void setName(std::string_view name) = 0;
+	virtual void setName(QString const& name) = 0;
 
 	/*! Get the description of the endpoint.
 	 *
 	 *
 	 * \return QString contains the description.
 	*/
-	virtual std::string description() const = 0;
+	virtual QString description() const = 0;
 
 	/*! Set the description for the endpoint.
 	 *
 	 * \param description Contains the description to set.
 	 *
 	*/
-	virtual void setDescription(std::string_view description) = 0;
+	virtual void setDescription(QString const& description) = 0;
 
     /*!
      *  Updates the endpoint interface.

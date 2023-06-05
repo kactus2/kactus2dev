@@ -106,9 +106,9 @@ SystemView* SystemView::clone() const
 //-----------------------------------------------------------------------------
 // Function: SystemView::type()
 //-----------------------------------------------------------------------------
-std::string SystemView::type() const
+QString SystemView::type() const
 {
-    return "kactus2:systemView";
+    return QStringLiteral("kactus2:systemView");
 }
 
 //-----------------------------------------------------------------------------

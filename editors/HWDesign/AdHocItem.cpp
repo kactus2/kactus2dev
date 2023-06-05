@@ -142,31 +142,31 @@ bool AdHocItem::adhocPortIsValid() const
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::name()
 //-----------------------------------------------------------------------------
-std::string AdHocItem::name() const
+QString AdHocItem::name() const
 {
-    return port_->name().toStdString();
+    return port_->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::description()
 //-----------------------------------------------------------------------------
-std::string AdHocItem::description() const
+QString AdHocItem::description() const
 {
     Q_ASSERT(port_);
     if (port_)
     {
-        return port_->description().toStdString();
+        return port_->description();
     }
     else
     {
-        return std::string();
+        return QString();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::setDescription()
 //-----------------------------------------------------------------------------
-void AdHocItem::setDescription(std::string_view description)
+void AdHocItem::setDescription(QString const& description)
 {
     Q_ASSERT(port_);
     if (port_)

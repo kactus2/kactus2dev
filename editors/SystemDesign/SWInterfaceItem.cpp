@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::SWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, std::string_view name,
+SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
 SWConnectionEndpoint(component, name, parent, QVector2D(1.0f, 0.0f)),
 component_(component),
@@ -50,7 +50,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, apiIf->nameStd(), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, apiIf->name(), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 apiInterface_(apiIf),
 graphicsData_(interfaceGraphics)
@@ -66,7 +66,7 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, comIf->nameStd(), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, comIf->name(), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(comIf),
 graphicsData_(interfaceGraphics)
@@ -80,26 +80,26 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::name()
 //-----------------------------------------------------------------------------
-std::string SWInterfaceItem::name() const
+QString SWInterfaceItem::name() const
 {
     if (isCom())
     {
-        return comInterface_->nameStd();
+        return comInterface_->name();
     }
     else if (isApi())
     {
-        return apiInterface_->nameStd();
+        return apiInterface_->name();
     }
     else
     {
-        return getNameLabel()->getText().toStdString();
+        return getNameLabel()->getText();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void SWInterfaceItem::setName(std::string_view name)
+void SWInterfaceItem::setName(QString const& name)
 {
     beginUpdateConnectionNames();
 
@@ -113,7 +113,7 @@ void SWInterfaceItem::setName(std::string_view name)
     }
     else
     {
-        getNameLabel()->setText(QString::fromStdString(std::string(name)));
+        getNameLabel()->setText(name);
     }
 
     graphicsData_->setName(name);
@@ -536,26 +536,26 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::description()
 //-----------------------------------------------------------------------------
-std::string SWInterfaceItem::description() const
+QString SWInterfaceItem::description() const
 {
 	if (isCom())
     {
-	    return comInterface_->descriptionStd();
+	    return comInterface_->description();
     }
     else if (isApi())
     {
-        return apiInterface_->descriptionStd();
+        return apiInterface_->description();
     }
     else
     {
-        return std::string();
+        return QString();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::setDescription()
 //-----------------------------------------------------------------------------
-void SWInterfaceItem::setDescription(std::string_view description)
+void SWInterfaceItem::setDescription(QString const& description)
 {
 	if (isCom())
     {

@@ -73,6 +73,7 @@ public:
 
     bool isBus() const;
 
+    QSharedPointer<ConnectionRoute> route_;
 };
 
 #endif // HWCONNECTION_H

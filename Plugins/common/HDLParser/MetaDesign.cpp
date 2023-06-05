@@ -48,7 +48,7 @@ designInstantiation_(designInstantiation),
 designConf_(designConf), 
 topInstance_(topInstance),
 parameters_(new QList<QSharedPointer<Parameter> >()),
-instances_(new QMap<std::string,QSharedPointer<MetaInstance> >),
+instances_(new QMap<QString,QSharedPointer<MetaInstance> >),
 interconnections_(new QList<QSharedPointer<MetaInterconnection> >),
 adHocWires_(new QList<QSharedPointer<MetaWire> >)
 {
@@ -209,8 +209,7 @@ void MetaDesign::findInstances()
         if (!component)
         {
             messages_->showError(QObject::tr("Design %1: Component of instance %2 was not found: %3")
-                .arg(design_->getVlnv().toString(), 
-                    QString::fromStdString(instance->getInstanceName()), instanceVLNV.toString()));
+                .arg(design_->getVlnv().toString(), instance->getInstanceName(), instanceVLNV.toString()));
             continue;   
         }
 

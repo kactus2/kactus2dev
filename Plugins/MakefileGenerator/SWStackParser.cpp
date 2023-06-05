@@ -198,17 +198,15 @@ bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance,
         if (softInstance->getInstanceName() == connection->getStartInterface()->getComponentReference())
         {
             ourInterface = softComponent->getApiInterface(connection->getStartInterface()->getBusReference());
-
         }
         else
         {
             // See if one of the ends is ours.
-            foreach (QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
+            for (QSharedPointer<ActiveInterface> activeInterface : *connection->getActiveInterfaces())
             {
                 if (softInstance->getInstanceName() == activeInterface->getComponentReference())
                 {
                     ourInterface = softComponent->getApiInterface(activeInterface->getBusReference());
-
                     break;
                 }
             }
@@ -293,15 +291,14 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 
 	// The top component of the design may contain header files specific to the instance.
 	// The path leading to the design.
-	QString fileSetName = QString::fromStdString(softInstance->getFileSetRef());
+	QString fileSetName = softInstance->getFileSetRef();
 
 	// Create a new fileSet, if no reference exist.
 	if (fileSetName.isEmpty())
 	{
 		// If not, make a new one.
-		fileSetName = NameGenerationPolicy::instanceFilesetName(systemViewName, QString::fromStdString(
-            softInstance->getInstanceName()));
-		softInstance->setFileSetRef(fileSetName.toStdString());
+		fileSetName = NameGenerationPolicy::instanceFilesetName(systemViewName, softInstance->getInstanceName());
+		softInstance->setFileSetRef(fileSetName);
 	}
 
 	// Obtain the the fileSet by name.

@@ -53,9 +53,9 @@ del_(true)
                 new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
 
             // If the port is visible as ad-hoc in the current design, it must be hidden.
-            if (diagram->getDiagramAdHocPort(port->nameStd()) != nullptr)
+            if (diagram->getDiagramAdHocPort(port->name()) != nullptr)
             {                               
-                new AdHocVisibilityChangeCommand(diagram, port->nameStd(), false, delCmd);
+                new AdHocVisibilityChangeCommand(diagram, port->name(), false, delCmd);
             }
         }
     }

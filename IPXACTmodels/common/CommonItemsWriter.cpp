@@ -141,14 +141,6 @@ void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent)
-{
-    writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), isPresent);
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeConfigurableElementValues()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeConfigurableElementValues(QXmlStreamWriter& writer,

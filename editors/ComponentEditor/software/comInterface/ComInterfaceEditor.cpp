@@ -197,7 +197,7 @@ void ComInterfaceEditor::onDirectionChange(int index)
 //-----------------------------------------------------------------------------
 void ComInterfaceEditor::onPropertiesChange()
 {
-	auto propertyValues = propertyValueEditor_.getData();
+	QMap<QString, QString> propertyValues = propertyValueEditor_.getData();
 	comIf_->setPropertyValues(propertyValues);
 	emit contentChanged();
 }

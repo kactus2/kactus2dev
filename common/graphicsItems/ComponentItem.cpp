@@ -51,7 +51,7 @@ QGraphicsRectItem(parent),
     nameLabel_->setFont(font);
     nameLabel_->setTextWidth(COMPONENTWIDTH - 20);
     nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
-    nameLabel_->setPlainText(QString::fromStdString(instance->getInstanceName()));
+    nameLabel_->setPlainText(instance->getInstanceName());
 
     setPos(instance->getPosition());
 }
@@ -86,7 +86,7 @@ void ComponentItem::updateComponent()
         toolTipText += "Unpackaged component. No VLNV assigned!";
     }
 
-    toolTipText += "<br><br><b>Instance name:</b> " + QString::fromStdString(name());
+    toolTipText += "<br><br><b>Instance name:</b> " + name();
 
     if (!description().isEmpty())
     {
@@ -128,9 +128,9 @@ qreal ComponentItem::getWidth()
 //-----------------------------------------------------------------------------
 void ComponentItem::setName(QString const& newName)
 {
-    QString oldName = QString::fromStdString(name());
+    QString oldName = name();
 
-    componentInstance_->setInstanceName(newName.toStdString());
+    componentInstance_->setInstanceName(newName);
 
     updateNameLabel();
 
@@ -164,7 +164,7 @@ void ComponentItem::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::name()
 //-----------------------------------------------------------------------------
-std::string ComponentItem::name() const
+QString ComponentItem::name() const
 {
     return componentInstance_->getInstanceName();
 }
@@ -239,7 +239,7 @@ void ComponentItem::updateNameLabel()
     }
     else
     {
-        text = QString::fromStdString(name());
+        text = name();
     }
 
     nameLabel_->setHtml("<center>" + text + "</center>");
@@ -276,7 +276,7 @@ IGraphicsItemStack* ComponentItem::getParentStack()
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::getUuid()
 //-----------------------------------------------------------------------------
-std::string ComponentItem::getUuid() const
+QString ComponentItem::getUuid() const
 {
 	return componentInstance_->getUuid();
 }

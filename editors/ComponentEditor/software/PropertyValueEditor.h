@@ -51,7 +51,7 @@ public:
     /*!
      *  Returns the edited data.
      */
-    QMap<std::string, std::string> getData() const;
+    QMap<QString, QString> getData() const;
 
     //! Disables editing while still enabling scrolling.
     void setLock(bool locked);
@@ -62,7 +62,7 @@ public slots:
      *
      *      @param [in] propertyValue The property values.
      */
-    void setData(QMap<std::string, std::string> const& propertyValues);
+    void setData(QMap<QString, QString> const& propertyValues);
 
 signals:
     //! Emitted when contents of the editor changes.

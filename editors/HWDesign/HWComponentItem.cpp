@@ -120,16 +120,15 @@ void HWComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::setPortAdHocVisible()
 //-----------------------------------------------------------------------------
-void HWComponentItem::onAdHocVisibilityChanged(std::string const& portName, bool visible)
+void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
     // Create/destroy the ad-hoc port graphics item.
     if (visible)
     {
-        auto name = QString::fromStdString(portName);
-        QSharedPointer<Port> adhocPort = componentModel()->getPort(name);
+        QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         if (!adhocPort)
         {
-            adhocPort = QSharedPointer<Port>(new Port(name));
+            adhocPort = QSharedPointer<Port>(new Port(portName));
         }
 
         ActivePortItem* port = getAdHocPort(portName);
@@ -182,7 +181,7 @@ void HWComponentItem::detach(AdHocVisibilityEditor* editor)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::adHocIdentifier()
 //-----------------------------------------------------------------------------
-std::string HWComponentItem::adHocIdentifier() const
+QString HWComponentItem::adHocIdentifier() const
 {
     return name();
 }
@@ -190,7 +189,7 @@ std::string HWComponentItem::adHocIdentifier() const
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(std::string const& portName)
+HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(QString const& portName)
 {
     return getAdHocPort(portName);
 }
@@ -269,7 +268,7 @@ void HWComponentItem::removePort(HWConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getBusPort()
 //-----------------------------------------------------------------------------
-ActiveBusInterfaceItem* HWComponentItem::getBusPort(std::string const& name) const
+ActiveBusInterfaceItem* HWComponentItem::getBusPort(QString const& name) const
 {
     for (QGraphicsItem* item : QGraphicsRectItem::childItems())
     {
@@ -283,19 +282,19 @@ ActiveBusInterfaceItem* HWComponentItem::getBusPort(std::string const& name) con
         }
     }
 
-    return nullptr;
+    return 0;
 }
 
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getAdHocPort()
 //-----------------------------------------------------------------------------
-ActivePortItem* HWComponentItem::getAdHocPort(std::string const& portName) const
+ActivePortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 {
     QList<ConnectionEndpoint*> allInterfaces;
     allInterfaces.append(leftPorts_);
     allInterfaces.append(rightPorts_);
 
-    for (auto const& endpoint : allInterfaces)
+    for (ConnectionEndpoint* endpoint : allInterfaces)
     {
         if (dynamic_cast<ActivePortItem*>(endpoint) != nullptr && endpoint->name() == portName)
         {
@@ -345,7 +344,7 @@ void HWComponentItem::onMovePort(ConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getBusInterfacePositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> HWComponentItem::getBusInterfacePositions() const
+QMap<QString, QPointF> HWComponentItem::getBusInterfacePositions() const
 {
     return getComponentInstance()->getBusInterfacePositions();
 }
@@ -353,7 +352,7 @@ QMap<std::string, QPointF> HWComponentItem::getBusInterfacePositions() const
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::getAdHocPortPositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> HWComponentItem::getAdHocPortPositions() const
+QMap<QString, QPointF> HWComponentItem::getAdHocPortPositions() const
 {
     return getComponentInstance()->getAdHocPortPositions();
 }
@@ -476,16 +475,16 @@ void HWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 //-----------------------------------------------------------------------------
 void HWComponentItem::positionBusInterfaceTerminals()
 {
-    QMap<std::string, QPointF> instancePositions = getComponentInstance()->getBusInterfacePositions();
+    QMap<QString, QPointF> instancePositions = getComponentInstance()->getBusInterfacePositions();
 
-    for (auto const& busInterface : *componentModel()->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *componentModel()->getBusInterfaces())
     {
         auto port = new ActiveBusInterfaceItem(busInterface, getLibraryInterface(), this);
 
         // Check if instance specific position has been specified.
-        if (instancePositions.contains(busInterface->name().toStdString()))
+        if (instancePositions.contains(busInterface->name()))
         {
-            port->setPos(instancePositions.value(busInterface->name().toStdString()));
+            port->setPos(instancePositions.value(busInterface->name()));
             addPortToSideByPosition(port);
         }
         // Check if the default position has been specified.
@@ -502,7 +501,7 @@ void HWComponentItem::positionBusInterfaceTerminals()
 
     if (isDraft())
     {
-        for (auto const& interfaceName : instancePositions.keys())
+        for (QString const& interfaceName : instancePositions.keys())
         {
             QSharedPointer<BusInterface> busInterface(new BusInterface());
             busInterface->setName(interfaceName);
@@ -522,11 +521,11 @@ void HWComponentItem::positionBusInterfaceTerminals()
 //-----------------------------------------------------------------------------
 void HWComponentItem::positionAdHocPortTerminals()
 {
-    QMap<std::string, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
+    QMap<QString, QPointF> instancePositions = getComponentInstance()->getAdHocPortPositions();
 
     for(auto it = instancePositions.cbegin(); it != instancePositions.cend(); ++it)
     {
-        auto portName = QString::fromStdString(it.key());
+        auto portName = it.key();
 
         QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
         if (!adhocPort)
@@ -542,7 +541,7 @@ void HWComponentItem::positionAdHocPortTerminals()
 
     for (QSharedPointer<Port> adhocPort : *componentModel()->getPorts())
     {
-        if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->nameStd()))
+        if (adhocPort->isAdHocVisible() && !instancePositions.contains(adhocPort->name()))
         {
             ActivePortItem* adhocItem (new ActivePortItem(adhocPort, this));
 
@@ -554,12 +553,12 @@ void HWComponentItem::positionAdHocPortTerminals()
 //-----------------------------------------------------------------------------
 // Function: HWComponentItem::createAdhocItem()
 //-----------------------------------------------------------------------------
-AdHocItem* HWComponentItem::createAdhocItem(std::string const& portName)
+AdHocItem* HWComponentItem::createAdhocItem(QString const& portName)
 {
-    QSharedPointer<Port> adhocPort = componentModel()->getPort(QString::fromStdString(portName));
+    QSharedPointer<Port> adhocPort = componentModel()->getPort(portName);
     if (!adhocPort)
     {
-        adhocPort = QSharedPointer<Port>(new Port(QString::fromStdString(portName)));
+        adhocPort = QSharedPointer<Port>(new Port(portName));
     }
 
     ActivePortItem* portItem = getAdHocPort(portName);

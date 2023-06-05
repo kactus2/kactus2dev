@@ -94,7 +94,7 @@ public:
 	/*
 	*  Get the component instance by name.
 	*/
-	QSharedPointer<ComponentInstance> findComponentInstance(std::string const& instanceName) const;
+	QSharedPointer<ComponentInstance> findComponentInstance(QString const& instanceName) const;
 
     /*!
      *  Get the component instances.
@@ -110,7 +110,7 @@ public:
      *
      *      @return The description of the found HW instance.
 	 */
-	std::string getHWInstanceDescription(std::string const& instanceName) const;
+	QString getHWInstanceDescription(QString const& instanceName) const;
 
     /*!
      *  Get a list of the interconnections.
@@ -127,7 +127,7 @@ public:
      *
      *      @return True if at least one interconnection is found, false otherwise.
 	 */
-	bool hasInterconnection(std::string const& instanceName, std::string const& interfaceName) const;
+	bool hasInterconnection(QString const& instanceName, QString const& interfaceName) const;
 
     /*!
      *  Get a list of ad-hoc connections.
@@ -149,7 +149,7 @@ public:
     /*!
      *  Returns the port ad-hoc visibilities for the top-level component in this design.
      */
-    QMap<std::string, bool> getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Returns the ad-hoc port positions.
@@ -204,7 +204,7 @@ public:
     /*!
      *  Sets the ad-hoc port positions.
      */
-    void setAdHocPortPositions(QMap<std::string, QPointF> const& val);
+    void setAdHocPortPositions(QMap<QString, QPointF> const& val);
 
     /*!
      *  Sets the columns of this design.
@@ -232,7 +232,7 @@ public:
      *
      *      @return VLNV of the instantiated component.
 	 */
-	VLNV getHWComponentVLNV(std::string const& instanceName) const;
+	VLNV getHWComponentVLNV(QString const& instanceName) const;
 
 	/*!
 	 *  Check if the design contains a given HW instance.
@@ -241,7 +241,7 @@ public:
      *
      *      @return True if the instance is found, false otherwise.
 	 */
-	bool containsHWInstance(std::string const& instanceName) const;
+	bool containsHWInstance(QString const& instanceName) const;
 
 	/*!
 	 *  Check if there is a configurable element value set for the given HW instance.
@@ -251,7 +251,7 @@ public:
      *
      *      @return Ture if the value has been set, otherwise false.
 	 */
-	bool hasConfElementValue(std::string const& instanceName, std::string const& confElementName) const;
+	bool hasConfElementValue(QString const& instanceName, QString const& confElementName) const;
 
 	/*!
 	 *  Get the configurable element value set for the given HW instance.
@@ -259,9 +259,9 @@ public:
 	 *      @param [in] instanceName        Identifies the HW instance.
 	 *      @param [in] confElementName     Identifies the configurable element value.
      *
-     *      @return std::string containing the configurable element value.
+     *      @return QString containing the configurable element value.
 	 */
-	std::string getConfElementValue(std::string const& instanceName, std::string const& confElementName) const;
+	QString getConfElementValue(QString const& instanceName, QString const& confElementName) const;
 
 	/*!
 	 *  Set the implementation type of the design.
@@ -322,7 +322,7 @@ public:
      *
      *      @param [in] name    Name of the selected graphics data.
      */
-    void removeInterfaceGraphicsData(std::string const& name);
+    void removeInterfaceGraphicsData(QString const& name);
 
 private:
     /*!

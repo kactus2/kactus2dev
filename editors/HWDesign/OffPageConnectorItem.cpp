@@ -65,7 +65,7 @@ void OffPageConnectorItem::updateInterface()
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::name()
 //-----------------------------------------------------------------------------
-std::string OffPageConnectorItem::name() const
+QString OffPageConnectorItem::name() const
 {
     return parent_->name();
 }
@@ -73,7 +73,7 @@ std::string OffPageConnectorItem::name() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::setName()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::setName(std::string_view name)
+void OffPageConnectorItem::setName(QString const& name)
 {
 	parent_->setName(name);
 }
@@ -81,7 +81,7 @@ void OffPageConnectorItem::setName(std::string_view name)
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::description()
 //-----------------------------------------------------------------------------
-std::string OffPageConnectorItem::description() const
+QString OffPageConnectorItem::description() const
 {
     return parent_->description();
 }
@@ -89,7 +89,7 @@ std::string OffPageConnectorItem::description() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::setDescription()
 //-----------------------------------------------------------------------------
-void OffPageConnectorItem::setDescription(std::string_view description)
+void OffPageConnectorItem::setDescription(QString const& description)
 {
     parent_->setDescription(description);
 }

@@ -69,7 +69,7 @@ protected:
      *
      *      @return A unique name derived from the selected name.
      */
-    std::string getUniqueName(std::string_view newName, std::string_view itemTypeName) const;
+    QString getUniqueName(std::string const& newName, std::string const& itemTypeName) const;
 
     /*!
      *  Check if the new name is different from the current name.
@@ -79,18 +79,18 @@ protected:
      *
      *      @return True, if the new name is different, false otherwise.
      */
-    bool nameHasChanged(std::string_view newName, std::string_view oldName) const;
+    bool nameHasChanged(std::string const& newName, std::string const& oldName) const;
 
 private:
 
     /*!
      *  Check if the selected name is unique.
      *
-     *      @param [in] name    The selected name.
+     *      @param [in] portName    The selected name.
      *
      *      @return True, if the selected name is unique, false otherwise.
      */
-    bool nameIsUnique(std::string_view name) const;
+    bool nameIsUnique(QString const& portName) const;
 };
 
 #endif // COMMONINTERFACE_H

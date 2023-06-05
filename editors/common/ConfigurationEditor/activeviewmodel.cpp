@@ -85,8 +85,9 @@ void ActiveViewModel::setDesign( DesignWidget* designWidget, QSharedPointer<Desi
 		auto const& instanceName = instances_.at(i)->name();
 		auto const& activeView = desConf_->getActiveView(instanceName);
 		// if theres a defined active view for the instance.
-		if (activeView.isEmpty() == false)        {
-			table_.append(InstanceViewPair(instanceName, desConf_->getActiveView(instanceName)));
+		if (activeView.isEmpty() == false)
+        {
+			table_.append(InstanceViewPair(instanceName, activeView));
 		}
 		// if no active view has been defined.
 		else
@@ -252,9 +253,9 @@ bool ActiveViewModel::setData(const QModelIndex& index, const QVariant& value, i
 //-----------------------------------------------------------------------------
 // Function: activeviewmodel::changeViewConfiguration()
 //-----------------------------------------------------------------------------
-void ActiveViewModel::changeViewConfiguration(std::string const& instanceName, std::string const& newViewName)
+void ActiveViewModel::changeViewConfiguration(QString const& instanceName, QString const& newViewName)
 {
-    if (newViewName.empty())
+    if (newViewName.isEmpty())
     {
         desConf_->removeViewConfiguration(instanceName);
         return;
@@ -481,6 +482,16 @@ bool ActiveViewModel::hasConfiguration() const
 ActiveViewModel::InstanceViewPair::InstanceViewPair(const QString& instanceName, const QString& viewName ):
 instanceName_(instanceName),
 viewName_(viewName)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: activeviewmodel::InstanceViewPair::operator==()
+//-----------------------------------------------------------------------------
+ActiveViewModel::InstanceViewPair::InstanceViewPair(const QString& instanceName ):
+instanceName_(instanceName),
+viewName_()
 {
 
 }

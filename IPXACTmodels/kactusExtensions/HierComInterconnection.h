@@ -42,11 +42,11 @@ public:
      *      @param [in] direction     The direction of the top-level interface in the design diagram.
      *      @param [in] route         The connection route.
      */
-    HierComInterconnection(std::string const& name, std::string const& displayName, std::string const& description,
-        std::string const& interfaceRef,
-        QSharedPointer<ActiveInterface> ref,
-        QPointF const& position, QVector2D const& direction,
-        QList<QPointF> const& route);
+    HierComInterconnection(QString const& name, QString const& displayName, QString const& description,
+                      QString const& interfaceRef,
+                      QSharedPointer<ActiveInterface> ref,
+                      QPointF const& position, QVector2D const& direction,
+                      QList<QPointF> const& route);
 
     /*!
      *  Copy constructor.
@@ -75,7 +75,7 @@ public:
      *
      *      @return The type of the extension.
      */
-    std::string type() const final;
+    virtual QString type() const;
 
     /*!
      *  Writes the contents to an XML stream.
@@ -106,7 +106,7 @@ public:
      *
      *      @param [in] interfaceRef Name reference to an COM interface in the top-level component.
      */
-    void setTopInterfaceRef(std::string const& interfaceRef);
+    void setTopInterfaceRef(QString const& interfaceRef);
 
     /*!
      *  Sets the interface reference to an COM interface in a contained SW component instance.
@@ -118,7 +118,7 @@ public:
     /*!
      *  Returns the name reference to an COM interface in the top-level component.
      */
-    std::string const& getTopInterfaceRef() const;
+    QString const& getTopInterfaceRef() const;
 
     /*!
      *  Returns the interface reference to an COM interface in a contained SW component instance.
@@ -189,7 +189,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The interface reference in the top-level component.
-    std::string topInterfaceRef_;
+    QString topInterfaceRef_;
 
     //! The position of the top-level interface in the design diagram.
     QPointF position_;

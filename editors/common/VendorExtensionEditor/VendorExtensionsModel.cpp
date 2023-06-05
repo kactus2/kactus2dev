@@ -141,7 +141,7 @@ QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!genericExtension)
         {
-            return QString::fromStdString(extension->type()).split(":").first();
+            return extension->type().split(":").first();
         }
         else
         {
@@ -152,7 +152,7 @@ QVariant VendorExtensionsModel::valueForIndex(QModelIndex const& index) const
     {
         if (!genericExtension)
         {
-            return QString::fromStdString(extension->type()).split(":").last();
+            return extension->type().split(":").last();
         }
         else
         {

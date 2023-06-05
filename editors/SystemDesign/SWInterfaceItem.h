@@ -42,7 +42,7 @@ public:
      *      @param [in] interfaceGraphics   Container for the interface graphics data.
      *      @param [in] parent              Owner of this item.
      */
-    SWInterfaceItem(QSharedPointer<Component> component, std::string_view name,
+    SWInterfaceItem(QSharedPointer<Component> component, QString const& name,
         QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent);
 
     /*!
@@ -139,26 +139,26 @@ public:
     /*!
      *  Returns the name of the interface.
      */
-    virtual std::string name() const;
+    virtual QString name() const;
 
 	/*!
      *  Sets the name for the interface.
 	 *
 	 *      @param [in] name The name to set for the interface.
 	 */
-	virtual void setName(std::string_view name);
+	virtual void setName(QString const& name);
 
 	/*!
      *  Returns the description of the interface.
 	 */
-	virtual std::string description() const;
+	virtual QString description() const;
 
 	/*! 
      *  Sets the description for the interface.
 	 *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(std::string_view description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.

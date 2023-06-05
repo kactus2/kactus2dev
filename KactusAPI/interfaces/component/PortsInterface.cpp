@@ -128,7 +128,7 @@ bool PortsInterface::setName(string const& currentPortName, string const& newPor
     QSharedPointer<Port> editedPort = getPort(currentPortName);
     if (editedPort && nameHasChanged(newPortName, currentPortName))
     {
-        auto uniqueNewName(getUniqueName(newPortName, "port"));
+        QString uniqueNewName(getUniqueName(newPortName, "port"));
 
         editedPort->setName(uniqueNewName);
         return true;
@@ -1083,9 +1083,9 @@ int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string co
 //-----------------------------------------------------------------------------
 void PortsInterface::addWirePort(string const& newPortName)
 {
-    auto portName(getUniqueName(newPortName, "port"));
+    QString portName(getUniqueName(newPortName, "port"));
 
-    QSharedPointer<Port> newPort(new Port(QString::fromStdString(portName)));
+    QSharedPointer<Port> newPort(new Port(portName));
     newPort->setWire(QSharedPointer<Wire>(new Wire()));
 
     ports_->append(newPort);
@@ -1096,9 +1096,9 @@ void PortsInterface::addWirePort(string const& newPortName)
 //-----------------------------------------------------------------------------
 void PortsInterface::addTransactionalPort(string const& newPortName)
 {
-    auto portName(getUniqueName(newPortName, "port"));
+    QString portName(getUniqueName(newPortName, "port"));
 
-    QSharedPointer<Port> newPort(new Port(QString::fromStdString(portName)));
+    QSharedPointer<Port> newPort(new Port(portName));
     newPort->setTransactional(QSharedPointer<Transactional>(new Transactional()));
 
     ports_->append(newPort);

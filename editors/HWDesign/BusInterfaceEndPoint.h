@@ -60,28 +60,28 @@ public:
     /*!
      *  Get the name of the bus interface.
      */
-    virtual std::string name() const;
+    virtual QString name() const;
 
     /*!
      *  Set a new name for the bus interface.
      *
      *      @param [in] name    The new bus interface name.
      */
-    virtual void setName(std::string_view name);
+    virtual void setName(QString const& name);
     
     /*!
      *  Get the description of the bus interface.
 	 *
 	 *      @return The bus interface description.
      */
-	virtual std::string description() const;
+	virtual QString description() const;
 
 	/*!
      *  Set a new description for the bus interface.
 	 *
 	 *      @param [in] description     The selected description to set.
      */
-	virtual void setDescription(std::string_view description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Get the contained bus interface.
@@ -278,7 +278,7 @@ private:
      *      @param [in] previousName    The previous name.
      *      @param [in] newName         The new name.
      */
-    virtual void updateName(std::string_view previousName, std::string_view newName) = 0;
+    virtual void updateName(QString const& previousName, QString const& newName) = 0;
 
     /*!
      *  Create a move command for this end point item.

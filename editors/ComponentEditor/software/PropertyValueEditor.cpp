@@ -60,7 +60,7 @@ void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty
 //-----------------------------------------------------------------------------
 // Function: PropertyValueEditor::setData()
 //-----------------------------------------------------------------------------
-void PropertyValueEditor::setData(QMap<std::string, std::string> const& propertyValues)
+void PropertyValueEditor::setData(QMap<QString, QString> const& propertyValues)
 {
     model_.setData(propertyValues);
 }
@@ -68,7 +68,7 @@ void PropertyValueEditor::setData(QMap<std::string, std::string> const& property
 //-----------------------------------------------------------------------------
 // Function: PropertyValueEditor::getData()
 //-----------------------------------------------------------------------------
-QMap<std::string, std::string> PropertyValueEditor::getData() const
+QMap<QString, QString> PropertyValueEditor::getData() const
 {
     return model_.getData();
 }

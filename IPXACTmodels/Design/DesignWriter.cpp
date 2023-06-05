@@ -143,9 +143,8 @@ void DesignWriter::Details::writeActiveInterface(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:activeInterface"));
 
-    writer.writeAttribute(componentReferenceAttribute(docRevision), 
-        QString::fromStdString(activeInterface->getComponentReference()));
-    writer.writeAttribute(QStringLiteral("busRef"), QString::fromStdString(activeInterface->getBusReference()));
+    writer.writeAttribute(componentReferenceAttribute(docRevision), activeInterface->getComponentReference());
+    writer.writeAttribute(QStringLiteral("busRef"), activeInterface->getBusReference());
     
     if (docRevision == Document::Revision::Std14)
     {
@@ -160,7 +159,7 @@ void DesignWriter::Details::writeActiveInterface(QXmlStreamWriter& writer,
 
         for (auto const& portName : *activeInterface->getExcludePorts())
         {
-            writer.writeTextElement(QStringLiteral("ipxact:excludePort"), QString::fromStdString(portName));
+            writer.writeTextElement(QStringLiteral("ipxact:excludePort"), portName);
         }
 
         writer.writeEndElement(); // ipxact:excludePorts
@@ -197,7 +196,7 @@ void DesignWriter::Details::writeHierInterface(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:hierInterface"));
 
-    writer.writeAttribute(QStringLiteral("busRef"), QString::fromStdString(hierInterface->getBusReference()));
+    writer.writeAttribute(QStringLiteral("busRef"), hierInterface->getBusReference());
 
     CommonItemsWriter::writeIsPresent(writer, hierInterface->getIsPresent());
 
@@ -249,14 +248,13 @@ void DesignWriter::Details::writeMonitorInterconnection(QXmlStreamWriter& writer
 void DesignWriter::Details::writeMonitorInterface(QXmlStreamWriter& writer,
     QSharedPointer<MonitorInterface> monitorInterface, Document::Revision docRevision)
 {
-    writer.writeAttribute(componentReferenceAttribute(docRevision), 
-        QString::fromStdString(monitorInterface->getComponentReference()));
+    writer.writeAttribute(componentReferenceAttribute(docRevision), monitorInterface->getComponentReference());
 
-    writer.writeAttribute(QStringLiteral("busRef"), QString::fromStdString(monitorInterface->getBusReference()));
+    writer.writeAttribute(QStringLiteral("busRef"), monitorInterface->getBusReference());
 
-    if (!monitorInterface->getPath().empty())
+    if (!monitorInterface->getPath().isEmpty())
     {
-        writer.writeAttribute(QStringLiteral("path"), QString::fromStdString(monitorInterface->getPath()));
+        writer.writeAttribute(QStringLiteral("path"), monitorInterface->getPath());
     }
 
     CommonItemsWriter::writeDescription(writer, monitorInterface->getDescription());
@@ -323,8 +321,7 @@ void DesignWriter::Details::writeAdHocPortReferences(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:internalPortReference"));
 
-        writer.writeAttribute(
-            componentReferenceAttribute(docRevision), QString::fromStdString(internalRef->getComponentRef()));
+        writer.writeAttribute(componentReferenceAttribute(docRevision), internalRef->getComponentRef());
 
         writePortReference(writer, internalRef, docRevision);
 
@@ -349,7 +346,7 @@ void DesignWriter::Details::writeAdHocPortReferences(QXmlStreamWriter& writer,
 void DesignWriter::Details::writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portReference,
     Document::Revision docRevision)
 {
-    writer.writeAttribute(QStringLiteral("portRef"), QString::fromStdString(portReference->getPortRef()));
+    writer.writeAttribute(QStringLiteral("portRef"), portReference->getPortRef());
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -361,7 +358,7 @@ void DesignWriter::Details::writePortReference(QXmlStreamWriter& writer, QShared
         for (auto const& subPortReference : *portReference->getSubPortReferences())
         {
             writer.writeStartElement(QStringLiteral("ipxact:subPortReference"));
-            writer.writeAttribute(QStringLiteral("subPortRef"), QString::fromStdString(subPortReference->getPortRef()));
+            writer.writeAttribute(QStringLiteral("subPortRef"), subPortReference->getPortRef());
 
             writePartSelect(writer, subPortReference->getPartSelect());
 

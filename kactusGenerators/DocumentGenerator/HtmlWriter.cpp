@@ -686,7 +686,7 @@ void HtmlWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<Design
     for (auto const& instance : *design->getComponentInstances())
     {
         QStringList rowCells(QStringList()
-            << QString::fromStdString(instance->getInstanceName())
+            << instance->getInstanceName()
             << "<a href=\"" + instance->getComponentRef()->toString(":") + "\">"
                 + instance->getComponentRef()->toString(" - ") + "</a>"
             << getComponentInstanceConfigurableElements(instance, design)

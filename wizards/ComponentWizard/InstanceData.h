@@ -38,18 +38,18 @@ namespace InstanceData
     };
 
     //! Reserved vocabulary for instance data.
-    const std::string VERILOGINSTANCES("verilogInstances");
-    const std::string SINGLEINSTANCE("instance");
+    const QString VERILOGINSTANCES("verilogInstances");
+    const QString SINGLEINSTANCE("instance");
 
-    const std::string INSTANCENAME("instanceName");
-    const std::string MODULENAME("moduleName");
-    const std::string PARAMETERS("parameters");
-    const std::string SINGLEPARAMETER("parameter");
-    const std::string CONNECTIONS("connections");
-    const std::string SINGLECONNECTION("connection");
+    const QString INSTANCENAME("instanceName");
+    const QString MODULENAME("moduleName");
+    const QString PARAMETERS("parameters");
+    const QString SINGLEPARAMETER("parameter");
+    const QString CONNECTIONS("connections");
+    const QString SINGLECONNECTION("connection");
 
-    const std::string SUBITEMNAME("subItemName");
-    const std::string SUBITEMVALUE("subItemValue");
+    const QString SUBITEMNAME("subItemName");
+    const QString SUBITEMVALUE("subItemValue");
 };
 
 Q_DECLARE_METATYPE(QVector<InstanceData::instanceData>)

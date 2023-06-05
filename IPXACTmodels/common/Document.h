@@ -229,14 +229,14 @@ public:
      *
      *      @param [in] versionNumber   Version of Kactus2.
      */
-    void setVersion(std::string const& versionNumber);
+    void setVersion(QString const& versionNumber);
 
     /*!
      *  Get the version number of Kactus2 used for creating this document.
      *
      *      @return  The used version of Kactus2.
      */
-    std::string getVersion() const;
+    QString getVersion() const;
 
     /*!
      *  Check if the document has Kactus attributes.
@@ -313,14 +313,14 @@ public:
      *
      *      @return The license of the document, if any.
      */
-    std::string getLicense() const;
+    QString getLicense() const;
 
     /*!
      *  Set a new license for the document.
      *
      *      @param [in] license     The new license.
      */
-    void setLicense(std::string const& license);
+    void setLicense(QString const& license);
 
     /*!
      *  Get the document tags.
@@ -404,7 +404,7 @@ private:
      *
      *      @return The selected tag container.
      */
-    QSharedPointer<Kactus2Group> getTagByName(std::string const& name, QSharedPointer<Kactus2Group> tagGroup) const;
+    QSharedPointer<Kactus2Group> getTagByName(QString const& name, QSharedPointer<Kactus2Group> tagGroup) const;
 
     /*!
      *  Remove old non-existing tags.
@@ -421,7 +421,7 @@ private:
      *
      *      @return Name of the selected tag.
      */
-    std::string getTagName(QSharedPointer<VendorExtension> tagExtension) const;
+    QString getTagName(QSharedPointer<VendorExtension> tagExtension) const;
 
     //-----------------------------------------------------------------------------
     // Data.

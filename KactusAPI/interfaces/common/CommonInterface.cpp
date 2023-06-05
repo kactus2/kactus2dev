@@ -14,29 +14,34 @@
 //-----------------------------------------------------------------------------
 // Function: CommonInterface::getUniqueName()
 //-----------------------------------------------------------------------------
-std::string CommonInterface::getUniqueName(std::string_view newName, std::string_view itemTypeName) const
+QString CommonInterface::getUniqueName(std::string const& newName, std::string const& itemTypeName) const
 {
-    std::string referenceName(newName);
-    if (referenceName.empty())
+    QString referencePortName(QString::fromStdString(newName));
+    if (referencePortName.isEmpty())
     {
-        referenceName = itemTypeName;
+        referencePortName = QString::fromStdString(itemTypeName);
     }
 
-    std::string name(referenceName);
+    QString newPortName(referencePortName);
+
+    QString format(QLatin1String("$itemName$_$itemNumber$"));
     int runningNumber = 0;
-    while (!nameIsUnique(name))
+    while (!nameIsUnique(newPortName))
     {
-        name = referenceName + "_" + std::to_string(runningNumber);
-        ++runningNumber;
+        newPortName = format;
+        newPortName.replace("$itemName$", referencePortName);
+        newPortName.replace("$itemNumber$", QString::number(runningNumber));
+
+        runningNumber++;
     }
 
-    return name;
+    return newPortName;
 }
 
 //-----------------------------------------------------------------------------
 // Function: CommonInterface::nameHasChanged()
 //-----------------------------------------------------------------------------
-bool CommonInterface::nameHasChanged(std::string_view newName, std::string_view oldName) const
+bool CommonInterface::nameHasChanged(std::string const& newName, std::string const& oldName) const
 {
     return newName != oldName;
 }
@@ -44,9 +49,16 @@ bool CommonInterface::nameHasChanged(std::string_view newName, std::string_view 
 //-----------------------------------------------------------------------------
 // Function: CommonInterface::nameIsUnique()
 //-----------------------------------------------------------------------------
-bool CommonInterface::nameIsUnique(std::string_view name) const
+bool CommonInterface::nameIsUnique(QString const& portName) const
 {
-    auto itemNames = getItemNames();
-    return std::none_of(itemNames.cbegin(), itemNames.cend(),
-        [&name](auto const& item) { return item == name; });
+    for (auto containedName : getItemNames())
+    {
+        QString convertedName(QString::fromStdString(containedName));
+        if (convertedName == portName)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

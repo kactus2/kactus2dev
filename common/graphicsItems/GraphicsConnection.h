@@ -154,7 +154,7 @@ public:
     /*!
      *  Updates the name of the connection according to the default formatting.
      */
-    std::string createDefaultName() const;
+    QString createDefaultName() const;
 
     /*!
      *  Begins the position update of the connection.
@@ -175,14 +175,14 @@ public:
 	 *
 	 *      @param [in] name The name to set for the connection.
 	 */
-	virtual void setName(std::string const& name);
+	virtual void setName(QString const& name);
 
     /*!
      *  Sets the description for the connection.
 	 *
      *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(std::string const& /*description*/) {};
+	virtual void setDescription(QString const& /*description*/) {};
 
     /*!
      *  Sets the imported state.
@@ -194,12 +194,12 @@ public:
     /*!
      *  Returns the name of this connection
      */
-    virtual std::string name() const { return std::string(); };
+    virtual QString name() const { return QString(); };
 
 	/*!
      *  Returns the description of the connection.
 	 */
-	virtual std::string description() const { return std::string(); };
+	virtual QString description() const { return QString(); };
 
     /*!
      *  Returns true if the connection is an imported one.
@@ -258,7 +258,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    virtual void changeConnectionComponentReference(std::string const& oldName, std::string const& newName);
+    virtual void changeConnectionComponentReference(QString const& oldName, QString const& newName);
 
 signals:
     //! Signals that the connection has changed.
@@ -541,7 +541,7 @@ private:
     RoutingMode routingMode_ = ROUTING_MODE_NORMAL;
 
     //! The route of the interconnection.
-    QSharedPointer<ConnectionRoute> route_ = QSharedPointer<ConnectionRoute>(new ConnectionRoute(std::string()));
+    QSharedPointer<ConnectionRoute> route_ = QSharedPointer<ConnectionRoute>(new ConnectionRoute(QString()));
 
     //! If true, the connection is an imported one.
     bool imported_ = false;

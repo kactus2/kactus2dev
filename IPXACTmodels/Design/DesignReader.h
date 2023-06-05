@@ -99,7 +99,7 @@ namespace DesignReader
          *
          *     @return The read component reference.
          */
-        std::string parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision);
+         QString parseComponentReference(QDomNode const& interfaceNode, Document::Revision docRevision);
 
         /*!
          *  Reads a hierarchical interface.

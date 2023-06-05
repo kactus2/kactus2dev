@@ -19,6 +19,8 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <QRegularExpression>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceValidator::ComponentInstanceValidator()
 //-----------------------------------------------------------------------------
@@ -51,8 +53,16 @@ bool ComponentInstanceValidator::validate(QSharedPointer<ComponentInstance> inst
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidName(QSharedPointer<ComponentInstance> instance) const
 {
-    auto const name = instance->getInstanceName();
-    return !(name.empty() || std::all_of(name.cbegin(), name.cend(), isspace));
+    QRegularExpression whiteSpaceExpression;
+    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
+    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(instance->getInstanceName());
+
+    if (instance->getInstanceName().isEmpty() || whiteSpaceMatch.hasMatch())
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -60,9 +70,9 @@ bool ComponentInstanceValidator::hasValidName(QSharedPointer<ComponentInstance> 
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidIsPresent(QSharedPointer<ComponentInstance> instance) const
 {
-    if (!instance->getIsPresent().empty())
+    if (!instance->getIsPresent().isEmpty())
     {
-        QString solvedValue = parser_->parseExpression(QString::fromStdString(instance->getIsPresent()));
+        QString solvedValue = parser_->parseExpression(instance->getIsPresent());
 
         bool toIntOk = true;
         int intValue = solvedValue.toInt(&toIntOk);
@@ -104,8 +114,8 @@ void ComponentInstanceValidator::findErrorsInName(QVector<QString>& errors,
 {
     if (!hasValidName(instance))
     {
-        errors.append(QObject::tr("Invalid instance name '%1' set for component instance within %2").arg(
-            QString::fromStdString(instance->getInstanceName()), context));
+        errors.append(QObject::tr("Invalid instance name '%1' set for component instance within %2")
+            .arg(instance->getInstanceName()).arg(context));
     }
 }
 
@@ -117,8 +127,8 @@ void ComponentInstanceValidator::findErrorsInIsPresent(QVector<QString>& errors,
 {
     if (!hasValidIsPresent(instance))
     {
-        errors.append(QObject::tr("Invalid isPresent set for component instance %1 within %2").arg(
-            QString::fromStdString(instance->getInstanceName()), context));
+        errors.append(QObject::tr("Invalid isPresent set for component instance %1 within %2")
+            .arg(instance->getInstanceName()).arg(context));
     }
 }
 
@@ -133,20 +143,18 @@ void ComponentInstanceValidator::findErrorsInComponentReference(QVector<QString>
         if (!libraryHandler_->contains(*instance->getComponentRef()))
         {
             errors.append(QObject::tr("Component reference %1 in component instance %2 within %3 was not found "
-                "in the library").arg(
-                    instance->getComponentRef()->toString(),
-                    QString::fromStdString(instance->getInstanceName()),
-                    context));
+                "in the library")
+                .arg(instance->getComponentRef()->toString()).arg(instance->getInstanceName()).arg(context));
         }
 
-        QString instanceContext = QObject::tr("component reference in component instance %1").arg(
-                QString::fromStdString(instance->getInstanceName()));
+        QString instanceContext =
+            QObject::tr("component reference in component instance %1").arg(instance->getInstanceName());
 
         instance->getComponentRef()->isValid(errors, instanceContext);
     }
     else
     {
-        errors.append(QObject::tr("No component reference given in component instance %1 within %2").arg(
-            QString::fromStdString(instance->getInstanceName()), context));
+        errors.append(QObject::tr("No component reference given in component instance %1 within %2")
+            .arg(instance->getInstanceName()).arg(context));
     }
 }

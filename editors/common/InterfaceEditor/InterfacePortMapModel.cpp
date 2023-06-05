@@ -178,10 +178,9 @@ void InterfacePortMapModel::setInterfaceData(ConnectionEndpoint* busItem, QStrin
 //-----------------------------------------------------------------------------
 bool InterfacePortMapModel::portIsExcluded(QString const& portName) const
 {
-    auto name = portName.toStdString();
-    for (QSharedPointer<ActiveInterface> currentInterface : activeInterfaces_)
+    foreach (QSharedPointer<ActiveInterface> currentInterface, activeInterfaces_)
     {
-        if (currentInterface->getExcludePorts()->contains(name))
+        if (currentInterface->getExcludePorts()->contains(portName))
         {
             return true;
         }
@@ -324,13 +323,13 @@ bool InterfacePortMapModel::setData(const QModelIndex& index, const QVariant& va
 
         mappingItems_[index.row()].isExcluded_ = excludeValue;
 
-        for (QSharedPointer<ActiveInterface> currentInterface : activeInterfaces_)
+        foreach (QSharedPointer<ActiveInterface> currentInterface, activeInterfaces_)
         {
-            currentInterface->getExcludePorts()->removeAll(mappingItems_.at(index.row()).physicalPortName_.toStdString());
+            currentInterface->getExcludePorts()->removeAll(mappingItems_.at(index.row()).physicalPortName_);
             
             if (mappingItems_.at(index.row()).isExcluded_)
             {
-                currentInterface->getExcludePorts()->append(mappingItems_.at(index.row()).physicalPortName_.toStdString());
+                currentInterface->getExcludePorts()->append(mappingItems_.at(index.row()).physicalPortName_);
             }
         }
 

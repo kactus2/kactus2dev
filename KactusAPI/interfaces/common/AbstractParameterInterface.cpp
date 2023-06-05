@@ -50,7 +50,7 @@ bool AbstractParameterInterface::setName(std::string const& currentName, std::st
     QSharedPointer<Parameter> editedParameter = getParameter(currentName);
     if (editedParameter && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, "parameter");
+        QString uniqueNewName = getUniqueName(newName, "parameter");
 
         editedParameter->setName(uniqueNewName);
         return true;

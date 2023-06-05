@@ -37,7 +37,7 @@ template <typename T> ConnectionItem<T>::ConnectionItem(QPointF const& p1, QVect
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::setName()
 //-----------------------------------------------------------------------------
-template <typename T> void ConnectionItem<T>::setName(std::string const& name)
+template <typename T> void ConnectionItem<T>::setName(QString const& name)
 {
     GraphicsConnection::setName(name);
     interconnection_->setName(name);
@@ -48,15 +48,15 @@ template <typename T> void ConnectionItem<T>::setName(std::string const& name)
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::name()
 //-----------------------------------------------------------------------------
-template <typename T> std::string ConnectionItem<T>::name() const
+template <typename T> QString ConnectionItem<T>::name() const
 {
-    return interconnection_->nameStd();
+    return interconnection_->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::setDescription()
 //-----------------------------------------------------------------------------
-template <typename T> void ConnectionItem<T>::setDescription(std::string const& description)
+template <typename T> void ConnectionItem<T>::setDescription(QString const& description)
 {
     interconnection_->setDescription(description);
 
@@ -66,9 +66,9 @@ template <typename T> void ConnectionItem<T>::setDescription(std::string const& 
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::description()
 //-----------------------------------------------------------------------------
-template <typename T> std::string ConnectionItem<T>::description() const
+template <typename T> QString ConnectionItem<T>::description() const
 {
-    return interconnection_->descriptionStd();
+    return interconnection_->description();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,8 +82,8 @@ template <typename T> QSharedPointer<T> ConnectionItem<T>::getInterconnection()
 //-----------------------------------------------------------------------------
 // Function: ConnectionItem::changeConnectionComponentReference()
 //-----------------------------------------------------------------------------
-template <typename T> void ConnectionItem<T>::changeConnectionComponentReference(std::string const& oldName, 
-    std::string const& newName)
+template <typename T> void ConnectionItem<T>::changeConnectionComponentReference(QString const& oldName, 
+    QString const& newName)
 {
     interconnection_->changeInterfaceComponentReferences(oldName, newName);
 }

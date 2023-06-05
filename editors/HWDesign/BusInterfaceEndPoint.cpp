@@ -136,15 +136,15 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithInitiative(TransactionalTyp
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::name()
 //-----------------------------------------------------------------------------
-std::string BusInterfaceEndPoint::name() const
+QString BusInterfaceEndPoint::name() const
 {
-    return busInterface_->nameStd();
+    return busInterface_->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::setName()
 //-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::setName(std::string_view name)
+void BusInterfaceEndPoint::setName(QString const& name)
 {
     beginUpdateConnectionNames();
 
@@ -152,7 +152,7 @@ void BusInterfaceEndPoint::setName(std::string_view name)
 
     busInterface_->setName(name);
 
-    updateName(previousName.toStdString(), name);
+    updateName(previousName, name);
 
     updateInterface();
     emit contentChanged();
@@ -171,22 +171,22 @@ void BusInterfaceEndPoint::setBusInterface(QSharedPointer<BusInterface> newBus)
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::description()
 //-----------------------------------------------------------------------------
-std::string BusInterfaceEndPoint::description() const
+QString BusInterfaceEndPoint::description() const
 {
     if (busInterface_)
     {
-        return busInterface_->descriptionStd();
+        return busInterface_->description();
     }
     else
     {
-        return std::string();
+        return QString();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::setDescription()
 //-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::setDescription(std::string_view description)
+void BusInterfaceEndPoint::setDescription(QString const& description)
 {
     if (busInterface_)
     {

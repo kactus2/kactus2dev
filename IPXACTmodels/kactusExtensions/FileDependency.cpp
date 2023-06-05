@@ -105,9 +105,9 @@ FileDependency* FileDependency::clone() const
 //-----------------------------------------------------------------------------
 // Function: FileDependency::type()
 //-----------------------------------------------------------------------------
-std::string FileDependency::type() const
+QString FileDependency::type() const
 {
-    return "kactus2:fileDependency";
+    return QStringLiteral("kactus2:fileDependency");
 }
 
 //-----------------------------------------------------------------------------

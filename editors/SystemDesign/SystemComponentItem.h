@@ -61,13 +61,13 @@ public:
      *  Sets the property values.
      *
      *      @param [in] values The property values.
-     */
-    void setPropertyValues(QMap<std::string, std::string> const& values);
+     */ 
+    void setPropertyValues(QMap<QString, QString> const& values);
 
     /*!
      *  Returns the property values.
      */
-    QMap<std::string, std::string> getPropertyValues() const;
+    QMap<QString, QString> const getPropertyValues() const;
 
     /*!
      *  Adds a new, empty port to the component.
@@ -149,7 +149,7 @@ public:
      *
      *      @return The corresponding port item, or null if no match was found.
      */
-    SWPortItem* getSWPort(std::string_view name, SWConnectionEndpoint::EndpointType type) const;
+    SWPortItem* getSWPort(QString const& name, SWConnectionEndpoint::EndpointType type) const;
 
     /*!
      *  Retrieves the port with properties similar to the selected end point.
@@ -171,7 +171,7 @@ public:
      *      @param [in] positions      The positions to set.
      *      @param [in] createMissing  If true, the missing bus interfaces are created.
      */
-    void setApiInterfacePositions(QMap<std::string, QPointF> const& positions, bool createMissing = false);
+    void setApiInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
 
     /*!
      *  Sets the COM interface positions.
@@ -179,17 +179,17 @@ public:
      *      @param [in] positions      The positions to set.
      *      @param [in] createMissing  If true, the missing bus interfaces are created.
      */
-    void setComInterfacePositions(QMap<std::string, QPointF> const& positions, bool createMissing = false);
+    void setComInterfacePositions(QMap<QString, QPointF> const& positions, bool createMissing = false);
 
     /*!
      *  Returns the API interface positions.
      */
-    QMap<std::string, QPointF> getApiInterfacePositions() const;
+    QMap<QString, QPointF> getApiInterfacePositions() const;
 
     /*!
      *  Returns the COM interface positions.
      */
-    QMap<std::string, QPointF> getComInterfacePositions() const;
+    QMap<QString, QPointF> getComInterfacePositions() const;
 
     /*!
      *  Marks the component as a packetized component.
@@ -203,7 +203,7 @@ public:
 
 signals:
     //! Occurs when the property values have been changed.
-    void propertyValuesChanged(QMap<std::string, std::string> const& propertyValues);
+    void propertyValuesChanged(QMap<QString, QString> const& propertyValues);
 
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
@@ -234,7 +234,7 @@ private:
     bool connUpdateDisabled_ = false;
 
     //! The set property values.
-    QMap<std::string, std::string> propertyValues_;
+    QMap<QString, QString> propertyValues_;
 };
 
 //-----------------------------------------------------------------------------

@@ -209,8 +209,8 @@ public:
      *      @param [in] instanceUUID                The id for instance to get the values.
      *      @param [in] configurableElementValues   The values to be saved in the design configuration.
      */
-    void setConfigurableElementValues(std::string const& instanceUUID,
-        QMap<std::string, std::string> const& configurableElementValues);
+    void setConfigurableElementValues(QString const& instanceUUID, 
+        QMap<QString, QString> const& configurableElementValues);
 
     /*!
      *  Finds and creates instance extensions.
@@ -219,7 +219,7 @@ public:
      *
      *      @return The instance extension.
      */
-    QSharedPointer<VendorExtension> findOrCreateInstanceExtension(std::string const& instanceUUID);
+    QSharedPointer<VendorExtension> findOrCreateInstanceExtension(QString const& instanceUUID);
 
     /*!
      *  Gets the override configurable element values for a given component instance identified by UUID.
@@ -228,21 +228,21 @@ public:
      *
      *      @return Configurable element values for the instance.
      */
-    QMap<std::string, std::string> getConfigurableElementValues(std::string const& instanceUUID) const;
+    QMap<QString, QString> getConfigurableElementValues(QString const& instanceUUID) const;
 
     /*!
      *  Gets the override view configuration.
      *
      *      @return Pairs of instance id and their overridden views.
      */
-    QMap<std::string, std::string> getKactus2ViewOverrides() const;
+    QMap<QString, QString> getKactus2ViewOverrides() const;
 
     /*!
      *  Sets the override view configuration.
      *
      *      @param [in] kactus2ViewOverrides    The new view overrides.
      */
-    void setKactus2ViewOverrides(QMap<std::string, std::string> kactus2ViewOverrides);
+    void setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides);
 
 private:
 

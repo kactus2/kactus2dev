@@ -66,21 +66,21 @@ public:
      *
      *      @return The name of the ad hoc port.
      */
-    virtual std::string name() const;
+    virtual QString name() const;
 
 	/*!
      *  Returns the description of the port.
      *
      *      @return The description of the port.
      */
-	virtual std::string description() const;
+	virtual QString description() const;
 
 	/*!
      *  Sets the description of the port.
      *
      *      @param [in] description The description to set.
      */
-	virtual void setDescription(std::string_view description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.

@@ -41,12 +41,15 @@ design_(diagram->getDesign())
         componentCopy = QSharedPointer<Component>(new Component(*component));
     }
 
-    auto uniqueInstanceName = diagram->createInstanceName(componentInstance->getInstanceName());
+    QString uniqueInstanceName = diagram->createInstanceName(componentInstance->getInstanceName());
     componentInstance_->setInstanceName(uniqueInstanceName);
 
     HWComponentItem* componentItem = new HWComponentItem(diagram->getLibraryInterface(), componentInstance_, 
         componentCopy, column);
     componentItem->setPos(position);
+
+    //comp->setBusInterfacePositions(instance.instance->getBusInterfacePositions(), false);
+    //comp->setAdHocPortPositions(instance.instance->getAdHocPortPositions());
 
     GraphicsColumn* targetColumn = column;
 

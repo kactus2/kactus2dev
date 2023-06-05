@@ -170,7 +170,7 @@ QString AdhocPortEditor::getTiedValue(QSharedPointer<AdHocConnection> connection
 {
     if (connectionItem)
     {
-        return QString::fromStdString(connectionItem->getTiedValue());
+        return connectionItem->getTiedValue();
     }
 
     return QString();
@@ -181,18 +181,18 @@ QString AdhocPortEditor::getTiedValue(QSharedPointer<AdHocConnection> connection
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
 {
-    auto instanceName = getInstanceName();
+    QString instanceName = getInstanceName();
 
     QSharedPointer<Design> containingDesign = designDiagram_->getDesign();
     for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
     {
-        if (!instanceName.empty())
+        if (!instanceName.isEmpty())
         {
             for (QSharedPointer<PortReference> internalReference : *connection->getInternalPortReferences())
             {
                 if (internalReference->getPortRef() == containedPortItem_->name() &&
                     internalReference->getComponentRef() == instanceName &&
-                    (!connection->getTiedValue().empty() || internalReference->getPartSelect()))
+                    (!connection->getTiedValue().isEmpty() || internalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -203,7 +203,7 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
             for (QSharedPointer<PortReference> externalReference : *connection->getExternalPortReferences())
             {
                 if (externalReference->getPortRef() == containedPortItem_->name() &&
-                    (!connection->getTiedValue().empty() || externalReference->getPartSelect()))
+                    (!connection->getTiedValue().isEmpty() || externalReference->getPartSelect()))
                 {
                     return connection;
                 }
@@ -217,9 +217,9 @@ QSharedPointer<AdHocConnection> AdhocPortEditor::getTiedConnection() const
 //-----------------------------------------------------------------------------
 // Function: AdhocPortEditor::getInstanceName()
 //-----------------------------------------------------------------------------
-std::string AdhocPortEditor::getInstanceName() const
+QString AdhocPortEditor::getInstanceName() const
 {
-    std::string instanceName;
+    QString instanceName;
     ComponentItem* containingInstance = containedPortItem_->encompassingComp();
     if (containingInstance)
     {
@@ -242,8 +242,7 @@ void AdhocPortEditor::setTiedValueEditorToolTip(QString const& tiedValue)
 
         if (parsedTieOff.isEmpty() && QString::compare(tiedValue, "default", Qt::CaseInsensitive) == 0)
         {
-            newToolTip = QObject::tr("No default value defined for port ") + 
-                QString::fromStdString(containedPortItem_->name());
+            newToolTip = QObject::tr("No default value defined for port ") + containedPortItem_->name();
         }
         else
         {
@@ -408,7 +407,7 @@ void AdhocPortEditor::updateTiedValueBounds(QSharedPointer<PartSelect> portPartS
 QSharedPointer<PartSelect> AdhocPortEditor::getEndPointPartSelect(QSharedPointer<AdHocConnection> adHocConnection)
 const
 {
-    auto instanceName = getInstanceName();
+    QString instanceName = getInstanceName();
 
     if (adHocConnection)
     {
@@ -449,7 +448,7 @@ void AdhocPortEditor::createTieOffChangeCommand(QString const& newTiedValue)
 
     if (connection)
     {
-        oldTieOffValue = QString::fromStdString(connection->getTiedValue());
+        oldTieOffValue = connection->getTiedValue();
         parsedOldTieOff = getParsedTieOffValue(oldTieOffValue);
     }
 
@@ -549,7 +548,7 @@ void AdhocPortEditor::refreshEditors()
     QSharedPointer<AdHocConnection> connection = getTiedConnection();
     if (connection)
     {
-        tiedValue = QString::fromStdString(connection->getTiedValue());
+        tiedValue = connection->getTiedValue();
 
         QSharedPointer<PartSelect> partSelect = getEndPointPartSelect(connection);
         if (partSelect)

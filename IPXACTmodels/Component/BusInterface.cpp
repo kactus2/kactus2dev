@@ -723,7 +723,7 @@ void BusInterface::setDefaultPos(QPointF const& pos)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             getVendorExtensions()->removeAll(extension);
         }
@@ -743,7 +743,7 @@ QPointF BusInterface::getDefaultPos()
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:position")
+        if (extension->type() == QLatin1String("kactus2:position"))
         {
             QSharedPointer<Kactus2Position> defaultPosition = extension.dynamicCast<Kactus2Position>();
             return defaultPosition->position();

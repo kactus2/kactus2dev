@@ -25,7 +25,7 @@ class IPXACTMODELS_EXPORT ConnectionRoute : public VendorExtension
 {
 public:
     //! The constructor.
-    ConnectionRoute(std::string_view connectionName);
+    ConnectionRoute(QString const& connectionName);
 
     //! The destructor.
     ~ConnectionRoute() final;
@@ -48,7 +48,7 @@ public:
      *
      *      @return A type identifier of the vendor extension.
      */
-    std::string type() const final;
+    virtual QString type() const;
     
     /*!
      *  Writes the vendor extension to XML.
@@ -62,14 +62,14 @@ public:
      *
      *      @param [in] name   The name of the connection.
      */
-    void setName(std::string_view name);
+    void setName(QString const& name);
 
     /*!
      *  Gets the name of the connection the route is stored for.
      *
      *      @return The name of the route represented by the item.
      */
-    std::string name() const;
+    QString  name() const;
 
     /*!
      *  Sets the connection to offpage mode or normal mode.
@@ -109,7 +109,7 @@ public:
 private:
 
     //! The name of the connection.
-    std::string name_;
+    QString name_;
 
     //! Whether or not the connection is drawn in off-page mode.
     bool offpage_ = false;

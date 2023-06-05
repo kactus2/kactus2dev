@@ -20,10 +20,10 @@
 struct TagData
 {
     //! Tag name.
-    std::string name_;
+    QString name_;
 
     //! Tag color in hex code ("#RRGGBB").
-    std::string color_;
+    QString color_;
 
     /*
      *  Comparison operator for tag data.

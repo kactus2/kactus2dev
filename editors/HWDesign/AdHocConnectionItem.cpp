@@ -57,3 +57,4 @@ bool AdHocConnectionItem::isBus() const
 {
     return false;
 }
+

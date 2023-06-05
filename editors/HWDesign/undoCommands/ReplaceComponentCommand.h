@@ -85,7 +85,7 @@ private:
      *      @param [in] diagram                 The containing design diagram.
      */
     void changeConnections(HWComponentItem* oldComponentItem, HWComponentItem* newComponentItem, 
-        QVector<std::string>& connectionNames);
+        QVector<QString>& connectionNames);
 
     /*!
      *  Create exchange commands for connections between the end points.
@@ -95,7 +95,7 @@ private:
      *      @param [in] newEndpoint         The new end point.
      */
     void createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint,
-        HWConnectionEndpoint* newEndpoint, QVector<std::string>& connectionNames);
+        HWConnectionEndpoint* newEndpoint, QVector<QString>& connectionNames);
 
     //-----------------------------------------------------------------------------
     // Data.

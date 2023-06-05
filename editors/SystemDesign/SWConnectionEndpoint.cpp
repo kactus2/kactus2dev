@@ -26,14 +26,14 @@
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint()
 //-----------------------------------------------------------------------------
-SWConnectionEndpoint::SWConnectionEndpoint(QSharedPointer<Component> component, std::string_view name,
+SWConnectionEndpoint::SWConnectionEndpoint(QSharedPointer<Component> component, QString const& name,
     QGraphicsItem* parent, QVector2D const& dir):
 ConnectionEndpoint(parent),
 type_(ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED),
 nameLabel_(new GraphicsItemLabel(QString(), this)),
 containingComponent_(component)
 {
-    nameLabel_->setText(QString::fromStdString(std::string(name)));
+    nameLabel_->setText(name);
 
     ConnectionEndpoint::setDirection(dir);
 

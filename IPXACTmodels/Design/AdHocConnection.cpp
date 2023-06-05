@@ -18,8 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::AdHocConnection()
 //-----------------------------------------------------------------------------
-AdHocConnection::AdHocConnection(std::string name,
-    std::string tiedValue, QList<QPointF> const& route,  bool offPage) :
+AdHocConnection::AdHocConnection(QString name, 
+    QString tiedValue, QList<QPointF> const& route,  bool offPage) :
 NameGroup(name),
     Extendable(),
     tiedValue_(tiedValue)
@@ -121,13 +121,13 @@ void AdHocConnection::setExternalPortReferences(QSharedPointer<QList<QSharedPoin
 //-----------------------------------------------------------------------------
 void AdHocConnection::setRoute(QList<QPointF> const& route)
 {
-    auto extension = findVendorExtension("kactus2:route");
+    auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
     getVendorExtensions()->removeAll(extension);
 
 
     if (!route.isEmpty())
     {
-        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group("kactus2:route"));
+        QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group(QStringLiteral("kactus2:route")));
         for (auto const& location : route)
         {
             QSharedPointer<Kactus2Position> routePoint (new Kactus2Position(location));
@@ -144,7 +144,7 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 QList<QPointF> AdHocConnection::getRoute() const
 {
     QList<QSharedPointer<VendorExtension> > routeExtensions =
-        getGroupedExtensionsByType("kactus2:route", "kactus2:position");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:route"), QStringLiteral("kactus2:position"));
 
     QList<QPointF> route;
     for (auto const& extension : routeExtensions)
@@ -161,7 +161,7 @@ QList<QPointF> AdHocConnection::getRoute() const
 //-----------------------------------------------------------------------------
 bool AdHocConnection::isOffPage() const
 {
-    return findVendorExtension("kactus2:offPage") != nullptr;
+    return findVendorExtension(QStringLiteral("kactus2:offPage")) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -169,13 +169,13 @@ bool AdHocConnection::isOffPage() const
 //-----------------------------------------------------------------------------
 void AdHocConnection::setOffPage(bool offPage)
 {
-    setPlaceholderExtension(offPage, "kactus2:offPage");
+    setPlaceholderExtension(offPage, QStringLiteral("kactus2:offPage"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::getIsPresent()
 //-----------------------------------------------------------------------------
-std::string AdHocConnection::getIsPresent() const
+QString AdHocConnection::getIsPresent() const
 {
     return isPresent_;
 }
@@ -183,7 +183,7 @@ std::string AdHocConnection::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::setIsPresent()
 //-----------------------------------------------------------------------------
-void AdHocConnection::setIsPresent(std::string const& newIsPresent)
+void AdHocConnection::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -191,7 +191,7 @@ void AdHocConnection::setIsPresent(std::string const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::getTiedValue()
 //-----------------------------------------------------------------------------
-std::string AdHocConnection::getTiedValue() const
+QString AdHocConnection::getTiedValue() const
 {
     return tiedValue_;
 }
@@ -199,7 +199,7 @@ std::string AdHocConnection::getTiedValue() const
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::setTiedValue()
 //-----------------------------------------------------------------------------
-void AdHocConnection::setTiedValue(std::string const& newTiedValue)
+void AdHocConnection::setTiedValue(QString const& newTiedValue)
 {
     tiedValue_ = newTiedValue;
 }
@@ -207,7 +207,7 @@ void AdHocConnection::setTiedValue(std::string const& newTiedValue)
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::changeInterfaceComponentReferences()
 //-----------------------------------------------------------------------------
-void AdHocConnection::changeInterfaceComponentReferences(std::string const& oldName, std::string const& newName)
+void AdHocConnection::changeInterfaceComponentReferences(QString const& oldName, QString const& newName)
 {
     for (QSharedPointer<PortReference> portReference : *internalPortReferences_)
     {

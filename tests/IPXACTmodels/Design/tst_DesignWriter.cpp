@@ -409,7 +409,7 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
     otherComponentInstance->setUuid("otherUUID");
     otherComponentInstance->setImported(true);
 
-    QMap<std::string, std::string> swProperties;
+    QMap<QString, QString> swProperties;
     swProperties.insert("testSWProperty", "8");
     testComponentInstance->setPropertyValues(swProperties);
 
@@ -608,7 +608,7 @@ void tst_DesignWriter::testWrite2022Interconnections()
     QSharedPointer<ActiveInterface> testActiveInterface(new ActiveInterface("otherComponent", "otherBus"));
 
     QSharedPointer<Interconnection> testInterconnection(new Interconnection());
-    testInterconnection->setName(std::string("testActiveHierActive"));
+    testInterconnection->setName("testActiveHierActive");
     testInterconnection->setDisplayName("connect");
     testInterconnection->setShortDescription("brief");
     testInterconnection->setDescription("interconnect description");
@@ -1282,7 +1282,7 @@ void tst_DesignWriter::testWriteParameters()
 
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setValueId("testID");
-    testParameter->setName(std::string("testParameter"));
+    testParameter->setName("testParameter");
     testParameter->setValue("1");
 
     testDesign->getParameters()->append(testParameter);
@@ -1328,7 +1328,7 @@ void tst_DesignWriter::testWriteAssertions()
     auto testDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
 
     QSharedPointer<Assertion> testAssertion(new Assertion());
-    testAssertion->setName(std::string("testAssertion"));
+    testAssertion->setName("testAssertion");
     testAssertion->setDisplayName("assertionDisplay");
     testAssertion->setDescription("assertionDescription");
     testAssertion->setAssert("13");
@@ -1523,7 +1523,7 @@ void tst_DesignWriter::testWritePortAdHocVisibilitiesAndPositions()
     portPosition.setX(4);
     portPosition.setY(25);
 
-    QMap<std::string, QPointF> adHocPositions;
+    QMap<QString, QPointF> adHocPositions;
     adHocPositions.insert("testPort", portPosition);
     testDesign->setAdHocPortPositions(adHocPositions);
 

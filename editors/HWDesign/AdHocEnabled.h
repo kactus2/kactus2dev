@@ -42,7 +42,7 @@ public:
      *      @param [in] portAdHocVisibilities  The saved ad-hoc visibilities for the ports.
      */
     void setAdHocData(QSharedPointer<Component> component,
-                      QMap<std::string, bool> const& portAdHocVisibilities = QMap<std::string, bool>());
+                      QMap<QString, bool> const& portAdHocVisibilities = QMap<QString, bool>());
 
     /*!
      *  Sets the ad-hoc visibility of the given port.
@@ -50,19 +50,19 @@ public:
      *      @param [in] portName The name of the port.
      *      @param [in] visible  If true, the port is set visible for ad-hoc.
      */
-    void setPortAdHocVisible(std::string const& portName, bool visible);
+    void setPortAdHocVisible(QString const& portName, bool visible);
 
     /*!
      *  Returns true if the given port is currently visible for ad-hoc.
      *
      *      @param [in] portName The name of the port.
      */
-    bool isPortAdHocVisible(std::string const& portName) const;
+    bool isPortAdHocVisible(QString const& portName) const;
 
     /*!
      *  Returns the ad-hoc visibility map.
      */
-    QMap<std::string, bool> getPortAdHocVisibilities() const;
+    QMap<QString, bool> getPortAdHocVisibilities() const;
 
     /*!
      *  Returns the list of ports.
@@ -75,7 +75,7 @@ public:
      *      @param [in] portName  The name of the port.
      *      @param [in] visible   The new ad-hoc visibility.
      */
-    virtual void onAdHocVisibilityChanged(std::string_view portName, bool visible);
+    virtual void onAdHocVisibilityChanged(QString const& portName, bool visible);
 
     /*!
      *  Attaches the data source to an ad-hoc editor.
@@ -92,12 +92,12 @@ public:
      *
      *      @return The name of the ad hoc enabled item.
      */
-    virtual std::string adHocIdentifier() const = 0;
+    virtual QString adHocIdentifier() const = 0;
 
     /*!
      *  Returns the ad-hoc port with the given name or null if not found.
      */
-    virtual HWConnectionEndpoint* getDiagramAdHocPort(std::string_view portName);
+    virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
     /*!
      *  Create an ad hoc port item with the selected name.
@@ -106,7 +106,7 @@ public:
      *
      *      @return 0. Child items should create their own items where desired.
      */
-    virtual AdHocItem* createAdhocItem(std::string_view portName);
+    virtual AdHocItem* createAdhocItem(QString const& portName);
 
     /*!
      *  Change the visibility of an ad hoc port item.
@@ -143,7 +143,7 @@ private:
     QSharedPointer<Component> component_;
 
     //! The ad-hoc visibility flags for ports.
-    QMap<std::string, bool> portAdHocVisibilities_;
+    QMap<QString, bool> portAdHocVisibilities_;
 };
 
 //-----------------------------------------------------------------------------

@@ -39,7 +39,7 @@ public:
      *
      *      @return A type identifier of the vendor extension.
      */
-    virtual std::string type() const = 0;
+    virtual QString type() const = 0;
 
     /*!
      *  Writes the vendor extension to XML.

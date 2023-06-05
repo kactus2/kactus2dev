@@ -15,7 +15,10 @@
 // Function: HierComInterconnection::HierComInterconnection()
 //-----------------------------------------------------------------------------
 HierComInterconnection::HierComInterconnection() :
-Interconnection()
+Interconnection(),
+topInterfaceRef_(),
+position_(),
+direction_()
 {
 
 }
@@ -23,8 +26,8 @@ Interconnection()
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::HierComInterconnection()
 //-----------------------------------------------------------------------------
-HierComInterconnection::HierComInterconnection(std::string const& name, std::string const& displayName,
-    std::string const& description, std::string const& interfaceRef, QSharedPointer<ActiveInterface> ref,
+HierComInterconnection::HierComInterconnection(QString const& name, QString const& displayName,
+    QString const& description, QString const& interfaceRef, QSharedPointer<ActiveInterface> ref,
     QPointF const& position, QVector2D const& direction, QList<QPointF> const& route) :
 Interconnection(name, ref, displayName, description),
 topInterfaceRef_(interfaceRef),
@@ -60,12 +63,12 @@ direction_()
     setDescription(connectionNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
 
     QDomNamedNodeMap connectionAttributes = connectionNode.attributes();
-    setTopInterfaceRef(connectionAttributes.namedItem(QStringLiteral("interfaceRef")).nodeValue().toStdString());
+    setTopInterfaceRef(connectionAttributes.namedItem(QStringLiteral("interfaceRef")).nodeValue());
 
     QDomElement comInterfaceElement = connectionNode.firstChildElement(QStringLiteral("kactus2:activeComInterface"));
     QDomNamedNodeMap interfaceAttributes = comInterfaceElement.attributes();
-    auto interfaceComponentRef = interfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue().toStdString();
-    auto interfaceApiRef = interfaceAttributes.namedItem(QStringLiteral("comRef")).nodeValue().toStdString();
+    QString interfaceComponentRef = interfaceAttributes.namedItem(QStringLiteral("componentRef")).nodeValue();
+    QString interfaceApiRef = interfaceAttributes.namedItem(QStringLiteral("comRef")).nodeValue();
     QSharedPointer<ActiveInterface> newApiInterface(new ActiveInterface(interfaceComponentRef, interfaceApiRef));
     setInterface(newApiInterface);
 
@@ -125,9 +128,9 @@ HierComInterconnection* HierComInterconnection::clone() const
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::type()
 //-----------------------------------------------------------------------------
-std::string HierComInterconnection::type() const
+QString HierComInterconnection::type() const
 {
-    return "kactus2:hierComConnection";
+    return QStringLiteral("kactus2:hierComConnection");
 }
 
 //-----------------------------------------------------------------------------
@@ -136,16 +139,15 @@ std::string HierComInterconnection::type() const
 void HierComInterconnection::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(QStringLiteral("kactus2:hierComConnection"));
-    writer.writeAttribute(QStringLiteral("interfaceRef"), QString::fromStdString(topInterfaceRef_));
+    writer.writeAttribute(QStringLiteral("interfaceRef"), topInterfaceRef_);
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
     writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
     writer.writeTextElement(QStringLiteral("ipxact:description"), description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:activeComInterface"));
-    writer.writeAttribute(QStringLiteral("componentRef"), 
-        QString::fromStdString(getInterface()->getComponentReference()));
-    writer.writeAttribute(QStringLiteral("comRef"), QString::fromStdString(getInterface()->getBusReference()));
+    writer.writeAttribute(QStringLiteral("componentRef"), getInterface()->getComponentReference());
+    writer.writeAttribute(QStringLiteral("comRef"), getInterface()->getBusReference());
 
     writePosition(writer);
     writeVectorDirection(writer);
@@ -187,7 +189,7 @@ void HierComInterconnection::setInterface(QSharedPointer<ActiveInterface> ref)
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::setTopInterfaceRef()
 //-----------------------------------------------------------------------------
-void HierComInterconnection::setTopInterfaceRef(std::string const& interfaceRef)
+void HierComInterconnection::setTopInterfaceRef(QString const& interfaceRef)
 {
     topInterfaceRef_ = interfaceRef;
 }
@@ -195,7 +197,7 @@ void HierComInterconnection::setTopInterfaceRef(std::string const& interfaceRef)
 //-----------------------------------------------------------------------------
 // Function: HierComInterconnection::getTopInterfaceRef()
 //-----------------------------------------------------------------------------
-std::string const& HierComInterconnection::getTopInterfaceRef() const
+QString const& HierComInterconnection::getTopInterfaceRef() const
 {
     return topInterfaceRef_;
 }

@@ -84,8 +84,8 @@ public:
 	 *
 	*/
     ConnectionChangeCommand(GraphicsConnection* connection,
-        std::string const& newName,
-        std::string const& newDescription,
+        QString const& newName,
+        QString const& newDescription,
         QUndoCommand* parent = nullptr);
 
 	//! \brief The destructor
@@ -113,16 +113,16 @@ private:
 	GraphicsConnection* connection_ = nullptr;
 
 	//! \brief The new name for the connection.
-    std::string newName_;
+    QString newName_;
 
 	//! \brief The new description for the connection.
-    std::string newDescription_;
+    QString newDescription_;
 
 	//! \brief The old name of the connection.
-    std::string oldName_;
+    QString oldName_;
 
 	//! \brief The old description of the connection.
-    std::string oldDescription_;
+    QString oldDescription_;
 };
 
 //-----------------------------------------------------------------------------

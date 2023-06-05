@@ -262,7 +262,7 @@ qreal ActivePortItem::getNameLength()
 {
     QFont font = getNameLabel()->font();
 
-	return NamelabelWidth::getTextLength(QString::fromStdString(name()), font);
+	return NamelabelWidth::getTextLength(name(), font);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,7 +271,7 @@ qreal ActivePortItem::getNameLength()
 void ActivePortItem::shortenNameLabel( qreal width )
 {
     QFont font = getNameLabel()->font();
-	QString nameLabelText = NamelabelWidth::setNameLabel(QString::fromStdString(name()), font, width);
+	QString nameLabelText = NamelabelWidth::setNameLabel(name(), font, width);
 
 	setLabelPosition();
 }

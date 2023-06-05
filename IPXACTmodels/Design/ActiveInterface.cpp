@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::ActiveInterface()
 //-----------------------------------------------------------------------------
-ActiveInterface::ActiveInterface(std::string const& componentRef, std::string const& busRef):
+ActiveInterface::ActiveInterface(QString const& componentRef, QString const& busRef):
 HierInterface(busRef),
 componentRef_(componentRef)
 {
@@ -26,9 +26,10 @@ componentRef_(componentRef)
 //-----------------------------------------------------------------------------
 ActiveInterface::ActiveInterface(const ActiveInterface& other) :
 HierInterface(other),
-componentRef_(other.componentRef_)
+componentRef_(other.componentRef_),
+excludePorts_(new QStringList())
 {
-    for (auto const& portName : *other.excludePorts_)
+    for (QString const& portName : *other.excludePorts_)
     {
         excludePorts_->append(portName);
     }
@@ -44,7 +45,7 @@ ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)
         HierInterface::operator=(other);
         componentRef_ = other.componentRef_;
 
-        for (auto const& portName : *other.excludePorts_)
+        for (QString const& portName : *other.excludePorts_)
         {
             excludePorts_->append(portName);
         }
@@ -59,7 +60,7 @@ ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)
 bool ActiveInterface::operator==(const ActiveInterface& other) const
 {
     return (HierInterface::operator==(other)) &&
-        (componentRef_.compare(other.componentRef_) == 0);
+        (componentRef_.compare(other.componentRef_, Qt::CaseInsensitive) == 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +79,7 @@ bool ActiveInterface::operator<(const ActiveInterface& other)
     int busRefeferencecomparison = HierInterface::operator<(other);
     if (busRefeferencecomparison == 0)
     {
-        return componentRef_.compare(other.componentRef_) < 0;
+        return componentRef_.compare(other.componentRef_, Qt::CaseInsensitive) < 0;
     }
     else
     {
@@ -89,7 +90,7 @@ bool ActiveInterface::operator<(const ActiveInterface& other)
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::references()
 //-----------------------------------------------------------------------------
-bool ActiveInterface::references(std::string const& instanceName, std::string const& busInterfaceName)
+bool ActiveInterface::references(QString const& instanceName, QString const& busInterfaceName)
 {
     return instanceName == componentRef_ && busInterfaceName == getBusReference();
 }
@@ -97,7 +98,7 @@ bool ActiveInterface::references(std::string const& instanceName, std::string co
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::getComponentReference()
 //-----------------------------------------------------------------------------
-std::string ActiveInterface::getComponentReference() const
+QString ActiveInterface::getComponentReference() const
 {
     return componentRef_;
 }
@@ -105,7 +106,7 @@ std::string ActiveInterface::getComponentReference() const
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::setComponentReference()
 //-----------------------------------------------------------------------------
-void ActiveInterface::setComponentReference(std::string const& newComponentReference)
+void ActiveInterface::setComponentReference(QString const& newComponentReference)
 {
     componentRef_ = newComponentReference;
 }
@@ -113,7 +114,7 @@ void ActiveInterface::setComponentReference(std::string const& newComponentRefer
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::getExcludePorts()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<std::string> > ActiveInterface::getExcludePorts() const
+QSharedPointer<QStringList> ActiveInterface::getExcludePorts() const
 {
     return excludePorts_;
 }
@@ -121,7 +122,7 @@ QSharedPointer<QList<std::string> > ActiveInterface::getExcludePorts() const
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::setExcludePorts()
 //-----------------------------------------------------------------------------
-void ActiveInterface::setExcludePorts(QSharedPointer<QList<std::string> > newExcludePorts)
+void ActiveInterface::setExcludePorts(QSharedPointer<QStringList> newExcludePorts)
 {
     excludePorts_ = newExcludePorts;
 }

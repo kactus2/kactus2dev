@@ -114,8 +114,7 @@ private:
      *      @param [in] currentTreeItem     The current tree item.
      *      @param [in] viewOverrides       The stored view overrides.
      */
-    void parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, 
-        QMap<std::string, std::string> const& viewOverrides);
+    void parseExistingInstanceView(QTreeWidgetItem* currentTreeItem, QMap<QString, QString> viewOverrides);
 
     /*!
      *  Check if the changed item is a top level tree item.
@@ -152,7 +151,7 @@ private:
      *      @param [in] treeItem        The current tree item.
      *      @param [in] viewOverrides   The view overrides.
      */
-    void parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<std::string, std::string>& viewOverrides);
+    void parseChildTreeItem(QTreeWidgetItem* treeItem, QMap<QString, QString>& viewOverrides);
 
     //-----------------------------------------------------------------------------
     // Data.

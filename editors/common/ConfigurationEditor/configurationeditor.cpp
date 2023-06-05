@@ -194,7 +194,7 @@ void ConfigurationEditor::createAndSaveConfiguration(CreateConfigurationDialog c
     // Create the configuration.
     QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configurationVLNV, Document::Revision::Unknown));
     designConfiguration->setDesignConfigImplementation(KactusAttribute::HW);
-    designConfiguration->setVersion(VersionHelper::versionFileStr().toStdString());
+    designConfiguration->setVersion(VersionHelper::versionFileStr());
 
     // Set the configuration to reference the same design.
     if (dialog.designSelection() == CreateConfigurationDialog::USE_EXISTING)

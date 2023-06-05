@@ -41,9 +41,9 @@ VendorExtension* KactusAttribute::clone() const
 //-----------------------------------------------------------------------------
 // Function: KactusAttribute::type()
 //-----------------------------------------------------------------------------
-std::string KactusAttribute::type() const
+QString KactusAttribute::type() const
 {
-    return "kactus2:extensions";
+    return QStringLiteral("kactus2:extensions");
 }
 
 //-----------------------------------------------------------------------------

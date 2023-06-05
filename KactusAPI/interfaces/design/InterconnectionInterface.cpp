@@ -18,7 +18,7 @@
 
 namespace
 {
-    std::string const DEFAULT_NAME = "interconnection";
+    QString const DEFAULT_NAME = QLatin1String("interconnection");
 };
 
 //-----------------------------------------------------------------------------
@@ -94,29 +94,34 @@ std::string InterconnectionInterface::getIndexedItemName(int const& itemIndex) c
 std::string InterconnectionInterface::getConnectionName(std::string const& startInstanceName,
     std::string const& startBusName, std::string const& endInstanceName, std::string const& endBusName) const
 {
+    QString firstInstance = QString::fromStdString(startInstanceName);
+    QString firstBus = QString::fromStdString(startBusName);
+    QString secondInstance = QString::fromStdString(endInstanceName);
+    QString secondBus = QString::fromStdString(endBusName);
+
     for (auto connection : *interconnections_)
     {
-        std::string endInstance;
-        std::string endBus;
+        QString endInstance = "";
+        QString endBus = "";
 
         QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
         if (startInterface)
         {
-            if (startInterface->getComponentReference() == startInstanceName &&
-                startInterface->getBusReference() == startBusName)
+            if (startInterface->getComponentReference() == firstInstance &&
+                startInterface->getBusReference() == firstBus)
             {
-                endInstance = endInstanceName;
-                endBus = endBusName;
+                endInstance = secondInstance;
+                endBus = secondBus;
             }
-            else if (startInterface->getComponentReference() == endInstanceName &&
-                startInterface->getBusReference() == endBusName)
+            else if (startInterface->getComponentReference() == secondInstance &&
+                startInterface->getBusReference() == secondBus)
             {
-                endInstance = startInstanceName;
-                endBus = startBusName;
+                endInstance = firstInstance;
+                endBus = firstBus;
             }
         }
 
-        if (!endInstance.empty() && !endBus.empty())
+        if (!endInstance.isEmpty() && !endBus.isEmpty())
         {
             for (auto connectionInterface : *connection->getActiveInterfaces())
             {
@@ -129,7 +134,7 @@ std::string InterconnectionInterface::getConnectionName(std::string const& start
         }
     }
 
-    return std::string();
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -138,15 +143,19 @@ std::string InterconnectionInterface::getConnectionName(std::string const& start
 std::string InterconnectionInterface::getHierarchicalConnectionName(std::string const& instanceName,
     std::string const& instanceBus, std::string const& topBus) const
 {
+    QString instanceQ = QString::fromStdString(instanceName);
+    QString instanceBusQ = QString::fromStdString(instanceBus);
+    QString topBusQ = QString::fromStdString(topBus);
+
     for (auto connection : *interconnections_)
     {
         QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
-        if (startInterface && startInterface->getComponentReference() == instanceName &&
-            startInterface->getBusReference() == instanceBus)
+        if (startInterface && startInterface->getComponentReference() == instanceQ &&
+            startInterface->getBusReference() == instanceBusQ)
         {
             for (auto connectionInterface : *connection->getHierInterfaces())
             {
-                if (connectionInterface->getBusReference() == topBus)
+                if (connectionInterface->getBusReference() == topBusQ)
                 {
                     return connection->name().toStdString();
                 }
@@ -154,7 +163,7 @@ std::string InterconnectionInterface::getHierarchicalConnectionName(std::string 
         }
     }
 
-    return std::string();
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -180,7 +189,7 @@ std::vector<std::string> InterconnectionInterface::getItemNames() const
     }
 
     std::vector<std::string> connectionNames;
-    for (auto const& connectionName : connectionNamesQ)
+    for (auto connectionName : connectionNamesQ)
     {
         connectionNames.push_back(connectionName.toStdString());
     }
@@ -196,7 +205,7 @@ bool InterconnectionInterface::setName(std::string const& currentName, std::stri
     QSharedPointer<Interconnection> editedConnection = getInterconnection(currentName);
     if (editedConnection && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, DEFAULT_NAME);
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
         editedConnection->setName(uniqueNewName);
 
         return true;
@@ -259,27 +268,32 @@ void InterconnectionInterface::addInterconnection(std::string const& startCompon
     std::string const& startBus, std::string const& endComponentInstance, std::string const& endBus,
     std::string const& connectionName)
 {
+    QString startComponentQ = QString::fromStdString(startComponentInstance);
+    QString startBusQ = QString::fromStdString(startBus);
+    QString endComponentQ = QString::fromStdString(endComponentInstance);
+    QString endBusQ = QString::fromStdString(endBus);
+
     QSharedPointer<Interconnection> newConnection(new Interconnection());
 
     QSharedPointer<ActiveInterface> startInterface(new ActiveInterface());
-    startInterface->setComponentReference(startComponentInstance);
-    startInterface->setBusReference(startBus);
+    startInterface->setComponentReference(QString::fromStdString(startComponentInstance));
+    startInterface->setBusReference(QString::fromStdString(startBus));
 
     QSharedPointer<ActiveInterface> endInterface(new ActiveInterface());
-    endInterface->setComponentReference(endComponentInstance);
-    endInterface->setBusReference(endBus);
+    endInterface->setComponentReference(QString::fromStdString(endComponentInstance));
+    endInterface->setBusReference(QString::fromStdString(endBus));
 
     newConnection->setStartInterface(startInterface);
     newConnection->getActiveInterfaces()->append(endInterface);
 
-    std::string newConnectionName = connectionName;
-    if (newConnectionName.empty())
+    QString newConnectionName = QString::fromStdString(connectionName);
+    if (newConnectionName.isEmpty())
     {
-        newConnectionName = startComponentInstance + "_" + startBus + "_to_" +
-            endComponentInstance + "_" + endBus;
+        newConnectionName = startComponentQ + QLatin1String("_") + startBusQ + QLatin1String("_to_") +
+            endComponentQ + QLatin1String("_") + endBusQ;
     }
 
-    newConnectionName = getUniqueName(newConnectionName, DEFAULT_NAME);
+    newConnectionName = getUniqueName(newConnectionName.toStdString(), DEFAULT_NAME.toStdString());
     newConnection->setName(newConnectionName);
 
     interconnections_->append(newConnection);
@@ -295,14 +309,14 @@ void InterconnectionInterface::addHierarchicalInterconnection(std::string const&
     QString instanceBusQ = QString::fromStdString(instanceBus);
     QString topBusQ = QString::fromStdString(topBus);
 
-    QSharedPointer<ActiveInterface> instanceInterface(new ActiveInterface(instanceName, instanceBus));
+    QSharedPointer<ActiveInterface> instanceInterface(new ActiveInterface(instanceNameQ, instanceBusQ));
 
-    QSharedPointer<HierInterface> topInterface(new HierInterface(topBus));
+    QSharedPointer<HierInterface> topInterface(new HierInterface(topBusQ));
 
-    std::string newConnectionName = connectionName;
-    if (newConnectionName.empty())
+    QString newConnectionName = QString::fromStdString(connectionName);
+    if (newConnectionName.isEmpty())
     {
-        newConnectionName = instanceName + "_" + instanceBus + "_to_" + topBus;
+        newConnectionName = instanceNameQ + QLatin1String("_") + instanceBusQ + QLatin1String("_to_") + topBusQ;
     }
     
     QSharedPointer<Interconnection> newConnection(new Interconnection(newConnectionName, instanceInterface));
@@ -330,11 +344,13 @@ bool InterconnectionInterface::removeInterconnection(std::string const& connecti
 //-----------------------------------------------------------------------------
 bool InterconnectionInterface::removeInstanceInterconnections(std::string const& instanceName)
 {
+    QString instanceNameQ = QString::fromStdString(instanceName);
+
     QVector<QSharedPointer<Interconnection> > removedConnections;
 
     for (auto connection : *interconnections_)
     {
-        if (connection->getStartInterface()->getComponentReference() == instanceName)
+        if (connection->getStartInterface()->getComponentReference() == instanceNameQ)
         {
             removedConnections.append(connection);
         }
@@ -345,7 +361,7 @@ bool InterconnectionInterface::removeInstanceInterconnections(std::string const&
             {
                 QSharedPointer<ActiveInterface> currentInterface =
                     connection->getActiveInterfaces()->at(interfaceCounter);
-                if (currentInterface->getComponentReference() == instanceName)
+                if (currentInterface->getComponentReference() == instanceNameQ)
                 {
                     connection->getActiveInterfaces()->removeOne(currentInterface);
                 }
@@ -395,18 +411,21 @@ bool InterconnectionInterface::interconnectionExists(std::string const& connecti
 void InterconnectionInterface::renameComponentReferences(std::string const& currentName,
     std::string const& newName)
 {
+    QString oldInstanceName = QString::fromStdString(currentName);
+    QString newInstanceName = QString::fromStdString(newName);
+
     for (auto connection : *interconnections_)
     {
-        if (connection->getStartInterface()->getComponentReference() == currentName)
+        if (connection->getStartInterface()->getComponentReference() == oldInstanceName)
         {
-            connection->getStartInterface()->setComponentReference(newName);
+            connection->getStartInterface()->setComponentReference(newInstanceName);
         }
 
         for (auto connectionInterface : *connection->getActiveInterfaces())
         {
-            if (connectionInterface->getComponentReference() == currentName)
+            if (connectionInterface->getComponentReference() == oldInstanceName)
             {
-                connectionInterface->setComponentReference(newName);
+                connectionInterface->setComponentReference(newInstanceName);
             }
         }
     }

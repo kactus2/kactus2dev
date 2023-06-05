@@ -373,12 +373,12 @@ void SystemDesignDiagram::onAddToLibraryAction()
 					case KactusAttribute::SOC:
 					{
 						// set the name
-						newView->setName(std::string("rtl"));
+						newView->setName("rtl");
 						break;
 					}
 					default:
 					{
-						newView->setName(std::string("flat"));
+						newView->setName("flat");
 						break;
 					}
 				}
@@ -611,7 +611,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
         QSharedPointer<Component> comp = libComp.staticCast<Component>();
 
         // Set the instance name for the new component instance.
-        auto instanceName = createInstanceName(comp->getVlnv().getName().toStdString());
+        QString instanceName = createInstanceName(comp->getVlnv().getName());
 
         // Act based on the selected drop action.
         if (event->dropAction() == Qt::CopyAction)
@@ -672,8 +672,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
                 tr("Component instance '%1' is about to be replaced "
-                "with an instance of %2. Continue and replace?").arg(
-                    QString::fromStdString(oldCompItem->name()), droppedVLNV.toString()),
+                "with an instance of %2. Continue and replace?").arg(oldCompItem->name(), droppedVLNV.toString()),
                 QMessageBox::Yes | QMessageBox::No, getParent());
 
             if (msgBox.exec() == QMessageBox::No)
@@ -844,7 +843,7 @@ void SystemDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
 QSharedPointer<ComponentInstance> SystemDesignDiagram::createSWInstance(QSharedPointer<Component> comp)
 {
 	QSharedPointer<ComponentInstance> swInstance(new ComponentInstance());
-	auto instanceName = createInstanceName(comp->getVlnv().getName().toStdString());
+	QString instanceName = createInstanceName(comp->getVlnv().getName());
 	swInstance->setInstanceName(instanceName);
 	swInstance->setComponentRef( QSharedPointer<ConfigurableVLNVReference>(
 		new ConfigurableVLNVReference(comp->getVlnv()) ) );
@@ -859,9 +858,9 @@ QStringList SystemDesignDiagram::getUsedInstanceNames() const
 {
     QStringList usedNames;
 
-    for (auto const& instance : *getDesign()->getComponentInstances())
+    foreach (QSharedPointer<ComponentInstance> instance, *getDesign()->getComponentInstances())
     {
-        usedNames.append(QString::fromStdString(instance->getInstanceName()));
+        usedNames.append(instance->getInstanceName());
     }
 
     return usedNames;
@@ -1283,7 +1282,10 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                 component->setImplementation(KactusAttribute::HW);
             }
 
-            HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance);
+            HWMappingItem* item = new HWMappingItem(getLibraryInterface(), component, instance); //instance->getConfigurableElementValues());
+            item->setImported(instance->isImported());
+            item->setImportRef(instance->getImportRef());
+            item->setPropertyValues(instance->getPropertyValues());
 
             connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
@@ -1347,14 +1349,18 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
 
+        item->setImported(instance->isImported());
+        item->setImportRef(instance->getImportRef());
         item->setPos(instance->getPosition());
+        item->setPropertyValues(instance->getPropertyValues());
+        item->setFileSetRef(instance->getFileSetRef());
 
         if (instance->isDraft())
         {
             item->setDraft();
         }
 
-        if (instance->getMapping().empty())
+        if (instance->getMapping().isEmpty())
         {
             // Check if the position is not found.
             if (instance->getPosition().isNull())
@@ -1431,7 +1437,7 @@ void SystemDesignDiagram::loadInterfaces(QSharedPointer<Design> design)
     // Create SW interface items for the top-level API and COM interfaces.
     for (QSharedPointer<ApiInterface> apiIf : getEditedComponent()->getApiInterfaces())
     {
-        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, apiIf->name().toStdString());
+        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, apiIf->name());
 
         SWInterfaceItem* item (new SWInterfaceItem(getEditedComponent(), apiIf, graphicsData));
 
@@ -1443,7 +1449,7 @@ void SystemDesignDiagram::loadInterfaces(QSharedPointer<Design> design)
 
     for (QSharedPointer<ComInterface> comIf : getEditedComponent()->getComInterfaces())
     {
-        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, comIf->name().toStdString());
+        QSharedPointer<InterfaceGraphicsData> graphicsData = findOrCreateInterfaceGraphicsData(design, comIf->name());
 
         SWInterfaceItem* item (new SWInterfaceItem(getEditedComponent(), comIf, graphicsData));
 
@@ -1455,7 +1461,7 @@ void SystemDesignDiagram::loadInterfaces(QSharedPointer<Design> design)
 
     for (QSharedPointer<InterfaceGraphicsData> graphicsData : design->getInterfaceGraphicsData())
     {
-        if (!componentInterfaceNames.contains(QString::fromStdString(graphicsData->getName())))
+        if (!componentInterfaceNames.contains(graphicsData->getName()))
         {
             SWInterfaceItem* draftInterfaceItem (
                 new SWInterfaceItem(getEditedComponent(), graphicsData->getName(), graphicsData, 0));
@@ -1469,9 +1475,9 @@ void SystemDesignDiagram::loadInterfaces(QSharedPointer<Design> design)
 // Function: SystemDesignDiagram::findOrCreateInterfaceGraphicsData()
 //-----------------------------------------------------------------------------
 QSharedPointer<InterfaceGraphicsData> SystemDesignDiagram::findOrCreateInterfaceGraphicsData(
-    QSharedPointer<Design> design, std::string const& interfaceName)
+    QSharedPointer<Design> design, QString const& interfaceName)
 {
-    for (QSharedPointer<InterfaceGraphicsData> graphicsData : design->getInterfaceGraphicsData())
+    foreach (QSharedPointer<InterfaceGraphicsData> graphicsData, design->getInterfaceGraphicsData())
     {
         if (interfaceName == graphicsData->getName())
         {
@@ -1520,7 +1526,7 @@ void SystemDesignDiagram::loadComConnections(QSharedPointer<Design> design)
                 endPoint = endPoint->getOffPageConnector();
             }
 
-            QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->nameStd());
+            QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
 
             ComGraphicsConnection* connection =
                 new ComGraphicsConnection(startPoint, endPoint, conn, comRoute, true, this);
@@ -1550,15 +1556,13 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
     QSharedPointer<ActiveInterface> activeReference = endpointInterface.dynamicCast<ActiveInterface>();
     if (activeReference)
     {
-        auto componentReference = activeReference->getComponentReference();
+        QString componentReference = activeReference->getComponentReference();
         SystemComponentItem* componentItem = getComponent(componentReference);
         if (!componentItem)
         {
             emit errorMessage(
-                tr("Component '%1' containing interface '%2' in connection '%3' was not found in the design.").arg(
-                    QString::fromStdString(componentReference),
-                    QString::fromStdString(endpointInterface->getBusReference()),
-                    connectionName));
+                tr("Component '%1' containing interface '%2' in connection '%3' was not found in the design.")
+                .arg(componentReference).arg(endpointInterface->getBusReference()).arg(connectionName));
         }
         else
         {
@@ -1570,8 +1574,7 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
         SWInterfaceItem* interfaceEndpoint = getSWInterfaceItem(endpointInterface->getBusReference());
         if (interfaceEndpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_COM)
         {
-            QSharedPointer<ComInterface> componentCom = getEditedComponent()->getComInterface(
-                QString::fromStdString(interfaceReference));
+            QSharedPointer<ComInterface> componentCom = getEditedComponent()->getComInterface(interfaceReference);
             if (!componentCom)
             {
                 return createDummyInterface("COM", interfaceReference);
@@ -1579,8 +1582,7 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
         }
         else if (interfaceEndpoint->getType() == ConnectionEndpoint::ENDPOINT_TYPE_API)
         {
-            QSharedPointer<ApiInterface> componentApi = getEditedComponent()->getApiInterface(
-                QString::fromStdString(interfaceReference));
+            QSharedPointer<ApiInterface> componentApi = getEditedComponent()->getApiInterface(interfaceReference);
             if (!componentApi)
             {
                 return createDummyInterface("API", interfaceReference);
@@ -1596,7 +1598,7 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateEndpointItem(QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::getSWInterfaceItem()
 //-----------------------------------------------------------------------------
-SWInterfaceItem* SystemDesignDiagram::getSWInterfaceItem(std::string_view interfaceName) const
+SWInterfaceItem* SystemDesignDiagram::getSWInterfaceItem(QString const& interfaceName) const
 {
     SWInterfaceItem* endPoint = nullptr;
 
@@ -1620,10 +1622,10 @@ SWInterfaceItem* SystemDesignDiagram::getSWInterfaceItem(std::string_view interf
 // Function: SystemDesignDiagram::createDummyInterface()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* SystemDesignDiagram::createDummyInterface(QString const& itemType,
-    std::string_view interfaceReference)
+    QString const& interfaceReference)
 {
     emit errorMessage(tr("%1 interface '%2' was not found within the top component").
-        arg(itemType).arg(QString::fromStdString(std::string(interfaceReference))));
+        arg(itemType).arg(interfaceReference));
 
     QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceReference));
     getDesign()->getVendorExtensions()->append(graphicsData);
@@ -1640,7 +1642,7 @@ ConnectionEndpoint* SystemDesignDiagram::createDummyInterface(QString const& ite
 // Function: SystemDesignDiagram::findOrCreatePortItem()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* SystemDesignDiagram::findOrCreateSWPortItem(SystemComponentItem* containingItem,
-    std::string_view interfaceReference, SWConnectionEndpoint::EndpointType type,
+    QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
     QSharedPointer<Design> containingDesign)
 {
     ConnectionEndpoint* portEndpoint = containingItem->getSWPort(interfaceReference, type);
@@ -1653,10 +1655,8 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateSWPortItem(SystemComponentI
             interfaceType = "COM";
         }
 
-        emit errorMessage(tr("%1 interface '%2' was not found in the component '%3'").arg(
-            interfaceType,
-            QString::fromStdString(std::string(interfaceReference)),
-            QString::fromStdString(containingItem->name())));
+        emit errorMessage(tr("%1 interface '%2' was not found in the component '%3'").
+            arg(interfaceType, interfaceReference,containingItem->name()));
 
         portEndpoint = createMissingPort(interfaceReference, ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED,
             containingItem, containingDesign);
@@ -1668,7 +1668,7 @@ ConnectionEndpoint* SystemDesignDiagram::findOrCreateSWPortItem(SystemComponentI
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::getInterconnectionRoute()
 //-----------------------------------------------------------------------------
-QSharedPointer<ConnectionRoute> SystemDesignDiagram::getInterconnectionRoute(std::string_view interconnectionName)
+QSharedPointer<ConnectionRoute> SystemDesignDiagram::getInterconnectionRoute(QString const& interconnectionName)
     const
 {
     for (QSharedPointer<ConnectionRoute> route : getDesign()->getRoutes())
@@ -1700,7 +1700,7 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
             endPoint = endPoint->getOffPageConnector();
         }
 
-        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->nameStd());
+        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->name());
         ApiGraphicsConnection* connection =
             new ApiGraphicsConnection(startPoint, endPoint, dependency, apiRoute, true, this);
 
@@ -1722,9 +1722,9 @@ void SystemDesignDiagram::loadApiDependencies(QSharedPointer<Design> design)
 //-----------------------------------------------------------------------------
 // Function: getHWComponent()
 //-----------------------------------------------------------------------------
-HWMappingItem* SystemDesignDiagram::getHWComponent(std::string const& instanceName)
+HWMappingItem* SystemDesignDiagram::getHWComponent(QString const& instanceName)
 {
-    for (QGraphicsItem* item : items())
+    foreach (QGraphicsItem *item, items())
     {
         if (item->type() == HWMappingItem::Type)
         {
@@ -1737,16 +1737,16 @@ HWMappingItem* SystemDesignDiagram::getHWComponent(std::string const& instanceNa
         }
     }
 
-    emit errorMessage(tr("Component %1 was not found in the design").arg(QString::fromStdString(instanceName)));
+    emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
     return nullptr;
 }
 
 //-----------------------------------------------------------------------------
 // Function: getHWComponent()
 //-----------------------------------------------------------------------------
-HWMappingItem* SystemDesignDiagram::getHWComponentByUUID(std::string const& uuid)
+HWMappingItem* SystemDesignDiagram::getHWComponentByUUID(QString const& uuid)
 {
-    for (QGraphicsItem* item : items())
+    foreach (QGraphicsItem *item, items())
     {
         if (item->type() == HWMappingItem::Type)
         {
@@ -1759,14 +1759,14 @@ HWMappingItem* SystemDesignDiagram::getHWComponentByUUID(std::string const& uuid
         }
     }
 
-    emit errorMessage(tr("Component with UUID %1 was not found in the design").arg(QString::fromStdString(uuid)));
+    emit errorMessage(tr("Component with UUID %1 was not found in the design").arg(uuid));
     return nullptr;
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::getComponent()
 //-----------------------------------------------------------------------------
-SystemComponentItem* SystemDesignDiagram::getComponent(std::string const& instanceName)
+SystemComponentItem* SystemDesignDiagram::getComponent(QString const& instanceName)
 {
     for (QGraphicsItem *item : items())
     {
@@ -1778,14 +1778,14 @@ SystemComponentItem* SystemDesignDiagram::getComponent(std::string const& instan
         }
     }
 
-    emit errorMessage(tr("Component %1 was not found in the design").arg(QString::fromStdString(instanceName)));
+    emit errorMessage(tr("Component %1 was not found in the design").arg(instanceName));
     return nullptr;
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createMissingPort()
 //-----------------------------------------------------------------------------
-SWPortItem* SystemDesignDiagram::createMissingPort(std::string_view  portName, ConnectionEndpoint::EndpointType type,
+SWPortItem* SystemDesignDiagram::createMissingPort(QString const&  portName, ConnectionEndpoint::EndpointType type,
                                                    SystemComponentItem* component, QSharedPointer<Design> design)
 {
     SWPortItem* port = new SWPortItem(portName, component->componentModel(), component);
@@ -1797,11 +1797,11 @@ SWPortItem* SystemDesignDiagram::createMissingPort(std::string_view  portName, C
         {
             if (type == ConnectionEndpoint::ENDPOINT_TYPE_API)
             {
-                port->setPos(instance->getApiInterfacePositions().value(std::string(portName)));
+                port->setPos(instance->getApiInterfacePositions().value(portName));
             }
             else if (type == ConnectionEndpoint::ENDPOINT_TYPE_COM)
             {
-                port->setPos(instance->getComInterfacePositions().value(std::string(portName)));
+                port->setPos(instance->getComInterfacePositions().value(portName));
             }
 
             component->onMovePort(port);
@@ -1819,7 +1819,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
                                        QPointF const& guidePos)
 {
     // Map which hold name mappings for SW instances.
-    QMap<std::string, std::string> nameMappings;
+    QMap<QString, QString> nameMappings;
 
     // Import SW instances.
     for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
@@ -1844,7 +1844,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         }
 
         // Determine a unique name for the instance->
-        auto instanceName = instance->getInstanceName();
+        QString instanceName = instance->getInstanceName();
 
         if (getComponent(instanceName) != nullptr)
         {
@@ -1854,7 +1854,11 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         nameMappings.insert(instance->getInstanceName(), instanceName);
 
         SWComponentItem* item = new SWComponentItem(getLibraryInterface(), component, instance);
+        item->setImported(instance->isImported());
+        item->setImportRef(instance->getImportRef());
         item->setPos(stack->mapStackFromScene(guidePos));
+        item->setPropertyValues(instance->getPropertyValues());
+        item->setFileSetRef(instance->getFileSetRef());
 
         connect(item, SIGNAL(openCSource(ComponentItem*)), this, SIGNAL(openCSource(ComponentItem*)));
         connect(item, SIGNAL(errorMessage(QString const&)), this, SIGNAL(errorMessage(QString const&)));
@@ -1867,20 +1871,20 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     for (QSharedPointer<ApiInterconnection> dependency : design->getApiConnections())
     {
         // Find the referenced components.
-        auto startComponentReference = dependency->getStartInterface()->getComponentReference();
-        auto startApiReference = dependency->getStartInterface()->getBusReference();
+        QString startComponentReference = dependency->getStartInterface()->getComponentReference();
+        QString startApiReference = dependency->getStartInterface()->getBusReference();
 
         SystemComponentItem* comp1 = getComponent(nameMappings.value(startComponentReference));
 
         if (comp1 == nullptr)
         {
-            emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                QString::fromStdString(nameMappings.value(startComponentReference))));
+            emit errorMessage(tr("Component '%1' was not found in the design").
+                arg(nameMappings.value(startComponentReference)));
             continue;
         }
 
-        auto endComponentReference = std::string();
-        auto endApiReference = dependency->getEndInterface()->getBusReference();
+        QString endComponentReference = "";
+        QString endApiReference = dependency->getEndInterface()->getBusReference();
 
         SystemComponentItem* comp2 = nullptr;
 
@@ -1894,7 +1898,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             if (comp2 == nullptr)
             {
                 emit errorMessage(tr("Component '%1' was not found in the design").
-                    arg(QString::fromStdString(nameMappings.value(endComponentReference))));
+                    arg(nameMappings.value(endComponentReference)));
                 continue;
             }
         }
@@ -1906,8 +1910,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         if (port1 == nullptr)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
-                arg(QString::fromStdString(startApiReference), 
-                    QString::fromStdString(startComponentReference)));
+                arg(startApiReference).arg(startComponentReference));
 
             port1 = createMissingPort(startApiReference, SWConnectionEndpoint::ENDPOINT_TYPE_API, comp1, design);
         }
@@ -1918,7 +1921,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         if (port2 == nullptr)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
-                arg(QString::fromStdString(endApiReference), QString::fromStdString(endComponentReference)));
+                arg(endApiReference).arg(endComponentReference));
 
             port2 = createMissingPort(endApiReference, SWConnectionEndpoint::ENDPOINT_TYPE_API, comp2, design);
         }
@@ -1929,7 +1932,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             port2 = port2->getOffPageConnector();
         }
 
-        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->nameStd());
+        QSharedPointer<ConnectionRoute> apiRoute = getInterconnectionRoute(dependency->name());
 
         auto connection = new ApiGraphicsConnection(port1, port2, dependency, apiRoute, true, this);
         connection->setImported(dependency->isImported());
@@ -1950,22 +1953,22 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
     for (QSharedPointer<ComInterconnection> conn : design->getComConnections())
     {
         // Find the referenced components.
-        auto startComponentReference = conn->getStartInterface()->getComponentReference();
-        auto startComReference = conn->getStartInterface()->getBusReference();
+        QString startComponentReference = conn->getStartInterface()->getComponentReference();
+        QString startComReference = conn->getStartInterface()->getBusReference();
 
         SystemComponentItem* comp1 = getComponent(nameMappings.value(startComponentReference));
 
         if (comp1 == nullptr)
         {
             emit errorMessage(tr("Component '%1' was not found in the design").
-                arg(QString::fromStdString(nameMappings.value(startComponentReference))));
+                arg(nameMappings.value(startComponentReference)));
             continue;
         }
 
         SystemComponentItem* comp2 = nullptr;
 
-        auto endComponentReference = std::string();
-        auto endcomReference = conn->getEndInterface()->getBusReference();
+        QString endComponentReference ="";
+        QString endcomReference = conn->getEndInterface()->getBusReference();
         QSharedPointer<ActiveInterface> activeEndInterface = conn->getEndInterface().dynamicCast<ActiveInterface>();
         if (activeEndInterface)
         {
@@ -1975,7 +1978,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             if (comp2 == nullptr)
             {
                 emit errorMessage(tr("Component '%1' was not found in the design").arg(
-                    QString::fromStdString(nameMappings.value(endComponentReference))));
+                    nameMappings.value(endComponentReference)));
                 continue;
             }
         }
@@ -1987,7 +1990,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         if (port1 == nullptr)
         {
             emit errorMessage(tr("COM interface '%1' was not found in the component '%2'").
-                arg(QString::fromStdString(startComReference), QString::fromStdString(startComponentReference)));
+                arg(startComReference).arg(startComponentReference));
             continue;
         }
 
@@ -2000,7 +2003,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
         if (port2 == nullptr)
         {
             emit errorMessage(tr("API interface '%1' was not found in the component '%2'").
-                arg(QString::fromStdString(endcomReference), QString::fromStdString(endComponentReference)));
+                arg(endcomReference).arg(endComponentReference));
             continue;
         }
 
@@ -2010,7 +2013,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
             port2 = port2->getOffPageConnector();
         }
 
-        QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->nameStd());
+        QSharedPointer<ConnectionRoute> comRoute = getInterconnectionRoute(conn->name());
 
         auto connection = new ComGraphicsConnection(port1, port2, conn, comRoute, true, this);
 
@@ -2082,8 +2085,8 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 QSharedPointer<HierInterface> SystemDesignDiagram::createEndpointInterface(ConnectionEndpoint* connectionPoint)
 {
-    auto componentReference = std::string();
-    auto endPointName = connectionPoint->name();
+    QString componentReference;
+    QString endPointName = connectionPoint->name();
 
     SWPortItem* portItem = dynamic_cast<SWPortItem*>(connectionPoint);
     if (portItem)
@@ -2095,13 +2098,13 @@ QSharedPointer<HierInterface> SystemDesignDiagram::createEndpointInterface(Conne
         SWInterfaceItem* interfaceItem = dynamic_cast<SWInterfaceItem*>(connectionPoint);
         if (interfaceItem)
         {
-            componentReference = interfaceItem->getOwnerComponent()->getVlnv().getName().toStdString();
+            componentReference = interfaceItem->getOwnerComponent()->getVlnv().getName();
         }
     }
 
     QSharedPointer<HierInterface> endPointInterface;
 
-    auto editedComponentName = getEditedComponent()->getVlnv().getName().toStdString();
+    QString editedComponentName = getEditedComponent()->getVlnv().getName();
     if (componentReference == editedComponentName)
     {
         endPointInterface = QSharedPointer<HierInterface> (new HierInterface(endPointName));
@@ -2166,9 +2169,9 @@ QSharedPointer<QUndoCommand> SystemDesignDiagram::createAddCommandForConnection(
 void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
 {
     QString interfaceName = createDraftInterfaceName("interface");
-    QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceName.toStdString()));
+    QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceName));
 
-    SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), interfaceName.toStdString(), graphicsData, 0);
+    SWInterfaceItem* newItem = new SWInterfaceItem(getEditedComponent(), interfaceName, graphicsData, 0);
 
     newItem->setPos(snapPointToGrid(pos));
 
@@ -2222,9 +2225,9 @@ QString SystemDesignDiagram::createDraftInterfaceName(QString const& baseName) c
     }
     for (QSharedPointer<InterfaceGraphicsData> graphicsData : getDesign()->getInterfaceGraphicsData())
     {
-        if (!interfaceNames.contains(QString::fromStdString(graphicsData->getName())))
+        if (!interfaceNames.contains(graphicsData->getName()))
         {
-            interfaceNames.append(QString::fromStdString(graphicsData->getName()));
+            interfaceNames.append(graphicsData->getName());
         }
     }
 
@@ -2321,7 +2324,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
             if (stack->getContentType() == ColumnTypes::COMPONENTS)
             {
                 // Determine an unused name for the component instance.
-                auto name = createInstanceName("instance");
+                QString name = createInstanceName("instance");
 
                 // Create a component model without a valid vlnv.
                 QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
@@ -2421,12 +2424,12 @@ void SystemDesignDiagram::copySWInstances(QList<QGraphicsItem*> const& items,
 void SystemDesignDiagram::pasteSWInstances(ComponentCollectionCopyData const collection, IGraphicsItemStack* stack,
                                            QUndoCommand* cmd, bool useCursorPos)
 {
-    for (ComponentInstanceCopyData const instanceCopy : collection.instances)
+    foreach (ComponentInstanceCopyData const instanceCopy, collection.instances)
     {
         // Create unique name for the component instance.
         QSharedPointer<ComponentInstance> swInstanceCopy (new ComponentInstance(*instanceCopy.swInstance.data()));
 
-        auto instanceName = createInstanceName(instanceCopy.swInstance->getInstanceName());
+        QString instanceName = createInstanceName(instanceCopy.swInstance->getInstanceName());
         swInstanceCopy->setInstanceName(instanceName);
 
         // Take a copy of the component in case of a draft.
@@ -2528,7 +2531,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
               targetComp->getSWPort(uniqueName, SWConnectionEndpoint::ENDPOINT_TYPE_API) != nullptr)
         {
             ++count;
-            uniqueName = portData.name + "_" + std::to_string(count);			
+            uniqueName = portData.name + "_" + QString::number(count);			
         }
 
         SWPortItem* port = nullptr;
@@ -2595,11 +2598,11 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
 {
     for (PortCopyData const& portData : collection.ports)
     {
-        auto uniqueName = createDraftInterfaceName(QString::fromStdString(portData.name));
+        auto uniqueName = createDraftInterfaceName(portData.name);
 
         SWInterfaceItem* interface = nullptr;
 
-        QSharedPointer<InterfaceGraphicsData> graphicsData(new InterfaceGraphicsData(uniqueName.toStdString()));
+        QSharedPointer<InterfaceGraphicsData> graphicsData(new InterfaceGraphicsData(uniqueName));
 
         if (portData.apiInterface != nullptr)
         {
@@ -2618,7 +2621,7 @@ void SystemDesignDiagram::pasteInterfaces(PortCollectionCopyData const& collecti
         }
         else
         {
-            interface = new SWInterfaceItem(getEditedComponent(), uniqueName.toStdString(), graphicsData, 0);
+            interface = new SWInterfaceItem(getEditedComponent(), uniqueName, graphicsData, 0);
         }
 
         if (useCursorPos)

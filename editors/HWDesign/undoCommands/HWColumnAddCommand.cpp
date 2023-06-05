@@ -91,7 +91,7 @@ bool HWColumnAddCommand::portExistsInDiagram(QSharedPointer<Port> adHocPort) con
 {
     QString portName = adHocPort->name();
 
-    if (getDiagram()->getDiagramAdHocPort(portName.toStdString()))
+    if (getDiagram()->getDiagramAdHocPort(portName))
     {
         return true;
     }
@@ -104,10 +104,10 @@ bool HWColumnAddCommand::portExistsInDiagram(QSharedPointer<Port> adHocPort) con
 QSharedPointer<Kactus2Placeholder> HWColumnAddCommand::getAdHocPositionExtension(
     QSharedPointer<Kactus2Group> positionGroup, QSharedPointer<Port> adhocPort) const
 {
-    for (QSharedPointer<VendorExtension> extension : positionGroup->getByType("kactus2:adHocVisible"))
+    foreach (QSharedPointer<VendorExtension> extension, positionGroup->getByType("kactus2:adHocVisible"))
     {
         QSharedPointer<Kactus2Placeholder> adhocPosition = extension.dynamicCast<Kactus2Placeholder>();
-        if (adhocPosition && adhocPosition->getAttributeValue(std::string("portName")) == adhocPort->name().toStdString())
+        if (adhocPosition && adhocPosition->getAttributeValue(QString("portName")) == adhocPort->name())
         {
             return adhocPosition;
         }
@@ -154,14 +154,14 @@ void HWColumnAddCommand::removeMissingPortsFromDesign()
     QSharedPointer<VendorExtension> adhocExtension = getDiagram()->getDesign()->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
     
-    for (HierarchicalPortItem* adHocItem : missingAdHocPortItems_)
+    foreach (HierarchicalPortItem* adHocItem, missingAdHocPortItems_)
     {
         getColumn()->removeItem(adHocItem);
 
         for (QSharedPointer<VendorExtension> extension : adhocGroup->getByType("kactus2:adHocVisible"))
         {
             QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-            if (portExtension->getAttributeValue(std::string("portName")) == adHocItem->name())
+            if (portExtension->getAttributeValue("portName") == adHocItem->name())
             {
                 adhocGroup->removeFromGroup(portExtension);
             }

@@ -129,7 +129,7 @@ private:
      *      @param [in] previousName    The previous name of the bus interface.
      *      @param [in] newName         The new name of the bus interface.
      */
-    virtual void updateName(std::string_view previousName, std::string_view newName);
+    virtual void updateName(QString const& previousName, QString const& newName);
 
     /*!
      *  Finds the possible opposing modes for a bus interface.

@@ -103,8 +103,7 @@ int DesignParameterReferenceCounter::countReferencesInSingleAdHocConnection(QStr
 
     if (!connection->getInternalPortReferences()->isEmpty() || !connection->getExternalPortReferences()->isEmpty())
     {
-        referenceCounter += countReferencesInExpression(parameterID,
-            QString::fromStdString(connection->getTiedValue()));
+        referenceCounter += countReferencesInExpression(parameterID, connection->getTiedValue());
 
         foreach (QSharedPointer<PortReference> port, *connection->getInternalPortReferences())
         {

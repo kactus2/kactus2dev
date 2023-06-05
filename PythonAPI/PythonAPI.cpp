@@ -356,7 +356,7 @@ bool PythonAPI::createComponent(std::string const& vendor, std::string const& li
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);
     component->setImplementation(KactusAttribute::HW);
-    component->setVersion(KactusAPI::getVersionFileString().toStdString());
+    component->setVersion(KactusAPI::getVersionFileString());
 
     QString directory = KactusAPI::getDefaultLibraryPath();
     QString vlnvDir = "/" + newComponentVLNV.getVendor() + "/" + newComponentVLNV.getLibrary() + "/" +

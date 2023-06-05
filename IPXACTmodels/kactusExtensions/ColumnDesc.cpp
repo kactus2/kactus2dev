@@ -49,9 +49,9 @@ ColumnDesc* ColumnDesc::clone() const
 //-----------------------------------------------------------------------------
 // Function: ColumnDesc::type()
 //-----------------------------------------------------------------------------
-std::string ColumnDesc::type() const
+QString ColumnDesc::type() const
 {
-    return "kactus2:column";
+    return QStringLiteral("kactus2:column");
 }
 
 //-----------------------------------------------------------------------------

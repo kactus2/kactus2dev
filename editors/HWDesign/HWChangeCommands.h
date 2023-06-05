@@ -66,7 +66,7 @@ public:
      *      @param [in] design      Design containing the component instance.
      *      @param [in] parent      The parent command.
      */
-    ComponentChangeNameCommand(ComponentItem* component, std::string const& newName, QSharedPointer<Design> design,
+    ComponentChangeNameCommand(ComponentItem* component, QString const& newName, QSharedPointer<Design> design,
         QUndoCommand* parent = 0);
 
     /*!
@@ -95,7 +95,7 @@ private:
      *      @param [in] oldReference    The old component reference.
      *      @param [in] newReference    The new component reference.
      */
-    void renameInstanceAndConnections(std::string const& previousName, std::string const& newReference);
+    void renameInstanceAndConnections(QString const& previousName, QString const& newReference);
 
     /*!
      *  Change the default name of an ad hoc connection.
@@ -105,8 +105,8 @@ private:
      *      @param [in] oldReference    Old component reference.
      *      @param [in] newReference    New component reference.
      */
-    void changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection, std::string const& portReference,
-        std::string const& oldReference, std::string const& newReference);
+    void changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection, QString const& portReference,
+        QString const& oldReference, QString const& newReference);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -116,12 +116,12 @@ private:
     ComponentItem* component_;
 
     //! The component's old name.
-    std::string oldName_;
+    QString oldName_;
 
     //! The component's new name.
-    std::string newName_;
+    QString newName_;
 
-    //! Design containing the component instance.
+    //! Design containing the componnet instance.
     QSharedPointer<Design> containingDesign_;
 };
 
@@ -232,8 +232,8 @@ public:
      *      @param [in] activeViewModel     Pointer to the model that manages the active views.
      *      @param [in] parent              Pointer to the parent command.
      */
-    ComponentActiveViewChangeCommand(std::string const& instanceName, std::string const& oldActiveView,
-        std::string const& newActiveView, ActiveViewModel* activeViewModel, QUndoCommand* parent = 0);
+    ComponentActiveViewChangeCommand(const QString& instanceName, QString const& oldActiveView,
+        QString const& newActiveView, ActiveViewModel* activeViewModel, QUndoCommand* parent = 0);
 
     /*!
      *  Destructor.
@@ -261,13 +261,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component's old active view.
-    std::string instanceName_;
+    QString instanceName_;
 
     //! The component's new name.
-    std::string newViewName_;
+    QString newViewName_;
 
     //! The component's new active view.
-    std::string oldViewName_;
+    QString oldViewName_;
 
 	//! Pointer to the model that manages the active views.
 	ActiveViewModel* activeViewModel_;
@@ -395,7 +395,7 @@ public:
      *      @param [in] parent    The parent command.
      */
     EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
-        std::string_view newName,
+        QString const& newName,
         QList<QSharedPointer<HierInterface> > activeIntefaces,
         QUndoCommand* parent = 0);
 
@@ -427,10 +427,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old name.
-    std::string oldName_;
+    QString oldName_;
 
     //! The endpoint's new name.
-    std::string newName_;
+    QString newName_;
 
     //! The interfaces affected by the name change.
     QList<QSharedPointer<HierInterface> > activeIntefaces_;
@@ -449,7 +449,7 @@ public:
      *      @param [in] newDescription  The endpoint's new description.
      *      @param [in] parent          The parent command.
      */
-	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, std::string_view newDescription,
+	EndpointDescChangeCommand(ConnectionEndpoint* endpoint, QString const& newDescription,
                               QUndoCommand* parent = 0);
 
     /*!
@@ -480,10 +480,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old description.
-    std::string oldDescription_;
+    QString oldDescription_;
 
     //! The endpoint's new description.
-    std::string newDescription_;
+    QString newDescription_;
 };
 
 //-----------------------------------------------------------------------------
@@ -650,7 +650,7 @@ public:
      *      @param [in] parent     The parent command.
      */
     EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
-                                        QMap<std::string, std::string> const& newValues,
+                                        QMap<QString, QString> const& newValues,
                                         QUndoCommand* parent = 0);
 
     /*!
@@ -681,10 +681,10 @@ private:
     ConnectionEndpoint* endpoint_;
 
     //! The endpoint's old property values.
-    QMap<std::string, std::string> oldValues_;
+    QMap<QString, QString> oldValues_;
 
     //! The endpoint's new property values.
-    QMap<std::string, std::string> newValues_;
+    QMap<QString, QString> newValues_;
 };
 
 //-----------------------------------------------------------------------------

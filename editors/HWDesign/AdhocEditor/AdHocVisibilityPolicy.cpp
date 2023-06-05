@@ -65,7 +65,7 @@ bool AdHocVisibilityPolicy::portHasConnections(QSharedPointer<Port> port) const
 {
     if (dataSource_)
     {
-        HWConnectionEndpoint* endpoint = dataSource_->getDiagramAdHocPort(port->name().toStdString());
+        HWConnectionEndpoint* endpoint = dataSource_->getDiagramAdHocPort(port->name());
         if (endpoint)
         {
             if (!endpoint->getConnections().isEmpty() ||
@@ -102,9 +102,9 @@ bool AdHocVisibilityPolicy::portHasTieOffConnection(QSharedPointer<Port> port) c
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdHocVisibilityPolicy::getTieOffConnection(QSharedPointer<Port> port) const
 {
-    auto adHocId = dataSource_->adHocIdentifier();
+    QString adHocId = dataSource_->adHocIdentifier();
 
-    if (adHocId == "top-level")
+    if (adHocId == QObject::tr("top-level"))
     {
         return getTopComponentTieOffConnection(port);
     }
@@ -120,11 +120,11 @@ QSharedPointer<AdHocConnection> AdHocVisibilityPolicy::getTieOffConnection(QShar
 QSharedPointer<AdHocConnection> AdHocVisibilityPolicy::getTopComponentTieOffConnection(QSharedPointer<Port> port)
     const
 {
-    for (QSharedPointer<AdHocConnection> connection : *adhocConnections_)
+    foreach (QSharedPointer<AdHocConnection> connection, *adhocConnections_)
     {
-        for (QSharedPointer<PortReference> externalReference : *connection->getExternalPortReferences())
+        foreach (QSharedPointer<PortReference> externalReference, *connection->getExternalPortReferences())
         {
-            if (externalReference->getPortRef() == port->name().toStdString() && !connection->getTiedValue().empty())
+            if (externalReference->getPortRef() == port->name() && !connection->getTiedValue().isEmpty())
             {
                 return connection;
             }
@@ -139,12 +139,12 @@ QSharedPointer<AdHocConnection> AdHocVisibilityPolicy::getTopComponentTieOffConn
 //-----------------------------------------------------------------------------
 QSharedPointer<AdHocConnection> AdHocVisibilityPolicy::getInstanceTieOffConnection(QSharedPointer<Port> port) const
 {
-    for (QSharedPointer<AdHocConnection> connection : *adhocConnections_)
+    foreach (QSharedPointer<AdHocConnection> connection, *adhocConnections_)
     {
-        for (QSharedPointer<PortReference> internalReference : *connection->getInternalPortReferences())
+        foreach (QSharedPointer<PortReference> internalReference, *connection->getInternalPortReferences())
         {
             if (dataSource_->adHocIdentifier() == internalReference->getComponentRef() &&
-                internalReference->getPortRef() == port->name().toStdString() && !connection->getTiedValue().empty())
+                internalReference->getPortRef() == port->name() && !connection->getTiedValue().isEmpty())
             {
                 return connection;
             }
@@ -161,7 +161,7 @@ bool AdHocVisibilityPolicy::isPortAdhocVisible(QString const& portName) const
 {
     if (dataSource_)
     {
-        return dataSource_->isPortAdHocVisible(portName.toStdString());
+        return dataSource_->isPortAdHocVisible(portName);
     }
     else
     {

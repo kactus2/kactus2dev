@@ -133,13 +133,13 @@ void ComponentDesignDiagram::onSelectionChanged()
 
     // If the old selection was an off-page connector, hide its connections.
     // Also hide the previously selected connection if it was an off-page connection.
-    for (QGraphicsItem* oldSelection : previouslySelectedItems_)
+    foreach (QGraphicsItem* oldSelection, previouslySelectedItems_)
     {
         if (oldSelection->type() == offpageConnectorType())
         {
             ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(oldSelection);
 
-            for (GraphicsConnection* connection : connector->getConnections())
+            foreach (GraphicsConnection* connection, connector->getConnections())
             {
                 if (connection != selectedItem)
                 {
@@ -170,7 +170,7 @@ void ComponentDesignDiagram::onSelectionChanged()
     {
         ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(selectedItem);
 
-        for (GraphicsConnection* connection : connector->getConnections())
+        foreach (GraphicsConnection* connection, connector->getConnections())
         {
             connection->show();
         }
@@ -189,9 +189,7 @@ void ComponentDesignDiagram::onSelectionChanged()
 void ComponentDesignDiagram::raiseSelectedConnectionToFront()
 {
     if (selectedItems().isEmpty())
-    {
         return;
-    }
 
     QGraphicsItem* selectedItem = selectedItems().first();
     if (selectedItem->type() == connectionType())
@@ -245,7 +243,7 @@ void ComponentDesignDiagram::onOpenAutoConnector()
 
         if (!autoConnections.isEmpty())
         {
-            for (auto const& connectionItem : autoConnections)
+            for (auto connectionItem : autoConnections)
             {
                 ConnectionEndpoint* startPointItem = getEndPointForItem(connectionItem.first);
                 ConnectionEndpoint* endPointItem = getEndPointForItem(connectionItem.second);
@@ -586,7 +584,7 @@ void ComponentDesignDiagram::setupAutoconnectText(ComponentItem* componentItem)
 {
     if (openAutoConnector_.isEnabled())
     {
-        QString targetName;
+        QString targetName = "";
 
         if (selectedItems().count() == 1)
         {
@@ -729,6 +727,7 @@ void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
     QString activeViewName;
+    auto instanceName = compItem->name();
 
 
 

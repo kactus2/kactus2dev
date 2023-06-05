@@ -88,7 +88,7 @@ del_(true)
 //-----------------------------------------------------------------------------
 void ComponentDeleteCommand::createTieOffDeleteCommand(ConnectionEndpoint* endPoint)
 {
-    auto portName = endPoint->name();
+    QString portName = endPoint->name();
 
     for (QSharedPointer<AdHocConnection> connection : *diagram_->getDesign()->getAdHocConnections())
     {

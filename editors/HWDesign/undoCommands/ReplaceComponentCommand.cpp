@@ -51,7 +51,7 @@ diagram_(diagram)
     new ItemMoveCommand(oldComp, position_, oldComp->getParentStack(), newComp_->scenePos(),
         newComp_->getParentStack(), diagram, this);
 
-    QVector<std::string> connectionNames;
+    QVector<QString> connectionNames;
     changeConnections(oldComp, newComp_, connectionNames);
     changeConnections(newComp_, oldComp, connectionNames);
 
@@ -69,7 +69,7 @@ diagram_(diagram)
 // Function: ReplaceComponentCommand::changeConnections()
 //-----------------------------------------------------------------------------
 void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentItem, 
-    HWComponentItem* newComponentItem, QVector<std::string>& connectionNames)
+    HWComponentItem* newComponentItem, QVector<QString>& connectionNames)
 {
     for (ConnectionEndpoint* oldEndpoint : oldComponentItem->getEndpoints())
     {
@@ -99,7 +99,7 @@ void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentIte
 // Function: ReplaceComponentCommand::createConnectionExchangeCommands()
 //-----------------------------------------------------------------------------
 void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint, 
-    HWConnectionEndpoint* newEndpoint, QVector<std::string>& connectionNames)
+    HWConnectionEndpoint* newEndpoint, QVector<QString>& connectionNames)
 {
     // Create a move command to move the port to the same place where it is in the old component.
     new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), diagram_, this);

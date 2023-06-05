@@ -137,7 +137,7 @@ private:
      *
      *      @return Instance data matching the ID.
      */
-    QString getInstanceString(std::string const& stringID, QSharedPointer<Kactus2Group> extensionGroup) const;
+    QString getInstanceString(QString const& stringID, QSharedPointer<Kactus2Group> extensionGroup) const;
 
     /*!
      *  Get the string pairs for the selected instance parameter pair.
@@ -148,8 +148,7 @@ private:
      *
      *      @return Parameter pair data for the selected ID.
      */
-    QVector<QPair<QString, QString> > getInstanceStringPairs(std::string const& itemGroupID, 
-        std::string const& itemID,
+    QVector<QPair<QString, QString> > getInstanceStringPairs(QString const& itemGroupID, QString const& itemID,
         QSharedPointer<Kactus2Group> extensionGroup) const;
 
     /*!
@@ -160,7 +159,7 @@ private:
      *
      *      @return Value of the selected ID.
      */
-    std::string getSingleValueFromGroup(std::string const& valueID, QSharedPointer<Kactus2Group> extensionGroup) const;
+    QString getSingleValueFromGroup(QString const& valueID, QSharedPointer<Kactus2Group> extensionGroup) const;
 
 	//-----------------------------------------------------------------------------
 	// Data.

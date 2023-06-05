@@ -34,15 +34,14 @@ HierarchicalPortItem::HierarchicalPortItem(QSharedPointer<Component> component, 
 AdHocItem(port, component, parent, QVector2D(1.0f, 0.0f)),
 dataGroup_(dataGroup)
 {
-    if (dataGroup_->getAttributeValue(std::string("portName")).empty())
+    if (dataGroup_->getAttributeValue("portName").isEmpty())
     {
-        dataGroup_->setAttribute("portName", AdHocItem::getPort()->name().toStdString());
+        dataGroup_->setAttribute("portName", getPort()->name());
     }
-    
-    if (!dataGroup_->getAttributeValue(std::string("x")).empty())
+
+    if (!dataGroup_->getAttributeValue("x").isEmpty())
     {
-        QPointF position(std::stoi(dataGroup_->getAttributeValue(std::string("x"))),
-            std::stoi(dataGroup_->getAttributeValue(std::string("y"))));
+        QPointF position(dataGroup_->getAttributeValue("x").toInt(), dataGroup_->getAttributeValue("y").toInt());
         setPos(position);
     }
 

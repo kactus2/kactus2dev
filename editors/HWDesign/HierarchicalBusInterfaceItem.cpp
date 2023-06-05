@@ -51,7 +51,7 @@ dataGroup_(dataGroup)
     setTypeLocked(busIf != 0 && busIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT);
     setPolygon(HierarchicalBusInterfaceItem:: getDirectionOutShape());
 
-    dataGroup_->setName(busIf->name().toStdString());
+    dataGroup_->setName(busIf->name());
 
     if (dataGroup_->hasPosition())
     {
@@ -76,7 +76,7 @@ dataGroup_(dataGroup)
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void HierarchicalBusInterfaceItem::updateName(std::string_view, std::string_view newName)
+void HierarchicalBusInterfaceItem::updateName(QString const&, QString const& newName)
 {
     dataGroup_->setName(newName);
 }

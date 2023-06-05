@@ -106,7 +106,7 @@ public:
     /*!
      *  Returns the instance name.
      */
-    std::string name() const;
+    QString name() const;
 
 	/*!
      *  Returns the display name of the component instance.
@@ -148,7 +148,7 @@ public:
      *
 	 * \return QString containing uuid.
 	 */
-    std::string getUuid() const;
+	QString getUuid() const;
 
     /*!
      *  Defines the connection point for associations in scene coordinates.

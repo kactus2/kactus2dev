@@ -52,7 +52,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         endpoint1_->addConnection(this);
         endpoint2_->addConnection(this);
 
-        if (route_->name().empty())
+        if (route_->name().isEmpty())
         {
             route_->setName(createDefaultName());
         }
@@ -176,7 +176,7 @@ void GraphicsConnection::setRoute(QList<QPointF> path)
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::setName()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::setName(std::string const& name)
+void GraphicsConnection::setName(QString const& name)
 {
     route_->setName(name);
     emit contentChanged();
@@ -598,7 +598,7 @@ void GraphicsConnection::paintConnectionPath()
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::updateName()
 //-----------------------------------------------------------------------------
-std::string GraphicsConnection::createDefaultName() const
+QString GraphicsConnection::createDefaultName() const
 {
     Q_ASSERT(endpoint1_ != 0);
     Q_ASSERT(endpoint2_ != 0);
@@ -612,13 +612,13 @@ std::string GraphicsConnection::createDefaultName() const
         std::swap(start, end);
     }
 
-    std::string startComponentName = std::string();
+    auto startComponentName = QString();
     if (start->encompassingComp() != nullptr)
     {
         startComponentName = start->encompassingComp()->name() + "_";
     }
 
-    std::string endComponentName = std::string();
+    auto endComponentName = QString();
     if (end->encompassingComp() != nullptr)
     {
         endComponentName = end->encompassingComp()->name() + "_";
@@ -1549,7 +1549,7 @@ QPointF GraphicsConnection::findClosestPoint(QList<QPointF> const& sourcePoints,
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::changeConnectionComponentReference()
 //-----------------------------------------------------------------------------
-void GraphicsConnection::changeConnectionComponentReference(std::string const&, std::string const& )
+void GraphicsConnection::changeConnectionComponentReference(QString const&, QString const& )
 {
     return;
 }

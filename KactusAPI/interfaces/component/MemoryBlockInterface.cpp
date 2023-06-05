@@ -162,7 +162,7 @@ bool MemoryBlockInterface::setName(string const& currentName, string const& newN
     QSharedPointer<MemoryBlockBase> editedItem = getBlock(currentName);
     if (editedItem && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, getDefaultName());
+        QString uniqueNewName = getUniqueName(newName, getDefaultName());
         editedItem->setName(uniqueNewName);
 
         return true;

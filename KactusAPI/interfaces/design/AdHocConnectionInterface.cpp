@@ -78,7 +78,7 @@ int AdHocConnectionInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 std::string AdHocConnectionInterface::getIndexedItemName(int const& itemIndex) const
 {
-    std::string connectionName;
+    std::string connectionName = "";
     if (itemIndex >= 0 && itemIndex < itemCount())
     {
         connectionName = connections_->at(itemIndex)->name().toStdString();
@@ -93,6 +93,11 @@ std::string AdHocConnectionInterface::getIndexedItemName(int const& itemIndex) c
 std::string AdHocConnectionInterface::getConnectionName(std::string const& startInstanceName,
     std::string const& startPortName, std::string const& endInstanceName, std::string const& endPortName) const
 {
+    QString firstInstance = QString::fromStdString(startInstanceName);
+    QString firstPort = QString::fromStdString(startPortName);
+    QString secondInstance = QString::fromStdString(endInstanceName);
+    QString secondPort = QString::fromStdString(endPortName);
+
     for (auto connection : *connections_)
     {
         bool foundFirst = false;
@@ -100,12 +105,12 @@ std::string AdHocConnectionInterface::getConnectionName(std::string const& start
 
         for (auto portReference : *connection->getInternalPortReferences())
         {
-            if (portReference->getComponentRef() == startInstanceName && portReference->getPortRef() == startPortName)
+            if (portReference->getComponentRef() == firstInstance && portReference->getPortRef() == firstPort)
             {
                 foundFirst = true;
             }
-            else if (portReference->getComponentRef() == endInstanceName &&
-                portReference->getPortRef() == endPortName)
+            else if (portReference->getComponentRef() == secondInstance &&
+                portReference->getPortRef() == secondPort)
             {
                 foundSecond = true;
             }
@@ -122,7 +127,7 @@ std::string AdHocConnectionInterface::getConnectionName(std::string const& start
         }
     }
 
-    return std::string();
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------
@@ -131,6 +136,10 @@ std::string AdHocConnectionInterface::getConnectionName(std::string const& start
 std::string AdHocConnectionInterface::getHierarchicalConnectionName(std::string const& instanceName,
     std::string const& instancePort, std::string const& topPort) const
 {
+    QString instanceNameQ = QString::fromStdString(instanceName);
+    QString instancePortQ = QString::fromStdString(instancePort);
+    QString topPortQ = QString::fromStdString(topPort);
+
     for (auto connection : *connections_)
     {
         bool foundInstance = false;
@@ -138,7 +147,7 @@ std::string AdHocConnectionInterface::getHierarchicalConnectionName(std::string 
 
         for (auto portReference : *connection->getInternalPortReferences())
         {
-            if (portReference->getComponentRef() == instanceName && portReference->getPortRef() == instancePort)
+            if (portReference->getComponentRef() == instanceNameQ && portReference->getPortRef() == instancePortQ)
             {
                 foundInstance = true;
                 break;
@@ -146,7 +155,7 @@ std::string AdHocConnectionInterface::getHierarchicalConnectionName(std::string 
         }
         for (auto portReference : *connection->getExternalPortReferences())
         {
-            if (portReference->getPortRef() == topPort)
+            if (portReference->getPortRef() == topPortQ)
             {
                 foundTop = true;
                 break;
@@ -201,7 +210,7 @@ bool AdHocConnectionInterface::setName(std::string const& currentName, std::stri
     QSharedPointer<AdHocConnection> editedConnection = getAdHocConnection(currentName);
     if (editedConnection && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
         editedConnection->setName(uniqueNewName);
 
         return true;
@@ -264,14 +273,21 @@ void AdHocConnectionInterface::addAdHocConnection(std::string const& startCompon
     std::string const& startPort, std::string const& endComponentInstance, std::string const& endPort,
     std::string const& connectionName)
 {
-    std::string newConnectionName = connectionName;
-    if (connectionName.empty())
+    QString newConnectionName = QString::fromStdString(connectionName);
+
+    QString startInstanceQ = QString::fromStdString(startComponentInstance);
+    QString startPortQ = QString::fromStdString(startPort);
+    QString endInstanceQ = QString::fromStdString(endComponentInstance);
+    QString endPortQ = QString::fromStdString(endPort);
+
+    if (newConnectionName.isEmpty())
     {
-        newConnectionName = startComponentInstance + "_" + startPort + "_to_" + endComponentInstance + "_" + endPort;
+        newConnectionName = startInstanceQ + QStringLiteral("_") + startPortQ + QStringLiteral("_to_") +
+            endInstanceQ + QStringLiteral("_") + endPortQ;
     }
 
-    QSharedPointer<PortReference> startReference(new PortReference(startPort, startComponentInstance));
-    QSharedPointer<PortReference> endReference(new PortReference(endPort, endComponentInstance));
+    QSharedPointer<PortReference> startReference(new PortReference(startPortQ, startInstanceQ));
+    QSharedPointer<PortReference> endReference(new PortReference(endPortQ, endInstanceQ));
 
     QSharedPointer<AdHocConnection> newConnection(new AdHocConnection(newConnectionName));
     newConnection->getInternalPortReferences()->append(startReference);
@@ -286,14 +302,18 @@ void AdHocConnectionInterface::addAdHocConnection(std::string const& startCompon
 void AdHocConnectionInterface::addHierarchicalAdHocConnection(std::string const& instanceName,
     std::string const& instancePort, std::string const& topPort, std::string const& connectionName /* = "" */)
 {
-    std::string newConnectionName = connectionName;
-    if (newConnectionName.empty())
+    QString instanceQ = QString::fromStdString(instanceName);
+    QString instancePortQ = QString::fromStdString(instancePort);
+    QString topPortQ = QString::fromStdString(topPort);
+
+    QString newConnectionName = QString::fromStdString(connectionName);
+    if (newConnectionName.isEmpty())
     {
-        newConnectionName = instanceName + "_" + instancePort + "_to_" + topPort;
+        newConnectionName = instanceQ + QStringLiteral("_") + instancePortQ + QStringLiteral("_to_") + topPortQ;
     }
 
-    QSharedPointer<PortReference> instanceReference(new PortReference(instancePort, instanceName));
-    QSharedPointer<PortReference> topReference(new PortReference(topPort));
+    QSharedPointer<PortReference> instanceReference(new PortReference(instancePortQ, instanceQ));
+    QSharedPointer<PortReference> topReference(new PortReference(topPortQ));
 
     QSharedPointer<AdHocConnection> newConnection(new AdHocConnection(newConnectionName));
     newConnection->getInternalPortReferences()->append(instanceReference);
@@ -321,6 +341,8 @@ bool AdHocConnectionInterface::removeAdHocConnection(std::string const& connecti
 //-----------------------------------------------------------------------------
 bool AdHocConnectionInterface::removeInstanceAdHocConnections(std::string const& instanceName)
 {
+    QString instanceNameQ = QString::fromStdString(instanceName);
+
     QVector<QSharedPointer<AdHocConnection> > removedConnections;
 
     for (auto connection : *connections_)
@@ -330,7 +352,7 @@ bool AdHocConnectionInterface::removeInstanceAdHocConnections(std::string const&
         {
             QSharedPointer<PortReference> portReference =
                 connection->getInternalPortReferences()->at(connectionIndex);
-            if (portReference->getComponentRef() == instanceName)
+            if (portReference->getComponentRef() == instanceNameQ)
             {
                 connection->getInternalPortReferences()->removeOne(portReference);
             }
@@ -377,13 +399,16 @@ bool AdHocConnectionInterface::adHocConnectionExists(std::string const& connecti
 void AdHocConnectionInterface::renameComponentReferences(std::string const& currentName,
     std::string const& newName)
 {
+    QString oldInstanceName = QString::fromStdString(currentName);
+    QString newInstanceName = QString::fromStdString(newName);
+
     for (auto connection : *connections_)
     {
         for (auto portReference : *connection->getInternalPortReferences())
         {
-            if (portReference->getComponentRef() == currentName)
+            if (portReference->getComponentRef() == oldInstanceName)
             {
-                portReference->setComponentRef(newName);
+                portReference->setComponentRef(newInstanceName);
             }
         }
     }

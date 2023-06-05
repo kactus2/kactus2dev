@@ -35,9 +35,9 @@ public:
      *      @param [in] displayName         Display name.
      *      @param [in] description         Description.
      */
-    MonitorInterconnection(std::string const& name, 
-        QSharedPointer<MonitorInterface> activeInterface = nullptr,
-        std::string const& displayName = std::string(), std::string const& description = std::string());
+    MonitorInterconnection(QString const& name, 
+        QSharedPointer<MonitorInterface> activeInterface = QSharedPointer<MonitorInterface>(0),
+        QString const& displayName = QString(), QString const& description = QString());
 
     /*!
      *  Constructor.
@@ -92,14 +92,14 @@ public:
      *
      *      @return The presence.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new presence.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
 private:
 
@@ -108,7 +108,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The presence.
-    std::string isPresent_;
+    QString isPresent_;
 
     //! The monitored active interface
     QSharedPointer<MonitorInterface> monitoredActiveInterface_ =

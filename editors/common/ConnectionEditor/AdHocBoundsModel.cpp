@@ -97,8 +97,8 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
 
         if (index.column() == AdHocBoundColumns::NAME)
         {
-            QString portName = QString::fromStdString(port->getPortRef());
-            if (port->getComponentRef().empty())
+            QString portName = port->getPortRef();
+            if (port->getComponentRef().isEmpty())
             {
                 portName.append(QStringLiteral(" (external)"));
             }
@@ -114,6 +114,14 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
             {
                 return part->getLeftRange();
             }
+            /*else if (index.row() == 0)
+            {
+                return connection_->endpoint1()->getPort()->getLeftBound();
+            }
+            else if (index.row() == 1)
+            {
+                return connection_->endpoint2()->getPort()->getLeftBound();
+            }*/
         }
 
         else if (index.column() == AdHocBoundColumns::RIGHT_BOUND)
@@ -124,6 +132,14 @@ QVariant AdHocBoundsModel::data(QModelIndex const& index, int role) const
             {
                 return part->getRightRange();
             }
+            /*else if (index.row() == 0)
+            {
+                return connection_->endpoint1()->getPort()->getRightBound();
+            }
+            else if (index.row() == 1)
+            {
+                return connection_->endpoint2()->getPort()->getRightBound();
+            }*/
         }
     }   
 

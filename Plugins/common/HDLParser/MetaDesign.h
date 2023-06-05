@@ -69,7 +69,7 @@ public:
     /*!
      *  Returns map of the parsed meta instances within the design. Keyed with instance names.
      */
-    QSharedPointer<QMap<std::string,QSharedPointer<MetaInstance> > > getInstances() const {return instances_;}
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > getInstances() const {return instances_;}
     
     /*!
      *  Returns list of the parsed meta interconnections within the design.
@@ -283,7 +283,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
 
     //! The parsed instances in the design_, keyed with their names.
-    QSharedPointer<QMap<std::string, QSharedPointer<MetaInstance> > > instances_;
+    QSharedPointer<QMap<QString,QSharedPointer<MetaInstance> > > instances_;
     //! The parsed interconnections of the design_.
     QSharedPointer<QList<QSharedPointer<MetaInterconnection> > > interconnections_;
     //! The parsed ad-hoc connections of the design_.

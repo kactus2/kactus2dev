@@ -71,7 +71,7 @@ private:
      *      @return Parsed tie off value.
      */
     QString getParsedTieOffValue(QString const& tieOffValue,
-        std::string const& portName, QSharedPointer<Component const> ownerComponent) const;
+        QString const& portName, QSharedPointer<Component const> ownerComponent) const;
 
     //-----------------------------------------------------------------------------
     // Data.

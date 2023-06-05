@@ -111,9 +111,9 @@ bool FileInterface::setName(std::string const& currentName, std::string const& n
     QSharedPointer<File> editedFile = getFile(currentName);
     if (editedFile && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, FILE_TYPE);
+        QString uniqueNewName = getUniqueName(newName, FILE_TYPE);
 
-        editedFile->setName(QString::fromStdString(uniqueNewName));
+        editedFile->setName(uniqueNewName);
         return true;
     }
     else
@@ -227,13 +227,13 @@ std::vector<std::string> FileInterface::getExpressionsInSelectedFiles(std::vecto
 //-----------------------------------------------------------------------------
 void FileInterface::addFile(int const& row, std::string const& newFileName)
 {
-    auto fileName = getUniqueName(newFileName, FILE_TYPE);
+    QString fileName = getUniqueName(newFileName, FILE_TYPE);
 
     QSharedPointer<File> newFile(new File());
 
     QSettings settings;
     newFile->setFileTypes(settings);
-    newFile->setName(QString::fromStdString(fileName));
+    newFile->setName(fileName);
 
     files_->insert(row, newFile);
 }

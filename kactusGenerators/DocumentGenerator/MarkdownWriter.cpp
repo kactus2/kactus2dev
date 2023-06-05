@@ -618,7 +618,7 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
     for (auto const& instance : *design->getComponentInstances())
     {
         QStringList rowCells(QStringList()
-            << QString::fromStdString(instance->getInstanceName())
+            << instance->getInstanceName()
             << "[" + instance->getComponentRef()->toString(" - ") + "](#" 
                 + instance->getComponentRef()->toString(":") + ")"
             << getComponentInstanceConfigurableElements(instance, design)

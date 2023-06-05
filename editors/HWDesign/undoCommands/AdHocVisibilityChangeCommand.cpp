@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
-AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, std::string_view portName,
+AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSource, QString const& portName,
                                                            bool newVisibility, QUndoCommand* parent):
 QUndoCommand(parent),
 dataSource_(dataSource),
@@ -43,12 +43,12 @@ adhocPort_()
         {
             pos_ = port->scenePos();
 
-            for (GraphicsConnection* connection : adhocPort_->getConnections())
+            foreach (GraphicsConnection* connection, adhocPort_->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
 
-            for (GraphicsConnection* connection : adhocPort_->getOffPageConnector()->getConnections())
+            foreach (GraphicsConnection* connection, adhocPort_->getOffPageConnector()->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }

@@ -550,7 +550,7 @@ void VhdlGenerator2::parseInstances()
 
     ExpressionFormatterFactoryImplementation formatterFactory;
 
-	foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
+	for (QSharedPointer<ComponentInstance> instance : *design_->getComponentInstances())
     {
 		VLNV::IPXactType instanceType = handler_->getDocumentType(*instance->getComponentRef());
 
@@ -603,7 +603,7 @@ void VhdlGenerator2::parseInstances()
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(this, handler_,
-            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->getDescription()));
+            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->description()));
 
         connect(compInstance.data(), SIGNAL(noticeMessage(const QString&)),
             this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
@@ -612,7 +612,7 @@ void VhdlGenerator2::parseInstances()
 
 		QSharedPointer<ComponentInstantiation> componentInstantiation;
 
-		foreach (QSharedPointer<ComponentInstantiation> currentInstantiation,
+		for (QSharedPointer<ComponentInstantiation> currentInstantiation :
 			*compInstance->componentModel()->getComponentInstantiations())
 		{
 			if (currentInstantiation->name() == instanceActiveView)
@@ -639,7 +639,7 @@ void VhdlGenerator2::parseInstances()
         ExpressionFormatter* instanceFormatter =
             formatterFactory.createDesignInstanceFormatter(compInstance->componentModel(), design_);
 
-        foreach(QSharedPointer<ConfigurableElementValue> configurableElement, 
+        for (QSharedPointer<ConfigurableElementValue> configurableElement: 
             *instance->getConfigurableElementValues())
         {
             QString elementName =
@@ -694,7 +694,7 @@ void VhdlGenerator2::parseInterconnections()
 		else
         { 
 			instance1 = instances_.value(firstInterface->getComponentReference());
-			interface1 = instance1->interface(QString::fromStdString(firstInterface->getBusReference()));
+			interface1 = instance1->interface(firstInterface->getBusReference());
 		}
 
 		// if the interface is not found

@@ -50,7 +50,7 @@ public:
     //-----------------------------------------------------------------------------
 	struct PortCopyData
 	{
-        std::string name;                              //!< The name of the interface.
+        QString name;                              //!< The name of the interface.
         // Only one of these is valid at one time.
 		QSharedPointer<ApiInterface> apiInterface; //!< API interface.
 		QSharedPointer<ComInterface> comInterface; //!< COM interface.
@@ -334,7 +334,7 @@ private:
      *      @return Graphics data of the interface.
      */
     QSharedPointer<InterfaceGraphicsData> findOrCreateInterfaceGraphicsData(QSharedPointer<Design> design,
-        std::string const& interfaceName);
+        QString const& interfaceName);
 
     /*!
      *  Add the interface item to the layout.
@@ -369,7 +369,7 @@ private:
      *
      *      @return The SW interface item matching the selected interface name.
      */
-    SWInterfaceItem* getSWInterfaceItem(std::string_view interfaceName) const;
+    SWInterfaceItem* getSWInterfaceItem(QString const& interfaceName) const;
 
     /*!
      *  Create a dummy interface.
@@ -379,7 +379,7 @@ private:
      *
      *      @return The created dummy interface.
      */
-    ConnectionEndpoint* createDummyInterface(QString const& itemType, std::string_view interfaceReference);
+    ConnectionEndpoint* createDummyInterface(QString const& itemType, QString const& interfaceReference);
 
     /*!
      *  Find or create a SW port item.
@@ -392,7 +392,7 @@ private:
      *      @return The found SW port item.
      */
     ConnectionEndpoint* findOrCreateSWPortItem(SystemComponentItem* containingItem,
-        std::string_view interfaceReference, SWConnectionEndpoint::EndpointType type,
+        QString const& interfaceReference, SWConnectionEndpoint::EndpointType type,
         QSharedPointer<Design> containingDesign);
 
     /*!
@@ -407,17 +407,17 @@ private:
      *
      *      @return The route used by the selected interconnection.
      */
-    QSharedPointer<ConnectionRoute> getInterconnectionRoute(std::string_view interconnectionName) const;
+    QSharedPointer<ConnectionRoute> getInterconnectionRoute(QString const& interconnectionName) const;
 
     /*!
      *  Returns the HW component instance with the given name.
      */
-    HWMappingItem* getHWComponent(std::string const& instanceName);
+    HWMappingItem* getHWComponent(QString const& instanceName);
 
     /*!
      *  Returns the HW component instance with the given UUID.
      */
-    HWMappingItem* getHWComponentByUUID(std::string const& uuid);
+    HWMappingItem* getHWComponentByUUID(QString const& uuid);
 
     /*!
      *  Returns the component with the given name (either HW or SW).
@@ -426,7 +426,7 @@ private:
      *
      *      @return The corresponding component, or null if not found.
      */
-    SystemComponentItem* getComponent(std::string const& instanceName);
+    SystemComponentItem* getComponent(QString const& instanceName);
 
     /*!
      *  Creates a missing port to the given component item.
@@ -436,7 +436,7 @@ private:
      *      @param [in] component  The parent component.
      *      @param [in] design     The design containing related information.
      */
-    SWPortItem* createMissingPort(std::string_view portName, ConnectionEndpoint::EndpointType type,
+    SWPortItem* createMissingPort(QString const& portName, ConnectionEndpoint::EndpointType type,
                                   SystemComponentItem* component, QSharedPointer<Design> design);
 
     /*!

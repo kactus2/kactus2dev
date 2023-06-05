@@ -77,7 +77,7 @@ void SystemComponentAddCommand::undo()
         {
             containingDesign_->getComponentInstances()->removeAll(swInstance);
 
-            if (!newHwComponentId_.empty())
+            if (!newHwComponentId_.isEmpty())
             {
                 swInstance->setMapping("");
             }
@@ -104,7 +104,7 @@ void SystemComponentAddCommand::redo()
         {
             containingDesign_->getComponentInstances()->append(swInstance);
 
-            if (!newHwComponentId_.empty())
+            if (!newHwComponentId_.isEmpty())
             {
                 swInstance->setMapping(newHwComponentId_);
             }

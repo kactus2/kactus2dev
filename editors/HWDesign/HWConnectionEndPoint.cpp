@@ -183,7 +183,7 @@ void HWConnectionEndpoint::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::setName()
 //-----------------------------------------------------------------------------
-void HWConnectionEndpoint::setName(std::string_view /*name*/)
+void HWConnectionEndpoint::setName(QString const& /*name*/)
 {
     // Intentionally empty.
 }

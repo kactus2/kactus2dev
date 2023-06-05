@@ -53,3 +53,4 @@ bool HWConnection::isBus() const
 {
     return endpoint1()->isBus();
 }
+

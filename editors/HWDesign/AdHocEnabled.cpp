@@ -19,14 +19,16 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()
 //-----------------------------------------------------------------------------
-AdHocEnabled::AdHocEnabled()
+AdHocEnabled::AdHocEnabled() :
+component_(),
+portAdHocVisibilities_()
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::setAdHocData()
 //-----------------------------------------------------------------------------
-void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<std::string, bool> const& portAdHocVisibilities)
+void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QString, bool> const& portAdHocVisibilities)
 {
     component_ = component;
     portAdHocVisibilities_.clear();
@@ -34,20 +36,20 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<std::s
     // Parse port ad-hoc visibilities.
     if (component->hasPorts())
     {
-        for (auto const& adhocPort : *component->getPorts())
+        foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
         {
             bool visible = adhocPort->isAdHocVisible();
 
-            if (portAdHocVisibilities.contains(adhocPort->name().toStdString()))
+            if (portAdHocVisibilities.contains(adhocPort->name()))
             {
-                visible = portAdHocVisibilities.value(adhocPort->name().toStdString());
+                visible = portAdHocVisibilities.value(adhocPort->name());
             }
 
-            portAdHocVisibilities_.insert(adhocPort->name().toStdString(), visible);
+            portAdHocVisibilities_.insert(adhocPort->name(), visible);
         }
     }
 
-    QMapIterator<std::string, bool> visibilityIterator(portAdHocVisibilities);
+    QMapIterator<QString, bool> visibilityIterator(portAdHocVisibilities);
     while (visibilityIterator.hasNext())
     {
         visibilityIterator.next();
@@ -62,7 +64,7 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<std::s
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::setPortAdHocVisible()
 //-----------------------------------------------------------------------------
-void AdHocEnabled::setPortAdHocVisible(std::string const& portName, bool visible)
+void AdHocEnabled::setPortAdHocVisible(QString const& portName, bool visible)
 {
     // Check if the visibility has changed.
     if (portAdHocVisibilities_.value(portName) != visible)
@@ -76,7 +78,7 @@ void AdHocEnabled::setPortAdHocVisible(std::string const& portName, bool visible
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::isPortAdHocVisible()
 //-----------------------------------------------------------------------------
-bool AdHocEnabled::isPortAdHocVisible(std::string const& portName) const
+bool AdHocEnabled::isPortAdHocVisible(QString const& portName) const
 {
     return portAdHocVisibilities_.value(portName, false);
 }
@@ -84,7 +86,7 @@ bool AdHocEnabled::isPortAdHocVisible(std::string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::onAdHocVisibilityChanged()
 //-----------------------------------------------------------------------------
-void AdHocEnabled::onAdHocVisibilityChanged(std::string_view, bool)
+void AdHocEnabled::onAdHocVisibilityChanged(QString const&, bool)
 {
     // Default implementation is empty.
 }
@@ -92,7 +94,7 @@ void AdHocEnabled::onAdHocVisibilityChanged(std::string_view, bool)
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getPortAdHocVisibilities()
 //-----------------------------------------------------------------------------
-QMap<std::string, bool> AdHocEnabled::getPortAdHocVisibilities() const
+QMap<QString, bool> AdHocEnabled::getPortAdHocVisibilities() const
 {
     return portAdHocVisibilities_;
 }
@@ -109,7 +111,7 @@ QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::getDiagramAdHocPort()
 //-----------------------------------------------------------------------------
-HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(std::string_view)
+HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
 {
     return nullptr;
 }
@@ -117,7 +119,7 @@ HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(std::string_view)
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::createAdhocItem()
 //-----------------------------------------------------------------------------
-AdHocItem* AdHocEnabled::createAdhocItem(std::string_view)
+AdHocItem* AdHocEnabled::createAdhocItem(QString const&)
 {
     return nullptr;
 }

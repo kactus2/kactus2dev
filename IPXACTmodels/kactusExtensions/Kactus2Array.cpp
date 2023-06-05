@@ -40,9 +40,9 @@ Kactus2Array* Kactus2Array::clone() const
 //-----------------------------------------------------------------------------
 // Function: Kactus2Array::type()
 //-----------------------------------------------------------------------------
-std::string Kactus2Array::type() const
+QString Kactus2Array::type() const
 {
-    return "kactus2:array";
+    return QStringLiteral("kactus2:array");
 }
 
 //-----------------------------------------------------------------------------
@@ -50,7 +50,7 @@ std::string Kactus2Array::type() const
 //-----------------------------------------------------------------------------
 void Kactus2Array::write(QXmlStreamWriter& writer) const
 {
-    writer.writeStartElement(QString::fromStdString(type()));
+    writer.writeStartElement(type());
     writer.writeTextElement(QStringLiteral("kactus2:left"), left_);
     writer.writeTextElement(QStringLiteral("kactus2:right"), right_);
     writer.writeEndElement();

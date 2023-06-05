@@ -84,7 +84,7 @@ private:
     bool del_;
 
     //! The uuID of the containing HW component instance.
-    std::string newHwComponentId_;
+    QString newHwComponentId_;
 
     //! The design containing the system component item.
     QSharedPointer<Design> containingDesign_;

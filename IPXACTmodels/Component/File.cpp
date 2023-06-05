@@ -411,10 +411,10 @@ QString File::getLastHash() const
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:hash")
+        if (extension->type() == QLatin1String("kactus2:hash"))
         {
             QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
-            return QString::fromStdString(hashExtension->value());
+            return hashExtension->value();
         }
     }
 
@@ -428,7 +428,7 @@ void File::setLastHash(QString const& newHash)
 {
     foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:hash")
+        if (extension->type() == QLatin1String("kactus2:hash"))
         {
             if (newHash.isEmpty())
             {
@@ -437,7 +437,7 @@ void File::setLastHash(QString const& newHash)
             else
             {
                 QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
-                hashExtension->setValue(newHash.toStdString());
+                hashExtension->setValue(newHash);
             }
             return;
         }
@@ -445,7 +445,7 @@ void File::setLastHash(QString const& newHash)
 
     if (!newHash.isEmpty())
     {
-        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value("kactus2:hash", newHash.toStdString()));
+        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value(QStringLiteral("kactus2:hash"), newHash));
         getVendorExtensions()->append(hashExtension);
     }
 }

@@ -212,7 +212,7 @@ void tst_DesignConfigurationValidator::testHasValidDesignReference()
 
         if (addToLibrary)
         {
-            QSharedPointer<Design> referencedDesign (new Design(designReference));
+            QSharedPointer<Design> referencedDesign (new Design(designReference, Document::Revision::Std14));
             mockLibrary->addComponent(referencedDesign);
         }
     }
@@ -399,7 +399,8 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
     QFETCH(bool, referenceOk);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "vendor", "library", "design", "1")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "vendor", "library", "design", "1"),
+        Document::Revision::Std14));
 
     QSharedPointer<InterconnectionConfiguration> testConfiguration (new InterconnectionConfiguration());
     testConfiguration->setInterconnectionReference(interconnectionName);
@@ -704,7 +705,8 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
     QFETCH(bool, busInterfaceExists);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "vendor", "library", "design", "version")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "vendor", "library", "design", "version"),
+        Document::Revision::Std14));
 
     QSharedPointer<ConfigurableVLNVReference> abstractorRef (new ConfigurableVLNVReference(VLNV::ABSTRACTOR,
         QLatin1String("Yu-Jing"), QLatin1String("JSA"), QLatin1String("O-yoroi"), QLatin1String("Kidobutai")));
@@ -818,7 +820,8 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
     QFETCH(QString, isPresent);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Guilty", "Gear", "Heavy", "day")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Guilty", "Gear", "Heavy", "day"),
+        Document::Revision::Std14));
 
     QSharedPointer<ConfigurableVLNVReference> abstractorRef (new ConfigurableVLNVReference(VLNV::ABSTRACTOR,
         QLatin1String("Yu-Jing"), QLatin1String("JSA"), QLatin1String("O-yoroi"), QLatin1String("Kidobutai")));
@@ -914,7 +917,7 @@ void tst_DesignConfigurationValidator::testHasValidInterconnectionConfigurations
 
     VLNV designVLNV (VLNV::DESIGN, "Guilty", "Gear", "Xrd", "Revelator");
 
-    QSharedPointer<Design> testDesign (new Design(designVLNV));
+    QSharedPointer<Design> testDesign (new Design(designVLNV, Document::Revision::Std14));
     mockLibrary->addComponent(testDesign);
 
     QSharedPointer<DesignConfiguration> testConfiguration (new DesignConfiguration(
@@ -1232,7 +1235,7 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
     QFETCH(bool, isValid);
 
     QSharedPointer<Design> referencedDesign (
-        new Design(VLNV(VLNV::DESIGN, "Evangelion", "Shin", "Geki", "jouban")));
+        new Design(VLNV(VLNV::DESIGN, "Evangelion", "Shin", "Geki", "jouban"), Document::Revision::Std14));
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     mockLibrary->addComponent(referencedDesign);

@@ -338,13 +338,13 @@ KactusAttribute::Implementation DesignConfiguration::getDesignConfigImplementati
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getConfigurableElementValues()
 //-----------------------------------------------------------------------------
-QMap<std::string, std::string> DesignConfiguration::getConfigurableElementValues(std::string const& instanceUUID) const
+QMap<QString, QString> DesignConfiguration::getConfigurableElementValues(QString const& instanceUUID) const
 {
-    QMap<std::string, std::string> configurableElements;
-    std::string instanceIdentifier = "kactus2:componentInstance";
+    QMap<QString, QString> configurableElements;
+    QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
     for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
-        if (extension->type() == "kactus2:configurableElementValues")
+        if (extension->type() == QLatin1String("kactus2:configurableElementValues"))
         {
             QSharedPointer<Kactus2Group> cevsGroup = extension.dynamicCast<Kactus2Group>();
             for (QSharedPointer<VendorExtension> instanceNode :
@@ -352,8 +352,8 @@ QMap<std::string, std::string> DesignConfiguration::getConfigurableElementValues
             {
                 QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
 
-                std::string groupUUID;
-                QList<QSharedPointer<VendorExtension> > uuidValues = instanceGroup->getByType("kactus2:uuid");
+                QString groupUUID;
+                QList<QSharedPointer<VendorExtension> > uuidValues = instanceGroup->getByType(QStringLiteral("kactus2:uuid"));
                 if (!uuidValues.isEmpty())
                 {
                     groupUUID = uuidValues.first().dynamicCast<Kactus2Value>()->value();
@@ -361,12 +361,12 @@ QMap<std::string, std::string> DesignConfiguration::getConfigurableElementValues
 
                 if (groupUUID == instanceUUID)
                 {
-                    std::string elementIdentifier = "kactus2:configurableElementValue";
+                    QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
                     for (QSharedPointer<VendorExtension> value : instanceGroup->getByType(elementIdentifier))
                     {
                         QSharedPointer<Kactus2Placeholder> valueHolder = value.dynamicCast<Kactus2Placeholder>();
-                        configurableElements.insert(valueHolder->getAttributeValue(std::string("referenceId")),
-                            valueHolder->getAttributeValue(std::string("value")));
+                        configurableElements.insert(valueHolder->getAttributeValue(QStringLiteral("referenceId")), 
+                            valueHolder->getAttributeValue(QStringLiteral("value")));
                     }
                 }
             }
@@ -379,30 +379,30 @@ QMap<std::string, std::string> DesignConfiguration::getConfigurableElementValues
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::setConfigurableElementValues()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::setConfigurableElementValues(std::string const& instanceUUID,
-    QMap<std::string, std::string> const& configurableElementValues)
+void DesignConfiguration::setConfigurableElementValues(QString const& instanceUUID, 
+    QMap<QString, QString> const& configurableElementValues)
 {
     if (configurableElementValues.isEmpty())
     {
         return;
     }
 
-    QMap<std::string, std::string> valuesToSet = configurableElementValues;
+    QMap<QString, QString> valuesToSet = configurableElementValues;
 
     QSharedPointer<Kactus2Group> instanceGroup =
         findOrCreateInstanceExtension(instanceUUID).dynamicCast<Kactus2Group>();
 
-    std::string elementIdentifier = "kactus2:configurableElementValue";
+   QString elementIdentifier = QStringLiteral("kactus2:configurableElementValue");
                    
     for (QSharedPointer<VendorExtension> value : instanceGroup->getByType(elementIdentifier))
     {
         QSharedPointer<Kactus2Placeholder> existingValue = value.dynamicCast<Kactus2Placeholder>();
 
-        std::string referenceId = existingValue->getAttributeValue(std::string("referenceId"));
+        QString referenceId = existingValue->getAttributeValue(QStringLiteral("referenceId"));
         if (valuesToSet.contains(referenceId))
         {
-            std::string updatedValue = valuesToSet.value(referenceId);
-            existingValue->setAttribute(std::string("value"), updatedValue);
+            QString updatedValue = valuesToSet.value(referenceId);
+            existingValue->setAttribute(QStringLiteral("value"), updatedValue);
             valuesToSet.remove(referenceId);
         }
         else
@@ -411,11 +411,12 @@ void DesignConfiguration::setConfigurableElementValues(std::string const& instan
         }
     }
 
-    for (auto const& newId : valuesToSet.keys())
+    for (QString const& newId : valuesToSet.keys())
     {
-        QSharedPointer<Kactus2Placeholder> valueHolder(new Kactus2Placeholder("kactus2:configurableElementValue"));
-        valueHolder->setAttribute(std::string("referenceId"), newId);
-        valueHolder->setAttribute(std::string("value"), valuesToSet.value(newId));
+        QSharedPointer<Kactus2Placeholder> valueHolder(
+            new Kactus2Placeholder(QStringLiteral("kactus2:configurableElementValue")));
+        valueHolder->setAttribute(QStringLiteral("referenceId"), newId);
+        valueHolder->setAttribute(QStringLiteral("value"), valuesToSet.value(newId));
         instanceGroup->addToGroup(valueHolder);
     }
 }
@@ -423,24 +424,25 @@ void DesignConfiguration::setConfigurableElementValues(std::string const& instan
 //-----------------------------------------------------------------------------
 // Function: designconfiguration::getKactsu2ViewOverrides()
 //-----------------------------------------------------------------------------
-QMap<std::string, std::string> DesignConfiguration::getKactus2ViewOverrides() const
+QMap<QString, QString> DesignConfiguration::getKactus2ViewOverrides() const
 {
     QSharedPointer<Kactus2Group> overrideGroup =
-        findVendorExtension("kactus2:viewOverrides").dynamicCast<Kactus2Group>();
+        findVendorExtension(QStringLiteral("kactus2:viewOverrides")).dynamicCast<Kactus2Group>();
 
-    QMap <std::string, std::string> viewOverrides;
+    QMap <QString, QString> viewOverrides;
 
     if (overrideGroup)
     {
-        std::string overrideIndentifier = "kactus2:instanceView";
-        for (QSharedPointer<VendorExtension> extension : overrideGroup->getByType(overrideIndentifier))
+        auto overrideIndentifier = QStringLiteral("kactus2:instanceView");
+        for (QSharedPointer<VendorExtension> extension : 
+            overrideGroup->getByType(overrideIndentifier))
         {
             QSharedPointer<Kactus2Placeholder> viewExtension = extension.dynamicCast<Kactus2Placeholder>();
 
             if (viewExtension)
             {
-                auto viewOverrideId = viewExtension->getAttributeValue(std::string("id"));
-                auto viewOverrideValue = viewExtension->getAttributeValue(std::string("viewName"));
+                QString viewOverrideId = viewExtension->getAttributeValue(QStringLiteral("id"));
+                QString viewOverrideValue = viewExtension->getAttributeValue(QStringLiteral("viewName"));
 
                 viewOverrides.insert(viewOverrideId, viewOverrideValue);
             }
@@ -453,21 +455,22 @@ QMap<std::string, std::string> DesignConfiguration::getKactus2ViewOverrides() co
 //-----------------------------------------------------------------------------
 // Function: designconfiguration::setKactus2ViewOverrides()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::setKactus2ViewOverrides(QMap<std::string, std::string> kactus2ViewOverrides)
+void DesignConfiguration::setKactus2ViewOverrides(QMap<QString, QString> kactus2ViewOverrides)
 {
-    auto extension = findVendorExtension("kactus2:viewOverrides");
+    auto extension = findVendorExtension(QLatin1String("kactus2:viewOverrides"));
 
     getVendorExtensions()->removeAll(extension);
 
     if (!kactus2ViewOverrides.isEmpty())
     {
-        QSharedPointer<Kactus2Group> overrideGroup (new Kactus2Group("kactus2:viewOverrides"));
+        QSharedPointer<Kactus2Group> overrideGroup (new Kactus2Group(QStringLiteral("kactus2:viewOverrides")));
 
         for (auto const& id : kactus2ViewOverrides.keys())
         {
-            QSharedPointer<Kactus2Placeholder> treeItemExtension(new Kactus2Placeholder("kactus2:instanceView"));
-            treeItemExtension->setAttribute(std::string("id"), id);
-            treeItemExtension->setAttribute(std::string("viewName"), kactus2ViewOverrides.value(id));
+            QSharedPointer<Kactus2Placeholder> treeItemExtension(
+                new Kactus2Placeholder(QStringLiteral("kactus2:instanceView")));
+            treeItemExtension->setAttribute(QStringLiteral("id"), id);
+            treeItemExtension->setAttribute(QStringLiteral("viewName"), kactus2ViewOverrides.value(id));
 
             overrideGroup->addToGroup(treeItemExtension);
         }
@@ -479,24 +482,24 @@ void DesignConfiguration::setKactus2ViewOverrides(QMap<std::string, std::string>
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::findOrCreateInstanceExtension()
 //-----------------------------------------------------------------------------
-QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(std::string const& instanceUUID)
+QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtension(QString const& instanceUUID)
 {
     QSharedPointer<Kactus2Group> cevGroup =
-        findVendorExtension("kactus2:configurableElementValues").dynamicCast<Kactus2Group>();
+        findVendorExtension(QLatin1String("kactus2:configurableElementValues")).dynamicCast<Kactus2Group>();
 
     if (cevGroup == nullptr)
     {
-        cevGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:configurableElementValues"));
+        cevGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QStringLiteral("kactus2:configurableElementValues")));
         getVendorExtensions()->append(cevGroup);
     }
 
     QSharedPointer<Kactus2Group> targetInstanceGroup;
-    std::string instanceIdentifier = "kactus2:componentInstance";
+    QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
     for  (QSharedPointer<VendorExtension> instanceNode : cevGroup->getByType(instanceIdentifier))
     {
         QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();
-        std::string groupUUID;
-        QList<QSharedPointer<VendorExtension> > uuidValues = instanceGroup->getByType("kactus2:uuid");
+        QString groupUUID;
+        QList<QSharedPointer<VendorExtension> > uuidValues = instanceGroup->getByType(QStringLiteral("kactus2:uuid"));
         if (!uuidValues.isEmpty())
         {
             groupUUID = uuidValues.first().dynamicCast<Kactus2Value>()->value();
@@ -511,9 +514,9 @@ QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtensi
 
     if (targetInstanceGroup.isNull())
     {
-        targetInstanceGroup = QSharedPointer<Kactus2Group>(new Kactus2Group("kactus2:componentInstance"));
+        targetInstanceGroup = QSharedPointer<Kactus2Group>(new Kactus2Group(QStringLiteral("kactus2:componentInstance")));
         targetInstanceGroup->addToGroup(QSharedPointer<Kactus2Value>(
-            new Kactus2Value("kactus2:uuid", instanceUUID)));
+            new Kactus2Value(QStringLiteral("kactus2:uuid"), instanceUUID)));
         cevGroup->addToGroup(targetInstanceGroup);
     }
 

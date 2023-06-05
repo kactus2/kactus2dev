@@ -14,9 +14,9 @@
 //-----------------------------------------------------------------------------
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
-MonitorInterconnection::MonitorInterconnection(std::string const& name,
-    QSharedPointer<MonitorInterface> activeInterface, std::string const& displayName,
-    std::string const& description) :
+MonitorInterconnection::MonitorInterconnection(QString const& name,
+    QSharedPointer<MonitorInterface> activeInterface, QString const& displayName,
+    QString const& description) :
 NameGroup(name, displayName, description),
 monitoredActiveInterface_(activeInterface)
 {
@@ -111,7 +111,7 @@ void MonitorInterconnection::setMonitorInterfaces(
 //-----------------------------------------------------------------------------
 // Function: Interconnection::getIsPresent()
 //-----------------------------------------------------------------------------
-std::string MonitorInterconnection::getIsPresent() const
+QString MonitorInterconnection::getIsPresent() const
 {
     return isPresent_;
 }
@@ -119,7 +119,7 @@ std::string MonitorInterconnection::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: Interconnection::setIsPresent()
 //-----------------------------------------------------------------------------
-void MonitorInterconnection::setIsPresent(std::string const& newIsPresent)
+void MonitorInterconnection::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }

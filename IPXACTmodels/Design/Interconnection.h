@@ -37,8 +37,8 @@ public:
      *      @param [in] displayName     The display name.
      *      @param [in] description     The description.
      */
-    Interconnection(std::string const& name, QSharedPointer<ActiveInterface> startInterface,
-        std::string const& displayName = std::string(), std::string const& description = std::string());
+    Interconnection(QString const name, QSharedPointer<ActiveInterface> startInterface,
+        QString const& displayName = QString(), QString const& description = QString ());
 
     /*!
      *  The constructor.
@@ -107,14 +107,14 @@ public:
      *
      *      @return The presence.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new presence.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Check if an interface references a given component and a bus interface.
@@ -124,8 +124,7 @@ public:
      *
      *      @return True, if an interface references the given component and bus interface, otherwise false.
      */
-    bool hasInterfaceReferencingComponent(std::string const& instanceName, 
-        std::string const& busInterfaceName) const;
+    bool hasInterfaceReferencingComponent(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Change the component reference of contained interfaces.
@@ -133,7 +132,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    void changeInterfaceComponentReferences(std::string const& oldComponent, std::string const& newComponent);
+    void changeInterfaceComponentReferences(QString const& oldComponent, QString const& newComponent);
 
 private:
 
@@ -153,7 +152,7 @@ private:
         QSharedPointer<QList<QSharedPointer<HierInterface> > >(new QList<QSharedPointer<HierInterface> >());
 
     //! The presence.
-    std::string isPresent_;
+    QString isPresent_;
 
 };
 #endif // INTERCONNECTION_H

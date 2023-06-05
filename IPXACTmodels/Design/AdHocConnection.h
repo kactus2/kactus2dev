@@ -36,8 +36,8 @@ public:
      *      @param [in] route           The route of the connection.
      *      @param [in] offPage         Specifies whether the connection is off page or not.
      */
-    AdHocConnection(std::string name,
-        std::string tiedValue = std::string(),
+    AdHocConnection(QString name,
+        QString tiedValue = QString(),
         QList<QPointF> const& route = QList<QPointF>(),
         bool offPage = false);
 
@@ -117,28 +117,28 @@ public:
      *
      *      @return The presence value of the connection.
      */
-    std::string getIsPresent() const;
+    QString getIsPresent() const;
 
     /*!
      *  Set the presence.
      *
      *      @param [in] newIsPresent    The new value for presence.
      */
-    void setIsPresent(std::string const& newIsPresent);
+    void setIsPresent(QString const& newIsPresent);
 
     /*!
      *  Get the tied value of the connection.
      *
      *      @return The tied value.
      */
-    std::string getTiedValue() const;
+    QString getTiedValue() const;
 
     /*!
      *  Set the tied value.
      *
      *      @param [in] newTiedValue    The new tied value.
      */
-    void setTiedValue(std::string const& newTiedValue);
+    void setTiedValue(QString const& newTiedValue);
 
     /*!
      *  Change the component reference of contained interfaces.
@@ -146,7 +146,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    void changeInterfaceComponentReferences(std::string const& oldName, std::string const& newName);
+    void changeInterfaceComponentReferences(QString const& oldName, QString const& newName);
 
 private:
 
@@ -155,10 +155,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Defines the presence of the connection
-    std::string isPresent_;
+    QString isPresent_;
 
     //! Specifies a fixed logic value for this connection.
-    std::string tiedValue_;
+    QString tiedValue_;
 
     //! A list of port references of the component instance.
     QSharedPointer<QList<QSharedPointer<PortReference> > > internalPortReferences_ =

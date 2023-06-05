@@ -128,11 +128,11 @@ std::vector<std::string> FileBuilderInterface::getExpressionsInSelectedFileBuild
 //-----------------------------------------------------------------------------
 void FileBuilderInterface::addFileBuilder(int const& row, std::string const& newFileBuilderName)
 {
-    auto uniqueFileBuilderName = getUniqueName(newFileBuilderName, DEFAULT_TYPE);
+    QString uniqueFileBuilderName = getUniqueName(newFileBuilderName, DEFAULT_TYPE);
 
     QSharedPointer<FileBuilder> newFileBuilder(new FileBuilder());
 
-    newFileBuilder->setFileType(QString::fromStdString(newFileBuilderName));
+    newFileBuilder->setFileType(uniqueFileBuilderName);
 
     fileBuilders_->insert(row, newFileBuilder);
 }
@@ -203,9 +203,9 @@ bool FileBuilderInterface::setFileType(std::string const& currentFileType, std::
     QSharedPointer<FileBuilder> editedFileBuilder = getFileBuilder(currentFileType);
     if (editedFileBuilder && nameHasChanged(newFileType, currentFileType))
     {
-        auto uniqueNewFileType = getUniqueName(newFileType, DEFAULT_TYPE);
+        QString uniqueNewFileType = getUniqueName(newFileType, DEFAULT_TYPE);
 
-        editedFileBuilder->setFileType(QString::fromStdString(uniqueNewFileType));
+        editedFileBuilder->setFileType(uniqueNewFileType);
         return true;
     }
     else

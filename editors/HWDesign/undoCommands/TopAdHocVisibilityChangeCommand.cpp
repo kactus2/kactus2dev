@@ -26,7 +26,7 @@
 // Function: TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
 TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand(HWDesignDiagram* diagram, 
-    std::string_view portName,
+    QString const& portName,
     bool newVisibility, 
     QUndoCommand* parent):
 AdHocVisibilityChangeCommand(diagram, portName, newVisibility, parent)
@@ -43,7 +43,7 @@ AdHocVisibilityChangeCommand(diagram, portName, newVisibility, parent)
 // Function: TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion()
 //-----------------------------------------------------------------------------
 void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignDiagram* diagram,
-    std::string_view portName)
+    QString const& portName)
 {
     if (diagram && diagram->getDesign())
     {
@@ -52,7 +52,7 @@ void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignD
         {
             for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
             {
-                if (!connection->getTiedValue().empty())
+                if (!connection->getTiedValue().isEmpty())
                 {
                     if ((connection->getInternalPortReferences()->size() == 1 &&
                         connection->getExternalPortReferences()->isEmpty() &&

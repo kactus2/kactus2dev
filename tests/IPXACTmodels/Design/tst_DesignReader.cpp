@@ -216,10 +216,10 @@ void tst_DesignReader::testReadComponentInstances()
 
     QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
 
-    QCOMPARE(QString::fromStdString(testInstance->getInstanceName()), QString("testInstance"));
+    QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
     QCOMPARE(testInstance->displayName(), QString("displayName"));
     QCOMPARE(testInstance->description(), QString("described"));
-    QCOMPARE(QString::fromStdString(testInstance->getIsPresent()), QString("2-1"));
+    QCOMPARE(testInstance->getIsPresent(), QString("2-1"));
 
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         testDesign->getComponentInstances()->first()->getComponentRef();
@@ -232,7 +232,7 @@ void tst_DesignReader::testReadComponentInstances()
     QCOMPARE(componentRef->getConfigurableElementValues()->first()->getConfigurableValue(), QString("10"));
 
     QCOMPARE(testInstance->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getVendorExtensions()->first()->type()), QString("kactus2:uuid"));
+    QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("kactus2:uuid"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -285,11 +285,11 @@ void tst_DesignReader::testRead2022ComponentInstances()
 
     QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
 
-    QCOMPARE(QString::fromStdString(testInstance->getInstanceName()), QString("testInstance"));
+    QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
     QCOMPARE(testInstance->displayName(), QString("displayName"));
     QCOMPARE(testInstance->shortDescription(), QString("brief"));
     QCOMPARE(testInstance->description(), QString("described"));
-    QCOMPARE(QString::fromStdString(testInstance->getIsPresent()), QString());
+    QCOMPARE(testInstance->getIsPresent(), QString());
 
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         testDesign->getComponentInstances()->first()->getComponentRef();
@@ -302,13 +302,13 @@ void tst_DesignReader::testRead2022ComponentInstances()
     QCOMPARE(componentRef->getConfigurableElementValues()->first()->getConfigurableValue(), QString("10"));
 
     QCOMPARE(testInstance->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getVendorExtensions()->first()->type()), QString("kactus2:uuid"));
+    QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("kactus2:uuid"));
 
     QCOMPARE(testInstance->getPowerDomainLinks()->size(), 1);
 
     auto powerDomainLink = testInstance->getPowerDomainLinks()->first();
-    QCOMPARE(QString::fromStdString(powerDomainLink->externalReference_), QString("external"));
-    QCOMPARE(QString::fromStdString(powerDomainLink->internalReference_), QString("internal"));
+    QCOMPARE(powerDomainLink->externalReference_, QString("external"));
+    QCOMPARE(powerDomainLink->internalReference_, QString("internal"));
 
 }
 
@@ -370,43 +370,43 @@ void tst_DesignReader::testReadComponentInstanceExtensions()
 
     QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
 
-    QCOMPARE(QString::fromStdString(testInstance->getInstanceName()), QString("testInstance"));
+    QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
 
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         testDesign->getComponentInstances()->first()->getComponentRef();
     QCOMPARE(componentRef->getName(), QString("testComponent"));
 
     QCOMPARE(testInstance->getVendorExtensions()->size(), 8);
-    QCOMPARE(QString::fromStdString(testInstance->getUuid()), QString("testUUID"));
+    QCOMPARE(testInstance->getUuid(), QString("testUUID"));
     QCOMPARE(testInstance->getPosition().x(), qreal(10));
     QCOMPARE(testInstance->getPosition().y(), qreal(10));
 
     QCOMPARE(testInstance->isImported(), true);
-    QCOMPARE(QString::fromStdString(testInstance->getImportRef()), QString("importSource"));
+    QCOMPARE(testInstance->getImportRef(), QString("importSource"));
 
     QCOMPARE(testInstance->getBusInterfacePositions().count(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getBusInterfacePositions().firstKey()), QString("testInterface"));
+    QCOMPARE(testInstance->getBusInterfacePositions().firstKey(), QString("testInterface"));
     QCOMPARE(testInstance->getBusInterfacePositions().first().x(), qreal(4));
     QCOMPARE(testInstance->getBusInterfacePositions().first().y(), qreal(4));
 
     QCOMPARE(testInstance->getAdHocPortPositions().count(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getAdHocPortPositions().firstKey()), QString("adHocPort"));
+    QCOMPARE(testInstance->getAdHocPortPositions().firstKey(), QString("adHocPort"));
     QCOMPARE(testInstance->getAdHocPortPositions().first().x(), qreal(3));
     QCOMPARE(testInstance->getAdHocPortPositions().first().y(), qreal(3));
 
     QCOMPARE(testInstance->getApiInterfacePositions().count(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getApiInterfacePositions().firstKey()), QString("apiInterface"));
+    QCOMPARE(testInstance->getApiInterfacePositions().firstKey(), QString("apiInterface"));
     QCOMPARE(testInstance->getApiInterfacePositions().first().x(), qreal(2));
     QCOMPARE(testInstance->getApiInterfacePositions().first().y(), qreal(2));
 
     QCOMPARE(testInstance->getComInterfacePositions().count(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getComInterfacePositions().firstKey()), QString("comInterface"));
+    QCOMPARE(testInstance->getComInterfacePositions().firstKey(), QString("comInterface"));
     QCOMPARE(testInstance->getComInterfacePositions().first().x(), qreal(1));
     QCOMPARE(testInstance->getComInterfacePositions().first().y(), qreal(1));
 
     QCOMPARE(testInstance->getPropertyValues().count(), 1);
-    QCOMPARE(QString::fromStdString(testInstance->getPropertyValues().firstKey()), QString("testSWProperty"));
-    QCOMPARE(QString::fromStdString(testInstance->getPropertyValues().first()), QString("8"));
+    QCOMPARE(testInstance->getPropertyValues().firstKey(), QString("testSWProperty"));
+    QCOMPARE(testInstance->getPropertyValues().first(), QString("8"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -468,38 +468,38 @@ void tst_DesignReader::testReadInterconnections()
     QCOMPARE(testConnection->name(), QString("testConnection"));
     QCOMPARE(testConnection->displayName(), QString("interconnectionDisplay"));
     QCOMPARE(testConnection->description(), QString("interconnectionDescription"));
-    QCOMPARE(QString::fromStdString(testConnection->getIsPresent()), QString("4-3"));
+    QCOMPARE(testConnection->getIsPresent(), QString("4-3"));
 
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getComponentReference()), QString("startComponent"));
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getBusReference()), QString("startBus"));
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getIsPresent()), QString("1"));
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getDescription()), QString("interfaceDescription"));
+    QCOMPARE(testConnection->getStartInterface()->getComponentReference(), QString("startComponent"));
+    QCOMPARE(testConnection->getStartInterface()->getBusReference(), QString("startBus"));
+    QCOMPARE(testConnection->getStartInterface()->getIsPresent(), QString("1"));
+    QCOMPARE(testConnection->getStartInterface()->getDescription(), QString("interfaceDescription"));
     QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getExcludePorts()->first()), QString("testExcludePort"));
+    QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->first(), QString("testExcludePort"));
     QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(testConnection->getActiveInterfaces()->size(), 1);
 
     QSharedPointer<ActiveInterface> active = testConnection->getActiveInterfaces()->first();
-    QCOMPARE(QString::fromStdString(active->getComponentReference()), QString("otherComponent"));
-    QCOMPARE(QString::fromStdString(active->getBusReference()), QString("otherBus"));
-    QCOMPARE(QString::fromStdString(active->getIsPresent()), QString());
-    QCOMPARE(QString::fromStdString(active->getDescription()), QString());
+    QCOMPARE(active->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(active->getBusReference(), QString("otherBus"));
+    QCOMPARE(active->getIsPresent(), QString(""));
+    QCOMPARE(active->getDescription(), QString(""));
     QCOMPARE(active->getExcludePorts()->size(), 0);
     QCOMPARE(active->getVendorExtensions()->size(), 0);
 
     QCOMPARE(testConnection->getHierInterfaces()->size(), 1);
 
     QSharedPointer<HierInterface> hierarchy = testConnection->getHierInterfaces()->first();
-    QCOMPARE(QString::fromStdString(hierarchy->getBusReference()), QString("hierBusRef"));
-    QCOMPARE(QString::fromStdString(hierarchy->getIsPresent()), QString("2-1"));
-    QCOMPARE(QString::fromStdString(hierarchy->getDescription()), QString("hierDescription"));
+    QCOMPARE(hierarchy->getBusReference(), QString("hierBusRef"));
+    QCOMPARE(hierarchy->getIsPresent(), QString("2-1"));
+    QCOMPARE(hierarchy->getDescription(), QString("hierDescription"));
     QCOMPARE(hierarchy->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(hierarchy->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(hierarchy->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(testConnection->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(testConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -562,38 +562,38 @@ void tst_DesignReader::testRead2022Interconnections()
     QCOMPARE(testConnection->displayName(), QString("interconnectionDisplay"));
     QCOMPARE(testConnection->shortDescription(), QString("brief interconnect"));
     QCOMPARE(testConnection->description(), QString("interconnectionDescription"));
-    QCOMPARE(QString::fromStdString(testConnection->getIsPresent()), QString());
+    QCOMPARE(testConnection->getIsPresent(), QString());
 
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getComponentReference()), QString("startComponent"));
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getBusReference()), QString("startBus"));
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getIsPresent()), QString());
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getDescription()), QString("interfaceDescription"));
+    QCOMPARE(testConnection->getStartInterface()->getComponentReference(), QString("startComponent"));
+    QCOMPARE(testConnection->getStartInterface()->getBusReference(), QString("startBus"));
+    QCOMPARE(testConnection->getStartInterface()->getIsPresent(), QString());
+    QCOMPARE(testConnection->getStartInterface()->getDescription(), QString("interfaceDescription"));
     QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getExcludePorts()->first()), QString("testExcludePort"));
+    QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->first(), QString("testExcludePort"));
     QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getStartInterface()->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(testConnection->getActiveInterfaces()->size(), 1);
 
     QSharedPointer<ActiveInterface> active = testConnection->getActiveInterfaces()->first();
-    QCOMPARE(QString::fromStdString(active->getComponentReference()), QString("otherComponent"));
-    QCOMPARE(QString::fromStdString(active->getBusReference()), QString("otherBus"));
-    QCOMPARE(QString::fromStdString(active->getIsPresent()), QString());
-    QCOMPARE(QString::fromStdString(active->getDescription()), QString());
+    QCOMPARE(active->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(active->getBusReference(), QString("otherBus"));
+    QCOMPARE(active->getIsPresent(), QString());
+    QCOMPARE(active->getDescription(), QString(""));
     QCOMPARE(active->getExcludePorts()->size(), 0);
     QCOMPARE(active->getVendorExtensions()->size(), 0);
 
     QCOMPARE(testConnection->getHierInterfaces()->size(), 1);
 
     QSharedPointer<HierInterface> hierarchy = testConnection->getHierInterfaces()->first();
-    QCOMPARE(QString::fromStdString(hierarchy->getBusReference()), QString("hierBusRef"));
-    QCOMPARE(QString::fromStdString(hierarchy->getIsPresent()), QString());
-    QCOMPARE(QString::fromStdString(hierarchy->getDescription()), QString("hierDescription"));
+    QCOMPARE(hierarchy->getBusReference(), QString("hierBusRef"));
+    QCOMPARE(hierarchy->getIsPresent(), QString());
+    QCOMPARE(hierarchy->getDescription(), QString("hierDescription"));
     QCOMPARE(hierarchy->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(hierarchy->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(hierarchy->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(testConnection->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(testConnection->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(testConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
 
 }
 
@@ -641,14 +641,14 @@ void tst_DesignReader::testReadInterconnectionExtensions()
     QSharedPointer<Interconnection> interconnection = testDesign->getInterconnections()->first();
     QCOMPARE(interconnection->name(), QString("testActiveHier"));
 
-    QCOMPARE(QString::fromStdString(interconnection->getStartInterface()->getComponentReference()), QString("componentRef"));
-    QCOMPARE(QString::fromStdString(interconnection->getStartInterface()->getBusReference()), QString("busRef"));
+    QCOMPARE(interconnection->getStartInterface()->getComponentReference(), QString("componentRef"));
+    QCOMPARE(interconnection->getStartInterface()->getBusReference(), QString("busRef"));
     QCOMPARE(interconnection->isOffPage(), true);
 
     QCOMPARE(interconnection->getActiveInterfaces()->size(), 0);
 
     QCOMPARE(interconnection->getHierInterfaces()->size(), 1);
-    QCOMPARE(QString::fromStdString(interconnection->getHierInterfaces()->first()->getBusReference()), QString("hierBusRef"));
+    QCOMPARE(interconnection->getHierInterfaces()->first()->getBusReference(), QString("hierBusRef"));
 
     QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().size(), 2);
     QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().first().x(), qreal(1));
@@ -710,28 +710,28 @@ void tst_DesignReader::testReadMonitorInterconnections()
     QCOMPARE(monitorConnection->name(), QString("monitorInterconnection"));
     QCOMPARE(monitorConnection->displayName(), QString("monitorDisplay"));
     QCOMPARE(monitorConnection->description(), QString("monitorDescription"));
-    QCOMPARE(QString::fromStdString(monitorConnection->getIsPresent()), QString("2-1"));
+    QCOMPARE(monitorConnection->getIsPresent(), QString("2-1"));
 
     QSharedPointer<MonitorInterface> monitoredActive = monitorConnection->getMonitoredActiveInterface();
 
-    QCOMPARE(QString::fromStdString(monitoredActive->getComponentReference()), QString("componentRef"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getBusReference()), QString("busRef"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getPath()), QString("/path/to/test"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getDescription()), QString("monitoredActiveDescription"));
+    QCOMPARE(monitoredActive->getComponentReference(), QString("componentRef"));
+    QCOMPARE(monitoredActive->getBusReference(), QString("busRef"));
+    QCOMPARE(monitoredActive->getPath(), QString("/path/to/test"));
+    QCOMPARE(monitoredActive->getDescription(), QString("monitoredActiveDescription"));
     QCOMPARE(monitoredActive->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(monitoredActive->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(monitoredActive->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(monitorConnection->getMonitorInterfaces()->size(), 1);
 
     QSharedPointer<MonitorInterface> monitorInterface = monitorConnection->getMonitorInterfaces()->first();
 
-    QCOMPARE(QString::fromStdString(monitorInterface->getComponentReference()), QString("otherComponent"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getBusReference()), QString("otherBus"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getPath()), QString("/path/to/other/test"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getDescription()), QString("monitorInterfaceDescription"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getIsPresent()), QString("1"));
+    QCOMPARE(monitorInterface->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(monitorInterface->getBusReference(), QString("otherBus"));
+    QCOMPARE(monitorInterface->getPath(), QString("/path/to/other/test"));
+    QCOMPARE(monitorInterface->getDescription(), QString("monitorInterfaceDescription"));
+    QCOMPARE(monitorInterface->getIsPresent(), QString("1"));
     QCOMPARE(monitorInterface->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(monitorInterface->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(monitorInterface->getVendorExtensions()->first()->type(), QString("testExtension"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -786,28 +786,28 @@ void tst_DesignReader::testRead2022MonitorInterconnections()
     QCOMPARE(monitorConnection->displayName(), QString("monitorDisplay"));
     QCOMPARE(monitorConnection->shortDescription(), QString("brief monitor"));
     QCOMPARE(monitorConnection->description(), QString("monitorDescription"));
-    QCOMPARE(QString::fromStdString(monitorConnection->getIsPresent()), QString());
+    QCOMPARE(monitorConnection->getIsPresent(), QString());
 
     QSharedPointer<MonitorInterface> monitoredActive = monitorConnection->getMonitoredActiveInterface();
 
-    QCOMPARE(QString::fromStdString(monitoredActive->getComponentReference()), QString("componentRef"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getBusReference()), QString("busRef"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getPath()), QString("/path/to/test"));
-    QCOMPARE(QString::fromStdString(monitoredActive->getDescription()), QString("monitoredActiveDescription"));
+    QCOMPARE(monitoredActive->getComponentReference(), QString("componentRef"));
+    QCOMPARE(monitoredActive->getBusReference(), QString("busRef"));
+    QCOMPARE(monitoredActive->getPath(), QString("/path/to/test"));
+    QCOMPARE(monitoredActive->getDescription(), QString("monitoredActiveDescription"));
     QCOMPARE(monitoredActive->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(monitoredActive->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(monitoredActive->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(monitorConnection->getMonitorInterfaces()->size(), 1);
 
     QSharedPointer<MonitorInterface> monitorInterface = monitorConnection->getMonitorInterfaces()->first();
 
-    QCOMPARE(QString::fromStdString(monitorInterface->getComponentReference()), QString("otherComponent"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getBusReference()), QString("otherBus"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getPath()), QString("/path/to/other/test"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getDescription()), QString("monitorInterfaceDescription"));
-    QCOMPARE(QString::fromStdString(monitorInterface->getIsPresent()), QString());
+    QCOMPARE(monitorInterface->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(monitorInterface->getBusReference(), QString("otherBus"));
+    QCOMPARE(monitorInterface->getPath(), QString("/path/to/other/test"));
+    QCOMPARE(monitorInterface->getDescription(), QString("monitorInterfaceDescription"));
+    QCOMPARE(monitorInterface->getIsPresent(), QString());
     QCOMPARE(monitorInterface->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(monitorInterface->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(monitorInterface->getVendorExtensions()->first()->type(), QString("testExtension"));
 }
 
 //-----------------------------------------------------------------------------
@@ -876,17 +876,17 @@ void tst_DesignReader::testReadAdHocConnections()
     QCOMPARE(adHocConnection->name(), QString("adHoc"));
     QCOMPARE(adHocConnection->displayName(), QString("displayAd"));
     QCOMPARE(adHocConnection->description(), QString("describeAd"));
-    QCOMPARE(QString::fromStdString(adHocConnection->getIsPresent()), QString("4-3"));
-    QCOMPARE(QString::fromStdString(adHocConnection->getTiedValue()), QString("default"));
+    QCOMPARE(adHocConnection->getIsPresent(), QString("4-3"));
+    QCOMPARE(adHocConnection->getTiedValue(), QString("default"));
     QCOMPARE(adHocConnection->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(adHocConnection->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(adHocConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(adHocConnection->getInternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> internalRef = adHocConnection->getInternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(internalRef->getComponentRef()), QString("componentInstance"));
-    QCOMPARE(QString::fromStdString(internalRef->getPortRef()), QString("internalPort"));
-    QCOMPARE(QString::fromStdString(internalRef->getIsPresent()), QString("1"));
+    QCOMPARE(internalRef->getComponentRef(), QString("componentInstance"));
+    QCOMPARE(internalRef->getPortRef(), QString("internalPort"));
+    QCOMPARE(internalRef->getIsPresent(), QString("1"));
 
     QSharedPointer<PartSelect> internalPartSelect = internalRef->getPartSelect();
     QCOMPARE(internalPartSelect->getLeftRange(), QString("1"));
@@ -898,8 +898,8 @@ void tst_DesignReader::testReadAdHocConnections()
     QCOMPARE(adHocConnection->getExternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> externalRef = adHocConnection->getExternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(externalRef->getPortRef()), QString("externalPort"));
-    QCOMPARE(QString::fromStdString(externalRef->getIsPresent()), QString("0"));
+    QCOMPARE(externalRef->getPortRef(), QString("externalPort"));
+    QCOMPARE(externalRef->getIsPresent(), QString("0"));
 
     QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
     QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
@@ -971,17 +971,17 @@ void tst_DesignReader::testRead2022AdHocConnections()
     QCOMPARE(adHocConnection->displayName(), QString("displayAd"));
     QCOMPARE(adHocConnection->shortDescription(), QString("shortAd"));
     QCOMPARE(adHocConnection->description(), QString("describeAd"));
-    QCOMPARE(QString::fromStdString(adHocConnection->getIsPresent()), QString());
-    QCOMPARE(QString::fromStdString(adHocConnection->getTiedValue()), QString("default"));
+    QCOMPARE(adHocConnection->getIsPresent(), QString());
+    QCOMPARE(adHocConnection->getTiedValue(), QString("default"));
     QCOMPARE(adHocConnection->getVendorExtensions()->size(), 1);
-    QCOMPARE(QString::fromStdString(adHocConnection->getVendorExtensions()->first()->type()), QString("testExtension"));
+    QCOMPARE(adHocConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
 
     QCOMPARE(adHocConnection->getInternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> internalRef = adHocConnection->getInternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(internalRef->getComponentRef()), QString("componentInstance"));
-    QCOMPARE(QString::fromStdString(internalRef->getPortRef()), QString("internalPort"));
-    QCOMPARE(QString::fromStdString(internalRef->getIsPresent()), QString());
+    QCOMPARE(internalRef->getComponentRef(), QString("componentInstance"));
+    QCOMPARE(internalRef->getPortRef(), QString("internalPort"));
+    QCOMPARE(internalRef->getIsPresent(), QString());
 
     QSharedPointer<PartSelect> internalPartSelect = internalRef->getPartSelect();
     QCOMPARE(internalPartSelect->getLeftRange(), QString("1"));
@@ -993,8 +993,8 @@ void tst_DesignReader::testRead2022AdHocConnections()
     QCOMPARE(adHocConnection->getExternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> externalRef = adHocConnection->getExternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(externalRef->getPortRef()), QString("externalPort"));
-    QCOMPARE(QString::fromStdString(externalRef->getIsPresent()), QString());
+    QCOMPARE(externalRef->getPortRef(), QString("externalPort"));
+    QCOMPARE(externalRef->getIsPresent(), QString());
 
     QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
     QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
@@ -1068,20 +1068,20 @@ void tst_DesignReader::testRead2022AdHocSubPortReferences()
     QSharedPointer<AdHocConnection> adHocConnection = testDesign->getAdHocConnections()->first();
 
     QCOMPARE(adHocConnection->name(), QString("adHoc"));
-    QCOMPARE(QString::fromStdString(adHocConnection->getTiedValue()), QString("default"));
+    QCOMPARE(adHocConnection->getTiedValue(), QString("default"));
 
     QCOMPARE(adHocConnection->getInternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> internalRef = adHocConnection->getInternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(internalRef->getComponentRef()), QString("componentInstance"));
-    QCOMPARE(QString::fromStdString(internalRef->getPortRef()), QString("internalPort"));
+    QCOMPARE(internalRef->getComponentRef(), QString("componentInstance"));
+    QCOMPARE(internalRef->getPortRef(), QString("internalPort"));
     QCOMPARE(internalRef->getSubPortReferences()->size(), 2);
 
     QSharedPointer<PortReference> subPortRef = internalRef->getSubPortReferences()->first();
-    QCOMPARE(QString::fromStdString(subPortRef->getPortRef()), QString("subPort"));
+    QCOMPARE(subPortRef->getPortRef(), QString("subPort"));
 
     QSharedPointer<PortReference> partSubPortRef = internalRef->getSubPortReferences()->last();
-    QCOMPARE(QString::fromStdString(partSubPortRef->getPortRef()), QString("partPort"));
+    QCOMPARE(partSubPortRef->getPortRef(), QString("partPort"));
 
 
     QSharedPointer<PartSelect> subPartSelect = partSubPortRef->getPartSelect();
@@ -1099,7 +1099,7 @@ void tst_DesignReader::testRead2022AdHocSubPortReferences()
     QCOMPARE(adHocConnection->getExternalPortReferences()->size(), 1);
 
     QSharedPointer<PortReference> externalRef = adHocConnection->getExternalPortReferences()->first();
-    QCOMPARE(QString::fromStdString(externalRef->getPortRef()), QString("externalPort"));
+    QCOMPARE(externalRef->getPortRef(), QString("externalPort"));
 
     QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
     QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
@@ -1264,8 +1264,8 @@ void tst_DesignReader::testReadVendorExtensions()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVendorExtensions()->last()->type()), QString("testExtension"));
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVendorExtensions()->last()->type(), QString("testExtension"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -1302,7 +1302,7 @@ void tst_DesignReader::testReadColumns()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QList<QSharedPointer<ColumnDesc> > columnList = testDesign->getColumns();
     QCOMPARE(columnList.size(), 2);
@@ -1371,11 +1371,11 @@ void tst_DesignReader::testReadSWInstances()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QSharedPointer<ComponentInstance> swInstance = testDesign->getComponentInstances()->first();
 
-    QCOMPARE(QString::fromStdString(swInstance->getInstanceName()), QString("testInstance"));
+    QCOMPARE(swInstance->getInstanceName(), QString("testInstance"));
     QCOMPARE(swInstance->displayName(), QString("testDisplay"));
     QCOMPARE(swInstance->description(), QString("testDescription"));
 
@@ -1384,18 +1384,18 @@ void tst_DesignReader::testReadSWInstances()
     QCOMPARE(swInstance->getComponentRef()->getName(), QString("refComponent"));
     QCOMPARE(swInstance->getComponentRef()->getVersion(), QString("1.1"));
 
-    QCOMPARE(QString::fromStdString(swInstance->getFileSetRef()), QString("filesetRef"));
-    QCOMPARE(QString::fromStdString(swInstance->getMapping()), QString("hwRef"));
+    QCOMPARE(swInstance->getFileSetRef(), QString("filesetRef"));
+    QCOMPARE(swInstance->getMapping(), QString("hwRef"));
     QCOMPARE(swInstance->getPosition().x(), qreal(1));
     QCOMPARE(swInstance->getPosition().y(), qreal(2));
     
     QCOMPARE(swInstance->isImported(), true);
-    QCOMPARE(QString::fromStdString(swInstance->getImportRef()), QString("importer"));
+    QCOMPARE(swInstance->getImportRef(), QString("importer"));
     
     QCOMPARE(swInstance->isDraft(), true);
     QCOMPARE(swInstance->getPropertyValues().count(), 1);
-    QCOMPARE(QString::fromStdString(swInstance->getPropertyValues().firstKey()), QString("testProperty"));
-    QCOMPARE(QString::fromStdString(swInstance->getPropertyValues().first()), QString("value"));
+    QCOMPARE(swInstance->getPropertyValues().firstKey(), QString("testProperty"));
+    QCOMPARE(swInstance->getPropertyValues().first(), QString("value"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -1429,24 +1429,24 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QSharedPointer<VendorExtension> adhocExtension = testDesign->getAdHocPortPositions();
     QSharedPointer<Kactus2Group> adhocGroup = adhocExtension.dynamicCast<Kactus2Group>();
 
-    QMap<std::string, QPointF> adHocPorts;
+    QMap<QString, QPointF> adHocPorts;
     foreach (QSharedPointer<VendorExtension> extension, adhocGroup->getByType("kactus2:adHocVisible"))
     {
         QSharedPointer<Kactus2Placeholder> portAdHocVisibility = extension.dynamicCast<Kactus2Placeholder>();
 
-        auto portName = portAdHocVisibility->getAttributeValue(std::string("portName"));
-        int positionX = std::stoi(portAdHocVisibility->getAttributeValue(std::string("x")));
-        int positionY = std::stoi(portAdHocVisibility->getAttributeValue(std::string("y")));
+        QString portName = portAdHocVisibility->getAttributeValue("portName");
+        int positionX = portAdHocVisibility->getAttributeValue("x").toInt();
+        int positionY = portAdHocVisibility->getAttributeValue("y").toInt();
 
         adHocPorts.insert(portName, QPointF(positionX, positionY));
     }
 
-    QCOMPARE(QString::fromStdString(adHocPorts.firstKey()), QString("testPort"));
+    QCOMPARE(adHocPorts.firstKey(), QString("testPort"));
     QCOMPARE(adHocPorts.first().x(), qreal(4));
     QCOMPARE(adHocPorts.first().y(), qreal(25));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
@@ -1492,7 +1492,7 @@ void tst_DesignReader::testReadApiConnections()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QList<QSharedPointer<ApiInterconnection> > apiConnections = testDesign->getApiConnections();
     QCOMPARE(apiConnections.size(), 1);
@@ -1500,10 +1500,10 @@ void tst_DesignReader::testReadApiConnections()
     QCOMPARE(apiConnections.first()->displayName(), QString("connection"));
     QCOMPARE(apiConnections.first()->description(), QString("described"));
 
-    QCOMPARE(QString::fromStdString(apiConnections.first()->getStartInterface()->getComponentReference()), QString("applicationOne"));
-    QCOMPARE(QString::fromStdString(apiConnections.first()->getStartInterface()->getBusReference()), QString("busOne"));
-    QCOMPARE(QString::fromStdString(apiConnections.first()->getActiveInterfaces()->first()->getComponentReference()), QString("applicationTwo"));
-    QCOMPARE(QString::fromStdString(apiConnections.first()->getActiveInterfaces()->first()->getBusReference()), QString("busTwo"));
+    QCOMPARE(apiConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(apiConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(apiConnections.first()->getActiveInterfaces()->first()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(apiConnections.first()->getActiveInterfaces()->first()->getBusReference(), QString("busTwo"));
 
     QCOMPARE(apiConnections.first()->isOffPage(), false);
 
@@ -1547,7 +1547,7 @@ void tst_DesignReader::testReadHierApiConnections()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QList<QSharedPointer<ApiInterconnection> > hierApiConnections = testDesign->getApiConnections();
     QCOMPARE(hierApiConnections.size(), 1);
@@ -1555,9 +1555,9 @@ void tst_DesignReader::testReadHierApiConnections()
     QCOMPARE(hierApiConnections.first()->displayName(), QString("display"));
     QCOMPARE(hierApiConnections.first()->description(), QString("description"));
 
-    QCOMPARE(QString::fromStdString(hierApiConnections.first()->getEndInterface()->getBusReference()), QString("topInterface"));
-    QCOMPARE(QString::fromStdString(hierApiConnections.first()->getStartInterface()->getComponentReference()), QString("applicationOne"));
-    QCOMPARE(QString::fromStdString(hierApiConnections.first()->getStartInterface()->getBusReference()), QString("busOne"));
+    QCOMPARE(hierApiConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
+    QCOMPARE(hierApiConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierApiConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -1600,7 +1600,7 @@ void tst_DesignReader::testReadComConnections()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QList<QSharedPointer<ComInterconnection> > comConnections = testDesign->getComConnections();
     QCOMPARE(comConnections.size(), 1);
@@ -1608,10 +1608,10 @@ void tst_DesignReader::testReadComConnections()
     QCOMPARE(comConnections.first()->displayName(), QString("display"));
     QCOMPARE(comConnections.first()->description(), QString("description"));
 
-    QCOMPARE(QString::fromStdString(comConnections.first()->getStartInterface()->getComponentReference()), QString("applicationOne"));
-    QCOMPARE(QString::fromStdString(comConnections.first()->getStartInterface()->getBusReference()), QString("busOne"));
-    QCOMPARE(QString::fromStdString(comConnections.first()->getActiveInterfaces()->first()->getComponentReference()), QString("applicationTwo"));
-    QCOMPARE(QString::fromStdString(comConnections.first()->getActiveInterfaces()->first()->getBusReference()), QString("busTwo"));
+    QCOMPARE(comConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(comConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getComponentReference(), QString("applicationTwo"));
+    QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getBusReference(), QString("busTwo"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
@@ -1651,7 +1651,7 @@ void tst_DesignReader::testReadHierComConnections()
     QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
-    QCOMPARE(QString::fromStdString(testDesign->getVersion()), QString("3.0.0"));
+    QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
 
     QList<QSharedPointer<ComInterconnection> > hierComConnections = testDesign->getComConnections();
     QCOMPARE(hierComConnections.size(), 1);
@@ -1659,9 +1659,9 @@ void tst_DesignReader::testReadHierComConnections()
     QCOMPARE(hierComConnections.first()->displayName(), QString("display"));
     QCOMPARE(hierComConnections.first()->description(), QString("description"));
 
-    QCOMPARE(QString::fromStdString(hierComConnections.first()->getEndInterface()->getBusReference()), QString("topInterface"));
-    QCOMPARE(QString::fromStdString(hierComConnections.first()->getStartInterface()->getComponentReference()), QString("applicationOne"));
-    QCOMPARE(QString::fromStdString(hierComConnections.first()->getStartInterface()->getBusReference()), QString("busOne"));
+    QCOMPARE(hierComConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
+    QCOMPARE(hierComConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
+    QCOMPARE(hierComConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
     QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 

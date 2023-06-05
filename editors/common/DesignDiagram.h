@@ -104,7 +104,7 @@ public:
     virtual void detach(AdHocVisibilityEditor* editor);
 
         
-    std::string adHocIdentifier() const override;
+    virtual QString adHocIdentifier() const;
 
     /*!
      *  Adds an instance name to the list of used instance names.
@@ -242,7 +242,7 @@ public:
      *
      *      @param [in] baseName The base name for the instance.
      */
-     std::string createInstanceName(std::string const& baseName);
+    QString createInstanceName(QString const& baseName);
 
     /*!
      *  Get the currently active top component view.

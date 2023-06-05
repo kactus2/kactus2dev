@@ -316,7 +316,7 @@ QStringList DesignDiagram::getUsedInstanceNames() const
     QStringList usedNames;
     for (QSharedPointer<ComponentInstance> instance : *getDesign()->getComponentInstances())
     {
-        usedNames.append(QString::fromStdString(instance->getInstanceName()));
+        usedNames.append(instance->getInstanceName());
     }
 
     return usedNames;
@@ -580,7 +580,7 @@ QSharedPointer<GraphicsColumnLayout> DesignDiagram::getLayout() const
 // Function: DesignDiagram::createInstanceName()
 // Forms a unique identifier for a component instance
 //-----------------------------------------------------------------------------
-std::string DesignDiagram::createInstanceName(std::string const& baseName)
+QString DesignDiagram::createInstanceName(QString const& baseName)
 {
     QSettings settings; // this reads the application settings automatically
     QString format = settings.value("Policies/InstanceNames", "").toString();
@@ -594,9 +594,8 @@ std::string DesignDiagram::createInstanceName(std::string const& baseName)
 
     QStringList instanceNames = getUsedInstanceNames();
 
-    QString base = QString::fromStdString(baseName);
     QString name = format;
-    name.replace("$ComponentName$", base);
+    name.replace("$ComponentName$", baseName);
     name.replace("$InstanceNumber$", QString::number(runningNumber));
 
     while (instanceNames.contains(name))
@@ -604,11 +603,11 @@ std::string DesignDiagram::createInstanceName(std::string const& baseName)
         runningNumber++;
 
         name = format;
-        name.replace("$ComponentName$", base);
+        name.replace("$ComponentName$", baseName);
         name.replace("$InstanceNumber$", QString::number(runningNumber));
     }
 
-    return name.toStdString();
+    return name;
 }
 
 //-----------------------------------------------------------------------------
@@ -688,9 +687,9 @@ void DesignDiagram::setProtectionForStickyNotes()
 //-----------------------------------------------------------------------------
 // Function: DesignDiagram::adHocIdentifier()
 //-----------------------------------------------------------------------------
-std::string DesignDiagram::adHocIdentifier() const
+QString DesignDiagram::adHocIdentifier() const
 {
-    return "top-level";
+    return tr("top-level");
 }
 
 //-----------------------------------------------------------------------------

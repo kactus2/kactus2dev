@@ -98,17 +98,15 @@ void SWPortDeleteCommand::redo()
     parent_->removePort(port_);
 
     QSharedPointer<ComponentInstance> containingInstance = parent_->getComponentInstance();
-    auto apiPositions = containingInstance->getApiInterfacePositions();
-    auto comPositions = containingInstance->getComInterfacePositions();
+    QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
+    QMap<QString, QPointF> comPositions = containingInstance->getComInterfacePositions();
 
-    auto name = port_->name();
-    if (apiPositions.contains(name))
-    {
-        containingInstance->removeApiInterfacePosition(name);
+    if (apiPositions.contains(port_->name()))    {
+        containingInstance->removeApiInterfacePosition(port_->name());
     }
-    if (comPositions.contains(name))
+    if (comPositions.contains(port_->name()))
     {
-        containingInstance->removeComInterfacePosition(name);
+        containingInstance->removeComInterfacePosition(port_->name());
     }
 
     // Remove the endpoint from the scene.

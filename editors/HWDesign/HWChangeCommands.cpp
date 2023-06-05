@@ -50,7 +50,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentChangeNameCommand::ComponentChangeNameCommand()
 //-----------------------------------------------------------------------------
-ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component, std::string const& newName,
+ComponentChangeNameCommand::ComponentChangeNameCommand(ComponentItem* component, QString const& newName,
     QSharedPointer<Design> design, QUndoCommand* parent):
 QUndoCommand(parent),
     component_(component),
@@ -87,26 +87,26 @@ void ComponentChangeNameCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: HWChangeCommands::renameInstanceAndConnections()
 //-----------------------------------------------------------------------------
-void ComponentChangeNameCommand::renameInstanceAndConnections(std::string const& previousName,
-    std::string const& newName)
+void ComponentChangeNameCommand::renameInstanceAndConnections(QString const& previousName,
+    QString const& newName)
 {
     QList<GraphicsConnection*> allConnections;
 
     // Update component reference in interconnections and ad-hoc connections.
-    for (ConnectionEndpoint* endpoint : component_->getEndpoints())
+    foreach (ConnectionEndpoint* endpoint, component_->getEndpoints())
     {
         allConnections.append(endpoint->getConnections()); 
         allConnections.append(endpoint->getOffPageConnector()->getConnections());
     }
 
-    for (GraphicsConnection* connection : allConnections)
+    foreach (GraphicsConnection* connection, allConnections)
     {
          connection->changeConnectionComponentReference(previousName, newName);
     }
 
     // Find all connections, including ad-hoc, that are using the default naming and should be renamed.
     QList<GraphicsConnection*> renamedConnections;
-    for (GraphicsConnection* connection : allConnections)
+    foreach (GraphicsConnection* connection, allConnections)
     {
         if (connection->hasDefaultName())
         {
@@ -115,20 +115,20 @@ void ComponentChangeNameCommand::renameInstanceAndConnections(std::string const&
     }
 
     // Rename component instance.
-    component_->setName(QString::fromStdString(newName));
+    component_->setName(newName);
 
     // Instance must be renamed before renaming the connections with automatic naming.
-    for (GraphicsConnection* connection : renamedConnections)
+    foreach (GraphicsConnection* connection, renamedConnections)
     {
         connection->setName(connection->createDefaultName());
     }
 
     // Rename ad-hoc connections defining tie-offs for the component instance.
-    for (QSharedPointer<AdHocConnection> adhocConnection : *containingDesign_->getAdHocConnections())
+    foreach (QSharedPointer<AdHocConnection> adhocConnection, *containingDesign_->getAdHocConnections())
     {
-        if (!adhocConnection->getTiedValue().empty())
+        if (!adhocConnection->getTiedValue().isEmpty())
         {
-            for (QSharedPointer<PortReference> internalReference : *adhocConnection->getInternalPortReferences())
+            foreach (QSharedPointer<PortReference> internalReference, *adhocConnection->getInternalPortReferences())
             {
                 if (internalReference->getComponentRef().compare(previousName) == 0)
                 {
@@ -145,12 +145,12 @@ void ComponentChangeNameCommand::renameInstanceAndConnections(std::string const&
 // Function: HWChangeCommands::changeAdHocConnectionDefaultName()
 //-----------------------------------------------------------------------------
 void ComponentChangeNameCommand::changeAdHocConnectionDefaultName(QSharedPointer<AdHocConnection> connection,
-    std::string const& portReference, std::string const& oldReference, std::string const& newReference)
+    QString const& portReference, QString const& oldReference, QString const& newReference)
 {
-    auto defaultName = oldReference + "_" + portReference + "_to_tiedValue";
-    if (connection->name().toStdString().compare(defaultName) == 0)
+    QString defaultName = oldReference + "_" + portReference + "_to_tiedValue";
+    if (connection->name().compare(defaultName) == 0)
     {
-        auto newName = newReference + "_" + portReference + "_to_tiedValue";
+        QString newName = newReference + "_" + portReference + "_to_tiedValue";
         connection->setName(newName);
     }
 }
@@ -230,8 +230,8 @@ void ComponentChangeDescriptionNameCommand::redo()
 //-----------------------------------------------------------------------------
 // Function: ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand()
 //-----------------------------------------------------------------------------
-ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand(std::string const& instanceName,
-    std::string const& oldActiveView, std::string const& newActiveView, ActiveViewModel* activeViewModel,
+ComponentActiveViewChangeCommand::ComponentActiveViewChangeCommand(QString const& instanceName, 
+    QString const& oldActiveView, QString const& newActiveView, ActiveViewModel* activeViewModel,
     QUndoCommand* parent):
 QUndoCommand(parent),
 instanceName_(instanceName),
@@ -366,7 +366,7 @@ void EndpointChangeCommand::redo()
 // Function: EndpointNameChangeCommand::EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
-    std::string_view newName,
+    QString const& newName,
     QList<QSharedPointer<HierInterface> > activeIntefaces,
     QUndoCommand* parent) :
     QUndoCommand(parent),
@@ -392,7 +392,7 @@ void EndpointNameChangeCommand::undo()
     QUndoCommand::undo();
 
     endpoint_->setName(oldName_);
-    for (QSharedPointer<HierInterface> interface : activeIntefaces_)
+    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
     {
         interface->setBusReference(oldName_);
     }
@@ -406,7 +406,7 @@ void EndpointNameChangeCommand::redo()
     QUndoCommand::redo();
 
     endpoint_->setName(newName_);
-    for (QSharedPointer<HierInterface> interface : activeIntefaces_)
+    foreach (QSharedPointer<HierInterface> interface, activeIntefaces_)
     {
         interface->setBusReference(newName_);
     }
@@ -416,7 +416,7 @@ void EndpointNameChangeCommand::redo()
 // Function: EndpointDescChangeCommand::EndpointDescChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoint, 
-    std::string_view newDescription,
+    QString const& newDescription,
                                                      QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),
@@ -571,7 +571,7 @@ void EndpointTransferTypeChangeCommand::redo()
 // Function: EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointPropertyValuesChangeCommand::EndpointPropertyValuesChangeCommand(ConnectionEndpoint* endpoint,
-                                                                         QMap<std::string, std::string> const & newValues,
+                                                                         QMap<QString, QString> const & newValues,
                                                                          QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),

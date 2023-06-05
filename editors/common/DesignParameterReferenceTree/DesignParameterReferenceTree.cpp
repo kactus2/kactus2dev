@@ -110,8 +110,7 @@ void DesignParameterReferenceTree::createReferencesForComponentInstances()
 void DesignParameterReferenceTree::createReferencesForSingleComponentInstance(
     QSharedPointer<ComponentInstance> instance, QTreeWidgetItem* instancesItem)
 {
-    QTreeWidgetItem* singleInstanceItem = 
-        createMiddleItem(QString::fromStdString(instance->getInstanceName()), instancesItem);
+    QTreeWidgetItem* singleInstanceItem = createMiddleItem(instance->getInstanceName(), instancesItem);
 
     if (referenceCounter_->countReferencesInConfigurableElementValues(
         getTargetID(), instance->getConfigurableElementValues()) > 0)
@@ -188,7 +187,7 @@ QMultiMap<QString, QSharedPointer<AdHocConnection> > DesignParameterReferenceTre
             connection->getExternalPortReferences()->isEmpty())
         {
             QSharedPointer<PortReference> port = connection->getInternalPortReferences()->first();
-            connectionsInOder.insert(QString::fromStdString(port->getComponentRef()), connection);
+            connectionsInOder.insert(port->getComponentRef(), connection);
         }
         else if (connection->getExternalPortReferences()->size() == 1 &&
             connection->getInternalPortReferences()->isEmpty())
@@ -207,10 +206,10 @@ void DesignParameterReferenceTree::createReferencesForSingleAdHocConnection(
     QSharedPointer<AdHocConnection> connection, QTreeWidgetItem* componentItem)
 {
     QSharedPointer<PortReference> connectedPort = getTiedValuePort(connection);
-    QTreeWidgetItem* portItem = createMiddleItem(QString::fromStdString(connectedPort->getPortRef()), componentItem);
+    QTreeWidgetItem* portItem = createMiddleItem(connectedPort->getPortRef(), componentItem);
 
     QString targetID = getTargetID();
-    QString tiedValue = QString::fromStdString(connection->getTiedValue());
+    QString tiedValue = connection->getTiedValue();
     if (!tiedValue.isEmpty() && referenceCounter_->countReferencesInExpression(targetID, tiedValue) > 0)
     {
         createItem(QStringLiteral("Tied value"), tiedValue, portItem);

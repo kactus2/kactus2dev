@@ -49,7 +49,7 @@ BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent)
 //-----------------------------------------------------------------------------
 // Function: ActiveBusInterfaceItem::updateName()
 //-----------------------------------------------------------------------------
-void ActiveBusInterfaceItem::updateName(std::string_view previousName, std::string_view newName)
+void ActiveBusInterfaceItem::updateName(QString const& previousName, QString const& newName)
 {
     if (previousName.compare(newName) != 0)
     {
@@ -183,7 +183,7 @@ void ActiveBusInterfaceItem::checkDirection()
 qreal ActiveBusInterfaceItem::getNameLength()
 {
     QFont font = getNameLabel()->font();
-    return NamelabelWidth::getTextLength(QString::fromStdString(name()), font);
+    return NamelabelWidth::getTextLength(name(), font);
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +191,7 @@ qreal ActiveBusInterfaceItem::getNameLength()
 //-----------------------------------------------------------------------------
 void ActiveBusInterfaceItem::shortenNameLabel(qreal width)
 {
-    QString nameLabelText = NamelabelWidth::setNameLabel(QString::fromStdString(name()), getNameLabel()->font(), width);
+    QString nameLabelText = NamelabelWidth::setNameLabel(name(), getNameLabel()->font(), width);
     getNameLabel()->setText(nameLabelText);
 
     setLabelPosition();

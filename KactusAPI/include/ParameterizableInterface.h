@@ -49,7 +49,7 @@ public:
      *
      *      @return Number of references to the selected ID in the selected item.
      */
-    virtual int getAllReferencesToIdInItem(std::string const& itemName, std::string const& valueID) const = 0;
+    virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const = 0;
 
     //! No copying. No assignment.
     ParameterizableInterface(const ParameterizableInterface& other) = delete;

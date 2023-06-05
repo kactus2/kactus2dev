@@ -54,9 +54,10 @@ void ComponentInstanceInterface::setComponentInstances(QSharedPointer<Design> ne
 QSharedPointer<ComponentInstance> ComponentInstanceInterface::getComponentInstance(std::string const& instanceName)
 const
 {
+    QString instanceNameQ = QString::fromStdString(instanceName);
     for (auto instance : *componentInstances_)
     {
-        if (instance->getInstanceName() == instanceName)
+        if (instance->getInstanceName() == instanceNameQ)
         {
             return instance;
         }
@@ -70,9 +71,10 @@ const
 //-----------------------------------------------------------------------------
 int ComponentInstanceInterface::getItemIndex(std::string const& itemName) const
 {
+    QString itemNameQ = QString::fromStdString(itemName);
     for (int i = 0; i < componentInstances_->size(); ++i)
     {
-        if (componentInstances_->at(i)->getInstanceName() == itemName)
+        if (componentInstances_->at(i)->getInstanceName() == itemNameQ)
         {
             return i;
         }
@@ -86,12 +88,13 @@ int ComponentInstanceInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 std::string ComponentInstanceInterface::getIndexedItemName(int const& itemIndex) const
 {
+    std::string instanceName = "";
     if (itemIndex >= 0 && itemIndex < itemCount())
     {
-        return componentInstances_->at(itemIndex)->getInstanceName();
+        instanceName = componentInstances_->at(itemIndex)->getInstanceName().toStdString();
     }
 
-    return std::string();
+    return instanceName;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,10 +110,19 @@ int ComponentInstanceInterface::itemCount() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> ComponentInstanceInterface::getItemNames() const
 {
-    std::vector<std::string> instanceNames;
-    for (auto const& instance : *componentInstances_)
+    QVector<QString> instanceNamesQ;
+    for (auto instance : *componentInstances_)
     {
-        instanceNames.push_back(instance->getInstanceName());
+        if (!instanceNamesQ.contains(instance->getInstanceName()))
+        {
+            instanceNamesQ.append(instance->getInstanceName());
+        }
+    }
+
+    std::vector<std::string> instanceNames;
+    for (auto instanceName : instanceNamesQ)
+    {
+        instanceNames.push_back(instanceName.toStdString());
     }
 
     return instanceNames;
@@ -124,7 +136,7 @@ bool ComponentInstanceInterface::setName(std::string const& currentName, std::st
     QSharedPointer<ComponentInstance> editedInstance = getComponentInstance(currentName);
     if (editedInstance && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
 
         editedInstance->setInstanceName(uniqueNewName);
 
@@ -150,7 +162,7 @@ std::string ComponentInstanceInterface::getDescription(std::string const& itemNa
         return editedInstance->description().toStdString();
     }
 
-    return std::string();
+    return std::string("");
 }
 
 //-----------------------------------------------------------------------------

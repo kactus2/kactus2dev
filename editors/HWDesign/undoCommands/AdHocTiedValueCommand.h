@@ -86,14 +86,14 @@ private:
      *
      *      @return Name of the tied value connection, <InstanceName>_<portName>_to_tiedValue
      */
-    std::string createNameForTiedValueConnection(AdHocItem* portItem) const;
+    QString createNameForTiedValueConnection(AdHocItem* portItem) const;
 
     /*!
      *  Setup the referenced port.
      *
      *      @param [in] portName    Name of the ad hoc port item.
      */
-    void setupReferencedPort(std::string const& portName);
+    void setupReferencedPort(QString const& portName);
 
     //-----------------------------------------------------------------------------
     // Data.

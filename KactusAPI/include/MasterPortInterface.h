@@ -40,14 +40,14 @@ public:
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addWirePort(std::string const& newPortName = std::string()) = 0;
+    virtual void addWirePort(std::string const& newPortName = std::string("")) = 0;
 
     /*!
      *  Add a transactional port.
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addTransactionalPort(std::string const& newPortName = std::string()) = 0;
+    virtual void addTransactionalPort(std::string const& newPortName = std::string("")) = 0;
 
     /*!
      *  Check if the selected port is a wire.

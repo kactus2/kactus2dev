@@ -80,7 +80,7 @@ bool DesignValidator::hasValidComponentInstances(QSharedPointer<Design> design) 
         return true;
     }
 
-    QVector<std::string> instanceNames;
+    QVector<QString> instanceNames;
     for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
     {
         if (instanceNames.contains(instance->getInstanceName()) ||
@@ -257,15 +257,15 @@ void DesignValidator::findErrorsInComponentInstances(QVector<QString>& errors, Q
         return;
     }
 
-    QVector<std::string> instanceNames;
-    QVector<std::string> duplicateNames;
+    QVector<QString> instanceNames;
+    QVector<QString> duplicateNames;
     for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
     {
         if (instanceNames.contains(instance->getInstanceName()) &&
             !duplicateNames.contains(instance->getInstanceName()))
         {
-            errors.append(QObject::tr("Component instance name '%1' within %2 is not unique.").arg(
-                QString::fromStdString(instance->getInstanceName()), context));
+            errors.append(QObject::tr("Component instance name '%1' within %2 is not unique.")
+                .arg(instance->getInstanceName()).arg(context));
             duplicateNames.append(instance->getInstanceName());
         }
 

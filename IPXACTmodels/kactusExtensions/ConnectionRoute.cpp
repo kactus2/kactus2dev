@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::ConnectionRoute()
 //-----------------------------------------------------------------------------
-ConnectionRoute::ConnectionRoute(std::string_view connectionName) :
+ConnectionRoute::ConnectionRoute(QString const& connectionName) :
 name_(connectionName)
 {
 
@@ -52,9 +52,9 @@ VendorExtension* ConnectionRoute::clone() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::type()
 //-----------------------------------------------------------------------------
-std::string ConnectionRoute::type() const
+QString ConnectionRoute::type() const
 {
-    return "kactus2:route";
+    return QStringLiteral("kactus2:route");
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ void ConnectionRoute::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(QStringLiteral("kactus2:route"));
     
-    writer.writeAttribute(QStringLiteral("kactus2:connRef"), QString::fromStdString(name()));
+    writer.writeAttribute(QStringLiteral("kactus2:connRef"), name());
     if (isOffpage())
     {
         writer.writeAttribute(QStringLiteral("kactus2:offPage"), QStringLiteral("true"));
@@ -87,7 +87,7 @@ void ConnectionRoute::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::setName()
 //-----------------------------------------------------------------------------
-void ConnectionRoute::setName(std::string_view name)
+void ConnectionRoute::setName(QString const& name)
 {
     name_ = name;
 }
@@ -95,7 +95,7 @@ void ConnectionRoute::setName(std::string_view name)
 //-----------------------------------------------------------------------------
 // Function: ConnectionRoute::name()
 //-----------------------------------------------------------------------------
-std::string ConnectionRoute::name() const
+QString ConnectionRoute::name() const
 {
     return name_;
 }

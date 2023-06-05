@@ -30,7 +30,7 @@
 
 namespace
 {
-    std::string const DEFAULT_NAME = "bus_interface";
+    QString const DEFAULT_NAME = QLatin1String("bus_interface");
     QString const DEFAULT_FILEGROUP = QLatin1String("default");
 };
 
@@ -398,7 +398,7 @@ bool BusInterfaceInterface::setName(std::string const& currentName, std::string 
     QSharedPointer<BusInterface> editedBus = getBusInterface(currentName);
     if (editedBus && nameHasChanged(newName, currentName))
     {
-        auto uniqueNewName = getUniqueName(newName, DEFAULT_NAME);
+        QString uniqueNewName = getUniqueName(newName, DEFAULT_NAME.toStdString());
 
         editedBus->setName(uniqueNewName);
         return true;
@@ -750,7 +750,7 @@ bool BusInterfaceInterface::setBitSteering(std::string const& busName, std::stri
 void BusInterfaceInterface::addBusInterface(int const& newBusIndex, std::string const& busName)
 {
     QSharedPointer<BusInterface> newBus(new BusInterface());
-    newBus->setName(getUniqueName(busName, DEFAULT_NAME));
+    newBus->setName(getUniqueName(busName, DEFAULT_NAME.toStdString()));
 
     busInterfaces_->insert(newBusIndex, newBus);
 }
@@ -1542,7 +1542,7 @@ std::vector<std::string> BusInterfaceInterface::pasteRows()
             for (auto copiedBus : copiedBusList)
             {
                 QSharedPointer<BusInterface> newBus(new BusInterface(*copiedBus.data()));
-                newBus->setName(getUniqueName(newBus->name().toStdString(), DEFAULT_NAME));
+                newBus->setName(getUniqueName(newBus->name().toStdString(), DEFAULT_NAME.toStdString()));
                 busInterfaces_->append(newBus);
 
                 pastedBusNames.push_back(newBus->name().toStdString());

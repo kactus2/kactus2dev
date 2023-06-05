@@ -48,28 +48,28 @@ public:
      *
      *      @param [in] name    The new connection item name.
      */
-    void setName(std::string const& name) final;
+    void setName(QString const& name) final;
 
     /*!
      *  Get the name of the connection item.
      *
      *      @return The name of the connection item.
      */
-    std::string name() const final;
+    QString name() const final;
 
     /*!
      *  Set the description for the connection item.
      *
      *      @param [in] description     The new description.
      */
-    void setDescription(std::string const& description) final;
+    void setDescription(QString const& description) final;
 
     /*!
      *  Get the description for the connection item.
      *
      *      @return The description of the connection item.
      */
-    std::string description() const final;
+    QString description() const final;
 
     /*!
      *  Get the contained interconnection.
@@ -84,7 +84,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    void changeConnectionComponentReference(std::string const& oldName, std::string const& newName) final;
+    void changeConnectionComponentReference(QString const& oldName, QString const& newName) final;
 
 private:
 

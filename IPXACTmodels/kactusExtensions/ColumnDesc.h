@@ -48,7 +48,7 @@ public:
      *
      *      @return The type of the extension.
      */
-    std::string type() const final;
+    virtual QString type() const;
 
     /*!
      *  Writes the column description to an XML stream.

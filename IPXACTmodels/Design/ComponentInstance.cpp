@@ -26,16 +26,16 @@ ComponentInstance::ComponentInstance() :
     NameGroup(),
     componentRef_(new ConfigurableVLNVReference())
 {
-    if (getUuid().empty())
+    if (getUuid().isEmpty())
     {
-        setUuid(QUuid::createUuid().toString().toStdString());
+        setUuid(QUuid::createUuid().toString());
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::ComponentInstance()
 //-----------------------------------------------------------------------------
-ComponentInstance::ComponentInstance(std::string const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef):
+ComponentInstance::ComponentInstance(QString const& instanceName, QSharedPointer<ConfigurableVLNVReference> componentRef):
     Extendable(),
     NameGroup(instanceName),
     componentRef_(componentRef)
@@ -52,9 +52,9 @@ ComponentInstance::ComponentInstance(ComponentInstance const& other) :
     isPresent_(other.isPresent_),
     componentRef_(new ConfigurableVLNVReference(*other.componentRef_))
 {
-    if (getUuid().empty())
+    if (getUuid().isEmpty())
     {
-        setUuid(QUuid::createUuid().toString().toStdString());
+        setUuid(QUuid::createUuid().toString());
     }
 
     for (auto const& link : *other.powerDomainLinks_)
@@ -76,9 +76,9 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
         isPresent_ = other.isPresent_;
         componentRef_ = other.componentRef_;
 
-        if (getUuid().empty())
+        if (getUuid().isEmpty())
         {
-            setUuid(QUuid::createUuid().toString().toStdString());
+            setUuid(QUuid::createUuid().toString());
         }
 
         powerDomainLinks_->clear();
@@ -94,7 +94,7 @@ ComponentInstance& ComponentInstance::operator=(ComponentInstance const& other)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setInstanceName()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setInstanceName(std::string const& name)
+void ComponentInstance::setInstanceName(QString const& name)
 {
     setName(name);
 }
@@ -102,9 +102,9 @@ void ComponentInstance::setInstanceName(std::string const& name)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getInstanceName()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getInstanceName() const
+QString ComponentInstance::getInstanceName() const
 {
-    return name().toStdString();
+    return name();
 }
 
 //-----------------------------------------------------------------------------
@@ -126,7 +126,7 @@ QSharedPointer<ConfigurableVLNVReference> ComponentInstance::getComponentRef() c
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getIsPresent()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getIsPresent() const
+QString ComponentInstance::getIsPresent() const
 {
     return isPresent_;
 }
@@ -134,7 +134,7 @@ std::string ComponentInstance::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setIsPresent()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setIsPresent(std::string const& newIsPresent)
+void ComponentInstance::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
@@ -170,7 +170,7 @@ QSharedPointer<QList<QSharedPointer<ComponentInstance::PowerDomainLink> > > Comp
 //-----------------------------------------------------------------------------
 void ComponentInstance::setPosition(QPointF const& pos)
 {
-    auto extension = findVendorExtension("kactus2:position").dynamicCast<Kactus2Position>();
+    auto extension = findVendorExtension(QStringLiteral("kactus2:position")).dynamicCast<Kactus2Position>();
 
     if (pos.isNull())
     {
@@ -191,19 +191,19 @@ void ComponentInstance::setPosition(QPointF const& pos)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setImportRef()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setImportRef(std::string const& nameRef)
+void ComponentInstance::setImportRef(QString const& nameRef)
 {
-    auto importExtension = findVendorExtension("kactus2:imported").dynamicCast<Kactus2Placeholder>();
+    auto importExtension = findVendorExtension(QStringLiteral("kactus2:imported")).dynamicCast<Kactus2Placeholder>();
 
-    if (!nameRef.empty())
+    if (!nameRef.isEmpty())
     {
         if (importExtension == nullptr)
         {
-            importExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:imported"));
+            importExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(QStringLiteral("kactus2:imported")));
             getVendorExtensions()->append(importExtension);
         }
 
-        importExtension->setAttribute("importRef", nameRef);
+        importExtension->setAttribute(QStringLiteral("importRef"), nameRef);
     }
     else
     {
@@ -214,20 +214,21 @@ void ComponentInstance::setImportRef(std::string const& nameRef)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setPropertyValues()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setPropertyValues(QMap<std::string, std::string> const& values)
+void ComponentInstance::setPropertyValues(QMap<QString, QString> const& values)
 {
-    auto extension = findVendorExtension("kactus2:propertyValues");
+    auto extension = findVendorExtension(QStringLiteral("kactus2:propertyValues"));
     getVendorExtensions()->removeAll(extension);
 
     if (!values.isEmpty())
     {
-        QSharedPointer<Kactus2Group> propertyValueGroup(new Kactus2Group("kactus2:propertyValues"));
+        QSharedPointer<Kactus2Group> propertyValueGroup(new Kactus2Group(QStringLiteral("kactus2:propertyValues")));
 
         for (auto it = values.cbegin(); it != values.cend(); ++it)
         {
-            QSharedPointer<Kactus2Placeholder> propertyValue(new Kactus2Placeholder("kactus2:propertyValue"));
-            propertyValue->setAttribute("name", it.key());
-            propertyValue->setAttribute("value", it.value());
+            QSharedPointer<Kactus2Placeholder> propertyValue(
+                new Kactus2Placeholder(QStringLiteral("kactus2:propertyValue")));
+            propertyValue->setAttribute(QStringLiteral("name"), it.key());
+            propertyValue->setAttribute(QStringLiteral("value"), it.value());
 
             propertyValueGroup->addToGroup(propertyValue);
         }
@@ -239,57 +240,66 @@ void ComponentInstance::setPropertyValues(QMap<std::string, std::string> const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateBusInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updateBusInterfacePosition(std::string_view name, QPointF const& pos)
+void ComponentInstance::updateBusInterfacePosition(QString const& name, QPointF const& pos)
 {
-    updatePositionsMap(name, pos, "kactus2:portPositions", "kactus2:portPosition", "busRef");
+    updatePositionsMap(name, pos, QStringLiteral("kactus2:portPositions"), QStringLiteral("kactus2:portPosition"),
+        QStringLiteral("busRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removeBusInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removeBusInterfacePosition(std::string_view interfaceName)
+void ComponentInstance::removeBusInterfacePosition(QString const& interfaceName)
 {
-    removePosition(interfaceName, "kactus2:portPositions", "kactus2:portPosition", "busRef");
+    removePosition(interfaceName, QStringLiteral("kactus2:portPositions"), QStringLiteral("kactus2:portPosition"),
+        QStringLiteral("busRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateAdHocPortPosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updateAdHocPortPosition(std::string const& name, QPointF const& pos)
+void ComponentInstance::updateAdHocPortPosition(QString const& name, QPointF const& pos)
 {
-    updatePositionsMap(name, pos, "kactus2:adHocVisibilities", "kactus2:adHocVisible", "portName");
+    updatePositionsMap(name, pos, QStringLiteral("kactus2:adHocVisibilities"), 
+        QStringLiteral("kactus2:adHocVisible"), QStringLiteral("portName"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateApiInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updateApiInterfacePosition(std::string const& name, QPointF const& pos)
+void ComponentInstance::updateApiInterfacePosition(QString const& name, QPointF const& pos)
 {
-    updatePositionsMap(name, pos, "kactus2:apiInterfacePositions", "kactus2:apiInterfacePosition", "apiRef");
+    updatePositionsMap(name, pos, QStringLiteral("kactus2:apiInterfacePositions"), 
+        QStringLiteral("kactus2:apiInterfacePosition"), QStringLiteral("apiRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removeApiInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removeApiInterfacePosition(std::string const& name)
+void ComponentInstance::removeApiInterfacePosition(QString const& name)
 {
-    removePosition(name, "kactus2:apiInterfacePositions", "kactus2:apiInterfacePosition", "apiRef");
+    removePosition(name, QStringLiteral("kactus2:apiInterfacePositions"),
+        QStringLiteral("kactus2:apiInterfacePosition"),
+        QStringLiteral("apiRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updateComInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updateComInterfacePosition(std::string const& name, QPointF const& pos)
+void ComponentInstance::updateComInterfacePosition(QString const& name, QPointF const& pos)
 {
-    updatePositionsMap(name, pos, "kactus2:comInterfacePositions", "kactus2:comInterfacePosition", "comRef");
+    updatePositionsMap(name, pos, QStringLiteral("kactus2:comInterfacePositions"), 
+        QStringLiteral("kactus2:comInterfacePosition"), QStringLiteral("comRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removeComInterfacePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removeComInterfacePosition(std::string const& name)
+void ComponentInstance::removeComInterfacePosition(QString const& name)
 {
-    removePosition(name, "kactus2:comInterfacePositions", "kactus2:comInterfacePosition", "comRef");
+    removePosition(name, QStringLiteral("kactus2:comInterfacePositions"),
+        QStringLiteral("kactus2:comInterfacePosition"),
+        QStringLiteral("comRef"));
 }
 
 //-----------------------------------------------------------------------------
@@ -297,7 +307,7 @@ void ComponentInstance::removeComInterfacePosition(std::string const& name)
 //-----------------------------------------------------------------------------
 QPointF ComponentInstance::getPosition() const
 {
-    auto position = findVendorExtension("kactus2:position").dynamicCast<Kactus2Position>();
+    auto position = findVendorExtension(QStringLiteral("kactus2:position")).dynamicCast<Kactus2Position>();
 
     if (position != nullptr)
     {
@@ -312,7 +322,7 @@ QPointF ComponentInstance::getPosition() const
 //-----------------------------------------------------------------------------
 void ComponentInstance::setImported(bool isImported)
 {
-    setPlaceholderExtension(isImported, "kactus2:imported");
+    setPlaceholderExtension(isImported, QStringLiteral("kactus2:imported"));
 }
 
 //-----------------------------------------------------------------------------
@@ -320,43 +330,43 @@ void ComponentInstance::setImported(bool isImported)
 //-----------------------------------------------------------------------------
 bool ComponentInstance::isImported() const
 {
-    return findVendorExtension("kactus2:imported") != nullptr;
+    return findVendorExtension(QStringLiteral("kactus2:imported")) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getImportRef()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getImportRef() const
+QString ComponentInstance::getImportRef() const
 {
-    auto importExtension = findVendorExtension("kactus2:imported").dynamicCast<Kactus2Placeholder>();
+    auto importExtension = findVendorExtension(QStringLiteral("kactus2:imported")).dynamicCast<Kactus2Placeholder>();
 
     if (importExtension != nullptr)
     {
-        return importExtension->getAttributeValue(std::string("importRef"));
+        return importExtension->getAttributeValue(QStringLiteral("importRef"));
     }
 
-    return std::string();
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getPropertyValues()
 //-----------------------------------------------------------------------------
-QMap<std::string, std::string> ComponentInstance::getPropertyValues() const
+QMap<QString, QString> ComponentInstance::getPropertyValues() const
 {
-    QMap<std::string, std::string> propertyValues;
+    QMap<QString, QString> propertyValues;
 
-    auto propertyGroup = findVendorExtension("kactus2:propertyValues").dynamicCast<Kactus2Group>();
+    auto propertyGroup = findVendorExtension(QStringLiteral("kactus2:propertyValues")).dynamicCast<Kactus2Group>();
 
     if (propertyGroup != nullptr)
     {
         QList<QSharedPointer<VendorExtension> > valueExtensionList =
-            propertyGroup->getByType("kactus2:propertyValue");
+            propertyGroup->getByType(QStringLiteral("kactus2:propertyValue"));
 
         for (auto const& valueExtension : valueExtensionList)
         {
             QSharedPointer<Kactus2Placeholder> propertyValue = valueExtension.dynamicCast<Kactus2Placeholder>();
-            std::string name = propertyValue->getAttributeValue(std::string("name"));
-            std::string value = propertyValue->getAttributeValue(std::string("value"));
+            QString name = propertyValue->getAttributeValue(QStringLiteral("name"));
+            QString value = propertyValue->getAttributeValue(QStringLiteral("value"));
 
             propertyValues.insert(name, value);
         }
@@ -368,50 +378,54 @@ QMap<std::string, std::string> ComponentInstance::getPropertyValues() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getBusInterfacePositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> ComponentInstance::getBusInterfacePositions() const
+QMap<QString, QPointF> ComponentInstance::getBusInterfacePositions() const
 {
-    return getPositionMap("kactus2:portPositions", "kactus2:portPosition", "busRef");
+    return getPositionMap(QStringLiteral("kactus2:portPositions"), QStringLiteral("kactus2:portPosition"), 
+        QStringLiteral("busRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getAdHocPortPositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> ComponentInstance::getAdHocPortPositions() const
+QMap<QString, QPointF> ComponentInstance::getAdHocPortPositions() const
 {
-    return getPositionMap("kactus2:adHocVisibilities", "kactus2:adHocVisible", "portName");
+    return getPositionMap(QStringLiteral("kactus2:adHocVisibilities"), QStringLiteral("kactus2:adHocVisible"),
+        QStringLiteral("portName"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getApiInterfacePositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> ComponentInstance::getApiInterfacePositions() const
+QMap<QString, QPointF> ComponentInstance::getApiInterfacePositions() const
 {
-    return getPositionMap("kactus2:apiInterfacePositions", "kactus2:apiInterfacePosition", "apiRef");
+    return getPositionMap(QStringLiteral("kactus2:apiInterfacePositions"), 
+        QStringLiteral("kactus2:apiInterfacePosition"), QStringLiteral("apiRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getComInterfacePositions()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> ComponentInstance::getComInterfacePositions() const
+QMap<QString, QPointF> ComponentInstance::getComInterfacePositions() const
 {
-    return getPositionMap("kactus2:comInterfacePositions", 
-        "kactus2:comInterfacePosition", "comRef");
+    return getPositionMap(QStringLiteral("kactus2:comInterfacePositions"), 
+        QStringLiteral("kactus2:comInterfacePosition"), QStringLiteral("comRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getPortAdHocVisibilities()
 //-----------------------------------------------------------------------------
-QMap<std::string, bool> ComponentInstance::getPortAdHocVisibilities() const
+QMap<QString, bool> ComponentInstance::getPortAdHocVisibilities() const
 {
-    QMap<std::string, bool> portAdHocVisibilities;
+    QMap<QString, bool> portAdHocVisibilities;
 
     QList<QSharedPointer<VendorExtension> > adHocPortExtensionList =
-        getGroupedExtensionsByType("kactus2:adHocVisibilities", "kactus2:adHocVisible");
+        getGroupedExtensionsByType(QStringLiteral("kactus2:adHocVisibilities"),
+        QStringLiteral("kactus2:adHocVisible"));
 
     for (auto const& extension : adHocPortExtensionList)
     {
         QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-        portAdHocVisibilities.insert(portExtension->getAttributeValue(std::string("portName")), true);
+        portAdHocVisibilities.insert(portExtension->getAttributeValue(QStringLiteral("portName")), true);
     }
 
     return portAdHocVisibilities;
@@ -420,27 +434,27 @@ QMap<std::string, bool> ComponentInstance::getPortAdHocVisibilities() const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setFileSetRef()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setFileSetRef(std::string const& fileSetName)
+void ComponentInstance::setFileSetRef(QString const& fileSetName)
 {
-    setValueExtension(fileSetName, "kactus2:fileSetRef");
+    setValueExtension(fileSetName, QStringLiteral("kactus2:fileSetRef"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setMapping()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setMapping(std::string const& hwRef)
+void ComponentInstance::setMapping(QString const& hwRef)
 {
-    auto extension = findVendorExtension("kactus2:mapping").dynamicCast<Kactus2Placeholder>();
+    auto extension = findVendorExtension(QStringLiteral("kactus2:mapping")).dynamicCast<Kactus2Placeholder>();
 
-    if (!hwRef.empty())
+    if (!hwRef.isEmpty())
     {
         if (extension == nullptr)
         {
-            extension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder("kactus2:mapping"));
+            extension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(QStringLiteral("kactus2:mapping")));
             getVendorExtensions()->append(extension);
         }
         
-        extension->setAttribute(QStringLiteral("hwRef"), QString::fromStdString(hwRef));
+        extension->setAttribute(QStringLiteral("hwRef"), hwRef);
 
     }
     else
@@ -452,43 +466,43 @@ void ComponentInstance::setMapping(std::string const& hwRef)
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getFileSetRef()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getFileSetRef() const
+QString ComponentInstance::getFileSetRef() const
 {
-    auto extension = findVendorExtension("kactus2:fileSetRef").dynamicCast<Kactus2Value>();
+    auto extension = findVendorExtension(QStringLiteral("kactus2:fileSetRef")).dynamicCast<Kactus2Value>();
     if (extension != nullptr)
     {
         return extension->value();
     }
 
-    return std::string();
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getMapping()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getMapping() const
+QString ComponentInstance::getMapping() const
 {
-    auto extension = findVendorExtension("kactus2:mapping").dynamicCast<Kactus2Placeholder>();
+    auto extension = findVendorExtension(QStringLiteral("kactus2:mapping")).dynamicCast<Kactus2Placeholder>();
     if (extension != nullptr)
     {
-        return extension->getAttributeValue(std::string("hwRef"));
+        return extension->getAttributeValue(QStringLiteral("hwRef"));
     }
 
-    return std::string();
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getUuid()
 //-----------------------------------------------------------------------------
-std::string ComponentInstance::getUuid() const
+QString ComponentInstance::getUuid() const
 {
-    auto extension = findVendorExtension("kactus2:uuid").dynamicCast<Kactus2Value>();
+    auto extension = findVendorExtension(QStringLiteral("kactus2:uuid")).dynamicCast<Kactus2Value>();
     if (extension != nullptr)
     {
         return extension->value();
     }
 
-    return std::string();
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -496,7 +510,7 @@ std::string ComponentInstance::getUuid() const
 //-----------------------------------------------------------------------------
 bool ComponentInstance::isDraft() const
 {
-    return findVendorExtension("kactus2:draft") != nullptr;
+    return findVendorExtension(QStringLiteral("kactus2:draft")) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -504,33 +518,34 @@ bool ComponentInstance::isDraft() const
 //-----------------------------------------------------------------------------
 void ComponentInstance::setDraft(bool instanceIsDraft)
 {
-    setPlaceholderExtension(instanceIsDraft, "kactus2:draft");
+    setPlaceholderExtension(instanceIsDraft, QStringLiteral("kactus2:draft"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setUuid()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setUuid(std::string const& newUuid)
+void ComponentInstance::setUuid(QString const& newUuid)
 {
-    setValueExtension(newUuid, "kactus2:uuid");
+    setValueExtension(newUuid, QStringLiteral("kactus2:uuid"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::hideAdHocPort()
 //-----------------------------------------------------------------------------
-void ComponentInstance::hideAdHocPort(std::string const& portName)
+void ComponentInstance::hideAdHocPort(QString const& portName)
 {
-    removePosition(portName, "kactus2:adHocVisibilities",
-        "kactus2:adHocVisible", "portName");
+    removePosition(portName, QStringLiteral("kactus2:adHocVisibilities"),
+        QStringLiteral("kactus2:adHocVisible"),
+        QStringLiteral("portName"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::updatePositionsMap()
 //-----------------------------------------------------------------------------
-void ComponentInstance::updatePositionsMap(std::string_view newReferenceName, QPointF const& newPosition,
-    std::string const& groupIdentifier, std::string const& itemIdentifier, std::string const& referenceIdentifier) const
+void ComponentInstance::updatePositionsMap(QString const& newReferenceName, QPointF const& newPosition,
+    QString const& groupIdentifier, QString const& itemIdentifier, QString const& referenceIdentifier) const
 {
-    if (newReferenceName.empty() || newPosition.isNull())
+    if (newReferenceName.isEmpty() || newPosition.isNull())
     {
         return;
     }
@@ -556,7 +571,7 @@ void ComponentInstance::updatePositionsMap(std::string_view newReferenceName, QP
     else
     {
         positionExtension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(itemIdentifier));
-        positionExtension->setAttribute(referenceIdentifier, std::string(newReferenceName));
+        positionExtension->setAttribute(referenceIdentifier, newReferenceName);
 
         portGroup->addToGroup(positionExtension);
     }
@@ -568,10 +583,10 @@ void ComponentInstance::updatePositionsMap(std::string_view newReferenceName, QP
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::removePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstance::removePosition(std::string_view interfaceName, std::string const& groupIdentifier,
-    std::string const& itemIdentifier, std::string const& referenceIdentifier)
+void ComponentInstance::removePosition(QString const& interfaceName, QString const& groupIdentifier, 
+    QString const& itemIdentifier, QString const& referenceIdentifier)
 {
-    if (interfaceName.empty())
+    if (interfaceName.isEmpty())
     {
         return;
     }
@@ -606,20 +621,20 @@ void ComponentInstance::removePosition(std::string_view interfaceName, std::stri
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::getPositionMap()
 //-----------------------------------------------------------------------------
-QMap<std::string, QPointF> ComponentInstance::getPositionMap(std::string const& groupIdentifier,
-    std::string const& itemIdentifier, std::string const& referenceIdentifier) const
+QMap<QString, QPointF> ComponentInstance::getPositionMap(QString const& groupIdentifier,
+    QString const& itemIdentifier, QString const& referenceIdentifier) const
 {
     QList<QSharedPointer<VendorExtension> > positionList =
         getGroupedExtensionsByType(groupIdentifier, itemIdentifier);
 
-    QMap<std::string, QPointF> portPositions;
+    QMap<QString, QPointF> portPositions;
 
     for (auto const& extension : positionList)
     {
         auto positionExtension = extension.dynamicCast<Kactus2Placeholder>();
-        auto referenceName = positionExtension->getAttributeValue(referenceIdentifier);
-        int positionX = std::stoi(positionExtension->getAttributeValue(std::string("x")));
-        int positionY = std::stoi(positionExtension->getAttributeValue(std::string("y")));
+        QString referenceName = positionExtension->getAttributeValue(referenceIdentifier);
+        int positionX = positionExtension->getAttributeValue(QStringLiteral("x")).toInt();
+        int positionY = positionExtension->getAttributeValue(QStringLiteral("y")).toInt();
 
         portPositions.insert(referenceName , QPointF(positionX, positionY));
     }
@@ -630,15 +645,15 @@ QMap<std::string, QPointF> ComponentInstance::getPositionMap(std::string const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstance::setValueExtension()
 //-----------------------------------------------------------------------------
-void ComponentInstance::setValueExtension(std::string const& value, std::string const& extensionType)
+void ComponentInstance::setValueExtension(QString const& value, QString const& extensionType)
 {
     auto extension = findVendorExtension(extensionType).dynamicCast<Kactus2Value>();
 
-    if (value.empty() == false)
+    if (value.isEmpty() == false)
     {
         if (extension == nullptr)
         {
-            extension = QSharedPointer<Kactus2Value>(new Kactus2Value(extensionType, std::string()));
+            extension = QSharedPointer<Kactus2Value>(new Kactus2Value(extensionType, QString()));
             getVendorExtensions()->append(extension);
         }
 

@@ -43,8 +43,10 @@ namespace ComponentInstanceReader
          *
          *     @param [in] instanceNode  XML description of the instance.
          *     @param [in] instance      The component instance whose power domain links are read.
+         *
+         *     @return 
          */
-         void parsePowerDomainLinks(QDomNode const& instanceNode, QSharedPointer<ComponentInstance> instance);
+         void parsePowerDomainLinks(QDomNode const& instanceNode, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse extensions of the instance.
@@ -52,7 +54,7 @@ namespace ComponentInstanceReader
          *      @param [in] componentInstanceNode   XML description of the extensions.
          *      @param [in] instance                The component instance whose extensions are read.
          */
-        void parseExtensions(const QDomNode& componentInstanceNode, QSharedPointer<ComponentInstance> instance);
+        void parseExtensions(const QDomNode& componentInstanceNode, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse the draft flag of the instance.
@@ -60,7 +62,7 @@ namespace ComponentInstanceReader
          *      @param [in] draftNode           XML description of the draft flag.
          *      @param [in] instance            The possessing component instance.
          */
-        void parseDraft(QDomElement const& draftNode, QSharedPointer<ComponentInstance> instance);
+        void parseDraft(QDomElement const& draftNode, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse the position of the instance.
@@ -68,7 +70,7 @@ namespace ComponentInstanceReader
          *      @param [in] positionElement     XML description of the instance position.
          *      @param [in] instance            The possessing component instance.
          */
-        void parsePosition(QDomElement const& positionElement, QSharedPointer<ComponentInstance> instance);
+        void parsePosition(QDomElement const& positionElement, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse import information.
@@ -76,7 +78,7 @@ namespace ComponentInstanceReader
          *      @param [in] importElement   XML description of the instance import.
          *      @param [in] instance        The possessing component instance.
          */
-        void parseImport(QDomElement const& importElement, QSharedPointer<ComponentInstance> instance);
+        void parseImport(QDomElement const& importElement, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse port positions.
@@ -85,7 +87,7 @@ namespace ComponentInstanceReader
          *      @param [in] instance                The possessing component instance.
          */
         void parsePortPositions(QDomElement const& portPositionsElement,
-            QSharedPointer<ComponentInstance> instance);
+            QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse ad-hoc visibilities.
@@ -93,7 +95,7 @@ namespace ComponentInstanceReader
          *      @param [in] adHocElement    XML description of the ad-hoc visibilities.
          *      @param [in] instance        The possessing component instance.
          */
-        void parseAdHocVisibilities(QDomElement const& adHocElement, QSharedPointer<ComponentInstance> instance);
+        void parseAdHocVisibilities(QDomElement const& adHocElement, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse api interface positions.
@@ -102,7 +104,7 @@ namespace ComponentInstanceReader
          *      @param [in] instance    The possessing component instance.
          */
         void parseApiInterfacePositions(QDomElement const& apiElement,
-            QSharedPointer<ComponentInstance> instance);
+            QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse com interface positions.
@@ -111,7 +113,7 @@ namespace ComponentInstanceReader
          *      @param [in] instance    The possessing component instance.
          */
         void parseComInterfacePositions(QDomElement const& comElement,
-            QSharedPointer<ComponentInstance> instance);
+            QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse property values.
@@ -119,7 +121,7 @@ namespace ComponentInstanceReader
          *      @param [in] propertyElement     XML description of the property values.
          *      @param [in] instance            The possessing component instance.
          */
-        void parsePropertyValues(QDomElement const& propertyElement, QSharedPointer<ComponentInstance> instance);
+        void parsePropertyValues(QDomElement const& propertyElement, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Create mapped positions.
@@ -128,8 +130,8 @@ namespace ComponentInstanceReader
          *      @param [in] itemIdentifier          Identifier for the containing XML element.
          *      @param [in] referenceIdentifier     Identifier for the reference.
          */
-        QMap<QString, QPointF> createMappedPositions(QDomElement const& positionElement, 
-            QString const& itemIdentifier, QString const& referenceIdentifier);
+        QMap<QString, QPointF> createMappedPositions(QDomElement const& positionElement, QString const& itemIdentifier,
+            QString const& referenceIdentifier) ;
 
         /*!
          *  Parse file set reference.
@@ -137,7 +139,7 @@ namespace ComponentInstanceReader
          *      @param [in] fileSetRefElement       XML description of the file set reference.
          *      @param [in] instance                The possessing component instance.
          */
-        void parseFileSetRef(QDomElement const& fileSetRefElement, QSharedPointer<ComponentInstance> instance);
+        void parseFileSetRef(QDomElement const& fileSetRefElement, QSharedPointer<ComponentInstance> instance) ;
 
         /*!
          *  Parse hardware mapping.
@@ -145,7 +147,7 @@ namespace ComponentInstanceReader
          *      @param [in] mappingElement          XML description of the mapping.
          *      @param [in] instance                The possessing component instance.
          */
-        void parseMapping(QDomElement const& mappingElement, QSharedPointer<ComponentInstance> instance);
+        void parseMapping(QDomElement const& mappingElement, QSharedPointer<ComponentInstance> instance) ;
     }
 };
 

@@ -100,7 +100,7 @@ diagram_(diagram)
 void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldComponent,
     SystemComponentItem* newComponent, QSharedPointer<Design> design)
 {
-    QVector<std::string> connectionNames;
+    QVector<QString> connectionNames;
 
     for (ConnectionEndpoint* oldEndpoint : oldComponent->getEndpoints())
     {

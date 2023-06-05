@@ -240,7 +240,7 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     else if (endpoint1->isAdHoc())
     {
         AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
-        adHocBoundsModel_.setConnection(adHoc->getAdHocConnection(), diagram->getEditProvider());
+        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 
@@ -476,7 +476,7 @@ void ConnectionEditor::setTableHeaders()
     ComponentItem* componentItem2 = connection_->endpoint2()->encompassingComp();
     if (componentItem2)
     {
-        portWidget_.horizontalHeaderItem(1)->setText(QString::fromStdString(componentItem2->name()));
+        portWidget_.horizontalHeaderItem(1)->setText(componentItem2->name());
     }
     else // if was the interface of a top component
     {
