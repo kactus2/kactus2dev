@@ -560,8 +560,8 @@ void ComponentInstance::updatePositionsMap(QString const& newReferenceName, QPoi
     QList<QSharedPointer<VendorExtension> > interfacePositions = portGroup->getByType(itemIdentifier);
 
     auto it = std::find_if(interfacePositions.begin(), interfacePositions.end(),
-        [&referenceIdentifier, &newReferenceName](auto const& positionExtension)
-        { return positionExtension.dynamicCast<Kactus2Placeholder>()->getAttributeValue(referenceIdentifier) == newReferenceName; });
+        [&referenceIdentifier, &newReferenceName](QSharedPointer<VendorExtension> positionExtension)
+    {   return positionExtension.dynamicCast<Kactus2Placeholder>()->getAttributeValue(referenceIdentifier) == newReferenceName; });
 
     QSharedPointer<Kactus2Placeholder> positionExtension;
     if (it != interfacePositions.cend())
@@ -602,7 +602,7 @@ void ComponentInstance::removePosition(QString const& interfaceName, QString con
     QList<QSharedPointer<VendorExtension> > interfacePositions = portGroup->getByType(itemIdentifier);
 
     auto it = std::find_if(interfacePositions.begin(), interfacePositions.end(),
-        [&referenceIdentifier, &interfaceName](auto const& positionExtension)
+        [&referenceIdentifier, &interfaceName](QSharedPointer<VendorExtension> positionExtension)
     { return positionExtension.dynamicCast<Kactus2Placeholder>()->getAttributeValue(referenceIdentifier) == interfaceName; });
 
     QSharedPointer<Kactus2Placeholder> positionExtension;
