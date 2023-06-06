@@ -203,9 +203,6 @@ signals:
     //! Emitted when a C source file should be opened for editing.
     void openCSource(ComponentItem* compItem);
 
-    //! Signaled when the bus with the given vlnv should be opened for editing.
-    void openBus(VLNV const& vlnv);
-
     //! Signaled when the draw mode of the diagram has changed.
     void modeChanged(DrawMode mode);
 
