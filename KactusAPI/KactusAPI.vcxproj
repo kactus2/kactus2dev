@@ -211,11 +211,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutDir>$(SolutionDir)x64\executable\</OutDir>
+    <OutDir>$(SolutionDir)executable\</OutDir>
     <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutDir>$(SolutionDir)x64\executable\</OutDir>
+    <OutDir>$(SolutionDir)executable\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -225,7 +225,7 @@
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)\$(ProjectName).dll</OutputFile>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)executable</AdditionalLibraryDirectories>
       <AdditionalDependencies>IPXACTmodels.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -238,7 +238,7 @@
     <Link>
       <OutputFile>$(OutDir)\$(ProjectName)d.dll</OutputFile>
       <AdditionalDependencies>IPXACTmodelsd.lib;%(AdditionalDependencies);$(Qt_LIBS_)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)executable</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
