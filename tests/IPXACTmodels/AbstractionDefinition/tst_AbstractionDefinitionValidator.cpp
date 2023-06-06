@@ -14,6 +14,7 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/validators/AbstractionDefinitionValidator.h>
+#include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
@@ -60,7 +61,7 @@ private slots:
     void systemWirePortHasGroup();
 
 	void wireQualifier();
-
+	void packetsOnlyInStd22();
 
 private:
 	//! The test mock for library interface.
@@ -867,6 +868,71 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
 
     QCOMPARE(errorList.size(), 0);
     QVERIFY(validator.validate(abstraction));
+    QVERIFY(validator.validate(abstraction2));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::packetsOnlyInStd22()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::packetsOnlyInStd22()
+{
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition(absVLNV, Document::Revision::Std22));
+	
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    abstraction->setBusType(testBusDefVlnv_);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setLogicalName("testPort");
+	abstraction->getLogicalPorts()->append(testPort);
+
+	QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+	testPort->setWire(wire);
+
+	QSharedPointer<Packet> testPacket(new Packet()); // no packet name
+	QSharedPointer<PacketField> testPacketField(new PacketField("testPacketField"));
+	// no packetfield in packet
+	// no width defined
+
+	testPort->getPackets()->append(testPacket);
+
+
+    VLNV absVLNV2(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name2", "version");
+    QSharedPointer<AbstractionDefinition> abstraction2(new AbstractionDefinition(absVLNV2, Document::Revision::Std14));
+
+    abstraction2->setBusType(testBusDefVlnv_);
+
+    QSharedPointer<PortAbstraction> testPort2(new PortAbstraction());
+    testPort2->setLogicalName("testPort2");
+    abstraction2->getLogicalPorts()->append(testPort2);
+
+    QSharedPointer<WireAbstraction> wire2(new WireAbstraction());
+    testPort2->setWire(wire2);
+
+    QSharedPointer<Packet> testPacket2(new Packet("testPacket2"));
+    QSharedPointer<PacketField> testPacketField2(new PacketField("testPacketField2"));
+	testPacket2->getPacketFields()->append(testPacketField2);
+
+	testPort2->getPackets()->append(testPacket2);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abstraction);
+    validator.findErrorsIn(errorList, abstraction2);
+    QCOMPARE(errorList.size(), 3);
+    QVERIFY(!validator.validate(abstraction));
+    QVERIFY(!validator.validate(abstraction2));
+
+	testPacket->getPacketFields()->append(testPacketField);
+	testPacket->setName("testPacket");
+	testPort2->getPackets()->clear();
+
+	errorList.clear();
+    validator.findErrorsIn(errorList, abstraction);
+    validator.findErrorsIn(errorList, abstraction2);
+
+    QCOMPARE(errorList.size(), 1); // still no width defined for testPacketField
+    QVERIFY(!validator.validate(abstraction));
     QVERIFY(validator.validate(abstraction2));
 }
 

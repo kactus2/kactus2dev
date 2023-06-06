@@ -29,6 +29,7 @@ class ExpressionParser;
 class LibraryInterface;
 class PortAbstraction;
 class BusDefinition;
+class Packet;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:AbstractionDefinition.
@@ -373,6 +374,12 @@ private:
      */
     void findErrorsInExtendTransactionalPort(QVector<QString>& errors, QString const& context,
         QSharedPointer<TransactionalPort> port, QSharedPointer<TransactionalPort> extendPort) const;
+
+    bool hasValidPortPackets(QSharedPointer<PortAbstraction> port, QSharedPointer<AbstractionDefinition> abstraction)
+        const;
+
+    void findErrorsInPortPackets(QVector<QString>& errors, QString const& context,
+        QSharedPointer<PortAbstraction> port, Document::Revision revision) const;
 
     //-----------------------------------------------------------------------------
     // Data.

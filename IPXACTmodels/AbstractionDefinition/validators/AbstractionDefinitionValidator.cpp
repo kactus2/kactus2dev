@@ -19,6 +19,7 @@
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
+#include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 
@@ -31,6 +32,7 @@
 #include <IPXACTmodels/common/validators/CellSpecificationValidator.h>
 #include <IPXACTmodels/common/validators/TimingConstraintValidator.h>
 #include <IPXACTmodels/common/validators/QualifierValidator.h>
+#include <IPXACTmodels/AbstractionDefinition/validators/PacketValidator.h>
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
@@ -182,17 +184,28 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		return false;
 	}
 
-	// Presence must be valid expression if defined.
-    bool isValidPresence = false;
-    expressionParser_->parseExpression(port->isPresent(), &isValidPresence);
-	if (isValidPresence == false)
-	{
-		return false;
-	}
 
-    if (abstractionDefinition->getRevision() != Document::Revision::Std22 && port->getMatch())
+    if (abstractionDefinition->getRevision() != Document::Revision::Std22)
     {
-        return false;
+        if (port->getMatch())
+        {
+            return false;
+        }
+
+        // Presence must be valid expression if defined.
+        bool isValidPresence = false;
+        expressionParser_->parseExpression(port->isPresent(), &isValidPresence);
+	    if (!isValidPresence)
+	    {
+		    return false;
+	    }
+    }
+    else
+    {
+        if (!port->isPresent().isEmpty())
+        {
+            return false;
+        }
     }
 
 	QSharedPointer<WireAbstraction> wire = port->getWire();
@@ -277,6 +290,11 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
             }
         }
 	}
+
+    if (!hasValidPortPackets(port, abstractionDefinition))
+    {
+        return false;
+    }
 
     return true;
 }
@@ -403,6 +421,8 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
             }
         }
 	}
+
+    findErrorsInPortPackets(errors, context, port, abstractionDefinition->getRevision());
 }
 
 //-----------------------------------------------------------------------------
@@ -537,6 +557,8 @@ bool AbstractionDefinitionValidator::isValidPortQualifier(QSharedPointer<Qualifi
     {
         return false;
     }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1206,6 +1228,61 @@ void AbstractionDefinitionValidator::findErrorsInExtendTransactionalPort(QVector
         if (portProtocol->getPayloadExtension() != extendPortProtocol->getPayloadExtension())
         {
             errors.append(QObject::tr("The payload extension of %1 cannot be edited").arg(context));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::hasValidPortPackets()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::hasValidPortPackets(QSharedPointer<PortAbstraction> port, 
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    auto packets = port->getPackets();
+    
+    if (packets->isEmpty())
+    {
+        return true;
+    }
+
+    if (abstraction->getRevision() != Document::Revision::Std22)
+    {
+        return false;
+    }
+
+    for (auto const& packet : *packets)
+    {
+        if (!PacketValidator::validate(packet))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInPortPackets()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInPortPackets(QVector<QString>& errors, QString const& context,
+    QSharedPointer<PortAbstraction> port, Document::Revision revision) const
+{
+    auto packets = port->getPackets();
+
+    if (packets->isEmpty())
+    {
+        return;
+    }
+
+    if (revision != Document::Revision::Std22)
+    {
+        errors.append(QObject::tr("Packets defined in %1 not supported by IP-XACT document revision.").arg(context));
+    }
+    else
+    {
+        for (auto const& packet : *packets)
+        {
+            PacketValidator::findErrorsIn(errors, packet, context);
         }
     }
 }
