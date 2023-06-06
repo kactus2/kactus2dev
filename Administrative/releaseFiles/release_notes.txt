@@ -1,6 +1,6 @@
 ===============================================================================
                             RELEASE NOTES : Kactus2
-                  Copyright (c) 2012-2022 Tampere University
+                  Copyright (c) 2012-2023 Tampere University
                  https://research.tuni.fi/system-on-chip/tools
 ===============================================================================
               + Improvement or feature added
@@ -8,6 +8,45 @@
               * Changed or Information
 ===============================================================================
 
+
+07/06/2023 3.12.0
+----------------------------------------------------
++ Updated user interface visuals
+  * Changed only one side editor to be visible on left and right
+  * Added sidebars for controlling side editor visibilities
+	* Updated side editor colors
+  * Updated library layout and filters
+  * Updated lots of icons
+  * Updated Component editor navigation tree to show modified elements
+  * Updated Design editor column and grid color
+  * Relocated script editor from side editor to the right side of main window
+  * Relocated Component preview to LibraryWidget
+  * Relocated all generator plugins under one button in toolbar
++ Improved documentation generation
+  * Added markdown format
+  * Added register files
+  * Added table of registers for each address block
+  * Added field enumerations
+  * Updated formatting for both HTML and markdown
++ Added validity check results in Component editor general page
++ Added new editor for selecting channels, abstraction types and file sets
++ Added Renode platform description generator as a plugin
+  * Added generation of platform description files (.repl) for CPUs, peripherals and memories
+  * Added configuration file for generation
+
+- Fixed port ad-hoc status after importing from CSV file
+- Fixed updating address space visualization when local memory map changes
+- Fixed Design editor crashing with ad-hoc connection referencing non-existent port as endpoint
+- Fixed library filters not being saved in settings
+- Fixed crashing on Verilog generation (community contribution)
+- Fixed generated indexing in Verilog when many interfaces map to the same physical port
+- Fixed VHDL importing failing with last port on specific conditions
+- Fixed reset mask default value in SVD generation
+
+* Separated Abstraction Definition editor from Bus Definition editor 
+* Combined ad-hoc visibility and ad-hoc tieoff editor into one
+* Changed build target directory to executable in Visual Studio
+* Removed x86 build configurations in Visual Studio
 
 17/01/2023 3.11.1
 ----------------------------------------------------
