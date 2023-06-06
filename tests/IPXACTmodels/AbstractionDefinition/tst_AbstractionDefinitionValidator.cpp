@@ -59,6 +59,9 @@ private slots:
 	void transactionalSuccessful();
     void systemWirePortHasGroup();
 
+	void wireQualifier();
+
+
 private:
 	//! The test mock for library interface.
 	LibraryMock* library_;
@@ -799,6 +802,72 @@ void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
 
     QCOMPARE(errorList.size(), 0);
     QVERIFY(validator.validate(abstraction));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::wireQualifier()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::wireQualifier()
+{
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    abstraction->setBusType(testBusDefVlnv_);
+
+	QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+	testPort->setLogicalName("testPort");
+	abstraction->getLogicalPorts()->append(testPort);
+
+	QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+	testPort->setWire(wire);
+
+	QSharedPointer<Qualifier> wireQualifier(new Qualifier());
+	wireQualifier->setType(Qualifier::Protection);
+	wireQualifier->setPowerEnableLevel("super high");
+	wire->setQualifier(wireQualifier);
+
+    VLNV absVLNV2(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name2", "version");
+    QSharedPointer<AbstractionDefinition> abstraction2(new AbstractionDefinition(absVLNV2, Document::Revision::Std22));
+
+    abstraction2->setBusType(testBusDefVlnv_);
+
+    QSharedPointer<PortAbstraction> testPort2(new PortAbstraction());
+    testPort2->setLogicalName("testPort");
+	abstraction2->getLogicalPorts()->append(testPort2);
+
+    QSharedPointer<WireAbstraction> wire2(new WireAbstraction());
+    testPort2->setWire(wire2);
+
+    QSharedPointer<Qualifier> wireQualifier2(new Qualifier());
+    wireQualifier2->setType(Qualifier::PowerEnable);
+    wireQualifier2->setPowerEnableLevel("high");
+    wireQualifier2->setPowerDomainRef("testPowerDomain"); // port qualifier must not have powerDomainRef set when in an absDef
+
+	wire2->setQualifier(wireQualifier2);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abstraction);
+	validator.findErrorsIn(errorList, abstraction2);
+
+    QCOMPARE(errorList.size(), 2);
+    QVERIFY(!validator.validate(abstraction));
+    QVERIFY(!validator.validate(abstraction2));
+
+	wireQualifier->clear();
+	wireQualifier->setType(Qualifier::Address);
+	wireQualifier->setType(Qualifier::Data);
+
+	wireQualifier2->setPowerDomainRef("");
+
+	errorList.clear();
+    validator.findErrorsIn(errorList, abstraction);
+    validator.findErrorsIn(errorList, abstraction2);
+
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abstraction));
+    QVERIFY(validator.validate(abstraction2));
 }
 
 QTEST_APPLESS_MAIN(tst_AbstractionDefinitionValidator)

@@ -131,8 +131,28 @@ private:
 	 *      @param [in] ports		Collection of ports within the abstraction definition.
 	 */
 	void findErrorsInWirePort(QVector<QString>& errors, QSharedPointer<WirePort> wirePort,
-        QString const& context, 
+        QString const& context,
         QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const;
+
+    /*!
+     *	Validates the given port qualifier.
+     *  
+     *      @param [in] qualifier	        The qualifier to check.
+     *      @param [in] documentRevision	The IP-XACT standard revision of the document being checked.
+     *		
+     * 		@return True, if port qualifier is valid, otherwise false.
+     */
+    bool isValidPortQualifier(QSharedPointer<Qualifier> qualifier, Document::Revision documentRevision) const;
+
+    /*!
+     *	Finds possible errors in a qualifier of a port and creates a list of them.
+     *  
+     *      @param [in] errors	            List of found errors.
+     *      @param [in] context	            Context to help locate the errors.
+     *      @param [in] abstraction     	The abstraction definition being checked.
+     */
+    void findErrorsInPortQualifier(QVector<QString>& errors, QSharedPointer<Qualifier> qualifier, QString const& context, 
+        QSharedPointer<AbstractionDefinition> abstraction) const;
 
 	/*!
 	 *  Validates the constraints of parameter wirePort.

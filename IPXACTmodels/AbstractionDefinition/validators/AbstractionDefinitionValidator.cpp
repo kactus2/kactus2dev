@@ -30,6 +30,7 @@
 
 #include <IPXACTmodels/common/validators/CellSpecificationValidator.h>
 #include <IPXACTmodels/common/validators/TimingConstraintValidator.h>
+#include <IPXACTmodels/common/validators/QualifierValidator.h>
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
@@ -208,6 +209,11 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
     auto ports = abstractionDefinition->getLogicalPorts();
 	if (wire)
 	{
+        if (!isValidPortQualifier(wire->getQualifier(), abstractionDefinition->getRevision()))
+        {
+            return false;
+        }
+
 		// Default value must be valid expression if defined.
         bool isValidDefaultValue = false;
         expressionParser_->parseExpression(wire->getDefaultValue(), &isValidDefaultValue);
@@ -230,7 +236,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		// System ports must be valid if exist.
         if (wire->getSystemPorts())
         {
-            foreach(QSharedPointer<WirePort> systemWirePort, *wire->getSystemPorts())
+            for (auto const& systemWirePort : *wire->getSystemPorts())
             {
                 if (!isValidWirePort(systemWirePort, ports) ||
                     !systemGroups.contains(systemWirePort->getSystemGroup()))
@@ -243,6 +249,11 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 
 	if (transactional)
 	{
+        if (!isValidPortQualifier(transactional->getQualifier(), abstractionDefinition->getRevision()))
+        {
+            return false;
+        }
+
 		// Master and slave ports must be valid if exist.
         if (transactional->getMasterPort() && !isValidTransactionalPort(transactional->getMasterPort()))
         {
@@ -257,7 +268,7 @@ bool AbstractionDefinitionValidator::isValidPortAbstraction(QSharedPointer<PortA
 		// System ports must be valid if exist.
         if (transactional->getSystemPorts())
         {
-            foreach(QSharedPointer<TransactionalPort> transPort, *transactional->getSystemPorts())
+            for (auto const& transPort : *transactional->getSystemPorts())
             {
                 if (!isValidTransactionalPort(transPort) || !systemGroups.contains(transPort->getSystemGroup()))
                 {
@@ -326,6 +337,11 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
     auto ports = abstractionDefinition->getLogicalPorts();
 	if (wire)
 	{
+        if (auto qualifier = wire->getQualifier(); qualifier->isSet())
+        {
+            findErrorsInPortQualifier(errors, qualifier, context, abstractionDefinition);
+        }
+
 		// Default value must be valid expression if defined.
         bool isValidDefaultValue = false;
         expressionParser_->parseExpression(wire->getDefaultValue(), &isValidDefaultValue);
@@ -349,7 +365,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 		// System ports must be valid if exist.
         if (wire->getSystemPorts())
         {
-            foreach(QSharedPointer<WirePort> wirePort, *wire->getSystemPorts())
+            for (auto const& wirePort : *wire->getSystemPorts())
             {
                 findErrorsInWirePort(errors, wirePort, context, ports);
                 findErrorsInSystemGroup(
@@ -360,6 +376,11 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
 
 	if (transactional)
 	{
+        if (auto qualifier = transactional->getQualifier(); qualifier->isSet())
+        {
+            findErrorsInPortQualifier(errors, qualifier, context, abstractionDefinition);
+        }
+
 		// Master and slave ports must be valid if exist.
         if (transactional->getMasterPort())
         {
@@ -374,7 +395,7 @@ void AbstractionDefinitionValidator::findErrorsInPortAbstraction(QVector<QString
         if (transactional->getSystemPorts())
         {
             // System ports must be valid if exist.
-            foreach(QSharedPointer<TransactionalPort> transPort, *transactional->getSystemPorts())
+            for (auto const& transPort : *transactional->getSystemPorts())
             {
                 findErrorsInTransactionalPort(errors, context, transPort);
                 findErrorsInSystemGroup(
@@ -489,7 +510,6 @@ void AbstractionDefinitionValidator::findErrorsInWirePort(QVector<QString>& erro
 	QSharedPointer<WirePort> wirePort, QString const& context,
 	QSharedPointer<QList<QSharedPointer<PortAbstraction> > > ports) const
 {
-
 	// Width must be valid expression if defined.
     bool isValidWidth = false;
     expressionParser_->parseExpression(wirePort->getWidth(), &isValidWidth);
@@ -500,6 +520,42 @@ void AbstractionDefinitionValidator::findErrorsInWirePort(QVector<QString>& erro
 
 	// Any existing constraints must be valid.
 	findErrorsInConstraints(errors, wirePort, context, ports);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::isValidPortQualifier()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::isValidPortQualifier(QSharedPointer<Qualifier> qualifier,
+    Document::Revision documentRevision) const
+{
+    if (!QualifierValidator::validate(qualifier, documentRevision))
+    {
+        return false;
+    }
+
+    if (qualifier->hasType(Qualifier::PowerEnable) && !qualifier->getPowerDomainRef().isEmpty())
+    {
+        return false;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInPortQualifier()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInPortQualifier(QVector<QString>& errors, 
+    QSharedPointer<Qualifier> qualifier, QString const& context, 
+    QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    QualifierValidator::findErrorsIn(errors, qualifier, context, abstraction->getRevision());
+
+    if (qualifier->hasType(Qualifier::PowerEnable))
+    {
+        if (!qualifier->getPowerDomainRef().isEmpty())
+        {
+            errors.append(QObject::tr("Illegal attribute powerDomainRef set for power enable qualifier "
+                "of %1 within abstraction definition %2.").arg(context, abstraction->getVlnv().toString()));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

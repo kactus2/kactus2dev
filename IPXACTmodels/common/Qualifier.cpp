@@ -260,31 +260,3 @@ Qualifier::Type Qualifier::stringToType(QString const& typeString)
     }
     return Type::Any;
 }
-
-//-----------------------------------------------------------------------------
-// Function: Qualifier::typeToXMLElementName()
-//-----------------------------------------------------------------------------
-QString Qualifier::typeToXMLElementName(Type type)
-{
-    auto body = QStringLiteral("ipxact:is");
-    
-    if (type == Type::ClockEnable)
-    {
-        return body + QStringLiteral("ClockEn");
-    }
-
-    if (type == Type::PowerEnable)
-    {
-        return body + QStringLiteral("PowerEn");
-    }
-
-    if (type == Type::FlowControl)
-    {
-        return body + QStringLiteral("FlowControl");
-    }
-
-    auto typeAsStr = typeToString(type);
-    typeAsStr.front() = typeAsStr.front().toUpper();
-
-    return body + typeAsStr;
-}

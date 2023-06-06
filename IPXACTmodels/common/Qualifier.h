@@ -43,6 +43,7 @@ public:
         Any
     };
 
+    //! Map of qualifier type and string pairs.
     static const QMap<Qualifier::Type, QString> QUALIFIER_TYPE_STRING;
 
     Qualifier();
@@ -51,72 +52,187 @@ public:
 
     ~Qualifier() = default;
 
+    /*!
+     *	Checks if the qualifier has been set.
+     *		
+     * 		@return True, if any qualifier type is set, otherwise false.
+     */
     bool isSet() const;
 
+    /*!
+     *	Clears any values set to the qualifier.
+     */
     void clear();
 
+    /*!
+     *	Checks if the qualifier has a specific type set.
+     *  
+     *      @param [in] type	The type to check.
+     *		
+     * 		@return True, if the type is set, otherwise false.
+     */
     bool hasType(Type type) const;
 
+    /*!
+     *	Sets the qualifier type.
+     *  
+     *      @param [in] type	The type to set.
+     */
     void setType(Type type);
 
+    /*!
+     *	Gets the qualifier types that have been set.
+     *  
+     *		
+     * 		@return A list of set types.
+     */
     QSharedPointer<QList<Type> > getTypes() const;
 
+    /*!
+     *	Sets the level attribute of the reset qualifier.
+     *  
+     *      @param [in] level	The level to set.
+     */
     void setResetLevel(QString const& level);
 
+    /*!
+     *	Gets the level attribute of the reset qualifier.
+     *
+     *      @return The reset level.
+     */
     QString getResetLevel() const;
 
+    /*!
+     *	Sets the level attribute of the clock enable qualifier.
+     *
+     *      @param [in] level	The level to set.
+     */
     void setClockEnableLevel(QString const& level);
 
+    /*!
+     *	Gets the level attribute of the clock enable qualifier.
+     *
+     *      @return The reset level.
+     */
     QString getClockEnableLevel() const;
 
+    /*!
+     *	Sets the level attribute of the power enable qualifier.
+     *
+     *      @param [in] level	The level to set.
+     */
     void setPowerEnableLevel(QString const& level);
 
+    /*!
+     *	Gets the level attribute of the power enable qualifier.
+     *
+     *      @return The reset level.
+     */
     QString getPowerEnableLevel() const;
 
+    /*!
+     *	Sets the powerDomainRef attribute of the power enable qualifier.
+     *
+     *      @param [in] reference	The power domain reference to set.
+     */
     void setPowerDomainRef(QString const& reference);
 
+    /*!
+     *	Gets the powerDomainRef attribute of the power enable qualifier.
+     *
+     *      @return The power domain reference.
+     */
     QString getPowerDomainRef() const;
 
+    /*!
+     *	Sets the flowType attribute of the flow control qualifier.
+     *
+     *      @param [in] flowType    The flow type to set.
+     */
     void setFlowType(QString const& flowType);
 
+    /*!
+     *	Gets the flowType attribute of the flow control qualifier.
+     *
+     *      @return The flow type.
+     */
     QString getFlowType() const;
 
+    /*!
+     *	Sets the user attribute of the flow control qualifier.
+     *
+     *      @param [in] userFlowType    The user defined flow type to set.
+     */
     void setUserFlowType(QString const& userFlowType);
 
+    /*!
+     *	Gets the user attribute of the flow control qualifier.
+     *
+     *      @return The user defined flow type.
+     */
     QString getUserFlowType() const;
 
+    /*!
+     *	Sets the user attribute of the user qualifier.
+     *
+     *      @param [in] userDefined     The user defined qualifier.
+     */
     void setUserDefined(QString const& userDefined);
 
+    /*!
+     *	Gets the user attribute of the user qualifier.
+     *
+     *      @return The user defined qualifier.
+     */
     QString getUserDefined() const;
-
+    
     bool operator==(Qualifier const& other);
 
     bool operator!=(Qualifier const& other);
 
+
+    /*!
+     *	Gets a qualifier type as string.
+     *  
+     *      @param [in] type	Type to convert to string.
+     *		
+     * 		@return Type as string.
+     */
     static QString typeToString(Type type);
-    
+
+    /*!
+     *	Converts a qualifier type from string to type.
+     *
+     *      @param [in] typeString	Type as a string to convert to type.
+     *
+     * 		@return Qualifier type.
+     */
     static Type stringToType(QString const& typeString);
 
-    static QString typeToXMLElementName(Type type);
-
 private:
-
+    //! The list of types assigned to this qualifier.
     QSharedPointer<QList<Type> > types_ = QSharedPointer<QList<Type> >(new QList<Type>());
 
+    //! The level attribute for qualifier Reset.
     QString resetLevel_;
 
+    //! The level attribute for qualifier Clock Enable.
     QString clockEnableLevel_;
-
+    
+    //! The level attribute for qualifier Power Enable.
     QString powerEnableLevel_;
 
+    //! The powerDomainRef attribute for qualifier Power Enable.
     QString powerDomainRef_;
 
+    //! The flowType attribute for qualifier Flow Control.
     QString flowType_;
 
+    //! The user attribute for qualifier Flow Control.
     QString userFlowType_;
 
+    //! The user attribute for qualifier User.
     QString userDefined_;
-    
 };
 
 #endif // QUALIFIER_H
