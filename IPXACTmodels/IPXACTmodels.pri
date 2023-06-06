@@ -40,6 +40,7 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
     ./common/ChoiceWriter.h \
+    ./common/NameGroupWriter.h \
     ./common/TagData.h \
     ./common/AccessTypes.h \
     ./common/Array.h \
@@ -81,7 +82,6 @@ HEADERS += ./generaldeclarations.h \
     ./common/ModuleParameterReader.h \
     ./common/ModuleParameterWriter.h \
     ./common/NameGroupReader.h \
-    ./common/NameGroupWriter.h \
     ./common/ParameterReader.h \
     ./common/ParameterWriter.h \
     ./common/ProtocolReader.h \
@@ -102,17 +102,19 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/AbstractionDefinition.h \
     ./AbstractionDefinition/Packet.h \
     ./AbstractionDefinition/PacketField.h \
+    ./AbstractionDefinition/PacketReader.h \
+    ./AbstractionDefinition/PacketWriter.h \
     ./AbstractionDefinition/PortAbstraction.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
+    ./AbstractionDefinition/TransactionalAbstractionReader.h \
     ./AbstractionDefinition/TransactionalPort.h \
     ./AbstractionDefinition/WireAbstraction.h \
+    ./AbstractionDefinition/WireAbstractionReader.h \
     ./AbstractionDefinition/WireAbstractionWriter.h \
     ./AbstractionDefinition/WirePort.h \
     ./AbstractionDefinition/AbstractionDefinitionReader.h \
     ./AbstractionDefinition/AbstractionDefinitionWriter.h \
-    ./AbstractionDefinition/TransactionalAbstractionReader.h \
     ./AbstractionDefinition/TransactionalAbstractionWriter.h \
-    ./AbstractionDefinition/WireAbstractionReader.h \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
     ./Design/ActiveInterface.h \
     ./Design/AdHocConnection.h \
@@ -268,7 +270,8 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./common/validators/QualifierValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -339,6 +342,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/Protocol.cpp \
     ./common/ProtocolReader.cpp \
     ./common/ProtocolWriter.cpp \
+    ./common/Qualifier.cpp \
     ./common/Range.cpp \
     ./common/TimingConstraint.cpp \
     ./common/TransactionalTypes.cpp \
@@ -362,6 +366,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./AbstractionDefinition/AbstractionDefinitionWriter.cpp \
     ./AbstractionDefinition/Packet.cpp \
     ./AbstractionDefinition/PacketField.cpp \
+    ./AbstractionDefinition/PacketReader.cpp \
+    ./AbstractionDefinition/PacketWriter.cpp \
     ./AbstractionDefinition/PortAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstraction.cpp \
     ./AbstractionDefinition/TransactionalAbstractionReader.cpp \
@@ -526,4 +532,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./common/validators/QualifierValidator.cpp

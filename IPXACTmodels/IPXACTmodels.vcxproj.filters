@@ -914,6 +914,18 @@
     <ClCompile Include="AbstractionDefinition\PacketField.cpp">
       <Filter>Source Files\AbstractionDefinition</Filter>
     </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketReader.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="common\Qualifier.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="AbstractionDefinition\PacketWriter.cpp">
+      <Filter>Source Files\AbstractionDefinition</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\QualifierValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1486,6 +1498,24 @@
     <ClInclude Include="AbstractionDefinition\PacketField.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractionDefinition\WireAbstractionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketReader.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\PacketWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\QualifierValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1512,13 +1542,7 @@
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionWriter.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
-    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionReader.h">
-      <Filter>Header Files\AbstractionDefinition</Filter>
-    </QtMoc>
     <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
-      <Filter>Header Files\AbstractionDefinition</Filter>
-    </QtMoc>
-    <QtMoc Include="AbstractionDefinition\WireAbstractionReader.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </QtMoc>
     <CustomBuild Include="Component\AddressBlockReader.h">
@@ -1663,9 +1687,6 @@
       <Filter>Header Files\common</Filter>
     </QtMoc>
     <QtMoc Include="common\NameGroupReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\NameGroupWriter.h">
       <Filter>Header Files\common</Filter>
     </QtMoc>
     <QtMoc Include="common\ParameterReader.h">

@@ -120,6 +120,8 @@
     <ClCompile Include="AbstractionDefinition\AbstractionDefinitionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\Packet.cpp" />
     <ClCompile Include="AbstractionDefinition\PacketField.cpp" />
+    <ClCompile Include="AbstractionDefinition\PacketReader.cpp" />
+    <ClCompile Include="AbstractionDefinition\PacketWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\PortAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionReader.cpp" />
@@ -178,6 +180,7 @@
     <ClCompile Include="common\Protocol.cpp" />
     <ClCompile Include="common\ProtocolReader.cpp" />
     <ClCompile Include="common\ProtocolWriter.cpp" />
+    <ClCompile Include="common\Qualifier.cpp" />
     <ClCompile Include="common\Range.cpp" />
     <ClCompile Include="common\TimingConstraint.cpp" />
     <ClCompile Include="common\TransactionalTypes.cpp" />
@@ -188,6 +191,7 @@
     <ClCompile Include="common\validators\NMTokenValidator.cpp" />
     <ClCompile Include="common\validators\ParameterValidator.cpp" />
     <ClCompile Include="common\validators\ProtocolValidator.cpp" />
+    <ClCompile Include="common\validators\QualifierValidator.cpp" />
     <ClCompile Include="common\validators\TimingConstraintValidator.cpp" />
     <ClCompile Include="common\validators\ValueFormatter.cpp" />
     <ClCompile Include="common\Vector.cpp" />
@@ -378,9 +382,13 @@
     <ClInclude Include="AbstractionDefinition\AbstractionDefinition.h" />
     <ClInclude Include="AbstractionDefinition\Packet.h" />
     <ClInclude Include="AbstractionDefinition\PacketField.h" />
+    <ClInclude Include="AbstractionDefinition\PacketReader.h" />
+    <ClInclude Include="AbstractionDefinition\PacketWriter.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
+    <ClInclude Include="common\NameGroupWriter.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
+    <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
@@ -438,15 +446,13 @@
     </CustomBuild>
     <ClInclude Include="AbstractionDefinition\PortAbstraction.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h" />
-    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionReader.h">
-    </QtMoc>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionReader.h" />
     <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
     </QtMoc>
     <ClInclude Include="AbstractionDefinition\TransactionalPort.h" />
     <ClInclude Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.h" />
     <ClInclude Include="AbstractionDefinition\WireAbstraction.h" />
-    <QtMoc Include="AbstractionDefinition\WireAbstractionReader.h">
-    </QtMoc>
+    <ClInclude Include="AbstractionDefinition\WireAbstractionReader.h" />
     <ClInclude Include="AbstractionDefinition\WireAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\WirePort.h" />
     <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h" />
@@ -617,8 +623,6 @@
     </QtMoc>
     <ClInclude Include="common\NameGroup.h" />
     <QtMoc Include="common\NameGroupReader.h">
-    </QtMoc>
-    <QtMoc Include="common\NameGroupWriter.h">
     </QtMoc>
     <ClInclude Include="common\NameValuePair.h" />
     <ClInclude Include="common\Parameter.h" />
