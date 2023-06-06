@@ -27,8 +27,10 @@ HEADERS += ./RenodeConfigurationManager.h \
     ../../editors/MemoryDesigner/MemoryDesignerConstants.h \
     ../../editors/MemoryDesigner/MemoryItem.h \
     ../../IPXACTmodels/utilities/ComponentSearch.h \
-    ./CPUDialog/RenodeCpuRoutesContainer.h \
     ./CPUDialog/RenodeColumns.h \
+    ./CPUDialog/RenodeConstants.h \
+    ./CPUDialog/RenodeCpuRoutesContainer.h \
+    ./CPUDialog/RenodeStructs.h \
     ./CPUDialog/RenodeUtilities.h \
     ./CPUDialog/RenodePeripheralsModel.h \
     ./CPUDialog/RenodePeripheralsEditor.h \
@@ -40,13 +42,18 @@ HEADERS += ./RenodeConfigurationManager.h \
     ./CPUDialog/RenodeFileEditor.h \
     ../common/CPUDialog/CPUEditor.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplatesDialog.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateEditor.h \
     ../common/ConfigurationManager.h \
     ../common/ConnectivityGraphUtilities.h \
     ../common/CpuRoutesContainer.h \
     ../common/PluginConfigurationManager.h \
     ../common/SingleCpuRoutesContainer.h \
-    ./CPUDialog/RenodeStructs.h \
-    ./CPUDialog/RenodeConstants.h
+    ../../common/views/EditableTableView/editabletableview.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.h \
+    ./RenodeSettingsWidget.h \
+    ./RenodeSettingsModel.h
 SOURCES += ./RenodeConfigurationManager.cpp \
     ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
@@ -79,9 +86,16 @@ SOURCES += ./RenodeConfigurationManager.cpp \
     ./CPUDialog/RenodePeripheralsEditor.cpp \
     ./CPUDialog/RenodePeripheralsModel.cpp \
     ./CPUDialog/RenodeUtilities.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateEditor.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplatesDialog.cpp \
     ../common/ConfigurationManager.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
     ../common/CpuRoutesContainer.cpp \
     ../common/PluginConfigurationManager.cpp \
-    ../common/SingleCpuRoutesContainer.cpp
+    ../common/SingleCpuRoutesContainer.cpp \
+    ../../common/views/EditableTableView/editabletableview.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.cpp \
+    ./RenodeSettingsWidget.cpp \
+    ./RenodeSettingsModel.cpp
 RESOURCES += RenodeGenerator.qrc

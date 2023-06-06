@@ -23,9 +23,10 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeFileEditor.h>
-
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+
 #include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
+#include <Plugins/RenodeGenerator/RenodeSettingsWidget.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -42,7 +43,8 @@
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::RenodeGeneratorPlugin()
 //-----------------------------------------------------------------------------
-RenodeGeneratorPlugin::RenodeGeneratorPlugin() : QObject(0)
+RenodeGeneratorPlugin::RenodeGeneratorPlugin() :
+QObject(nullptr)
 {
 
 }
@@ -60,7 +62,7 @@ QString RenodeGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString RenodeGeneratorPlugin::getVersion() const
 {
-    return "0.1";
+    return "0.3";
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +70,7 @@ QString RenodeGeneratorPlugin::getVersion() const
 //-----------------------------------------------------------------------------
 QString RenodeGeneratorPlugin::getDescription() const
 {
-    return tr("");
+    return tr("Generate Renode platform files for CPU, memory and peripherals.");
 }
 
 //-----------------------------------------------------------------------------
@@ -100,7 +102,7 @@ QString RenodeGeneratorPlugin::getLicenseHolder() const
 //-----------------------------------------------------------------------------
 QWidget* RenodeGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return new RenodeSettingsWidget(settingsModel_);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,7 +110,7 @@ QWidget* RenodeGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* RenodeGeneratorPlugin::getSettingsModel()
 {
-    return NULL;
+    return settingsModel_;
 }
 
 //-----------------------------------------------------------------------------

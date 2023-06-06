@@ -1,18 +1,19 @@
 //-----------------------------------------------------------------------------
-// File: SVDCPUDelegate.cpp
+// File: RenodePeripheralsDelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 20.05.2021
+// Date: 03.03.2023
 //
 // Description:
-// The delegate that provides editors to edit SVD CPU details.
+// The delegate that provides editors to edit Renode peripheral details.
 //-----------------------------------------------------------------------------
 
 #include "RenodePeripheralsDelegate.h"
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
 #include <common/KactusColors.h>
 
@@ -26,12 +27,17 @@
 // Function: RenodePeripheralsDelegate::RenodePeripheralsDelegate()
 //-----------------------------------------------------------------------------
 RenodePeripheralsDelegate::RenodePeripheralsDelegate(QObject* parent /* = 0 */):
-QStyledItemDelegate(parent),
-booleanModify_(false),
-booleanState_(Qt::Unchecked),
-currentFolder_("")
+QStyledItemDelegate(parent)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::setupTemplates()
+//-----------------------------------------------------------------------------
+void RenodePeripheralsDelegate::setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates)
+{
+    pythonTemplates_ = newTemplates;
 }
 
 //-----------------------------------------------------------------------------
@@ -48,9 +54,9 @@ void RenodePeripheralsDelegate::onFolderChanged(QString const& newFolder)
 QWidget* RenodePeripheralsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    if (index.column() == PeripheralColumns::CLASS)
+    if (index.column() == PeripheralColumns::CLASS || index.column() == PeripheralColumns::TEMPLATE)
     {
-        QComboBox* editor(new QComboBox(parent));
+        auto editor(new QComboBox(parent));
         return editor;
     }
     else
@@ -64,41 +70,42 @@ QWidget* RenodePeripheralsDelegate::createEditor(QWidget* parent, QStyleOptionVi
 //-----------------------------------------------------------------------------
 void RenodePeripheralsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == PeripheralColumns::CLASS)
+    if (index.column() == PeripheralColumns::CLASS || index.column() == PeripheralColumns::TEMPLATE)
     {
-        QComboBox* classEditor = dynamic_cast<QComboBox*>(editor);
-        classEditor->setEditable(true);
-        if (classEditor)
+		auto comboEditor = dynamic_cast<QComboBox*>(editor);
+        if (comboEditor)
         {
-            QString filePath = QDir::currentPath() + "/Plugins/RenodeGenerator/peripherals.txt";
-            QFile peripheralClassFile(filePath);
-            if (peripheralClassFile.open(QIODevice::ReadOnly))
+            if (index.column() == PeripheralColumns::CLASS)
             {
-                QTextStream fileStream(&peripheralClassFile);
-                while (!fileStream.atEnd())
-                {
-                    classEditor->addItem(fileStream.readLine());
-                }
+				comboEditor->setEditable(true);
+				QString filePath = QDir::currentPath() + "/Plugins/RenodeGenerator/peripherals.txt";
+				//             QFile peripheralClassFile(filePath);
+				if (QFile peripheralClassFile(filePath); peripheralClassFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream fileStream(&peripheralClassFile);
+					while (!fileStream.atEnd())
+					{
+                        comboEditor->addItem(fileStream.readLine());
+					}
 
-                peripheralClassFile.close();
+					peripheralClassFile.close();
+				}
             }
+			else if (index.column() == PeripheralColumns::TEMPLATE)
+			{
+				QStringList templateNames = { "" };
+				templateNames.append(RenodeUtilities::getTemplateNames(pythonTemplates_));
+				comboEditor->addItems(templateNames);
+			}
 
-            QString currentClass = index.data(Qt::DisplayRole).toString();
-            classEditor->setCurrentIndex(classEditor->findText(currentClass));
+            QString currentItem = index.data(Qt::DisplayRole).toString();
+			comboEditor->setCurrentIndex(comboEditor->findText(currentItem));
         }
     }
     else
     {
         QStyledItemDelegate::setEditorData(editor, index);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodePeripheralsDelegate::setModelData()
-//-----------------------------------------------------------------------------
-void RenodePeripheralsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
-{
-    QStyledItemDelegate::setModelData(editor, model, index);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,9 +124,7 @@ bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* m
     }
 
     // Make sure that the item is checkable.
-    Qt::ItemFlags flags = model->flags(index);
-
-    if (!(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
+	if (Qt::ItemFlags flags = model->flags(index); !(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
     {
         return false;
     }
@@ -132,7 +137,7 @@ bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* m
         return false;
     }
 
-    Qt::CheckState newState = static_cast<Qt::CheckState>(value.toInt());
+	auto newState = static_cast<Qt::CheckState>(value.toInt());
 
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)
@@ -204,8 +209,7 @@ void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem co
         QColor rectangleColor = KactusColors::REGULAR_FIELD;
 
         QModelIndex classIndex = index.sibling(index.row(), PeripheralColumns::CLASS);
-        QString peripheralClass = classIndex.data(Qt::DisplayRole).toString();
-        if (peripheralClass != RenodeConstants::PYTHONPERIPHERAL)
+		if (auto peripheralClass = classIndex.data(Qt::DisplayRole).toString(); peripheralClass != RenodeConstants::PYTHONPERIPHERAL)
         {
             rectangleColor = KactusColors::DISABLED_FIELD;
         }

@@ -14,13 +14,28 @@
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
 
+#include <QSharedPointer>
+
 //-----------------------------------------------------------------------------
 //! Utility structs for Renode generator.
 //-----------------------------------------------------------------------------
 namespace RenodeStructs
 {
+    //! Container for python peripheral templates.
+	struct peripheralTemplate
+	{
+        //! Path for the template file.
+		QString template_;
+
+        //! Target path for the generated peripheral file.
+		QString path_;
+
+        //! Container identifier.
+		QString identifier_;
+	};
+
     //! Container for renode peripheral data connected to a CPU.
-    struct cpuPeripherals
+    struct cpuPeripheral
     {
         //! Name.
         QString peripheralName_ = "";
@@ -42,6 +57,9 @@ namespace RenodeStructs
 
         //! Relative path to the python file for this peripheral.
         QString filePath_ = RenodeConstants::PYTHONPERIPHERALFILEPATH;
+
+        //! The used peripheral template container.
+        QSharedPointer<RenodeStructs::peripheralTemplate> template_;
     };
 
     //! Container for renode memory data connected to a CPU.

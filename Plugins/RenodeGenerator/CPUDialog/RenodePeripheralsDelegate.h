@@ -12,6 +12,8 @@
 #ifndef RENODEPERIPHERALSDELEGATE_H
 #define RENODEPERIPHERALSDELEGATE_H
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
+
 #include <QCompleter>
 #include <QStyledItemDelegate>
 
@@ -37,6 +39,13 @@ public:
      */
     virtual ~RenodePeripheralsDelegate() = default;
 
+    /*!
+     *  Setup the available peripheral templates.
+     *	
+     *      @param [in] newTemplates    List of the available peripheral templates.
+     */
+    void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
+
 	/*!
      *  Create a new editor for the given item
 	 *
@@ -56,15 +65,6 @@ public:
 	 *      @param [in] index   Model index identifying the item that's data is to be set.
      */
 	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
-
-    /*!
-     *  Save the data from the editor to the model.
-	 *
-	 *      @param [in] editor  The editor that contains the data to store.
-	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
-	 *      @param [in] index   Model index identifying the item that's data is to be saved.
-     */
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
 	/*!
 	 *  Renders an item in the given index.
@@ -110,13 +110,16 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Boolean for boolean group modify.
-    bool booleanModify_;
+    bool booleanModify_ = false;
 
     //! The new state for the boolean modify.
-    Qt::CheckState booleanState_;
+    Qt::CheckState booleanState_ = Qt::Unchecked;
 
     //! The current folder location.
-    QString currentFolder_;
+    QString currentFolder_ = QString("");
+
+    //! List of the available peripheral templates.
+    QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > pythonTemplates_;
 };
 
 #endif // RENODEPERIPHERALSDELEGATE_H

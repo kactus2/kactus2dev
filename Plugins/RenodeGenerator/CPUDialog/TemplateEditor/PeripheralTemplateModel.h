@@ -1,27 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: RenodePeripheralsModel.h
+// File: PeripheralTemplateModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
 // Date: 24.02.2023
 //
 // Description:
-// The model to manage the Renode peripheral details.
+// The model to manage the peripheral templates.
 //-----------------------------------------------------------------------------
 
-#ifndef RENODEPERIPHERALSMODEL_H
-#define RENODEPERIPHERALSMODEL_H
+#ifndef PERIPHERALTEMPLATEMODEL_H
+#define PERIPHERALTEMPLATEMODEL_H
 
-#include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
 #include <QAbstractTableModel>
-#include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! The model to manage the Renode peripheral details.
+//! The model to manage the peripheral templates.
 //-----------------------------------------------------------------------------
-class RenodePeripheralsModel : public QAbstractTableModel
+class PeripheralTemplateModel : public QAbstractTableModel
 {
 	Q_OBJECT
 
@@ -32,33 +30,26 @@ public:
 	 *
 	 *      @param [in] parent  Pointer to the owner of this model.
 	 */
-	RenodePeripheralsModel(QObject *parent);
+	PeripheralTemplateModel(QObject *parent);
 	
 	/*!
      *  The destructor.
      */
-    virtual ~RenodePeripheralsModel() = default;
+    virtual ~PeripheralTemplateModel() = default;
 
     /*!
-     *  Setup the selected peripherals.
+     *  Setup the peripheral templates.
      *
-     *      @param [in] newPeripherals  The selected peripherals.
+     *      @param [in] newTemplates	The selected peripheral templates.
      */
-    void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > newPeripherals);
-
-	/*!
-	 *  Setup the available peripheral templates.
-	 *	
-	 *      @param [in] newTemplates    List of the available peripheral templates.
-	 */
 	void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
 
 	/*!
-     *  Setup the folder path for the generated renode files.
-     *
-	 *      @param [in] newFolderPath   The new folder path.
+	 *  Get the list of peripheral templates.
+	 *
+	 *      @return List of peripheral templates.
 	 */
-	void setFolderPath(QString const& newFolderPath);
+	QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > getTemplates() const;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -120,11 +111,46 @@ public:
 	bool setData(QModelIndex const& index, const QVariant& value, int role = Qt::EditRole);
     
     //! No copying. No assignment.
-    RenodePeripheralsModel(const RenodePeripheralsModel& other) = delete;
-    RenodePeripheralsModel& operator=(const RenodePeripheralsModel& other) = delete;
+	PeripheralTemplateModel(const PeripheralTemplateModel& other) = delete;
+	PeripheralTemplateModel& operator=(const PeripheralTemplateModel& other) = delete;
+
+public slots:
+	
+	/*!
+	 *  Add a new empty row to the model
+	 */
+	void onAddRow();
+
+	/*!
+	 *  A new item should be added to given index.
+	 *
+	 *      @param [in] index   The position where new item should be added at.
+	 */
+	void onAddItem(const QModelIndex& index);
+
+	/*!
+	 *  An item should be removed from the model.
+	 *
+	 *      @param [in] index   Identifies the item that should be removed.
+	 */
+	void onRemoveItem(const QModelIndex& index);
+
+	/*!
+	 *  Remove a row from the model.
+	 *
+	 *      @param [in] row Specifies the row to remove
+	 */
+	void onRemoveRow(int row);
 
 private:
-	
+
+	/*!
+	 *  Add a new item to the selected row.
+	 *	
+	 *      @param [in] newItemRow	The selected row.
+	 */
+	void addItem(int newItemRow);
+
     /*!
      *  Gets the value for the given index.
      *
@@ -143,36 +169,12 @@ private:
      */
     QVariant tooltipForIndex(QModelIndex const& index) const;
 
-    /*!
-     *  Get the background color for the selected index.
-     *
-     *      @param [in] index   The selected index.
-     *
-     *      @return Background color of the selected index.
-     */
-    QVariant backgroundColourForIndex(QModelIndex const& index) const;
-
-    /*!
-     *  Check if the class of the indexed peripheral is python peripheral.
-     *
-     *      @param [in] index   The selected index.
-     *
-     *      @return True, if the indexed peripheral class is python peripheral, false otherwise.
-     */
-    bool classIsPythonPeripherals(QModelIndex const& index) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The peripheral details being edited.
-    QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > peripherals_;
-
-    //! List of available peripheral templates.
-	QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > pythonTemplates_;
-
-    //! The folder path for the generated renode files.
-	QString folderPath_ = QString();
+    //! The peripheral template details being edited.
+	QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates_;
 };
 
-#endif // RENODEPERIPHERALSMODEL_H
+#endif // PERIPHERALTEMPLATEMODEL_H

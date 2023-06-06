@@ -180,7 +180,7 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& p
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writePeripheral()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripherals> peripheral, QString const& tab, QString const& renodeFilePath)
+void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripheral> peripheral, QString const& tab, QString const& renodeFilePath)
 {
     QString filePath = peripheral->filePath_;
     if (filePath.last(1) != "/")

@@ -14,22 +14,23 @@
 #include <common/KactusColors.h>
 
 #include <QColor>
+#include <QDir>
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsModel::RenodePeripheralsModel()
 //-----------------------------------------------------------------------------
 RenodePeripheralsModel::RenodePeripheralsModel(QObject *parent):
-QAbstractTableModel(parent),
-peripherals_()
+QAbstractTableModel(parent)
 {
 }
 
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsModel::setupPeripherals()
 //-----------------------------------------------------------------------------
-void RenodePeripheralsModel::setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals>> newPeripherals)
+void RenodePeripheralsModel::setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral>> newPeripherals)
 {
     beginResetModel();
 
@@ -37,6 +38,22 @@ void RenodePeripheralsModel::setupPeripherals(QVector<QSharedPointer<RenodeStruc
     peripherals_ = newPeripherals;
 
     endResetModel();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsModel::setupTemplates()
+//-----------------------------------------------------------------------------
+void RenodePeripheralsModel::setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates)
+{
+    pythonTemplates_ = newTemplates;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsModel::setFolderPath()
+//-----------------------------------------------------------------------------
+void RenodePeripheralsModel::setFolderPath(QString const& newFolderPath)
+{
+    folderPath_ = newFolderPath;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,6 +137,10 @@ QVariant RenodePeripheralsModel::headerData(int section, Qt::Orientation orienta
         {
             return tr("Initable");
         }
+        else if (section == PeripheralColumns::TEMPLATE)
+        {
+            return tr("Template");
+        }
         else if (section == PeripheralColumns::FILEPATH)
         {
             return tr("File path");
@@ -151,7 +172,7 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == PeripheralColumns::NAME || index.column() == PeripheralColumns::BASEADDRESS ||
             index.column() == PeripheralColumns::SIZE ||
-            ((index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH) &&
+            ((index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH || index.column() == PeripheralColumns::TEMPLATE) &&
                 classIsPythonPeripherals(index) == false))
         {
             return KactusColors::DISABLED_TEXT;
@@ -169,7 +190,7 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == PeripheralColumns::INITABLE)
         {
-            QSharedPointer<RenodeStructs::cpuPeripherals> indexedPeripheral = peripherals_.at(index.row());
+            QSharedPointer<RenodeStructs::cpuPeripheral> indexedPeripheral = peripherals_.at(index.row());
             if (index.column() == PeripheralColumns::INITABLE && indexedPeripheral->initable_)
             {
                 return Qt::Checked;
@@ -198,7 +219,7 @@ bool RenodePeripheralsModel::setData(QModelIndex const& index, QVariant const& v
 		return false;
 	}
 
-    QSharedPointer<RenodeStructs::cpuPeripherals> indexedPeripheral = peripherals_.at(index.row());
+    QSharedPointer<RenodeStructs::cpuPeripheral> indexedPeripheral = peripherals_.at(index.row());
     if (Qt::EditRole == role)
     {
         if (index.column() == PeripheralColumns::CLASS)
@@ -208,6 +229,21 @@ bool RenodePeripheralsModel::setData(QModelIndex const& index, QVariant const& v
         else if (index.column() == PeripheralColumns::FILEPATH)
         {
             indexedPeripheral->filePath_ = value.toString();
+        }
+        else if (index.column() == PeripheralColumns::TEMPLATE)
+        {
+            auto templateName = value.toString();
+            QSharedPointer<RenodeStructs::peripheralTemplate> selectedTemplate = RenodeUtilities::getTemplateFromList(templateName, pythonTemplates_);
+
+            indexedPeripheral->template_ = selectedTemplate;
+            if (selectedTemplate)
+            {
+                QDir folderDirectory(folderPath_);
+				indexedPeripheral->filePath_ = folderDirectory.relativeFilePath(selectedTemplate->path_);
+
+				QModelIndex pathIndex = index.sibling(index.row(), PeripheralColumns::FILEPATH);
+				emit dataChanged(pathIndex, pathIndex);
+            }
         }
 
         emit dataChanged(index, index);
@@ -232,7 +268,7 @@ bool RenodePeripheralsModel::setData(QModelIndex const& index, QVariant const& v
 //-----------------------------------------------------------------------------
 QVariant RenodePeripheralsModel::valueForIndex(QModelIndex const& index) const
 {
-    QSharedPointer<RenodeStructs::cpuPeripherals> indexedPeripheral = peripherals_.at(index.row());
+    QSharedPointer<RenodeStructs::cpuPeripheral> indexedPeripheral = peripherals_.at(index.row());
 
     if (index.column() == PeripheralColumns::NAME)
     {
@@ -254,7 +290,11 @@ QVariant RenodePeripheralsModel::valueForIndex(QModelIndex const& index) const
     {
         return indexedPeripheral->filePath_;
     }
-   
+    else if (index.column() == PeripheralColumns::TEMPLATE && indexedPeripheral->template_)
+    {
+        return indexedPeripheral->template_->identifier_;
+    }
+
     return QVariant();
 }
 
@@ -283,6 +323,10 @@ QVariant RenodePeripheralsModel::tooltipForIndex(QModelIndex const& index) const
     {
         return QString("If true, the peripheral can be initialized and executes code from the isInit section\nOnly applicable for class " + RenodeConstants::PYTHONPERIPHERAL);
     }
+    else if (index.column() == PeripheralColumns::TEMPLATE)
+    {
+        return QString("Template for python peripherals.");
+    }
     else if (index.column() == PeripheralColumns::FILEPATH)
     {
         return QString("Relative path to the python file for this peripheral\nOnly applicable for class " + RenodeConstants::PYTHONPERIPHERAL);
@@ -297,12 +341,9 @@ QVariant RenodePeripheralsModel::tooltipForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant RenodePeripheralsModel::backgroundColourForIndex(QModelIndex const& index) const
 {
-    if (index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH)
+    if ((index.column() == PeripheralColumns::INITABLE || index.column() == PeripheralColumns::FILEPATH || index.column() == PeripheralColumns::TEMPLATE) && classIsPythonPeripherals(index) == false)
     {
-        if (classIsPythonPeripherals(index) == false)
-        {
-            return KactusColors::DISABLED_FIELD;
-        }
+        return KactusColors::DISABLED_FIELD;
     }
     
     return KactusColors::REGULAR_FIELD;

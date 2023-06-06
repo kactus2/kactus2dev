@@ -15,12 +15,7 @@
 // Function: RenodeCpuRoutesContainer::RenodeCpuRoutesContainer()
 //-----------------------------------------------------------------------------
 RenodeCpuRoutesContainer::RenodeCpuRoutesContainer(QSharedPointer<Cpu> renodeCpu):
-SingleCpuRoutesContainer(renodeCpu),
-peripherals_(),
-memories_(),
-className_(),
-cpuType_(),
-timeProvider_()
+SingleCpuRoutesContainer(renodeCpu)
 {
     initializeCpuData();
 }
@@ -29,12 +24,7 @@ timeProvider_()
 // Function: RenodeCpuRoutesContainer::RenodeCpuRoutesContainer()
 //-----------------------------------------------------------------------------
 RenodeCpuRoutesContainer::RenodeCpuRoutesContainer(const SingleCpuRoutesContainer& other) :
-SingleCpuRoutesContainer(other),
-peripherals_(),
-memories_(),
-className_(),
-cpuType_(),
-timeProvider_()
+SingleCpuRoutesContainer(other)
 {
     initializeCpuData();
 }
@@ -52,7 +42,7 @@ void RenodeCpuRoutesContainer::initializeCpuData()
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuRoutesContainer::setPeripherals()
 //-----------------------------------------------------------------------------
-void RenodeCpuRoutesContainer::setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals)
+void RenodeCpuRoutesContainer::setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > newPeripherals)
 {
     peripherals_ = newPeripherals;
 }
@@ -60,7 +50,7 @@ void RenodeCpuRoutesContainer::setPeripherals(QVector<QSharedPointer<RenodeStruc
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuRoutesContainer::getPeripherals()
 //-----------------------------------------------------------------------------
-QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > RenodeCpuRoutesContainer::getPeripherals() const
+QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > RenodeCpuRoutesContainer::getPeripherals() const
 {
     return peripherals_;
 }

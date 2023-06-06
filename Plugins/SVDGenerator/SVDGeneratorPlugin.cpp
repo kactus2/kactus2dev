@@ -95,7 +95,7 @@ QString SVDGeneratorPlugin::getLicenseHolder() const
 //-----------------------------------------------------------------------------
 QWidget* SVDGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ QWidget* SVDGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* SVDGeneratorPlugin::getSettingsModel()
 {
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

@@ -71,13 +71,6 @@ public:
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
     /*!
-     *  Setup the folder path.
-     *
-     *      @param [in] newFolderPath   The new folder path.
-     */
-    virtual void setupFolderPath(QString const& newFolderPath) override final;
-
-    /*!
      *  Get the name of the currently active CPU.
      *
      *      @return Name of the currently active CPU.
@@ -87,6 +80,15 @@ public:
     //! No copying. No assignment.
     RenodeCpuEditor(const RenodeCpuEditor& other) = delete;
     RenodeCpuEditor& operator=(const RenodeCpuEditor& other) = delete;
+
+public slots:
+
+	/*!
+	 *  Setup the selected folder path.
+	 *	
+	 *      @param [in] newFolderPath   The new folder path.
+	 */
+	virtual void setupFolderPath(QString const& newFolderPath) override final;
 
 signals:
 
@@ -152,11 +154,11 @@ private:
     /*!
      *  Get the CPU container for the selected CPU.
      *
-     *      @param [in] cpuName     Name of the selected CPU.
+     *      @param [in] cpuText     Identifier of the selected CPU.
      *
      *      @return CPU container for the selected CPU.
      */
-    QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuName) const;
+    QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuText) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -169,7 +171,7 @@ private:
     QVector<QSharedPointer<RenodeCpuRoutesContainer> > availableCpuContainers_;
 
     //! The selected CPU (work in progress, should be multiple cpus).
-    QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_;
+    QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_ = nullptr;
 
     //! Editor for peripherals.
     RenodePeripheralsEditor* peripheralEditor_;

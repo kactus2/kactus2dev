@@ -27,6 +27,7 @@ namespace PeripheralColumns
         SIZE,
         CLASS,
         INITABLE,
+        TEMPLATE,
         FILEPATH,
         COLUMN_COUNT
     };
@@ -47,6 +48,21 @@ namespace MemoryColumns
         COLUMN_COUNT
     };
 
+};
+
+//-----------------------------------------------------------------------------
+//! Columns for Renode peripheral templates.
+//-----------------------------------------------------------------------------
+namespace PeripheralTemplateColumns
+{
+    //! The columns in the peripheral template editor.
+    enum columns
+    {
+        NAME = 0,
+		TEMPLATE,
+        PATH,
+        COLUMN_COUNT
+    };
 };
 
 #endif // RENODECOLUMNS_H

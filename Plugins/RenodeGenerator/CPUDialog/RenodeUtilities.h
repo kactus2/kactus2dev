@@ -13,6 +13,7 @@
 #define RENODEUTILITIES_H
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -41,6 +42,25 @@ namespace RenodeUtilities
         LibraryInterface* library,
         QSharedPointer<Component> component,
         QString const& viewName);
+
+    /*!
+     *  Get the available peripheral template names.
+     *	
+     *      @param [in] templates   List of available peripheral templates.
+     *
+     *      @return List of peripheral template names.
+     */
+    QStringList getTemplateNames(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates);
+
+    /*!
+     *  Get the selected peripheral template from the selected list.
+     *	
+     *      @param [in] templateName    Name of the selected peripheral template.
+     *      @param [in] templates       List of available peripheral templates.
+     *
+     *      @return The selected peripheral template.
+     */
+    QSharedPointer<RenodeStructs::peripheralTemplate> getTemplateFromList(QString const& templateName, QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates);
 };
 
 #endif //RENODEUTILITIES_H

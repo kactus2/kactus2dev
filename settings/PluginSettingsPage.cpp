@@ -301,20 +301,19 @@ void PluginSettingsPage::setupLayout()
     pluginDirSelector_.setMinimumHeight(120);
     pluginDirSelector_.setMinimumWidth(240);
 
-    infoStack_.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-
-    QGroupBox* infoGroup = new QGroupBox(tr("Plugin general information"), this);
-
-    QVBoxLayout* infoLayout = new QVBoxLayout(infoGroup);
+	auto infoLayout = new QVBoxLayout();
     infoLayout->addWidget(&infoStack_);
 
+	auto infoGroup = new QGroupBox(tr("Plugin general information"), this);
+    infoGroup->setLayout(infoLayout);
+    infoGroup->setFlat(true);
 
-    QGridLayout* layout = new QGridLayout(this);
+    auto layout = new QGridLayout(this);
     layout->addWidget(new QLabel(tr("Plugin directories:"), this), 0, 0, 1, 1);
     layout->addWidget(new QLabel(tr("Available plugins:"), this), 0, 1, 1, 1);
     layout->addWidget(&pluginDirSelector_, 1, 0, 1, 1);
     layout->addWidget(&pluginsTree_, 1, 1, 1, 1);
     layout->addWidget(infoGroup, 2, 0, 1, 2);
-    layout->setColumnStretch(0, 1);
-    layout->setColumnStretch(1, 1);
+
+    layout->setRowStretch(1, 2);
 }

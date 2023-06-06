@@ -25,6 +25,7 @@
 #include <QDir>
 #include <QFormLayout>
 #include <QLabel>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::RenodeCpuEditor()
@@ -32,8 +33,6 @@
 RenodeCpuEditor::RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent /* = 0 */):
 CPUEditor(parent),
 utility_(utility),
-availableCpuContainers_(),
-renodeCPU_(),
 peripheralEditor_(new RenodePeripheralsEditor(this)),
 memoryEditor_(new RenodeMemoriesEditor(this)),
 cpuSelector_(new QComboBox(this)),
@@ -46,15 +45,15 @@ configurationObject_(configurationObject)
 
     cpuClassCombo_->setEditable(true);
 
-    QFormLayout* cpuLayout(new QFormLayout());
+    auto cpuLayout(new QFormLayout());
     cpuLayout->addRow("CPU", cpuSelector_);
     cpuLayout->addRow("Class", cpuClassCombo_);
     cpuLayout->addRow("Architecture", cpuTypeEditor_);
     cpuLayout->addRow("Time provider", cpuTimeProviderEditor_);
 
-    QLabel* cpuDetailsLabel = new QLabel("CPU details");
-    QLabel* memoriesLabel = new QLabel("Memory");
-    QLabel* peripheralsLabel = new QLabel("Peripherals");
+    auto cpuDetailsLabel = new QLabel("CPU details");
+    auto memoriesLabel = new QLabel("Memory");
+    auto peripheralsLabel = new QLabel("Peripherals");
 
     QFont summaryFont = memoriesLabel->font();
     summaryFont.setBold(true);
@@ -63,7 +62,7 @@ configurationObject_(configurationObject)
     memoriesLabel->setFont(summaryFont);
     peripheralsLabel->setFont(summaryFont);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(cpuDetailsLabel, 0, Qt::AlignCenter);
     layout->addLayout(cpuLayout, 0);
     layout->addWidget(memoriesLabel, 0, Qt::AlignCenter);
@@ -111,11 +110,11 @@ void RenodeCpuEditor::onHandleCpuChange(QString const& newCPU)
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::getContainerForCpu()
 //-----------------------------------------------------------------------------
-QSharedPointer<RenodeCpuRoutesContainer> RenodeCpuEditor::getContainerForCpu(QString const& cpuName) const
+QSharedPointer<RenodeCpuRoutesContainer> RenodeCpuEditor::getContainerForCpu(QString const& cpuText) const
 {
     for (auto container : availableCpuContainers_)
     {
-        if (container->getCpu()->name() == cpuName)
+        if (container->getFileID() == cpuText)
         {
             return container;
         }
@@ -183,19 +182,15 @@ void RenodeCpuEditor::setupActiveCpuContainer()
     QString selectedCpu = configurationObject_.value(RenodeConstants::SINGLECPU).toString("");
     if (selectedCpu.isEmpty())
     {
-        selectedCpu = availableCpuContainers_.first()->getCpu()->name();
+        selectedCpu = availableCpuContainers_.first()->getFileID();
     }
 
     for (auto cpuContainer : availableCpuContainers_)
     {
-        cpuSelector_->addItem(cpuContainer->getCpu()->name());
-
-        if (!renodeCPU_ && cpuContainer->getCpu()->name() == selectedCpu)
-        {
-            renodeCPU_ = cpuContainer;
-        }
+		cpuSelector_->addItem(cpuContainer->getFileID());
     }
 
+    renodeCPU_ = getContainerForCpu(selectedCpu);
     cpuSelector_->setCurrentText(selectedCpu);
 }
 
@@ -205,15 +200,21 @@ void RenodeCpuEditor::setupActiveCpuContainer()
 void RenodeCpuEditor::setupEditorsForCpu()
 {
     checkStartingInterfacesForErrors();
+    QString cpuName = "";
 
-    cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
-    cpuTypeEditor_->setText(renodeCPU_->getCpuType());
-    cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
+    if (renodeCPU_)
+    {
+		cpuClassCombo_->setCurrentText(renodeCPU_->getClassName());
+		cpuTypeEditor_->setText(renodeCPU_->getCpuType());
+		cpuTimeProviderEditor_->setText(renodeCPU_->getTimeProvider());
 
-    peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
-    memoryEditor_->setupMemories(renodeCPU_->getMemories());
+		peripheralEditor_->setupPeripherals(renodeCPU_->getPeripherals());
+		memoryEditor_->setupMemories(renodeCPU_->getMemories());
 
-    emit(cpuChanged(renodeCPU_->getCpu()->name()));
+        cpuName = renodeCPU_->getCpu()->name();
+    }
+
+	emit(cpuChanged(cpuName));
 }
 
 //-----------------------------------------------------------------------------
@@ -221,7 +222,7 @@ void RenodeCpuEditor::setupEditorsForCpu()
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::checkStartingInterfacesForErrors()
 {
-    if (renodeCPU_->getRoutes().isEmpty())
+    if (!renodeCPU_ || renodeCPU_->getRoutes().isEmpty())
     {
         return;
     }

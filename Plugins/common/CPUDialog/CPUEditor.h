@@ -59,16 +59,18 @@ public:
      */
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const = 0;
 
+    //! No copying. No assignment.
+    CPUEditor(const CPUEditor& other) = delete;
+    CPUEditor& operator=(const CPUEditor& other) = delete;
+
+public slots:
+
     /*!
      *  Setup the folder path.
      *
      *      @param [in] newFolderPath   The new folder path.
      */
     virtual void setupFolderPath(QString const& newFolderPath);
-
-    //! No copying. No assignment.
-    CPUEditor(const CPUEditor& other) = delete;
-    CPUEditor& operator=(const CPUEditor& other) = delete;
 
 signals:
 

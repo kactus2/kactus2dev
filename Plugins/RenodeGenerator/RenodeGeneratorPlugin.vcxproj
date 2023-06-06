@@ -131,6 +131,7 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityComponent.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityConnection.cpp" />
     <ClCompile Include="..\..\editors\MemoryDesigner\ConnectivityGraph.cpp" />
@@ -165,9 +166,15 @@
     <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp" />
     <ClCompile Include="CPUDialog\RenodeUtilities.cpp" />
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateDelegate.cpp" />
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateEditor.cpp" />
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateModel.cpp" />
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplatesDialog.cpp" />
     <ClCompile Include="RenodeConfigurationManager.cpp" />
     <ClCompile Include="RenodeGenerator.cpp" />
     <ClCompile Include="RenodeGeneratorPlugin.cpp" />
+    <ClCompile Include="RenodeSettingsModel.cpp" />
+    <ClCompile Include="RenodeSettingsWidget.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="RenodeGenerator.png" />
@@ -176,6 +183,9 @@
     <QtRcc Include="RenodeGenerator.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="RenodeSettingsModel.h" />
+    <QtMoc Include="RenodeSettingsWidget.h" />
+    <QtMoc Include="..\..\common\views\EditableTableView\editabletableview.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityComponent.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityConnection.h" />
     <ClInclude Include="..\..\editors\MemoryDesigner\ConnectivityGraph.h" />
@@ -204,6 +214,10 @@
     <QtMoc Include="CPUDialog\RenodeFileEditor.h" />
     <ClInclude Include="CPUDialog\RenodeStructs.h" />
     <ClInclude Include="CPUDialog\RenodeUtilities.h" />
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplatesDialog.h" />
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateEditor.h" />
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateModel.h" />
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateDelegate.h" />
     <ClInclude Include="RenodeConfigurationManager.h" />
     <ClInclude Include="RenodeGenerator.h" />
     <QtMoc Include="RenodeGeneratorPlugin.h" />

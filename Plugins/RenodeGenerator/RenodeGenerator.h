@@ -159,7 +159,7 @@ private:
      *      @param [in] renodeFilePath  The file path to the Renode platform files.
      */
     void writePeripheral(QTextStream& stream,
-        QSharedPointer<RenodeStructs::cpuPeripherals> peripheral,
+        QSharedPointer<RenodeStructs::cpuPeripheral> peripheral,
         QString const& tab,
         QString const& renodeFilePath);
 

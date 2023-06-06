@@ -125,7 +125,7 @@ namespace
     //-----------------------------------------------------------------------------
     // Function: RenodeUtilities::createPeripheral()
     //-----------------------------------------------------------------------------
-    QSharedPointer<RenodeStructs::cpuPeripherals> createPeripheral(QSharedPointer<MemoryItem> mapItem,
+    QSharedPointer<RenodeStructs::cpuPeripheral> createPeripheral(QSharedPointer<MemoryItem> mapItem,
         quint64 mapBaseAddress, QVector<QSharedPointer<MemoryItem> > currentMemoryBlock, QStringList& peripheralNames)
     {
         QSharedPointer<MemoryItem> firstBlock = currentMemoryBlock.first();
@@ -136,12 +136,13 @@ namespace
 
         quint64 size = endAddress - offset + 1;
 
-        QSharedPointer<RenodeStructs::cpuPeripherals> newPeripheral(new RenodeStructs::cpuPeripherals());
+        QSharedPointer<RenodeStructs::cpuPeripheral> newPeripheral(new RenodeStructs::cpuPeripheral());
         QString newPeripheralName = getUniqueName(mapItem->getName(), peripheralNames);
         newPeripheral->peripheralName_ = newPeripheralName;
         newPeripheral->peripheralID_ = "";
         newPeripheral->baseAddress_ = valueToHexa(offset);
         newPeripheral->size_ = valueToHexa(size);
+        newPeripheral->template_ = nullptr;
 
         peripheralNames.append(newPeripheralName);
 
@@ -179,7 +180,7 @@ namespace
     // Function: RenodeUtilities::createAndAddPeripheralOrMemory()
     //-----------------------------------------------------------------------------
     void createItemBlock(General::Usage blockUsage, QVector<QSharedPointer<MemoryItem> >& currentMemoryBlock,
-        QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals, QVector<QSharedPointer<RenodeStructs::cpuMemories> >& memories,
+        QVector<QSharedPointer<RenodeStructs::cpuPeripheral> >& peripherals, QVector<QSharedPointer<RenodeStructs::cpuMemories> >& memories,
         QSharedPointer<MemoryItem> interfaceMemory, quint64 const& memoryBaseAddress, QStringList& peripheralNames, QStringList& memoryNames)
     {
         if (!currentMemoryBlock.isEmpty())
@@ -226,7 +227,7 @@ namespace
     //-----------------------------------------------------------------------------
     // Function: RenodeUtilities::findPeripheral()
     //-----------------------------------------------------------------------------
-    QSharedPointer<RenodeStructs::cpuPeripherals> findPeripheral(QString const& peripheralName, QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > const& peripherals)
+    QSharedPointer<RenodeStructs::cpuPeripheral> findPeripheral(QString const& peripheralName, QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > const& peripherals)
     {
         for (auto currentPeripheral : peripherals)
         {
@@ -236,13 +237,13 @@ namespace
             }
         }
 
-        return QSharedPointer<RenodeStructs::cpuPeripherals>();
+        return QSharedPointer<RenodeStructs::cpuPeripheral>();
     }
 
     //-----------------------------------------------------------------------------
     // Function: RenodeUtilities::setupPeripheralConfiguration()
     //-----------------------------------------------------------------------------
-    void setupPeripheralConfiguration(QJsonObject const& configurationObject, QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals)
+    void setupPeripheralConfiguration(QJsonObject const& configurationObject, QVector<QSharedPointer<RenodeStructs::cpuPeripheral> >& peripherals)
     {
         QJsonValue peripheralsValue = configurationObject.value(RenodeConstants::PERIPHERALS);
         if (peripheralsValue.isArray())
@@ -257,7 +258,7 @@ namespace
                     QJsonObject peripheralObject = singlePeripheralValue.toObject();
                     QString peripheralName = peripheralObject.value(RenodeConstants::PERIPHERALNAME).toString("");
 
-                    QSharedPointer<RenodeStructs::cpuPeripherals> matchingPeripheral = findPeripheral(peripheralName, peripherals);
+                    QSharedPointer<RenodeStructs::cpuPeripheral> matchingPeripheral = findPeripheral(peripheralName, peripherals);
                     if (matchingPeripheral)
                     {
                         matchingPeripheral->className_ = peripheralObject.value(RenodeConstants::PERIPHERALCLASS).toString(matchingPeripheral->className_);
@@ -317,12 +318,11 @@ namespace
     // Function: RenodeUtilities::getConfigurationObjectForCpu()
     //-----------------------------------------------------------------------------
     QSharedPointer<RenodeCpuRoutesContainer> createAndConfigureCpuContainer(QJsonObject const& configurationObject,
-        QSharedPointer<SingleCpuRoutesContainer> cpuContainer, QVector<QSharedPointer<RenodeStructs::cpuPeripherals> >& peripherals,
+        QSharedPointer<SingleCpuRoutesContainer> cpuContainer, QVector<QSharedPointer<RenodeStructs::cpuPeripheral> >& peripherals,
         QVector<QSharedPointer<RenodeStructs::cpuMemories> >& memories)
     {
         QSharedPointer<RenodeCpuRoutesContainer> renodeCpuContainer(new RenodeCpuRoutesContainer(*cpuContainer.data()));
-        QJsonValue multiCpuValue = configurationObject.value(RenodeConstants::CPUS);
-        if (multiCpuValue.isArray())
+		if (auto multiCpuValue = configurationObject.value(RenodeConstants::CPUS); multiCpuValue.isArray())
         {
             QJsonArray cpuArray = multiCpuValue.toArray();
             if (!cpuArray.isEmpty())
@@ -362,7 +362,7 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
     QVector<QSharedPointer<RenodeCpuRoutesContainer> > cpuDetails;
     for (auto defaultCPU : ConnectivityGraphUtilities::getDefaultCPUs(library, component, viewName))
     {
-        QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals;
+        QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > peripherals;
         QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories;
         QStringList peripheralNames;
         QStringList memoryNames;
@@ -437,4 +437,34 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
     }
 
     return cpuDetails;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeUtilities::getTemplateNames()
+//-----------------------------------------------------------------------------
+QStringList RenodeUtilities::getTemplateNames(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates)
+{
+    QStringList names;
+    for (auto singleTemplate : templates)
+    {
+        names.append(singleTemplate->identifier_);
+    }
+
+    return names;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeUtilities::getTemplateFromList()
+//-----------------------------------------------------------------------------
+QSharedPointer<RenodeStructs::peripheralTemplate> RenodeUtilities::getTemplateFromList(QString const& templateName, QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates)
+{
+    for (auto singleTemplate : templates)
+    {
+        if (singleTemplate->identifier_ == templateName)
+        {
+            return singleTemplate;
+        }
+    }
+
+    return QSharedPointer<RenodeStructs::peripheralTemplate>();
 }

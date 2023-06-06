@@ -91,7 +91,7 @@ QString VerilogGeneratorPlugin::getLicenseHolder() const
 //-----------------------------------------------------------------------------
 QWidget* VerilogGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -99,7 +99,7 @@ QWidget* VerilogGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* VerilogGeneratorPlugin::getSettingsModel()
 {
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

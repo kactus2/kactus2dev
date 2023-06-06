@@ -44,13 +44,11 @@ public:
     virtual ~RenodePeripheralsEditor() = default;
 
     /*!
-     *  Setup the selected CPUs.
+     *  Setup the selected peripherals.
      *
-     *      @param [in] library     Interface for accessing the library.
-     *      @param [in] component   Top component of the selected design.
-     *      @param [in] activeView  Active view of the design.
+     *      @param [in] peripherals     The selected peripherals.
      */
-    void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals);
+    void setupPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > peripherals);
 
     /*!
      *  Setup the folder path.
@@ -62,6 +60,13 @@ public:
     //! No copying. No assignment.
     RenodePeripheralsEditor(const RenodePeripheralsEditor& other) = delete;
     RenodePeripheralsEditor& operator=(const RenodePeripheralsEditor& other) = delete;
+
+private slots:
+
+	/*!
+	 *  Open the peripherals template dialog.
+	 */
+	void openTemplatesDialog();
 
 private:
 
@@ -77,6 +82,12 @@ private:
 
     //! The delegate.
     RenodePeripheralsDelegate* peripheralDelegate_;
+
+    //! Target folder for the Renode generator.
+    QString generationFolder_;
+
+    //! List of the available peripheral templates.
+    QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > peripheralTemplates_;
 };
 
 #endif // RENODEPERIPHERALSEDITOR_H
