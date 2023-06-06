@@ -197,7 +197,6 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
 void HWComponentItem::attach(AdHocVisibilityEditor* editor)
 {
     connect(this, SIGNAL(adHocVisibilitiesChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(destroyed(ComponentItem*)), editor, SLOT(clear()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
