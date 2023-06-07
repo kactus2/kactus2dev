@@ -22,6 +22,7 @@
 #include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
 #include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
@@ -112,6 +113,11 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
         logicalNames.append(portAbstraction->getLogicalName());
 	}
 
+    if (!hasValidChoices(abstractionDefinition))
+    {
+        return false;
+    }
+
 	return true;
 }
 
@@ -169,6 +175,18 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 
         logicalNames.append(port->getLogicalName());
 	}
+
+    if (auto choices = abstractionDefinition->getChoices(); !choices->isEmpty())
+    {
+        if (abstractionDefinition->getRevision() != Document::Revision::Std22)
+        {
+            errors.append(QObject::tr("Choices defined in IP-XACT 2014 document %1.").arg(context));
+        }
+        else
+        {
+            findErrorsInChoices(errors, context, choices);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1284,5 +1302,49 @@ void AbstractionDefinitionValidator::findErrorsInPortPackets(QVector<QString>& e
         {
             PacketValidator::findErrorsIn(errors, packet, context);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::hasValidChoices()
+//-----------------------------------------------------------------------------
+bool AbstractionDefinitionValidator::hasValidChoices(QSharedPointer<AbstractionDefinition> abstraction) const
+{
+    auto choices = abstraction->getChoices();
+
+    if (choices->isEmpty())
+    {
+        return true;
+    }
+
+    if (abstraction->getRevision() != Document::Revision::Std22)
+    {
+        return false;
+    }
+
+    ChoiceValidator choiceValidator(expressionParser_);
+
+    for (auto const& choice : *choices)
+    {
+        if (!choiceValidator.validate(choice))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionValidator::findErrorsInChoices()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionValidator::findErrorsInChoices(QVector<QString>& errors, QString const& context,
+    QSharedPointer<QList<QSharedPointer<Choice> > >choices) const
+{
+    ChoiceValidator choiceValidator(expressionParser_);
+
+    for (auto const& choice : *choices)
+    {
+        choiceValidator.findErrorsIn(errors, choice, context);
     }
 }

@@ -62,6 +62,7 @@ private slots:
 
 	void wireQualifier();
 	void packetsOnlyInStd22();
+	void choicesOnlyInStd22();
 
 private:
 	//! The test mock for library interface.
@@ -933,6 +934,68 @@ void tst_AbstractionDefinitionValidator::packetsOnlyInStd22()
 
     QCOMPARE(errorList.size(), 1); // still no width defined for testPacketField
     QVERIFY(!validator.validate(abstraction));
+    QVERIFY(validator.validate(abstraction2));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::choicesOnlyInStd22()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::choicesOnlyInStd22()
+{
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition(absVLNV, Document::Revision::Std14));
+
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    abstraction->setBusType(testBusDefVlnv_);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setLogicalName("testPort");
+    abstraction->getLogicalPorts()->append(testPort);
+
+    QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+    testPort->setWire(wire);
+
+    QSharedPointer<Choice> testChoice(new Choice());
+    abstraction->getChoices()->append(testChoice); // error 1
+
+    VLNV busVLNV(VLNV::BUSDEFINITION, "vendor", "library", "testbusdef", "version");
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, Document::Revision::Std22));
+    library_->addComponent(busDef);
+
+    VLNV absVLNV2(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name2", "version");
+    QSharedPointer<AbstractionDefinition> abstraction2(new AbstractionDefinition(absVLNV2, Document::Revision::Std22));
+
+    abstraction2->setBusType(busVLNV);
+
+    QSharedPointer<PortAbstraction> testPort2(new PortAbstraction());
+    testPort2->setLogicalName("testPort");
+    abstraction2->getLogicalPorts()->append(testPort2);
+
+    abstraction2->getChoices()->append(testChoice); // error 2 & 3: no name, no enumeration(s)
+
+    QSharedPointer<WireAbstraction> wire2(new WireAbstraction());
+    testPort2->setWire(wire2);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abstraction);
+    validator.findErrorsIn(errorList, abstraction2);
+    QCOMPARE(errorList.size(), 3);
+    QVERIFY(!validator.validate(abstraction));
+    QVERIFY(!validator.validate(abstraction2));
+
+    abstraction->getChoices()->clear();
+    testChoice->setName("testChoice");
+    
+    QSharedPointer<Enumeration> testEnumeration(new Enumeration());
+    testEnumeration->setValue("16");
+    testChoice->enumerations()->append(testEnumeration);
+
+    errorList.clear();
+    validator.findErrorsIn(errorList, abstraction);
+    validator.findErrorsIn(errorList, abstraction2);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abstraction));
     QVERIFY(validator.validate(abstraction2));
 }
 

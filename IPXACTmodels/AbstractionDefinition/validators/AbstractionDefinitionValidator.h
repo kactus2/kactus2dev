@@ -375,11 +375,46 @@ private:
     void findErrorsInExtendTransactionalPort(QVector<QString>& errors, QString const& context,
         QSharedPointer<TransactionalPort> port, QSharedPointer<TransactionalPort> extendPort) const;
 
+    /*!
+     *	Check if port packets are valid.
+     *  
+     *      @param [in] port	        The port whose packets are checked.
+     *      @param [in] abstraction	    The abstraction definition.
+     *		
+     * 		@return True if valid, otherwise false.
+     */
     bool hasValidPortPackets(QSharedPointer<PortAbstraction> port, QSharedPointer<AbstractionDefinition> abstraction)
         const;
 
+    /*!
+     *	Find errors in the packets of the selected port.
+     *  
+     *      @param [in] errors	    List of found errors.
+     *      @param [in] context	    Context to help locate the errors.
+     *      @param [in] port	    The port whose packets are checked.
+     *      @param [in] revision	The IP-XACT revision of the document.
+     */
     void findErrorsInPortPackets(QVector<QString>& errors, QString const& context,
         QSharedPointer<PortAbstraction> port, Document::Revision revision) const;
+
+    /*!
+     *	Check if the choices of the abstraction definition are valid.
+     *  
+     *      @param [in] abstraction	    The abstraction definition to check.
+     *		
+     * 		@return True, if choices are valid, otherwise false.
+     */
+    bool hasValidChoices(QSharedPointer<AbstractionDefinition> abstraction) const;
+
+    /*!
+     *	Find errors in the choices of an abstraction definition.
+     *  
+     *      @param [in] errors	    List of found errors.
+     *      @param [in] context	    Context to help locate the errors.
+     *      @param [in] choices	    The choices to check.
+     */
+    void findErrorsInChoices(QVector<QString>& errors, QString const& context,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices) const;
 
     //-----------------------------------------------------------------------------
     // Data.
