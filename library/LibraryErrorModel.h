@@ -49,6 +49,9 @@ public:
      */
     void addErrors(QVector<QString> const& errorList, QString const& vlnv);
 
+    //! Clear all errors.
+    void clear();
+
     /*!
      *  Returns the number of rows to be displayed.
      *

@@ -15,14 +15,18 @@
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/widgets/kactusAttributeEditor/KactusAttributeEditor.h>
-#include <common/widgets/componentPreviewBox/ComponentPreviewBox.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ParameterCache.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+
+#include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QGroupBox>
 #include <QHBoxLayout>
+#include <QHeaderView>
 #include <QLineEdit>
 #include <QSplitter>
 #include <QStringList>
@@ -31,15 +35,18 @@
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor::GeneralEditor()
 //-----------------------------------------------------------------------------
-GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget *parent):
-ItemEditor(component, libHandler, parent),
+GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
+    ItemEditor(component, libHandler, parent),
     vlnvDisplayer_(new VLNVDisplayer(this, component->getVlnv())),
     attributeEditor_(new KactusAttributeEditor(this)),
     authorEditor_(new QLineEdit(this)),
     licenseEditor_(new QLineEdit(this)),
     descriptionEditor_(new QPlainTextEdit(this)),
     headerEditor_(new QPlainTextEdit(this)),
-    previewBox_(new ComponentPreviewBox(libHandler, this))
+    finder_(new ParameterCache(component)),
+    parser_(new IPXactSystemVerilogParser(finder_)),
+    validator_(new ComponentValidator(parser_, libHandler))
+
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
@@ -48,14 +55,15 @@ ItemEditor(component, libHandler, parent),
     vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
 	vlnvDisplayer_->setPath(xmlPath);
 
-    previewBox_->setInteractive(true);
-    previewBox_->setComponent(component);
-    //previewBox_->setFixedWidth(280);
-    previewBox_->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    validityIcon_->setFixedSize(24, 24);
+
+    errorView_->setModel(errorModel_);
+    errorView_->hideColumn(2);
+    errorView_->horizontalHeader()->hide();
+    errorView_->setShowGrid(false);
 
     setupLayout();
 
-    connect(previewBox_, SIGNAL(endpointsRearranged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
     connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
     connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
@@ -64,15 +72,7 @@ ItemEditor(component, libHandler, parent),
     connect(licenseEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onLicenseChange()), Qt::UniqueConnection);
 
-    refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: GeneralEditor::~GeneralEditor()
-//-----------------------------------------------------------------------------
-GeneralEditor::~GeneralEditor()
-{
-
+    GeneralEditor::refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,6 +124,28 @@ void GeneralEditor::refresh()
 	headerEditor_->setPlainText(comment);
 	connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
 
+    auto errors = QStringList();
+    validator_->findErrorsIn(errors, component());
+    
+    errorModel_->clear();
+
+    bool hasErrors = errors.empty() == false;
+    errorView_->setVisible(hasErrors);
+
+    if (hasErrors)
+    {
+        errorModel_->addErrors(errors, QString());
+        errorView_->resizeColumnsToContents();
+
+        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/exclamation--frame.png").scaled(24, 24));
+        validityStatus_->setText(tr("%1 error(s) found:").arg(QString::number(errors.count())));
+    }
+    else
+    {
+        validityIcon_->setPixmap(QPixmap(":icons/common/graphics/checkMark.png"));
+        validityStatus_->setText(tr("Complete"));
+    }
+
     changeExtensionsEditorItem();
 }
 
@@ -160,8 +182,6 @@ void GeneralEditor::showEvent( QShowEvent* event )
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/general.html");
-
-    previewBox_->updatePreview();
 }
 
 //-----------------------------------------------------------------------------
@@ -196,8 +216,7 @@ void GeneralEditor::onLicenseChange()
 //-----------------------------------------------------------------------------
 void GeneralEditor::setupLayout()
 {
-    QWidget* topWidget = new QWidget(this);
-    QGridLayout* layout = new QGridLayout(topWidget);
+    QGridLayout* layout = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
     QGroupBox* descriptionBox = new QGroupBox("Description", this);
@@ -216,22 +235,25 @@ void GeneralEditor::setupLayout()
     copyrightLayout->addRow(tr("Author:"), authorEditor_);
     copyrightLayout->addRow(tr("License:"), licenseEditor_);
 
+    QGroupBox* errorBox = new QGroupBox("Validation", this);
+
+    QHBoxLayout* labelLayout = new QHBoxLayout();
+    labelLayout->addWidget(validityIcon_);
+    labelLayout->addWidget(validityStatus_);
+    labelLayout->addStretch();
+
+    QVBoxLayout* errorLayout = new QVBoxLayout(errorBox);
+    errorLayout->addLayout(labelLayout);
+    errorLayout->addWidget(errorView_);
+
     layout->addWidget(new SummaryLabel(tr("Component summary"), this), 0, 0, 1, 2, Qt::AlignCenter);
     layout->addWidget(vlnvDisplayer_, 1, 0, 1, 2);
     layout->addWidget(attributeEditor_, 2, 0, 1, 1);
     layout->addWidget(authorBox, 2, 1, 1, 1);    
     layout->addWidget(descriptionBox, 3, 0, 1, 1);
     layout->addWidget(commentBox, 3, 1, 1, 1);
+    layout->addWidget(errorBox, 4, 0, 1, 2);
 
-    QSplitter* splitter = new QSplitter(Qt::Vertical, this);    
-    splitter->addWidget(topWidget);
-    splitter->addWidget(previewBox_);
-    splitter->setStretchFactor(0, 1);
-    splitter->setStretchFactor(1, 2);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(this);
-    topLayout->addWidget(splitter);
-    topLayout->setContentsMargins(4, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------

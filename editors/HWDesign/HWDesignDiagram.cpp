@@ -2403,8 +2403,14 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
     {
         QSharedPointer<PortReference> primaryPort = adHocConnection->getInternalPortReferences()->at(0);
 
+
         HWConnectionEndpoint* primaryPortItem = findAdhocPort(primaryPort);        
-        
+
+        if (primaryPortItem == nullptr)
+        {
+            return;
+        }
+
         if (adHocConnection->isOffPage())
         {
             primaryPortItem = static_cast<HWConnectionEndpoint*>(primaryPortItem->getOffPageConnector());

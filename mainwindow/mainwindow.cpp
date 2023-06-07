@@ -3249,7 +3249,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 void MainWindow::showAbout()
 {
-    SplashScreen* splash = new SplashScreen(VersionHelper::createVersionString(), this);
+    SplashScreen* splash = new SplashScreen(VersionHelper::createVersionString());
     splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
     splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));

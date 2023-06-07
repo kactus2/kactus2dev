@@ -274,7 +274,7 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int index)
+void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int /*index*/)
 {
     addrSpaceVisualizer_->refresh();
 }

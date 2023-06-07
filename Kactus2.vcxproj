@@ -55,16 +55,19 @@
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
+    <OutDir>$(SolutionDir)executable\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>x64\executable\</OutDir>
-    <IntDir>x64\release\</IntDir>
+    <OutDir>$(SolutionDir)executable\</OutDir>
+    <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>x64\executable\</OutDir>
-    <IntDir>x64\debug\</IntDir>
+    <OutDir>$(SolutionDir)executable\</OutDir>
+    <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary>true</IgnoreImportLibrary>
     <TargetName>$(ProjectName)_d</TargetName>
   </PropertyGroup>
@@ -130,9 +133,9 @@
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>IPXACTmodelsd.lib;KactusAPId.lib;python310_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>x64\executable\Kactus2_d.exe</OutputFile>
+      <OutputFile>executable\Kactus2_d.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
@@ -197,13 +200,13 @@ CreateHelp
     <Link>
       <AdditionalOptions>"/MANIFESTDEPENDENCY:type=%27win32%27 name=%27Microsoft.Windows.Common-Controls%27 version=%276.0.0.0%27 publicKeyToken=%276595b64144ccf1df%27 language=%27*%27 processorArchitecture=%27*%27" %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>IPXACTmodels.lib;python310.lib;KactusAPI.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>x64\executable\Kactus2.exe</OutputFile>
+      <OutputFile>executable\Kactus2.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>executable;$(PYTHON_DIR)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -228,6 +231,7 @@ CreateHelp
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
     <Link>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\executable;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
       <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -706,6 +710,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorswpropertiesitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorSystemViewsItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditortreemodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeSortProxyModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\componenteditorviewitem.cpp" />
@@ -946,6 +951,7 @@ CreateHelp
     <ClCompile Include="settings\SettingsPage.cpp" />
     <ClCompile Include="settings\SettingsUpdater.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizard.cpp" />
+    <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardAbsDefinitionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardBusDefinitionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardConclusionPage.cpp" />
     <ClCompile Include="wizards\BusInterfaceWizard\BusInterfaceWizardGeneralOptionsPage.cpp" />
@@ -1882,6 +1888,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>
@@ -2212,6 +2219,7 @@ CreateHelp
     <ClInclude Include="settings\FileTypeColumns.h" />
     <QtMoc Include="settings\NewPluginsDialog.h">
     </QtMoc>
+    <QtMoc Include="wizards\BusInterfaceWizard\BusInterfaceWizardAbsDefinitionPage.h" />
     <ClInclude Include="wizards\common\ComponentComparator\ComponentComparator.h" />
     <ClInclude Include="wizards\common\IPXactDiff.h" />
     <ClInclude Include="wizards\common\IPXactElementComparator.h" />

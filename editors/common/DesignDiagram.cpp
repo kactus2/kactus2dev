@@ -152,7 +152,6 @@ QString DesignDiagram::getTopView() const
 void DesignDiagram::attach(AdHocVisibilityEditor* editor)
 {
     connect(this, SIGNAL(contentChanged()), editor, SLOT(onContentChanged()), Qt::UniqueConnection);
-    connect(this, SIGNAL(destroyed(QObject*)), editor, SLOT(clear()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

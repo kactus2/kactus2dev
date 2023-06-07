@@ -821,7 +821,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./common/graphicsItems/ConnectionItem.h
+    ./common/graphicsItems/ConnectionItem.h \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardAbsDefinitionPage.h \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1553,5 +1555,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./wizards/BusInterfaceWizard/BusInterfaceWizardAbsDefinitionPage.cpp \
+    ./editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.cpp
 RESOURCES += kactus.qrc

@@ -47,7 +47,12 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~BusIfInterfaceSlave() = default;
+	~BusIfInterfaceSlave() final = default;
+
+
+    //! No copying. No assignment.
+    BusIfInterfaceSlave(const BusIfInterfaceSlave& other) = delete;
+    BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other) = delete;
 
 	/*!
      *  Check for the validity of the edited item.
@@ -103,14 +108,13 @@ private slots:
 
 private:
 
-    //! No copying. No assignment.
-	BusIfInterfaceSlave(const BusIfInterfaceSlave& other);    
-	BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other);
-
     /*!
      *  Setup the current file set references.
      */
     void setupFileSetReferences();
+
+    //! Save the current file set references.
+    void saveFileSetReferences();
 
     /*!
      *  Sets the editor layout.

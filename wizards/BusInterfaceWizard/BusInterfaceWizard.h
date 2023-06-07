@@ -49,6 +49,7 @@ public:
         PAGE_INTRO = 0,
         PAGE_GENERALOPTIONS,
         PAGE_BUSDEFINITION,
+        PAGE_ABSDEFINITION,
         PAGE_PORTMAPS,
         PAGE_SUMMARY
 	 };    
@@ -75,7 +76,7 @@ public:
 	 /*!
 	 *  Destructor.
 	 */
-	 ~BusInterfaceWizard();
+	 ~BusInterfaceWizard() final = default;
 
 signals:
 

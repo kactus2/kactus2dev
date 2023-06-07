@@ -71,7 +71,7 @@ adHocModel_(visibilityPolicy_, this)
 //-----------------------------------------------------------------------------
 AdHocVisibilityEditor::~AdHocVisibilityEditor()
 {
-    adHocModel_.setDataSource(nullptr, QSharedPointer<IEditProvider>());
+
 }
 
 //-----------------------------------------------------------------------------
@@ -111,15 +111,10 @@ void AdHocVisibilityEditor::setDataSource(AdHocEnabled* dataSource, QSharedPoint
 //-----------------------------------------------------------------------------
 void AdHocVisibilityEditor::clear()
 {
-    if (dataSource_ != nullptr)
-    {
-        dataSource_->detach(this);
-    }
+	dataSource_ = nullptr;
+    adHocModel_.setDataSource(nullptr, nullptr);
 
-	dataSource_ = 0;
-    adHocModel_.setDataSource(nullptr, QSharedPointer<IEditProvider>());
-
-    visibilityPolicy_->setDataSource(nullptr, QSharedPointer<QList<QSharedPointer<AdHocConnection> > > ());
+    visibilityPolicy_->setDataSource(nullptr, nullptr);
 
     nameLabel_.hide();
     portAdHocTable_.hide();

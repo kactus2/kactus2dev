@@ -287,7 +287,7 @@ void ImportInstancesEditor::createInstanceVLNVItems(QVector<InstanceData::instan
                 if (vlnvName.compare(singleInstance.moduleName_) == 0 &&
                     instanceDataMatchesComponentPorts(singleInstance, componentCandidate))
                 {
-                    instanceComponentMatches.insertMulti(singleInstance.instanceName_, componentCandidate);
+                    instanceComponentMatches.insert(singleInstance.instanceName_, componentCandidate);
                 }
             }
         }
