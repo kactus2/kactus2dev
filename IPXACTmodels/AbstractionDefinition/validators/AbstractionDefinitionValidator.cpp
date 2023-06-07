@@ -1268,9 +1268,10 @@ bool AbstractionDefinitionValidator::hasValidPortPackets(QSharedPointer<PortAbst
         return false;
     }
 
+    PacketValidator packetValidator(expressionParser_);
     for (auto const& packet : *packets)
     {
-        if (!PacketValidator::validate(packet))
+        if (!packetValidator.validate(packet))
         {
             return false;
         }
@@ -1298,9 +1299,10 @@ void AbstractionDefinitionValidator::findErrorsInPortPackets(QVector<QString>& e
     }
     else
     {
+        PacketValidator packetValidator(expressionParser_);
         for (auto const& packet : *packets)
         {
-            PacketValidator::findErrorsIn(errors, packet, context);
+            packetValidator.findErrorsIn(errors, packet, context);
         }
     }
 }

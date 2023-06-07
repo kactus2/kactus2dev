@@ -62,6 +62,7 @@ private slots:
 
 	void wireQualifier();
 	void packetsOnlyInStd22();
+    void invalidPacketFieldWidthValue();
 	void choicesOnlyInStd22();
 
 private:
@@ -935,6 +936,46 @@ void tst_AbstractionDefinitionValidator::packetsOnlyInStd22()
     QCOMPARE(errorList.size(), 1); // still no width defined for testPacketField
     QVERIFY(!validator.validate(abstraction));
     QVERIFY(validator.validate(abstraction2));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AbstractionDefinitionValidator::invalidPacketFieldWidthValue()
+//-----------------------------------------------------------------------------
+void tst_AbstractionDefinitionValidator::invalidPacketFieldWidthValue()
+{
+    VLNV absVLNV(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name", "version");
+    QSharedPointer<AbstractionDefinition> abstraction(new AbstractionDefinition(absVLNV, Document::Revision::Std22));
+
+    AbstractionDefinitionValidator validator(library_, expressionParser_);
+
+    abstraction->setBusType(testBusDefVlnv_);
+
+    QSharedPointer<PortAbstraction> testPort(new PortAbstraction());
+    testPort->setLogicalName("testPort");
+    abstraction->getLogicalPorts()->append(testPort);
+
+    QSharedPointer<WireAbstraction> wire(new WireAbstraction());
+    testPort->setWire(wire);
+
+    QSharedPointer<Packet> testPacket(new Packet("testPacket"));
+    QSharedPointer<PacketField> testPacketField(new PacketField("testPacketField"));
+    testPacket->getPacketFields()->append(testPacketField);
+    testPacketField->setWidth("2+2");
+    testPacketField->setValue("'h10"); // error
+    
+    testPort->getPackets()->append(testPacket);
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, abstraction);
+    QCOMPARE(errorList.size(), 1);
+    QVERIFY(!validator.validate(abstraction));
+
+    testPacketField->setWidth("8");
+
+    errorList.clear();
+    validator.findErrorsIn(errorList, abstraction);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validate(abstraction));
 }
 
 //-----------------------------------------------------------------------------
