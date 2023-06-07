@@ -33,13 +33,6 @@ QObject(parent),
 libHandler_(libHandler),
 component_(component), 
 model_(model),
-childItems_(),
-editor_(NULL),
-locked_(true),
-highlight_(false),
-referenceCounter_(0),
-parameterFinder_(0),
-expressionFormatter_(0),
 parent_(parent)
 {
 
@@ -47,6 +40,7 @@ parent_(parent)
 		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
     connect(this, SIGNAL(contentChanged()),
         model, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
 	connect(this, SIGNAL(createChild(ComponentEditorItem*, int)),
 		model, SLOT(addItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
 	connect(this, SIGNAL(removeChild(ComponentEditorItem*, int)),
@@ -83,12 +77,7 @@ ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler,
 QObject(parent),
 libHandler_(libHandler),
 component_(component),
-model_(parent),
-childItems_(), 
-editor_(NULL),
-locked_(true),
-highlight_(false),
-parent_(NULL)
+model_(parent)
 {
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		parent, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
@@ -99,11 +88,10 @@ parent_(NULL)
 //-----------------------------------------------------------------------------
 ComponentEditorItem::~ComponentEditorItem()
 {
-	childItems_.clear();
 	if (editor_)
     {
 		delete editor_;
-		editor_ = NULL;
+		editor_ = nullptr;
 	}
 }
 
@@ -185,40 +173,56 @@ QFont ComponentEditorItem::getFont() const
 bool ComponentEditorItem::isValid() const
 {
 	// if at least one child is not valid then this is not valid
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
-    {
-		if (!childItem->isValid())
-        {
-			return false;
-		}
-	}
-
-	// all children were valid
-	return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorItem::setHighlight()
-//-----------------------------------------------------------------------------
-void ComponentEditorItem::setHighlight(bool highlight)
-{
-    highlight_ = highlight;
+	return std::all_of(childItems_.cbegin(), childItems_.cend(), 
+		[](auto const& childItem) { return childItem->isValid(); });
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorItem::isModified()
 //-----------------------------------------------------------------------------
-bool ComponentEditorItem::highlight() const
+bool ComponentEditorItem::isModified() const
 {
-    return highlight_;
+    return modified_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::clearModified()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::clearModified()
+{
+	bool changed = modified_;
+
+	modified_ = false;
+
+	for (auto const& child : childItems_)
+	{
+		child->clearModified();
+	}
+
+    if (changed)
+    {
+        emit contentChanged(this);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditoritem::setModified()
+//-----------------------------------------------------------------------------
+void ComponentEditorItem::setModified()
+{
+    modified_ = true;
+
+    if (parent_)
+    {
+        parent_->setModified();
+    }
+}
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::visualizer()
 //-----------------------------------------------------------------------------
 ItemVisualizer* ComponentEditorItem::visualizer()
 {
-	return NULL;
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -226,6 +230,8 @@ ItemVisualizer* ComponentEditorItem::visualizer()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::onEditorChanged()
 {
+	setModified();
+
 	// if there is a valid parent then update it also
 	if (parent_)
     {
@@ -235,7 +241,7 @@ void ComponentEditorItem::onEditorChanged()
 	// update this item
 	emit contentChanged(this);
 
-    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    for (auto const& childItem : childItems_)
     {
         emit contentChanged(childItem.data());
     }
@@ -247,7 +253,7 @@ void ComponentEditorItem::onEditorChanged()
 void ComponentEditorItem::onGraphicsChanged()
 {
     QApplication::setOverrideCursor(Qt::WaitCursor);
-    foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+    for (auto const& childItem : childItems_)
     {
         childItem->updateGraphics();
     }
@@ -268,7 +274,7 @@ void ComponentEditorItem::setLocked(bool locked)
 	}
 
 	// also tell child items
-	foreach (QSharedPointer<ComponentEditorItem> childItem, childItems_)
+	for (auto const& childItem :childItems_)
     {
 		childItem->setLocked(locked);
 	}
@@ -310,6 +316,7 @@ void ComponentEditorItem::onMoveChild( int source, int target )
 {
 	emit moveChild(this, source, target);
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::moveChild()
@@ -382,7 +389,7 @@ QList<QAction* > ComponentEditorItem::actions() const
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorItem::getGraphicsItem()
 {
-	return NULL;
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------

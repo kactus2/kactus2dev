@@ -57,7 +57,7 @@ QRectF MemoryVisualizationItem::itemTotalRect() const
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::addChild(MemoryVisualizationItem* childItem)
 {
-    childItems_.insertMulti(childItem->getOffset(), childItem);
+    childItems_.insert(childItem->getOffset(), childItem);
 
     childItem->setWidth(childWidth_);
     childItem->setVisible(isExpanded());

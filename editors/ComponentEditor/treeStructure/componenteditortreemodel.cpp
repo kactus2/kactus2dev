@@ -21,8 +21,7 @@
 // Function: componenteditortreemodel::ComponentEditorTreeModel()
 //-----------------------------------------------------------------------------
 ComponentEditorTreeModel::ComponentEditorTreeModel(QObject* parent) :
-QAbstractItemModel(parent),
-rootItem_()
+QAbstractItemModel(parent)
 {
 	setObjectName(tr("ComponentEditorTreeModel"));
 }
@@ -132,14 +131,10 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
 	}
 	else if (role == Qt::ForegroundRole)
     {
-        if (!item->isValid())
+        if (item->parent() != rootItem_ && !item->isValid())
         {
             return KactusColors::ERROR;
-        }         
-        else if (item->highlight())
-        {
-            return KactusColors::REGULAR_MESSAGE;
-        }  
+        }
         else
         {
             return KactusColors::REGULAR_TEXT;
@@ -149,10 +144,27 @@ QVariant ComponentEditorTreeModel::data( const QModelIndex& index, int role /*= 
     {
 		return item->getTooltip();
 	}
-    else if( role == Qt::DecorationRole && item->hasIcon() )
+    else if (role == Qt::SizeHintRole)
     {
-        return item->getIcon();
+		QSize size(80, 18);
+		if (item->parent() == rootItem_)
+		{
+			size.setHeight(26);
+		}
+		return size;
     }
+	else if (role == Qt::DecorationRole)
+	{
+		if (item->parent() == rootItem_ && item->isValid() == false)
+		{
+			return QIcon(":icons/common/graphics/exclamation--frame.png");
+		}
+		return QVariant();
+	}
+	else if (role == Qt::UserRole)
+	{
+		return item->isModified();
+	}
 	// not supported role
 	else
     {
@@ -381,12 +393,20 @@ QModelIndex ComponentEditorTreeModel::getIndexOfItem(QVector<QString> itemIdenti
 {
     QModelIndex itemIndex;
 
-    foreach (QString currentIdentifier, itemIdentifierChain)
+    for (auto const& currentIdentifier : itemIdentifierChain)
     {
         itemIndex = findIndexByItemIdentifier(currentIdentifier, itemIndex);
     }
 
     return itemIndex;
+}
+
+//-----------------------------------------------------------------------------
+// Function: componenteditortreemodel::clearItemsModified()
+//-----------------------------------------------------------------------------
+void ComponentEditorTreeModel::clearItemsModified() const
+{
+	rootItem_->clearModified();
 }
 
 //-----------------------------------------------------------------------------

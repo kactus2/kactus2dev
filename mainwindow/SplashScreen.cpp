@@ -18,20 +18,12 @@
 //-----------------------------------------------------------------------------
 // Function: SplashScreen::SplashScreen()
 //-----------------------------------------------------------------------------
-SplashScreen::SplashScreen(QString const& versionString, QWidget* parent /*= 0*/):
+SplashScreen::SplashScreen(QString const& versionString):
 QSplashScreen(QPixmap(":/common/graphics/splash.png")),
     versionString_(versionString)
 {
     setWindowFlags(windowFlags() | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setCursor(Qt::PointingHandCursor);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SplashScreen::~SplashScreen()
-//-----------------------------------------------------------------------------
-SplashScreen::~SplashScreen()
-{
-
 }
 
 //-----------------------------------------------------------------------------

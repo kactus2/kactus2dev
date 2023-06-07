@@ -98,20 +98,6 @@ void BusIfInterfaceSlave::refresh()
     bridges_.setChecked(getBusInterface()->getBridgeInterface()->itemCount() != 0);
 }
 
-//-----------------------------------------------------------------------------
-// Function: busifinterfaceslave::setupFileSetReferences()
-//-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::setupFileSetReferences()
-{
-    QStringList newFileSetItems;
-
-    for (auto fileSetName : getBusInterface()->getFileSetReferences(getBusName()))
-    {
-        newFileSetItems.append(QString::fromStdString(fileSetName));
-    }
-
-    fileSetRefs_.setItems(newFileSetItems);
-}
 
 //-----------------------------------------------------------------------------
 // Function: BusIfInterfaceSlave::getInterfaceMode()
@@ -191,14 +177,7 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::onFileSetReferencesChanged()
 {
-    std::vector<std::string> newItems;
-    for (auto fileSetReference : fileSetRefs_.items())
-    {
-        newItems.push_back(fileSetReference.toStdString());
-    }
-
-    getBusInterface()->setFileSetReferences(getBusName(), newItems);
-
+    saveFileSetReferences();
     emit contentChanged();
 }
 
@@ -207,16 +186,45 @@ void BusIfInterfaceSlave::onFileSetReferencesChanged()
 //-----------------------------------------------------------------------------
 void BusIfInterfaceSlave::saveModeSpecific()
 {
-    onFileSetReferencesChanged();
+    saveFileSetReferences();
 
     if (memoryMapBox_->isChecked())
     {
-        onMemoryMapChange(memoryMapReferenceSelector_.currentText());
+        getBusInterface()->setMemoryMapReference(getBusName(), memoryMapReferenceSelector_.currentText().toStdString());
     }
     else if (bridges_.isChecked())
     {
         bridges_.refresh();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfaceslave::setupFileSetReferences()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::setupFileSetReferences()
+{
+    QStringList newFileSetItems;
+
+    for (auto const& fileSetName : getBusInterface()->getFileSetReferences(getBusName()))
+    {
+        newFileSetItems.append(QString::fromStdString(fileSetName));
+    }
+
+    fileSetRefs_.setItems(newFileSetItems);
+}
+
+//-----------------------------------------------------------------------------
+// Function: busifinterfaceslave::saveFileSetReferences()
+//-----------------------------------------------------------------------------
+void BusIfInterfaceSlave::saveFileSetReferences()
+{
+    std::vector<std::string> newItems;
+    for (auto fileSetReference : fileSetRefs_.items())
+    {
+        newItems.push_back(fileSetReference.toStdString());
+    }
+
+    getBusInterface()->setFileSetReferences(getBusName(), newItems);
 }
 
 //-----------------------------------------------------------------------------

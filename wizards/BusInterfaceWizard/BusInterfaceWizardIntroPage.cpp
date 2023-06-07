@@ -52,7 +52,8 @@ void BusInterfaceWizardIntroPage::setupLayout()
 
     QString infoText = tr("This wizard contains the following steps:");
     infoText += "<ul><li>" + tr("Bus Interface General Information");
-    infoText += "<li>" + tr("Bus Editor");
+    infoText += "<li>" + tr("Bus Definition Editor");
+    infoText += "<li>" + tr("Abstraction Definition Editor");
     infoText += "<li>" + tr("Port Maps");
     infoText += "<li>" + tr("Summary") + "</ul>";
 

@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <editors/ComponentEditor/itemvisualizer.h>
+
 #include <QSharedPointer>
 #include <QGraphicsView>
 #include <QRectF>
@@ -24,7 +26,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! ComponentPreviewBox class.
 //-----------------------------------------------------------------------------
-class ComponentPreviewBox : public QGraphicsView
+class ComponentPreviewBox : public ItemVisualizer
 {
 	Q_OBJECT
 
@@ -35,12 +37,16 @@ public:
      *      @param [in] lh         The library interface. 
      *      @param [in] parent     The parent widget.
      */
-    ComponentPreviewBox(LibraryInterface* lh, QWidget* parent = 0);
+    ComponentPreviewBox(LibraryInterface* lh, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
      */
-    ~ComponentPreviewBox();
+    ~ComponentPreviewBox() override = default;
+
+    // Disable copying.
+    ComponentPreviewBox(ComponentPreviewBox const& rhs) = delete;
+    ComponentPreviewBox& operator=(ComponentPreviewBox const& rhs) = delete;
 
     /*!
      *  Sets the component that will be visualized.
@@ -57,9 +63,25 @@ public:
 	/*!
      *  Get the bounding rect of all items on the scene.
 	 *
-	 *      @return QRectF The rect that bounds all items.
+	 *      @return The rect that bounds all items.
 	 */
 	QRectF itemsBoundingRect() const;
+
+    /*!
+     *  Get the graphics scene.
+     *
+     *      @return The graphics scene used by the preview.
+     */
+    QGraphicsScene* scene() const;
+
+    /*!
+     *  Set the preview interactive i.e. user can move interfaces.
+     *
+     *      @param [in] interactive  Interactive or view-only.
+     */
+    void setInteractive(bool interactive);
+
+
 
 public slots:
 
@@ -76,9 +98,6 @@ signals:
     void endpointsRearranged();
 
 private:
-    // Disable copying.
-    ComponentPreviewBox(ComponentPreviewBox const& rhs);
-    ComponentPreviewBox& operator=(ComponentPreviewBox const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -88,10 +107,13 @@ private:
     LibraryInterface* lh_;
 
     //! The component to visualize.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
+
+    QGraphicsView* view_;
 
     //! The graphics scene.
     QGraphicsScene* scene_;
+
 };
 
 //-----------------------------------------------------------------------------

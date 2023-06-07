@@ -634,7 +634,7 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeEndOfDocument()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeEndOfDocument(QTextStream& stream)
+void MarkdownWriter::writeEndOfDocument(QTextStream& /*stream*/)
 {
 }
 

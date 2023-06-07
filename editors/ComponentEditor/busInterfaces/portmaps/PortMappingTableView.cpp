@@ -79,7 +79,7 @@ void PortMappingTableView::dragMoveEvent(QDragMoveEvent* e)
 	// if the source is another port list view then select the item under the cursor.
 	if (source && source != this) 
     {
-		setCurrentIndex(indexAt(e->pos()));
+		setCurrentIndex(indexAt(e->position().toPoint()));
     }
 	if (source && e->mimeData()->hasFormat("text/plain"))
     {

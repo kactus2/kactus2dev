@@ -49,9 +49,9 @@ public:
 		QWidget *parent);
 
 	//! \brief The destructor
-    virtual ~ComponentTreeView();
+     ~ComponentTreeView() final = default;
 
-	//! \brief Set the locked state (enables/disables the dragging).
+	//! \brief set the locked state (enables/disables the dragging).
 	void setLocked(bool locked);
 
 	/*! \brief Select the specified item and deselect all others.
