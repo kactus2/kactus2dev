@@ -23,9 +23,9 @@ linux-g++ | linux-g++-64 | linux-g++-32 {
 
 }
 win64 | win32 {
- LIBS += -L$$PWD/../../../x64/executable \
+ LIBS += -L$$PWD/../../../executable/ \
      -lIPXACTmodelsd
- LIBS += -L$$PWD/../../../x64/executable \
+ LIBS += -L$$PWD/../../../executable/ \
      -lKactusAPId
 }
 
