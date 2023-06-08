@@ -193,6 +193,28 @@ void CommonItemsWriter::writeNonEmptyElement(QXmlStreamWriter& writer, QString c
 }
 
 //-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeNonEmptyAttribute()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, QString const& value)
+{
+    if (!value.isEmpty())
+    {
+        writer.writeAttribute(attributeName, value);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeNonEmptyAttribute()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, std::string const& value)
+{
+    if (!value.empty())
+    {
+        writer.writeAttribute(attributeName, QString::fromStdString(value));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeQualifier()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier)

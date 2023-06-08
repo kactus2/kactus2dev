@@ -36,9 +36,9 @@ void ChoiceWriter::Details::writeEnumeration(QXmlStreamWriter& writer, QSharedPo
 {
     writer.writeStartElement(QStringLiteral("ipxact:enumeration"));
 
-    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("text"), enumeration->getText());
+    CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("text"), enumeration->getText());
 
-    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("help"), enumeration->getHelp());
+    CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("help"), enumeration->getHelp());
 
     writer.writeCharacters(enumeration->getValue());
 
