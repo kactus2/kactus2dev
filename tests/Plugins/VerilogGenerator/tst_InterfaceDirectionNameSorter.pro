@@ -19,11 +19,11 @@ CONFIG += c++11 testcase console
 DEFINES += VERILOGGENERATORPLUGIN_LIB
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../../x64/executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../../x64/executable/ -lIPXACTmodelsd
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodelsd
     DESTDIR = ./debug
 }
 else:unix {
@@ -32,9 +32,11 @@ else:unix {
 }
 
 INCLUDEPATH += $$PWD/../../../
+INCLUDEPATH += $$PWD/../../../executable
 INCLUDEPATH += $$DESTDIR
 
 DEPENDPATH += $$PWD/../../../
+DEPENDPATH += $$PWD/../../../executable
 DEPENDPATH += .
 
 OBJECTS_DIR += $$DESTDIR
