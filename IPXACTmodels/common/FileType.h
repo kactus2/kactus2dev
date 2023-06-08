@@ -9,8 +9,8 @@
 // NameSpace FileTypes is used to store functions related to file types.
 //-----------------------------------------------------------------------------
 
-#ifndef FILETYPES_H
-#define FILETYPES_H
+#ifndef FILETYPE_H
+#define FILETYPE_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -24,6 +24,17 @@
 //-----------------------------------------------------------------------------
 namespace FileTypes
 {
+	struct FileType
+	{
+		QString type_;
+		QString libExt_;
+
+		QString getType() const { return type_; }
+		QString getLibExt() const { return libExt_; }
+
+		explicit FileType(QString const& fileType) : type_(fileType) {};
+	};
+
     //! The number of supported file type definitions
     const unsigned int FILE_TYPE_COUNT = 33;
 
@@ -94,4 +105,4 @@ namespace FileTypes
 
 }
 
-#endif // FILETYPES_H
+#endif // FILETYPE_H

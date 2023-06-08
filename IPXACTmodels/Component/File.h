@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/common/BuildModel.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <IPXACTmodels/common/NameValuePair.h>
 #include <IPXACTmodels/common/Extendable.h>
@@ -449,43 +450,45 @@ private:
     QString isPresent_;
 
 	//! Contains the file types of the file.
-	QSharedPointer<QStringList> fileTypes_;
+	QList<FileTypes::FileType> fileTypes_;
 
     //! Holds whether the file contains a structural RTL or not.
-    bool structural_;
+    bool structural_ = false;
 
 	//! Declares if the file is an include file or not.
-	bool includeFile_;
+	bool includeFile_ = false;
 
 	//! Indicates if the include file is needed by users.
-	bool externalDeclarations_;
+	bool externalDeclarations_ = false;
 
 	//! The logical name for the file or directory.
 	QString logicalName_;
 
 	//! Can another process override this name or not.
-	bool logicalNameDefault_;
+	bool logicalNameDefault_ = false;
 
 	//! Defines any names that can be referenced externally.
-    QSharedPointer<QStringList> exportedNames_;
+    QSharedPointer<QStringList> exportedNames_ = QSharedPointer<QStringList>(new QStringList());
 
 	//! Contains the buildCommand element.
-	QSharedPointer<BuildCommand> buildCommand_;
+	QSharedPointer<BuildCommand> buildCommand_ = nullptr;
 
 	//! Contains paths to the directories containing dependency files.
     QSharedPointer<QStringList> dependencies_;
 
 	//! Specifies the define symbols to use in the source file.
-    QSharedPointer<QList<QSharedPointer<NameValuePair> > > defines_;
+    QSharedPointer<QList<QSharedPointer<NameValuePair> > > defines_ =
+		QSharedPointer<QList<QSharedPointer<NameValuePair> > >(new QList<QSharedPointer<NameValuePair> >());
 
 	//! Relates the file to a executable image type in the design.
-    QSharedPointer<QStringList> imageTypes_;
+    QSharedPointer<QStringList> imageTypes_ = QSharedPointer<QStringList>(new QStringList());
 
 	//! Details the file for the user.
 	QString description_;
 
     //! The current hash that is pending for writing to disk.
     QString pendingHash_;
+
 };
 
 #endif // FILE_H

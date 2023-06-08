@@ -163,7 +163,7 @@
     <ClCompile Include="common\FileBuilder.cpp" />
     <ClCompile Include="common\FileBuilderReader.cpp" />
     <ClCompile Include="common\FileBuilderWriter.cpp" />
-    <ClCompile Include="common\FileTypes.cpp" />
+    <ClCompile Include="common\FileType.cpp" />
     <ClCompile Include="common\GenericVendorExtension.cpp" />
     <ClCompile Include="common\ModuleParameter.cpp" />
     <ClCompile Include="common\ModuleParameterReader.cpp" />
@@ -387,6 +387,7 @@
     <ClInclude Include="AbstractionDefinition\PacketWriter.h" />
     <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
+    <ClInclude Include="common\FileType.h" />
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
@@ -602,7 +603,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </CustomBuild>
-    <ClInclude Include="common\FileTypes.h" />
     <CustomBuild Include="common\GenericVendorExtension.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </Message>

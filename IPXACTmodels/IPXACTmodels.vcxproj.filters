@@ -554,9 +554,6 @@
     <ClCompile Include="common\FileBuilderWriter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
-    <ClCompile Include="common\FileTypes.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\ModuleParameter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -929,6 +926,9 @@
     <ClCompile Include="AbstractionDefinition\validators\PacketValidator.cpp">
       <Filter>Source Files\AbstractionDefinition\validators</Filter>
     </ClCompile>
+    <ClCompile Include="common\FileType.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1181,9 +1181,6 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\FileBuilder.h">
-      <Filter>Header Files\common</Filter>
-    </ClInclude>
-    <ClInclude Include="common\FileTypes.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\ModuleParameter.h">
@@ -1544,6 +1541,9 @@
       <Filter>Header Files\common</Filter>
     </ClInclude>
     <ClInclude Include="common\ModuleParameterReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\FileType.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>

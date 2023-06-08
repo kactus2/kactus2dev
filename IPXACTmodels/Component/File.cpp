@@ -20,26 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: File::File()
 //-----------------------------------------------------------------------------
-File::File(QString const& filePath /* = QString() */, QString const& fileType /* = QString() */) :
+File::File(QString const& filePath, QString const& fileType) :
 Extendable(),
-fileId_(),
-attributes_(),
-name_(filePath),
-fileName_(),
-isPresent_(),
-fileTypes_(new QStringList()),
-structural_(false),
-includeFile_(false),
-externalDeclarations_(false),
-logicalName_(),
-logicalNameDefault_(false),
-exportedNames_(new QStringList()),
-buildCommand_(),
-dependencies_(new QStringList()),
-defines_(new QList<QSharedPointer<NameValuePair> > ()),
-imageTypes_(new QStringList()),
-description_(),
-pendingHash_()
+name_(filePath)
 {
 	parseFileName();
 
@@ -59,17 +42,11 @@ attributes_(other.attributes_),
 name_(other.name_),
 fileName_(other.fileName_),
 isPresent_(other.isPresent_),
-fileTypes_(new QStringList()),
 structural_(other.structural_),
 includeFile_(other.includeFile_),
 externalDeclarations_(other.externalDeclarations_),
 logicalName_(other.logicalName_),
 logicalNameDefault_(other.logicalNameDefault_),
-exportedNames_(new QStringList()),
-buildCommand_(),
-dependencies_(new QStringList()),
-defines_(new QList<QSharedPointer<NameValuePair> > ()),
-imageTypes_(new QStringList()),
 description_(other.description_),
 pendingHash_(other.pendingHash_)
 {
@@ -326,7 +303,7 @@ QSharedPointer<BuildCommand> File::getBuildCommand() const
     }
     else
     {
-        return QSharedPointer<BuildCommand>();
+        return nullptr;
     }
 }
 
@@ -469,17 +446,10 @@ void File::setPendingHash(QString const& hash)
 //-----------------------------------------------------------------------------
 // Function: File::matchesFileType()
 //-----------------------------------------------------------------------------
-bool File::matchesFileType( const QStringList& fileTypes ) const
+bool File::matchesFileType(const QStringList& fileTypes) const
 {
-    foreach (QString fileType, fileTypes)
-    {
-        if (fileTypes_->contains(fileType))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(fileTypes_.cbegin(), fileTypes_.cend(),
+        [&fileTypes](auto const& fileType) { return fileTypes.contains(fileType->getType()); };
 }
 
 //-----------------------------------------------------------------------------
@@ -487,14 +457,7 @@ bool File::matchesFileType( const QStringList& fileTypes ) const
 //-----------------------------------------------------------------------------
 bool File::matchesFileType( const QString& fileType ) const
 {
-    if (fileTypes_->contains(fileType))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return (fileTypes_->contains(fileType));
 }
 
 //-----------------------------------------------------------------------------
@@ -516,7 +479,7 @@ void File::addFileType(const QString fileType)
 {
     if (!fileTypes_->contains(fileType))
     {
-        fileTypes_->append(fileType);
+        fileTypes_->append(FileTypes::FileType(fileType));
     }
 }
 
@@ -541,7 +504,7 @@ void File::clearDefines()
 //-----------------------------------------------------------------------------
 QString File::getCommand() const
 {
-    if (buildCommand_ && !buildCommand_->getCommand().isEmpty())
+    if (buildCommand_)
     {
         return buildCommand_->getCommand();
     }
@@ -579,16 +542,7 @@ QString File::getFlags() const
 //-----------------------------------------------------------------------------
 bool File::isRTLFile() const
 {
-    foreach (QString fileType, *fileTypes_)
-    {
-        if (fileType == QLatin1String("vhdlSource") || fileType == QLatin1String("vhdlSource-87") ||
-            fileType == QLatin1String("vhdlSource-93") || fileType == QLatin1String("verilogSource") ||
-            fileType == QLatin1String("verilogSource-95") || fileType == QLatin1String("verilogSource-2001"))
-        {
-            return true;
-        }
-    }
-    return false;
+    return isVhdlFile() || isVerilogFile();
 }
 
 //-----------------------------------------------------------------------------
@@ -596,7 +550,7 @@ bool File::isRTLFile() const
 //-----------------------------------------------------------------------------
 bool File::isVhdlFile() const
 {
-    foreach (QString fileType, *fileTypes_)
+    for (QString const& fileType : *fileTypes_)
     {
         if (fileType.compare(QLatin1String("vhdlSource"), Qt::CaseInsensitive) == 0 ||
             fileType.compare(QLatin1String("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
@@ -613,7 +567,7 @@ bool File::isVhdlFile() const
 //-----------------------------------------------------------------------------
 bool File::isVerilogFile() const
 {
-    foreach (QString fileType, *fileTypes_)
+    for (QString const& fileType : *fileTypes_)
     {
         if (fileType.compare(QLatin1String("verilogSource"), Qt::CaseInsensitive) == 0 ||
             fileType.compare(QLatin1String("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
@@ -685,12 +639,12 @@ void File::copyBuildCommand(const File& other)
 //-----------------------------------------------------------------------------
 void File::copyDefines(const File& other)
 {
-    foreach (QSharedPointer<NameValuePair> definition, *other.defines_)
+    for (QSharedPointer<NameValuePair> definition : *other.defines_)
     {
         if (definition)
         {
             QSharedPointer<NameValuePair> copy =
-                QSharedPointer<NameValuePair>(new NameValuePair(*definition.data()));
+                QSharedPointer<NameValuePair>(new NameValuePair(*definition));
             defines_->append(copy);
         }
     }
@@ -701,19 +655,19 @@ void File::copyDefines(const File& other)
 //-----------------------------------------------------------------------------
 void File::copyStringLists(const File& other)
 {
-    foreach (QString fileType, *other.fileTypes_)
+    for (QString const& fileType : *other.fileTypes_)
     {
         fileTypes_->append(fileType);
     }
-    foreach (QString exportedName, *other.exportedNames_)
+    for (QString const& exportedName : *other.exportedNames_)
     {
         exportedNames_->append(exportedName);
     }
-    foreach (QString dependency, *other.dependencies_)
+    for (QString const& dependency : *other.dependencies_)
     {
         dependencies_->append(dependency);
     }
-    foreach (QString imageType, *other.imageTypes_)
+    for (QString const& imageType : *other.imageTypes_)
     {
         imageTypes_->append(imageType);
     }

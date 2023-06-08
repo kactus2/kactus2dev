@@ -37,6 +37,8 @@ private slots:
     void readDefines();
     void readImageTypes();
 
+    void read2022File();
+
     void readHashExtension();
     void readVendorExtensions();
     void readDescription();
@@ -425,6 +427,33 @@ void tst_FileReader::readImageTypes()
 
     QCOMPARE(testFile->getImageTypes()->size(), 1);
     QCOMPARE(testFile->getImageTypes()->first(), QString("jpg"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileReader::read2022File()
+//-----------------------------------------------------------------------------
+void tst_FileReader::read2022File()
+{
+    QString documentContent(
+        "<ipxact:file>"
+            "<ipxact:name>./testFile</ipxact:name>"
+            "<ipxact:isPresent>1</ipxact:isPresent>"
+            "<ipxact:fileType user=\"test\" libext=\"ext\">user</ipxact:fileType>"
+            "<ipxact:imageType>jpg</ipxact:imageType>"
+        "</ipxact:file>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fileNode = document.firstChildElement("ipxact:file");
+
+    FileReader fileReader;
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+
+    QCOMPARE(testFile->getIsPresent(), QString()); //!< No isPresent should be available.
+    QCOMPARE(testFile->getFileTypes()->first(), QString("user"));
+    QCOMPARE(testFile->getFileTypes()->first()->getLibExt(), QString("ext"));
 }
 
 //-----------------------------------------------------------------------------
