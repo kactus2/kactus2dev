@@ -926,6 +926,9 @@
     <ClCompile Include="common\validators\QualifierValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="AbstractionDefinition\validators\PacketValidator.cpp">
+      <Filter>Source Files\AbstractionDefinition\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1515,6 +1518,9 @@
     </ClInclude>
     <ClInclude Include="common\validators\QualifierValidator.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h">
+      <Filter>Header Files\AbstractionDefinition\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

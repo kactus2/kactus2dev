@@ -128,6 +128,7 @@
     <ClCompile Include="AbstractionDefinition\TransactionalAbstractionWriter.cpp" />
     <ClCompile Include="AbstractionDefinition\TransactionalPort.cpp" />
     <ClCompile Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.cpp" />
+    <ClCompile Include="AbstractionDefinition\validators\PacketValidator.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstraction.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionReader.cpp" />
     <ClCompile Include="AbstractionDefinition\WireAbstractionWriter.cpp" />
@@ -384,6 +385,7 @@
     <ClInclude Include="AbstractionDefinition\PacketField.h" />
     <ClInclude Include="AbstractionDefinition\PacketReader.h" />
     <ClInclude Include="AbstractionDefinition\PacketWriter.h" />
+    <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
     <ClInclude Include="common\NameGroupWriter.h" />
     <ClInclude Include="common\TagData.h" />
