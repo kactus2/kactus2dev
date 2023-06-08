@@ -100,9 +100,9 @@ diagram_(diagram)
 void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldComponent,
     SystemComponentItem* newComponent, QSharedPointer<Design> design)
 {
-    QStringList connectionNames;
+    QVector<QString> connectionNames;
 
-    foreach (ConnectionEndpoint* oldEndpoint, oldComponent->getEndpoints())
+    for (ConnectionEndpoint* oldEndpoint : oldComponent->getEndpoints())
     {
         if (!oldEndpoint->getConnections().isEmpty() ||
             !oldEndpoint->getOffPageConnector()->getConnections().isEmpty())
@@ -115,12 +115,12 @@ void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldCo
                 new SWPortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), diagram_, this);
 
                 // Exchange connections between the endpoints.
-                foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+                for (GraphicsConnection* connection : oldEndpoint->getConnections())
                 {
                     createConnectionExchangeCommand(connection, oldEndpoint, newEndpoint);
                 }
 
-                foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+                for (GraphicsConnection* connection : oldEndpoint->getOffPageConnector()->getConnections())
                 {
                     createConnectionExchangeCommand(connection, oldEndpoint->getOffPageConnector(),
                         newEndpoint->getOffPageConnector());
@@ -128,7 +128,7 @@ void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldCo
             }
             else
             {
-                foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+                for (GraphicsConnection* connection : oldEndpoint->getConnections())
                 {
                     if (!connectionNames.contains(connection->name()))
                     {
@@ -136,7 +136,7 @@ void ReplaceSystemComponentCommand::changeConnections(SystemComponentItem* oldCo
                         connectionNames.append(connection->name());
                     }
                 }
-                foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+                for (GraphicsConnection* connection : oldEndpoint->getOffPageConnector()->getConnections())
                 {
                     if (!connectionNames.contains(connection->name()))
                     {

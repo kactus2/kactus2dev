@@ -56,7 +56,7 @@ bool ComponentEditorRootItem::isValid() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorRootItem::editor()
 {
-	return NULL;
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,7 +64,7 @@ ItemEditor* ComponentEditorRootItem::editor()
 //-----------------------------------------------------------------------------
 const ItemEditor* ComponentEditorRootItem::editor() const
 {
-	return NULL;
+	return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void ComponentEditorRootItem::addChildItem(QSharedPointer<ComponentEditorItem> c
 QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem(QString const& interfaceName) const
 {
 	// check all children
-	foreach (const QSharedPointer<ComponentEditorItem> item, childItems_)
+	for (const QSharedPointer<ComponentEditorItem> item : childItems_)
     {
 		const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
 			item.dynamicCast<ComponentEditorBusInterfacesItem>();
@@ -110,7 +110,7 @@ QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem
 //-----------------------------------------------------------------------------
 void ComponentEditorRootItem::onInterfaceAdded()
 {
-    foreach (const QSharedPointer<ComponentEditorItem> item, childItems_)
+    for (const QSharedPointer<ComponentEditorItem> item : childItems_)
     {
         const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
             item.dynamicCast<ComponentEditorBusInterfacesItem>();
@@ -121,7 +121,6 @@ void ComponentEditorRootItem::onInterfaceAdded()
             int childIndex = busIfsItem->children().count();
             model_->addItem(busIfsItem.data(), childIndex);
             busIfsItem->refreshEditor();
-            busIfsItem->child(childIndex)->setHighlight(true);
             return;
         }
     }

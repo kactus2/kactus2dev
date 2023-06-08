@@ -11,6 +11,8 @@
 
 #include "NameGroupWriter.h"
 
+#include "CommonItemsWriter.h"
+
 //-----------------------------------------------------------------------------
 // Function: NameGroupWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
@@ -18,16 +20,12 @@ void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Na
 {
     writer.writeTextElement(QStringLiteral("ipxact:name"), nameGroup->name());
 
-    if (!nameGroup->displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), nameGroup->displayName());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:displayName"), nameGroup->displayName());
     if (!nameGroup->shortDescription().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
     }
-    if (!nameGroup->description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), nameGroup->description());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
+
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:description"), nameGroup->description());
 }

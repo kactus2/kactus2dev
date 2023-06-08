@@ -15,8 +15,7 @@
 // Function: ModuleParameter::ModuleParameter()
 //-----------------------------------------------------------------------------
 ModuleParameter::ModuleParameter() :
-Parameter(),
-isPresent_()
+Parameter()
 {
     
 }

@@ -62,14 +62,6 @@ void CommonItemsWriter::writeDisplayName(QXmlStreamWriter& writer, QString const
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeDisplayName()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeDisplayName(QXmlStreamWriter& writer, std::string const& displayName)
-{
-    writeNonEmptyElement(writer, QStringLiteral("ipxact:displayName"), displayName);
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeDescription()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeDescription(QXmlStreamWriter& writer, QString const& description)
@@ -78,25 +70,9 @@ void CommonItemsWriter::writeDescription(QXmlStreamWriter& writer, QString const
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeDescription()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeDescription(QXmlStreamWriter& writer, std::string const& description)
-{
-    writeNonEmptyElement(writer, QStringLiteral("ipxact:description"), description);
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeShortDescription()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeShortDescription(QXmlStreamWriter& writer, QString const& shortDescription)
-{
-    writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), shortDescription);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeShortDescription()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeShortDescription(QXmlStreamWriter& writer, std::string const& shortDescription)
 {
     writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), shortDescription);
 }
@@ -160,14 +136,6 @@ void CommonItemsWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedP
 // Function: CommonItemsWriter::writeIsPresent()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent)
-{
-    writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), isPresent);
-}
-
-//-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, std::string const& isPresent)
 {
     writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), isPresent);
 }

@@ -50,10 +50,10 @@ public:
      *      @param [in] parent          The parent object.
      */
     HWComponentItem(LibraryInterface* libInterface, QSharedPointer<ComponentInstance> instance,
-        QSharedPointer<Component> component, QGraphicsItem* parent = 0);
+        QSharedPointer<Component> component, QGraphicsItem* parent = nullptr);
 
 	//! The destructor
-	virtual ~HWComponentItem();
+	~HWComponentItem() final;
 
     int type() const { return Type; }
 
@@ -61,11 +61,6 @@ public:
      *  Updates the diagram component to reflect the current state of the component model.
      */
     virtual void updateComponent();
-
-    /*!
-	 *  Returns the height of the component.
-	 */
-	virtual qreal getHeight();
 
     /*!
      *  Called when a port's ad-hoc visibility has been changed.
@@ -158,7 +153,7 @@ public:
      *
      *      @return True, if the component is a draft component, otherwise false.
      */
-    bool isDraft();
+    bool isDraft() const;
 
     /*!
      *  Create an ad hoc port item with the given name.
@@ -194,41 +189,6 @@ private:
     //! No assignment
 	HWComponentItem& operator=(const HWComponentItem& other);
 
-    /*!
-     *  Adds an interface item to component side determined by the item position.
-     *
-     *      @param [in] port   The interface item to add.
-     */
-    void addPortToSideByPosition(HWConnectionEndpoint* port);
-       
-    /*!
-     *  Adds an interface item to the component side with less ports.
-     *
-     *      @param [in] port   The interface item to add.
-     */
-    void addPortToSideWithLessPorts(HWConnectionEndpoint* port);
-
-    /*!
-     *  Adds a bus interface on the left side of the component item.
-     *
-     *      @param [in] port   The port to add.
-     */
-    void addPortToLeft(HWConnectionEndpoint* port);
-    
-    /*!
-     *  Adds a bus interface on the right side of the component item.
-     *
-     *      @param [in] port   The port to add.
-     */
-    void addPortToRight(HWConnectionEndpoint* port);
-
-	/*!
-	 *  Check and resize the port labels to better match with the component width.
-	 *
-	 *      @param [in] port       The port that is compared to the other stack.
-	 *      @param [in] otherSide  The stack containing the ports of the other side.
-	 */
-    void checkPortLabelSize( ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide );
    
     //! Positions the bus interface items for the component.        
     void positionBusInterfaceTerminals();
@@ -254,25 +214,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    enum
-    {
-        SPACING = GridSize,
-        MIN_Y_PLACEMENT = 3 * GridSize,
-		BOTTOM_MARGIN = 2 * GridSize,
-    };
-
 	//! Hierarchy icon for the component.
-    QGraphicsPixmapItem* hierIcon_;
+    QGraphicsPixmapItem* hierIcon_ = nullptr;
 
     //! The old column from where the mouse drag event began.
-    HWColumn* oldColumn_;
-
-    //! The layout for ports.
-    QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> > portLayout_;
-
-    //! The left and right port stacks.
-    QList<ConnectionEndpoint*> leftPorts_;
-    QList<ConnectionEndpoint*> rightPorts_;
+    HWColumn* oldColumn_ = nullptr;
 
     //! The old position.
     QPointF oldPos_;

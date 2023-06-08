@@ -33,16 +33,9 @@
 //-----------------------------------------------------------------------------
 AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, 
     QSharedPointer<AdHocConnection> adhocConnection, QSharedPointer<ConnectionRoute> route,
-    DesignDiagram* parent)
-    : GraphicsConnection(endpoint1, endpoint2, true,
-    adhocConnection->name(),
-    adhocConnection->displayName(),
-    adhocConnection->description(), parent),
-    adHocConnection_(adhocConnection),
-    route_(route)
+    DesignDiagram* parent):
+    ConnectionItem(endpoint1, endpoint2, adhocConnection, route, true, parent)
 {
-    GraphicsConnection::setRoute(route_->getRoute());
-
     setLineWidth(1);
 }
 
@@ -52,104 +45,9 @@ AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, Connecti
 AdHocConnectionItem::AdHocConnectionItem(QPointF const& p1, QVector2D const& dir1,
     QPointF const& p2, QVector2D const& dir2,
     DesignDiagram* parent):
-GraphicsConnection(p1, dir1, p2, dir2, parent),
-    adHocConnection_(),
-    route_()
+    ConnectionItem(p1, dir1, p2, dir2, parent)
 {
     setLineWidth(1);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::~AdHocConnectionItem()
-//-----------------------------------------------------------------------------
-AdHocConnectionItem::~AdHocConnectionItem()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::setName()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::setName(QString const& name)
-{
-    GraphicsConnection::setName(name);
-
-    adHocConnection_->setName(name);
-    route_->setName(name);
-    
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::name()
-//-----------------------------------------------------------------------------
-QString AdHocConnectionItem::name() const
-{
-    return adHocConnection_->name();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::setDescription()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::setDescription(QString const& description)
-{
-    adHocConnection_->setDescription(description);
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::description()
-//-----------------------------------------------------------------------------
-QString AdHocConnectionItem::description() const
-{
-    return adHocConnection_->description();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::getAdHocConnection()
-//-----------------------------------------------------------------------------
-QSharedPointer<AdHocConnection> AdHocConnectionItem::getAdHocConnection()
-{
-    return adHocConnection_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::getRouteExtension()
-//-----------------------------------------------------------------------------
-QSharedPointer<ConnectionRoute> AdHocConnectionItem::getRouteExtension() const
-{
-    return route_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::connectEnds()
-//-----------------------------------------------------------------------------
-bool AdHocConnectionItem::connectEnds()
-{
-    if (!GraphicsConnection::connectEnds())
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::toggleOffPage()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::toggleOffPage()
-{
-    route_->setOffpage(!route_->isOffpage());
-    GraphicsConnection::toggleOffPage();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::setRoute()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::setRoute(QList<QPointF> path)
-{
-    route_->setRoute(path);
-
-    GraphicsConnection::setRoute(path);
 }
 
 //-----------------------------------------------------------------------------
@@ -160,16 +58,3 @@ bool AdHocConnectionItem::isBus() const
     return false;
 }
 
-//-----------------------------------------------------------------------------
-// Function: AdHocConnectionItem::changeConnectionComponentReference()
-//-----------------------------------------------------------------------------
-void AdHocConnectionItem::changeConnectionComponentReference(QString const& oldName, QString const& newName)
-{
-    foreach (QSharedPointer<PortReference> portReference, *adHocConnection_->getInternalPortReferences())
-    {
-        if (portReference->getComponentRef().compare(oldName) == 0)
-        {
-            portReference->setComponentRef(newName);
-        }
-    }
-}

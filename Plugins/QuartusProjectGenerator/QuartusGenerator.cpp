@@ -455,12 +455,12 @@ void QuartusGenerator::readDesign(QSharedPointer<const Design> design,
 
         QSharedPointer<View> view;
 
-        if (desConf && desConf->hasActiveView(instance->getInstanceName().toStdString()))
+        if (desConf && desConf->hasActiveView(instance->getInstanceName()))
         {
             QMap<QString, QString> viewOverrides = desConf->getKactus2ViewOverrides();
 
             QString viewName = viewOverrides.value(instance->getUuid(), 
-                QString::fromStdString(desConf->getActiveView(instance->getInstanceName().toStdString())));
+                desConf->getActiveView(instance->getInstanceName()));
 
             view = Search::findByName(viewName, *component->getViews());
         }

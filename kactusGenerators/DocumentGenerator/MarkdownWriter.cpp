@@ -623,7 +623,7 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
                 + instance->getComponentRef()->toString(":") + ")"
             << getComponentInstanceConfigurableElements(instance, design)
             << (configuration && configuration->getDesignRef() == design->getVlnv()
-                ? QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()))
+                ? configuration->getActiveView(instance->getInstanceName())
                 : QStringLiteral(""))
         );
 
@@ -634,7 +634,7 @@ void MarkdownWriter::writeDesignInstances(QTextStream& stream, QSharedPointer<De
 //-----------------------------------------------------------------------------
 // Function: MarkdownWriter::writeEndOfDocument()
 //-----------------------------------------------------------------------------
-void MarkdownWriter::writeEndOfDocument(QTextStream& stream)
+void MarkdownWriter::writeEndOfDocument(QTextStream& /*stream*/)
 {
 }
 

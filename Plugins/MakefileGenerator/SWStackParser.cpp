@@ -122,7 +122,7 @@ void SWStackParser::parse(QString const& sysViewName)
 		QSharedPointer<Component> hardComponent = library_->getModel(*hardwareVLNV).dynamicCast<Component>();
 
 		// Find the view corresponding the active view name
-		QString hardViewName = QString::fromStdString(designConf_->getActiveView(hardInstance->getInstanceName().toStdString()));
+		QString hardViewName = designConf_->getActiveView(hardInstance->getInstanceName());
 		QSharedPointer<View> hardView = hardComponent->getModel()->findView(hardViewName);
 
 		// If not found, skip.
@@ -191,7 +191,7 @@ void SWStackParser::parse(QString const& sysViewName)
 //-----------------------------------------------------------------------------
 bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance, QSharedPointer<Component> softComponent)
 {
-    foreach (QSharedPointer<ApiInterconnection> connection, design_->getApiConnections())
+    for (QSharedPointer<ApiInterconnection> connection : design_->getApiConnections())
     {
         QSharedPointer<ApiInterface> ourInterface;
 
@@ -202,7 +202,7 @@ bool SWStackParser::isTopOfStack(QSharedPointer<ComponentInstance> softInstance,
         else
         {
             // See if one of the ends is ours.
-            foreach (QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
+            for (QSharedPointer<ActiveInterface> activeInterface : *connection->getActiveInterfaces())
             {
                 if (softInstance->getInstanceName() == activeInterface->getComponentReference())
                 {
@@ -236,7 +236,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 	}
 
 	// There may be only one active software view.
-	QString softViewName = QString::fromStdString(designConf_->getActiveView(softInstance->getInstanceName().toStdString()));
+	QString softViewName = designConf_->getActiveView(softInstance->getInstanceName());
 
     // It must correspond an actual view in the component.
 	QSharedPointer<View> softView = softComponent->getModel()->findView(softViewName);
@@ -315,7 +315,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 	stackPart->instanceHeaders = fileSet;
 
     // Go through the list of connections in the design to retrieve remote endpoint identifiers.
-    foreach (QSharedPointer<ApiInterconnection> connection, design_->getApiConnections())
+    for (QSharedPointer<ApiInterconnection> connection : design_->getApiConnections())
     {
         QSharedPointer<ApiInterface> ourInterface;
         QSharedPointer<ApiInterface> theirInterface;
@@ -334,7 +334,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
             theirInterface = theirComponent->getApiInterface(connection->getStartInterface()->getBusReference());
         }
 
-        foreach(QSharedPointer<ActiveInterface> activeInterface, *connection->getActiveInterfaces())
+        for (QSharedPointer<ActiveInterface> activeInterface : *connection->getActiveInterfaces())
         {
             if (softInstance->getInstanceName() == activeInterface->getComponentReference())
             {
@@ -364,7 +364,7 @@ QSharedPointer<Component> SWStackParser::searchSWComponent(QString instanceName,
     QSharedPointer<ComponentInstance>& targetInstance)
 {
     // Go through the software instances of the design, finding the right one.
-    foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
+    for (QSharedPointer<ComponentInstance> instance : *design_->getComponentInstances())
     {
         // If the found instance name is same as target, it is what we seek.
         if (instance->getInstanceName() == instanceName)

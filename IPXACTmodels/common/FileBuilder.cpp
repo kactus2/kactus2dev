@@ -113,12 +113,7 @@ void FileBuilder::setFileType( const QString& newFileType )
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::hasFileType()
 //-----------------------------------------------------------------------------
-bool FileBuilder::hasFileType( const QString& fileType ) const
+bool FileBuilder::hasFileType(const QString& fileType) const
 {
-    if (fileType_ == fileType || userFileType_ == fileType)
-    {
-        return true;
-    }
-
-    return false;
+    return fileType_ == fileType || userFileType_ == fileType;
 }

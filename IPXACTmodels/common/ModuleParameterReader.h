@@ -15,7 +15,6 @@
 #include "ModuleParameter.h"
 #include "ParameterReader.h"
 
-#include <QObject>
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
@@ -23,15 +22,13 @@
 //-----------------------------------------------------------------------------
 class ModuleParameterReader : public ParameterReader
 {
-    Q_OBJECT
-
 public:
 
 	//! The constructor.
-    ModuleParameterReader(QObject* parent = 0);
+    ModuleParameterReader();
 
 	//! The destructor.
-    ~ModuleParameterReader();
+    ~ModuleParameterReader() final;
 
     /*!
      *  Creates a module parameter from XML description.

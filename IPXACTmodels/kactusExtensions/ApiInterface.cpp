@@ -13,6 +13,7 @@
 #include "ApiInterface.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: str2DependencyDirection()
@@ -151,14 +152,10 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
-    if (!displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
-    }
-    if (!description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
-    }
+
+    CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeDescription(writer, description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:apiType"));
     writer.writeAttribute(QStringLiteral("vendor"), apiType_.getVendor());

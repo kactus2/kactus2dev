@@ -69,12 +69,6 @@ onlySW_(onlySW)
     setDiagram(new SystemDesignDiagram(onlySW, lh, getEditProvider(), this));
 }
 
-//-----------------------------------------------------------------------------
-// Function: ~SystemDesignWidget()
-//-----------------------------------------------------------------------------
-SystemDesignWidget::~SystemDesignWidget()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: setDesign()
@@ -92,7 +86,7 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     // Retrieve the model.
     QSharedPointer<Component> system = getLibraryInterface()->getModel(vlnv).staticCast<Component>();
 
-    if (system == 0)
+    if (system == nullptr)
     {
         return false;
     }
@@ -108,7 +102,6 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
     connect(getDiagram(), SIGNAL(modeChanged(DrawMode)),
         this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
-/*    setDocumentName(system->getVlnv().getName() + " (" + system->getVlnv().getVersion() + ")");*/
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     if (onlySW_)
     {
@@ -301,14 +294,14 @@ void SystemDesignWidget::onDeleteSelectedItems()
 void SystemDesignWidget::deleteSelectedSystemColumns(QList<QGraphicsItem*> selectedItems)
 {
     // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         SystemColumn* column = static_cast<SystemColumn*>(selected);
 
         if (!column->isEmpty())
         {
             // Column cannot be deleted if it contains HW mapping items.
-            foreach (QGraphicsItem* childItem, column->getItems())
+            for (QGraphicsItem* childItem: column->getItems())
             {
                 if (childItem->type() == HWMappingItem::Type)
                 {
@@ -339,7 +332,7 @@ void SystemDesignWidget::deleteSelectedSystemColumns(QList<QGraphicsItem*> selec
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         SystemColumn* column = static_cast<SystemColumn*>(selected);
         QUndoCommand* childCmd = new SystemColumnDeleteCommand(getDiagram(), column, cmd.data());
@@ -357,7 +350,7 @@ void SystemDesignWidget::deleteSelectedSWComponentItems(QList<QGraphicsItem*> se
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         SWComponentItem* component = static_cast<SWComponentItem*>(selected);
 
@@ -376,7 +369,7 @@ void SystemDesignWidget::deleteSelectedSWComponentItems(QList<QGraphicsItem*> se
 
             childCmd->redo();
 
-            foreach(Association* association, component->getAssociations())
+            for(Association* association : component->getAssociations())
             {
                 QUndoCommand* associationRemoveCmd =
                     new AssociationRemoveCommand(association, getDiagram(), childCmd);
@@ -396,7 +389,7 @@ void SystemDesignWidget::deleteSelectedSWPortItems(QList<QGraphicsItem*> selecte
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         SWPortItem* port = static_cast<SWPortItem*>(selected);
 
@@ -420,7 +413,7 @@ void SystemDesignWidget::deleteSelectedSWInterfaceItems(QList<QGraphicsItem*> se
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(selected);
 
@@ -440,11 +433,11 @@ void SystemDesignWidget::deleteSelectedComConnectionItems(QList<QGraphicsItem*> 
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected: selectedItems)
     {
-        ComGraphicsConnection* comConnection = static_cast<ComGraphicsConnection*>(selected);
-        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
-        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
+        auto comConnection = static_cast<ComGraphicsConnection*>(selected);
+        auto endPoint1 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint1());
+        auto endPoint2 = static_cast<SWConnectionEndpoint*>(comConnection->endpoint2());
 
         QUndoCommand* childCommand =
             new ComConnectionDeleteCommand(comConnection, getDiagram()->getDesign(), undoCommand.data());
@@ -465,11 +458,11 @@ void SystemDesignWidget::deleteSelectedApiConnectionItems(QList<QGraphicsItem*> 
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        ApiGraphicsConnection* apiConnection = static_cast<ApiGraphicsConnection*>(selected);
-        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
-        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
+        auto apiConnection = static_cast<ApiGraphicsConnection*>(selected);
+        auto endPoint1 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint1());
+        auto endPoint2 = static_cast<SWConnectionEndpoint*>(apiConnection->endpoint2());
 
         QUndoCommand* childCommand =
             new ApiConnectionDeleteCommand(apiConnection, getDiagram()->getDesign(), undoCommand.data());
@@ -490,11 +483,11 @@ void SystemDesignWidget::deleteSelectedGraphicsConnectionItems(QList<QGraphicsIt
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> undoCommand(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        GraphicsConnection* connection = static_cast<GraphicsConnection*>(selected);
-        SWConnectionEndpoint* endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
-        SWConnectionEndpoint* endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
+        auto connection = static_cast<GraphicsConnection*>(selected);
+        auto endPoint1 = static_cast<SWConnectionEndpoint*>(connection->endpoint1());
+        auto endPoint2 = static_cast<SWConnectionEndpoint*>(connection->endpoint2());
 
         QUndoCommand* childCommand = new QUndoCommand(undoCommand.data());
         childCommand->redo();
@@ -514,7 +507,7 @@ void SystemDesignWidget::deleteConnectedEndPoint(SWConnectionEndpoint* endPoint,
 {
     if (endPoint->isInvalid())
     {
-        QUndoCommand* endPointCommand = 0;
+        QUndoCommand* endPointCommand = nullptr;
         if (endPoint->type() == SWPortItem::Type)
         {
             endPointCommand = new SWPortDeleteCommand(
@@ -618,7 +611,7 @@ bool SystemDesignWidget::saveAs()
 	// Find the open view.
 	QSharedPointer<SystemView> openView;
 
-	foreach ( QSharedPointer<SystemView> currentView, getEditedComponent()->getSystemViews() )
+	for (QSharedPointer<SystemView> currentView : getEditedComponent()->getSystemViews())
 	{
 		if ( getOpenViewName() == currentView->name() )
 		{
@@ -662,9 +655,9 @@ bool SystemDesignWidget::saveAs()
     QString sourcePath = sourceInfo.absolutePath();
 
 	// Update the file paths and copy necessary files.
-	foreach (QSharedPointer<FileSet> fileSet, *oldComponent->getFileSets())
+	for (QSharedPointer<FileSet> fileSet : *oldComponent->getFileSets())
 	{
-		foreach (QSharedPointer<File> file, *fileSet->getFiles())
+		for (QSharedPointer<File> file: *fileSet->getFiles())
 		{
 			// Get the absolute path to the file.
 			QDir source(sourcePath);
@@ -699,14 +692,11 @@ bool SystemDesignWidget::saveAs()
     getLibraryInterface()->beginSave();
 
     // if design configuration is used then write it.
-    if (designConf)
+    if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf))
     {
-        if (!getLibraryInterface()->writeModelToFile(directory, designConf))
-        {
-            writeSucceeded = false;
-        }
+        writeSucceeded = false;
     }
-
+    
     if (!getLibraryInterface()->writeModelToFile(directory, design))
     {
         writeSucceeded = false;

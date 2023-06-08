@@ -158,7 +158,7 @@ void ViewConfigurer::createChildTreeWidgetItems(QSharedPointer<Design> currentDe
             VLNV componentReference = *currentInstance->getComponentRef();
             QSharedPointer<Component> component = libraryHandler_->getModel(componentReference).dynamicCast<Component>();
 
-            QString instanceViewName = QString::fromStdString(currentDesignConfiguration->getActiveView(currentInstance->getInstanceName().toStdString()));
+            QString instanceViewName = currentDesignConfiguration->getActiveView(currentInstance->getInstanceName());
 
             QTreeWidgetItem* instanceItem (new QTreeWidgetItem(parentItem));
             instanceItem->setText(ViewConfigurerColumns::ITEM_VLNV, componentReference.toString(":"));
@@ -247,7 +247,7 @@ void ViewConfigurer::modifyTreeWithExistingViewGroup()
 {
     if(selectedDesignConfiguration_)
     {
-        QMap<QString, QString> viewOverrides = selectedDesignConfiguration_->getKactus2ViewOverrides();
+        auto viewOverrides = selectedDesignConfiguration_->getKactus2ViewOverrides();
 
         if (!viewOverrides.isEmpty())
         {

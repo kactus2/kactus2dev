@@ -44,7 +44,7 @@ QSharedPointer<ConfigurableVLNVReference> AbstractorInstance::getAbstractorRef()
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getShortDescription()
 //-----------------------------------------------------------------------------
-std::string AbstractorInstance::getShortDescription() const
+QString AbstractorInstance::getShortDescription() const
 {
     return shortDescription_;
 }
@@ -52,7 +52,7 @@ std::string AbstractorInstance::getShortDescription() const
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getDescription()
 //-----------------------------------------------------------------------------
-std::string AbstractorInstance::getDescription() const
+QString AbstractorInstance::getDescription() const
 {
     return description_;
 }
@@ -60,7 +60,7 @@ std::string AbstractorInstance::getDescription() const
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getDisplayName()
 //-----------------------------------------------------------------------------
-std::string AbstractorInstance::getDisplayName() const
+QString AbstractorInstance::getDisplayName() const
 {
     return displayName_;
 }
@@ -68,7 +68,7 @@ std::string AbstractorInstance::getDisplayName() const
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getInstanceName()
 //-----------------------------------------------------------------------------
-std::string AbstractorInstance::getInstanceName() const
+QString AbstractorInstance::getInstanceName() const
 {
     return instanceName_;
 }
@@ -76,7 +76,7 @@ std::string AbstractorInstance::getInstanceName() const
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::getViewName()
 //-----------------------------------------------------------------------------
-std::string AbstractorInstance::getViewName() const
+QString AbstractorInstance::getViewName() const
 {
     return viewName_;
 }
@@ -92,7 +92,7 @@ void AbstractorInstance::setAbstractorRef(QSharedPointer<ConfigurableVLNVReferen
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::setShortDescription()
 //-----------------------------------------------------------------------------
-void AbstractorInstance::setShortDescription(const std::string& shortDescription)
+void AbstractorInstance::setShortDescription(const QString& shortDescription)
 {
     shortDescription_ = shortDescription;
 }
@@ -100,7 +100,7 @@ void AbstractorInstance::setShortDescription(const std::string& shortDescription
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::setDescription()
 //-----------------------------------------------------------------------------
-void AbstractorInstance::setDescription(const std::string& description)
+void AbstractorInstance::setDescription(const QString& description)
 {
     description_ = description;
 }
@@ -108,7 +108,7 @@ void AbstractorInstance::setDescription(const std::string& description)
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::setDisplayName()
 //-----------------------------------------------------------------------------
-void AbstractorInstance::setDisplayName(const std::string& displayName)
+void AbstractorInstance::setDisplayName(const QString& displayName)
 {
     displayName_ = displayName;
 }
@@ -116,7 +116,7 @@ void AbstractorInstance::setDisplayName(const std::string& displayName)
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::setInstanceName()
 //-----------------------------------------------------------------------------
-void AbstractorInstance::setInstanceName(const std::string& instanceName)
+void AbstractorInstance::setInstanceName(const QString& instanceName)
 {
     instanceName_ = instanceName;
 }
@@ -124,7 +124,7 @@ void AbstractorInstance::setInstanceName(const std::string& instanceName)
 //-----------------------------------------------------------------------------
 // Function: AbstractorInstance::setViewName()
 //-----------------------------------------------------------------------------
-void AbstractorInstance::setViewName(const std::string& viewName)
+void AbstractorInstance::setViewName(const QString& viewName)
 {
     viewName_ = viewName;
 }

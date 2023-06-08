@@ -17,6 +17,7 @@
 #include "BusInterfaceWizardIntroPage.h"
 #include "BusInterfaceWizardGeneralOptionsPage.h"
 #include "BusInterfaceWizardBusDefinitionPage.h"
+#include "BusInterfaceWizardAbsDefinitionPage.h"
 #include "BusInterfaceWizardPortMapPage.h"
 #include "BusInterfaceWizardConclusionPage.h"
 
@@ -53,11 +54,12 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(
         expressionParser, component->getChoices()));
 
-    BusInterfaceWizardBusDefinitionEditorPage::SignalNamingPolicy namingPolicy =
-        BusInterfaceWizardBusDefinitionEditorPage::NAME;
+    BusInterfaceWizardAbsDefinitionPage::SignalNamingPolicy namingPolicy =
+        BusInterfaceWizardAbsDefinitionPage::NAME;
+
     if (descriptionAsLogicalName)
     {
-        namingPolicy = BusInterfaceWizardBusDefinitionEditorPage::DESCRIPTION;
+        namingPolicy = BusInterfaceWizardAbsDefinitionPage::DESCRIPTION;
     }
 
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
@@ -81,18 +83,12 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
             setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
             setPage(PAGE_GENERALOPTIONS, optionsPage);
             setPage(PAGE_BUSDEFINITION, new BusInterfaceWizardBusDefinitionEditorPage(
+                component, busIf, handler, absDefVLNV.isValid(), this));
+            setPage(PAGE_ABSDEFINITION, new BusInterfaceWizardAbsDefinitionPage(
                 component, busIf, handler, portNames, this, absDefVLNV, expressionParser, namingPolicy));
             setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
                 expressionParser, parameterFinder, busInterface, portMapInterface, this));
             setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceWizard::~BusInterfaceWizard()
-//-----------------------------------------------------------------------------
-BusInterfaceWizard::~BusInterfaceWizard()
-{
-
 }

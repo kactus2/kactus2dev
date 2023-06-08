@@ -18,6 +18,8 @@
 
 #include <common/graphicsItems/ConnectionEndpoint.h>
 
+#include <editors/common/GraphicsItemLabel.h>
+
 #include <QList>
 #include <QPointF>
 #include <QVector2D>
@@ -30,7 +32,6 @@ class BusInterface;
 class VLNV;
 class OffPageConnectorItem;
 class HWComponentItem;
-class GraphicsItemLabel;
 
 //-----------------------------------------------------------------------------
 //! HWConnectionEndpoint interface.
@@ -54,7 +55,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~HWConnectionEndpoint();
+    ~HWConnectionEndpoint() override = default;
+
+    // Disable copying.
+    HWConnectionEndpoint(HWConnectionEndpoint const& rhs) = delete;
+    HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs) = delete;
 
     virtual void updateInterface();
 
@@ -121,9 +126,6 @@ protected:
 
 
 private:
-    // Disable copying.
-    HWConnectionEndpoint(HWConnectionEndpoint const& rhs);
-    HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs);
 
     /*!
      *  Update the graphics of the end point item.
@@ -140,16 +142,16 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Component containing this end point.
-    QSharedPointer<Component> containingComponent_;
+    QSharedPointer<Component> containingComponent_ = nullptr;
 
     //! Component item containing this end point item.
-    HWComponentItem* parentComponentItem_;
+    HWComponentItem* parentComponentItem_ = nullptr;
 
     //! The name label.
-    GraphicsItemLabel* nameLabel_;
+    GraphicsItemLabel* nameLabel_ = new GraphicsItemLabel(QString(), this);
 
     //! The off page connector item.
-    OffPageConnectorItem* offPageConnector_;
+    OffPageConnectorItem* offPageConnector_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

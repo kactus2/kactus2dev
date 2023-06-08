@@ -329,7 +329,7 @@ void InterfaceEditor::setBusInterface()
     QString activeView = activeTopView_;
     if (interface_->encompassingComp() && containingConfiguration_)
     {
-        activeView = QString::fromStdString(containingConfiguration_->getActiveView(interface_->encompassingComp()->name().toStdString()));
+        activeView = containingConfiguration_->getActiveView(interface_->encompassingComp()->name());
     }
 
     VLNV absVLNV;

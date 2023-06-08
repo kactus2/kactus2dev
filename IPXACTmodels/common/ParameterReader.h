@@ -12,7 +12,6 @@
 #ifndef PARAMETERREADER_H
 #define PARAMETERREADER_H
 
-#include <QObject>
 #include <QDomNode>
 
 #include <IPXACTmodels/common/Document.h>
@@ -24,17 +23,19 @@ class Parameter;
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ParameterReader : public QObject
+class IPXACTMODELS_EXPORT ParameterReader
 {
-    Q_OBJECT
-
 public:
 
 	//! The constructor.
-	ParameterReader(QObject* parent = 0);
+	ParameterReader();
 
 	//! The destructor.
-	~ParameterReader();
+	virtual ~ParameterReader();
+
+    // Disable copying.
+    ParameterReader(ParameterReader const& rhs) = delete;
+    ParameterReader& operator=(ParameterReader const& rhs) = delete;
 
     /*!
      *  Creates a parameter from XML description.
@@ -90,20 +91,6 @@ protected:
      *      @param [in/out] parameter   The parameter to insert the value into.
      */
     void parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
-       
-    /*!
-     *  Reads the vendor extensions from XML to a parameter.
-     *
-     *      @param [in] parameterNode   The XML description of the parameter.
-     *      @param [in/out] parameter   The parameter to insert the vendor extensions into.
-     */
-    void parseVendorExtensions(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const;
-
-private:
-
-    // Disable copying.
-    ParameterReader(ParameterReader const& rhs);
-    ParameterReader& operator=(ParameterReader const& rhs);
 
 };
 

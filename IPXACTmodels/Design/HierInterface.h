@@ -30,12 +30,12 @@ public:
      *
      *      @param [in] busRef  The name of the referenced bus interface.
      */
-    HierInterface(QString busRef = QString());
+    explicit HierInterface(QString busRef = QString());
 
     /*!
      *  Copy constructor.
      */
-    HierInterface(const HierInterface& other);
+    HierInterface(const HierInterface& other) = default;
 
     /*!
      *  The destructor.
@@ -52,17 +52,17 @@ public:
      *
      *      @return True, if the bus interfaces reference the same interface.
      */
-    bool operator==(const HierInterface& other);
+    bool operator==(const HierInterface& other) const;
 
     /*!
      *  The != operator.
      */
-    bool operator!=(const HierInterface& other);
+    bool operator!=(const HierInterface& other) const;
 
     /*!
      *  The < operator.
      */
-    bool operator<(const HierInterface& other);
+    bool operator<(const HierInterface& other) const;
 
     /*!
      *  Get the name of the referenced bus interface.

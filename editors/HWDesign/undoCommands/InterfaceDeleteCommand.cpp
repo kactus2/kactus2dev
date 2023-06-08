@@ -46,14 +46,14 @@ del_(true)
     if (removePorts)
     {
         // Create copies of the related ports and remove commands for them.
-        foreach (QSharedPointer<Port> port, 
+        for (QSharedPointer<Port> port : 
             interface_->getOwnerComponent()->getPortsMappedInInterface(busIf_->name()))
         {
             DeletePhysicalPortCommand* delCmd =
                 new DeletePhysicalPortCommand(interface_->getOwnerComponent(), port, this);
 
             // If the port is visible as ad-hoc in the current design, it must be hidden.
-            if (diagram->getDiagramAdHocPort(port->name()) != 0)
+            if (diagram->getDiagramAdHocPort(port->name()) != nullptr)
             {                               
                 new AdHocVisibilityChangeCommand(diagram, port->name(), false, delCmd);
             }
@@ -61,12 +61,12 @@ del_(true)
     }
 
     // Create child commands for removing interconnections.
-    foreach (GraphicsConnection* conn, interface_->getConnections())
+    for (GraphicsConnection* conn : interface_->getConnections())
     {
         new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
     }
 
-    foreach (GraphicsConnection* conn, interface_->getOffPageConnector()->getConnections())
+    for (GraphicsConnection* conn : interface_->getOffPageConnector()->getConnections())
     {
         new ConnectionDeleteCommand(diagram, static_cast<HWConnection*>(conn), this);
     }

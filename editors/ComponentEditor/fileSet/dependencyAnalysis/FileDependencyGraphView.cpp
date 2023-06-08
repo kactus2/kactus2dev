@@ -167,7 +167,7 @@ void FileDependencyGraphView::mousePressEvent(QMouseEvent* event)
         viewport()->repaint();
     }
 
-    int column = columnAt(event->x());
+    int column = columnAt(event->position().x());
 
     // Check if the user pressed over the dependencies column.
     if (column == FileDependencyColumns::DEPENDENCIES)
@@ -542,7 +542,7 @@ void FileDependencyGraphView::selectDependencyUnderCursor(QMouseEvent* event)
 
         if (event->button() == Qt::RightButton && selectedDependency_ != 0)
         {
-            createContextMenu(event->globalPos());
+            createContextMenu(event->globalPosition().toPoint());
         }
     }
 }
@@ -577,7 +577,7 @@ void FileDependencyGraphView::createContextMenuForDependency(QMouseEvent* event)
                     connect(resetAction, SIGNAL(triggered()), this, SLOT(onLocationReset()));
                 }
 
-                contextMenu.exec(event->globalPos());
+                contextMenu.exec(event->globalPosition().toPoint());
             }
         }
     }

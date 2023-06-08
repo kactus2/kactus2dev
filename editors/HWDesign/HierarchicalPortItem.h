@@ -48,7 +48,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HierarchicalPortItem();
+	~HierarchicalPortItem() final = default;
 
 	/*!
 	 *  Get the type of this graphics item.
@@ -138,10 +138,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The visibility data group of the item.
-    QSharedPointer<Kactus2Placeholder> dataGroup_;
+    QSharedPointer<Kactus2Placeholder> dataGroup_ = nullptr;
 
     //! The old column from where the mouse drag event began.
-    GraphicsColumn* oldColumn_;
+    GraphicsColumn* oldColumn_ = nullptr;
 
     //! The old positions of the other interfaces before mouse move.
     QMap<QGraphicsItem*, QPointF> oldInterfacePositions_;

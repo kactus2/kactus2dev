@@ -35,12 +35,21 @@
 DesignConfigurationValidator::DesignConfigurationValidator(QSharedPointer<ExpressionParser> parser,
     LibraryInterface* library):
 libraryHandler_(library),
-parameterValidator_(new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
-assertionValidator_(new AssertionValidator(parser)),
-interconnectionValidator_(new InterconnectionConfigurationValidator(parser, libraryHandler_)),
-viewConfigurationValidator_(new ViewConfigurationValidator(libraryHandler_, parser))
+parameterValidator_(),
+assertionValidator_(),
+interconnectionValidator_(),
+viewConfigurationValidator_()
 {
+    parameterValidator_ = QSharedPointer<ParameterValidator>(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
 
+    assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
+
+    interconnectionValidator_ = QSharedPointer<InterconnectionConfigurationValidator>(
+        new InterconnectionConfigurationValidator(parser, libraryHandler_));
+
+    viewConfigurationValidator_ =
+        QSharedPointer<ViewConfigurationValidator>(new ViewConfigurationValidator(libraryHandler_, parser));
 }
 
 //-----------------------------------------------------------------------------
@@ -138,8 +147,9 @@ bool DesignConfigurationValidator::hasValidInterconnectionConfigurations(
                 libraryHandler_->getDesign(designConfiguration->getDesignRef());
             interconnectionValidator_->designChanged(referencedDesign);
 
-            QVector<std::string> interconnectionReferences;
-            for (auto const& configuration : *designConfiguration->getInterconnectionConfs())
+            QVector<QString> interconnectionReferences;
+            foreach (QSharedPointer<InterconnectionConfiguration> configuration,
+                *designConfiguration->getInterconnectionConfs())
             {
                 if (interconnectionReferences.contains(configuration->getInterconnectionReference()) ||
                     !interconnectionValidator_->validate(configuration))
@@ -174,8 +184,8 @@ bool DesignConfigurationValidator::hasValidViewConfigurations(
 
             viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
 
-            QVector<std::string> instanceNames;
-            for (QSharedPointer<ViewConfiguration> viewConfiguration :
+            QVector<QString> instanceNames;
+            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
                 *designConfiguration->getViewConfigurations())
             {
                 if (instanceNames.contains(viewConfiguration->getInstanceName()) ||
@@ -339,18 +349,20 @@ void DesignConfigurationValidator::findErrorsInInterconnectionConfigurations(QVe
 
         QVector<QString> connectionReferences;
         QVector<QString> duplicateNames;
-        for (auto const& connectionConfiguration : *designConfiguration->getInterconnectionConfs())
+        foreach (QSharedPointer<InterconnectionConfiguration> connectionConfiguration,
+            *designConfiguration->getInterconnectionConfs())
         {
-            auto reference = QString::fromStdString(connectionConfiguration->getInterconnectionReference());
-            if (connectionReferences.contains(reference) && !duplicateNames.contains(reference))
+            if (connectionReferences.contains(connectionConfiguration->getInterconnectionReference()) &&
+                !duplicateNames.contains(connectionConfiguration->getInterconnectionReference()))
             {
                 errors.append(QObject::tr("Interconnection reference '%1' set for interconnection configuration "
-                    "within %2 is not unique.").arg(reference, context));
-                duplicateNames.append(reference);
+                    "within %2 is not unique.")
+                    .arg(connectionConfiguration->getInterconnectionReference()).arg(context));
+                duplicateNames.append(connectionConfiguration->getInterconnectionReference());
             }
 
             interconnectionValidator_->findErrorsIn(errors, connectionConfiguration, context);
-            connectionReferences.append(reference);
+            connectionReferences.append(connectionConfiguration->getInterconnectionReference());
         }
     }
 }
@@ -373,16 +385,16 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
                 viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
             }
 
-            QVector<std::string> instanceNames;
-            QVector<std::string> duplicateNames;
-            for (QSharedPointer<ViewConfiguration> viewConfiguration :
+            QVector<QString> instanceNames;
+            QVector<QString> duplicateNames;
+            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
                 *designConfiguration->getViewConfigurations())
             {
                 if (instanceNames.contains(viewConfiguration->getInstanceName()) &&
                     !duplicateNames.contains(viewConfiguration->getInstanceName()))
                 {
                     errors.append(QObject::tr("View configuration name '%1' within %2 is not unique.")
-                        .arg(QString::fromStdString(viewConfiguration->getInstanceName()), context));
+                        .arg(viewConfiguration->getInstanceName()).arg(context));
                     duplicateNames.append(viewConfiguration->getInstanceName());
                 }
                 else

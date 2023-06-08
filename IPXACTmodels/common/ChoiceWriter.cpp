@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ChoiceWriter.h"
+#include "CommonItemsWriter.h"
 
 //-----------------------------------------------------------------------------
 // Function: ChoiceWriter::writeChoice()
@@ -35,15 +36,9 @@ void ChoiceWriter::Details::writeEnumeration(QXmlStreamWriter& writer, QSharedPo
 {
     writer.writeStartElement(QStringLiteral("ipxact:enumeration"));
 
-    if (!enumeration->getText().isEmpty())
-    {
-        writer.writeAttribute(QStringLiteral("text"), enumeration->getText());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("text"), enumeration->getText());
 
-    if (!enumeration->getHelp().isEmpty())
-    {
-        writer.writeAttribute(QStringLiteral("help"), enumeration->getHelp());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("help"), enumeration->getHelp());
 
     writer.writeCharacters(enumeration->getValue());
 

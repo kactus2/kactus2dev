@@ -36,10 +36,10 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 {
     writer.writeStartDocument();
     
-    writeTopComments(writer, apiDefinition);
+    DocumentWriter::writeTopComments(writer, apiDefinition);
 	
     writer.writeStartElement(QStringLiteral("kactus2:apiDefinition"));
-    writeNamespaceDeclarations(writer, apiDefinition);
+	DocumentWriter::writeNamespaceDeclarations(writer, apiDefinition);
 
 	// Write basic information.
 	writer.writeTextElement(QStringLiteral("ipxact:vendor"), apiDefinition->getVlnv().getVendor());
@@ -47,10 +47,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 	writer.writeTextElement(QStringLiteral("ipxact:name"), apiDefinition->getVlnv().getName());
 	writer.writeTextElement(QStringLiteral("ipxact:version"), apiDefinition->getVlnv().getVersion());
 
-	if (!apiDefinition->getDescription().isEmpty())
-	{
-		writer.writeTextElement(QStringLiteral("ipxact:description"), apiDefinition->getDescription());
-	}
+	CommonItemsWriter::writeDescription(writer, apiDefinition->getDescription());
 
 	// Write COM definition reference.
 	VLNV comDefRef = apiDefinition->getComDefinitionRef();
@@ -64,7 +61,7 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 	// Write data types.
 	writer.writeStartElement(QStringLiteral("kactus2:dataTypes"));
 
-	foreach (QString const& type, *apiDefinition->getDataTypes())
+	for (QString const& type : *apiDefinition->getDataTypes())
 	{
 		writer.writeEmptyElement(QStringLiteral("kactus2:dataType"));
 		writer.writeAttribute(QStringLiteral("name"), type);
@@ -75,14 +72,14 @@ void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPo
 	// Write properties.
 	writer.writeStartElement(QStringLiteral("kactus2:functions"));
 
-	foreach (QSharedPointer<ApiFunction> func, *apiDefinition->getFunctions())
+	for (QSharedPointer<ApiFunction> func : *apiDefinition->getFunctions())
 	{
 		func->write(writer);
 	}
 
 	writer.writeEndElement(); // kactus2:functions
 
-    writeVendorExtensions(writer, apiDefinition);
+    CommonItemsWriter::writeVendorExtensions(writer, apiDefinition);
 
 	writer.writeEndElement(); // kactus2:apiDefinition
 	writer.writeEndDocument();

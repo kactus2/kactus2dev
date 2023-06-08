@@ -113,7 +113,7 @@ QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 //-----------------------------------------------------------------------------
 HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
 {
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +121,7 @@ HWConnectionEndpoint* AdHocEnabled::getDiagramAdHocPort(QString const&)
 //-----------------------------------------------------------------------------
 AdHocItem* AdHocEnabled::createAdhocItem(QString const&)
 {
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

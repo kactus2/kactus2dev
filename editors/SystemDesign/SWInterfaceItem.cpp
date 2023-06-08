@@ -38,16 +38,11 @@ SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QString co
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
 SWConnectionEndpoint(component, name, parent, QVector2D(1.0f, 0.0f)),
 component_(component),
-comInterface_(),
-apiInterface_(),
-oldPos_(),
-oldStack_(0),
-oldInterfacePositions_(),
 graphicsData_(interfaceGraphics)
 {
     setType(ENDPOINT_TYPE_UNDEFINED);
     setTypeLocked(false);
-    initialize();
+    SWInterfaceItem::initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -55,19 +50,15 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ApiInterface> apiIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, QString(apiIf->name()), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, apiIf->name(), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
-comInterface_(),
 apiInterface_(apiIf),
-oldPos_(),
-oldStack_(0),
-oldInterfacePositions_(),
 graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(apiIf != 0);
     setType(ENDPOINT_TYPE_API);
     setTypeLocked(true);
-    initialize();
+    SWInterfaceItem::initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -75,26 +66,15 @@ graphicsData_(interfaceGraphics)
 //-----------------------------------------------------------------------------
 SWInterfaceItem::SWInterfaceItem(QSharedPointer<Component> component, QSharedPointer<ComInterface> comIf,
                                  QSharedPointer<InterfaceGraphicsData> interfaceGraphics, QGraphicsItem *parent):
-SWConnectionEndpoint(component, QString(comIf->name()), parent, QVector2D(1.0f, 0.0f)),
+SWConnectionEndpoint(component, comIf->name(), parent, QVector2D(1.0f, 0.0f)),
 component_(component),
 comInterface_(comIf),
-apiInterface_(),
-oldPos_(),
-oldStack_(0),
-oldInterfacePositions_(),
 graphicsData_(interfaceGraphics)
 {
     Q_ASSERT(comIf != 0);
     setType(ENDPOINT_TYPE_COM);
     setTypeLocked(true);
-    initialize();
-}
-
-//-----------------------------------------------------------------------------
-// Function: SWInterfaceItem::~SWInterfaceItem()
-//-----------------------------------------------------------------------------
-SWInterfaceItem::~SWInterfaceItem()
-{
+    SWInterfaceItem::initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -119,7 +99,7 @@ QString SWInterfaceItem::name() const
 //-----------------------------------------------------------------------------
 // Function: setName()
 //-----------------------------------------------------------------------------
-void SWInterfaceItem::setName(const QString& name)
+void SWInterfaceItem::setName(QString const& name)
 {
     beginUpdateConnectionNames();
 
@@ -440,10 +420,7 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
     {
         graphicsData_->setPosition(value.toPointF());
 
-        foreach (GraphicsConnection* conn, getConnections())
-        {
-            conn->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -472,8 +449,8 @@ void SWInterfaceItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
     setPos(parentItem()->mapFromScene(oldStack_->mapStackToScene(pos())));
 
-    IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-    Q_ASSERT(stack != 0);
+    auto stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+    Q_ASSERT(stack != nullptr);
     stack->onMoveItem(this);
 }
 
@@ -486,31 +463,19 @@ void SWInterfaceItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
     oldPos_ = scenePos();
     oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
-    Q_ASSERT(oldStack_ != 0);
+    Q_ASSERT(oldStack_ != nullptr);
 
-    // Save the positions of the other interfaces.
-    /*foreach (GraphicsColumn* column, static_cast<GraphicsColumn*>(oldStack_)->getLayout().getColumns())
-    {*/
-        foreach (QGraphicsItem* item, scene()->items()) //column->childItems())
-        {
-            if (item->type() == SWInterfaceItem::Type)
-            {
-                SWInterfaceItem* interface = static_cast<SWInterfaceItem*>(item);
-                oldInterfacePositions_.insert(interface, interface->scenePos());
-            }
-        }
-    //}
-
-    // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem* item : scene()->items()) //column->childItems())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
+        if (item->type() == SWInterfaceItem::Type)
         {
-            conn->beginUpdatePosition();
+            auto interface = static_cast<SWInterfaceItem*>(item);
+            oldInterfacePositions_.insert(interface, interface->scenePos());
         }
     }
+
+    // Begin the position update for all connections.
+    beginUpdateConnectionPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -520,8 +485,8 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 {
     SWConnectionEndpoint::mouseReleaseEvent(event);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram && oldStack_ != 0)
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldStack_ != nullptr)
     {
         IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
         Q_ASSERT(stack != 0);
@@ -555,16 +520,7 @@ void SWInterfaceItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
         oldInterfacePositions_.clear();
 
-        // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-            if (conn != 0)
-            {
-                conn->endUpdatePosition(cmd.data());
-            }
-        }
+        endUpdateConnectionPositions(cmd.data());
 
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
@@ -643,6 +599,7 @@ void SWInterfaceItem::initialize()
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::onBeginConnect()
 {
+    //! Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
@@ -650,6 +607,7 @@ void SWInterfaceItem::onBeginConnect()
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::onEndConnect()
 {
+    //! Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
@@ -658,7 +616,7 @@ void SWInterfaceItem::onEndConnect()
 void SWInterfaceItem::setTypeDefinition(VLNV const& type)
 {
     // Disconnect existing connections before setting the type.
-    foreach (GraphicsConnection* conn, getConnections())
+    for (GraphicsConnection* conn : getConnections())
     {
         if (conn->endpoint1() != this)
         {
@@ -721,7 +679,7 @@ void SWInterfaceItem::setTypeDefinition(VLNV const& type)
     if (getType() != ENDPOINT_TYPE_UNDEFINED)
     {
         // Undefined endpoints of the connections can now be defined.
-        foreach (GraphicsConnection* conn, getConnections())
+        for (GraphicsConnection* conn : getConnections())
         {
             if (conn->endpoint1() != this)
             {
@@ -814,13 +772,13 @@ void SWInterfaceItem::define(QSharedPointer<ComInterface> comIf)
 //-----------------------------------------------------------------------------
 void SWInterfaceItem::undefine()
 {
-    if (apiInterface_ != 0)
+    if (apiInterface_ != nullptr)
     {
         getOwnerComponent()->getVendorExtensions()->removeOne(apiInterface_);
         apiInterface_.clear();
     }
 
-    if (comInterface_ != 0)
+    if (comInterface_ != nullptr)
     {
         getOwnerComponent()->getVendorExtensions()->removeOne(comInterface_);
         comInterface_.clear();
@@ -854,14 +812,7 @@ void SWInterfaceItem::setLabelPosition()
 //-----------------------------------------------------------------------------
 bool SWInterfaceItem::isCom() const
 {
-    if (comInterface_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return comInterface_ != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -869,12 +820,5 @@ bool SWInterfaceItem::isCom() const
 //-----------------------------------------------------------------------------
 bool SWInterfaceItem::isApi() const
 {
-    if (apiInterface_)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return apiInterface_ != nullptr;
 }

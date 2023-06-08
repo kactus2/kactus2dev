@@ -16,8 +16,7 @@
 //-----------------------------------------------------------------------------
 ActiveInterface::ActiveInterface(QString const& componentRef, QString const& busRef):
 HierInterface(busRef),
-componentRef_(componentRef),
-excludePorts_(new QStringList)
+componentRef_(componentRef)
 {
 
 }
@@ -30,18 +29,10 @@ HierInterface(other),
 componentRef_(other.componentRef_),
 excludePorts_(new QStringList())
 {
-    foreach (QString portName, *other.excludePorts_)
+    for (QString const& portName : *other.excludePorts_)
     {
         excludePorts_->append(portName);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ActiveInterface::~ActiveInterface()
-//-----------------------------------------------------------------------------
-ActiveInterface::~ActiveInterface()
-{
-    excludePorts_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +45,7 @@ ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)
         HierInterface::operator=(other);
         componentRef_ = other.componentRef_;
 
-        foreach (QString portName, *other.excludePorts_)
+        for (QString const& portName : *other.excludePorts_)
         {
             excludePorts_->append(portName);
         }
@@ -66,7 +57,7 @@ ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::operator==()
 //-----------------------------------------------------------------------------
-bool ActiveInterface::operator==(const ActiveInterface& other)
+bool ActiveInterface::operator==(const ActiveInterface& other) const
 {
     return (HierInterface::operator==(other)) &&
         (componentRef_.compare(other.componentRef_, Qt::CaseInsensitive) == 0);

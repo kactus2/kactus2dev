@@ -38,12 +38,12 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 {
     QSharedPointer<ComDefinition> comDefinition(new ComDefinition());
 
-    parseTopComments(document, comDefinition);
+    DocumentReader::parseTopComments(document, comDefinition);
 
-    parseXMLProcessingInstructions(document, comDefinition);
+	DocumentReader::parseXMLProcessingInstructions(document, comDefinition);
 
     QDomElement comNode = document.firstChildElement();
-    parseNamespaceDeclarations(comNode, comDefinition);
+	DocumentReader::parseNamespaceDeclarations(comNode, comDefinition);
 
 	comDefinition->setVlnv(createVLNVFrom(comNode, VLNV::COMDEFINITION));
 
@@ -71,7 +71,7 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 		}
     }
 
-    parseKactusAndVendorExtensions(comNode, comDefinition);
+	DocumentReader::parseKactusAndVendorExtensions(comNode, comDefinition);
 
 	return comDefinition;
 }

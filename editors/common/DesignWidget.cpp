@@ -69,7 +69,7 @@ DesignWidget::~DesignWidget()
     view_->verticalScrollBar()->disconnect(this);
 
     delete diagram_;
-    diagram_ = 0;
+    diagram_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +204,7 @@ void DesignWidget::refresh()
 //-----------------------------------------------------------------------------
 VLNV DesignWidget::getOpenDocument() const
 {
-    if (editedComponent_ != 0)
+    if (editedComponent_ != nullptr)
     {
         return editedComponent_->getVlnv();
     }
@@ -239,7 +239,7 @@ bool DesignWidget::save()
     QSharedPointer<Design> design = getDiagram()->getDesign();
     QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
-    if (design == 0)
+    if (design == nullptr)
     {
         return false;
     }
@@ -306,7 +306,7 @@ void DesignWidget::removeSelectedNotes()
     getDiagram()->clearSelection();
 
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         StickyNote* note = qgraphicsitem_cast<StickyNote*>(selected);
         StickyNoteRemoveCommand* noteRemoveCommand = new StickyNoteRemoveCommand(note, getDiagram(), 
@@ -333,7 +333,7 @@ void DesignWidget::removeSelectedAssociations()
     getDiagram()->clearSelection();
 
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         Association* association = qgraphicsitem_cast<Association*>(selected);
         QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), 

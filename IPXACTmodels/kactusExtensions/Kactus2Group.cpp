@@ -54,7 +54,7 @@ Kactus2Group* Kactus2Group::clone() const
 {
     Kactus2Group* cloned = new Kactus2Group(name_);
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (QSharedPointer<VendorExtension> extension : groupExtensions_)
     {
         cloned->groupExtensions_.append(QSharedPointer<VendorExtension>(extension->clone()));
     }
@@ -77,7 +77,7 @@ void Kactus2Group::write(QXmlStreamWriter& writer) const
 {
     writer.writeStartElement(name_);
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (QSharedPointer<VendorExtension> extension : groupExtensions_)
     {
         extension->write(writer);
     }
@@ -111,7 +111,7 @@ QList<QSharedPointer<VendorExtension> > Kactus2Group::getByType(QString const& t
 {
     QList<QSharedPointer<VendorExtension> > typedExtensions;
 
-    foreach(QSharedPointer<VendorExtension> extension, groupExtensions_)
+    for (QSharedPointer<VendorExtension> extension : groupExtensions_)
     {
         if (extension->type() == type)
         {

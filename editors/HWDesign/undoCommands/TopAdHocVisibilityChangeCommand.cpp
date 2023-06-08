@@ -25,8 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand()
 //-----------------------------------------------------------------------------
-TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand(HWDesignDiagram* diagram, QString const& portName,
-    bool newVisibility, QUndoCommand* parent):
+TopAdHocVisibilityChangeCommand::TopAdHocVisibilityChangeCommand(HWDesignDiagram* diagram, 
+    QString const& portName,
+    bool newVisibility, 
+    QUndoCommand* parent):
 AdHocVisibilityChangeCommand(diagram, portName, newVisibility, parent)
 {
     setupTieOffConnectionForDeletion(diagram, portName);
@@ -48,7 +50,7 @@ void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignD
         QSharedPointer<Design> containingDesign = diagram->getDesign();
         if (containingDesign)
         {
-            foreach (QSharedPointer<AdHocConnection> connection, *containingDesign->getAdHocConnections())
+            for (QSharedPointer<AdHocConnection> connection : *containingDesign->getAdHocConnections())
             {
                 if (!connection->getTiedValue().isEmpty())
                 {
@@ -73,7 +75,7 @@ void TopAdHocVisibilityChangeCommand::setupTieOffConnectionForDeletion(HWDesignD
 void TopAdHocVisibilityChangeCommand::setupColumnAddition(HWDesignDiagram* diagram)
 {
     GraphicsColumnLayout* diagramLayout = diagram->getLayout().data();
-    foreach (GraphicsColumn* column, diagramLayout->getColumns())
+    for  (GraphicsColumn* column : diagramLayout->getColumns())
     {
         if (column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
         {
@@ -87,12 +89,4 @@ void TopAdHocVisibilityChangeCommand::setupColumnAddition(HWDesignDiagram* diagr
     HWColumn* newColumn(new HWColumn(newColumnDescription, diagramLayout));
 
     new HWColumnAddCommand(diagramLayout, newColumn, diagram, this);
-}
-
-//-----------------------------------------------------------------------------
-// Function: TopAdHocVisibilityChangeCommand::~TopAdHocVisibilityChangeCommand()
-//-----------------------------------------------------------------------------
-TopAdHocVisibilityChangeCommand::~TopAdHocVisibilityChangeCommand()
-{
-
 }

@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: NameGroupReader::NameGroupReader()
 //-----------------------------------------------------------------------------
-NameGroupReader::NameGroupReader(QObject* parent /* = 0 */) :
-QObject(parent)
+NameGroupReader::NameGroupReader() 
 {
 
 }
@@ -31,28 +30,21 @@ NameGroupReader::~NameGroupReader()
 //-----------------------------------------------------------------------------
 // Function: NameGroupReader::parseNameGroup()
 //-----------------------------------------------------------------------------
-void NameGroupReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<NameGroup> nameGroup) const
+void NameGroupReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<NameGroup> nameGroup)
 {
-    QString newName = parseName(nameGroupNode);
-    nameGroup->setName(newName);
+    nameGroup->setName(parseName(nameGroupNode));
 
-    QString newDisplayName = parseDisplayName(nameGroupNode);
-    if (!newDisplayName.isEmpty())
-    {
-        nameGroup->setDisplayName(newDisplayName);
-    }
+    nameGroup->setDisplayName(parseDisplayName(nameGroupNode));
 
-    QString newDescription = parseDescription(nameGroupNode);
-    if (!newDescription.isEmpty())
-    {
-        nameGroup->setDescription(newDescription);
-    }
+    nameGroup->setShortDescription(parseShortDescription(nameGroupNode));
+
+    nameGroup->setDescription(parseDescription(nameGroupNode));
 }
 
 //-----------------------------------------------------------------------------
 // Function: NameGroupReader::parseName()
 //-----------------------------------------------------------------------------
-QString NameGroupReader::parseName(QDomNode const& nameGroupNode) const
+QString NameGroupReader::parseName(QDomNode const& nameGroupNode)
 {
     return nameGroupNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
 }
@@ -60,15 +52,23 @@ QString NameGroupReader::parseName(QDomNode const& nameGroupNode) const
 //-----------------------------------------------------------------------------
 // Function: NameGroupReader::parseDisplayName()
 //-----------------------------------------------------------------------------
-QString NameGroupReader::parseDisplayName(QDomNode const& nameGroupNode) const
+QString NameGroupReader::parseDisplayName(QDomNode const& nameGroupNode)
 {
     return nameGroupNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
+// Function: NameGroupReader::parseShortDescription()
+//-----------------------------------------------------------------------------
+QString NameGroupReader::parseShortDescription(QDomNode const& nameGroupNode)
+{
+    return nameGroupNode.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue();
+}
+
+//-----------------------------------------------------------------------------
 // Function: NameGroupReader::parseDescription()
 //-----------------------------------------------------------------------------
-QString NameGroupReader::parseDescription(QDomNode const& nameGroupNode) const
+QString NameGroupReader::parseDescription(QDomNode const& nameGroupNode)
 {
     return nameGroupNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
 }

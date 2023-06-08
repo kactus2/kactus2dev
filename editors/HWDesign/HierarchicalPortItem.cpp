@@ -32,10 +32,7 @@
 HierarchicalPortItem::HierarchicalPortItem(QSharedPointer<Component> component, QSharedPointer<Port> port,
     QSharedPointer<Kactus2Placeholder> dataGroup, QGraphicsItem* parent):
 AdHocItem(port, component, parent, QVector2D(1.0f, 0.0f)),
-dataGroup_(dataGroup),
-oldColumn_(0),
-oldInterfacePositions_(),
-oldPos_()
+dataGroup_(dataGroup)
 {
     if (dataGroup_->getAttributeValue("portName").isEmpty())
     {
@@ -55,13 +52,6 @@ oldPos_()
     updateInterface();
 }
 
-//-----------------------------------------------------------------------------
-// Function: HierarchicalPortItem::~HierarchicalPortItem()
-//-----------------------------------------------------------------------------
-HierarchicalPortItem::~HierarchicalPortItem()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: HierarchicalPortItem::isHierarchical()
@@ -121,7 +111,7 @@ QVariant HierarchicalPortItem::itemChange(GraphicsItemChange change, QVariant co
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel()->setRotation(-rotation());
-        if (getTieOffLabel() != 0)
+        if (getTieOffLabel() != nullptr)
         {
             getTieOffLabel()->setRotation(-rotation());
         }
@@ -131,10 +121,7 @@ QVariant HierarchicalPortItem::itemChange(GraphicsItemChange change, QVariant co
         dataGroup_->setAttribute("x", QString::number(value.toPointF().x()));
         dataGroup_->setAttribute("y", QString::number(value.toPointF().y()));
 
-        foreach (GraphicsConnection* interconnection, getConnections())
-        {
-            interconnection->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -149,9 +136,9 @@ void HierarchicalPortItem::saveOldPortPositions()
 
     oldColumn_ = dynamic_cast<GraphicsColumn*>(parentItem());
     oldPos_ = scenePos();
-    Q_ASSERT(oldColumn_ != 0);
+    Q_ASSERT(oldColumn_ != nullptr);
 
-    foreach (QGraphicsItem* item, scene()->items()) //column->childItems())
+    for (QGraphicsItem* item : scene()->items())
     {
         if (item->type() == GFX_TYPE_DIAGRAM_INTERFACE || item->type() == HierarchicalPortItem::Type)
         {
@@ -167,7 +154,7 @@ void HierarchicalPortItem::moveItemByMouse()
 {
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
-    GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
+    auto column = dynamic_cast<GraphicsColumn*>(parentItem());
     Q_ASSERT(column != 0);
     column->onMoveItem(this);
 }
@@ -180,11 +167,11 @@ void HierarchicalPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     HWConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram && oldColumn_ != 0)
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldColumn_ != nullptr)
     {
-        GraphicsColumn* column = dynamic_cast<GraphicsColumn*>(parentItem());
-        Q_ASSERT(column != 0);
+        auto column = dynamic_cast<GraphicsColumn*>(parentItem());
+        Q_ASSERT(column != nullptr);
         column->onReleaseItem(this);
 
         QSharedPointer<QUndoCommand> cmd;
@@ -212,14 +199,7 @@ void HierarchicalPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
         }
 
         // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
-        {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-            if (conn != 0)
-            {
-                conn->endUpdatePosition(cmd.data());
-            }
-        }
+        endUpdateConnectionPositions(cmd.data());
 
         // Add the undo command to the edit stack only if it has changes.
         if (cmd->childCount() > 0 || oldPos_ != scenePos())
@@ -228,7 +208,7 @@ void HierarchicalPortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             cmd->redo();
         }
 
-        oldColumn_ = 0;
+        oldColumn_ = nullptr;
     }
 }
 

@@ -30,6 +30,7 @@ class MonitorInterface;
 class Component;
 class ComponentInstance;
 class BusInterface;
+class PortMap;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:interconnection and ipxact:monitorInterconnection.
@@ -218,11 +219,12 @@ private:
      *  Check if a single exclude port is valid.
      *
      *      @param [in] portReference   The selected port reference.
-     *      @param [in] currentBus      The referenced bus interfaces.
+     *      @param [in] portMaps        The port maps to search the port for.
      *
      *      @return True, if the exclude port is valid, otherwise false.
      */
-    bool singleExcludePortIsValid(QString const& portReference, QSharedPointer<BusInterface> currentBus) const;
+    bool singleExcludePortIsValid(QString const& portReference, 
+        QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const;
 
     /*!
      *  Check if a monitor interface is valid.
@@ -374,7 +376,8 @@ private:
     LibraryInterface* libraryHandler_;
 
     //! The currently available component instances.
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableComponentInstances_;
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableComponentInstances_ =
+        QSharedPointer<QList<QSharedPointer<ComponentInstance> > >(new QList<QSharedPointer<ComponentInstance> >());
 };
 
 #endif // INTERCONNETIONVALIDATOR_H

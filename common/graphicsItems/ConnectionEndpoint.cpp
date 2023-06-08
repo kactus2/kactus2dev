@@ -20,18 +20,14 @@
 
 #include <common/KactusColors.h>
 
+#include <QGraphicsScene>
 #include <QPen>
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint::ConnectionEndpoint(QGraphicsItem* parent /*= 0*/) :
-QGraphicsPolygonItem(parent),
-dir_(),
-connections_(),
-temporary_(false),
-typeLocked_(true),
-connUpdateList_()
+QGraphicsPolygonItem(parent)
 {
 }
 
@@ -117,11 +113,51 @@ bool ConnectionEndpoint::isConnected() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::beginUpdateConnectionPositions()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::beginUpdateConnectionPositions() const
+{
+    for (QGraphicsItem* item : scene()->items())
+    {
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
+        {
+            conn->beginUpdatePosition();
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::endUpdateConnectionPositions()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::endUpdateConnectionPositions(QUndoCommand* parentCommand) const
+{
+    for (QGraphicsItem* item : scene()->items())
+    {
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
+        {
+            conn->endUpdatePosition(parentCommand);
+        }
+    }
+}
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::updateConnectionPositions()
+//-----------------------------------------------------------------------------
+void ConnectionEndpoint::updateConnectionPositions() const 
+{
+    for (GraphicsConnection* connection : getConnections())
+    {
+        connection->updatePosition();
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::onDisconnect()
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::onDisconnect()
 {
-
+    // Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
@@ -200,7 +236,7 @@ bool ConnectionEndpoint::isDirectionFixed() const
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> ConnectionEndpoint::getBusInterface() const
 {
-    return QSharedPointer<BusInterface>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -208,7 +244,7 @@ QSharedPointer<BusInterface> ConnectionEndpoint::getBusInterface() const
 //-----------------------------------------------------------------------------
 QSharedPointer<ComInterface> ConnectionEndpoint::getComInterface() const
 {
-    return QSharedPointer<ComInterface>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +252,7 @@ QSharedPointer<ComInterface> ConnectionEndpoint::getComInterface() const
 //-----------------------------------------------------------------------------
 QSharedPointer<ApiInterface> ConnectionEndpoint::getApiInterface() const
 {
-    return QSharedPointer<ApiInterface>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -224,7 +260,7 @@ QSharedPointer<ApiInterface> ConnectionEndpoint::getApiInterface() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> ConnectionEndpoint::getPort() const
 {
-    return QSharedPointer<Port>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -272,7 +308,7 @@ ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector()
 {
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -335,14 +371,14 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::revalidateConnections()
 {
-    foreach (GraphicsConnection* conn, getConnections())
+    for (GraphicsConnection* conn : getConnections())
     {
         conn->validate();
     }
 
-    if (getOffPageConnector() != 0)
+    if (getOffPageConnector() != nullptr)
     {
-        foreach (GraphicsConnection* conn, getOffPageConnector()->getConnections())
+        for (GraphicsConnection* conn : getOffPageConnector()->getConnections())
         {
             conn->validate();
         }
@@ -356,7 +392,7 @@ void ConnectionEndpoint::beginUpdateConnectionNames()
 {
     Q_ASSERT(connUpdateList_.isEmpty());
 
-    foreach (GraphicsConnection* conn, getConnections())
+    for (GraphicsConnection* conn : getConnections())
     {
         if (conn->hasDefaultName())
         {
@@ -364,9 +400,9 @@ void ConnectionEndpoint::beginUpdateConnectionNames()
         }
     }
 
-    if (getOffPageConnector() != 0)
+    if (getOffPageConnector() != nullptr)
     {
-        foreach (GraphicsConnection* conn, getOffPageConnector()->getConnections())
+        for (GraphicsConnection* conn : getOffPageConnector()->getConnections())
         {
             connUpdateList_.append(conn);
         }
@@ -378,7 +414,7 @@ void ConnectionEndpoint::beginUpdateConnectionNames()
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::endUpdateConnectionNames()
 {
-    foreach (GraphicsConnection* conn, connUpdateList_)
+    for (GraphicsConnection* conn: connUpdateList_)
     {
         conn->setName(conn->createDefaultName());
     }
@@ -407,5 +443,5 @@ qreal ConnectionEndpoint::getNameLength()
 //-----------------------------------------------------------------------------
 void ConnectionEndpoint::shortenNameLabel( qreal /*width */)
 {
-
+    // Intentionally empty.
 }

@@ -89,8 +89,7 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
     }
     else if (toCreate == VLNV::DESIGN)
     {
-        DesignReader reader;
-        return reader.createDesignFrom(doc);
+        return DesignReader::createDesignFrom(doc);
     }
     else if (toCreate == VLNV::DESIGNCONFIGURATION)
     {
@@ -155,9 +154,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     }
     else if (documentType == VLNV::DESIGN)
     {
-        DesignWriter designWriter;
         QSharedPointer<Design> design = model.dynamicCast<Design>();
-        designWriter.writeDesign(xmlWriter, design);
+        DesignWriter::writeDesign(xmlWriter, design);
     }
 
     else if (documentType == VLNV::DESIGNCONFIGURATION)

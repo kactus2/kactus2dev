@@ -307,7 +307,7 @@ protected:
      *
      *      @return The cursor position mapped to the current scene.
      */
-    QPointF findCursorPositionMappedToScene();
+    QPointF findCursorPositionMappedToScene() const;
 
     /*!
      *  Get the visible name for the selected component item.
@@ -378,7 +378,7 @@ private:
      *
      *      @return True, if endpoint can be connected to the current connection, otherwise false.
      */
-    bool isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint);
+    bool isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint) const;
 
     /*!
      *  Creates the currently drawn connection by ending it to the given point.

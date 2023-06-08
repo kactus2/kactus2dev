@@ -51,11 +51,11 @@ diagram_(diagram)
     new ItemMoveCommand(oldComp, position_, oldComp->getParentStack(), newComp_->scenePos(),
         newComp_->getParentStack(), diagram, this);
 
-    QStringList connectionNames;
+    QVector<QString> connectionNames;
     changeConnections(oldComp, newComp_, connectionNames);
     changeConnections(newComp_, oldComp, connectionNames);
 
-    foreach(Association* association, oldComp->getAssociations())
+    for(Association* association : oldComp->getAssociations())
     {
         new AssociationChangeEndpointCommand(association, oldComp, newComp_, this);
     }
@@ -69,9 +69,9 @@ diagram_(diagram)
 // Function: ReplaceComponentCommand::changeConnections()
 //-----------------------------------------------------------------------------
 void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentItem, 
-    HWComponentItem* newComponentItem, QStringList& connectionNames)
+    HWComponentItem* newComponentItem, QVector<QString>& connectionNames)
 {
-    foreach (ConnectionEndpoint* oldEndpoint, oldComponentItem->getEndpoints())
+    for (ConnectionEndpoint* oldEndpoint : oldComponentItem->getEndpoints())
     {
         if (!oldEndpoint->getConnections().isEmpty() || 
             (oldEndpoint->getOffPageConnector() && !oldEndpoint->getOffPageConnector()->getConnections().isEmpty()))
@@ -99,13 +99,13 @@ void ReplaceComponentCommand::changeConnections(HWComponentItem* oldComponentIte
 // Function: ReplaceComponentCommand::createConnectionExchangeCommands()
 //-----------------------------------------------------------------------------
 void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoint* oldEndpoint, 
-    HWConnectionEndpoint* newEndpoint, QStringList& connectionNames)
+    HWConnectionEndpoint* newEndpoint, QVector<QString>& connectionNames)
 {
     // Create a move command to move the port to the same place where it is in the old component.
     new PortMoveCommand(newEndpoint, newEndpoint->pos(), oldEndpoint->pos(), diagram_, this);
 
     // Exchange connections between the endpoints.
-    foreach (GraphicsConnection* connection, oldEndpoint->getConnections())
+    for (GraphicsConnection* connection : oldEndpoint->getConnections())
     {
         if (!connectionNames.contains(connection->name()))
         {
@@ -117,7 +117,7 @@ void ReplaceComponentCommand::createConnectionExchangeCommands(ConnectionEndpoin
     if (oldEndpoint->getOffPageConnector() &&
         !oldEndpoint->getOffPageConnector()->getConnections().isEmpty())
     {
-        foreach (GraphicsConnection* connection, oldEndpoint->getOffPageConnector()->getConnections())
+        for (GraphicsConnection* connection : oldEndpoint->getOffPageConnector()->getConnections())
         {
             if (!connectionNames.contains(connection->name()))
             {

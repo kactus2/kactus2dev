@@ -209,7 +209,7 @@ quint64 RegisterGraphItem::getSizeInAUB() const
         ++size; //Round truncated number upwards
     }
 
-    int dimension = qMax(quint64(1), parseExpression(register_->getDimension()));
+    quint64 dimension = qMax(quint64(1), parseExpression(register_->getDimension()));
 
     return dimension * size;
 }

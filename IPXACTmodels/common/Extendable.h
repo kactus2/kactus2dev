@@ -27,7 +27,7 @@ class IPXACTMODELS_EXPORT Extendable
 public:
 
 	//! The destructor.
-	virtual ~Extendable() = default;
+	virtual ~Extendable() {};
             
     /*!
      *  Gets the vendor extensions for the element.
@@ -64,6 +64,15 @@ protected:
      */
     QList<QSharedPointer<VendorExtension> > getGroupedExtensionsByType(QString const& groupName,
         QString const& extensionType) const;
+
+    /*!
+     * Creates a Kactus2 vendor extension with given type, if it does not exist already.
+     * If value is false, the extension is removed.
+     *
+     *     @param [in] value            The value to set.
+     *     @param [in] extensionType    The type of the vendor extension.
+     */
+    void setPlaceholderExtension(bool value, QString const& extensionType);
 
     /*!
      *  Find a vendor extension by given type.

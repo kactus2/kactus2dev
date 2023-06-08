@@ -57,7 +57,7 @@ void ComConnectionAddCommand::undo()
     connection_->disconnectEnds();
 
     QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
-    comInterconnections.removeAll(connection_->getComInterconnection());
+    comInterconnections.removeAll(connection_->getInterconnection());
     containingDesign_->setComConnections(comInterconnections);
 
     containingDesign_->removeRoute(connection_->getRouteExtension());
@@ -90,7 +90,7 @@ void ComConnectionAddCommand::redo()
         }
 
         QList<QSharedPointer<ComInterconnection> > comInterconnections = containingDesign_->getComConnections();
-        comInterconnections.append(connection_->getComInterconnection());
+        comInterconnections.append(connection_->getInterconnection());
         containingDesign_->setComConnections(comInterconnections);
 
         containingDesign_->addRoute(connection_->getRouteExtension());

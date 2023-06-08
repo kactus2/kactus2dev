@@ -78,11 +78,7 @@ QString AdHocTiedValueCommand::createNameForTiedValueConnection(AdHocItem* portI
         instanceName.append("_");
     }
 
-    QString portName = portItem->name();
-
-    QString tiedValuePart = "_to_tiedValue";
-
-    return instanceName + portName + tiedValuePart;
+    return instanceName + portItem->name() + QStringLiteral("_to_tiedValue");
 }
 
 //-----------------------------------------------------------------------------

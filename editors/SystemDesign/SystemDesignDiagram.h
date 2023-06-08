@@ -169,7 +169,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~SystemDesignDiagram();
+    ~SystemDesignDiagram() final = default;
 
     /*!
      *  Reflects the changes in the design to the top-level component.

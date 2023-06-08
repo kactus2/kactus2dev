@@ -33,12 +33,12 @@ public:
      *      @param [in] parent        The parent undo command.
      */
     TopAdHocVisibilityChangeCommand(HWDesignDiagram* dataSource, QString const& portName, bool newVisibility,
-        QUndoCommand* parent = 0);
+        QUndoCommand* parent = nullptr);
 
     /*!
      *  Destructor.
      */
-    ~TopAdHocVisibilityChangeCommand();
+    ~TopAdHocVisibilityChangeCommand() = default;
 
 private:
 

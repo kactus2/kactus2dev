@@ -43,6 +43,10 @@ public:
      */
     virtual ~CommonItemsReader() = default;
 
+    // Disable copying.
+    CommonItemsReader(CommonItemsReader const& rhs) = delete;
+    CommonItemsReader& operator=(CommonItemsReader const& rhs) = delete;
+
     /*!
     *  Parse and create VLNV from XML file.
     *
@@ -107,7 +111,7 @@ public:
      *
      *      @return A QString containing the isPresent element for the item.
      */
-    QString parseIsPresent(QDomElement const& isPresentElement) const;
+    static QString parseIsPresent(QDomElement const& isPresentElement);
 
     /*!
      *  Parses choices.
@@ -116,7 +120,7 @@ public:
      *      @return A list of choices.
      */
     static QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode);
-
+    
     /*!
      *  Parses a qualifier.
      *
@@ -128,11 +132,6 @@ public:
     static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
         Document::Revision revision);
 
-private:
-
-	// Disable copying.
-    CommonItemsReader(CommonItemsReader const& rhs);
-    CommonItemsReader& operator=(CommonItemsReader const& rhs);
 };
 
 #endif // DOCUMENTREADER_H

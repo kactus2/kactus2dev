@@ -15,10 +15,8 @@
 // Function: PortReference::PortReference()
 //-----------------------------------------------------------------------------
 PortReference::PortReference(QString const& portRef, QString const& componentRef /* = QString() */) :
-portRef_(portRef),
-    componentRef_(componentRef),
-    isPresent_(),
-    partSelect_()
+    portRef_(portRef),
+    componentRef_(componentRef)
 {
 
 }
@@ -29,21 +27,17 @@ portRef_(portRef),
 PortReference::PortReference(const PortReference& other):
 portRef_(other.portRef_),
     componentRef_(other.componentRef_),
-    isPresent_(other.isPresent_),
-    partSelect_()
+    isPresent_(other.isPresent_)
 {
     if (other.partSelect_)
     {
-        partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_.data()));
+        partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_));
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: PortReference::~PortReference()
-//-----------------------------------------------------------------------------
-PortReference::~PortReference()
-{
-
+    for (auto const& subPort : *other.subPortReferences_)
+    {
+        subPortReferences_->append(QSharedPointer<PortReference>(new PortReference(*subPort)));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +51,13 @@ PortReference& PortReference::operator=( const PortReference& other)
         componentRef_ = other.componentRef_;
         isPresent_ = other.isPresent_;
         partSelect_.clear();
-        partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_.data()));
+        partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_));
+
+        subPortReferences_->clear();
+        for (auto const& subPort : *other.subPortReferences_)
+        {
+            subPortReferences_->append(QSharedPointer<PortReference>(new PortReference(*subPort)));
+        }
     }
 
     return *this;
@@ -109,6 +109,14 @@ QString PortReference::getIsPresent() const
 void PortReference::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortReference::setIsPresent()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<PortReference> > > PortReference::getSubPortReferences() const
+{
+    return subPortReferences_;
 }
 
 //-----------------------------------------------------------------------------

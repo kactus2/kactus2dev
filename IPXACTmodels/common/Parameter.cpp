@@ -421,6 +421,7 @@ QString Parameter::getArrayLeft() const
     {
         return QString();
     }
+
     return arrays_->first()->getLeft();
 }
 
@@ -453,7 +454,6 @@ void Parameter::setArrayLeft(QString const& leftExpression)
         arrays_->first()->setLeft(leftExpression);
     }
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: Parameter::setArrayRight()

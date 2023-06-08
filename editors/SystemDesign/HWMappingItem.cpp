@@ -20,7 +20,6 @@
 #include <common/graphicsItems/GraphicsConnection.h>
 #include <common/graphicsItems/CommonGraphicsUndoCommands.h>
 #include <common/GenericEditProvider.h>
-#include <common/layouts/VStackedLayout.h>
 #include <common/KactusColors.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -34,16 +33,12 @@
 //-----------------------------------------------------------------------------
 HWMappingItem::HWMappingItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
                              QSharedPointer<ComponentInstance> instance):
-SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, instance, component, 0),
-oldStack_(0),
-layout_(new VStackedLayout<ComponentItem>(SPACING)),
-swComponents_(),
-oldPos_()
+SystemComponentItem(QRectF(-WIDTH/ 2, 0, WIDTH, 0), libInterface, instance, component, nullptr)
 {
     setFlag(ItemIsMovable);
     
-    updateComponent();
-    updateItemPositions();
+    HWMappingItem::updateComponent();
+    HWMappingItem::updateItemPositions();
 }
 
 //-----------------------------------------------------------------------------
@@ -52,9 +47,9 @@ oldPos_()
 HWMappingItem::~HWMappingItem()
 {
     // Remove this item from the column where it resides.
-    IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
+    auto column = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
-    if (column != 0)
+    if (column != nullptr)
     {
         column->removeItem(this);
     }
@@ -72,11 +67,11 @@ void HWMappingItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldStack_ = dynamic_cast<IGraphicsItemStack*>(parentItem());
 
     // End the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item: scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
 
-        if (conn != 0)
+        if (conn != nullptr)
         {
             conn->beginUpdatePosition();
         }
@@ -98,33 +93,33 @@ void HWMappingItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
 
     ComponentItem::mouseMoveEvent(event);
 
-    if (oldStack_ != 0)
+    if (oldStack_ != nullptr)
     {
         setPos(parentItem()->mapFromScene(oldStack_->mapStackToScene(pos())));
 
-        IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
-        Q_ASSERT(column != 0);
+        auto column = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(column != nullptr);
         column->onMoveItem(this);
     }
 
     setConnectionUpdateDisabled(false);
 
     // Update the port connections manually.
-    foreach (QGraphicsItem *item, childItems())
+    for (QGraphicsItem *item : childItems())
     {
         if (item->type() != SWPortItem::Type)
         {
             continue;
         }
 
-        SWPortItem* port = static_cast<SWPortItem*>(item);
+        auto port = static_cast<SWPortItem*>(item);
 
-        foreach (GraphicsConnection* conn, port->getConnections())
+        for (GraphicsConnection* conn : port->getConnections())
         {
             conn->updatePosition();
         }
 
-        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+        for (GraphicsConnection* conn : port->getOffPageConnector()->getConnections())
         {
             conn->updatePosition();
         }
@@ -139,11 +134,11 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram && oldStack_ != 0)
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram && oldStack_ != nullptr)
     {
-        IGraphicsItemStack* column = dynamic_cast<IGraphicsItemStack*>(parentItem());
-        Q_ASSERT(column != 0);
+        auto column = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(column != nullptr);
         column->onReleaseItem(this);
 
         QSharedPointer<QUndoCommand> cmd;
@@ -158,11 +153,11 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
+        for (QGraphicsItem *item : scene()->items())
         {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+            auto conn = dynamic_cast<GraphicsConnection*>(item);
 
-            if (conn != 0)
+            if (conn != nullptr)
             {
                 conn->endUpdatePosition(cmd.data());
             }
@@ -175,7 +170,7 @@ void HWMappingItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd->redo();
         }
 
-        oldStack_ = 0;
+        oldStack_ = nullptr;
     }
 }
 
@@ -196,7 +191,7 @@ qreal HWMappingItem::getHeight()
 // Function: HWMappingItem::getWidth()
 //-----------------------------------------------------------------------------
 qreal HWMappingItem::getWidth()
-{
+{	
 	return WIDTH;
 }
 
@@ -215,7 +210,7 @@ void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 
     item->setFlag(ItemStacksBehindParent, false);
 
-    ComponentItem* compItem = static_cast<ComponentItem*>(item);
+    auto compItem = static_cast<ComponentItem*>(item);
 
     if (load)
     {
@@ -254,7 +249,7 @@ void HWMappingItem::addItem(QGraphicsItem* item, bool load)
 void HWMappingItem::removeItem(QGraphicsItem* item)
 {
     swComponents_.removeAll(static_cast<ComponentItem*>(item));
-    item->setParentItem(0);
+    item->setParentItem(nullptr);
     updateItemPositions();
 }
 
@@ -263,7 +258,7 @@ void HWMappingItem::removeItem(QGraphicsItem* item)
 //-----------------------------------------------------------------------------
 void HWMappingItem::onMoveItem(QGraphicsItem* item)
 {
-    ComponentItem* compItem = static_cast<ComponentItem*>(item);
+    auto compItem = static_cast<ComponentItem*>(item);
 
     layout_->updateItemMove(swComponents_, compItem, TOP_MARGIN);
     offsetPortPositions(getComponentStackHeight() + SPACING);
@@ -278,15 +273,15 @@ void HWMappingItem::onMoveItem(QGraphicsItem* item)
         swInstance->setMapping(getComponentInstance()->getUuid());
     }
 
-    SWComponentItem* swItem = static_cast<SWComponentItem*>(compItem);
+    auto swItem = static_cast<SWComponentItem*>(compItem);
     // Only non-imported SW components can be moved out of the HW mapping item.
     if (!swItem->isImported() && swItem->rect().height() - intersection.height() >= swItem->rect().height())
     {
         swComponents_.removeAll(compItem);
 
         // Let the parent component stack handle the mouse move.
-        IGraphicsItemStack* parentStack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-        Q_ASSERT(parentStack != 0);
+        auto parentStack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(parentStack != nullptr);
         
         QPointF newPos = parentStack->mapStackFromScene(compItem->scenePos());
         compItem->setParentItem(parentItem());
@@ -347,7 +342,7 @@ QPointF HWMappingItem::mapStackFromScene(QPointF const& pos) const
 //-----------------------------------------------------------------------------
 bool HWMappingItem::isItemAllowed(QGraphicsItem* item) const
 {
-    return (componentModel()->isCpu() && item->type() == SWComponentItem::Type);
+    return (item->type() == SWComponentItem::Type && componentModel()->isCpu());
 }
 
 //-----------------------------------------------------------------------------
@@ -359,7 +354,7 @@ qreal HWMappingItem::getComponentStackHeight() const
 
     if (!swComponents_.isEmpty())
     {
-        foreach (ComponentItem* item, swComponents_)
+        for (ComponentItem* item : swComponents_)
         {
             stackHeight += item->boundingRect().height();
         }

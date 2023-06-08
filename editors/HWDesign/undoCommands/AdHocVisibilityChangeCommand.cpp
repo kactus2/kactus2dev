@@ -30,7 +30,6 @@ AdHocVisibilityChangeCommand::AdHocVisibilityChangeCommand(AdHocEnabled* dataSou
 QUndoCommand(parent),
 dataSource_(dataSource),
 portName_(portName),
-pos_(),
 newVisibility_(newVisibility),
 adhocPort_()
 {

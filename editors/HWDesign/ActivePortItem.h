@@ -45,7 +45,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ActivePortItem();
+	~ActivePortItem() final = default;
+
+    // Disable copying.
+    ActivePortItem(ActivePortItem const& rhs) = delete;
+    ActivePortItem& operator=(ActivePortItem const& rhs) = delete;
 
 	/*!
 	 *  Get the type of this graphics item.
@@ -101,7 +105,7 @@ public:
 	 *
 	 *      @param [in] width   The width of the shortened name.
 	 */
-    virtual void shortenNameLabel(qreal width) override final;
+    void shortenNameLabel(qreal width) final;
 
 protected:
 

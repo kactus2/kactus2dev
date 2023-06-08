@@ -124,7 +124,7 @@ void ComponentDesignDiagram::onSelectionChanged()
 
     // Retrieve the new selection.
     QList<QGraphicsItem*> nowSelectedItems = selectedItems();
-    QGraphicsItem* selectedItem = 0;
+    QGraphicsItem* selectedItem = nullptr;
 
     if (!nowSelectedItems.isEmpty())
     {
@@ -151,7 +151,7 @@ void ComponentDesignDiagram::onSelectionChanged()
         {
             GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(oldSelection);
 
-            if (conn->endpoint1() != 0)
+            if (conn->endpoint1() != nullptr)
             {
                 if (conn->endpoint1()->type() == offpageConnectorType())
                 {
@@ -166,7 +166,7 @@ void ComponentDesignDiagram::onSelectionChanged()
     }
 
     // If the new selection is an off-page connector, show its connections.
-    if (selectedItem != 0 && selectedItem->type() == offpageConnectorType())
+    if (selectedItem != nullptr && selectedItem->type() == offpageConnectorType())
     {
         ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(selectedItem);
 
@@ -308,8 +308,8 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
 
             if (singleSelection())
             {
-                QGraphicsItem* selectedItem = selectedItems().first();
-                QGraphicsView* firstView = views().first();
+                auto const selectedItem = selectedItems().first();
+                auto const firstView = views().first();
                 if (selectedItem && firstView)
                 {
                     QRectF itemRectangle = selectedItem->sceneBoundingRect();
@@ -392,8 +392,8 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent)
 {
-    QGraphicsItem* selectedItem = selectedItems().first();
-    QGraphicsView* firstView = views().first();
+    auto const selectedItem = selectedItems().first();
+    auto const firstView = views().first();
     if (selectedItem && firstView)
     {
         QRectF itemRectangle = selectedItem->sceneBoundingRect();
@@ -462,7 +462,7 @@ void ComponentDesignDiagram::keyReleaseEvent(QKeyEvent *event)
     if ((event->key() == Qt::Key_Shift) && inOffPageMode())
     {
         if (hasConnectionStartingPoint() && 
-            connectionStartPoint_->getConnections().size() == 0 && 
+            connectionStartPoint_->getConnections().isEmpty() && 
             connectionStartPoint_->type() == offpageConnectorType())
         {
             connectionStartPoint_->hide();
@@ -500,7 +500,7 @@ void ComponentDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
 //-----------------------------------------------------------------------------
 QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
 {
-    QMenu* menu = 0;
+    QMenu* menu = nullptr;
 
     if (contextMenuEnabled())
     {
@@ -564,7 +564,7 @@ void ComponentDesignDiagram::updateOpenDesignMenuFor(ComponentItem* compItem)
     QString activeViewName = getActiveViewOf(compItem);
     QStringList views = hierarchicalViewsOf(compItem);
 
-    foreach(QString viewName, views)
+    for (auto const& viewName : views)
     {
         QString actionText = viewName;
         if (viewName == activeViewName)
@@ -693,7 +693,7 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
         openComponentByActiveView(comp);
     }
     // If the component does not contain any hierarchical views, open the component editor.
-    else if (hierViews.size() == 0)
+    else if (hierViews.isEmpty())
     {
         if (comp->componentModel()->hasViews())
         {
@@ -727,12 +727,14 @@ void ComponentDesignDiagram::openInComponentEditor(ComponentItem* comp)
 QString ComponentDesignDiagram::getActiveViewOf(ComponentItem* compItem) const
 {
     QString activeViewName;
-    std::string instanceName = compItem->name().toStdString();
+    auto instanceName = compItem->name();
 
-    QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();
-    if (designConf && designConf->hasActiveView(instanceName)) 
+
+
+    if (QSharedPointer<DesignConfiguration> designConf = getDesignConfiguration();  designConf != nullptr)
     {
-        activeViewName = QString::fromStdString(designConf->getActiveView(instanceName));
+
+        activeViewName = designConf->getActiveView(compItem->name());
     }
 
     return activeViewName;
@@ -764,7 +766,7 @@ QPoint ComponentDesignDiagram::contextMenuPosition() const
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::findSceneMappedCursorPosition()
 //-----------------------------------------------------------------------------
-QPointF ComponentDesignDiagram::findCursorPositionMappedToScene()
+QPointF ComponentDesignDiagram::findCursorPositionMappedToScene() const
 {
     return views().first()->mapToScene(contextMenuPosition());
 }
@@ -812,25 +814,19 @@ void ComponentDesignDiagram::setupActions()
 void ComponentDesignDiagram::destroyConnections()
 {
     QList<GraphicsConnection*> connectionList;
-    foreach (QGraphicsItem* item, items())
+    for (QGraphicsItem* item : items())
     {
-        if (item)
+        GraphicsConnection* graphicsConnection = dynamic_cast<GraphicsConnection*>(item);
+        if (graphicsConnection)
         {
-            GraphicsConnection* graphicsConnection = dynamic_cast<GraphicsConnection*>(item);
-            if (graphicsConnection)
-            {
-                connectionList.append(graphicsConnection);
-            }
+            connectionList.append(graphicsConnection);
         }
     }
 
-    if (!connectionList.isEmpty())
+    for (GraphicsConnection * graphicsConnection : connectionList)
     {
-        foreach (GraphicsConnection* graphicsConnection, connectionList)
-        {
-            removeItem(graphicsConnection);
-            delete graphicsConnection;
-        }
+        removeItem(graphicsConnection);
+        delete graphicsConnection;
     }
 }
 
@@ -868,7 +864,7 @@ void ComponentDesignDiagram::connectAt(QPointF const& cursorPosition)
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::creatingConnection() const
 {
-    return tempConnection_ != 0;
+    return tempConnection_ != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -877,7 +873,7 @@ bool ComponentDesignDiagram::creatingConnection() const
 void ComponentDesignDiagram::setConnectionStartingPoint(QPointF const& cursorPosition)
 {
     // No need to change the starting point in off page mode.
-    if (inOffPageMode() && connectionStartPoint_ != 0)
+    if (inOffPageMode() && connectionStartPoint_ != nullptr)
     {
         return;
     }
@@ -885,9 +881,9 @@ void ComponentDesignDiagram::setConnectionStartingPoint(QPointF const& cursorPos
     // Try to snap to a connection end point.
     ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
 
-    if (endpoint == 0 || !endpoint->isVisible())
+    if (endpoint == nullptr || !endpoint->isVisible())
     {
-        connectionStartPoint_ = 0;
+        connectionStartPoint_ = nullptr;
         return;
     }
 
@@ -910,7 +906,7 @@ void ComponentDesignDiagram::setConnectionStartingPoint(QPointF const& cursorPos
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::hasConnectionStartingPoint() const
 {
-    return connectionStartPoint_ != 0;
+    return connectionStartPoint_ != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -918,7 +914,7 @@ bool ComponentDesignDiagram::hasConnectionStartingPoint() const
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
 {
-    Q_ASSERT(connectionStartPoint_ != 0);
+    Q_ASSERT(connectionStartPoint_ != nullptr);
 
     // Create the connection.
     tempConnection_ = createConnection(connectionStartPoint_, snapPointToGrid(startingPoint));
@@ -935,7 +931,7 @@ void ComponentDesignDiagram::beginCreateConnection(QPointF const& startingPoint)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::highlightConnectableEndpoints()
 {
-    foreach(QGraphicsItem* item, items())
+    for (QGraphicsItem* item : items())
     {
         ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
@@ -950,9 +946,9 @@ void ComponentDesignDiagram::highlightConnectableEndpoints()
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::isPossibleEndpointForCurrentConnection()
 //-----------------------------------------------------------------------------
-bool ComponentDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint)
+bool ComponentDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint) const
 {
-    return endpoint != 0 && endpoint->isVisible() && endpoint != connectionStartPoint_ &&
+    return endpoint != nullptr && endpoint->isVisible() && endpoint != connectionStartPoint_ &&
         endpoint->getOffPageConnector() != connectionStartPoint_ &&
         endpoint->canConnect(connectionStartPoint_) && connectionStartPoint_->canConnect(endpoint);
 }
@@ -1010,19 +1006,19 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             else
             {
                 discardConnection();
-                connectionStartPoint_ = 0;
+                connectionStartPoint_ = nullptr;
             }
-            tempConnection_ = 0;
+            tempConnection_ = nullptr;
         }
         else
         {
             discardConnection();
-            connectionStartPoint_ = 0;
+            connectionStartPoint_ = nullptr;
         }
 
         if (!inOffPageMode())
         {
-            connectionStartPoint_ = 0;
+            connectionStartPoint_ = nullptr;
         }
 
     }
@@ -1038,7 +1034,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::hasConnectionEndingPoint() const
 {
-    return connectionEndPoint_ != 0;
+    return connectionEndPoint_ != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1050,7 +1046,7 @@ void ComponentDesignDiagram::discardConnection()
     {
         removeItem(tempConnection_);
         delete tempConnection_;
-        tempConnection_ = 0;
+        tempConnection_ = nullptr;
     }    
 }
 
@@ -1060,10 +1056,10 @@ void ComponentDesignDiagram::discardConnection()
 void ComponentDesignDiagram::disableHighlights()
 {
     // If the starting point is set, disable highlight from it too.
-    if (connectionStartPoint_ != 0)
+    if (connectionStartPoint_ != nullptr)
     {
         connectionStartPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        connectionStartPoint_ = 0;
+        connectionStartPoint_ = nullptr;
     }
 
     clearHighlightedEndpoint();
@@ -1079,7 +1075,7 @@ void ComponentDesignDiagram::clearHighlightedEndpoint()
     if (hasConnectionEndingPoint())
     {
         connectionEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
-        connectionEndPoint_ = 0;
+        connectionEndPoint_ = nullptr;
     }
 }
 //-----------------------------------------------------------------------------
@@ -1087,10 +1083,11 @@ void ComponentDesignDiagram::clearHighlightedEndpoint()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::clearPotentialEndpoints()
 {
-    foreach (ConnectionEndpoint* endpoint, tempPotentialEndingEndPoints_)
+    for (ConnectionEndpoint* endpoint : tempPotentialEndingEndPoints_)
     {
         endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
     }
+
     tempPotentialEndingEndPoints_.clear();
 }
 
@@ -1103,7 +1100,7 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
     GraphicsColumn* column = getLayout()->findColumnAt(position);
 
     // Add a new diagram interface to the column it it is allowed.
-    if (column != 0 && column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
+    if (column != nullptr && column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
     {
         addTopLevelInterface(column, position);
     }
@@ -1115,18 +1112,18 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
 void ComponentDesignDiagram::toggleOffPageAt(QPointF const& position)
 {
     // Try to snap to a connection end point.
-    ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(position, this, GridSize);
+    ConnectionEndpoint const* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(position, this, GridSize);
 
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    if (endpoint != 0 && endpoint->isVisible())
+    if (endpoint != nullptr && endpoint->isVisible())
     {
         QList<GraphicsConnection*> connections = endpoint->getConnections();
-        if (connections.size() > 0)
+        if (connections.isEmpty() == false)
         {
             hideOffPageConnections();
 
-            foreach (GraphicsConnection* conn, connections)
+            for (GraphicsConnection* conn : connections)
             {
                 toggleConnectionStyle(conn, cmd.data());
             }
@@ -1154,7 +1151,7 @@ void ComponentDesignDiagram::toggleOffPageAt(QPointF const& position)
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUndoCommand* parentCmd)
 {
-    Q_ASSERT(parentCmd != 0);
+    Q_ASSERT(parentCmd != nullptr);
     emit clearItemSelection();
 
     conn->toggleOffPage();
@@ -1166,7 +1163,7 @@ void ComponentDesignDiagram::toggleConnectionStyle(GraphicsConnection* conn, QUn
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::hideOffPageConnections()
 {
-    foreach (QGraphicsItem* item, items())
+    for (QGraphicsItem* item : items())
     {
         GraphicsConnection* connection = dynamic_cast<GraphicsConnection*>(item);
 
@@ -1199,7 +1196,7 @@ void ComponentDesignDiagram::updateComponentReplaceDragCursor(QPointF const& cur
 {
     ComponentItem* destComp = getTopmostComponent(cursorPosition);
 
-    if (destComp != 0 && destComp != sourceComp_ && componentItemIsAllowedInColumnAtPosition(cursorPosition))
+    if (destComp != nullptr && destComp != sourceComp_ && componentItemIsAllowedInColumnAtPosition(cursorPosition))
     {
         QApplication::changeOverrideCursor(Qt::ClosedHandCursor);
     }
@@ -1232,7 +1229,7 @@ bool ComponentDesignDiagram::componentItemIsAllowedInColumnAtPosition(QPointF co
             itemType = ColumnTypes::INTERFACE;
         }
 
-        GraphicsColumn* column = getLayout()->findColumnAt(cursorPosition);
+        GraphicsColumn const* column = getLayout()->findColumnAt(cursorPosition);
 
         return column->getColumnDesc()->getAllowedItems() & itemType;
     }
@@ -1252,7 +1249,7 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
     {
         ComponentItem* destinationComponent = getTopmostComponent(endpoint);
 
-        if (destinationComponent == 0 || destinationComponent == sourceComp_)
+        if (destinationComponent == nullptr || destinationComponent == sourceComp_)
         {
             return;
         }
@@ -1290,9 +1287,9 @@ void ComponentDesignDiagram::updateConnectionDisplay(QPointF const& cursorPositi
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::updateConnectionDraw(QPointF const& cursorPosition)
 {
-    Q_ASSERT(tempConnection_->route().size() != 0);
+    Q_ASSERT(tempConnection_->route().isEmpty() == false);
 
-    GraphicsConnection* updatedConnection = 0;
+    GraphicsConnection* updatedConnection = nullptr;
 
     if (hasConnectionEndingPoint())
     {
@@ -1318,7 +1315,7 @@ void ComponentDesignDiagram::highlightEndpointUnderCursor(QPointF const& cursorP
 
     // Find out if there is an end point currently under the cursor.
     ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
-    if (endpoint != 0 && endpoint->isVisible())
+    if (endpoint != nullptr && endpoint->isVisible())
     {
         connectionEndPoint_ = endpoint;
         connectionEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
@@ -1327,7 +1324,7 @@ void ComponentDesignDiagram::highlightEndpointUnderCursor(QPointF const& cursorP
         {
             hideOffPageConnections();
 
-            foreach (GraphicsConnection* conn, connectionEndPoint_->getConnections())
+            for (GraphicsConnection* conn : connectionEndPoint_->getConnections())
             {
                 conn->show();
             }
@@ -1344,7 +1341,7 @@ void ComponentDesignDiagram::highlightPotentialEndpointUnderCursor(QPointF const
 
     // Find out if there is an end point currently under the cursor.
     ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(cursorPosition, this, GridSize);
-    if (endpoint != 0 && tempPotentialEndingEndPoints_.contains(endpoint))
+    if (endpoint != nullptr && tempPotentialEndingEndPoints_.contains(endpoint))
     {
         // Highlight the end point.          
         connectionEndPoint_ = endpoint;
@@ -1369,6 +1366,6 @@ void ComponentDesignDiagram::disableCurrentHighlight()
             connectionEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_OFF);
         }
 
-        connectionEndPoint_ = 0;
+        connectionEndPoint_ = nullptr;
     }
 }

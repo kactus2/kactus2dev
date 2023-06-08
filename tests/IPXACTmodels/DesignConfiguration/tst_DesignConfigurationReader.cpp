@@ -347,27 +347,27 @@ void tst_DesignConfigurationReader::testReadInterconnectionConfigurations()
     QSharedPointer<InterconnectionConfiguration> testInterconnectionConf =
         testDesignConfiguration->getInterconnectionConfs()->first();
 
-    QCOMPARE(testInterconnectionConf->getIsPresent(), std::string("0"));
-    QCOMPARE(testInterconnectionConf->getInterconnectionReference(), std::string("testInterconnectionReference"));
+    QCOMPARE(testInterconnectionConf->getIsPresent(), QString("0"));
+    QCOMPARE(testInterconnectionConf->getInterconnectionReference(), QString("testInterconnectionReference"));
     QCOMPARE(testInterconnectionConf->getAbstractorInstances()->size(), 1);
 
     QSharedPointer<MultipleAbstractorInstances> testMultipleAbsInstance = 
         testInterconnectionConf->getAbstractorInstances()->first();
-    QCOMPARE(testMultipleAbsInstance->getIsPresent(), std::string("1"));
+    QCOMPARE(testMultipleAbsInstance->getIsPresent(), QString("1"));
     QCOMPARE(testMultipleAbsInstance->getInterfaceReferences()->size(), 1);
     QCOMPARE(testMultipleAbsInstance->getAbstractorInstances()->size(), 1);
 
     QSharedPointer<InterfaceRef> testInterfaceRef = testMultipleAbsInstance->getInterfaceReferences()->first();
-    QCOMPARE(testInterfaceRef->getComponentRef(), std::string("testComponent"));
-    QCOMPARE(testInterfaceRef->getBusRef(), std::string("testBus"));
-    QCOMPARE(testInterfaceRef->getIsPresent(), std::string("1"));
+    QCOMPARE(testInterfaceRef->getComponentRef(), QString("testComponent"));
+    QCOMPARE(testInterfaceRef->getBusRef(), QString("testBus"));
+    QCOMPARE(testInterfaceRef->getIsPresent(), QString("1"));
 
     QSharedPointer<AbstractorInstance> testAbstractorInstance =
         testMultipleAbsInstance->getAbstractorInstances()->first();
-    QCOMPARE(testAbstractorInstance->getInstanceName(), std::string("testAbstractorInstance"));
-    QCOMPARE(testAbstractorInstance->getDisplayName(), std::string("abstractorDisplay"));
-    QCOMPARE(testAbstractorInstance->getDescription(), std::string("abstractorDescription"));
-    QCOMPARE(testAbstractorInstance->getViewName(), std::string("abstractorView"));
+    QCOMPARE(testAbstractorInstance->getInstanceName(), QString("testAbstractorInstance"));
+    QCOMPARE(testAbstractorInstance->getDisplayName(), QString("abstractorDisplay"));
+    QCOMPARE(testAbstractorInstance->getDescription(), QString("abstractorDescription"));
+    QCOMPARE(testAbstractorInstance->getViewName(), QString("abstractorView"));
 
     QCOMPARE(testAbstractorInstance->getAbstractorRef()->getVendor(), QString("tuni.fi"));
     QCOMPARE(testAbstractorInstance->getAbstractorRef()->getLibrary(), QString("TestLibrary"));
@@ -443,32 +443,32 @@ void tst_DesignConfigurationReader::testRead2022InterconnectionConfigurations()
     QSharedPointer<InterconnectionConfiguration> testInterconnectionConf =
         testDesignConfiguration->getInterconnectionConfs()->first();
 
-    QCOMPARE(testInterconnectionConf->getIsPresent(), std::string());
-    QCOMPARE(testInterconnectionConf->getInterconnectionReference(), std::string("testInterconnectionReference"));
+    QCOMPARE(testInterconnectionConf->getIsPresent(), QString());
+    QCOMPARE(testInterconnectionConf->getInterconnectionReference(), QString("testInterconnectionReference"));
     QCOMPARE(testInterconnectionConf->getAbstractorInstances()->size(), 1);
     QCOMPARE(testInterconnectionConf->getVendorExtensions()->count(), 1);
     QCOMPARE(testInterconnectionConf->getVendorExtensions()->first()->type(), QString("interconnectExtension"));
 
     QSharedPointer<MultipleAbstractorInstances> testMultipleAbsInstance =
         testInterconnectionConf->getAbstractorInstances()->first();
-    QCOMPARE(testMultipleAbsInstance->getIsPresent(), std::string());
+    QCOMPARE(testMultipleAbsInstance->getIsPresent(), QString());
     QCOMPARE(testMultipleAbsInstance->getInterfaceReferences()->size(), 1);
     QCOMPARE(testMultipleAbsInstance->getAbstractorInstances()->size(), 1);
 
     QSharedPointer<InterfaceRef> testInterfaceRef = testMultipleAbsInstance->getInterfaceReferences()->first();
-    QCOMPARE(testInterfaceRef->getComponentRef(), std::string("testComponent"));
-    QCOMPARE(testInterfaceRef->getBusRef(), std::string("testBus"));
-    QCOMPARE(testInterfaceRef->getIsPresent(), std::string());
+    QCOMPARE(testInterfaceRef->getComponentRef(), QString("testComponent"));
+    QCOMPARE(testInterfaceRef->getBusRef(), QString("testBus"));
+    QCOMPARE(testInterfaceRef->getIsPresent(), QString());
     QCOMPARE(testInterfaceRef->getVendorExtensions()->count(), 1);
     QCOMPARE(testInterfaceRef->getVendorExtensions()->first()->type(), QString("interfaceExtension"));
 
     QSharedPointer<AbstractorInstance> testAbstractorInstance =
         testMultipleAbsInstance->getAbstractorInstances()->first();
-    QCOMPARE(testAbstractorInstance->getInstanceName(), std::string("testAbstractorInstance"));
-    QCOMPARE(testAbstractorInstance->getDisplayName(), std::string("abstractorDisplay"));
-    QCOMPARE(testAbstractorInstance->getShortDescription(), std::string("short"));
-    QCOMPARE(testAbstractorInstance->getDescription(), std::string("abstractorDescription"));
-    QCOMPARE(testAbstractorInstance->getViewName(), std::string("abstractorView"));
+    QCOMPARE(testAbstractorInstance->getInstanceName(), QString("testAbstractorInstance"));
+    QCOMPARE(testAbstractorInstance->getDisplayName(), QString("abstractorDisplay"));
+    QCOMPARE(testAbstractorInstance->getShortDescription(), QString("short"));
+    QCOMPARE(testAbstractorInstance->getDescription(), QString("abstractorDescription"));
+    QCOMPARE(testAbstractorInstance->getViewName(), QString("abstractorView"));
     QCOMPARE(testAbstractorInstance->getVendorExtensions()->count(), 1);
     QCOMPARE(testAbstractorInstance->getVendorExtensions()->first()->type(), QString("abstractorExtension"));
 
@@ -512,6 +512,7 @@ void tst_DesignConfigurationReader::testReadViewConfigurations()
                     "</ipxact:configurableElementValues>"
                 "</ipxact:view>"
             "</ipxact:viewConfiguration>"
+            "<ipxact:description>Design description</ipxact:description>"
         "</ipxact:designConfiguration>"
         );
 
@@ -522,14 +523,15 @@ void tst_DesignConfigurationReader::testReadViewConfigurations()
         DesignConfigurationReader::createDesignConfigurationFrom(document);
 
     QCOMPARE(testDesignConfiguration->getRevision(), Document::Revision::Std14);
+    QCOMPARE(testDesignConfiguration->getDescription(), QString("Design description"));
     QCOMPARE(testDesignConfiguration->getViewConfigurations()->size(), 1);
 
     QSharedPointer<ViewConfiguration> testViewConfiguration =
         testDesignConfiguration->getViewConfigurations()->first();
 
-    QCOMPARE(testViewConfiguration->getInstanceName(), std::string("testViewConfig"));
-    QCOMPARE(testViewConfiguration->getIsPresent(), std::string("1"));
-    QCOMPARE(testViewConfiguration->getViewReference(), std::string("referenceToTestView"));
+    QCOMPARE(testViewConfiguration->getInstanceName(), QString("testViewConfig"));
+    QCOMPARE(testViewConfiguration->getIsPresent(), QString("1"));
+    QCOMPARE(testViewConfiguration->getViewReference(), QString("referenceToTestView"));
     QCOMPARE(testViewConfiguration->getViewConfigurableElements()->size(), 1);
 
     QSharedPointer<ConfigurableElementValue> testConfigurableElementValue =
@@ -583,9 +585,9 @@ void tst_DesignConfigurationReader::testRead2022ViewConfigurations()
     QSharedPointer<ViewConfiguration> testViewConfiguration =
         testDesignConfiguration->getViewConfigurations()->first();
 
-    QCOMPARE(testViewConfiguration->getInstanceName(), std::string("testViewConfig"));
-    QCOMPARE(testViewConfiguration->getIsPresent(), std::string());
-    QCOMPARE(testViewConfiguration->getViewReference(), std::string("referenceToTestView"));
+    QCOMPARE(testViewConfiguration->getInstanceName(), QString("testViewConfig"));
+    QCOMPARE(testViewConfiguration->getIsPresent(), QString());
+    QCOMPARE(testViewConfiguration->getViewReference(), QString("referenceToTestView"));
     QCOMPARE(testViewConfiguration->getViewConfigurableElements()->size(), 1);
     QCOMPARE(testViewConfiguration->getVendorExtensions()->count(), 1);
     QCOMPARE(testViewConfiguration->getVendorExtensions()->first()->type(), QString("viewExtension"));

@@ -35,21 +35,11 @@
 // Function: ActivePortItem::ActivePortItem()
 //-----------------------------------------------------------------------------
 ActivePortItem::ActivePortItem(QSharedPointer<Port> port, HWComponentItem* parent):
-AdHocItem(port, parent->componentModel(), parent),
-oldPos_(),
-oldPortPositions_()
+AdHocItem(port, parent->componentModel(), parent)
 {
     setPolygon(getPortShape());
 
     updateInterface();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ActivePortItem::~ActivePortItem()
-//-----------------------------------------------------------------------------
-ActivePortItem::~ActivePortItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -121,7 +111,7 @@ QVariant ActivePortItem::itemChange(GraphicsItemChange change, QVariant const& v
     else if (change == ItemRotationHasChanged)
     {
         getNameLabel()->setRotation(-rotation());
-        if (getTieOffLabel() != 0)
+        if (getTieOffLabel() != nullptr)
         {
             getTieOffLabel()->setRotation(-rotation());
         }
@@ -129,10 +119,7 @@ QVariant ActivePortItem::itemChange(GraphicsItemChange change, QVariant const& v
     else if (change == ItemScenePositionHasChanged)
     {
         // Update the connections.
-        foreach (GraphicsConnection *interconnection, getConnections())
-        {
-            interconnection->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -162,11 +149,11 @@ void ActivePortItem::saveOldPortPositions()
     oldPos_ = pos();
 
     // Save old port positions for all ports in the parent component.
-    foreach (QGraphicsItem* item, parentItem()->childItems())
+    for (QGraphicsItem* item : parentItem()->childItems())
     {
-        if (dynamic_cast<ConnectionEndpoint*>(item) != 0 && item != this)
+        if (dynamic_cast<ConnectionEndpoint*>(item) != nullptr && item != this)
         {
-            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
+            auto port = static_cast<ConnectionEndpoint*>(item);
             oldPortPositions_.insert(port, port->pos());
         }
     }
@@ -179,8 +166,8 @@ void ActivePortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
     HWConnectionEndpoint::mouseReleaseEvent(event);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram == 0)
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
+    if (diagram == nullptr)
     {
         // Update the default position in case the graphics are located in other scene than the designer.
         getPort()->setDefaultPos(pos());
@@ -220,14 +207,8 @@ void ActivePortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     oldPortPositions_.clear();
     
     // End the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
-        {
-            conn->endUpdatePosition(cmd.data());
-        }
-    }
+    endUpdateConnectionPositions(cmd.data());
+
 
     // Add the undo command to the edit stack only if it has changes.
     if (cmd->childCount() > 0 || oldPos_ != pos())

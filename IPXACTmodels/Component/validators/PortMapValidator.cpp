@@ -343,14 +343,14 @@ bool PortMapValidator::connectedPortsHaveValidInitiatives(QSharedPointer<PortAbs
         TransactionalTypes::Initiative physicalInitiative =
             TransactionalTypes::strToInitiative(physicalPort->getTransactional()->getInitiative());
 
-        if (physicalInitiative == TransactionalTypes::INITIATIVE_INVALID ||
-            ((logicalInitiative == TransactionalTypes::REQUIRES &&
-                physicalInitiative == TransactionalTypes::PROVIDES) ||
-                (logicalInitiative == TransactionalTypes::PROVIDES &&
-                    physicalInitiative == TransactionalTypes::REQUIRES) ||
-                (logicalInitiative == TransactionalTypes::BOTH &&
-                    (physicalInitiative == TransactionalTypes::REQUIRES ||
-                    physicalInitiative == TransactionalTypes::PROVIDES))))
+        if (physicalInitiative == TransactionalTypes::Initiative::INITIATIVE_INVALID ||
+            ((logicalInitiative == TransactionalTypes::Initiative::REQUIRES &&
+                physicalInitiative == TransactionalTypes::Initiative::PROVIDES) ||
+                (logicalInitiative == TransactionalTypes::Initiative::PROVIDES &&
+                    physicalInitiative == TransactionalTypes::Initiative::REQUIRES) ||
+                (logicalInitiative == TransactionalTypes::Initiative::BOTH &&
+                    (physicalInitiative == TransactionalTypes::Initiative::REQUIRES ||
+                    physicalInitiative == TransactionalTypes::Initiative::PROVIDES))))
         {
             return false;
         }

@@ -35,25 +35,13 @@
 // Function: DesignValidator::DesignValidator()
 //-----------------------------------------------------------------------------
 DesignValidator::DesignValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
-componentInstanceValidator_(),
-interconnectionValidator_(),
-adHocConnectionValidator_(),
-parameterValidator_(),
-assertionValidator_()
+componentInstanceValidator_(new ComponentInstanceValidator(parser, library)),
+interconnectionValidator_(new InterconnectionValidator(parser, library)),
+adHocConnectionValidator_(new AdHocConnectionValidator(parser, library)),
+parameterValidator_(new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
+assertionValidator_(new AssertionValidator(parser))
 {
-    componentInstanceValidator_ =
-        QSharedPointer<ComponentInstanceValidator> (new ComponentInstanceValidator(parser, library));
 
-    interconnectionValidator_ =
-        QSharedPointer<InterconnectionValidator> (new InterconnectionValidator(parser, library));
-
-    adHocConnectionValidator_ =
-        QSharedPointer<AdHocConnectionValidator> (new AdHocConnectionValidator(parser, library));
-
-    parameterValidator_ = QSharedPointer<ParameterValidator>(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-
-    assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
 }
 
 //-----------------------------------------------------------------------------
@@ -87,19 +75,21 @@ bool DesignValidator::hasValidVLNV(QSharedPointer<Design> design) const
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidComponentInstances(QSharedPointer<Design> design) const
 {
-    if (!design->getComponentInstances()->isEmpty())
+    if (design->getComponentInstances()->isEmpty())
     {
-        QVector<QString> instanceNames;
-        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
-        {
-            if (instanceNames.contains(instance->getInstanceName()) ||
-                !componentInstanceValidator_->validate(instance))
-            {
-                return false;
-            }
+        return true;
+    }
 
-            instanceNames.append(instance->getInstanceName());
+    QVector<QString> instanceNames;
+    for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
+    {
+        if (instanceNames.contains(instance->getInstanceName()) ||
+            !componentInstanceValidator_->validate(instance))
+        {
+            return false;
         }
+
+        instanceNames.append(instance->getInstanceName());
     }
 
     return true;
@@ -110,21 +100,23 @@ bool DesignValidator::hasValidComponentInstances(QSharedPointer<Design> design) 
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidInterconnections(QSharedPointer<Design> design) const
 {
-    if (!design->getInterconnections()->isEmpty())
+    if (design->getInterconnections()->isEmpty())
     {
-        interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
+        return true;
+    }
 
-        foreach (QSharedPointer<Interconnection> connection, *design->getInterconnections())
+    interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+
+    for (QSharedPointer<Interconnection> connection : *design->getInterconnections())
+    {
+        if (connectionNames.contains(connection->name()) ||
+            !interconnectionValidator_->validateInterconnection(connection))
         {
-            if (connectionNames.contains(connection->name()) ||
-                !interconnectionValidator_->validateInterconnection(connection))
-            {
-                return false;
-            }
-
-            connectionNames.append(connection->name());
+            return false;
         }
+
+        connectionNames.append(connection->name());
     }
 
     return true;
@@ -135,21 +127,23 @@ bool DesignValidator::hasValidInterconnections(QSharedPointer<Design> design) co
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidMonitorInterconnections(QSharedPointer<Design> design) const
 {
-    if (!design->getMonitorInterconnecions()->isEmpty())
+    if (design->getMonitorInterconnecions()->isEmpty())
     {
-        interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
+        return true;
+    }
 
-        foreach (QSharedPointer<MonitorInterconnection> connection, *design->getMonitorInterconnecions())
+    interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+
+    for (QSharedPointer<MonitorInterconnection> connection : *design->getMonitorInterconnecions())
+    {
+        if (connectionNames.contains(connection->name()) ||
+            !interconnectionValidator_->validateMonitorInterconnection(connection))
         {
-            if (connectionNames.contains(connection->name()) ||
-                !interconnectionValidator_->validateMonitorInterconnection(connection))
-            {
-                return false;
-            }
-
-            connectionNames.append(connection->name());
+            return false;
         }
+
+        connectionNames.append(connection->name());
     }
 
     return true;
@@ -160,19 +154,21 @@ bool DesignValidator::hasValidMonitorInterconnections(QSharedPointer<Design> des
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidAdHocConnections(QSharedPointer<Design> design) const
 {
-    if (!design->getAdHocConnections()->isEmpty())
+    if (design->getAdHocConnections()->isEmpty())
     {
-        adHocConnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
-        foreach (QSharedPointer<AdHocConnection> connection, *design->getAdHocConnections())
-        {
-            if (connectionNames.contains(connection->name()) || !adHocConnectionValidator_->validate(connection))
-            {
-                return false;
-            }
+        return true;
+    }
 
-            connectionNames.append(connection->name());
+    adHocConnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+    for (QSharedPointer<AdHocConnection> connection: *design->getAdHocConnections())
+    {
+        if (connectionNames.contains(connection->name()) || !adHocConnectionValidator_->validate(connection))
+        {
+            return false;
         }
+
+        connectionNames.append(connection->name());
     }
 
     return true;
@@ -183,18 +179,20 @@ bool DesignValidator::hasValidAdHocConnections(QSharedPointer<Design> design) co
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidParameters(QSharedPointer<Design> design) const
 {
-    if (!design->getParameters()->isEmpty())
+    if (design->getParameters()->isEmpty())
     {
-        QVector<QString> parameterNames;
-        foreach (QSharedPointer<Parameter> parameter, *design->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
-            {
-                return false;
-            }
+        return true;
+    }
 
-            parameterNames.append(parameter->name());
+    QVector<QString> parameterNames;
+    for (QSharedPointer<Parameter> parameter : *design->getParameters())
+    {
+        if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
+        {
+            return false;
         }
+
+        parameterNames.append(parameter->name());
     }
 
     return true;
@@ -205,20 +203,22 @@ bool DesignValidator::hasValidParameters(QSharedPointer<Design> design) const
 //-----------------------------------------------------------------------------
 bool DesignValidator::hasValidAssertions(QSharedPointer<Design> design) const
 {
-    if (!design->getAssertions()->isEmpty())
+    if (design->getAssertions()->isEmpty())
     {
-        QVector<QString> assertionNames;
-        foreach (QSharedPointer<Assertion> assertion, *design->getAssertions())
-        {
-            if (assertionNames.contains(assertion->name()) || !assertionValidator_->validate(assertion))
-            {
-                return false;
-            }
-
-            assertionNames.append(assertion->name());
-        }
+        return true;
     }
-    
+
+    QVector<QString> assertionNames;
+    for (QSharedPointer<Assertion> assertion : *design->getAssertions())
+    {
+        if (assertionNames.contains(assertion->name()) || !assertionValidator_->validate(assertion))
+        {
+            return false;
+        }
+
+        assertionNames.append(assertion->name());
+    }
+
     return true;
 }
 
@@ -252,23 +252,25 @@ void DesignValidator::findErrorsInVLNV(QVector<QString>& errors, QSharedPointer<
 void DesignValidator::findErrorsInComponentInstances(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getComponentInstances()->isEmpty())
+    if (design->getComponentInstances()->isEmpty())
     {
-        QVector<QString> instanceNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<ComponentInstance> instance, *design->getComponentInstances())
-        {
-            if (instanceNames.contains(instance->getInstanceName()) &&
-                !duplicateNames.contains(instance->getInstanceName()))
-            {
-                errors.append(QObject::tr("Component instance name '%1' within %2 is not unique.")
-                    .arg(instance->getInstanceName()).arg(context));
-                duplicateNames.append(instance->getInstanceName());
-            }
+        return;
+    }
 
-            instanceNames.append(instance->getInstanceName());
-            componentInstanceValidator_->findErrorsIn(errors, instance, context);
+    QVector<QString> instanceNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
+    {
+        if (instanceNames.contains(instance->getInstanceName()) &&
+            !duplicateNames.contains(instance->getInstanceName()))
+        {
+            errors.append(QObject::tr("Component instance name '%1' within %2 is not unique.")
+                .arg(instance->getInstanceName()).arg(context));
+            duplicateNames.append(instance->getInstanceName());
         }
+
+        instanceNames.append(instance->getInstanceName());
+        componentInstanceValidator_->findErrorsIn(errors, instance, context);
     }
 }
 
@@ -278,23 +280,25 @@ void DesignValidator::findErrorsInComponentInstances(QVector<QString>& errors, Q
 void DesignValidator::findErrorsInInterconnections(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getInterconnections()->isEmpty())
+    if (design->getInterconnections()->isEmpty())
     {
-        interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Interconnection> connection, *design->getInterconnections())
-        {
-            if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
-            {
-                errors.append(QObject::tr("Interconnection name %1 within %2 is not unique")
-                    .arg(connection->name()).arg(context));
-                duplicateNames.append(connection->name());
-            }
+        return;
+    }
 
-            connectionNames.append(connection->name());
-            interconnectionValidator_->findErrorsInInterconnection(errors, connection, context);
+    interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<Interconnection> connection : *design->getInterconnections())
+    {
+        if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
+        {
+            errors.append(QObject::tr("Interconnection name %1 within %2 is not unique")
+                .arg(connection->name()).arg(context));
+            duplicateNames.append(connection->name());
         }
+
+        connectionNames.append(connection->name());
+        interconnectionValidator_->findErrorsInInterconnection(errors, connection, context);
     }
 }
 
@@ -304,23 +308,25 @@ void DesignValidator::findErrorsInInterconnections(QVector<QString>& errors, QSh
 void DesignValidator::findErrorsInMonitorInterconnections(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getMonitorInterconnecions()->isEmpty())
+    if (design->getMonitorInterconnecions()->isEmpty())
     {
-        interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<MonitorInterconnection> connection, *design->getMonitorInterconnecions())
-        {
-            if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
-            {
-                errors.append(QObject::tr("Monitor interconnection name %1 within %2 is not unique")
-                    .arg(connection->name()).arg(context));
-                duplicateNames.append(connection->name());
-            }
+        return;
+    }
 
-            connectionNames.append(connection->name());
-            interconnectionValidator_->findErrorsInMonitorInterconnection(errors, connection, context);
+    interconnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<MonitorInterconnection> connection: *design->getMonitorInterconnecions())
+    {
+        if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
+        {
+            errors.append(QObject::tr("Monitor interconnection name %1 within %2 is not unique")
+                .arg(connection->name()).arg(context));
+            duplicateNames.append(connection->name());
         }
+
+        connectionNames.append(connection->name());
+        interconnectionValidator_->findErrorsInMonitorInterconnection(errors, connection, context);
     }
 }
 
@@ -330,23 +336,25 @@ void DesignValidator::findErrorsInMonitorInterconnections(QVector<QString>& erro
 void DesignValidator::findErrorsInAdHocConnections(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getAdHocConnections()->isEmpty())
+    if (design->getAdHocConnections()->isEmpty())
     {
-        adHocConnectionValidator_->changeComponentInstances(design->getComponentInstances());
-        QVector<QString> connectionNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<AdHocConnection> connection, *design->getAdHocConnections())
-        {
-            if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
-            {
-                errors.append(QObject::tr("Ad hoc connection name %1 within %2 is not unique")
-                    .arg(connection->name()).arg(context));
-                duplicateNames.append(connection->name());
-            }
+        return;
+    }
 
-            connectionNames.append(connection->name());
-            adHocConnectionValidator_->findErrorsIn(errors, connection, context);
+    adHocConnectionValidator_->changeComponentInstances(design->getComponentInstances());
+    QVector<QString> connectionNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<AdHocConnection> connection: *design->getAdHocConnections())
+    {
+        if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
+        {
+            errors.append(QObject::tr("Ad hoc connection name %1 within %2 is not unique")
+                .arg(connection->name()).arg(context));
+            duplicateNames.append(connection->name());
         }
+
+        connectionNames.append(connection->name());
+        adHocConnectionValidator_->findErrorsIn(errors, connection, context);
     }
 }
 
@@ -356,22 +364,24 @@ void DesignValidator::findErrorsInAdHocConnections(QVector<QString>& errors, QSh
 void DesignValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getParameters()->isEmpty())
+    if (design->getParameters()->isEmpty())
     {
-        QVector<QString> parameterNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Parameter> parameter, *design->getParameters())
-        {
-            if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
-            {
-                errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
-                    .arg(parameter->name()).arg(context));
-                duplicateNames.append(parameter->name());
-            }
+        return;
+    }
 
-            parameterNames.append(parameter->name());
-            parameterValidator_->findErrorsIn(errors, parameter, context);
+    QVector<QString> parameterNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<Parameter> parameter : *design->getParameters())
+    {
+        if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
+        {
+            errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
+                .arg(parameter->name()).arg(context));
+            duplicateNames.append(parameter->name());
         }
+
+        parameterNames.append(parameter->name());
+        parameterValidator_->findErrorsIn(errors, parameter, context);
     }
 }
 
@@ -381,21 +391,23 @@ void DesignValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPo
 void DesignValidator::findErrorsInAssertions(QVector<QString>& errors, QSharedPointer<Design> design,
     QString const& context) const
 {
-    if (!design->getAssertions()->isEmpty())
+    if (design->getAssertions()->isEmpty())
     {
-        QVector<QString> assertionNames;
-        QVector<QString> duplicateNames;
-        foreach (QSharedPointer<Assertion> assertion, *design->getAssertions())
-        {
-            if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
-            {
-                errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
-                    .arg(assertion->name()).arg(context));
-                duplicateNames.append(assertion->name());
-            }
+        return;
+    }
 
-            assertionNames.append(assertion->name());
-            assertionValidator_->findErrorsIn(errors, assertion, context);
+    QVector<QString> assertionNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<Assertion> assertion : *design->getAssertions())
+    {
+        if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
+        {
+            errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
+                .arg(assertion->name()).arg(context));
+            duplicateNames.append(assertion->name());
         }
+
+        assertionNames.append(assertion->name());
+        assertionValidator_->findErrorsIn(errors, assertion, context);
     }
 }

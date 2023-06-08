@@ -283,7 +283,8 @@ private:
     LibraryInterface* libraryHandler_;
 
     //! The currently available component instances.
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableComponentInstances_;
+    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableComponentInstances_ =
+        QSharedPointer<QList<QSharedPointer<ComponentInstance> > >(new QList<QSharedPointer<ComponentInstance> >());
 };
 
 #endif // ADHOCCONNECTIONVALIDATOR_H

@@ -57,14 +57,6 @@ busInterface_(busInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceWizardVLNVSelectionPage::~BusInterfaceWizardVLNVSelectionPage()
-//-----------------------------------------------------------------------------
-BusInterfaceWizardGeneralOptionsPage::~BusInterfaceWizardGeneralOptionsPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceWizardVLNVSelectionPage::nextId()
 //-----------------------------------------------------------------------------
 int BusInterfaceWizardGeneralOptionsPage::nextId() const
@@ -116,24 +108,30 @@ bool BusInterfaceWizardGeneralOptionsPage::abstractionReferenceIsFound() const
 
     abstractionInterface->setAbstractionTypes(busIf_->getAbstractionTypes(), busMode, systemGroup);
 
-    if (abstractionInterface->itemCount() > 0)
+    if (abstractionInterface->itemCount() == 0)
     {
-        for (int i = 0; i < abstractionInterface->itemCount(); ++i)
-        {
-            bool abstractionHasReference = abstractionInterface->hasAbstractionReference(i);
-            bool referenceExists = handler_->contains(*abstractionInterface->getAbstractionReference(i).data());
-            bool viewReferencesAreValid = abstractionInterface->hasValidViewReferences(i);
-
-            if (!abstractionHasReference || (abstractionHasReference && (!referenceExists || !viewReferencesAreValid)))
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return false;
     }
 
-    return false;
+    for (int i = 0; i < abstractionInterface->itemCount(); ++i)
+    {
+        bool abstractionHasReference = abstractionInterface->hasAbstractionReference(i);
+
+        if (!abstractionHasReference)
+        {
+            return false;
+        }
+
+        bool referenceExists = handler_->contains(*abstractionInterface->getAbstractionReference(i));
+        bool viewReferencesAreValid = abstractionInterface->hasValidViewReferences(i);
+
+        if (!referenceExists || !viewReferencesAreValid)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

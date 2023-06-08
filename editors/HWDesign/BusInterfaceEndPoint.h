@@ -13,6 +13,7 @@
 #define BUSINTERFACEENDPOINT_H
 
 #include <editors/HWDesign/HWConnectionEndpoint.h>
+#include <editors/HWDesign/WarningSymbol.h>
 
 #include <QSharedPointer>
 #include <QGraphicsTextItem>
@@ -25,7 +26,6 @@ class Port;
 class DesignDiagram;
 class HWComponentItem;
 class LibraryInterface;
-class WarningSymbol;
 
 //-----------------------------------------------------------------------------
 //! Parent interface class for HW bus interfaces.
@@ -51,7 +51,11 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~BusInterfaceEndPoint();
+    ~BusInterfaceEndPoint() override = default;
+
+    // Disable copying.
+    BusInterfaceEndPoint(BusInterfaceEndPoint const& rhs) = delete;
+    BusInterfaceEndPoint& operator=(BusInterfaceEndPoint const& rhs) = delete;
 
     /*!
      *  Get the name of the bus interface.
@@ -191,17 +195,12 @@ protected:
     void clearOldPortPositions();
 
     /*!
-     *  Update the connection positions of the associated end points.
-     */
-    void beginUpdateConnectionPositions();
-
-    /*!
      *  Handle the mouse release events.
      *
      *      @param [in] event   The mouse release event.
      */
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    
+
     /*!
      *  Get the shape of the bus interface with direction in.
      *
@@ -254,9 +253,6 @@ protected:
 
 private:
 
-    // Disable copying.
-    BusInterfaceEndPoint(BusInterfaceEndPoint const& rhs);
-    BusInterfaceEndPoint& operator=(BusInterfaceEndPoint const& rhs);
 
     /*!
      *  Get the graphical shape for the interface item.
@@ -330,7 +326,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The bus interface.
-    QSharedPointer<BusInterface> busInterface_;
+    QSharedPointer<BusInterface> busInterface_ = nullptr;
 
     //! Old position of the interface item.
     QPointF oldPos_;
@@ -339,10 +335,10 @@ private:
     QMap<ConnectionEndpoint*, QPointF> oldPortPositions_;
 
     //! Warning symbol for bus interfaces with no port maps.
-    WarningSymbol* portMapWarning_;
+    WarningSymbol* portMapWarning_ = new WarningSymbol(this);
 
     //! Access to the library.
-    LibraryInterface* library_;
+    LibraryInterface* library_ = nullptr;
 };
 
 #endif // BUSINTERFACEENDPOINT_H

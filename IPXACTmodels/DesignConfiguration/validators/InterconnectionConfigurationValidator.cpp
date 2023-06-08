@@ -27,13 +27,27 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
+#include <QRegularExpression>
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::InterconnectionConfigurationValidator()
+//-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 InterconnectionConfigurationValidator::InterconnectionConfigurationValidator(
     QSharedPointer<ExpressionParser> parser, LibraryInterface* library ):
 parser_(parser),
-libraryHandler_(library)
+libraryHandler_(library),
+availableInterconnections_(),
+availableMonitorInterconnections_(),
+availableComponentInstances_(),
+availableBusInterfaces_()
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: InterconnectionConfigurationValidator::designChanged()
+//-----------------------------------------------------------------------------
+InterconnectionConfigurationValidator::~InterconnectionConfigurationValidator()
 {
 
 }
@@ -66,7 +80,7 @@ bool InterconnectionConfigurationValidator::hasValidInterconnectionReference(
 {
     auto matchReference = [configuration](auto const& connection)
     {
-        return (configuration->getInterconnectionReference() == connection->name().toStdString());
+        return (configuration->getInterconnectionReference() == connection->name());
     };
 
     if (availableInterconnections_)
@@ -92,7 +106,7 @@ bool InterconnectionConfigurationValidator::hasValidInterconnectionReference(
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
-bool InterconnectionConfigurationValidator::hasValidIsPresent(std::string const& isPresent) const
+bool InterconnectionConfigurationValidator::hasValidIsPresent(QString const& isPresent) const
 {
     return CommonItemsValidator::hasValidIsPresent(isPresent, parser_);
 }
@@ -124,8 +138,8 @@ bool InterconnectionConfigurationValidator::multipleAbstractorInstanceIsValid(
         return false;
     }
 
-    QVector<std::string> instanceNames;
-    for (QSharedPointer<AbstractorInstance> instance : *multipleInstance->getAbstractorInstances())
+    QVector<QString> instanceNames;
+    foreach (QSharedPointer<AbstractorInstance> instance, *multipleInstance->getAbstractorInstances())
     {
         if (instanceNames.contains(instance->getInstanceName()) || !abstractorInstanceIsValid(instance))
         {
@@ -168,12 +182,12 @@ bool InterconnectionConfigurationValidator::interfaceReferenceComponentReference
     QSharedPointer<InterfaceRef> interfaceReference) const
 {
     auto componentRef = interfaceReference->getComponentRef();
-    if (componentRef.empty() == false && availableComponentInstances_)
+    if (componentRef.isEmpty() == false && availableComponentInstances_)
     {
         return std::any_of(availableComponentInstances_->cbegin(), availableComponentInstances_->cend(),
             [&componentRef](auto const& instance)
         {
-            return instance->getInstanceName().toStdString() == componentRef;
+            return instance->getInstanceName() == componentRef;
         });
     }
 
@@ -189,12 +203,12 @@ bool InterconnectionConfigurationValidator::interfaceReferenceBusReferenceIsVali
     changeAvailableBusInterfaces(interfaceReference);
 
     auto busRef = interfaceReference->getBusRef();
-    if (busRef.empty() == false && availableBusInterfaces_)
+    if (busRef.isEmpty() == false && availableBusInterfaces_)
     {
         return std::any_of(availableBusInterfaces_->cbegin(), availableBusInterfaces_->cend(),
             [&busRef](auto const& currentInterface)
         {
-            return currentInterface->name().toStdString() == busRef;
+            return currentInterface->name() == busRef;
         });
     }
 
@@ -211,12 +225,12 @@ void InterconnectionConfigurationValidator::changeAvailableBusInterfaces(
     {
         for (QSharedPointer<ComponentInstance> instance : *availableComponentInstances_)
         {
-            if (instance->getInstanceName().toStdString() == interfaceReference->getComponentRef())
+            if (instance->getInstanceName() == interfaceReference->getComponentRef())
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {
                     QSharedPointer<Component> referencedComponent =
-                        libraryHandler_->getModel(*instance->getComponentRef().data()).dynamicCast<Component>();
+                        libraryHandler_->getModel(*instance->getComponentRef()).dynamicCast<Component>();
 
                     if (referencedComponent)
                     {
@@ -250,7 +264,7 @@ bool InterconnectionConfigurationValidator::abstractorInstanceIsValid(QSharedPoi
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfigurationValidator::hasValidName()
 //-----------------------------------------------------------------------------
-bool InterconnectionConfigurationValidator::hasValidName(std::string const& name) const
+bool InterconnectionConfigurationValidator::hasValidName(QString const& name) const
 {
     return CommonItemsValidator::hasValidName(name);
 }
@@ -262,7 +276,7 @@ void InterconnectionConfigurationValidator::findErrorsIn(QVector<QString>& error
     QSharedPointer<InterconnectionConfiguration> configuration, QString const& context)
 {
     QString interconnectionContext = QObject::tr("interconnection configuration %1")
-        .arg(QString::fromStdString(configuration->getInterconnectionReference()));
+        .arg(configuration->getInterconnectionReference());
 
     findErrorsInInterconnectionReference(errors, configuration, context);
     findErrorsInIsPresent(errors, configuration->getIsPresent(), interconnectionContext, context);
@@ -278,7 +292,7 @@ void InterconnectionConfigurationValidator::findErrorsInInterconnectionReference
     if (!hasValidInterconnectionReference(configuration))
     {
         errors.append(QObject::tr("Invalid interconnection reference '%1' given for interconnection configuration "
-            "within %2.").arg(QString::fromStdString(configuration->getInterconnectionReference()), context));
+            "within %2.").arg(configuration->getInterconnectionReference()).arg(context));
     }
 }
 
@@ -286,7 +300,7 @@ void InterconnectionConfigurationValidator::findErrorsInInterconnectionReference
 // Function: InterconnectionConfigurationValidator::findErrorsInIsPresent()
 //-----------------------------------------------------------------------------
 void InterconnectionConfigurationValidator::findErrorsInIsPresent(QVector<QString>& errors,
-    std::string const& isPresent, QString const& innerContext, QString const& context) const
+    QString const& isPresent, QString const& innerContext, QString const& context) const
 {
     if (!hasValidIsPresent(isPresent))
     {
@@ -304,7 +318,7 @@ void InterconnectionConfigurationValidator::findErrorsInMultipleAbstractorInstan
     if (!configuration->getAbstractorInstances() || configuration->getAbstractorInstances()->isEmpty())
     {
         errors.append(QObject::tr("No abstractor instances found in interconnection configuration '%1' within %2")
-            .arg(QString::fromStdString(configuration->getInterconnectionReference()), context));
+            .arg(configuration->getInterconnectionReference()).arg(context));
     }
 
     for (QSharedPointer<MultipleAbstractorInstances> multipleInstance : *configuration->getAbstractorInstances())
@@ -327,12 +341,12 @@ void InterconnectionConfigurationValidator::findErrorsInOneMultipleAbstractorIns
         if (!interfaceReferenceComponentReferenceIsValid(interfaceReference))
         {
             errors.append(QObject::tr("Invalid component instance reference '%1' set for %2 within %3")
-                .arg(QString::fromStdString(interfaceReference->getComponentRef())).arg(multipleInstanceContext).arg(context));
+                .arg(interfaceReference->getComponentRef()).arg(multipleInstanceContext).arg(context));
         }
         if (!interfaceReferenceBusReferenceIsValid(interfaceReference))
         {
             errors.append(QObject::tr("Invalid bus interface reference '%1' set for %2 within %3")
-                .arg(QString::fromStdString(interfaceReference->getBusRef())).arg(multipleInstanceContext).arg(context));
+                .arg(interfaceReference->getBusRef()).arg(multipleInstanceContext).arg(context));
         }
         if (!hasValidIsPresent(interfaceReference->getIsPresent()))
         {
@@ -348,15 +362,15 @@ void InterconnectionConfigurationValidator::findErrorsInOneMultipleAbstractorIns
     }
     else
     {
-        QVector<std::string> instanceNames;
-        QVector<std::string> duplicateNames;
+        QVector<QString> instanceNames;
+        QVector<QString> duplicateNames;
         for (QSharedPointer<AbstractorInstance> instance : *multipleInstance->getAbstractorInstances())
         {
             if (instanceNames.contains(instance->getInstanceName()) &&
                 !duplicateNames.contains(instance->getInstanceName()))
             {
                 errors.append(QObject::tr("Abstractor instance name '%1' within %2 is not unique.")
-                    .arg(QString::fromStdString(instance->getInstanceName())).arg(context));
+                    .arg(instance->getInstanceName()).arg(context));
 
                 duplicateNames.append(instance->getInstanceName());
             }
@@ -376,18 +390,16 @@ void InterconnectionConfigurationValidator::findErrorsInAbstractorInstance(QVect
     if (!hasValidName(instance->getInstanceName()))
     {
         errors.append(QObject::tr("Invalid instance name '%1' set for abstractor instance within %2")
-            .arg(QString::fromStdString(instance->getInstanceName())).arg(context));
+            .arg(instance->getInstanceName()).arg(context));
     }
 
-    QString abstractorContext = QObject::tr("abstractor instance %1").arg(QString::fromStdString(instance->getInstanceName()));
+    QString abstractorContext = QObject::tr("abstractor instance %1").arg(instance->getInstanceName());
 
     instance->getAbstractorRef()->isValid(errors, abstractorContext);
 
     if (!hasValidName(instance->getViewName()))
     {
-        errors.append(QObject::tr("Invalid view name '%1' set for abstractor instance %2 within %3").arg(
-            QString::fromStdString(instance->getViewName()),
-            QString::fromStdString(instance->getInstanceName()),
-            context));
+        errors.append(QObject::tr("Invalid view name '%1' set for abstractor instance %2 within %3")
+            .arg(instance->getViewName()).arg(instance->getInstanceName()).arg(context));
     }
 }

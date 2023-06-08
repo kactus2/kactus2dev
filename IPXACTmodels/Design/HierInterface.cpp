@@ -19,23 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: HierInterface::HierInterface()
 //-----------------------------------------------------------------------------
-HierInterface::HierInterface(QString busRef /* = QString("") */) :
+HierInterface::HierInterface(QString busRef) :
 Extendable(),
-busRef_(busRef),
-isPresent_(),
-description_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierInterface::HierInterface()
-//-----------------------------------------------------------------------------
-HierInterface::HierInterface(const HierInterface& other) :
-Extendable(other),
-busRef_(other.busRef_),
-isPresent_(other.isPresent_),
-description_(other.description_)
+busRef_(busRef)
 {
 
 }
@@ -67,7 +53,7 @@ HierInterface& HierInterface::operator=(const HierInterface& other)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::operator==()
 //-----------------------------------------------------------------------------
-bool HierInterface::operator==(const HierInterface& other)
+bool HierInterface::operator==(const HierInterface& other) const
 {
     return (busRef_.compare(other.busRef_, Qt::CaseInsensitive) == 0);
 }
@@ -75,7 +61,7 @@ bool HierInterface::operator==(const HierInterface& other)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::operator!=()
 //-----------------------------------------------------------------------------
-bool HierInterface::operator!=(const HierInterface& other)
+bool HierInterface::operator!=(const HierInterface& other) const
 {
     return !operator==(other);
 }
@@ -83,7 +69,7 @@ bool HierInterface::operator!=(const HierInterface& other)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::operator<()
 //-----------------------------------------------------------------------------
-bool HierInterface::operator<(const HierInterface& other)
+bool HierInterface::operator<(const HierInterface& other) const
 {
     int busResult = busRef_.compare(other.busRef_, Qt::CaseInsensitive);
 
@@ -143,20 +129,14 @@ void HierInterface::setDescription(QString const& newDescription)
 //-----------------------------------------------------------------------------
 void HierInterface::setRoute(QList<QPointF> newRoute)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:route"))
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
+    getVendorExtensions()->removeAll(extension);
 
     if (!newRoute.isEmpty())
     {
         QSharedPointer<Kactus2Group> routeGroup (new Kactus2Group(QStringLiteral("kactus2:route")));
 
-        foreach (QPointF position, newRoute)
+        for (QPointF const& position : newRoute)
         {
             QSharedPointer<Kactus2Placeholder> newPosition(
                 new Kactus2Placeholder(QStringLiteral("kactus2:position")));
@@ -182,7 +162,7 @@ QList<QPointF> HierInterface::getRoute() const
 
     if (!routeExtension.isEmpty())
     {
-        foreach (QSharedPointer<VendorExtension> extension, routeExtension)
+        for (QSharedPointer<VendorExtension> extension : routeExtension)
         {
             QSharedPointer<Kactus2Placeholder> position = extension.dynamicCast<Kactus2Placeholder>();
             int positionX = position->getAttributeValue(QStringLiteral("x")).toInt();

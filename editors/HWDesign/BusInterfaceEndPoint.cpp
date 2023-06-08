@@ -20,7 +20,6 @@
 #include <editors/HWDesign/InterfaceGraphics.h>
 #include <editors/HWDesign/HWMoveCommands.h>
 #include <editors/HWDesign/columnview/HWColumn.h>
-#include <editors/HWDesign/WarningSymbol.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -33,22 +32,12 @@
 // Function: BusInterfaceEndPoint::BusInterfaceEndPoint()
 //-----------------------------------------------------------------------------
 BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-    LibraryInterface* library, QGraphicsItem *parent, QVector2D const& dir):
-HWConnectionEndpoint(busIf->name(), component, parent, dir),
-busInterface_(busIf),
-oldPos_(),
-portMapWarning_(new WarningSymbol(this)),
-library_(library)
+    LibraryInterface* library, QGraphicsItem* parent, QVector2D const& dir) :
+    HWConnectionEndpoint(busIf->name(), component, parent, dir),
+    busInterface_(busIf),
+    library_(library)
 {
     portMapWarning_->setVisible(false);
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::~BusInterfaceEndPoint()
-//-----------------------------------------------------------------------------
-BusInterfaceEndPoint::~BusInterfaceEndPoint()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +60,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
     TransactionalTypes::Initiative initiative =
         InterfaceGraphics::getInterfaceInitiative(busInterface_, getOwnerComponent());
 
-    if (direction == DirectionTypes::DIRECTION_INVALID && initiative != TransactionalTypes::INITIATIVE_INVALID)
+    if (direction == DirectionTypes::DIRECTION_INVALID && initiative != TransactionalTypes::Initiative::INITIATIVE_INVALID)
     {
         shape = getInterfaceShapeWithInitiative(initiative);
     }
@@ -130,11 +119,11 @@ QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithDirection(DirectionTypes::D
 //-----------------------------------------------------------------------------
 QPolygonF BusInterfaceEndPoint::getInterfaceShapeWithInitiative(TransactionalTypes::Initiative initiative) const
 {
-    if (initiative == TransactionalTypes::PROVIDES)
+    if (initiative == TransactionalTypes::Initiative::PROVIDES)
     {
         return getInitiativeProvidesShape();
     }
-    else if (initiative == TransactionalTypes::REQUIRES)
+    else if (initiative == TransactionalTypes::Initiative::REQUIRES)
     {
         return getInitiativeRequiresShape();
     }
@@ -190,7 +179,7 @@ QString BusInterfaceEndPoint::description() const
     }
     else
     {
-        return QString("");
+        return QString();
     }
 }
 
@@ -282,7 +271,7 @@ void BusInterfaceEndPoint::setOldPosition(QPointF const& newPosition)
 //-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::saveOldPortPositions(QList<QGraphicsItem*> items)
 {
-    foreach (QGraphicsItem* item, items)
+    for (QGraphicsItem* item : items)
     {
         ConnectionEndpoint* endPointItem = dynamic_cast<ConnectionEndpoint*>(item);
         if (endPointItem && item != this && endPointItem->isHierarchical() == isHierarchical())
@@ -310,22 +299,6 @@ void BusInterfaceEndPoint::clearOldPortPositions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceEndPoint::beginUpdateConnectionPositions()
-//-----------------------------------------------------------------------------
-void BusInterfaceEndPoint::beginUpdateConnectionPositions()
-{
-    foreach (QGraphicsItem *item, scene()->items())
-    {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-        if (conn != 0)
-        {
-            conn->beginUpdatePosition();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -338,7 +311,7 @@ void BusInterfaceEndPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     HWConnectionEndpoint::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    DesignDiagram* diagram = dynamic_cast<DesignDiagram*>(scene());
+    auto diagram = dynamic_cast<DesignDiagram*>(scene());
     if (diagram)
     {
         QSharedPointer<QUndoCommand> moveCommand = createMouseMoveCommand(diagram);
@@ -355,15 +328,7 @@ void BusInterfaceEndPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             clearOldPortPositions();
 
             // End the position update for all connections.
-            foreach (QGraphicsItem *item, scene()->items())
-            {
-                GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-
-                if (conn != 0)
-                {
-                    conn->endUpdatePosition(moveCommand.data());
-                }
-            }
+            endUpdateConnectionPositions(moveCommand.data());
 
             // Add the undo command to the edit stack only if it has changes.
             if (moveCommand->childCount() > 0 || getOldPosition() != getCurrentPosition())
@@ -380,7 +345,7 @@ void BusInterfaceEndPoint::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 bool BusInterfaceEndPoint::isConnectionValid(ConnectionEndpoint const* other) const
 {
-    if (!HWConnectionEndpoint::isConnectionValid(other) || !other->isBus() || other->getBusInterface() == 0)
+    if (!HWConnectionEndpoint::isConnectionValid(other) || !other->isBus() || other->getBusInterface() == nullptr)
     {
         return false;
     }
@@ -395,7 +360,7 @@ bool BusInterfaceEndPoint::onConnect(ConnectionEndpoint const* other)
 {
     updateInterface();
 
-    return other != 0;
+    return other != nullptr;
 }
 
 //-----------------------------------------------------------------------------

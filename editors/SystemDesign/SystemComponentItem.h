@@ -51,19 +51,23 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~SystemComponentItem();
+    ~SystemComponentItem() override = default;
+
+    // Disable copying.
+    SystemComponentItem(SystemComponentItem const& rhs) = delete;
+    SystemComponentItem& operator=(SystemComponentItem const& rhs) = delete;
 
     /*!
      *  Sets the property values.
      *
      *      @param [in] values The property values.
-     */
+     */ 
     void setPropertyValues(QMap<QString, QString> const& values);
 
     /*!
      *  Returns the property values.
      */
-    QMap<QString, QString> const& getPropertyValues() const;
+    QMap<QString, QString> getPropertyValues() const;
 
     /*!
      *  Adds a new, empty port to the component.
@@ -89,11 +93,6 @@ public:
     void removePort(SWPortItem* port);
 
     /*!
-     *  Updates the diagram component to reflect the current state of the component model.
-     */
-    virtual void updateComponent();
-
-    /*!
      *  Sets the flag whether the component has been imported or not.
      *
      *      @param [in] imported If true, the component is marked as imported.
@@ -115,7 +114,7 @@ public:
     /*!
      *  Returns the name of the import source instance.
      */
-    QString const& getImportRef() const;
+    QString getImportRef() const;
 
     /*!
      *  Called when a port is being moved.
@@ -209,10 +208,6 @@ signals:
 protected:
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
-    /*!
-     *  Returns the height for the component box.
-     */
-	virtual qreal getHeight();
 
     /*!
      *  Updates the port positions so that they have at minimum the given Y coordinate value.
@@ -220,9 +215,6 @@ protected:
     void offsetPortPositions(qreal minY);
 
 private:
-    // Disable copying.
-    SystemComponentItem(SystemComponentItem const& rhs);
-    SystemComponentItem& operator=(SystemComponentItem const& rhs);
 
     /*!
      *  Position the API interface items for the component item.
@@ -234,62 +226,12 @@ private:
      */
     void positionCOMInterfaceTerminals();
 
-    /*!
-     *  Add the port item to the side determined by its current position.
-     *
-     *      @param [in] port    The selected port item.
-     */
-    void addPortToSideByPosition(SWPortItem* port);
-
-    /*!
-     *  Add the port item to the side with less port items.
-     *
-     *      @param [in] port    The selected port item.
-     */
-    void addPortToSideWithLessPorts(SWPortItem* port);
-
-    /*!
-     *  Adds the given port to the component.
-     *
-     *      @param [in] port  The port to add.
-     *      @param [in] dir   The port direction which determines to which side to port will be placed.
-     */
-    void onAddPort(SWPortItem* port, PortDirection dir);
-
-	/*!
-	 *  Check and resize the port labels to better match with the component width.
-	 *
-	 *      @param [in] port       The port that is compared to the other stack.
-	 *      @param [in] otherSide  The stack containing the ports of the other side.
-	 */
-    void checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> otherSide);
-
-    enum
-    {
-        SPACING = 8,
-        MIN_Y_PLACEMENT = 3 * GridSize,
-        BOTTOM_MARGIN = 3 * GridSize
-    };
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The boolean flag for imported property.
-    bool imported_;
-
-    //! The name of the import source instance, if this component is an imported one.
-    QString importRef_;
-
-    //! Layout for ports.
-    QSharedPointer< IVGraphicsLayout<ConnectionEndpoint> > portLayout_;
-
-    //! The left and right port stacks.
-    QList<ConnectionEndpoint*> leftPorts_;
-    QList<ConnectionEndpoint*> rightPorts_;
-
     //! If true, connection updates coming from ports are disabled.
-    bool connUpdateDisabled_;
+    bool connUpdateDisabled_ = false;
 
     //! The set property values.
     QMap<QString, QString> propertyValues_;

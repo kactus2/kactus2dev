@@ -26,18 +26,25 @@ public:
     tst_DesignReader();
 
 private slots:
-    void testReadSimpleDesign();
+    void testReadMinimalDesign();
+    void testReadMinimal2022Design();
+
     void testReadProcessingInstructions();
 
     void testReadComponentInstances();
+    void testRead2022ComponentInstances();
     void testReadComponentInstanceExtensions();
 
     void testReadInterconnections();
+    void testRead2022Interconnections();
     void testReadInterconnectionExtensions();
 
     void testReadMonitorInterconnections();
-    
+    void testRead2022MonitorInterconnections();
+
     void testReadAdHocConnections();
+    void testRead2022AdHocConnections();
+    void testRead2022AdHocSubPortReferences();
     void testReadAdHocConnectionExtensions();
 
     void testReadParameters();
@@ -62,9 +69,9 @@ tst_DesignReader::tst_DesignReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_DesignReader::testReadSimpleDesign()
+// Function: tst_DesignReader::testReadMinimalDesign()
 //-----------------------------------------------------------------------------
-void tst_DesignReader::testReadSimpleDesign()
+void tst_DesignReader::testReadMinimalDesign()
 {
     QString documentContent(
         "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
@@ -72,7 +79,7 @@ void tst_DesignReader::testReadSimpleDesign()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -83,14 +90,49 @@ void tst_DesignReader::testReadSimpleDesign()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
-
-    QCOMPARE(testDesign->getVlnv().getVendor(), QString("TUT"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
+    QCOMPARE(testDesign->getVlnv().getVendor(), QString("tuni.fi"));
     QCOMPARE(testDesign->getVlnv().getLibrary(), QString("TestLibrary"));
     QCOMPARE(testDesign->getVlnv().getName(), QString("TestDesign"));
     QCOMPARE(testDesign->getVlnv().getVersion(), QString("0.1"));
+    QCOMPARE(testDesign->getDescription(), QString("TestDescription"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadMinimal2022Design()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testReadMinimal2022Design()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestDesign</ipxact:name>"
+        "<ipxact:version>0.1</ipxact:version>"
+        "<ipxact:displayName>minimalDesign</ipxact:displayName>"
+        "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+        "<ipxact:description>TestDescription</ipxact:description>"
+        "</ipxact:design>");
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getVlnv().getVendor(), QString("tuni.fi"));
+    QCOMPARE(testDesign->getVlnv().getLibrary(), QString("TestLibrary"));
+    QCOMPARE(testDesign->getVlnv().getName(), QString("TestDesign"));
+    QCOMPARE(testDesign->getVlnv().getVersion(), QString("0.1"));
+    QCOMPARE(testDesign->getDisplayName(), QString("minimalDesign"));
+    QCOMPARE(testDesign->getShortDescription(), QString("brief"));
     QCOMPARE(testDesign->getDescription(), QString("TestDescription"));
 }
 
@@ -108,7 +150,7 @@ void tst_DesignReader::testReadProcessingInstructions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -118,9 +160,7 @@ void tst_DesignReader::testReadProcessingInstructions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getXmlProcessingInstructions().count(), 1);
 
@@ -129,6 +169,7 @@ void tst_DesignReader::testReadProcessingInstructions()
     QCOMPARE(styleInstruction.second, QString("href=\"style.css\""));
 
     QCOMPARE(testDesign->getTopComments().first(), QString(" Header comment "));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -142,7 +183,7 @@ void tst_DesignReader::testReadComponentInstances()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -152,7 +193,7 @@ void tst_DesignReader::testReadComponentInstances()
                     "<ipxact:displayName>displayName</ipxact:displayName>"
                     "<ipxact:description>described</ipxact:description>"
                     "<ipxact:isPresent>2-1</ipxact:isPresent>"
-                    "<ipxact:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testComponent\""
+                    "<ipxact:componentRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testComponent\""
                         " version=\"1.0\">"
                         "<ipxact:configurableElementValues>"
                             "<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
@@ -169,21 +210,20 @@ void tst_DesignReader::testReadComponentInstances()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
 
     QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
 
     QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
-    QCOMPARE(testInstance->getDisplayName(), QString("displayName"));
-    QCOMPARE(testInstance->getDescription(), QString("described"));
+    QCOMPARE(testInstance->displayName(), QString("displayName"));
+    QCOMPARE(testInstance->description(), QString("described"));
     QCOMPARE(testInstance->getIsPresent(), QString("2-1"));
 
     QSharedPointer<ConfigurableVLNVReference> componentRef =
         testDesign->getComponentInstances()->first()->getComponentRef();
-    QCOMPARE(componentRef->getVendor(), QString("TUT"));
+    QCOMPARE(componentRef->getVendor(), QString("tuni.fi"));
     QCOMPARE(componentRef->getLibrary(), QString("TestLibrary"));
     QCOMPARE(componentRef->getName(), QString("testComponent"));
     QCOMPARE(componentRef->getVersion(), QString("1.0"));
@@ -193,6 +233,83 @@ void tst_DesignReader::testReadComponentInstances()
 
     QCOMPARE(testInstance->getVendorExtensions()->size(), 1);
     QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("kactus2:uuid"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testRead2022ComponentInstances()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testRead2022ComponentInstances()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:componentInstances>"
+                "<ipxact:componentInstance>"
+                    "<ipxact:instanceName>testInstance</ipxact:instanceName>"
+                    "<ipxact:displayName>displayName</ipxact:displayName>"
+                    "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+                    "<ipxact:description>described</ipxact:description>"
+                    "<ipxact:componentRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testComponent\" version=\"1.0\">"
+                        "<ipxact:configurableElementValues>"
+                            "<ipxact:configurableElementValue referenceId=\"testReferenceID\">10</ipxact:configurableElementValue>"
+                        "</ipxact:configurableElementValues>"
+                    "</ipxact:componentRef>"
+                    "<ipxact:powerDomainLinks>"
+                        "<ipxact:powerDomainLink>"
+                            "<ipxact:externalPowerDomainReference>external</ipxact:externalPowerDomainReference>"
+                            "<ipxact:internalPowerDomainReference>internal</ipxact:internalPowerDomainReference>"
+                        "</ipxact:powerDomainLink>"
+                    "</ipxact:powerDomainLinks>"
+                    "<ipxact:vendorExtensions>"
+                        "<kactus2:uuid>testUUID</kactus2:uuid>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:componentInstance>"
+            "</ipxact:componentInstances>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getComponentInstances()->size(), 1);
+
+    QSharedPointer<ComponentInstance> testInstance = testDesign->getComponentInstances()->first();
+
+    QCOMPARE(testInstance->getInstanceName(), QString("testInstance"));
+    QCOMPARE(testInstance->displayName(), QString("displayName"));
+    QCOMPARE(testInstance->shortDescription(), QString("brief"));
+    QCOMPARE(testInstance->description(), QString("described"));
+    QCOMPARE(testInstance->getIsPresent(), QString());
+
+    QSharedPointer<ConfigurableVLNVReference> componentRef =
+        testDesign->getComponentInstances()->first()->getComponentRef();
+    QCOMPARE(componentRef->getVendor(), QString("tuni.fi"));
+    QCOMPARE(componentRef->getLibrary(), QString("TestLibrary"));
+    QCOMPARE(componentRef->getName(), QString("testComponent"));
+    QCOMPARE(componentRef->getVersion(), QString("1.0"));
+    QCOMPARE(componentRef->getConfigurableElementValues()->size(), 1);
+    QCOMPARE(componentRef->getConfigurableElementValues()->first()->getReferenceId(), QString("testReferenceID"));
+    QCOMPARE(componentRef->getConfigurableElementValues()->first()->getConfigurableValue(), QString("10"));
+
+    QCOMPARE(testInstance->getVendorExtensions()->size(), 1);
+    QCOMPARE(testInstance->getVendorExtensions()->first()->type(), QString("kactus2:uuid"));
+
+    QCOMPARE(testInstance->getPowerDomainLinks()->size(), 1);
+
+    auto powerDomainLink = testInstance->getPowerDomainLinks()->first();
+    QCOMPARE(powerDomainLink->externalReference_, QString("external"));
+    QCOMPARE(powerDomainLink->internalReference_, QString("internal"));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -206,14 +323,14 @@ void tst_DesignReader::testReadComponentInstanceExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
             "<ipxact:componentInstances>"
                 "<ipxact:componentInstance>"
                     "<ipxact:instanceName>testInstance</ipxact:instanceName>"
-                    "<ipxact:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"testComponent\""
+                    "<ipxact:componentRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"testComponent\""
                         " version=\"1.0\">"
                         "<ipxact:configurableElementValues>"
                             "<ipxact:configurableElementValue referenceId=\"testReferenceID\">10"
@@ -247,8 +364,7 @@ void tst_DesignReader::testReadComponentInstanceExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
 
@@ -291,6 +407,7 @@ void tst_DesignReader::testReadComponentInstanceExtensions()
     QCOMPARE(testInstance->getPropertyValues().count(), 1);
     QCOMPARE(testInstance->getPropertyValues().firstKey(), QString("testSWProperty"));
     QCOMPARE(testInstance->getPropertyValues().first(), QString("8"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -304,7 +421,7 @@ void tst_DesignReader::testReadInterconnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-           "<ipxact:vendor>TUT</ipxact:vendor>"
+           "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -342,8 +459,7 @@ void tst_DesignReader::testReadInterconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getInterconnections()->size(), 1);
     
@@ -384,6 +500,101 @@ void tst_DesignReader::testReadInterconnections()
 
     QCOMPARE(testConnection->getVendorExtensions()->size(), 1);
     QCOMPARE(testConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testRead2022Interconnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testRead2022Interconnections()
+{
+    QString documentContent(
+    "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+    "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+    "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+    "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+     "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+        "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+        "<ipxact:library>TestLibrary</ipxact:library>"
+        "<ipxact:name>TestDesign</ipxact:name>"
+        "<ipxact:version>0.1</ipxact:version>"
+        "<ipxact:interconnections>"
+            "<ipxact:interconnection>"
+                "<ipxact:name>testConnection</ipxact:name>"
+                "<ipxact:displayName>interconnectionDisplay</ipxact:displayName>"
+                "<ipxact:shortDescription>brief interconnect</ipxact:shortDescription>"
+                "<ipxact:description>interconnectionDescription</ipxact:description>"
+                    "<ipxact:activeInterface componentInstanceRef=\"startComponent\" busRef=\"startBus\">"
+                    "<ipxact:description>interfaceDescription</ipxact:description>"
+                    "<ipxact:excludePorts>"
+                        "<ipxact:excludePort>testExcludePort</ipxact:excludePort>"
+                    "</ipxact:excludePorts>"
+                    "<ipxact:vendorExtensions>"
+                        "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:activeInterface>"
+                "<ipxact:activeInterface componentInstanceRef=\"otherComponent\" busRef=\"otherBus\"/>"
+                "<ipxact:hierInterface busRef=\"hierBusRef\">"
+                    "<ipxact:description>hierDescription</ipxact:description>"
+                    "<ipxact:vendorExtensions>"
+                        "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:hierInterface>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:interconnection>"
+        "</ipxact:interconnections>"
+    "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getInterconnections()->size(), 1);
+
+    QSharedPointer<Interconnection> testConnection = testDesign->getInterconnections()->first();
+
+    QCOMPARE(testConnection->name(), QString("testConnection"));
+    QCOMPARE(testConnection->displayName(), QString("interconnectionDisplay"));
+    QCOMPARE(testConnection->shortDescription(), QString("brief interconnect"));
+    QCOMPARE(testConnection->description(), QString("interconnectionDescription"));
+    QCOMPARE(testConnection->getIsPresent(), QString());
+
+    QCOMPARE(testConnection->getStartInterface()->getComponentReference(), QString("startComponent"));
+    QCOMPARE(testConnection->getStartInterface()->getBusReference(), QString("startBus"));
+    QCOMPARE(testConnection->getStartInterface()->getIsPresent(), QString());
+    QCOMPARE(testConnection->getStartInterface()->getDescription(), QString("interfaceDescription"));
+    QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->size(), 1);
+    QCOMPARE(testConnection->getStartInterface()->getExcludePorts()->first(), QString("testExcludePort"));
+    QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->size(), 1);
+    QCOMPARE(testConnection->getStartInterface()->getVendorExtensions()->first()->type(), QString("testExtension"));
+
+    QCOMPARE(testConnection->getActiveInterfaces()->size(), 1);
+
+    QSharedPointer<ActiveInterface> active = testConnection->getActiveInterfaces()->first();
+    QCOMPARE(active->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(active->getBusReference(), QString("otherBus"));
+    QCOMPARE(active->getIsPresent(), QString());
+    QCOMPARE(active->getDescription(), QString(""));
+    QCOMPARE(active->getExcludePorts()->size(), 0);
+    QCOMPARE(active->getVendorExtensions()->size(), 0);
+
+    QCOMPARE(testConnection->getHierInterfaces()->size(), 1);
+
+    QSharedPointer<HierInterface> hierarchy = testConnection->getHierInterfaces()->first();
+    QCOMPARE(hierarchy->getBusReference(), QString("hierBusRef"));
+    QCOMPARE(hierarchy->getIsPresent(), QString());
+    QCOMPARE(hierarchy->getDescription(), QString("hierDescription"));
+    QCOMPARE(hierarchy->getVendorExtensions()->size(), 1);
+    QCOMPARE(hierarchy->getVendorExtensions()->first()->type(), QString("testExtension"));
+
+    QCOMPARE(testConnection->getVendorExtensions()->size(), 1);
+    QCOMPARE(testConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -397,7 +608,7 @@ void tst_DesignReader::testReadInterconnectionExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -423,8 +634,7 @@ void tst_DesignReader::testReadInterconnectionExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getInterconnections()->size(), 1);
 
@@ -445,6 +655,7 @@ void tst_DesignReader::testReadInterconnectionExtensions()
     QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().first().x(), qreal(1));
     QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().last().x(), qreal(1));
     QCOMPARE(interconnection->getHierInterfaces()->first()->getRoute().last().y(), qreal(2));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -458,7 +669,7 @@ void tst_DesignReader::testReadMonitorInterconnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -490,8 +701,7 @@ void tst_DesignReader::testReadMonitorInterconnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getMonitorInterconnecions()->size(), 1);
 
@@ -522,6 +732,82 @@ void tst_DesignReader::testReadMonitorInterconnections()
     QCOMPARE(monitorInterface->getIsPresent(), QString("1"));
     QCOMPARE(monitorInterface->getVendorExtensions()->size(), 1);
     QCOMPARE(monitorInterface->getVendorExtensions()->first()->type(), QString("testExtension"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadMonitorInterconnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testRead2022MonitorInterconnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:interconnections>"
+                "<ipxact:monitorInterconnection>"
+                    "<ipxact:name>monitorInterconnection</ipxact:name>"
+                    "<ipxact:displayName>monitorDisplay</ipxact:displayName>"
+                    "<ipxact:shortDescription>brief monitor</ipxact:shortDescription>"
+                    "<ipxact:description>monitorDescription</ipxact:description>"
+                    "<ipxact:monitoredActiveInterface componentInstanceRef=\"componentRef\" busRef=\"busRef\" path=\"/path/to/test\">"
+                        "<ipxact:description>monitoredActiveDescription</ipxact:description>"
+                            "<ipxact:vendorExtensions>"
+                                "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                            "</ipxact:vendorExtensions>"
+                        "</ipxact:monitoredActiveInterface>"
+                    "<ipxact:monitorInterface componentInstanceRef=\"otherComponent\" busRef=\"otherBus\" path=\"/path/to/other/test\">"
+                        "<ipxact:description>monitorInterfaceDescription</ipxact:description>"
+                        "<ipxact:vendorExtensions>"
+                            "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                        "</ipxact:vendorExtensions>"
+                    "</ipxact:monitorInterface>"
+                "</ipxact:monitorInterconnection>"
+            "</ipxact:interconnections>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+    
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getMonitorInterconnecions()->size(), 1);
+
+    QSharedPointer<MonitorInterconnection> monitorConnection = testDesign->getMonitorInterconnecions()->first();
+
+    QCOMPARE(monitorConnection->name(), QString("monitorInterconnection"));
+    QCOMPARE(monitorConnection->displayName(), QString("monitorDisplay"));
+    QCOMPARE(monitorConnection->shortDescription(), QString("brief monitor"));
+    QCOMPARE(monitorConnection->description(), QString("monitorDescription"));
+    QCOMPARE(monitorConnection->getIsPresent(), QString());
+
+    QSharedPointer<MonitorInterface> monitoredActive = monitorConnection->getMonitoredActiveInterface();
+
+    QCOMPARE(monitoredActive->getComponentReference(), QString("componentRef"));
+    QCOMPARE(monitoredActive->getBusReference(), QString("busRef"));
+    QCOMPARE(monitoredActive->getPath(), QString("/path/to/test"));
+    QCOMPARE(monitoredActive->getDescription(), QString("monitoredActiveDescription"));
+    QCOMPARE(monitoredActive->getVendorExtensions()->size(), 1);
+    QCOMPARE(monitoredActive->getVendorExtensions()->first()->type(), QString("testExtension"));
+
+    QCOMPARE(monitorConnection->getMonitorInterfaces()->size(), 1);
+
+    QSharedPointer<MonitorInterface> monitorInterface = monitorConnection->getMonitorInterfaces()->first();
+
+    QCOMPARE(monitorInterface->getComponentReference(), QString("otherComponent"));
+    QCOMPARE(monitorInterface->getBusReference(), QString("otherBus"));
+    QCOMPARE(monitorInterface->getPath(), QString("/path/to/other/test"));
+    QCOMPARE(monitorInterface->getDescription(), QString("monitorInterfaceDescription"));
+    QCOMPARE(monitorInterface->getIsPresent(), QString());
+    QCOMPARE(monitorInterface->getVendorExtensions()->size(), 1);
+    QCOMPARE(monitorInterface->getVendorExtensions()->first()->type(), QString("testExtension"));
 }
 
 //-----------------------------------------------------------------------------
@@ -535,7 +821,7 @@ void tst_DesignReader::testReadAdHocConnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -580,9 +866,9 @@ void tst_DesignReader::testReadAdHocConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
 
     QSharedPointer<AdHocConnection> adHocConnection = testDesign->getAdHocConnections()->first();
@@ -621,6 +907,206 @@ void tst_DesignReader::testReadAdHocConnections()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadAdHocConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testRead2022AdHocConnections()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:adHocConnections>"
+                "<ipxact:adHocConnection>"
+                    "<ipxact:name>adHoc</ipxact:name>"
+                    "<ipxact:displayName>displayAd</ipxact:displayName>"
+                    "<ipxact:shortDescription>shortAd</ipxact:shortDescription>"
+                    "<ipxact:description>describeAd</ipxact:description>"
+                    "<ipxact:tiedValue>default</ipxact:tiedValue>"
+                    "<ipxact:portReferences>"
+                        "<ipxact:internalPortReference componentInstanceRef=\"componentInstance\" portRef=\"internalPort\">"
+                        "<ipxact:partSelect>"
+                            "<ipxact:range>"
+                                "<ipxact:left>1</ipxact:left>"
+                                "<ipxact:right>11</ipxact:right>"
+                            "</ipxact:range>"
+                            "<ipxact:indices>"
+                                "<ipxact:index>8</ipxact:index>"
+                                "<ipxact:index>4+4</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:partSelect>"
+                    "</ipxact:internalPortReference>"
+                    "<ipxact:externalPortReference portRef=\"externalPort\">"
+                        "<ipxact:partSelect>"
+                            "<ipxact:range>"
+                                "<ipxact:left>0</ipxact:left>"
+                                "<ipxact:right>4</ipxact:right>"
+                            "</ipxact:range>"
+                        "</ipxact:partSelect>"
+                    "</ipxact:externalPortReference>"
+                "</ipxact:portReferences>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+                "</ipxact:adHocConnection>"
+            "</ipxact:adHocConnections>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
+
+    QSharedPointer<AdHocConnection> adHocConnection = testDesign->getAdHocConnections()->first();
+
+    QCOMPARE(adHocConnection->name(), QString("adHoc"));
+    QCOMPARE(adHocConnection->displayName(), QString("displayAd"));
+    QCOMPARE(adHocConnection->shortDescription(), QString("shortAd"));
+    QCOMPARE(adHocConnection->description(), QString("describeAd"));
+    QCOMPARE(adHocConnection->getIsPresent(), QString());
+    QCOMPARE(adHocConnection->getTiedValue(), QString("default"));
+    QCOMPARE(adHocConnection->getVendorExtensions()->size(), 1);
+    QCOMPARE(adHocConnection->getVendorExtensions()->first()->type(), QString("testExtension"));
+
+    QCOMPARE(adHocConnection->getInternalPortReferences()->size(), 1);
+
+    QSharedPointer<PortReference> internalRef = adHocConnection->getInternalPortReferences()->first();
+    QCOMPARE(internalRef->getComponentRef(), QString("componentInstance"));
+    QCOMPARE(internalRef->getPortRef(), QString("internalPort"));
+    QCOMPARE(internalRef->getIsPresent(), QString());
+
+    QSharedPointer<PartSelect> internalPartSelect = internalRef->getPartSelect();
+    QCOMPARE(internalPartSelect->getLeftRange(), QString("1"));
+    QCOMPARE(internalPartSelect->getRightRange(), QString("11"));
+    QCOMPARE(internalPartSelect->getIndices()->size(), 2);
+    QCOMPARE(internalPartSelect->getIndices()->first(), QString("8"));
+    QCOMPARE(internalPartSelect->getIndices()->last(), QString("4+4"));
+
+    QCOMPARE(adHocConnection->getExternalPortReferences()->size(), 1);
+
+    QSharedPointer<PortReference> externalRef = adHocConnection->getExternalPortReferences()->first();
+    QCOMPARE(externalRef->getPortRef(), QString("externalPort"));
+    QCOMPARE(externalRef->getIsPresent(), QString());
+
+    QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
+    QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
+    QCOMPARE(externalPartSelect->getRightRange(), QString("4"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_DesignReader::testReadAdHocConnections()
+//-----------------------------------------------------------------------------
+void tst_DesignReader::testRead2022AdHocSubPortReferences()
+{
+    QString documentContent(
+        "<ipxact:design xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestDesign</ipxact:name>"
+            "<ipxact:version>0.1</ipxact:version>"
+            "<ipxact:adHocConnections>"
+                "<ipxact:adHocConnection>"
+                "<ipxact:name>adHoc</ipxact:name>"
+                "<ipxact:tiedValue>default</ipxact:tiedValue>"
+                "<ipxact:portReferences>"
+                    "<ipxact:internalPortReference componentInstanceRef=\"componentInstance\" portRef=\"internalPort\">"
+                    "<ipxact:subPortReference subPortRef=\"subPort\" />"
+                    "<ipxact:subPortReference subPortRef=\"partPort\">"
+                        "<ipxact:partSelect>"
+                            "<ipxact:range>"
+                                "<ipxact:left>1</ipxact:left>"
+                                "<ipxact:right>1</ipxact:right>"
+                            "</ipxact:range>"
+                            "<ipxact:indices>"
+                                "<ipxact:index>1</ipxact:index>"
+                            "</ipxact:indices>"
+                        "</ipxact:partSelect>"
+                    "</ipxact:subPortReference>"
+                    "<ipxact:partSelect>"
+                        "<ipxact:range>"
+                            "<ipxact:left>7</ipxact:left>"
+                            "<ipxact:right>0</ipxact:right>"
+                        "</ipxact:range>"
+                        "<ipxact:indices>"
+                            "<ipxact:index>0</ipxact:index>"
+                        "</ipxact:indices>"
+                    "</ipxact:partSelect>"
+                    "</ipxact:internalPortReference>"
+                    "<ipxact:externalPortReference portRef=\"externalPort\">"
+                        "<ipxact:partSelect>"
+                            "<ipxact:range>"
+                                "<ipxact:left>0</ipxact:left>"
+                                "<ipxact:right>2</ipxact:right>"
+                            "</ipxact:range>"
+                        "</ipxact:partSelect>"
+                        "</ipxact:externalPortReference>"
+                    "</ipxact:portReferences>"
+                "</ipxact:adHocConnection>"
+            "</ipxact:adHocConnections>"
+        "</ipxact:design>");
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
+
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std22);
+    QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
+
+    QSharedPointer<AdHocConnection> adHocConnection = testDesign->getAdHocConnections()->first();
+
+    QCOMPARE(adHocConnection->name(), QString("adHoc"));
+    QCOMPARE(adHocConnection->getTiedValue(), QString("default"));
+
+    QCOMPARE(adHocConnection->getInternalPortReferences()->size(), 1);
+
+    QSharedPointer<PortReference> internalRef = adHocConnection->getInternalPortReferences()->first();
+    QCOMPARE(internalRef->getComponentRef(), QString("componentInstance"));
+    QCOMPARE(internalRef->getPortRef(), QString("internalPort"));
+    QCOMPARE(internalRef->getSubPortReferences()->size(), 2);
+
+    QSharedPointer<PortReference> subPortRef = internalRef->getSubPortReferences()->first();
+    QCOMPARE(subPortRef->getPortRef(), QString("subPort"));
+
+    QSharedPointer<PortReference> partSubPortRef = internalRef->getSubPortReferences()->last();
+    QCOMPARE(partSubPortRef->getPortRef(), QString("partPort"));
+
+
+    QSharedPointer<PartSelect> subPartSelect = partSubPortRef->getPartSelect();
+    QCOMPARE(subPartSelect->getLeftRange(), QString("1"));
+    QCOMPARE(subPartSelect->getRightRange(), QString("1"));
+    QCOMPARE(subPartSelect->getIndices()->size(), 1);
+    QCOMPARE(subPartSelect->getIndices()->first(), QString("1"));
+
+    QSharedPointer<PartSelect> internalPartSelect = internalRef->getPartSelect();
+    QCOMPARE(internalPartSelect->getLeftRange(), QString("7"));
+    QCOMPARE(internalPartSelect->getRightRange(), QString("0"));
+    QCOMPARE(internalPartSelect->getIndices()->size(), 1);
+    QCOMPARE(internalPartSelect->getIndices()->first(), QString("0"));
+
+    QCOMPARE(adHocConnection->getExternalPortReferences()->size(), 1);
+
+    QSharedPointer<PortReference> externalRef = adHocConnection->getExternalPortReferences()->first();
+    QCOMPARE(externalRef->getPortRef(), QString("externalPort"));
+
+    QSharedPointer<PartSelect> externalPartSelect = externalRef->getPartSelect();
+    QCOMPARE(externalPartSelect->getLeftRange(), QString("0"));
+    QCOMPARE(externalPartSelect->getRightRange(), QString("2"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_DesignReader::testReadAdHocConnectionExtensions()
 //-----------------------------------------------------------------------------
 void tst_DesignReader::testReadAdHocConnectionExtensions()
@@ -631,7 +1117,7 @@ void tst_DesignReader::testReadAdHocConnectionExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -639,7 +1125,7 @@ void tst_DesignReader::testReadAdHocConnectionExtensions()
                 "<ipxact:adHocConnection>"
                     "<ipxact:name>adHoc</ipxact:name>"
                     "<ipxact:portReferences>"
-                        "<ipxact:internalPortReference componentRef=\"componentInstance\" portRef=\"internalPort\"/>"
+                        "<ipxact:internalPortReference componentInstanceRef=\"componentInstance\" portRef=\"internalPort\"/>"
                         "<ipxact:externalPortReference portRef=\"externalPort\"/>"
                     "</ipxact:portReferences>"
                     "<ipxact:vendorExtensions>"
@@ -657,8 +1143,7 @@ void tst_DesignReader::testReadAdHocConnectionExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader reader;
-    QSharedPointer<Design> testDesign = reader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getAdHocConnections()->size(), 1);
 
@@ -673,6 +1158,7 @@ void tst_DesignReader::testReadAdHocConnectionExtensions()
     QCOMPARE(adHocConnection->getRoute().at(1).y(), qreal(1));
     QCOMPARE(adHocConnection->getRoute().at(2).x(), qreal(4));
     QCOMPARE(adHocConnection->getRoute().at(2).y(), qreal(2));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -686,7 +1172,7 @@ void tst_DesignReader::testReadParameters()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -702,14 +1188,13 @@ void tst_DesignReader::testReadParameters()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getParameters()->size(), 1);
     QCOMPARE(testDesign->getParameters()->first()->name(), QString("designParameter"));
     QCOMPARE(testDesign->getParameters()->first()->getValueId(), QString("testID"));
     QCOMPARE(testDesign->getParameters()->first()->getValue(), QString("10+10"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -723,7 +1208,7 @@ void tst_DesignReader::testReadAssertions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -741,15 +1226,14 @@ void tst_DesignReader::testReadAssertions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getAssertions()->size(), 1);
     QCOMPARE(testDesign->getAssertions()->first()->name(), QString("testAssertion"));
     QCOMPARE(testDesign->getAssertions()->first()->displayName(), QString("assertionDisplay"));
     QCOMPARE(testDesign->getAssertions()->first()->description(), QString("assertionDescription"));
     QCOMPARE(testDesign->getAssertions()->first()->getAssert(), QString("13"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -763,7 +1247,7 @@ void tst_DesignReader::testReadVendorExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -777,12 +1261,12 @@ void tst_DesignReader::testReadVendorExtensions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVendorExtensions()->last()->type(), QString("testExtension"));
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -796,7 +1280,7 @@ void tst_DesignReader::testReadColumns()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -815,8 +1299,7 @@ void tst_DesignReader::testReadColumns()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -835,6 +1318,7 @@ void tst_DesignReader::testReadColumns()
     QCOMPARE(columnList.last()->getContentType(), ColumnTypes::BUSES);
     QVERIFY(columnList.last()->getAllowedItems() == 0);
     QCOMPARE(secondColumnWidth, 259);
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -848,7 +1332,7 @@ void tst_DesignReader::testReadSWInstances()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -860,7 +1344,7 @@ void tst_DesignReader::testReadSWInstances()
                         "<kactus2:instanceName>testInstance</kactus2:instanceName>"
                         "<kactus2:displayName>testDisplay</kactus2:displayName>"
                         "<kactus2:description>testDescription</kactus2:description>"
-                        "<kactus2:componentRef vendor=\"TUT\" library=\"TestLibrary\" name=\"refComponent\""
+                        "<kactus2:componentRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"refComponent\""
                             " version=\"1.1\"/>"
                         "<kactus2:fileSetRef>filesetRef</kactus2:fileSetRef>"
                         "<kactus2:mapping hwRef=\"hwRef\"/>"
@@ -884,8 +1368,7 @@ void tst_DesignReader::testReadSWInstances()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getComponentInstances()->size(), 1);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -893,10 +1376,10 @@ void tst_DesignReader::testReadSWInstances()
     QSharedPointer<ComponentInstance> swInstance = testDesign->getComponentInstances()->first();
 
     QCOMPARE(swInstance->getInstanceName(), QString("testInstance"));
-    QCOMPARE(swInstance->getDisplayName(), QString("testDisplay"));
-    QCOMPARE(swInstance->getDescription(), QString("testDescription"));
+    QCOMPARE(swInstance->displayName(), QString("testDisplay"));
+    QCOMPARE(swInstance->description(), QString("testDescription"));
 
-    QCOMPARE(swInstance->getComponentRef()->getVendor(), QString("TUT"));
+    QCOMPARE(swInstance->getComponentRef()->getVendor(), QString("tuni.fi"));
     QCOMPARE(swInstance->getComponentRef()->getLibrary(), QString("TestLibrary"));
     QCOMPARE(swInstance->getComponentRef()->getName(), QString("refComponent"));
     QCOMPARE(swInstance->getComponentRef()->getVersion(), QString("1.1"));
@@ -913,6 +1396,7 @@ void tst_DesignReader::testReadSWInstances()
     QCOMPARE(swInstance->getPropertyValues().count(), 1);
     QCOMPARE(swInstance->getPropertyValues().firstKey(), QString("testProperty"));
     QCOMPARE(swInstance->getPropertyValues().first(), QString("value"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -926,7 +1410,7 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -942,8 +1426,7 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -966,6 +1449,7 @@ void tst_DesignReader::testReadPortAdHocVisibilitiesAndPositions()
     QCOMPARE(adHocPorts.firstKey(), QString("testPort"));
     QCOMPARE(adHocPorts.first().x(), qreal(4));
     QCOMPARE(adHocPorts.first().y(), qreal(25));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -979,7 +1463,7 @@ void tst_DesignReader::testReadApiConnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -1005,8 +1489,7 @@ void tst_DesignReader::testReadApiConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1025,6 +1508,7 @@ void tst_DesignReader::testReadApiConnections()
     QCOMPARE(apiConnections.first()->isOffPage(), false);
 
     QCOMPARE(apiConnections.first()->isImported(), true);
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -1038,7 +1522,7 @@ void tst_DesignReader::testReadHierApiConnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -1060,8 +1544,7 @@ void tst_DesignReader::testReadHierApiConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1075,6 +1558,7 @@ void tst_DesignReader::testReadHierApiConnections()
     QCOMPARE(hierApiConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
     QCOMPARE(hierApiConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
     QCOMPARE(hierApiConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -1088,7 +1572,7 @@ void tst_DesignReader::testReadComConnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -1113,8 +1597,7 @@ void tst_DesignReader::testReadComConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1129,6 +1612,7 @@ void tst_DesignReader::testReadComConnections()
     QCOMPARE(comConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
     QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getComponentReference(), QString("applicationTwo"));
     QCOMPARE(comConnections.first()->getActiveInterfaces()->first()->getBusReference(), QString("busTwo"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -1142,7 +1626,7 @@ void tst_DesignReader::testReadHierComConnections()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestDesign</ipxact:name>"
             "<ipxact:version>0.1</ipxact:version>"
@@ -1164,8 +1648,7 @@ void tst_DesignReader::testReadHierComConnections()
     QDomDocument document;
     document.setContent(documentContent);
 
-    DesignReader designReader;
-    QSharedPointer<Design> testDesign = designReader.createDesignFrom(document);
+    QSharedPointer<Design> testDesign = DesignReader::createDesignFrom(document);
 
     QCOMPARE(testDesign->getVendorExtensions()->size(), 2);
     QCOMPARE(testDesign->getVersion(), QString("3.0.0"));
@@ -1179,6 +1662,7 @@ void tst_DesignReader::testReadHierComConnections()
     QCOMPARE(hierComConnections.first()->getEndInterface()->getBusReference(), QString("topInterface"));
     QCOMPARE(hierComConnections.first()->getStartInterface()->getComponentReference(), QString("applicationOne"));
     QCOMPARE(hierComConnections.first()->getStartInterface()->getBusReference(), QString("busOne"));
+    QCOMPARE(testDesign->getRevision(), Document::Revision::Std14);
 }
 
 QTEST_APPLESS_MAIN(tst_DesignReader)

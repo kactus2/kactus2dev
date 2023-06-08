@@ -15,12 +15,10 @@
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
 MonitorInterconnection::MonitorInterconnection(QString const& name,
-    QSharedPointer<MonitorInterface> activeInterface, QString const& displayName /* = QString() */,
-    QString const& description /* = QString() */) :
+    QSharedPointer<MonitorInterface> activeInterface, QString const& displayName,
+    QString const& description) :
 NameGroup(name, displayName, description),
-isPresent_(),
-monitoredActiveInterface_(activeInterface),
-monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
+monitoredActiveInterface_(activeInterface)
 {
 
 }
@@ -29,10 +27,7 @@ monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
 MonitorInterconnection::MonitorInterconnection() :
-NameGroup(),
-isPresent_(),
-monitoredActiveInterface_(new MonitorInterface()),
-monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
+NameGroup()
 {
 
 }
@@ -43,27 +38,14 @@ monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
 MonitorInterconnection::MonitorInterconnection(const MonitorInterconnection& other) :
 NameGroup(other),
 isPresent_(other.isPresent_),
-monitoredActiveInterface_(new MonitorInterface(*other.monitoredActiveInterface_.data())),
-monitorInterfaces_(new QList<QSharedPointer<MonitorInterface> > ())
+monitoredActiveInterface_(new MonitorInterface(*other.monitoredActiveInterface_))
 {
-    foreach (QSharedPointer<MonitorInterface> singleInterface, *other.monitorInterfaces_)
+    for (auto const& singleInterface : *other.monitorInterfaces_)
     {
-        if (singleInterface)
-        {
-            QSharedPointer<MonitorInterface> copy =
-                QSharedPointer<MonitorInterface> (new MonitorInterface(*singleInterface.data()));
-            monitorInterfaces_->append(copy);
-        }
+        QSharedPointer<MonitorInterface> copy =
+            QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
+        monitorInterfaces_->append(copy);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MonitorInterconnection::~MonitorInterconnection()
-//-----------------------------------------------------------------------------
-MonitorInterconnection::~MonitorInterconnection()
-{
-    monitoredActiveInterface_.clear();
-    monitorInterfaces_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -79,13 +61,13 @@ MonitorInterconnection& MonitorInterconnection::operator=(const MonitorInterconn
 
         monitoredActiveInterface_.clear();
         monitoredActiveInterface_ =
-            QSharedPointer<MonitorInterface>(new MonitorInterface(*other.monitoredActiveInterface_.data()));
+            QSharedPointer<MonitorInterface>(new MonitorInterface(*other.monitoredActiveInterface_));
 
         monitorInterfaces_->clear();
-        foreach (QSharedPointer<MonitorInterface> singleInterface, *other.monitorInterfaces_)
+        for (auto const& singleInterface : *other.monitorInterfaces_)
         {
             QSharedPointer<MonitorInterface> copy =
-                QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface.data()));
+                QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
             monitorInterfaces_->append(copy);
         }
     }

@@ -45,7 +45,11 @@ public:
 
 	//! The destructor.
 	virtual ~ViewConfigurationValidator();
-    
+
+    // Disable copying.
+    ViewConfigurationValidator(ViewConfigurationValidator const& rhs) = delete;
+    ViewConfigurationValidator& operator=(ViewConfigurationValidator const& rhs) = delete;
+
     /*!
      *  Change the available component instances.
      *
@@ -117,10 +121,6 @@ protected:
 
 private:
 
-	// Disable copying.
-	ViewConfigurationValidator(ViewConfigurationValidator const& rhs);
-	ViewConfigurationValidator& operator=(ViewConfigurationValidator const& rhs);
-
     /*!
      *  Change the currently available views.
      *
@@ -169,7 +169,7 @@ private:
     QSharedPointer<ExpressionParser> parser_;
 
     //! The currently available views.
-    QVector<std::string> availableViews_;
+    QStringList availableViews_;
 
     //! The currently available component instances.
     QSharedPointer<QList<QSharedPointer<ComponentInstance> > > availableInstances_;

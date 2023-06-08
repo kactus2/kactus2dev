@@ -165,7 +165,7 @@ void HierComInterconnection::write(QXmlStreamWriter& writer) const
             writer.writeAttribute(QStringLiteral("offPage"), QStringLiteral("false"));
         }
 
-        foreach (QPointF const& point, getRoute())
+        for (QPointF const& point : getRoute())
         {
             writer.writeEmptyElement(QStringLiteral("kactus2:position"));
             writer.writeAttribute(QStringLiteral("x"), QString::number(int(point.x())));

@@ -80,7 +80,7 @@ void ComConnectionExchangeCommand::undo()
 {
     QUndoCommand::undo();
 
-    QSharedPointer<ComInterconnection> interconnection = connection_->getComInterconnection();
+    QSharedPointer<ComInterconnection> interconnection = connection_->getInterconnection();
 
     if (interconnection && oldInterface_)
     {
@@ -108,7 +108,7 @@ void ComConnectionExchangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ComConnectionExchangeCommand::redo()
 {
-    QSharedPointer<ComInterconnection> interconnection = connection_->getComInterconnection();
+    QSharedPointer<ComInterconnection> interconnection = connection_->getInterconnection();
 
     if (interconnection && newInterface_)
     {

@@ -256,7 +256,7 @@ private:
 	QString version_;
 
 	//! The type of the document the VLNV-tag belongs to
-	IPXactType type_;
+	IPXactType type_ = VLNV::INVALID;
 };
 
 // With this declaration, VLNV can be used as a QVariant.

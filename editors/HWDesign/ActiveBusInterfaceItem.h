@@ -48,7 +48,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ActiveBusInterfaceItem();
+	~ActiveBusInterfaceItem() final = default;
+
+    // Disable copying.
+    ActiveBusInterfaceItem(ActiveBusInterfaceItem const& rhs) = delete;
+    ActiveBusInterfaceItem& operator=(ActiveBusInterfaceItem const& rhs) = delete;
 
 	/*!
 	 *  Get the graphics item type.
@@ -98,7 +102,7 @@ public:
 	 *  
 	 *      @param [in] width   The width of the shortened name.
 	 */
-	virtual void shortenNameLabel( qreal width ) override final;
+	void shortenNameLabel( qreal width ) final;
 
 protected:
 

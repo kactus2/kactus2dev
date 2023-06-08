@@ -185,7 +185,7 @@ void parseProgrammableElementsV2(LibraryInterface* lh, VLNV designVLNV,
 
                     if (designConf != 0)
                     {
-                        view = QString::fromStdString(designConf->getActiveView(instance->getInstanceName().toStdString()));
+                        view = designConf->getActiveView(instance->getInstanceName());
                     }
 
                     // Otherwise parse the hierarchical components recursively.
@@ -204,14 +204,14 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                        QList<QSharedPointer<ComponentInstance> > swInstances,
                        QList<QSharedPointer<ApiInterconnection> > apiDependencies)
 {
-    foreach (QSharedPointer<ComponentInstance> element, elements)
+    for (QSharedPointer<ComponentInstance> element : elements)
     {
         // Duplicate the component instance and set its import reference.
         QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(), 
             element->getComponentRef()));
 
-        instance->setDisplayName(element->getDisplayName());
-        instance->setDescription(element->getDescription()),
+        instance->setDisplayName(element->displayName());
+        instance->setDescription(element->description()),
         instance->setUuid(element->getUuid());
         instance->setImported(true);
 
@@ -239,7 +239,7 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                 continue;
             }
 
-            foreach (QSharedPointer<ComponentInstance> instance, *swDesign->getComponentInstances())
+            for (QSharedPointer<ComponentInstance> instance : *swDesign->getComponentInstances())
             {
                 QSharedPointer<ConfigurableVLNVReference> ref = instance->getComponentRef();
 
@@ -259,7 +259,7 @@ void addNewInstancesV2(LibraryInterface* lh, QList<QSharedPointer<ComponentInsta
                 swInstances.append(instance);
             }
 
-            foreach (QSharedPointer<ApiInterconnection> dependency, swDesign->getApiConnections())
+            for (QSharedPointer<ApiInterconnection> dependency : swDesign->getApiConnections())
             {
                 apiDependencies.append(dependency);
             }
@@ -368,7 +368,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
 
     // 1. PHASE: Check already existing elements against the new list and remove those that
     // are no longer part of the new element list.
-    foreach (QSharedPointer<ComponentInstance> hwInstance, *sysDesign.getComponentInstances())
+    for (QSharedPointer<ComponentInstance> hwInstance : *sysDesign.getComponentInstances())
     {
         QSharedPointer<ConfigurableVLNVReference> ref = hwInstance->getComponentRef();
 
@@ -408,13 +408,13 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     }
 
     // 2. PHASE: Add fresh new elements.
-    foreach (QSharedPointer<ComponentInstance> element, elements)
+    for (QSharedPointer<ComponentInstance> element : elements)
     {
         // Duplicate the component instance and set its kts_hw_ref.
         QSharedPointer<ComponentInstance> instance(new ComponentInstance(element->getInstanceName(),
             element->getComponentRef()));
-        instance->setDisplayName(element->getDisplayName());
-        instance->setDescription(element->getDescription()); 
+        instance->setDisplayName(element->displayName());
+        instance->setDescription(element->description()); 
         instance->setUuid(element->getUuid());
 
         instance->setImported(true);
@@ -426,7 +426,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     QList<QSharedPointer<ApiInterconnection> > oldApiDependencies = sysDesign.getApiConnections();
 
     // 3. PHASE: Copy non-imported instances from the old list to the new list.
-    foreach (QSharedPointer<ComponentInstance> swInstance, *sysDesign.getComponentInstances())
+    for (QSharedPointer<ComponentInstance> swInstance : *sysDesign.getComponentInstances())
     {
         QSharedPointer<ConfigurableVLNVReference> ref = swInstance->getComponentRef();
 
@@ -449,7 +449,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
     }
 
     // 4. PHASE: Parse SW designs from active SW views to retrieve the imported SW instances.
-    foreach (QSharedPointer<ComponentInstance> hwInstance, *hwInstances)
+    for (QSharedPointer<ComponentInstance> hwInstance : *hwInstances)
     {
         QSharedPointer<Document const> libComp = lh->getModelReadOnly(*hwInstance->getComponentRef());
         QSharedPointer<Component const> component = libComp.staticCast<Component const>();
@@ -458,7 +458,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
 
         if (designConf != 0)
         {
-            viewName = QString::fromStdString(designConf->getActiveView(hwInstance->getInstanceName().toStdString()));
+            viewName = designConf->getActiveView(hwInstance->getInstanceName());
         }
 
         if (component != 0)
@@ -473,7 +473,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 continue;
             }
 
-            foreach (QSharedPointer<ComponentInstance> swInstance, *swDesign->getComponentInstances())
+            for (QSharedPointer<ComponentInstance> swInstance : *swDesign->getComponentInstances())
             {
                 QSharedPointer<ConfigurableVLNVReference> ref = swInstance->getComponentRef();
 
@@ -510,7 +510,7 @@ void updateSystemDesignV2(LibraryInterface* lh, VLNV const& hwDesignVLNV, Design
                 }
             }
 
-            foreach (QSharedPointer<ApiInterconnection> dependency, swDesign->getApiConnections())
+            for (QSharedPointer<ApiInterconnection> dependency : swDesign->getApiConnections())
             {
                 int connIndex = getMatchingApiDependency(oldApiDependencies, swInstances,
                                                          dependency, hwInstance->getInstanceName());

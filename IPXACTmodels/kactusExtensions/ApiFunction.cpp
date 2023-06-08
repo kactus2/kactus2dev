@@ -36,9 +36,9 @@ ApiFunction::ApiFunction(ApiFunction const& rhs) : name_(rhs.name_),
                                                    desc_(rhs.desc_),
                                                    params_()
 {
-    foreach (QSharedPointer<ApiFunctionParameter> param, rhs.params_)
+    for (QSharedPointer<ApiFunctionParameter> param : rhs.params_)
     {
-        params_.append(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter(*param.data())));
+        params_.append(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter(*param)));
     }
 }
 
@@ -97,7 +97,7 @@ void ApiFunction::write(QXmlStreamWriter& writer)
     writer.writeAttribute(QStringLiteral("type"), returnType_);
     writer.writeAttribute(QStringLiteral("description"), returnValueDesc_);
 
-    foreach (QSharedPointer<ApiFunctionParameter> param, params_)
+    for (QSharedPointer<ApiFunctionParameter> param : params_)
     {
         param->write(writer);
     }
@@ -111,7 +111,6 @@ void ApiFunction::write(QXmlStreamWriter& writer)
 //-----------------------------------------------------------------------------
 void ApiFunction::findErrors(QVector<QString>& errorList, QString const& parentId) const
 {
-
     QString const thisId = QObject::tr("API function '%1'").arg(name_);
 
     if (name_.isEmpty())
@@ -127,7 +126,7 @@ void ApiFunction::findErrors(QVector<QString>& errorList, QString const& parentI
     // Validate the function parameters.
     QStringList paramNames;
 
-    foreach (QSharedPointer<ApiFunctionParameter> param, params_)
+    for (QSharedPointer<ApiFunctionParameter> param : params_)
     {
         if (paramNames.contains(param->name()))
         {
@@ -157,16 +156,14 @@ bool ApiFunction::validate() const
     // Validate the function parameters.
     QStringList paramNames;
 
-    foreach (QSharedPointer<ApiFunctionParameter> param, params_)
+    for (QSharedPointer<ApiFunctionParameter> param : params_)
     {
         if (paramNames.contains(param->name()))
         {
             return false;
         }
-        else
-        {
-            paramNames.append(param->name());
-        }
+
+        paramNames.append(param->name());
 
         if (!param->validate())
         {
@@ -357,9 +354,9 @@ ApiFunction& ApiFunction::operator=(ApiFunction const& rhs)
 
         params_.clear();
 
-        foreach (QSharedPointer<ApiFunctionParameter> param, rhs.params_)
+        for (QSharedPointer<ApiFunctionParameter> param : rhs.params_)
         {
-            params_.append(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter(*param.data())));
+            params_.append(QSharedPointer<ApiFunctionParameter>(new ApiFunctionParameter(*param)));
         }
     }
 

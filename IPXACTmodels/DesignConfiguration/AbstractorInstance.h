@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Extendable.h>
 
+#include <QString>
 #include <QList>
 #include <QSharedPointer>
 
@@ -56,35 +57,35 @@ public:
      *
      *      @return The description.
      */
-    std::string getShortDescription() const;
+    QString getShortDescription() const;
 
     /*!
 	 *  Get the description.
 	 *
      *      @return The description.
 	 */
-	std::string getDescription() const;
+	QString getDescription() const;
 
     /*!
 	 *  Get the display name.
 	 *
      *      @return The display name of the abstractor instance.
 	 */
-	std::string getDisplayName() const;
+	QString getDisplayName() const;
 
     /*!
 	 *  Get the instance name.
 	 *
      *      @return The name of this instance.
 	 */
-	std::string getInstanceName() const;
+	QString getInstanceName() const;
 
     /*!
 	 *  Get the name of the view associated with this instance.
 	 *
      *      @return The selected view name of the instance.
 	 */
-	std::string getViewName() const;
+	QString getViewName() const;
 
     /*!
      *  Set the abstractor reference.
@@ -98,56 +99,56 @@ public:
      *
      *      @param [in] shortDescription     The new short description.
      */
-    void setShortDescription(std::string const& shortDescription);
+    void setShortDescription(const QString& shortDescription);
 
     /*!
 	 *  Set the description.
 	 *
 	 *      @param [in] description     The new description.
 	 */
-	void setDescription(std::string const& description);
+	void setDescription(const QString& description);
 
     /*!
 	 *  Set the display name.
 	 *
 	 *      @param [in] displayName     The new display name.
 	 */
-	void setDisplayName(std::string const& displayName);
+	void setDisplayName(const QString& displayName);
 
     /*!
 	 *  Set the name for the instance.
 	 *
 	 *      @param [in] instanceName    The new instance name.
 	 */
-	void setInstanceName(std::string const& instanceName);
+	void setInstanceName(const QString& instanceName);
 
     /*!
 	 *  Set the name of the selected view.
 	 *
 	 *      @param [in] viewName    The name of the selected view.
 	 */
-	void setViewName(std::string const& viewName);
+	void setViewName(const QString& viewName);
 
 private:
 
     //! The name of this instance.
-	std::string instanceName_;
+	QString instanceName_;
 
     //! Descriptive text of the instance.
-	std::string displayName_;
+	QString displayName_;
 
     //! The short description of the instance.
-    std::string shortDescription_;
+    QString shortDescription_;
 
     //! Textual description of the instance.
-	std::string description_;
+	QString description_;
 
     //! Configurable VLNV of the abstractor reference.
     QSharedPointer<ConfigurableVLNVReference> abstractorRef_ =
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference());
 
     //! Defines the selected view.
-	std::string viewName_;
+	QString viewName_;
 };
 
 #endif // ABSTRACTORINSTANCE_H

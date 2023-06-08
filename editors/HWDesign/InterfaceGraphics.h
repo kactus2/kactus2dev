@@ -38,7 +38,7 @@ namespace InterfaceGraphics
             else
             {
                 QSharedPointer<AbstractionType> abstraction = busInterface_->getAbstractionTypes()->first();
-                foreach (QString portName, abstraction->getPhysicalPortNames())
+                for (auto const& portName : abstraction->getPhysicalPortNames())
                 {
                     QSharedPointer<Port> port = component->getPort(portName);
                     if (port != 0)
@@ -59,35 +59,38 @@ namespace InterfaceGraphics
         return direction;
     }
 
+    //-----------------------------------------------------------------------------
+    // Function: getInterfaceInitiative()
+    //-----------------------------------------------------------------------------
     static TransactionalTypes::Initiative getInterfaceInitiative(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<Component> component)
     {
-        TransactionalTypes::Initiative initiative = TransactionalTypes::INITIATIVE_INVALID;
+        TransactionalTypes::Initiative initiative = TransactionalTypes::Initiative::INITIATIVE_INVALID;
 
         if (busInterface->getAbstractionTypes() && !busInterface->getAbstractionTypes()->isEmpty())
         {
             if (busInterface->getAbstractionTypes()->size() != 1)
             {
-                initiative = TransactionalTypes::BOTH;
+                initiative = TransactionalTypes::Initiative::BOTH;
             }
 
             else
             {
                 QSharedPointer<AbstractionType> abstraction = busInterface->getAbstractionTypes()->first();
-                foreach(QString portName, abstraction->getPhysicalPortNames())
+                for (auto const& portName : abstraction->getPhysicalPortNames())
                 {
                     QSharedPointer<Port> port = component->getPort(portName);
                     if (port != 0 && port->getTransactional() != 0)
                     {
                         TransactionalTypes::Initiative portInitiative =
                             TransactionalTypes::strToInitiative(port->getTransactional()->getInitiative());
-                        if (initiative == TransactionalTypes::INITIATIVE_INVALID)
+                        if (initiative == TransactionalTypes::Initiative::INITIATIVE_INVALID)
                         {
                             initiative = portInitiative;
                         }
                         else if (initiative != portInitiative)
                         {
-                            return TransactionalTypes::BOTH;
+                            return TransactionalTypes::Initiative::BOTH;
                         }
                     }
                 }

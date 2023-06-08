@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <QMap>
 #include <QString>
 #include <QStringList>
 
@@ -21,32 +22,29 @@
 //! NameSpace FileTypes is used to store functions related to file types.
 //-----------------------------------------------------------------------------
 namespace TransactionalTypes
-{
-    //! Strings for the initiative types.
-    QString const INITIATIVE_REQUIRES = QLatin1String("requires");
-    QString const INITIATIVE_PROVIDES = QLatin1String("provides");
-    QString const INITIATIVE_BOTH = QLatin1String("both");
-    QString const INITIATIVE_PHANTOM = QLatin1String("phantom");
-    QString const INITIATIVE_REQUIRES_PROVIDES = QLatin1String("requires/provides");
-
-    //! The number of supported file type definitions.
-    const unsigned int INITIATIVE_TYPE_COUNT = 4;
-
-	//! The file types specified in the IP-Xact.
-	const QString INITIATIVE_TYPES[INITIATIVE_TYPE_COUNT] = {
-        INITIATIVE_REQUIRES,
-        INITIATIVE_PROVIDES,
-        INITIATIVE_BOTH,
-        INITIATIVE_PHANTOM
-    };
-
+{ 
     //! Initiative types.
-    enum Initiative {
+    enum class Initiative {
         REQUIRES,
         PROVIDES,
         BOTH,
         PHANTOM,
         INITIATIVE_INVALID
+    };
+
+    //! Strings for the initiative types.
+    QString const INITIATIVE_REQUIRES = QStringLiteral("requires");
+    QString const INITIATIVE_PROVIDES = QStringLiteral("provides");
+    QString const INITIATIVE_BOTH = QStringLiteral("both");
+    QString const INITIATIVE_PHANTOM = QStringLiteral("phantom");
+    QString const INITIATIVE_REQUIRES_PROVIDES = QStringLiteral("requires/provides");
+
+    const QMap<Initiative, QString> INITIATIVE_TYPES =
+    {
+        {Initiative::REQUIRES, INITIATIVE_REQUIRES},
+        {Initiative::PROVIDES, INITIATIVE_PROVIDES},
+        {Initiative::BOTH, INITIATIVE_BOTH},
+        {Initiative::PHANTOM, INITIATIVE_PHANTOM}
     };
 
     /*!
@@ -85,16 +83,13 @@ namespace TransactionalTypes
      */
     IPXACTMODELS_EXPORT TransactionalTypes::Initiative convertToMirrored(QString const& initiative);
 
-    //! The number of supported kind type definitions.
-    const unsigned int KIND_TYPE_COUNT = 5;
-
     //! The kind types specified in the IP-XACT.
-    const QString KIND_TYPES[KIND_TYPE_COUNT] = {
-        QLatin1String("tlm_port"),
-        QLatin1String("tlm_socket"),
-        QLatin1String("simple_socket"),
-        QLatin1String("multi_socket"),
-        QLatin1String("custom")
+    const QStringList KIND_TYPES = {
+        QStringLiteral("tlm_port"),
+        QStringLiteral("tlm_socket"),
+        QStringLiteral("simple_socket"),
+        QStringLiteral("multi_socket"),
+        QStringLiteral("custom")
     };
 
     /*!

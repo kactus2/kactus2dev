@@ -236,7 +236,8 @@ QList<VLNV> DesignConfiguration::getDependentVLNVs() const
     {
         if (generatorChainConfiguration->isValid())
         {
-            vlnvList.append(*generatorChainConfiguration);
+            VLNV generatorChainVLNV = *generatorChainConfiguration;
+            vlnvList.append(generatorChainVLNV);
 		}
 	}
 
@@ -252,9 +253,9 @@ QList<VLNV> DesignConfiguration::getDependentVLNVs() const
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::addViewConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::addViewConfiguration(std::string const& instanceName, std::string const& viewName)
+void DesignConfiguration::addViewConfiguration(QString const& instanceName, QString const& viewName)
 {
-	if (viewName.empty() == false)
+	if (!viewName.isEmpty())
     {
         QSharedPointer<ViewConfiguration> newViewConfig (new ViewConfiguration(instanceName));
         newViewConfig->setViewReference(viewName);
@@ -266,17 +267,21 @@ void DesignConfiguration::addViewConfiguration(std::string const& instanceName, 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::removeViewConfiguration()
 //-----------------------------------------------------------------------------
-void DesignConfiguration::removeViewConfiguration(std::string const& instanceName)
+void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 {
-    auto configuration = getViewConfiguration(instanceName);
-
-    viewConfigurations_->removeAll(configuration);
+    for (QSharedPointer<ViewConfiguration> configuration : *viewConfigurations_)
+    {
+        if (configuration->getInstanceName() == instanceName)
+        {
+            viewConfigurations_->removeAll(configuration);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getViewConfiguration()
 //-----------------------------------------------------------------------------
-QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(std::string const& instanceName) const
+QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QString const& instanceName) const
 {
     QSharedPointer<ViewConfiguration> configuration = nullptr;
 
@@ -294,22 +299,24 @@ QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(std:
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::getActiveView()
 //-----------------------------------------------------------------------------
-std::string DesignConfiguration::getActiveView(std::string const& instanceName) const
+QString DesignConfiguration::getActiveView(QString const& instanceName) const
 {
-    if (auto configuration = getViewConfiguration(instanceName); configuration)
+    auto configuration = getViewConfiguration(instanceName);
+
+    if (configuration)
     {
         return configuration->getViewReference();
     }
 
-    return std::string();
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfiguration::hasActiveView()
 //-----------------------------------------------------------------------------
-bool DesignConfiguration::hasActiveView(std::string const& instanceName) const
+bool DesignConfiguration::hasActiveView(QString const& instanceName) const
 {
-	return getActiveView(instanceName).empty() == false;
+	return !getActiveView(instanceName).isEmpty();
 }
 
 //-----------------------------------------------------------------------------

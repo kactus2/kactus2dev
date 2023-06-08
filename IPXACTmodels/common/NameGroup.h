@@ -26,7 +26,7 @@ class IPXACTMODELS_EXPORT NameGroup
 public:
 
 	//! The default constructor	
-	NameGroup();
+	NameGroup() = default;
 
 	/*! The constructor
 	 *
@@ -40,10 +40,10 @@ public:
 	 *
 	 *      @param [in] other    Reference to the NameGroup to copy.
 	*/
-	NameGroup(const NameGroup& other);
+	NameGroup(const NameGroup& other) = default;
 
     //! The destructor.
-    virtual ~NameGroup();
+    virtual ~NameGroup() = default;
 
 	/*! The assignment operator
 	 *
@@ -82,18 +82,18 @@ public:
     void setDisplayName(QString const& displayName);
 
     /*!
-     *  Gets the shortDescription element in the name group.
+     *  Gets the short description element in the name group.
      *
-     *      @return The shortDescription element.
+     *      @return The short description element.
      */
     QString shortDescription() const;
 
     /*!
-     *  Sets the shortDescription element in the group.
+     *  Sets the short description element in the group.
      *
-     *      @param [in] shortDescription    The short description to set.
+     *      @param [in] description   The description to set.
      */
-    void setShortDescription(QString const& shortDescription);
+    void setShortDescription(QString const& description);
 
     /*!
      *  Gets the description element in the name group.
@@ -117,7 +117,7 @@ private:
     //! The displayName matches the ipxact:displayName field within nameGroup.
     QString displayName_;
 
-    //! shortDescription matches the ipxact:shortDescription field within nameGroup.
+    //! The shortDescription matches the ipxact:shortDescription field within nameGroup.
     QString shortDescription_;
 
     //! description matches the ipxact:description field within nameGroup.

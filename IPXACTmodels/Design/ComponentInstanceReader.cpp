@@ -13,52 +13,69 @@
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceReader::ComponentInstanceReader()
-//-----------------------------------------------------------------------------
-ComponentInstanceReader::ComponentInstanceReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceReader::ComponentInstanceReader()
-//-----------------------------------------------------------------------------
-ComponentInstanceReader::~ComponentInstanceReader()
-{
-
-}
+#include <IPXACTmodels/common/NameGroupReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::createComponentInstanceFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> ComponentInstanceReader::createComponentInstanceFrom(
-    QDomNode const& instanceNode) const
+    QDomNode const& instanceNode, Document::Revision docRevision)
 {
+    QSharedPointer<ComponentInstance> newComponentInstance(new ComponentInstance());
+    NameGroupReader::parseNameGroup(instanceNode, newComponentInstance);
+
     QString instanceName = instanceNode.firstChildElement(QStringLiteral("ipxact:instanceName")).firstChild().nodeValue();
-    QString displayName = instanceNode.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue();
-    QString description = instanceNode.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
-    QString isPresent = instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+    newComponentInstance->setInstanceName(instanceName);
 
     QDomNode componentRefNode = instanceNode.firstChildElement(QStringLiteral("ipxact:componentRef"));
+
     QSharedPointer<ConfigurableVLNVReference> componentRef =
-        parseConfigurableVLNVReference(componentRefNode, VLNV::COMPONENT);
+        CommonItemsReader::parseConfigurableVLNVReference(componentRefNode, VLNV::COMPONENT);
+    newComponentInstance->setComponentRef(componentRef);
 
-    QSharedPointer<ComponentInstance> newComponentInstance (new ComponentInstance(instanceName, componentRef));
-    newComponentInstance->setIsPresent(isPresent);
-    newComponentInstance->setDisplayName(displayName);
-    newComponentInstance->setDescription(description);
+    if (docRevision == Document::Revision::Std14)
+    {
+        QString isPresent = instanceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        newComponentInstance->setIsPresent(isPresent);
+    }
 
-    parseExtensions(instanceNode, newComponentInstance);
+    if (docRevision == Document::Revision::Std22)
+    {
+        Details::parsePowerDomainLinks(instanceNode, newComponentInstance);
+    }
+
+    Details::parseExtensions(instanceNode, newComponentInstance);
 
     return newComponentInstance;
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstanceReader::parsePowerDomainLinks()
+//-----------------------------------------------------------------------------
+void ComponentInstanceReader::Details::parsePowerDomainLinks(QDomNode const& instanceNode,
+    QSharedPointer<ComponentInstance> instance)
+{
+    QDomElement domainsNode = instanceNode.firstChildElement(QStringLiteral("ipxact:powerDomainLinks"));
+    QDomNodeList domainNodeList = domainsNode.childNodes();
+
+    const int count = domainNodeList.count();
+    for (int index = 0; index < count; ++index)
+    {
+        auto const& domainNode = domainNodeList.at(index);
+        auto externalLink = domainNode.firstChildElement(QStringLiteral("ipxact:externalPowerDomainReference")).firstChild().nodeValue();
+        auto internalLink = domainNode.firstChildElement(QStringLiteral("ipxact:internalPowerDomainReference")).firstChild().nodeValue();
+
+        auto link = QSharedPointer<ComponentInstance::PowerDomainLink>(
+            new ComponentInstance::PowerDomainLink({ externalLink, internalLink }));
+        instance->getPowerDomainLinks()->append(link);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseExtensions()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceNode,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseExtensions(const QDomNode& componentInstanceNode,
+    QSharedPointer<ComponentInstance> instance)
 {
     QDomElement extensionsNode = componentInstanceNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
     QDomNodeList extensionNodeList = extensionsNode.childNodes();
@@ -99,14 +116,14 @@ void ComponentInstanceReader::parseExtensions(const QDomNode& componentInstanceN
     QDomElement mappingNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:mapping"));
     parseMapping(mappingNode, instance);
 
-    parseVendorExtensions(componentInstanceNode, instance);
+    CommonItemsReader::parseVendorExtensions(componentInstanceNode, instance);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseDraft()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseDraft(QDomElement const& draftNode,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseDraft(QDomElement const& draftNode,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (!draftNode.isNull())
     {
@@ -117,8 +134,8 @@ void ComponentInstanceReader::parseDraft(QDomElement const& draftNode,
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parsePosition()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parsePosition(QDomElement const& positionElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parsePosition(QDomElement const& positionElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (!positionElement.isNull())
     {
@@ -131,8 +148,8 @@ void ComponentInstanceReader::parsePosition(QDomElement const& positionElement,
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseImport()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseImport(QDomElement const& importElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseImport(QDomElement const& importElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (!importElement.isNull())
     {
@@ -152,15 +169,14 @@ void ComponentInstanceReader::parseImport(QDomElement const& importElement,
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parsePortPositions()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parsePortPositions(QDomElement const& portPositionsElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parsePortPositions(QDomElement const& portPositionsElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     QMap<QString, QPointF> portPositions = createMappedPositions(portPositionsElement, 
         QStringLiteral("kactus2:portPosition"), QStringLiteral("busRef"));
-    QMapIterator<QString, QPointF> portIterator(portPositions);
-    while (portIterator.hasNext())
+
+    for (auto portIterator = portPositions.cbegin(); portIterator != portPositions.cend(); ++portIterator)
     {
-        portIterator.next();
         instance->updateBusInterfacePosition(portIterator.key(), portIterator.value());
     }
 }
@@ -168,15 +184,14 @@ void ComponentInstanceReader::parsePortPositions(QDomElement const& portPosition
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseAdHocVisibilities()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseAdHocVisibilities(QDomElement const& adHocElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseAdHocVisibilities(QDomElement const& adHocElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     QMap<QString, QPointF> adHocPositions = createMappedPositions(adHocElement,
         QStringLiteral("kactus2:adHocVisible"), QStringLiteral("portName"));
-    QMapIterator<QString, QPointF> adHocIterator(adHocPositions);
-    while (adHocIterator.hasNext())
+
+    for (auto adHocIterator = adHocPositions.cbegin(); adHocIterator != adHocPositions.cend(); ++adHocIterator)
     {
-        adHocIterator.next();
         instance->updateAdHocPortPosition(adHocIterator.key(), adHocIterator.value());
     }
 }
@@ -184,15 +199,15 @@ void ComponentInstanceReader::parseAdHocVisibilities(QDomElement const& adHocEle
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseApiInterfacePositions()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseApiInterfacePositions(QDomElement const& apiElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseApiInterfacePositions(QDomElement const& apiElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     QMap<QString, QPointF> apiInterfacePositions = createMappedPositions(apiElement,
         QStringLiteral("kactus2:apiInterfacePosition"), QStringLiteral("apiRef"));
-    QMapIterator<QString, QPointF> apiInterfaceIterator(apiInterfacePositions);
-    while (apiInterfaceIterator.hasNext())
+
+    for (auto apiInterfaceIterator = apiInterfacePositions.cbegin(); 
+        apiInterfaceIterator != apiInterfacePositions.cend(); ++apiInterfaceIterator)
     {
-        apiInterfaceIterator.next();
         instance->updateApiInterfacePosition(apiInterfaceIterator.key(), apiInterfaceIterator.value());
     }
 }
@@ -200,15 +215,15 @@ void ComponentInstanceReader::parseApiInterfacePositions(QDomElement const& apiE
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseComInterfacePositions()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseComInterfacePositions(QDomElement const& comElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseComInterfacePositions(QDomElement const& comElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     QMap<QString, QPointF> comInterfacePositions = createMappedPositions(comElement,
         QStringLiteral("kactus2:comInterfacePosition"), QStringLiteral("comRef"));
-    QMapIterator<QString, QPointF> comInterfaceIterator(comInterfacePositions);
-    while (comInterfaceIterator.hasNext())
+
+    for (auto comInterfaceIterator = comInterfacePositions.cbegin(); 
+        comInterfaceIterator != comInterfacePositions.cend(); ++comInterfaceIterator)
     {
-        comInterfaceIterator.next();
         instance->updateComInterfacePosition(comInterfaceIterator.key(), comInterfaceIterator.value());
     }
 }
@@ -216,8 +231,8 @@ void ComponentInstanceReader::parseComInterfacePositions(QDomElement const& comE
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parsePropertyValues()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parsePropertyValues(QDomElement const& propertyElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parsePropertyValues(QDomElement const& propertyElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     QDomNodeList propertyValueNodes = propertyElement.elementsByTagName(QStringLiteral("kactus2:propertyValue"));
     QMap<QString, QString> newPropertyValues;
@@ -238,8 +253,8 @@ void ComponentInstanceReader::parsePropertyValues(QDomElement const& propertyEle
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::createMappedPositions()
 //-----------------------------------------------------------------------------
-QMap<QString, QPointF> ComponentInstanceReader::createMappedPositions(QDomElement const& positionElement,
-    QString const& itemIdentifier, QString const& referenceIdentifier) const
+QMap<QString, QPointF> ComponentInstanceReader::Details::createMappedPositions(QDomElement const& positionElement,
+    QString const& itemIdentifier, QString const& referenceIdentifier)
 {
     QMap<QString, QPointF> positionMap;
 
@@ -268,8 +283,8 @@ QMap<QString, QPointF> ComponentInstanceReader::createMappedPositions(QDomElemen
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseFileSetRef()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseFileSetRef(QDomElement const& fileSetRefElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseFileSetRef(QDomElement const& fileSetRefElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (!fileSetRefElement.isNull())
     {
@@ -285,8 +300,8 @@ void ComponentInstanceReader::parseFileSetRef(QDomElement const& fileSetRefEleme
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceReader::parseMapping()
 //-----------------------------------------------------------------------------
-void ComponentInstanceReader::parseMapping(QDomElement const& mappingElement,
-    QSharedPointer<ComponentInstance> instance) const
+void ComponentInstanceReader::Details::parseMapping(QDomElement const& mappingElement,
+    QSharedPointer<ComponentInstance> instance)
 {
     if (!mappingElement.isNull())
     {

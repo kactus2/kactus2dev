@@ -12,6 +12,7 @@
 #include "SystemView.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
@@ -120,14 +121,9 @@ void SystemView::write(QXmlStreamWriter& writer) const
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
-    if (!displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), displayName());
-    }
-    if (!description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), description());
-    }
+    CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeDescription(writer, description());
 
     // write hierarchyRef if one exists
     if (!hierarchyRef_.isEmpty())
@@ -142,7 +138,7 @@ void SystemView::write(QXmlStreamWriter& writer) const
     // Write HW view reference.
     writer.writeTextElement(QStringLiteral("kactus2:hwViewRef"), hwViewRef_);
 
-	 foreach (QString const& fileSetName, fileSetRefs_)
+	 for (QString const& fileSetName : fileSetRefs_)
      {
 		 writer.writeTextElement(QStringLiteral("kactus2:fileSetRef"), fileSetName);
 	 }
@@ -171,7 +167,7 @@ bool SystemView::isValid(QStringList const& fileSetNames, QStringList const& HWV
     }
 
 	 // make sure the referenced file sets are found
-	 foreach (QString const& fileSetRef, fileSetRefs_)
+	 for (QString const& fileSetRef : fileSetRefs_)
      {
 		 if (!fileSetNames.contains(fileSetRef))
          {
@@ -208,7 +204,7 @@ bool SystemView::isValid(QStringList const& fileSetNames, QStringList const& HWV
     }
 
 	 // make sure the referenced file sets are found
-	 foreach (QString const& fileSetRef, fileSetRefs_)
+	 for (QString const& fileSetRef : fileSetRefs_)
      {
 		 if (!fileSetNames.contains(fileSetRef))
          {

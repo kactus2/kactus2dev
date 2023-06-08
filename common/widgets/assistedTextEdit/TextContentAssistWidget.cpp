@@ -37,7 +37,6 @@ TextContentAssistWidget::TextContentAssistWidget(QPlainTextEdit* target, QWidget
     Q_ASSERT(matcher != 0);
     
     // Set widget settings.
-    //setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
     setFrameShadow(QFrame::Raised);
     setFocusPolicy(Qt::NoFocus);
     setFont(QFont("Tahoma", 10));

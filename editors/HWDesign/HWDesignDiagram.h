@@ -194,7 +194,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HWDesignDiagram();
+	~HWDesignDiagram() final = default;
 
     /*!
      *  Set the IP-XACT document that is viewed in HWDesignDiagram.
@@ -507,7 +507,7 @@ private:
      *
      *      @return The hierInterfaces with the given name.
      */
-    QList<QSharedPointer<HierInterface> > findInterfacesByName(QString const& previousName, 
+    QList<QSharedPointer<HierInterface> > findInterfacesByName(QString const& previousName,
         QSharedPointer<Interconnection> connection) const;
     
     /*!

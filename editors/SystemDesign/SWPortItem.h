@@ -61,7 +61,7 @@ public:
     /*!
      *  Destructor.
      */
-	virtual ~SWPortItem();
+	~SWPortItem() final = default;
 
     /*!
      *  Called when creating of a connection for this port has begun.
@@ -132,7 +132,7 @@ public:
 	 *
 	 *      @param [in] name The name to set for the port.
 	 */
-	virtual void setName(const QString& name);
+	virtual void setName(QString const& name);
 
 	/*!
      *  Returns the description of the port.
@@ -144,7 +144,7 @@ public:
 	 *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(const QString& description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.
@@ -217,7 +217,7 @@ public:
 	 *  
 	 *      @param [in] width   The width of the shortened name.
 	 */
-	virtual void shortenNameLabel( qreal width );
+	void shortenNameLabel( qreal width ) final;
 
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
@@ -277,10 +277,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The COM interface, or null if not set.
-    QSharedPointer<ComInterface> comInterface_;
+    QSharedPointer<ComInterface> comInterface_ = nullptr;
 
     //! The API interface, or null if not set.
-    QSharedPointer<ApiInterface> apiInterface_;
+    QSharedPointer<ApiInterface> apiInterface_ = nullptr;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;

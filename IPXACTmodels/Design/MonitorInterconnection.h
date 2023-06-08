@@ -52,7 +52,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~MonitorInterconnection();
+    ~MonitorInterconnection() final = default;
 
     /*!
      *  Assignment operator.
@@ -111,10 +111,12 @@ private:
     QString isPresent_;
 
     //! The monitored active interface
-    QSharedPointer<MonitorInterface> monitoredActiveInterface_;
+    QSharedPointer<MonitorInterface> monitoredActiveInterface_ =
+        QSharedPointer<MonitorInterface>(new MonitorInterface());
 
     //! A list of monitor interfaces.
-    QSharedPointer<QList<QSharedPointer<MonitorInterface> > > monitorInterfaces_;
+    QSharedPointer<QList<QSharedPointer<MonitorInterface> > > monitorInterfaces_ =
+        QSharedPointer<QList<QSharedPointer<MonitorInterface> > >(new QList<QSharedPointer<MonitorInterface> >());
 
 };
 #endif // MONITORINTERCONNECTION_H

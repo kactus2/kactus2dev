@@ -45,12 +45,11 @@ HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem(QSharedPointer<Compon
     QSharedPointer<BusInterface> busIf, QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library,
     QGraphicsItem *parent):
 BusInterfaceEndPoint(busIf, component, library, parent),
-dataGroup_(dataGroup),
-oldColumn_(0)
+dataGroup_(dataGroup)
 {
-    setTemporary(busIf == 0);
+    HierarchicalBusInterfaceItem::setTemporary(busIf == 0);
     setTypeLocked(busIf != 0 && busIf->getInterfaceMode() != General::INTERFACE_MODE_COUNT);
-    setPolygon(getDirectionOutShape());
+    setPolygon(HierarchicalBusInterfaceItem:: getDirectionOutShape());
 
     dataGroup_->setName(busIf->name());
 
@@ -61,25 +60,18 @@ oldColumn_(0)
 
     if (dataGroup_->hasDirection())
     {
-        setDirection(dataGroup_->getDirection());
+        HierarchicalBusInterfaceItem::setDirection(dataGroup_->getDirection());
     }
     else
     {
-        dataGroup_->setDirection(getDirection());
+        dataGroup_->setDirection(HierarchicalBusInterfaceItem::getDirection());
     }
 
 	getNameLabel()->setRotation(-rotation());
 
-    updateInterface();
+    HierarchicalBusInterfaceItem::updateInterface();
 }
 
-//-----------------------------------------------------------------------------
-// Function: HierarchicalBusInterfaceItem::~HierarchicalBusInterfaceItem()
-//-----------------------------------------------------------------------------
-HierarchicalBusInterfaceItem::~HierarchicalBusInterfaceItem()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItem::updateName()
@@ -97,7 +89,7 @@ void HierarchicalBusInterfaceItem::createMoveCommandForClashedItem(ConnectionEnd
 {
     if (endPoint && endPoint->isHierarchical() && endPoint->pos() != endPointPosition)
     {
-        HWColumn* itemColumn = dynamic_cast<HWColumn*>(endPoint->parentItem());
+        auto itemColumn = dynamic_cast<HWColumn*>(endPoint->parentItem());
         if (itemColumn)
         {
             new ItemMoveCommand(endPoint, endPointPosition, itemColumn, diagram, parentCommand.data());
@@ -193,10 +185,7 @@ QVariant HierarchicalBusInterfaceItem::itemChange(GraphicsItemChange change, QVa
     {   
         dataGroup_->setPosition(value.toPointF());
 
-        foreach (GraphicsConnection* interconnection, getConnections())
-        {
-            interconnection->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);
@@ -226,7 +215,7 @@ void HierarchicalBusInterfaceItem::moveItemByMouse()
 {
     setPos(parentItem()->mapFromScene(oldColumn_->mapToScene(pos())));
 
-    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+    auto column = dynamic_cast<HWColumn*>(parentItem());
     if (column)
     {
         column->onMoveItem(this);
@@ -243,7 +232,7 @@ QSharedPointer<QUndoCommand> HierarchicalBusInterfaceItem::createMouseMoveComman
         return QSharedPointer<QUndoCommand>();
     }
 
-    HWColumn* column = dynamic_cast<HWColumn*>(parentItem());
+    auto column = dynamic_cast<HWColumn*>(parentItem());
     Q_ASSERT(column != 0);
     column->onReleaseItem(this);
 

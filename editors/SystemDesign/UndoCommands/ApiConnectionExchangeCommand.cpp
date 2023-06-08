@@ -80,7 +80,7 @@ void ApiConnectionExchangeCommand::undo()
 {
     QUndoCommand::undo();
 
-    QSharedPointer<ApiInterconnection> interconnection = connection_->getApiInterconnection();
+    QSharedPointer<ApiInterconnection> interconnection = connection_->getInterconnection();
 
     if (interconnection && oldInterface_)
     {
@@ -108,7 +108,7 @@ void ApiConnectionExchangeCommand::undo()
 //-----------------------------------------------------------------------------
 void ApiConnectionExchangeCommand::redo()
 {
-    QSharedPointer<ApiInterconnection> interconnection = connection_->getApiInterconnection();
+    QSharedPointer<ApiInterconnection> interconnection = connection_->getInterconnection();
 
     if (interconnection && newInterface_)
     {

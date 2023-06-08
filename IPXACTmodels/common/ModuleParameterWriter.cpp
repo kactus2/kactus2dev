@@ -10,12 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterWriter.h"
+#include "CommonItemsWriter.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterWriter::ModuleParameterWriter()
 //-----------------------------------------------------------------------------
-ModuleParameterWriter::ModuleParameterWriter(QObject* parent /* = 0 */):
-ParameterWriter(parent)
+ModuleParameterWriter::ModuleParameterWriter():
+ParameterWriter()
 {
 
 }
@@ -46,21 +47,9 @@ void ModuleParameterWriter::writeModuleParameter(QXmlStreamWriter& writer,
 
     writeValue(writer, moduleParameter);
 
-    writeVendorExtensions(writer, moduleParameter);
+    CommonItemsWriter::writeVendorExtensions(writer, moduleParameter);
 
-    writeIsPresent(writer, moduleParameter);
+    CommonItemsWriter::writeIsPresent(writer, moduleParameter->getIsPresent());
 
     writer.writeEndElement(); // ipxact:moduleParameter
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void ModuleParameterWriter::writeIsPresent(QXmlStreamWriter& writer,
-    QSharedPointer<ModuleParameter> moduleParameter) const
-{
-    if (!moduleParameter->getIsPresent().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), moduleParameter->getIsPresent());
-    }
 }

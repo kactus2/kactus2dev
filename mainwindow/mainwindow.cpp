@@ -1465,11 +1465,11 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     Q_ASSERT(!viewNames.isEmpty());
 
     // Create the design and design configuration.
-    QSharedPointer<Design> design(new Design(designVLNV));
+    QSharedPointer<Design> design(new Design(designVLNV, Document::Revision::Std14));
     design->setDesignImplementation(KactusAttribute::HW);
     design->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1572,12 +1572,12 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     component->getDesignConfigurationInstantiations()->append(hierarchyInstantiation);
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
     newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1696,7 +1696,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     component->getViews()->append(view);
 
     // Create the design and design configuration.
-    QSharedPointer<Design> design(new Design(designVLNV));
+    QSharedPointer<Design> design(new Design(designVLNV, Document::Revision::Std14));
     design->setDesignImplementation(KactusAttribute::SW);
     design->setVersion(VersionHelper::versionFileStr());
 
@@ -1813,12 +1813,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV()));
+    QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
     newDesign->setDesignImplementation(KactusAttribute::SW);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1944,7 +1944,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     parentComp->setSystemViews(systemViews);
 
     // Flat-out the hierarchy to form the system design.
-    QSharedPointer<Design> sysDesign(new Design(designVLNV));
+    QSharedPointer<Design> sysDesign(new Design(designVLNV, Document::Revision::Std14));
     sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     sysDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1956,7 +1956,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
     // Create the design configuration.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -2060,12 +2060,12 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     component->setSystemViews(systemViews);
 
     // Create the design and design configuration objects to the same folder as the component.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV()));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
     newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -3249,7 +3249,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 void MainWindow::showAbout()
 {
-    SplashScreen* splash = new SplashScreen(VersionHelper::createVersionString(), this);
+    SplashScreen* splash = new SplashScreen(VersionHelper::createVersionString());
     splash->setAttribute(Qt::WA_DeleteOnClose);
     splash->setWindowFlags(splash->windowFlags() & ~(Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint));
     splash->move(this->mapToGlobal(this->rect().center() - splash->rect().center()));

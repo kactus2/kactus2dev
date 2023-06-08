@@ -11,14 +11,14 @@
 
 #include "ProtocolWriter.h"
 #include "Protocol.h"
+#include "CommonItemsWriter.h"
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
 // Function: ProtocolWriter::ProtocolWriter()
 //-----------------------------------------------------------------------------
-ProtocolWriter::ProtocolWriter(QObject* parent) :
-QObject(parent)
+ProtocolWriter::ProtocolWriter()
 {
 
 }
@@ -95,24 +95,8 @@ void ProtocolWriter::writePayload(QXmlStreamWriter& writer, QSharedPointer<Proto
             writer.writeEndElement();
         }
 
-        writeVendorExtensions(writer, portProtocol);
+        CommonItemsWriter::writeVendorExtensions(writer, portProtocol);
 
-        writer.writeEndElement();
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ProtocolWriter::writeVendorExtensions()
-//-----------------------------------------------------------------------------
-void ProtocolWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedPointer<Protocol> portProtocol) const
-{
-    if (!portProtocol->getVendorExtensions()->isEmpty())
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
-        foreach (QSharedPointer<VendorExtension> extension, *portProtocol->getVendorExtensions())
-        {
-            extension->write(writer);
-        }
         writer.writeEndElement();
     }
 }

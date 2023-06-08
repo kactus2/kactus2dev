@@ -83,13 +83,13 @@ public:
 	 * \param parent Pointer to the parent of this undo command.
 	 *
 	*/
-	ConnectionChangeCommand(GraphicsConnection* connection,
-		                    QString const& newName,
-		                    QString const& newDescription,
-		                    QUndoCommand* parent = 0);
+    ConnectionChangeCommand(GraphicsConnection* connection,
+        QString const& newName,
+        QString const& newDescription,
+        QUndoCommand* parent = nullptr);
 
 	//! \brief The destructor
-	virtual ~ConnectionChangeCommand();
+	~ConnectionChangeCommand() final = default;
 
 	/*! \brief Undoes the command.
 	 *
@@ -110,19 +110,19 @@ private:
 	ConnectionChangeCommand& operator=(const ConnectionChangeCommand& other);
 
 	//! \brief Pointer to the connection to change.
-	GraphicsConnection* connection_;
+	GraphicsConnection* connection_ = nullptr;
 
 	//! \brief The new name for the connection.
-	QString newName_;
+    QString newName_;
 
 	//! \brief The new description for the connection.
-	QString newDescription_;
+    QString newDescription_;
 
 	//! \brief The old name of the connection.
-	QString oldName_;
+    QString oldName_;
 
 	//! \brief The old description of the connection.
-	QString oldDescription_;
+    QString oldDescription_;
 };
 
 //-----------------------------------------------------------------------------

@@ -25,7 +25,7 @@ namespace CommonItemsValidator
      *
      *     @return True, if the name is valid, otherwise false.
      */
-    bool hasValidName(std::string_view name);
+    bool hasValidName(QString const& name);
 
     /*!
       * Validates the given isPresent expression.
@@ -35,7 +35,7 @@ namespace CommonItemsValidator
       *
       *     @return True, if the isPresent is valid, otherwise false.
       */
-    bool hasValidIsPresent(std::string const& isPresent, QSharedPointer<ExpressionParser> parser);
+    bool hasValidIsPresent(QString const& isPresent, QSharedPointer<ExpressionParser> parser);
 
 };
 

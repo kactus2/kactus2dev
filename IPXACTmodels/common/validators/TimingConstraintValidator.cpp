@@ -30,7 +30,7 @@ bool TimingConstraintValidator::validate(QSharedPointer<TimingConstraint> timing
 	}
 
 	// Must refer to a logical port.
-	foreach (QSharedPointer<PortAbstraction> port, *ports)
+	for (QSharedPointer<PortAbstraction> port : *ports)
 	{
 		if (port->getLogicalName() == timingConstraint->getClockName())
 		{
@@ -60,7 +60,7 @@ void TimingConstraintValidator::findErrorsIn(QVector<QString>& errors,
 	}
 
 	// Must refer to a logical port.
-	foreach (QSharedPointer<PortAbstraction> port, *ports)
+	for (QSharedPointer<PortAbstraction> port : *ports)
 	{
 		if (port->getLogicalName() == timingConstraint->getClockName())
 		{

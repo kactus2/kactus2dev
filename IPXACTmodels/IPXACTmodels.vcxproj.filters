@@ -1522,6 +1522,30 @@
     <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h">
       <Filter>Header Files\AbstractionDefinition\validators</Filter>
     </ClInclude>
+    <ClInclude Include="common\NameGroupReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\NameGroupWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ModuleParameterWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ParameterReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ParameterWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ProtocolReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ProtocolWriter.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ModuleParameterReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1686,27 +1710,6 @@
     <CustomBuild Include="common\FileBuilderWriter.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>
-    <QtMoc Include="common\ModuleParameterReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\ModuleParameterWriter.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\NameGroupReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\ParameterReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\ParameterWriter.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\ProtocolReader.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
-    <QtMoc Include="common\ProtocolWriter.h">
-      <Filter>Header Files\common</Filter>
-    </QtMoc>
     <CustomBuild Include="kactusExtensions\ApiDefinitionWriter.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </CustomBuild>

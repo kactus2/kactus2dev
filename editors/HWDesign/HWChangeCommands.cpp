@@ -366,14 +366,14 @@ void EndpointChangeCommand::redo()
 // Function: EndpointNameChangeCommand::EndpointNameChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointNameChangeCommand::EndpointNameChangeCommand(ConnectionEndpoint* endpoint, 
-                                                     QString const& newName,
-                                                     QList<QSharedPointer<HierInterface> > activeIntefaces,
-                                                     QUndoCommand* parent)
-    : QUndoCommand(parent), 
-       endpoint_(endpoint),
-       oldName_(endpoint->name()), 
-       newName_(newName),
-       activeIntefaces_(activeIntefaces)
+    QString const& newName,
+    QList<QSharedPointer<HierInterface> > activeIntefaces,
+    QUndoCommand* parent) :
+    QUndoCommand(parent),
+    endpoint_(endpoint),
+    oldName_(endpoint->name()),
+    newName_(newName),
+    activeIntefaces_(activeIntefaces)
 {
 }
 
@@ -416,7 +416,7 @@ void EndpointNameChangeCommand::redo()
 // Function: EndpointDescChangeCommand::EndpointDescChangeCommand()
 //-----------------------------------------------------------------------------
 EndpointDescChangeCommand::EndpointDescChangeCommand(ConnectionEndpoint* endpoint, 
-                                                     QString const& newDescription,
+    QString const& newDescription,
                                                      QUndoCommand* parent)
     : QUndoCommand(parent), 
       endpoint_(endpoint),

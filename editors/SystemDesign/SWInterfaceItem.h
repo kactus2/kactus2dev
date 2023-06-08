@@ -70,7 +70,7 @@ public:
     /*!
      *  Destructor.
      */
-	virtual ~SWInterfaceItem();
+	~SWInterfaceItem() override = default;
 
     /*!
      *  Called when creating of a connection for this port has begun.
@@ -146,7 +146,7 @@ public:
 	 *
 	 *      @param [in] name The name to set for the interface.
 	 */
-	virtual void setName(const QString& name);
+	virtual void setName(QString const& name);
 
 	/*!
      *  Returns the description of the interface.
@@ -158,7 +158,7 @@ public:
 	 *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(const QString& description);
+	virtual void setDescription(QString const& description);
 
     /*!
      *  Called when a connection between this and another end point is done.
@@ -278,25 +278,25 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The top-level component.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
 
     //! The COM interface, or null if not set.
-    QSharedPointer<ComInterface> comInterface_;
+    QSharedPointer<ComInterface> comInterface_ = nullptr;
 
     //! The API interface, or null if not set.
-    QSharedPointer<ApiInterface> apiInterface_;
+    QSharedPointer<ApiInterface> apiInterface_ = nullptr;
 
     //! The position of the port before mouse move.
     QPointF oldPos_;
 
     //! The old stack from where the mouse drag event began.
-    IGraphicsItemStack* oldStack_;
+    IGraphicsItemStack* oldStack_ = nullptr;
 
     //! The old positions of the other interfaces before mouse move.
     QMap<SWInterfaceItem*, QPointF> oldInterfacePositions_;
 
     //! The container for the graphical data.
-    QSharedPointer<InterfaceGraphicsData> graphicsData_;
+    QSharedPointer<InterfaceGraphicsData> graphicsData_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

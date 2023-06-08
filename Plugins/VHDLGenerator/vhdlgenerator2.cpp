@@ -550,7 +550,7 @@ void VhdlGenerator2::parseInstances()
 
     ExpressionFormatterFactoryImplementation formatterFactory;
 
-	foreach (QSharedPointer<ComponentInstance> instance, *design_->getComponentInstances())
+	for (QSharedPointer<ComponentInstance> instance : *design_->getComponentInstances())
     {
 		VLNV::IPXactType instanceType = handler_->getDocumentType(*instance->getComponentRef());
 
@@ -598,12 +598,12 @@ void VhdlGenerator2::parseInstances()
 		// if configuration is used then get the active view for the instance
 		if (desConf_)
         {
-			instanceActiveView = QString::fromStdString(desConf_->getActiveView(instance->getInstanceName().toStdString()));
+			instanceActiveView = desConf_->getActiveView(instance->getInstanceName());
 		}
 
 		// create the instance
 		QSharedPointer<VhdlComponentInstance> compInstance(new VhdlComponentInstance(this, handler_,
-            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->getDescription()));
+            compDeclaration.data(), instance->getInstanceName(), instanceActiveView, instance->description()));
 
         connect(compInstance.data(), SIGNAL(noticeMessage(const QString&)),
             this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
@@ -612,7 +612,7 @@ void VhdlGenerator2::parseInstances()
 
 		QSharedPointer<ComponentInstantiation> componentInstantiation;
 
-		foreach (QSharedPointer<ComponentInstantiation> currentInstantiation,
+		for (QSharedPointer<ComponentInstantiation> currentInstantiation :
 			*compInstance->componentModel()->getComponentInstantiations())
 		{
 			if (currentInstantiation->name() == instanceActiveView)
@@ -639,7 +639,7 @@ void VhdlGenerator2::parseInstances()
         ExpressionFormatter* instanceFormatter =
             formatterFactory.createDesignInstanceFormatter(compInstance->componentModel(), design_);
 
-        foreach(QSharedPointer<ConfigurableElementValue> configurableElement, 
+        for (QSharedPointer<ConfigurableElementValue> configurableElement: 
             *instance->getConfigurableElementValues())
         {
             QString elementName =
@@ -689,7 +689,7 @@ void VhdlGenerator2::parseInterconnections()
         {
 			invalidInterconnection = true;
 			emit errorMessage(tr("Instance %1 was not found in component %2.").
-                arg(firstInterface->getComponentReference()).arg(component_->getVlnv().toString()));
+                arg(firstInterface->getComponentReference(), component_->getVlnv().toString()));
 		}
 		else
         { 
@@ -701,7 +701,7 @@ void VhdlGenerator2::parseInterconnections()
 		if (!interface1)
         {
 			emit errorMessage(tr("Bus interface %1 was not found in component %2.").
-                arg(firstInterface->getBusReference()).arg(instance1->vlnv().toString()));
+                arg(firstInterface->getBusReference(), instance1->vlnv().toString()));
 			invalidInterconnection = true;
 		}
 
@@ -733,7 +733,7 @@ void VhdlGenerator2::parseInstanceInterconnection(QSharedPointer<Interconnection
     {
         invalidInterconnection = true;
         emit errorMessage(tr("Instance %1 was not found in component %2.").
-            arg(connectionEndInterface->getComponentReference()).arg(component_->getVlnv().toString()));
+            arg(connectionEndInterface->getComponentReference(), component_->getVlnv().toString()));
     }
     else
     {
@@ -744,7 +744,7 @@ void VhdlGenerator2::parseInstanceInterconnection(QSharedPointer<Interconnection
     if (!endInterface)
     {
         emit errorMessage(tr("Bus interface %1 was not found in component %2.").
-            arg(connectionEndInterface->getBusReference()).arg(endInstance->vlnv().toString()));
+            arg(connectionEndInterface->getBusReference(), endInstance->vlnv().toString()));
         invalidInterconnection = true;
     }
 
@@ -770,7 +770,7 @@ void VhdlGenerator2::parseHierarchicalConnection(QSharedPointer<VhdlComponentIns
 		if (!topInterface)
         {
 			emit errorMessage(tr("Interface %1 was not found in top component %2.").
-                arg(endInterface->getBusReference()).arg(component_->getVlnv().toString()));
+                arg(endInterface->getBusReference(), component_->getVlnv().toString()));
 			return;
 		}
 

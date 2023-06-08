@@ -861,10 +861,10 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	model->getViews()->append(hierView);
 
 	// create the design configuration
-	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
 	designConf->setDesignRef(designVLNV);
 
-	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
 
 	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
 	getLibraryInterface()->writeModelToFile(dirPath, designConf);

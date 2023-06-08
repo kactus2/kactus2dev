@@ -24,14 +24,6 @@ textLabel_(new QLabel(""))
 }
 
 //-----------------------------------------------------------------------------
-// Function: GraphicsItemLabel::~GraphicsItemLabel()
-//-----------------------------------------------------------------------------
-GraphicsItemLabel::~GraphicsItemLabel()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: GraphicsItemLabel::setText()
 //-----------------------------------------------------------------------------
 void GraphicsItemLabel::setText(QString const& newText)

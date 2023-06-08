@@ -32,15 +32,11 @@ public:
      *  The constructor.
      *
      *      @param [in] name            The name of the adHocConnection.
-     *      @param [in] displayName     The display name.
-     *      @param [in] description     The description.
      *      @param [in] tiedValue       Fixed logic value for the connection.
      *      @param [in] route           The route of the connection.
      *      @param [in] offPage         Specifies whether the connection is off page or not.
      */
     AdHocConnection(QString name,
-        QString displayName = QString(),
-        QString description = QString(),
         QString tiedValue = QString(),
         QList<QPointF> const& route = QList<QPointF>(),
         bool offPage = false);
@@ -48,7 +44,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~AdHocConnection();
+    ~AdHocConnection() override = default;
 
     /*!
      *  Copy constructor.
@@ -144,6 +140,14 @@ public:
      */
     void setTiedValue(QString const& newTiedValue);
 
+    /*!
+     *  Change the component reference of contained interfaces.
+     *
+     *      @param [in] oldName     The old component reference.
+     *      @param [in] newName     The new component reference.
+     */
+    void changeInterfaceComponentReferences(QString const& oldName, QString const& newName);
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -157,9 +161,11 @@ private:
     QString tiedValue_;
 
     //! A list of port references of the component instance.
-    QSharedPointer<QList<QSharedPointer<PortReference> > > internalPortReferences_;
-
+    QSharedPointer<QList<QSharedPointer<PortReference> > > internalPortReferences_ =
+        QSharedPointer<QList<QSharedPointer<PortReference> > >(new QList<QSharedPointer<PortReference> >());
+        
     //! A list of port references of the encompassing component.
-    QSharedPointer<QList<QSharedPointer<PortReference> > > externalPortReferences_;
+    QSharedPointer<QList<QSharedPointer<PortReference> > > externalPortReferences_ =
+        QSharedPointer<QList<QSharedPointer<PortReference> > >(new QList<QSharedPointer<PortReference> >());
 };
 #endif // ADHOCCONNECTION_H

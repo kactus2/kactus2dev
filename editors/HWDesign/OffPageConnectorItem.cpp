@@ -39,7 +39,7 @@ parent_(parent)
     setPolygon(shape);
 
     // Add a line as a child graphics item.
-    QGraphicsLineItem* line = new QGraphicsLineItem(0.0, 0.0, 0.0, 3*GridSize, this);
+    auto line = new QGraphicsLineItem(0.0, 0.0, 0.0, 3*GridSize, this);
     line->setFlag(ItemStacksBehindParent);
     
     QPen newPen = line->pen();
@@ -50,16 +50,8 @@ parent_(parent)
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemSendsScenePositionChanges);
 
-    updateInterface();
+    OffPageConnectorItem::updateInterface();
 }
-
-//-----------------------------------------------------------------------------
-// Function: OffPageConnectorItem::OffPageConnectorItem()
-//-----------------------------------------------------------------------------
-OffPageConnectorItem::~OffPageConnectorItem()
-{
-}
-
 
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::updateInterface()
@@ -121,7 +113,7 @@ void OffPageConnectorItem::removeConnection(GraphicsConnection* connection)
     ConnectionEndpoint::removeConnection(connection);
     connection->setRoutingMode(GraphicsConnection::ROUTING_MODE_NORMAL);
 
-    if (getConnections().size() == 0)
+    if (getConnections().isEmpty())
     {
         setVisible(false);
     }
@@ -188,7 +180,7 @@ QVector2D OffPageConnectorItem::getDirection() const
 //-----------------------------------------------------------------------------
 bool OffPageConnectorItem::isDirectionFixed() const
 {
-    if (getConnections().size() > 0)
+    if (getConnections().isEmpty() == false)
     {
         return true;
     }
@@ -269,10 +261,7 @@ QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change, QVariant co
 {
     if (change == ItemScenePositionHasChanged)
     {
-        foreach (GraphicsConnection* interconnection, getConnections())
-        {
-            interconnection->updatePosition();
-        }
+        updateConnectionPositions();
     }
 
     return QGraphicsItem::itemChange(change, value);

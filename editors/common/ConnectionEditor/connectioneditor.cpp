@@ -240,12 +240,12 @@ void ConnectionEditor::setConnection(GraphicsConnection* connection, DesignDiagr
     else if (endpoint1->isAdHoc())
     {
         AdHocConnectionItem* adHoc = static_cast<AdHocConnectionItem*>(connection_);
-        adHocBoundsModel_.setConnection(adHoc->getAdHocConnection(), diagram->getEditProvider());
+        adHocBoundsModel_.setConnection(adHoc->getInterconnection(), diagram->getEditProvider());
         adHocBoundsTable_.resizeRowsToContents();
     }
 
 	// set the names of the connected instances
-	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1->name()).arg(endpoint2->name()));
+	connectedInstances_.setText(QString("%1 - %2").arg(endpoint1->name(), endpoint2->name()));
 
 	// set text for the name editor, signal must be disconnected when name is set to avoid loops 
 	disconnect(&nameEdit_, SIGNAL(editingFinished()), this, SLOT(onNameOrDescriptionChanged()));
@@ -326,7 +326,7 @@ VLNV ConnectionEditor::findAbstractionVLNV(ConnectionEndpoint* endPoint,
     VLNV definition;
     if (abstraction && abstraction->getAbstractionRef())
     {
-        definition = *abstraction->getAbstractionRef().data();
+        definition = VLNV(*abstraction->getAbstractionRef());
     }
 
     return definition;
@@ -450,7 +450,7 @@ QString ConnectionEditor::getActiveViewForEndPoint(ConnectionEndpoint* endPoint)
         {
             QSharedPointer<DesignConfiguration> configuration = diagram_->getDesignConfiguration();
             QSharedPointer<ComponentInstance> instance = endPoint->encompassingComp()->getComponentInstance();
-            activeView = QString::fromStdString(configuration->getActiveView(instance->getInstanceName().toStdString()));
+            activeView = configuration->getActiveView(instance->getInstanceName());
         }
     }
 

@@ -16,25 +16,23 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QObject>
 #include <QDomNode>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! Reader class for name group element.
 //-----------------------------------------------------------------------------
-class NameGroupReader : public QObject
+class NameGroupReader
 {
-    Q_OBJECT
+
 
 public:
 
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  The parent of this reader.
      */
-    NameGroupReader(QObject* parent = 0);
+    NameGroupReader();
 
     /*!
      *  The destructor.
@@ -47,7 +45,7 @@ public:
      *      @param [in] nameGroupNode   XML description of the name group.
      *      @param [in] nameGroup       The new name group.
      */
-    void parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<NameGroup> nameGroup) const;
+    static void parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<NameGroup> nameGroup);
 
     /*!
      *  Reads and creates a name for name group.
@@ -56,7 +54,7 @@ public:
      *
      *      @return The name of the name group.
      */
-    QString parseName(QDomNode const& nameGroupNode) const;
+    static QString parseName(QDomNode const& nameGroupNode);
 
     /*!
      *  Reads and creates a display name for name group.
@@ -65,7 +63,16 @@ public:
      *
      *      @return The display name of the name group.
      */
-    QString parseDisplayName(QDomNode const& nameGroupNode) const;
+    static QString parseDisplayName(QDomNode const& nameGroupNode);
+  
+    /*!
+     *  Reads and creates a short description for name group.
+     *
+     *      @param [in] nameGroupNode   XML description of the name group.
+     *
+     *      @return The short description of the name group.
+     */
+    static QString parseShortDescription(QDomNode const& nameGroupNode);
 
     /*!
      *  Reads and creates a description for name group.
@@ -74,7 +81,7 @@ public:
      *
      *      @return The description of the name group.
      */
-    QString parseDescription(QDomNode const& nameGroupNode) const;
+    static QString parseDescription(QDomNode const& nameGroupNode);
 
 private:
 

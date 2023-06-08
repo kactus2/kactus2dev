@@ -42,7 +42,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ActiveInterface();
+    ~ActiveInterface() final = default;
 
     /*!
      *  Assignment operator.
@@ -54,7 +54,7 @@ public:
      *
      *      @return True, if the interfaces refer the same component and bus interface, otherwise false.
      */
-    bool operator==(const ActiveInterface& other);
+    bool operator==(const ActiveInterface& other) const;
 
     /*!
      *  The != operator.
@@ -116,6 +116,7 @@ private:
     QString componentRef_;
 
     //! A list of excluded ports
-    QSharedPointer<QStringList> excludePorts_;
+    QSharedPointer<QStringList> excludePorts_ = QSharedPointer<QStringList>(new QStringList());
+
 };
 #endif // ACTIVEINTERFACE_H

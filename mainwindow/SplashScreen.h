@@ -25,12 +25,16 @@ public:
     /*!
      *  Constructor.
      */
-    SplashScreen(QString const& versionString, QWidget* parent = 0);
+    explicit SplashScreen(QString const& versionString);
+
+    // Disable copying.
+    SplashScreen(SplashScreen const& rhs) = delete;
+    SplashScreen& operator=(SplashScreen const& rhs) = delete;
 
     /*!
      *  Destructor.
      */
-    ~SplashScreen();
+    ~SplashScreen() final = default;
 
 protected:
     //! Draws the contents of the splash screen.
@@ -43,9 +47,6 @@ protected:
     virtual void keyPressEvent(QKeyEvent* event);
 
 private:
-    // Disable copying.
-    SplashScreen(SplashScreen const& rhs);
-    SplashScreen& operator=(SplashScreen const& rhs);
 
     //! Current version to display.
     QString versionString_;

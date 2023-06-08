@@ -101,8 +101,7 @@ void SWPortDeleteCommand::redo()
     QMap<QString, QPointF> apiPositions = containingInstance->getApiInterfacePositions();
     QMap<QString, QPointF> comPositions = containingInstance->getComInterfacePositions();
 
-    if (apiPositions.contains(port_->name()))
-    {
+    if (apiPositions.contains(port_->name()))    {
         containingInstance->removeApiInterfacePosition(port_->name());
     }
     if (comPositions.contains(port_->name()))

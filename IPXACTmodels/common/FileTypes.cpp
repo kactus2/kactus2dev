@@ -16,14 +16,7 @@
 //-----------------------------------------------------------------------------
 bool FileTypes::isIpXactFileType( const QString& fileType )
 {
-	for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i)
-    {
-		if (QString(FileTypes::FILE_TYPES[i]) == fileType)
-        {
-			return true;
-		}
-	}
-	return false;
+	return FILE_TYPES.contains(fileType);
 }
 
 //-----------------------------------------------------------------------------
@@ -34,11 +27,11 @@ QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuf
     QStringList types;
 
 	settings.beginGroup(QStringLiteral("FileTypes"));
-	foreach (QString const& type, settings.childGroups())
+	for (QString const& type : settings.childGroups())
     {
 		QString extensions = settings.value(type + QStringLiteral("/Extensions")).toString();
 
-		foreach (QString const& extension, extensions.split(QLatin1Char(';'), Qt::SkipEmptyParts))
+		for (QString const& extension : extensions.split(QLatin1Char(';'), Qt::SkipEmptyParts))
         {
 			if (extension.compare(fileSuffix, Qt::CaseInsensitive) == 0)
             {

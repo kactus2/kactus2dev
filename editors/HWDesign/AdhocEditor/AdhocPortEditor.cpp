@@ -411,7 +411,7 @@ const
 
     if (adHocConnection)
     {
-        QString adhocPortName = containedPortItem_->name();
+        auto adhocPortName = containedPortItem_->name();
 
         for (QSharedPointer<PortReference> internalPort : *adHocConnection->getInternalPortReferences())
         {

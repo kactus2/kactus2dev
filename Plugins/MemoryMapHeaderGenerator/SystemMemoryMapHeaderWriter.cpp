@@ -87,7 +87,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
 		systemHeaderOption.instanceId_ = instance->getUuid();
 
-        QString activeView = QString::fromStdString(designConfiguration->getActiveView(instance->getInstanceName().toStdString()));
+        QString activeView = designConfiguration->getActiveView(instance->getInstanceName());
 		if (!activeView.isEmpty())
         {
 			QSharedPointer<View> swView = component->getModel()->findView(activeView);
@@ -295,7 +295,7 @@ void SystemMemoryMapHeaderWriter::searchInstanceFiles(QSharedPointer<const Compo
             QSharedPointer<const Component> instanceComponent = libComp.dynamicCast<const Component>();
             Q_ASSERT(instanceComponent);
 
-            QString activeView = QString::fromStdString(desConf->getActiveView(instance->getInstanceName().toStdString()));
+            QString activeView = desConf->getActiveView(instance->getInstanceName());
             if (activeView.isEmpty())
             {
                 QStringList hierViewNames = instanceComponent->getHierViews();

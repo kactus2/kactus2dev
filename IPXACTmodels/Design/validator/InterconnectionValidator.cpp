@@ -32,8 +32,7 @@
 InterconnectionValidator::InterconnectionValidator(QSharedPointer<ExpressionParser> parser,
     LibraryInterface* library):
 parser_(parser),
-libraryHandler_(library),
-availableComponentInstances_(new QList<QSharedPointer<ComponentInstance> > ())
+libraryHandler_(library)
 {
 
 }
@@ -144,18 +143,21 @@ bool InterconnectionValidator::activeInterfaceIsValid(QSharedPointer<ActiveInter
 QSharedPointer<ComponentInstance> InterconnectionValidator::getReferencedComponentInstance(
     QString const& instanceReference) const
 {
-    if (!instanceReference.isEmpty() && !availableComponentInstances_->isEmpty())
+    QSharedPointer<ComponentInstance> foundInstance = nullptr;
+    if (instanceReference.isEmpty() || availableComponentInstances_->isEmpty())
     {
-        foreach (QSharedPointer<ComponentInstance> instance, *availableComponentInstances_)
-        {
-            if (instance->getInstanceName() == instanceReference)
-            {
-                return instance;
-            }
-        }
+        return foundInstance;
     }
 
-    return QSharedPointer<ComponentInstance> ();
+    auto it = std::find_if(availableComponentInstances_->cbegin(), availableComponentInstances_->cend(),
+        [&instanceReference](auto const& instance) {return instance->getInstanceName() == instanceReference; });
+
+    if (it != availableComponentInstances_->cend())
+    {
+        foundInstance = *it;
+    }
+
+    return foundInstance;
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +169,7 @@ QSharedPointer<const Component> InterconnectionValidator::getReferencedComponent
     if (referencingInstance && referencingInstance->getComponentRef())
     {
         QSharedPointer<const Component> referencedComponent =
-            libraryHandler_->getModelReadOnly(*referencingInstance->getComponentRef()).dynamicCast<Component const>();
+            libraryHandler_->getModelReadOnly<Component>(*referencingInstance->getComponentRef());
 
         return referencedComponent;
     }
@@ -181,18 +183,14 @@ QSharedPointer<const Component> InterconnectionValidator::getReferencedComponent
 bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<const Component> component,
     QString const& busReference) const
 {
-    if (!busReference.isEmpty() && component)
+    if (busReference.isEmpty() || component == nullptr)
     {
-        foreach (QSharedPointer<BusInterface> currentBus, *component->getBusInterfaces())
-        {
-            if (currentBus->name() == busReference)
-            {
-                return true;
-            }
-        }
+        return false;
     }
-
-    return false;
+        
+    return std::any_of(component->getBusInterfaces()->cbegin(), component->getBusInterfaces()->cend(),
+        [&busReference](auto const& currentBus) { return currentBus->name() == busReference; });
+  
 }
 
 //-----------------------------------------------------------------------------
@@ -201,46 +199,36 @@ bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<const Componen
 bool InterconnectionValidator::excludePortsAreValid(QSharedPointer<const Component> component,
     QSharedPointer<ActiveInterface> activeInterface) const
 {
-    if (!activeInterface->getExcludePorts()->isEmpty())
+    if (activeInterface->getExcludePorts()->isEmpty())
     {
-        foreach (QSharedPointer<BusInterface> currentBus, *component->getBusInterfaces())
-        {
-            if (currentBus->name() == activeInterface->getBusReference())
-            {
-                foreach (QString excludePort, *activeInterface->getExcludePorts())
-                {
-                    if (!singleExcludePortIsValid(excludePort, currentBus))
-                    {
-                        return false;
-                    }
-                }
-
-                break;
-            }
-        }
+        return true;
     }
 
-    return true;
+    auto busInterface = component->getBusInterface(activeInterface->getBusReference());
+
+    if (busInterface == nullptr)
+    {
+        return false;
+    }
+
+    if (busInterface->getAbstractionTypes()->isEmpty())
+    {
+        return false;
+    }
+
+    auto portMaps = busInterface->getAllPortMaps();
+    return std::all_of(activeInterface->getExcludePorts()->cbegin(), activeInterface->getExcludePorts()->cend(),
+        [this, &portMaps](auto const& excludePort) { return singleExcludePortIsValid(excludePort, portMaps); });
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterconnectionValidator::singleExcludePortIsValid()
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::singleExcludePortIsValid(QString const& portReference,
-    QSharedPointer<BusInterface> currentBus) const
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps) const
 {
-    if (!currentBus->getAbstractionTypes()->isEmpty())
-    {
-        foreach (QSharedPointer<PortMap> portMap, *currentBus->getAllPortMaps())
-        {
-            if (portMap->getLogicalPort()->name_ == portReference)
-            {
-                return true;
-            }
-        }
-    }
-
-    return false;
+    return std::any_of(portMaps->cbegin(), portMaps->cend(),
+        [&portReference](auto const& portMap) { return portMap->getLogicalPort()->name_ == portReference; });
 }
 
 //-----------------------------------------------------------------------------
@@ -263,7 +251,7 @@ bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection
                 interConnection->getStartInterface()->getBusReference());
         }
 
-        foreach (QSharedPointer<ActiveInterface> currentInterface, *interConnection->getActiveInterfaces())
+        for (auto const& currentInterface: *interConnection->getActiveInterfaces())
         {
             if (!activeInterfaceIsValid(currentInterface) || !referenceCombinationIsUnique(interfaceReferences,
                 currentInterface->getComponentReference(), currentInterface->getBusReference()))
@@ -278,7 +266,7 @@ bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection
         }
 
         QVector<QString> usedHierBusInterfaces;
-        foreach (QSharedPointer<HierInterface> currentInterface, *interConnection->getHierInterfaces())
+        for (auto const& currentInterface : *interConnection->getHierInterfaces())
         {
             if (usedHierBusInterfaces.contains(currentInterface->getBusReference()) ||
                 !hasValidIsPresent(currentInterface->getIsPresent()))
@@ -301,12 +289,9 @@ bool InterconnectionValidator::hasValidInterfaces(QSharedPointer<Interconnection
 bool InterconnectionValidator::referenceCombinationIsUnique(QMap<QString, QString> referenceCombinations,
     QString const& componentReference, QString const& busReference) const
 {
-    QMapIterator<QString, QString> combinationIterator(referenceCombinations);
-    while (combinationIterator.hasNext())
+    for (auto it = referenceCombinations.cbegin(); it != referenceCombinations.cend(); ++it)
     {
-        combinationIterator.next();
-
-        if (combinationIterator.key() == componentReference && combinationIterator.value() == busReference)
+        if (it.key() == componentReference && it.value() == busReference)
         {
             return false;
         }
@@ -365,34 +350,33 @@ bool InterconnectionValidator::monitorInterfaceIsValid(QSharedPointer<MonitorInt
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::hasValidMonitorInterfaces(QSharedPointer<MonitorInterconnection> connection) const
 {
-    if (!connection->getMonitorInterfaces()->isEmpty())
+    if (connection->getMonitorInterfaces()->isEmpty())
     {
-        QMap<QString, QString> interfaceReferences;
-        if (connection->getMonitoredActiveInterface())
-        {
-            interfaceReferences.insert(connection->getMonitoredActiveInterface()->getComponentReference(),
-                connection->getMonitoredActiveInterface()->getBusReference());
-        }
-
-        foreach (QSharedPointer<MonitorInterface> monitorInterface, *connection->getMonitorInterfaces())
-        {
-            if (!monitorInterfaceIsValid(monitorInterface) ||
-                !referenceCombinationIsUnique(interfaceReferences, monitorInterface->getComponentReference(),
-                monitorInterface->getBusReference()))
-            {
-                return false;
-            }
-            else
-            {
-                interfaceReferences.insert(
-                    monitorInterface->getComponentReference(), monitorInterface->getBusReference());
-            }
-        }
-
-        return true;
+        return false;
     }
 
-    return false;
+    QMap<QString, QString> interfaceReferences;
+    if (connection->getMonitoredActiveInterface())
+    {
+        interfaceReferences.insert(connection->getMonitoredActiveInterface()->getComponentReference(),
+            connection->getMonitoredActiveInterface()->getBusReference());
+    }
+
+    for (auto const& monitorInterface : *connection->getMonitorInterfaces())
+    {
+        if (!monitorInterfaceIsValid(monitorInterface) ||
+            !referenceCombinationIsUnique(interfaceReferences, monitorInterface->getComponentReference(),
+                monitorInterface->getBusReference()))
+        {
+            return false;
+        }
+        else
+        {
+            interfaceReferences.insert(monitorInterface->getComponentReference(), monitorInterface->getBusReference());
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -531,21 +515,20 @@ void InterconnectionValidator::findErrorsInExcludePorts(QVector<QString>& errors
 {
     if (!activeInterface->getExcludePorts()->isEmpty())
     {
-        foreach (QSharedPointer<BusInterface> currentBus, *referencedComponent->getBusInterfaces())
+        auto busInterface = referencedComponent->getBusInterface(activeInterface->getBusReference());
+        if (busInterface == nullptr)
         {
-            if (currentBus->name() == activeInterface->getBusReference())
-            {
-                foreach (QString excludePort, *activeInterface->getExcludePorts())
-                {
-                    if (!singleExcludePortIsValid(excludePort, currentBus))
-                    {
-                        errors.append(QObject::tr("Logical port referenced in active interface in %1 was not "
-                            "found in the port maps of the referenced bus interface %2")
-                            .arg(innerContext).arg(currentBus->name()));
-                    }
-                }
+            return;
+        }
 
-                return;
+        auto portMaps = busInterface->getAllPortMaps();
+        for (QString const& excludePort : *activeInterface->getExcludePorts())
+        {
+            if (!singleExcludePortIsValid(excludePort, portMaps))
+            {
+                errors.append(QObject::tr("Logical port referenced in active interface in %1 was not "
+                    "found in the port maps of the referenced bus interface %2")
+                    .arg(innerContext).arg(busInterface->name()));
             }
         }
     }
@@ -573,7 +556,7 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
                 interConnection->getStartInterface()->getBusReference());
         }
 
-        foreach (QSharedPointer<ActiveInterface> currentInterface, *interConnection->getActiveInterfaces())
+        for (QSharedPointer<ActiveInterface> currentInterface : *interConnection->getActiveInterfaces())
         {
             if (!referenceCombinationIsUnique(interfaceReferences, currentInterface->getComponentReference(),
                 currentInterface->getBusReference()))
@@ -593,7 +576,7 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
         }
 
         QVector<QString> usedHierBusReferences;
-        foreach (QSharedPointer<HierInterface> hierarchicalInterface, *interConnection->getHierInterfaces())
+        for (QSharedPointer<HierInterface> hierarchicalInterface : *interConnection->getHierInterfaces())
         {
             if (usedHierBusReferences.contains(hierarchicalInterface->getBusReference()))
             {
@@ -680,7 +663,7 @@ void InterconnectionValidator::findErrorsInMonitorInterfaces(QVector<QString>& e
         }
 
         QString elementName = QLatin1String("monitor interface");
-        foreach (QSharedPointer<MonitorInterface> monitorInterface, *connection->getMonitorInterfaces())
+        for (QSharedPointer<MonitorInterface> monitorInterface: *connection->getMonitorInterfaces())
         {
             if (!referenceCombinationIsUnique(interfaceReferences, monitorInterface->getComponentReference(),
                 monitorInterface->getBusReference()))

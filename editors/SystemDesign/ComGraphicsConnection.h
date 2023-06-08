@@ -16,16 +16,17 @@
 #include <QGraphicsTextItem>
 #include <QUndoCommand>
 
-#include <common/graphicsItems/GraphicsConnection.h>
+#include <common/graphicsItems/ConnectionItem.h>
 #include <common/graphicsItems/GraphicsItemTypes.h>
 
-class ComInterconnection;
+#include <IPXACTmodels/kactusExtensions/ComInterconnection.h>
+
 class ConnectionRoute;
 
 //-----------------------------------------------------------------------------
 //! A graphical representation of a Kactus2 com interconnection.
 //-----------------------------------------------------------------------------
-class ComGraphicsConnection : public GraphicsConnection
+class ComGraphicsConnection : public ConnectionItem<ComInterconnection>
 {
     Q_OBJECT
 
@@ -33,21 +34,6 @@ public:
 
     //! The type of the COM connection item.
     enum { Type = GFX_TYPE_SW_COM_CONNECTION };
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] endpoint1       The start point of the connection.
-     *      @param [in] endpoint2       The end point of the connection.
-     *      @param [in] autoConnect     If true, automatically connects the end points.
-     *      @param [in] name            Name of the connection.
-     *      @param [in] displayName     Display name of the connection.
-     *      @param [in] description     Description of the connection.
-     *      @param [in] parent          The design diagram containing the connection.
-     */
-    ComGraphicsConnection(ConnectionEndpoint *endpoint1, ConnectionEndpoint *endpoint2, bool autoConnect,
-                          QString const& name, QString const& displayName, QString const& description,
-                          DesignDiagram* parent);
 
     /*!
      *  Constructor which creates an open-ended diagram interconnection.
@@ -78,68 +64,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ComGraphicsConnection();
-
-    /*!
-     *  Set the name of the COM connection.
-     *
-     *      @param [in] name    The new name of the connection.
-     */
-    virtual void setName(QString const& name);
-
-    /*!
-     *  Get the name of the connection.
-     *
-     *      @return The name of the connection.
-     */
-    virtual QString name() const;
-
-    /*!
-     *  Set the description of the COM connection.
-     *
-     *      @param [in] description     The new description of the connection.
-     */
-    virtual void setDescription(QString const& description);
-
-    /*!
-     *  Get the description of the connection.
-     *
-     *      @return The description of the connection.
-     */
-    virtual QString description() const;
-
-    /*!
-     *  Get the connected COM interconnection.
-     *
-     *      @return The connected COM interconnection.
-     */
-    QSharedPointer<ComInterconnection> getComInterconnection();
-
-    /*!
-     *  Get the route used by the connection.
-     *
-     *      @return The route used by the connection.
-     */
-    QSharedPointer<ConnectionRoute> getRouteExtension() const;
-
-    /*!
-     *  Toggles the connection between normal and off-page.
-     */
-    virtual void toggleOffPage();
-
-    /*!
-     *  Check if the connection is off-page.
-     *
-     *      @return True, if the connection is off-page, otherwise false.
-     */
-    bool isOffPage() const;
-
-    /*!
-     *  Set the routing of the interconnection.
-     *
-     *      @parameter [in] path    List containing the points used as the route for the connection.
-     */
-    virtual void setRoute(QList<QPointF> path);
+    virtual ~ComGraphicsConnection() = default;
 
     /*!
      *  Get the type of the graphical COM connection.
@@ -148,21 +73,6 @@ public:
      */
     int type() const { return Type; }
 
-    /*!
-     *  Change the component reference of a contained interface.
-     *
-     *      @param [in] oldName     The old component reference.
-     *      @param [in] newName     The new component reference.
-     */
-    virtual void changeConnectionComponentReference(QString const& oldName, QString const& newName);
-
-private:
-
-    //! The connected COM interconnection.
-    QSharedPointer<ComInterconnection> comInterconnection_;
-
-    //! The route used by the connection.
-    QSharedPointer<ConnectionRoute> route_;
 };
 
 #endif // COMGRAPHICSCONNECTION_H

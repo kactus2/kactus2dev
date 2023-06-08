@@ -35,8 +35,7 @@ QGraphicsRectItem(parent),
     Associable(),
     libInterface_(libInterface),
     component_(component), 
-    componentInstance_(instance),
-    nameLabel_(new QGraphicsTextItem(instance->getInstanceName(), this))
+    componentInstance_(instance)
 {
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
@@ -52,12 +51,13 @@ QGraphicsRectItem(parent),
     nameLabel_->setFont(font);
     nameLabel_->setTextWidth(COMPONENTWIDTH - 20);
     nameLabel_->setPos(-nameLabel_->boundingRect().width()/2, GridSize);
+    nameLabel_->setPlainText(instance->getInstanceName());
 
     setPos(instance->getPosition());
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~ComponentItem()
+// Function: ComponentItem::~ComponentItem()
 //-----------------------------------------------------------------------------
 ComponentItem::~ComponentItem()
 {
@@ -65,18 +65,11 @@ ComponentItem::~ComponentItem()
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateComponent()
+// Function: ComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 void ComponentItem::updateComponent()
 {
-    if (!displayName().isEmpty())
-    {
-        updateNameLabel(displayName());
-    }
-    else
-    {
-        updateNameLabel(name());
-    }
+    updateNameLabel();
 
     VLNV vlnv = component_->getVlnv();
 
@@ -115,8 +108,8 @@ void ComponentItem::updateSize()
 
 	setRect(-width/2, oldRect.y(), width, oldRect.height());
 
-	IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-	if (stack != 0)
+	auto stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+	if (stack != nullptr)
 	{
 		stack->updateItemPositions();
 	}
@@ -139,10 +132,7 @@ void ComponentItem::setName(QString const& newName)
 
     componentInstance_->setInstanceName(newName);
 
-    if (displayName().isEmpty())
-    {
-        updateNameLabel(newName);
-    }
+    updateNameLabel();
 
     updateComponent();
     
@@ -156,14 +146,7 @@ void ComponentItem::setDisplayName(QString const& displayName)
 {
     componentInstance_->setDisplayName(displayName);
 
-    if (!displayName.isEmpty())
-    {
-        updateNameLabel(displayName);
-    }
-    else
-    {
-        updateNameLabel(name());
-    }
+    updateNameLabel();
 
     emit displayNameChanged(displayName);
 }
@@ -191,7 +174,7 @@ QString ComponentItem::name() const
 //-----------------------------------------------------------------------------
 QString ComponentItem::displayName() const
 {
-    return componentInstance_->getDisplayName();
+    return componentInstance_->displayName();
 }
 
 //-----------------------------------------------------------------------------
@@ -199,7 +182,7 @@ QString ComponentItem::displayName() const
 //-----------------------------------------------------------------------------
 QString ComponentItem::description() const
 {
-    return componentInstance_->getDescription();
+    return componentInstance_->description();
 }
 
 //-----------------------------------------------------------------------------
@@ -245,10 +228,20 @@ QVariant ComponentItem::itemChange(GraphicsItemChange change, const QVariant &va
 }
 
 //-----------------------------------------------------------------------------
-// Function: updateNameLabel()
+// Function: ComponentItem::updateNameLabel()
 //-----------------------------------------------------------------------------
-void ComponentItem::updateNameLabel(QString const& text)
+void ComponentItem::updateNameLabel()
 {
+    auto text = QString();
+    if (!displayName().isEmpty())
+    {
+        text = displayName();
+    }
+    else
+    {
+        text = name();
+    }
+
     nameLabel_->setHtml("<center>" + text + "</center>");
 }
 
@@ -259,11 +252,11 @@ QList<ConnectionEndpoint*> ComponentItem::getEndpoints() const
 {
     QList<ConnectionEndpoint*> endpoints;
 
-    foreach (QGraphicsItem* item, QGraphicsRectItem::childItems())
+    for (QGraphicsItem* item : QGraphicsRectItem::childItems())
     {
-        ConnectionEndpoint* endpoint = dynamic_cast<ConnectionEndpoint*>(item);
+        auto endpoint = dynamic_cast<ConnectionEndpoint*>(item);
 
-        if (endpoint != 0)
+        if (endpoint != nullptr)
         {
             endpoints.append(endpoint);
         }
@@ -301,7 +294,21 @@ QPointF ComponentItem::connectionPoint(QPointF const&) const
 //-----------------------------------------------------------------------------
 qreal ComponentItem::getHeight()
 {
-	return 8*GridSize;
+    // Update the component's size based on the port that is positioned at
+    // the lowest level of them all.
+    qreal maxY = 4 * GridSize;
+
+    if (!leftPorts_.empty())
+    {
+        maxY = leftPorts_.back()->y();
+    }
+
+    if (!rightPorts_.empty())
+    {
+        maxY = qMax(maxY, rightPorts_.back()->y());
+    }
+
+    return (maxY + BOTTOM_MARGIN);
 }
 
 //-----------------------------------------------------------------------------
@@ -310,4 +317,118 @@ qreal ComponentItem::getHeight()
 LibraryInterface* ComponentItem::getLibraryInterface()
 {
     return libInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::addPortToSideByPosition()
+//-----------------------------------------------------------------------------
+void ComponentItem::addPortToSideByPosition(ConnectionEndpoint* port)
+{
+    if (port->pos().x() >= 0)
+    {
+        addPortToRight(port);
+    }
+    else
+    {
+        addPortToLeft(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::addPortToSideWithLessPorts()
+//-----------------------------------------------------------------------------
+void ComponentItem::addPortToSideWithLessPorts(ConnectionEndpoint* port)
+{
+    // Place the port at the bottom of the side that contains fewer ports.
+    if (leftPorts_.size() < rightPorts_.size())
+    {
+        if (!leftPorts_.empty())
+        {
+            port->setPos(QPointF(0, leftPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(0, GridSize * 4) + rect().topLeft());
+        }
+
+        addPortToLeft(port);
+    }
+    else
+    {
+        if (!rightPorts_.empty())
+        {
+            port->setPos(QPointF(rect().width(), rightPorts_.last()->pos().y() + GridSize * 3) + rect().topLeft());
+        }
+        else
+        {
+            port->setPos(QPointF(rect().width(), GridSize * 4) + rect().topLeft());
+        }
+
+        addPortToRight(port);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::addPortToLeft()
+//-----------------------------------------------------------------------------
+void ComponentItem::addPortToLeft(ConnectionEndpoint* port)
+{
+    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
+    leftPorts_.append(port);
+    portLayout_->updateItemMove(leftPorts_, port, MIN_Y_PLACEMENT);
+    portLayout_->setItemPos(leftPorts_, port, rect().left(), MIN_Y_PLACEMENT);
+    checkPortLabelSize(port, rightPorts_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItem::addPortToRight()
+//-----------------------------------------------------------------------------
+void ComponentItem::addPortToRight(ConnectionEndpoint* port)
+{
+    connect(port, SIGNAL(moved(ConnectionEndpoint*)), this, SIGNAL(endpointMoved(ConnectionEndpoint*)));
+
+    rightPorts_.append(port);
+    portLayout_->updateItemMove(rightPorts_, port, MIN_Y_PLACEMENT);
+    portLayout_->setItemPos(rightPorts_, port, rect().right(), MIN_Y_PLACEMENT);
+    checkPortLabelSize(port, leftPorts_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemComponentItem::checkPortLabelSize()
+//-----------------------------------------------------------------------------
+void ComponentItem::checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> const& otherSide)
+{
+    for (int i = 0; i < otherSide.size(); ++i)
+    {
+        if (port->y() == otherSide.at(i)->y())
+        {
+            qreal portLabelWidth = port->getNameLength();
+            qreal otherLabelWidth = otherSide.at(i)->getNameLength();
+
+            // Check if both of the labels exceed the mid section of the component.
+            if (portLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH / 2) &&
+                otherLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH) / 2)
+            {
+                port->shortenNameLabel(ComponentItem::COMPONENTWIDTH / 2);
+                otherSide.at(i)->shortenNameLabel(ComponentItem::COMPONENTWIDTH / 2);
+            }
+
+            // Check if the other port is wider than the other.
+            else if (portLabelWidth > otherLabelWidth)
+            {
+                port->shortenNameLabel(ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2);
+            }
+
+            else
+            {
+                otherSide.at(i)->shortenNameLabel(ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2);
+            }
+
+            return;
+        }
+    }
+
+    // If the port gets here, there is no ports with the same y() value, and so the port name is restored.
+    port->shortenNameLabel(ComponentItem::COMPONENTWIDTH);
 }

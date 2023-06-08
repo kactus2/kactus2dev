@@ -90,7 +90,7 @@ void ComponentDeleteCommand::createTieOffDeleteCommand(ConnectionEndpoint* endPo
 {
     QString portName = endPoint->name();
 
-    foreach (QSharedPointer<AdHocConnection> connection, *diagram_->getDesign()->getAdHocConnections())
+    for (QSharedPointer<AdHocConnection> connection : *diagram_->getDesign()->getAdHocConnections())
     {
         if (connection->getInternalPortReferences()->size() == 1 &&
             connection->getExternalPortReferences()->isEmpty())

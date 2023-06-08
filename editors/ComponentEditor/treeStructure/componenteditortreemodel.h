@@ -134,6 +134,8 @@ public:
      */
     QModelIndex getIndexOfItem(QVector<QString> itemIdentifierChain) const;
 
+	void clearItemsModified() const;
+
 public slots:
 
 	/*!
@@ -253,7 +255,7 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Pointer to the root item of the tree.
-	QSharedPointer<ComponentEditorRootItem> rootItem_;
+	QSharedPointer<ComponentEditorRootItem> rootItem_ = nullptr;
 };
 
 #endif // COMPONENTEDITORTREEMODEL_H

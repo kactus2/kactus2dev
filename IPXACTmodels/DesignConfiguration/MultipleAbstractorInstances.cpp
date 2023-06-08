@@ -49,7 +49,7 @@ isPresent_(other.isPresent_)
 //-----------------------------------------------------------------------------
 // Function: MultipleAbstractorInstances::getIsPresent()
 //-----------------------------------------------------------------------------
-std::string MultipleAbstractorInstances::getIsPresent() const
+QString MultipleAbstractorInstances::getIsPresent() const
 {
     return isPresent_;
 }
@@ -57,7 +57,7 @@ std::string MultipleAbstractorInstances::getIsPresent() const
 //-----------------------------------------------------------------------------
 // Function: MultipleAbstractorInstances::setIsPresent()
 //-----------------------------------------------------------------------------
-void MultipleAbstractorInstances::setIsPresent(std::string const& newIsPresent)
+void MultipleAbstractorInstances::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }

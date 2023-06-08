@@ -10,12 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterReader.h"
+#include "CommonItemsReader.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterReader::ModuleParameterReader()
 //-----------------------------------------------------------------------------
-ModuleParameterReader::ModuleParameterReader(QObject* parent /* = 0 */) :
-ParameterReader(parent)
+ModuleParameterReader::ModuleParameterReader() :
+ParameterReader()
 {
 
 }
@@ -46,7 +47,7 @@ QSharedPointer<ModuleParameter> ModuleParameterReader::createModuleParameterFrom
 
     parseValue(moduleParameterNode, newModuleParameter);
 
-    parseVendorExtensions(moduleParameterNode, newModuleParameter);
+    CommonItemsReader::parseVendorExtensions(moduleParameterNode, newModuleParameter);
 
     parseIsPresent(moduleParameterNode, newModuleParameter);
 
@@ -61,8 +62,5 @@ void ModuleParameterReader::parseIsPresent(QDomNode const& moduleParameterNode,
 {
     QDomElement presenceElement = moduleParameterNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
 
-    if (!presenceElement.isNull())
-    {
-        moduleParameter->setIsPresent(presenceElement.firstChild().nodeValue());
-    }
+    moduleParameter->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
 }

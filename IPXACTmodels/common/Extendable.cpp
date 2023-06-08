@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/common/VendorExtension.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
 //-----------------------------------------------------------------------------
 // Function: Extendable::getVendorExtensions()
@@ -80,6 +81,27 @@ QList<QSharedPointer<VendorExtension> > Extendable::getGroupedExtensionsByType(Q
     }
 
     return QList<QSharedPointer<VendorExtension> >();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Extendable::setPlaceholderExtension()
+//-----------------------------------------------------------------------------
+void Extendable::setPlaceholderExtension(bool value, QString const& extensionType)
+{
+    auto extension = findVendorExtension(extensionType).dynamicCast<Kactus2Placeholder>();
+
+    if (value)
+    {
+        if (extension == nullptr)
+        {
+            extension = QSharedPointer<Kactus2Placeholder>(new Kactus2Placeholder(extensionType));
+            getVendorExtensions()->append(extension);
+        }
+    }
+    else
+    {
+        getVendorExtensions()->removeAll(extension);
+    }
 }
 
 //-----------------------------------------------------------------------------

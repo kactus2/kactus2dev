@@ -39,12 +39,7 @@
 SWComponentItem::SWComponentItem(LibraryInterface* libInterface, QSharedPointer<Component> component,
                                  QSharedPointer<ComponentInstance> instance):
 SystemComponentItem(QRectF(-COMPONENTWIDTH / 2, 0, COMPONENTWIDTH, MIN_HEIGHT), libInterface, instance,
-    component, 0),
-oldStack_(0),
-oldPos_(),
-hierIcon_(0),
-importedIcon_(0),
-isDraft_(false)
+    component, nullptr)
 {
     setFlag(ItemIsMovable);
 
@@ -88,11 +83,11 @@ void SWComponentItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
     oldStackPos_ = parentItem()->scenePos();
 
     // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item : scene()->items())
     {
         GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
 
-        if (conn != 0)
+        if (conn != nullptr)
         {
             conn->beginUpdatePosition();
         }
@@ -120,29 +115,29 @@ void SWComponentItem::mouseMoveEvent(QGraphicsSceneMouseEvent* event)
     {
         setPos(parentItem()->mapFromScene(oldStackPos_ + pos()));
 
-        IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-        Q_ASSERT(stack != 0);
+        auto stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(stack != nullptr);
         stack->onMoveItem(this);
     }
 
     setConnectionUpdateDisabled(false);
 
     // Update the port connections manually.
-    foreach (QGraphicsItem *item, childItems())
+    for (QGraphicsItem *item : childItems())
     {
         if (item->type() != SWPortItem::Type)
         {
             continue;
         }
 
-        SWPortItem* port = static_cast<SWPortItem*>(item);
+        auto port = static_cast<SWPortItem*>(item);
 
-        foreach (GraphicsConnection* conn, port->getConnections())
+        for (GraphicsConnection* conn : port->getConnections())
         {
             conn->updatePosition();
         }
 
-        foreach (GraphicsConnection* conn, port->getOffPageConnector()->getConnections())
+        for (GraphicsConnection* conn : port->getOffPageConnector()->getConnections())
         {
             conn->updatePosition();
         }
@@ -164,10 +159,10 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     ComponentItem::mouseReleaseEvent(event);
     setZValue(0.0);
 
-    if (oldStack_ != 0)
+    if (oldStack_ != nullptr)
     {
-        IGraphicsItemStack* stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
-        Q_ASSERT(stack != 0);
+        auto stack = dynamic_cast<IGraphicsItemStack*>(parentItem());
+        Q_ASSERT(stack != nullptr);
         stack->onReleaseItem(this);
 
         QSharedPointer<QUndoCommand> cmd;
@@ -182,11 +177,11 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
         }
 
         // End the position update for all connections.
-        foreach (QGraphicsItem *item, scene()->items())
+        for (QGraphicsItem *item : scene()->items())
         {
-            GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
+            auto conn = dynamic_cast<GraphicsConnection*>(item);
 
-            if (conn != 0)
+            if (conn != nullptr)
             {
                 conn->endUpdatePosition(cmd.data());
             }
@@ -199,7 +194,7 @@ void SWComponentItem::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
             cmd->redo();
         }
 
-        oldStack_ = 0;
+        oldStack_ = nullptr;
     }
 }
 
@@ -229,7 +224,7 @@ void SWComponentItem::updateComponent()
     // Create a hierarchy icon if the component is a hierarchical one.
     if (componentModel()->isHierarchical())
     {
-        if (hierIcon_ == 0)
+        if (hierIcon_ == nullptr)
         {
             hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this);
             hierIcon_->setToolTip(tr("Hierarchical"));
@@ -239,23 +234,23 @@ void SWComponentItem::updateComponent()
     else if (hierIcon_ != 0)
     {
         delete hierIcon_;
-        hierIcon_ = 0;
+        hierIcon_ = nullptr;
     }
 
     // Create imported icon if the component is an imported one.
     if (isImported())
     {
-        if (importedIcon_ == 0)
+        if (importedIcon_ == nullptr)
         {
             hierIcon_ = new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/imported.png"), this);
             hierIcon_->setToolTip(tr("Auto-synced"));
             hierIcon_->setPos(-75, 6);
         }
     }
-    else if (importedIcon_ != 0)
+    else if (importedIcon_ != nullptr)
     {
         delete importedIcon_;
-        importedIcon_ = 0;
+        importedIcon_ = nullptr;
     }
 }
 

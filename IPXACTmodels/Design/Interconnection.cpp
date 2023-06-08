@@ -20,10 +20,7 @@ Interconnection::Interconnection(QString const name, QSharedPointer<ActiveInterf
     QString const& displayName, QString const& description) :
 NameGroup(name, displayName, description),
 Extendable(),
-startInterface_(startInterface),
-activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
-hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
-isPresent_()
+startInterface_(startInterface)
 {
 
 }
@@ -33,11 +30,7 @@ isPresent_()
 //-----------------------------------------------------------------------------
 Interconnection::Interconnection():
 NameGroup(),
-Extendable(),
-startInterface_(),
-activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
-hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
-isPresent_()
+Extendable()
 {
 
 }
@@ -48,40 +41,24 @@ isPresent_()
 Interconnection::Interconnection(const Interconnection& other) :
 NameGroup(other),
 Extendable(other),
-startInterface_(new ActiveInterface(*other.startInterface_.data())),
+startInterface_(new ActiveInterface(*other.startInterface_)),
 activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
 hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 isPresent_(other.isPresent_)
 {
-    foreach (QSharedPointer<ActiveInterface> singleInterface, *other.activeInterfaces_)
+    for (auto const& singleInterface: *other.activeInterfaces_)
     {
-        if(singleInterface)
-        {
-            QSharedPointer<ActiveInterface> copy =
-                QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface.data()));
-            activeInterfaces_->append(copy);
-        }
+        QSharedPointer<ActiveInterface> copy =
+            QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
+        activeInterfaces_->append(copy);
     }
 
-    foreach (QSharedPointer<HierInterface> singleInterface, *other.hierInterfaces_)
+    for (auto const& singleInterface : *other.hierInterfaces_)
     {
-        if (singleInterface)
-        {
-            QSharedPointer<HierInterface> copy =
-                QSharedPointer<HierInterface>(new HierInterface(*singleInterface.data()));
-            hierInterfaces_->append(copy);
-        }
+        QSharedPointer<HierInterface> copy =
+            QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
+        hierInterfaces_->append(copy);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Interconnection::~Interconnection()
-//-----------------------------------------------------------------------------
-Interconnection::~Interconnection()
-{
-    startInterface_.clear();
-    activeInterfaces_.clear();
-    hierInterfaces_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,28 +74,22 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
         isPresent_ = other.isPresent_;
 
         startInterface_.clear();
-        startInterface_ = QSharedPointer<ActiveInterface>(new ActiveInterface(*other.startInterface_.data()));
+        startInterface_ = QSharedPointer<ActiveInterface>(new ActiveInterface(*other.startInterface_));
 
         activeInterfaces_->clear();
-        foreach (QSharedPointer<ActiveInterface> singleInterface, *other.activeInterfaces_)
+        for (auto const& singleInterface : *other.activeInterfaces_)
         {
-            if(singleInterface)
-            {
-                QSharedPointer<ActiveInterface> copy =
-                    QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface.data()));
-                activeInterfaces_->append(copy);
-            }
+            QSharedPointer<ActiveInterface> copy =
+                QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
+            activeInterfaces_->append(copy);
         }
 
         hierInterfaces_->clear();
-        foreach (QSharedPointer<HierInterface> singleInterface, *other.hierInterfaces_)
+        for (auto const& singleInterface : *other.hierInterfaces_)
         {
-            if (singleInterface)
-            {
-                QSharedPointer<HierInterface> copy =
-                    QSharedPointer<HierInterface>(new HierInterface(*singleInterface.data()));
-                hierInterfaces_->append(copy);
-            }
+            QSharedPointer<HierInterface> copy =
+                QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
+            hierInterfaces_->append(copy);
         }
     }
 
@@ -130,15 +101,7 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
 //-----------------------------------------------------------------------------
 bool Interconnection::isOffPage() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type().compare(QLatin1String("kactus2:offPage")) == 0)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return findVendorExtension(QStringLiteral("kactus2:offPage")) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -146,21 +109,7 @@ bool Interconnection::isOffPage() const
 //-----------------------------------------------------------------------------
 void Interconnection::setOffPage(bool offpage)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type().compare(QLatin1String("kactus2:offPage")) == 0)
-        {
-            getVendorExtensions()->removeAll(extension);
-            break;
-        }
-    }
-
-    if (offpage)
-    {
-        QSharedPointer<Kactus2Placeholder> offPageExtension(
-            new Kactus2Placeholder(QStringLiteral("kactus2:offPage")));
-        getVendorExtensions()->append(offPageExtension);
-    }
+    setPlaceholderExtension(offpage, QStringLiteral("kactus2:offPage"));
 }
 
 //-----------------------------------------------------------------------------
@@ -223,16 +172,10 @@ bool Interconnection::hasInterfaceReferencingComponent(QString const& instanceNa
         return true;
     }
 
-    foreach (QSharedPointer<ActiveInterface> singleInterface, *activeInterfaces_)
-    {
-        if (singleInterface->getComponentReference() == instanceName &&
-            singleInterface->getBusReference() == busInterfaceName)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(activeInterfaces_->cbegin(), activeInterfaces_->cend(),
+        [&instanceName, &busInterfaceName](auto const& singleInterface)
+        { return singleInterface->getComponentReference() == instanceName &&
+          singleInterface->getBusReference() == busInterfaceName; });
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +187,8 @@ void Interconnection::changeInterfaceComponentReferences(QString const& oldCompo
     {
         startInterface_->setComponentReference(newComponent);
     }
-    foreach (QSharedPointer<ActiveInterface> currentInterface, *activeInterfaces_)
+
+    for (auto currentInterface : *activeInterfaces_)
     {
         if (currentInterface->getComponentReference().compare(oldComponent) == 0)
         {

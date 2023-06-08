@@ -16,6 +16,10 @@
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/common/NameGroup.h>
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -27,9 +31,17 @@
 //-----------------------------------------------------------------------------
 //! IP-XACT component instance class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComponentInstance : public Extendable
+class IPXACTMODELS_EXPORT ComponentInstance : public Extendable, public NameGroup
 {
 public:
+
+    struct PowerDomainLink
+    {
+        QString externalReference_;
+        QString internalReference_;
+
+        PowerDomainLink* clone() const { return new PowerDomainLink({ externalReference_, internalReference_ }); };
+    };
 
     /*!
      *  The default constructor.
@@ -52,7 +64,12 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~ComponentInstance() = default;
+    ~ComponentInstance() final = default;
+
+    /*!
+     *  Assignment operator.
+     */
+    ComponentInstance& operator=(ComponentInstance const& other);
 
     /*!
      *  Sets the name of the instance.
@@ -60,20 +77,11 @@ public:
      *      @param [in] name The name to set.
      */
     void setInstanceName(QString const& name);
-
+   
     /*!
-     *  Sets the display name of the instance.
-     *
-     *      @param [in] displayName The display name to set.
+     *  Returns the name of the instance.
      */
-    void setDisplayName(QString const& displayName);
-
-    /*!
-     *  Sets the description of the instance.
-     *
-     *      @param [in] description The description to set.
-     */
-    void setDescription(QString const& description);
+    QString getInstanceName() const;
 
     /*!
      *  Sets the component reference.
@@ -83,11 +91,37 @@ public:
     void setComponentRef(QSharedPointer<ConfigurableVLNVReference> newComponentRef);
 
     /*!
+     *  Returns the component reference.
+     */
+    QSharedPointer<ConfigurableVLNVReference> getComponentRef() const;
+
+    /*!
+     *  Get the presence of the instance.
+     *
+     *      @return A QString containing the presence.
+     */
+    QString getIsPresent() const;
+
+    /*!
+     *  Set the presence of the instance.
+     *
+     *      @param [in] newIsPresent    The new value for the presence.
+     */
+    void setIsPresent(QString const& newIsPresent);
+
+    /*!
      *  Sets the configurable element values.
      *
      *      @param [in] values The configurable element values to set.
      */
     void setConfigurableElementValues(QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > newValues);
+
+    /*!
+     *  Returns the configurable element values.
+     */
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > getConfigurableElementValues() const;
+
+    QSharedPointer<QList<QSharedPointer<PowerDomainLink> > > getPowerDomainLinks() const;
 
     /*!
      *  Sets the global position of the instance.
@@ -118,6 +152,11 @@ public:
      */
     void updateBusInterfacePosition(QString const& name, QPointF const& pos);
 
+    /*!
+     *  Remove bus interface position.
+     *
+     *      @param [in] interfaceName    Name of the removed bus interface.
+     */
     void removeBusInterfacePosition(QString const& interfaceName);
 
     /*!
@@ -157,31 +196,6 @@ public:
      *      @param [in] name    Name of the selected COM interface.
      */
     void removeComInterfacePosition(QString const& name);
-
-    /*!
-     *  Returns the name of the instance.
-     */
-    QString getInstanceName() const;
-    
-    /*!
-     *  Returns the display name of the instance.
-     */
-    QString getDisplayName() const;
-
-    /*!
-     *  Returns the description of the instance.
-     */
-    QString getDescription() const;
-
-    /*!
-     *  Returns the component reference.
-     */
-    QSharedPointer<ConfigurableVLNVReference> getComponentRef() const;
-
-    /*!
-     *  Returns the configurable element values.
-     */
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > getConfigurableElementValues() const;
 
     /*!
      *  Returns the global position of the instance in the design.
@@ -236,11 +250,6 @@ public:
      *  Returns the port ad-hoc visibilities.
      */
     QMap<QString, bool> getPortAdHocVisibilities() const;
-
-    /*!
-     *  Assignment operator.
-     */
-    ComponentInstance& operator=(ComponentInstance const& other);
     
     /*!
      *  Get the Uuid of the instance.
@@ -271,20 +280,6 @@ public:
     void setDraft(bool instanceIsDraft);
 
     /*!
-     *  Get the presence of the instance.
-     *
-     *      @return A QString containing the presence.
-     */
-    QString getIsPresent() const;
-     
-    /*!
-     *  Set the presence of the instance.
-     *
-     *      @param [in] newIsPresent    The new value for the presence.
-     */
-    void setIsPresent(QString const& newIsPresent);
-
-    /*!
      *  Hides an ad hoc port in the instance.
      *
      *      @param [in] portName   The name of the port to hide.
@@ -308,15 +303,14 @@ public:
     /*!
      *  Returns the file set reference (i.e. the name of the referenced file set).
      */
-    QString const getFileSetRef() const;
+    QString getFileSetRef() const;
 
     /*!
      *  Returns the name of the referenced HW component instance onto which the SW instance is mapped.
      */
-    QString const getMapping() const;
+    QString getMapping() const;
 
 private:
-    
 
     /*!
      *  Update a positions map extension (Kactus2 extension).
@@ -329,6 +323,9 @@ private:
      */
     void updatePositionsMap(QString const& newReferenceName, QPointF const& newPosition,
         QString const& groupIdentifier, QString const& itemIdentifier, QString const& referenceIdentifier) const;
+ 
+    void removePosition(QString const& interfaceName, QString const& groupIdentifier, QString const& itemIdentifier,
+        QString const& referenceIdentifier);
 
     /*!
      *  Get a map of positions (Kactus2 extension).
@@ -340,24 +337,28 @@ private:
     QMap<QString, QPointF> getPositionMap(QString const& groupIdentifier, QString const& itemIdentifier,
         QString const& referenceIdentifier) const;
     
+
+    /*!
+     * Sets the Kactus2 vendor extension value. If the extension does not exist, it is created.
+     *
+     *     @param [in] value            The value to set.
+     *     @param [in] extensionType    The type of the vendor extension.
+     */
+    void setValueExtension(QString const& value, QString const& extensionType);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The instance name.
-    QString instanceName_;
-
-    //! The display name.
-    QString displayName_;
-
-    //! The description of the instance .
-    QString description_;
 
     //! The presence.
     QString isPresent_;
 
     //! The referenced component.
     QSharedPointer<ConfigurableVLNVReference> componentRef_;
+
+    //! The power domain links of the component instance.
+    QSharedPointer<QList<QSharedPointer<PowerDomainLink> > > powerDomainLinks_ =
+        QSharedPointer<QList<QSharedPointer<PowerDomainLink> > >(new QList<QSharedPointer<PowerDomainLink> >());
 };
 
 //-----------------------------------------------------------------------------

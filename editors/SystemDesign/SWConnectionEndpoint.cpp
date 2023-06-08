@@ -16,7 +16,6 @@
 #include <common/KactusColors.h>
 
 #include <editors/common/diagramgrid.h>
-#include <editors/common/GraphicsItemLabel.h>
 #include <editors/HWDesign/OffPageConnectorItem.h>
 #include <editors/SystemDesign/SWComponentItem.h>
 
@@ -31,28 +30,21 @@ SWConnectionEndpoint::SWConnectionEndpoint(QSharedPointer<Component> component, 
     QGraphicsItem* parent, QVector2D const& dir):
 ConnectionEndpoint(parent),
 type_(ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED),
-nameLabel_(new GraphicsItemLabel(name, this)),
-offPageConnector_(),
-parentItem_(),
+nameLabel_(new GraphicsItemLabel(QString(), this)),
 containingComponent_(component)
 {
-    setDirection(dir);
+    nameLabel_->setText(name);
+
+    ConnectionEndpoint::setDirection(dir);
 
     if (parent)
     {
-        SystemComponentItem* parentSW = dynamic_cast<SystemComponentItem*>(parent);
+        auto parentSW = dynamic_cast<SystemComponentItem*>(parent);
         if (parentSW)
         {
             parentItem_ = parentSW;
         }
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~SWConnectionEndpoint()
-//-----------------------------------------------------------------------------
-SWConnectionEndpoint::~SWConnectionEndpoint()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -153,14 +145,7 @@ bool SWConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) co
 //-----------------------------------------------------------------------------
 bool SWConnectionEndpoint::isCom() const
 {
-    if (type_ == ConnectionEndpoint::ENDPOINT_TYPE_COM)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return type_ == ConnectionEndpoint::ENDPOINT_TYPE_COM;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,14 +153,7 @@ bool SWConnectionEndpoint::isCom() const
 //-----------------------------------------------------------------------------
 bool SWConnectionEndpoint::isApi() const
 {
-    if (type_ == ConnectionEndpoint::ENDPOINT_TYPE_API)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return type_ == ConnectionEndpoint::ENDPOINT_TYPE_API;
 }
 
 //-----------------------------------------------------------------------------

@@ -32,7 +32,7 @@
 #include <IPXACTmodels/Design/validator/InterconnectionValidator.h>
 #include <IPXACTmodels/Design/validator/AdHocConnectionValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -157,7 +157,7 @@ void tst_DesignValidator::testHasValidVLNV()
     QFETCH(bool, isValid);
 
     VLNV designVLNV(VLNV::DESIGN, vendor, library, name, version);
-    QSharedPointer<Design> testDesign (new Design(designVLNV));
+    QSharedPointer<Design> testDesign (new Design(designVLNV, Document::Revision::Std14));
 
     QSharedPointer<DesignValidator> validator = createDesignValidator(0);
 
@@ -432,7 +432,8 @@ void tst_DesignValidator::testHasValidComponentInstances()
 
     LibraryMock* mockLibrary (new LibraryMock(this));
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"),
+        Document::Revision::Std14));
 
     QSharedPointer<ConfigurableVLNVReference> componentVLNV (
         new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
@@ -1002,7 +1003,8 @@ void tst_DesignValidator::testHasValidInterconnections()
     QFETCH(bool, copyInterconnection);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"), 
+        Document::Revision::Std14));
 
     LibraryMock* mockLibrary (new LibraryMock(this));
 
@@ -1464,7 +1466,8 @@ void tst_DesignValidator::testHasValidMonitorInterconnections()
     QFETCH(bool, copyInterconnection);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"),
+        Document::Revision::Std14));
 
     LibraryMock* mockLibrary (new LibraryMock(this));
 
@@ -2011,7 +2014,8 @@ void tst_DesignValidator::testHasValidAdHocConnections()
     QFETCH(bool, copyAdHocConenction);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"),
+        Document::Revision::Std14));
 
     LibraryMock* mockLibrary (new LibraryMock(this));
 
@@ -2103,7 +2107,8 @@ void tst_DesignValidator::testHasValidParameters()
     testParameter->setName(name);
     testParameter->setValue(value);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"), 
+        Document::Revision::Std14));
 
     testDesign->getParameters()->append(testParameter);
 
@@ -2174,7 +2179,8 @@ void tst_DesignValidator::testHasValidAssertions()
     testAssertion->setName(name);
     testAssertion->setAssert(assertValue);
 
-    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3")));
+    QSharedPointer<Design> testDesign (new Design(VLNV(VLNV::DESIGN, "Samurai", "Champloo", "MugenJinFuu", "3"), 
+        Document::Revision::Std14));
     testDesign->getAssertions()->append(testAssertion);
 
     if (copyAssertion)
@@ -2242,7 +2248,7 @@ bool tst_DesignValidator::errorIsNotFoundInErrorList(QString const& expectedErro
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
         foreach(QString error, errorList)
         {
             qDebug() << error;
