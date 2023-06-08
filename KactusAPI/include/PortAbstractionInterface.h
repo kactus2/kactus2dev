@@ -848,7 +848,7 @@ private:
 	 *
 	 *      @return A qualifier that matches the string.
      */
-	Qualifier::Type stringToQualifier(std::string const& str) const;
+	//Qualifier::Type stringToQualifier(std::string const& str) const;
 
     /*!
      *  Create a wire signal.

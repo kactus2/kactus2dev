@@ -542,12 +542,12 @@ std::string PortAbstractionInterface::getQualifierString(int const& portIndex) c
     {
         if (selectedSignal->wire_)
         {
-            return qualifierToString(selectedSignal->abstraction_->getWire()->getQualifier()).toStdString();
+            return qualifierToString(*(selectedSignal->abstraction_->getWire()->getQualifier())).toStdString();
         }
         if (selectedSignal->transactional_)
         {
             return qualifierToString(
-                selectedSignal->abstraction_->getTransactional()->getQualifier()).toStdString();
+                *(selectedSignal->abstraction_->getTransactional()->getQualifier())).toStdString();
         }
     }
 
@@ -564,7 +564,7 @@ std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int co
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal)
     {
-        Qualifier portQualifier;
+        QSharedPointer<Qualifier> portQualifier;
         if (selectedSignal->wire_)
         {
             portQualifier = selectedSignal->abstraction_->getWire()->getQualifier();
@@ -574,21 +574,9 @@ std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int co
             portQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
         }
 
-        if (portQualifier.isAddress())
+        for (auto const& type : *portQualifier->getTypes())
         {
-            qualifierList.push_back("address");
-        }
-        if (portQualifier.isData())
-        {
-            qualifierList.push_back("data");
-        }
-        if (portQualifier.isClock())
-        {
-            qualifierList.push_back("clock");
-        }
-        if (portQualifier.isReset())
-        {
-            qualifierList.push_back("reset");
+            qualifierList.push_back(Qualifier::typeToString(type).toStdString());
         }
     }
 
@@ -600,23 +588,23 @@ std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int co
 //-----------------------------------------------------------------------------
 QString PortAbstractionInterface::qualifierToString(Qualifier const& qualifier) const
 {
-    if (qualifier.isData() && qualifier.isAddress())
+    if (qualifier.hasType(Qualifier::Data) && qualifier.hasType(Qualifier::Address))
     {
         return QStringLiteral("data/address");
     }
-    else if (qualifier.isData())
+    else if (qualifier.hasType(Qualifier::Data))
     {
         return QStringLiteral("data");
     }
-    else if (qualifier.isAddress())
+    else if (qualifier.hasType(Qualifier::Address))
     {
         return QStringLiteral("address");
     }
-    else if (qualifier.isClock())
+    else if (qualifier.hasType(Qualifier::Clock))
     {
         return QStringLiteral("clock");
     }
-    else if (qualifier.isReset())
+    else if (qualifier.hasType(Qualifier::Reset))
     {
         return QStringLiteral("reset");
     }
@@ -636,11 +624,13 @@ bool PortAbstractionInterface::setQualifier(int const& portIndex, std::string co
     {
         if (selectedSignal->wire_)
         {
-            selectedSignal->abstraction_->getWire()->setQualifier(stringToQualifier(newQualifier));
+            selectedSignal->abstraction_->getWire()->addQualifier(
+                Qualifier::stringToType(QString::fromStdString(newQualifier)));
         }
         else if (selectedSignal->transactional_)
         {
-            selectedSignal->abstraction_->getTransactional()->setQualifier(stringToQualifier(newQualifier));
+            selectedSignal->abstraction_->getTransactional()->addQualifier(
+                Qualifier::stringToType(QString::fromStdString(newQualifier)));
         }
 
         return true;
@@ -655,78 +645,83 @@ bool PortAbstractionInterface::setQualifier(int const& portIndex, std::string co
 bool PortAbstractionInterface::setQualifierList(int const& portIndex, std::vector<std::string> const& newQualifierList)
 {
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
-    if (selectedSignal)
+    if (!selectedSignal)
     {
-        Qualifier::Type newQualifierType = Qualifier::Any;
+        return false;
+    }
 
-        if (!newQualifierList.empty())
+    bool isWire = selectedSignal->wire_ != nullptr;
+
+    if (newQualifierList.empty())
+    {
+        if (isWire)
         {
-            for (auto newQualifier : newQualifierList)
-            {
-                Qualifier::Type comparisonQualifier = stringToQualifier(newQualifier);
-                if ((newQualifierType == Qualifier::Data && comparisonQualifier == Qualifier::Address) ||
-                    (newQualifierType == Qualifier::Address && comparisonQualifier == Qualifier::Data))
-                {
-                    newQualifierType = Qualifier::Data_Address;
-                }
-                else
-                {
-                    if (newQualifierType != Qualifier::Any && newQualifierType != comparisonQualifier)
-                    {
-                        newQualifierType = Qualifier::Any;
-                        break;
-                    }
-
-                    newQualifierType = comparisonQualifier;
-                }
-            }
+            selectedSignal->abstraction_->getWire()->getQualifier()->clear();
         }
-
-        if (selectedSignal->wire_)
+        else
         {
-            selectedSignal->abstraction_->getWire()->setQualifier(newQualifierType);
-        }
-        if (selectedSignal->transactional_)
-        {
-            selectedSignal->abstraction_->getTransactional()->setQualifier(newQualifierType);
+            selectedSignal->abstraction_->getTransactional()->getQualifier()->clear();
         }
 
         return true;
     }
 
-    return false;
+    if (isWire)
+    {
+        selectedSignal->abstraction_->getWire()->getQualifier()->clear();
+    }
+    else
+    {
+        selectedSignal->abstraction_->getTransactional()->getQualifier()->clear();
+    }
+
+    for (auto const& qualifier : newQualifierList)
+    {
+        if (isWire)
+        {
+            selectedSignal->abstraction_->getWire()->addQualifier(
+                Qualifier::stringToType(QString::fromStdString(qualifier)));
+        }
+        else
+        {
+            selectedSignal->abstraction_->getTransactional()->addQualifier(
+                Qualifier::stringToType(QString::fromStdString(qualifier)));
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::stringToQualifier()
 //-----------------------------------------------------------------------------
-Qualifier::Type PortAbstractionInterface::stringToQualifier(std::string const& str) const
-{
-    if (str == "address")
-    {
-        return Qualifier::Address;
-    }
-    else if (str == "data")
-    {
-        return Qualifier::Data;
-    }
-    else if (str == "data/address")
-    {
-        return Qualifier::Data_Address;
-    }
-    else if (str == "clock")
-    {
-        return Qualifier::Clock;
-    }
-    else if (str == "reset")
-    {
-        return Qualifier::Reset;
-    }
-    else
-    {
-        return Qualifier::Any;
-    }
-}
+//Qualifier::Type PortAbstractionInterface::stringToQualifier(std::string const& str) const
+//{
+//    if (str == "address")
+//    {
+//        return Qualifier::Address;
+//    }
+//    else if (str == "data")
+//    {
+//        return Qualifier::Data;
+//    }
+//    else if (str == "data/address")
+//    {
+//        return Qualifier::Data_Address;
+//    }
+//    else if (str == "clock")
+//    {
+//        return Qualifier::Clock;
+//    }
+//    else if (str == "reset")
+//    {
+//        return Qualifier::Reset;
+//    }
+//    else
+//    {
+//        return Qualifier::Any;
+//    }
+//}
 
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getDirectionString()
