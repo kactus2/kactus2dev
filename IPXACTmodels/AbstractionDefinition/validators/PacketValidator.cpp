@@ -94,8 +94,6 @@ bool PacketValidator::isValidPacketField(QSharedPointer<PacketField> packetField
         return false;
     }
 
-    // TODO: validate value when qualifier opcode is set.
-
     return true;
 }
 
@@ -119,8 +117,6 @@ void PacketValidator::findErrorsInPacketField(QStringList& errors, QString const
     }
 
     findErrorsInPacketFieldValue(errors, context, packetField, resolvedWidth);
-
-    // TODO: find errors when qualifier opcode is set.
 }
 
 //-----------------------------------------------------------------------------
@@ -176,6 +172,12 @@ bool PacketValidator::hasValidFieldValue(QSharedPointer<PacketField> packetField
 
     if (!valueIsConstant)
     {
+        // Value must be fixed, if opcode qualifier is set.
+        if (packetField->getQualifier()->hasType(Qualifier::Type::Opcode))
+        {
+            return false;
+        }
+
         bool valueIsValid = false;
         resolvedValue = expressionParser_->parseExpression(value, &valueIsValid);
 
