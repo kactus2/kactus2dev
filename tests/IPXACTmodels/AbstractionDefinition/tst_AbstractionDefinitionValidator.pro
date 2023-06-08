@@ -23,14 +23,17 @@ linux-g++ | linux-g++-64 | linux-g++-32 {
 
 }
 win64 | win32 {
- LIBS += -L../../../x64/executable \
+ LIBS += -L$$PWD/../../../x64/executable \
      -lIPXACTmodelsd
+ LIBS += -L$$PWD/../../../x64/executable \
+     -lKactusAPId
 }
 
 DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
+INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../
