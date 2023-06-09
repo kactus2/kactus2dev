@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
 
@@ -44,7 +46,8 @@ public:
      *      @param [in] writer      The used xml writer.
      *      @param [in] nameGroup   The selected file builder.
      */
-    void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
+    void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+        Document::Revision docRevision) const;
 
 private:
 
@@ -58,7 +61,8 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] fileBuilder     The selected file builder.
      */
-    void writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
+    void writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the build model of the file builder.

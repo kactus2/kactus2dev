@@ -18,7 +18,6 @@
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 
-#include <QRegularExpression>
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -122,12 +121,5 @@ void FileSetValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Fil
 //-----------------------------------------------------------------------------
 bool FileSetValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
-
-	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
-	{
-		return false;
-	}
-
-	return true;
+	return !(name.isEmpty() || name.trimmed().isEmpty());
 }

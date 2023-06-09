@@ -71,7 +71,7 @@ public:
 	 *
 	 *      @param [in] newFileType     The new file type.
 	 */
-	void setFileType(QString const& newFileType);
+	void setFileType(QString const& newFileType, QString const& libext = QString());
 
 	/*!
 	 *  Check if the file builde is meant for a given file type.

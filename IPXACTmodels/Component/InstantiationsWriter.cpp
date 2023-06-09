@@ -110,7 +110,7 @@ void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const
 // Function: InstantiationsWriter::writeComponentInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+    QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:componentInstantiation"));
 
@@ -127,7 +127,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 
     writeModuleParameters(writer, instantiation->getModuleParameters());
 
-    writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders());
+    writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders(), docRevision);
 
     writeFileSetReferences(writer, instantiation->getFileSetReferences());
 
@@ -190,7 +190,8 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
 // Function: InstantiationsWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders) const
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders, 
+    Document::Revision docRevision) const
 {
     if (!defautlFileBuilders->isEmpty())
     {
@@ -198,7 +199,7 @@ void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
 
         foreach (QSharedPointer<FileBuilder> fileBuilder, *defautlFileBuilders)
         {
-            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder);
+            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder, docRevision);
         }
     }
 }

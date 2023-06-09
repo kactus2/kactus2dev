@@ -47,7 +47,7 @@ public:
 		 *      @param [in] sourceName  The name of the source file.
 		 *      @param [in] fileType    The file type.
 		 */
-		SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
+		IPXACTMODELS_EXPORT SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
 
         //! Copy constructor.
         SourceFile(const SourceFile& other);

@@ -46,7 +46,7 @@ QSharedPointer<FileSet> FileSetReader::createFileSetFrom(QDomNode const& fileSet
 
     parseFiles(fileSetElement, newFileSet, docRevision);
 
-    parseDefaultFileBuilders(fileSetElement, newFileSet);
+    parseDefaultFileBuilders(fileSetElement, newFileSet, docRevision);
 
     parseDependencies(fileSetElement, newFileSet);
 
@@ -95,8 +95,8 @@ void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: FileSetReader::parseDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void FileSetReader::parseDefaultFileBuilders(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet)
-    const
+void FileSetReader::parseDefaultFileBuilders(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet,
+    Document::Revision docRevision) const
 {
     QDomNodeList fileBuilderNodeList = fileSetElement.elementsByTagName(QStringLiteral("ipxact:defaultFileBuilder"));
 
@@ -106,7 +106,7 @@ void FileSetReader::parseDefaultFileBuilders(QDomElement const& fileSetElement, 
         for (int fileBuilderIndex = 0; fileBuilderIndex < fileBuilderNodeList.count(); ++fileBuilderIndex)
         {
             QSharedPointer<FileBuilder> newFileBuilder =
-                fileBuilderReader.createDefaultFileBuilderFrom(fileBuilderNodeList.at(fileBuilderIndex));
+                fileBuilderReader.createDefaultFileBuilderFrom(fileBuilderNodeList.at(fileBuilderIndex), docRevision);
             newFileSet->getDefaultFileBuilders()->append(newFileBuilder);
         }
     }

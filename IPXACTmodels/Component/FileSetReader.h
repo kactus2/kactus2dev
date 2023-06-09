@@ -69,7 +69,8 @@ private:
      *      @param [in] fileSetElement  XML description of the file set.
      *      @param [in] newFileSet      The new file set item.
      */
-    void parseDefaultFileBuilders(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet) const;
+    void parseDefaultFileBuilders(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the dependencies.

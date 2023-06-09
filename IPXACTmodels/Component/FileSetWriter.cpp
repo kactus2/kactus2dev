@@ -46,7 +46,7 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 
     writeFiles(writer, fileSet->getFiles(), docRevision);
 
-    writeDefaultFileBuilders(writer, fileSet->getDefaultFileBuilders());
+    writeDefaultFileBuilders(writer, fileSet->getDefaultFileBuilders(), docRevision);
 
     writeDependencies(writer, fileSet->getDependencies());
 
@@ -88,7 +88,8 @@ void FileSetWriter::writeFiles(QXmlStreamWriter& writer,
 // Function: FileSetWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
 void FileSetWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders) const
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders, 
+    Document::Revision docRevision) const
 {
     if (!defaultFileBuilders->isEmpty())
     {
@@ -96,7 +97,7 @@ void FileSetWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
 
         foreach (QSharedPointer<FileBuilder> fileBuilder, *defaultFileBuilders)
         {
-            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder);
+            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder, docRevision);
         }
     }
 }

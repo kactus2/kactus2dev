@@ -28,6 +28,7 @@ private slots:
     void readGroups();
     void readFiles();
     void readDefaultFileBuilders();
+    void read2022DefaultFileBuilders();
     void readDependencies();
     void readFunctions();
 
@@ -184,6 +185,49 @@ void tst_FileSetReader::readDefaultFileBuilders()
 
     QCOMPARE(testFileBuilder->getVendorExtensions()->size(), 1);
     QCOMPARE(testFileBuilder->getVendorExtensions()->first()->type(), QString("testExtension"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileSetReader::read2022DefaultFileBuilders()
+//-----------------------------------------------------------------------------
+void tst_FileSetReader::read2022DefaultFileBuilders()
+{
+    QString documentContent(
+        "<ipxact:fileSet>"
+            "<ipxact:name>testFileSet</ipxact:name>"
+            "<ipxact:defaultFileBuilder>"
+                "<ipxact:fileType user=\"userFile\" libext=\"ext\">user</ipxact:fileType>"
+                "<ipxact:command>4+5+6-14</ipxact:command>"
+                "<ipxact:flags>2-1</ipxact:flags>"
+                "<ipxact:replaceDefaultFlags>0</ipxact:replaceDefaultFlags>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:defaultFileBuilder>"
+        "</ipxact:fileSet>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
+
+    FileSetReader fileSetReader;
+    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std22);
+
+    QCOMPARE(testFileSet->name(), QString("testFileSet"));
+
+    QCOMPARE(testFileSet->getDefaultFileBuilders()->size(), 1);
+
+    QSharedPointer<FileBuilder> testFileBuilder = testFileSet->getDefaultFileBuilders()->first();
+    QCOMPARE(testFileBuilder->getFileType().type_, QString("userFile"));
+    QCOMPARE(testFileBuilder->getFileType().libext_, QString("ext"));
+    QCOMPARE(testFileBuilder->getCommand(), QString("4+5+6-14"));
+    QCOMPARE(testFileBuilder->getFlags(), QString("2-1"));
+    QCOMPARE(testFileBuilder->getReplaceDefaultFlags(), QString("0"));
+
+    QCOMPARE(testFileBuilder->getVendorExtensions()->size(), 0); //!< No vendor extensions allowed.
 }
 
 //-----------------------------------------------------------------------------

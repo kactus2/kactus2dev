@@ -77,7 +77,8 @@ private:
      *      @param [in] defaultFileBuilders     The default file builders.
      */
     void writeDefaultFileBuilders(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders) const;
+        QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the dependencies.

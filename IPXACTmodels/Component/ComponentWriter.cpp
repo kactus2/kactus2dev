@@ -274,15 +274,15 @@ void ComponentWriter::writeInstantiations(QXmlStreamWriter& writer, QSharedPoint
 
         writer.writeStartElement(QStringLiteral("ipxact:instantiations"));
 
-        foreach (QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
-            instantiationsWriter.writeComponentInstantiation(writer, instantiation);
+            instantiationsWriter.writeComponentInstantiation(writer, instantiation, component->getRevision());
         }
-        foreach (QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
             instantiationsWriter.writeDesignInstantiation(writer, instantiation);
         }
-        foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
             instantiationsWriter.writeDesignConfigurationInstantiation(writer, instantiation);

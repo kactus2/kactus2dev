@@ -17,6 +17,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
+#include "Document.h"
+
 #include <QDomNode>
 #include <QSharedPointer>
 
@@ -42,7 +44,7 @@ public:
      *
      *      @return The created default file builder.
      */
-    QSharedPointer<FileBuilder> createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode) const;
+    QSharedPointer<FileBuilder> createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision) const;
 
 private:
 
@@ -56,7 +58,8 @@ private:
      *      @param [in] filebuilderNode     XML description of the file builder.
      *      @param [in] newFileBuilder      The selected file builder.
      */
-    void parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder) const;
+    void parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the file builder command, flags and replace default flags value.

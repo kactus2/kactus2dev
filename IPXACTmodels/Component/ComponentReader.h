@@ -122,7 +122,8 @@ private:
      *      @param [in] modelElement    XML description of the model.
      *      @param [in] newModel        The new model item.
      */
-    void parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel) const;
+    void parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the component instantiations.
@@ -130,8 +131,8 @@ private:
      *      @param [in] instantiationsElement   XML description of the instantiations element.
      *      @param [in] newModel                The new model item.
      */
-    void parseComponentInstantiations(QDomElement const& instantiationsElement, QSharedPointer<Model> newModel)
-        const;
+    void parseComponentInstantiations(QDomElement const& instantiationsElement, QSharedPointer<Model> newModel,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the design instantiations.

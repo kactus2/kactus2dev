@@ -32,16 +32,19 @@ FileBuilderWriter::~FileBuilderWriter()
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeDefaultFileBuilder()
 //-----------------------------------------------------------------------------
-void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)
-    const
+void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:defaultFileBuilder"));
 
-    writeFileType(writer, fileBuilder);
+    writeFileType(writer, fileBuilder, docRevision);
 
     writeBuildModel(writer, fileBuilder);
 
-    writeVendorExtensions(writer, fileBuilder);
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeVendorExtensions(writer, fileBuilder);
+    }
 
     writer.writeEndElement(); // ipxact:defaultFileBuilder
 }
@@ -49,17 +52,29 @@ void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QShare
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeFileType()
 //-----------------------------------------------------------------------------
-void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
+void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileType"));
 
-    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType().type_, Document::Revision::Std14))
+    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType().type_, docRevision))
     {
         writer.writeAttribute(QStringLiteral("user"), fileBuilder->getFileType().type_);
+
+        if (docRevision == Document::Revision::Std22 && fileBuilder->getFileType().libext_.isEmpty() == false)
+        {
+            writer.writeAttribute(QStringLiteral("libext"), fileBuilder->getFileType().libext_);
+        }
+
         writer.writeCharacters(QStringLiteral("user"));
     }
     else
     {
+        if (docRevision == Document::Revision::Std22 && fileBuilder->getFileType().libext_.isEmpty() == false)
+        {
+            writer.writeAttribute(QStringLiteral("libext"), fileBuilder->getFileType().libext_);
+        }
+
         writer.writeCharacters(fileBuilder->getFileType().type_);
     }
 

@@ -253,7 +253,7 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 
         parseViews(modelElement, newmodel);
 
-        parseInstantiations(modelElement, newmodel);
+        parseInstantiations(modelElement, newmodel, newComponent->getRevision());
 
         parsePorts(modelElement, newmodel);
 
@@ -286,12 +286,13 @@ void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::parseInstantiations()
 //-----------------------------------------------------------------------------
-void ComponentReader::parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
+void ComponentReader::parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomElement instantiationsElement = modelElement.firstChildElement(QStringLiteral("ipxact:instantiations"));
     if (!instantiationsElement.isNull())
     {
-        parseComponentInstantiations(instantiationsElement, newModel);
+        parseComponentInstantiations(instantiationsElement, newModel, docRevision);
 
         parseDesignInstantiations(instantiationsElement, newModel);
 
@@ -303,7 +304,8 @@ void ComponentReader::parseInstantiations(QDomElement const& modelElement, QShar
 // Function: ComponentReader::parseComponentInstantiations()
 //-----------------------------------------------------------------------------
 void ComponentReader::parseComponentInstantiations(QDomElement const& instantiationsElement,
-    QSharedPointer<Model> newModel) const
+    QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomNodeList componentInstantiationNodeList =
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:componentInstantiation"));
@@ -315,7 +317,7 @@ void ComponentReader::parseComponentInstantiations(QDomElement const& instantiat
         {
             QDomNode componentInstantiationNode = componentInstantiationNodeList.at(i);
             QSharedPointer<ComponentInstantiation> newInstantiation =
-                instantiationsReader.createComponentInstantiationFrom(componentInstantiationNode);
+                instantiationsReader.createComponentInstantiationFrom(componentInstantiationNode, docRevision);
 
             newModel->getComponentInstantiations()->append(newInstantiation);
         }

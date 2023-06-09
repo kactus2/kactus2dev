@@ -30,15 +30,18 @@ FileBuilderReader::~FileBuilderReader()
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::createDefaultFileBuilderFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode) const
+QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision) const
 {
     QSharedPointer<FileBuilder> newFilebuilder (new FileBuilder());
 
-    parseFileType(fileBuilderNode, newFilebuilder);
+    parseFileType(fileBuilderNode, newFilebuilder, docRevision);
 
     parseBuildModel(fileBuilderNode, newFilebuilder);
 
-    parseVendorExtensions(fileBuilderNode, newFilebuilder);
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsReader::parseVendorExtensions(fileBuilderNode, newFilebuilder);
+    }
 
     return newFilebuilder;
 }
@@ -46,8 +49,8 @@ QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDom
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::parseFileType()
 //-----------------------------------------------------------------------------
-void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder)
-    const
+void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
+    Document::Revision docRevision) const
 {
     QDomElement fileTypeElement = filebuilderNode.firstChildElement(QStringLiteral("ipxact:fileType"));
 
@@ -57,7 +60,13 @@ void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPo
         fileType = fileTypeElement.attribute(QStringLiteral("user"));
     }
 
-    newFileBuilder->setFileType(fileType);
+    QString libext;
+    if (docRevision == Document::Revision::Std22)
+    {
+        libext = fileTypeElement.attribute(QStringLiteral("libext"));
+    }
+
+    newFileBuilder->setFileType(fileType, libext);
 }
 
 //-----------------------------------------------------------------------------
