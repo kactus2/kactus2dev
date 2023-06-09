@@ -104,25 +104,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Validates the contained items.
      *
      *      @return True, if all the ports are valid, false otherwise.
@@ -246,6 +227,15 @@ private:
      *      @return The selected file set.
      */
     QSharedPointer<FileSet> getFileSet(std::string const& fileSetName) const;
+
+    /*!
+     *  Get the file set with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] fileSetName    Name of the selected file set.
+     *
+     *      @return The sliced file set with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& fileSetName) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

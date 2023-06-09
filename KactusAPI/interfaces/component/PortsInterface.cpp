@@ -121,6 +121,14 @@ QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> PortsInterface::getItem(std::string const& portName) const
+{
+    return getPort(portName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsInterface::setName()
 //-----------------------------------------------------------------------------
 bool PortsInterface::setName(string const& currentPortName, string const& newPortName)
@@ -137,35 +145,6 @@ bool PortsInterface::setName(string const& currentPortName, string const& newPor
     {
         return false;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::getDescription()
-//-----------------------------------------------------------------------------
-string PortsInterface::getDescription(string const& portName) const
-{
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
-    {
-        return editedPort->description().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortsInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool PortsInterface::setDescription(string const& portName, string const& newDescription)
-{
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (!editedPort)
-    {
-        return false;
-    }
-
-    editedPort->setDescription(QString::fromStdString(newDescription));
-    return true;
 }
 
 //-----------------------------------------------------------------------------

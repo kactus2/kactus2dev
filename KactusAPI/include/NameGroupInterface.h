@@ -14,6 +14,8 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
+#include <IPXACTmodels/common/NameGroup.h>
+
 #include <CommonInterface.h>
 
 #include <QString>
@@ -70,7 +72,7 @@ public:
      *
      *      @return Description of the selected item.
      */
-    virtual std::string getDescription(std::string const& itemName) const = 0;
+    virtual std::string getDescription(std::string const& itemName) const;
 
     /*!
      *  Set a new description for the selected item.
@@ -80,7 +82,26 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) = 0;
+    virtual bool setDescription(std::string const& itemName, std::string const& newDescription);
+
+    /*!
+     *	Get the short description of an item.
+     *  
+     *      @param [in] itemName	Name of the selected item.
+     *		
+     * 		@return Short description of the selected item.
+     */
+    virtual std::string getShortDescription(std::string const& itemName) const;
+    
+    /*!
+     *	Set a new short description for the selected item.
+     *  
+     *      @param [in] itemName	Description
+     *      @param [in] newShortDescription	Description
+     *		
+     * 		@return True, if successful, otherwise false.
+     */
+    bool setShortDescription(std::string const& itemName, std::string const& newShortDescription) const;
 
     /*!
      *  Check if the selected item has a valid name.
@@ -94,6 +115,17 @@ public:
     //! No copying. No assignment.
     NameGroupInterface(const NameGroupInterface& other) = delete;
     NameGroupInterface& operator=(const NameGroupInterface& other) = delete;
+
+private:
+
+    /*!
+     *  Get the item with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected item.
+     *
+     *      @return The sliced item with the selected name.
+     */
+    virtual QSharedPointer<NameGroup> getItem(std::string const& itemName) const = 0;
 };
 
 #endif // NAMEGROUPINTERFACE_H

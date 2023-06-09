@@ -154,6 +154,14 @@ QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string co
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> PortAbstractionInterface::getItem(std::string const& portName) const
+{
+    return getPort(portName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getSignal()
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstractionInterface::SignalRow> PortAbstractionInterface::getSignal(int const& signalIndex)
@@ -365,20 +373,6 @@ bool PortAbstractionInterface::setName(std::string const& currentName, std::stri
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::getDescription()
-//-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getDescription(std::string const& itemName) const
-{
-    QSharedPointer<PortAbstraction> editedPort = getPort(itemName);
-    if (editedPort)
-    {
-        return editedPort->description().toStdString();
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getMatch()
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::getMatch(int const& portIndex) const
@@ -389,21 +383,6 @@ bool PortAbstractionInterface::getMatch(int const& portIndex) const
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool PortAbstractionInterface::setDescription(std::string const& itemName, std::string const& newDescription)
-{
-    QSharedPointer<PortAbstraction> editedPort = getPort(itemName);
-    if (!editedPort)
-    {
-        return false;
-    }
-
-    editedPort->setDescription(QString::fromStdString(newDescription));
-    return true;
 }
 
 //-----------------------------------------------------------------------------

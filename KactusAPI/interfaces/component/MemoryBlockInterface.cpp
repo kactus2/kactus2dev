@@ -173,36 +173,6 @@ bool MemoryBlockInterface::setName(string const& currentName, string const& newN
     }
 }
 
-
-//-----------------------------------------------------------------------------
-// Function: MemoryBlockInterface::getDescription()
-//-----------------------------------------------------------------------------
-string MemoryBlockInterface::getDescription(string const& itemName) const
-{
-    QSharedPointer<MemoryBlockBase> editedItem = getBlock(itemName);
-    if (editedItem)
-    {
-        return editedItem->description().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryBlockInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool MemoryBlockInterface::setDescription(string const& itemName, string const& newDescription)
-{
-    QSharedPointer<MemoryBlockBase> editedItem = getBlock(itemName);
-    if (!editedItem)
-    {
-        return false;
-    }
-
-    editedItem->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getBaseAddressValue()
 //-----------------------------------------------------------------------------

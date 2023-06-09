@@ -119,25 +119,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Get the calculated offset value of the selected register.
      *
      *      @param [in] registerName    Name of the selected register.
@@ -462,6 +443,7 @@ public:
      */
     FieldInterface* getSubInterface() const;
 
+
 private:
 
     /*!
@@ -472,6 +454,15 @@ private:
      *      @return The selected register.
      */
     QSharedPointer<Register> getRegister(std::string const& registerName) const;
+
+    /*!
+     *  Get the register with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] registerName    Name of the selected register.
+     *
+     *      @return The sliced register with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& registerName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

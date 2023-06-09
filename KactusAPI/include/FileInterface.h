@@ -16,6 +16,7 @@
 
 #include <ParameterizableInterface.h>
 #include <NameGroupInterface.h>
+#include <IPXACTmodels/common/NameGroup.h>
 
 class File;
 class BuildCommand;
@@ -99,22 +100,24 @@ public:
 
     /*!
      *  Get the description of the selected item.
+     *  Can't inherit this function from NameGroupInterface, as File doesn't inherit from NameGroup.
      *
      *      @param [in] itemName    Name of the selected item.
      *
      *      @return Description of the selected item.
      */
-    virtual std::string getDescription(std::string const& itemName) const override final;
+    std::string getDescription(std::string const& itemName) const override;
 
     /*!
      *  Set a new description for the selected item.
-     *
+     *  Can't inherit this function from NameGroupInterface, as File doesn't inherit from NameGroup.
+     * 
      *      @param [in] itemName        Name of the selected item.
      *      @param [in] newDescription  New description.
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
+    bool setDescription(std::string const& itemName, std::string const& newDescription) override;
 
     /*!
      *  Validates the contained items.
@@ -533,6 +536,16 @@ private:
      *      @return The selected file.
      */
     QSharedPointer<File> getFile(std::string const& fileName) const;
+
+    /*!
+     *  Get the file with the selected name, sliced to a NameGroup.
+     *  Dummy function, return nullptr, as file doesn't contain a name group.
+     *
+     *      @param [in] file    Name of the selected file.
+     *
+     *      @return Always nullptr.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
 
     /*!
      *  Get the build command of the selected file.

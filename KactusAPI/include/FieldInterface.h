@@ -104,25 +104,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Get the calculated offset value of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
@@ -699,6 +680,7 @@ public:
      */
     bool setID(std::string const& fieldName, std::string const& newID);
 
+
 private:
 
     /*!
@@ -709,6 +691,15 @@ private:
      *      @return The selected field.
      */
     QSharedPointer<Field> getField(std::string const& fieldName) const;
+    
+    /*!
+     *  Get the field with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] fieldName    Name of the selected field.
+     *
+     *      @return The sliced field with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& fieldName) const override;
 
     /*!
      *  Get the write value constraing of the selected field.

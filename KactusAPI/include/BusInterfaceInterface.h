@@ -148,25 +148,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected bus interface.
-     *
-     *      @param [in] itemName    Name of the selected bus interface.
-     *
-     *      @return Description of the selected bus interface.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected bus interface.
-     *
-     *      @param [in] itemName        Name of the selected bus interface.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Validates the contained bus interfaces.
      *
      *      @return True, if all the bus interfaces are valid, false otherwise.
@@ -785,6 +766,15 @@ private:
      *      @return The selected bus interface.
      */
     QSharedPointer<BusInterface> getBusInterface(std::string const& busName) const;
+
+    /*!
+     *  Get the bus interface with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return The sliced port abstraction with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& busName) const override;
 
     /*!
      *  Get the selected master bus interface.

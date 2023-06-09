@@ -153,36 +153,6 @@ bool ComponentInstantiationInterface::setDisplayName(std::string const& itemName
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstantiationInterface::getDescription()
-//-----------------------------------------------------------------------------
-std::string ComponentInstantiationInterface::getDescription(std::string const& itemName) const
-{
-    QSharedPointer<ComponentInstantiation> editedItem = getComponentInstantiation(itemName);
-    if (editedItem)
-    {
-        return editedItem->description().toStdString();
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiationInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool ComponentInstantiationInterface::setDescription(std::string const& itemName,
-    std::string const& newDescription)
-{
-    QSharedPointer<ComponentInstantiation> editedItem = getComponentInstantiation(itemName);
-    if (!editedItem)
-    {
-        return false;
-    }
-
-    editedItem->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstantiationInterface::getAllReferencesToIdInItem()
 //-----------------------------------------------------------------------------
 int ComponentInstantiationInterface::getAllReferencesToIdInItem(
@@ -620,4 +590,12 @@ bool ComponentInstantiationInterface::setFileSetReferences(std::string const& in
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentInstantiationInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> ComponentInstantiationInterface::getItem(std::string const& itemName) const
+{
+    return getComponentInstantiation(itemName);
 }

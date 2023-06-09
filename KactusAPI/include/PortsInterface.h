@@ -103,25 +103,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected port.
-     *
-     *      @param [in] portName    Name of the selected port.
-     *
-     *      @return Description of the selected port.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected port.
-     *
-     *      @param [in] portName        Name of the selected port.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Calculate all the references to the selected ID in the selected port.
      *
      *      @param [in] portName    Name of the selected port.
@@ -812,6 +793,8 @@ public:
      *      @return The port with the selected name.
      */
     QSharedPointer<Port> getPort(std::string const& portName) const;
+
+    QSharedPointer<NameGroup> getItem(std::string const& portName) const override;
 
     //! No copying. No assignment.
     PortsInterface(const PortsInterface& other) = delete;
