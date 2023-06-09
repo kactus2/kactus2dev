@@ -357,13 +357,11 @@ void ComponentWriter::writeFileSets(QXmlStreamWriter& writer, QSharedPointer<Com
 {
     if (!component->getFileSets()->isEmpty())
     {
-        FileSetWriter setWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:fileSets"));
 
         for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
         {
-            setWriter.writeFileSet(writer, fileSet, component->getRevision());
+            FileSetWriter::writeFileSet(writer, fileSet, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:fileSets

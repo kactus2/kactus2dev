@@ -50,7 +50,7 @@ void Function::SourceFile::setSourceName(QString const& newSourceName)
 //-----------------------------------------------------------------------------
 // Function: Function::getFileType()
 //-----------------------------------------------------------------------------
-QString Function::SourceFile::getFileType() const
+FileType Function::SourceFile::getFileType() const
 {
     return fileType_;
 }
@@ -58,7 +58,7 @@ QString Function::SourceFile::getFileType() const
 //-----------------------------------------------------------------------------
 // Function: Function::setFileType()
 //-----------------------------------------------------------------------------
-void Function::SourceFile::setFileType(QString const& newFileType)
+void Function::SourceFile::setFileType(FileType const& newFileType)
 {
     fileType_ = newFileType;
 }

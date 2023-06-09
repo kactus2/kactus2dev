@@ -25,20 +25,8 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT file element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT FileWriter : public CommonItemsWriter
+namespace  FileWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    FileWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~FileWriter();
-
     /*!
      *  Write a file to an XML file.
      *
@@ -46,102 +34,109 @@ public:
      *      @param [in] file            The file to be written.
      *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
-
-private:
-
-    //! No copying allowed.
-    FileWriter(FileWriter const& rhs);
-    FileWriter& operator=(FileWriter const& rhs);
-
+    IPXACTMODELS_EXPORT void writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision);
+ 
     /*!
-     *  Write the file types.
+     *  Write a file type to an XML file.
      *
      *      @param [in] writer          The used xml writer.
-     *      @param [in] file            The file to be written.
+     *      @param [in] fileType        The file type to be written.
      *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
+    void writeFileType(QXmlStreamWriter& writer, FileType const& fileType,
+        Document::Revision docRevision);
 
-    /*!
-     *  Write the file attributes.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+    namespace Details
+    {
+        /*!
+         *  Write the file types.
+         *
+         *      @param [in] writer          The used xml writer.
+         *      @param [in] file            The file to be written.
+         *      @param [in] docRevision     The applied IP-XACT standard revision.
+         */
+        void writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision);
 
-    /*!
-     *  Write the structural status of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeIsStructural(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the file attributes.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the include file status of the value.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeIsIncludeFile(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the structural status of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeIsStructural(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the logical name of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeLogicalName(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the include file status of the value.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeIsIncludeFile(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the exported names of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeExportedNames(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the logical name of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeLogicalName(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the build command of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeBuildCommand(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the exported names of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeExportedNames(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the dependencies of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeDependencies(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the build command of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeBuildCommand(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the defines of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeDefines(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the dependencies of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeDependencies(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the image types of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeImageTypes(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the defines of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeDefines(QXmlStreamWriter& writer, QSharedPointer<File> file);
 
-    /*!
-     *  Write the file extensions.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeFileExtensions(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+        /*!
+         *  Write the image types of the file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeImageTypes(QXmlStreamWriter& writer, QSharedPointer<File> file);
+
+        /*!
+         *  Write the file extensions.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] file    The file to be written.
+         */
+        void writeFileExtensions(QXmlStreamWriter& writer, QSharedPointer<File> file);
+    }
 };
 
 #endif // FILEWRITER_H

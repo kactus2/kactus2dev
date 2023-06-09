@@ -96,8 +96,7 @@ void tst_FileWriter::writeSimpleFile()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -112,7 +111,7 @@ void tst_FileWriter::writeSimpleFile()
         "</ipxact:file>"
         ;
 
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -127,7 +126,7 @@ void tst_FileWriter::writeSimpleFile()
         "</ipxact:file>"
         ;
 
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -148,8 +147,7 @@ void tst_FileWriter::writeFileAttributes()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -165,8 +163,7 @@ void tst_FileWriter::writeFileTypes()
     testFile_->addFileType("vhdlSource2008", "ext");
     testFile_->addFileType("custom", "lib");
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
 
     QString expectedOutputFor2014(
         "<ipxact:file>"
@@ -181,7 +178,7 @@ void tst_FileWriter::writeFileTypes()
 
 
     output.clear();
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
 
     QString expectedOutputFor2022(
         "<ipxact:file>"
@@ -213,8 +210,7 @@ void tst_FileWriter::writeIsPresent()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -235,8 +231,7 @@ void tst_FileWriter::isPresentIsNotWrittenFor2022File()
         "</ipxact:file>"
     );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -258,8 +253,7 @@ void tst_FileWriter::writeLibextFor2022File()
         "</ipxact:file>"
     );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -281,8 +275,7 @@ void tst_FileWriter::writeIsStructural()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -304,8 +297,7 @@ void tst_FileWriter::writeIsIncluded()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -320,7 +312,7 @@ void tst_FileWriter::writeIsIncluded()
         "</ipxact:file>"
         ;
 
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -342,8 +334,7 @@ void tst_FileWriter::writeLogicalName()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -360,7 +351,7 @@ void tst_FileWriter::writeLogicalName()
         "</ipxact:file>"
         ;
 
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -382,8 +373,7 @@ void tst_FileWriter::writeExportedName()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -417,8 +407,7 @@ void tst_FileWriter::writeBuildCommand()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -438,7 +427,7 @@ void tst_FileWriter::writeBuildCommand()
         "</ipxact:file>"
         ;
 
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -462,8 +451,7 @@ void tst_FileWriter::writeDependencies()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -512,8 +500,7 @@ void tst_FileWriter::writeDefines()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -537,8 +524,7 @@ void tst_FileWriter::writeImageTypes()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -560,8 +546,7 @@ void tst_FileWriter::writeDescription()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -585,8 +570,7 @@ void tst_FileWriter::writeHashExtensions()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -617,8 +601,7 @@ void tst_FileWriter::writeVendorExtensions()
         "</ipxact:file>"
         );
 
-    FileWriter fileWriter;
-    fileWriter.writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
+    FileWriter::writeFile(xmlStreamWriter, testFile_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

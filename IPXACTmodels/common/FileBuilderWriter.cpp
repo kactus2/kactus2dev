@@ -13,33 +13,19 @@
 #include "FileBuilder.h"
 #include "FileType.h"
 
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::FileBuilderWriter()
-//-----------------------------------------------------------------------------
-FileBuilderWriter::FileBuilderWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::~FileBuilderWriter()
-//-----------------------------------------------------------------------------
-FileBuilderWriter::~FileBuilderWriter()
-{
-
-}
+#include <IPXACTmodels/Component/FileWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeDefaultFileBuilder()
 //-----------------------------------------------------------------------------
 void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:defaultFileBuilder"));
 
-    writeFileType(writer, fileBuilder, docRevision);
+    FileWriter::writeFileType(writer, fileBuilder->getFileType(), docRevision);
 
-    writeBuildModel(writer, fileBuilder);
+    Details::writeBuildModel(writer, fileBuilder);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -49,42 +35,11 @@ void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QShare
     writer.writeEndElement(); // ipxact:defaultFileBuilder
 }
 
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::writeFileType()
-//-----------------------------------------------------------------------------
-void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
-    Document::Revision docRevision) const
-{
-    writer.writeStartElement(QStringLiteral("ipxact:fileType"));
-
-    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType().type_, docRevision))
-    {
-        writer.writeAttribute(QStringLiteral("user"), fileBuilder->getFileType().type_);
-
-        if (docRevision == Document::Revision::Std22 && fileBuilder->getFileType().libext_.isEmpty() == false)
-        {
-            writer.writeAttribute(QStringLiteral("libext"), fileBuilder->getFileType().libext_);
-        }
-
-        writer.writeCharacters(QStringLiteral("user"));
-    }
-    else
-    {
-        if (docRevision == Document::Revision::Std22 && fileBuilder->getFileType().libext_.isEmpty() == false)
-        {
-            writer.writeAttribute(QStringLiteral("libext"), fileBuilder->getFileType().libext_);
-        }
-
-        writer.writeCharacters(fileBuilder->getFileType().type_);
-    }
-
-    writer.writeEndElement(); // ipxact:fileType
-}
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeBuildCommand()
 //-----------------------------------------------------------------------------
-void FileBuilderWriter::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
+void FileBuilderWriter::Details::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)
 {
     writer.writeTextElement(QStringLiteral("ipxact:command"), fileBuilder->getCommand());
 

@@ -190,17 +190,12 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
 // Function: InstantiationsWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders, 
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders,
     Document::Revision docRevision) const
 {
-    if (!defautlFileBuilders->isEmpty())
+    for (QSharedPointer<FileBuilder> fileBuilder : *defautlFileBuilders)
     {
-        FileBuilderWriter fileBuilderWriter;
-
-        foreach (QSharedPointer<FileBuilder> fileBuilder, *defautlFileBuilders)
-        {
-            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder, docRevision);
-        }
+        FileBuilderWriter::writeDefaultFileBuilder(writer, fileBuilder, docRevision);
     }
 }
 

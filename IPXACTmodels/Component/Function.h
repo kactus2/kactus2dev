@@ -13,6 +13,7 @@
 #define FUNCTION_H
 
 #include <IPXACTmodels/common/NameValuePair.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -39,7 +40,7 @@ public:
 		QString sourceName_;
 
 		//! Specifies the file type known by IP-Xact.
-		QString fileType_;
+		FileType fileType_;
 		
 		/*!
 		 *  The constructor.
@@ -71,14 +72,14 @@ public:
          *
          *      @return The source file type.
          */
-		IPXACTMODELS_EXPORT QString getFileType() const;
+		IPXACTMODELS_EXPORT FileType getFileType() const;
 
         /*!
          *  Set the file type for the source.
          *
          *      @param [in] newFileType     The new source file type.
          */
-		IPXACTMODELS_EXPORT void setFileType(QString const& newFileType);
+		IPXACTMODELS_EXPORT void setFileType(FileType const& newFileType);
 	};
 
     /*!
