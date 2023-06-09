@@ -155,6 +155,15 @@ public:
     virtual std::string getDescription(std::string const& itemName) const override final;
 
     /*!
+     *	Get the match status of the selected signal.
+     *  
+     *      @param [in] portIndex	Index of the selected signal.
+     *		
+     * 		@return True, if signal port has match, otherwise false.
+     */
+    bool getMatch(int const& portIndex) const;
+
+    /*!
      *  Get the names of the available port abstractions.
      *
      *      @return Names of the available ports abstractions.

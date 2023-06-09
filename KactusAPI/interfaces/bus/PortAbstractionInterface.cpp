@@ -379,6 +379,19 @@ std::string PortAbstractionInterface::getDescription(std::string const& itemName
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getMatch()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::getMatch(int const& portIndex) const
+{
+    if (auto const& signal = getSignal(portIndex); signal)
+    {
+        return signal->abstraction_->getMatch();
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::setDescription()
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::setDescription(std::string const& itemName, std::string const& newDescription)
