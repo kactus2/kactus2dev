@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: FileTypes.cpp
+// File: FileType.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -9,20 +9,32 @@
 // NameSpace FileTypes is used to store functions related to file types.
 //-----------------------------------------------------------------------------
 
-#include "FileTypes.h"
+#include "FileType.h"
 
 //-----------------------------------------------------------------------------
 // Function: FileTypes::isIpXactFileType()
 //-----------------------------------------------------------------------------
-bool FileTypes::isIpXactFileType( const QString& fileType )
+bool FileTypes::isIpXactFileType(QString const& fileType, Document::Revision docRevision )
 {
-	return FILE_TYPES.contains(fileType);
+	if (docRevision == Document::Revision::Std14)
+	{
+		return FILE_TYPES.contains(fileType);
+	}
+	else if (docRevision == Document::Revision::Std22)
+	{
+
+		return FILE_TYPES.contains(fileType) || FILE_TYPES_2022.contains(fileType);
+	}
+	else
+	{
+		return false;
+	}
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileTypes::getFileTypes()
+// Function: FileType::getFileTypes()
 //-----------------------------------------------------------------------------
-QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuffix )
+QStringList FileTypes::getFileTypes( QSettings& settings, QString const& fileSuffix )
 {
     QStringList types;
 
@@ -45,9 +57,9 @@ QStringList FileTypes::getFileTypes( QSettings& settings, const QString& fileSuf
 }
 
 //-----------------------------------------------------------------------------
-// Function: generaldeclarations::getFileTypes()
+// Function: FileType::getFileTypes()
 //-----------------------------------------------------------------------------
-QStringList FileTypes::getFileTypes( QSettings& settings, const QFileInfo& file )
+QStringList FileTypes::getFileTypes( QSettings& settings, QFileInfo const& file )
 {
     return FileTypes::getFileTypes(settings, file.suffix());
 }

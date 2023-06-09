@@ -438,7 +438,7 @@ void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointe
         for (int fileSetIndex = 0; fileSetIndex < fileSetNodeList.count(); ++fileSetIndex)
         {
             QDomNode fileSetNode = fileSetNodeList.at(fileSetIndex);
-            QSharedPointer<FileSet> newFileSet = setReader.createFileSetFrom(fileSetNode);
+            QSharedPointer<FileSet> newFileSet = setReader.createFileSetFrom(fileSetNode, newComponent->getRevision());
 
             newComponent->getFileSets()->append(newFileSet);
         }

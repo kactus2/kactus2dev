@@ -28,6 +28,9 @@ private slots:
     void readFileAttributes();
 
     void readFileIsPresent();
+    void read2022File();
+
+    void readFileTypes();
     void readIsStructural();
     void readIsIncludeFile();
     void readLogicalName();
@@ -37,7 +40,6 @@ private slots:
     void readDefines();
     void readImageTypes();
 
-    void read2022File();
 
     void readHashExtension();
     void readVendorExtensions();
@@ -71,11 +73,11 @@ void tst_FileReader::readSimpleFile()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->name(), QString("./testFile"));
     QCOMPARE(testFile->getFileTypes()->size(), 1);
-    QCOMPARE(testFile->getFileTypes()->first(), QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->first().type_, QString("vhdlSource"));
 
     documentContent =
         "<ipxact:file>"
@@ -87,12 +89,12 @@ void tst_FileReader::readSimpleFile()
 
     document.setContent(documentContent);
     fileNode = document.firstChildElement("ipxact:file");
-    testFile = fileReader.createFileFrom(fileNode);
+    testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->name(), QString("./testFile"));
     QCOMPARE(testFile->getFileTypes()->size(), 2);
-    QCOMPARE(testFile->getFileTypes()->first(), QString("vhdlSource"));
-    QCOMPARE(testFile->getFileTypes()->last(), QString("testUserFileType"));
+    QCOMPARE(testFile->getFileTypes()->first().type_, QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->last().type_, QString("testUserFileType"));
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +116,7 @@ void tst_FileReader::readFileAttributes()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getFileId(), QString("raiden"));
     QCOMPARE(testFile->getAttributes().count(), 1);
@@ -123,7 +125,7 @@ void tst_FileReader::readFileAttributes()
 
     QCOMPARE(testFile->name(), QString("./testFile"));
     QCOMPARE(testFile->getFileTypes()->size(), 1);
-    QCOMPARE(testFile->getFileTypes()->first(), QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->first().type_, QString("vhdlSource"));
 }
 
 //-----------------------------------------------------------------------------
@@ -146,12 +148,79 @@ void tst_FileReader::readFileIsPresent()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->name(), QString("./testFile"));
     QCOMPARE(testFile->getIsPresent(), QString("4*4/4-3"));
     QCOMPARE(testFile->getFileTypes()->size(), 1);
-    QCOMPARE(testFile->getFileTypes()->first(), QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->first().type_, QString("vhdlSource"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileReader::read2022File()
+//-----------------------------------------------------------------------------
+void tst_FileReader::read2022File()
+{
+    QString documentContent(
+        "<ipxact:file>"
+        "<ipxact:name>./testFile</ipxact:name>"
+        "<ipxact:isPresent>1</ipxact:isPresent>"
+        "<ipxact:fileType user=\"test\" libext=\"ext\">user</ipxact:fileType>"
+        "</ipxact:file>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fileNode = document.firstChildElement("ipxact:file");
+
+    FileReader fileReader;
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std22);
+
+    QCOMPARE(testFile->getIsPresent(), QString()); //!< No isPresent should be available.
+    QCOMPARE(testFile->getFileTypes()->first().type_, QString("test"));
+    QCOMPARE(testFile->getFileTypes()->first().libext_, QString("ext"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileReader::readFileTypes()
+//-----------------------------------------------------------------------------
+void tst_FileReader::readFileTypes()
+{
+    QString documentContent(
+        "<ipxact:file>"
+        "<ipxact:name>./testFile</ipxact:name>"
+        "<ipxact:fileType>vhdlSource</ipxact:fileType>"
+        "<ipxact:fileType libext=\"ext\">vhdlSource-93</ipxact:fileType>"
+        "<ipxact:fileType user=\"test\">user</ipxact:fileType>"
+        "</ipxact:file>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fileNode = document.firstChildElement("ipxact:file");
+
+    FileReader fileReader;
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
+
+    QCOMPARE(testFile->getFileTypes()->count(), 3);
+    QCOMPARE(testFile->getFileTypes()->at(0).type_, QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->at(0).libext_, QString());
+    QCOMPARE(testFile->getFileTypes()->at(1).type_, QString("vhdlSource-93"));
+    QCOMPARE(testFile->getFileTypes()->at(1).libext_, QString());
+    QCOMPARE(testFile->getFileTypes()->at(2).type_, QString("test"));
+    QCOMPARE(testFile->getFileTypes()->at(2).libext_, QString());
+
+    testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std22);
+
+    QCOMPARE(testFile->getFileTypes()->count(), 3);
+    QCOMPARE(testFile->getFileTypes()->at(0).type_, QString("vhdlSource"));
+    QCOMPARE(testFile->getFileTypes()->at(0).libext_, QString());
+    QCOMPARE(testFile->getFileTypes()->at(1).type_, QString("vhdlSource-93"));
+    QCOMPARE(testFile->getFileTypes()->at(1).libext_, QString("ext"));
+    QCOMPARE(testFile->getFileTypes()->at(2).type_, QString("test"));
+    QCOMPARE(testFile->getFileTypes()->at(2).libext_, QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -174,7 +243,7 @@ void tst_FileReader::readIsStructural()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->isStructural(), true);
 }
@@ -198,7 +267,7 @@ void tst_FileReader::readIsIncludeFile()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->isIncludeFile(), true);
     QCOMPARE(testFile->hasExternalDeclarations(), false);
@@ -213,7 +282,7 @@ void tst_FileReader::readIsIncludeFile()
 
     document.setContent(documentContent);
     fileNode = document.firstChildElement("ipxact:file");
-    testFile = fileReader.createFileFrom(fileNode);
+    testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->isIncludeFile(), true);
     QCOMPARE(testFile->hasExternalDeclarations(), true);
@@ -238,7 +307,7 @@ void tst_FileReader::readLogicalName()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getLogicalName(), QString("Spock"));
     QCOMPARE(testFile->isLogicalNameDefault(), false);
@@ -253,7 +322,7 @@ void tst_FileReader::readLogicalName()
 
     document.setContent(documentContent);
     fileNode = document.firstChildElement("ipxact:file");
-    testFile = fileReader.createFileFrom(fileNode);
+    testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getLogicalName(), QString("Spock"));
     QCOMPARE(testFile->isLogicalNameDefault(), true);
@@ -278,7 +347,7 @@ void tst_FileReader::readExportedNames()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getExportedNames()->size(), 1);
     QCOMPARE(testFile->getExportedNames()->first(), QString("Enterprise"));
@@ -308,7 +377,7 @@ void tst_FileReader::readBuildCommand()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getBuildCommand().isNull(), false);
 
@@ -330,7 +399,7 @@ void tst_FileReader::readBuildCommand()
         ;
     document.setContent(documentContent);
     fileNode = document.firstChildElement("ipxact:file");
-    testFile = fileReader.createFileFrom(fileNode);
+    testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getBuildCommand().isNull(), false);
 
@@ -358,7 +427,7 @@ void tst_FileReader::readDependencies()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getDependencies()->size(), 1);
     QCOMPARE(testFile->getDependencies()->first(), QString("/path/to/include"));
@@ -391,7 +460,7 @@ void tst_FileReader::readDefines()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getDefines()->size(), 1);
     QSharedPointer<NameValuePair> define = testFile->getDefines()->first();
@@ -423,38 +492,12 @@ void tst_FileReader::readImageTypes()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getImageTypes()->size(), 1);
     QCOMPARE(testFile->getImageTypes()->first(), QString("jpg"));
 }
 
-//-----------------------------------------------------------------------------
-// Function: tst_FileReader::read2022File()
-//-----------------------------------------------------------------------------
-void tst_FileReader::read2022File()
-{
-    QString documentContent(
-        "<ipxact:file>"
-            "<ipxact:name>./testFile</ipxact:name>"
-            "<ipxact:isPresent>1</ipxact:isPresent>"
-            "<ipxact:fileType user=\"test\" libext=\"ext\">user</ipxact:fileType>"
-            "<ipxact:imageType>jpg</ipxact:imageType>"
-        "</ipxact:file>"
-    );
-
-    QDomDocument document;
-    document.setContent(documentContent);
-
-    QDomNode fileNode = document.firstChildElement("ipxact:file");
-
-    FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
-
-    QCOMPARE(testFile->getIsPresent(), QString()); //!< No isPresent should be available.
-    QCOMPARE(testFile->getFileTypes()->first(), QString("user"));
-    QCOMPARE(testFile->getFileTypes()->first()->getLibExt(), QString("ext"));
-}
 
 //-----------------------------------------------------------------------------
 // Function: tst_FileReader::readHashExtension()
@@ -477,7 +520,7 @@ void tst_FileReader::readHashExtension()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getVendorExtensions()->size(), 1);
     QCOMPARE(testFile->getLastHash(), QString("hash"));
@@ -502,7 +545,7 @@ void tst_FileReader::readDescription()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getDescription(), QString("This is an important file."));
 }
@@ -528,7 +571,7 @@ void tst_FileReader::readVendorExtensions()
     QDomNode fileNode = document.firstChildElement("ipxact:file");
 
     FileReader fileReader;
-    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode);
+    QSharedPointer<File> testFile = fileReader.createFileFrom(fileNode, Document::Revision::Std14);
 
     QCOMPARE(testFile->getVendorExtensions()->size(), 1);
     QCOMPARE(testFile->getVendorExtensions()->first()->type(), QString("testExtension"));

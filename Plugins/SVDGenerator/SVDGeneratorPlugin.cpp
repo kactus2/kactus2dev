@@ -312,7 +312,7 @@ void SVDGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList cons
         if (!file)
         {
             file = QSharedPointer<File>(new File(relativeFilePath));
-            file->getFileTypes()->append(QStringLiteral("svd"));
+            file->getFileTypes()->append(FileType(QStringLiteral("svd")));
 
             targetFileset->addFile(file);
             utility->printInfo(tr("Added file %1 to top component file set %2.").arg(fileName, fileSetName));

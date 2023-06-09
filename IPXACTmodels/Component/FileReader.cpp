@@ -32,7 +32,7 @@ FileReader::~FileReader()
 //-----------------------------------------------------------------------------
 // Function: FileReader::createFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode) const
+QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode, Document::Revision docRevision) const
 {
     QDomElement fileElement = fileNode.toElement();
     QString fileName = fileNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
@@ -41,9 +41,13 @@ QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode) const
 
     parseFileAttributes(fileElement, newFile);
 
-    newFile->setIsPresent(parseIsPresent(fileNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
+    if (docRevision == Document::Revision::Std14)
+    {
+        auto isPresent = CommonItemsReader::parseIsPresent(fileNode.firstChildElement(QStringLiteral("ipxact:isPresent")));
+        newFile->setIsPresent(isPresent);
+    }
 
-    parseFileTypes(fileElement, newFile);
+    parseFileTypes(fileElement, newFile, docRevision);
 
     parseIsStructural(fileElement, newFile);
 
@@ -106,7 +110,7 @@ void FileReader::parseFileAttributes(QDomElement const& fileElement, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseFileTypes()
 //-----------------------------------------------------------------------------
-void FileReader::parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile, Document::Revision docRevision) const
 {
     QDomNodeList fileTypeNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:fileType"));
     
@@ -115,13 +119,20 @@ void FileReader::parseFileTypes(QDomElement const& fileElement, QSharedPointer<F
         QDomNode fileTypeNode = fileTypeNodeList.at(fileTypeIndex);
         QString fileType = fileTypeNode.firstChild().nodeValue();
 
+        QDomNamedNodeMap fileTypeAttributes = fileTypeNode.attributes();
         if (fileType == QLatin1String("user"))
         {
-            QDomNamedNodeMap fileTypeAttributes = fileTypeNode.attributes();
             fileType = fileTypeAttributes.namedItem(QStringLiteral("user")).nodeValue();
         }
 
-        newFile->getFileTypes()->append(fileType);
+        FileType type(fileType);
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            type.libext_ = fileTypeAttributes.namedItem(QStringLiteral("libext")).nodeValue();
+        }
+
+        newFile->getFileTypes()->append(type);
     }
 }
 

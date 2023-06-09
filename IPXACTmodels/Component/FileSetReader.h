@@ -39,7 +39,7 @@ public:
      *
      *      @param [in] fileSetNode     XML description of the file set.
      */
-    QSharedPointer<FileSet> createFileSetFrom(QDomNode const& fileSetNode) const;
+    QSharedPointer<FileSet> createFileSetFrom(QDomNode const& fileSetNode, Document::Revision docRevision) const;
 
 private:
 
@@ -61,7 +61,7 @@ private:
      *      @param [in] fileSetElement  XML description of the file set.
      *      @param [in] newFileSet      The new file set item.
      */
-    void parseFiles(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet) const;
+    void parseFiles(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet, Document::Revision docRevision) const;
 
     /*!
      *  Reads the default file builders.

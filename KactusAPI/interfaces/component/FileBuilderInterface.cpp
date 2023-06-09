@@ -70,12 +70,8 @@ std::vector<std::string> FileBuilderInterface::getItemNames() const
     {
         for (auto builder : *fileBuilders_)
         {
-            QString builderID = builder->getFileType();
+            QString builderID = builder->getFileType().type_;
 
-            if (builderID == USERFILETYPE)
-            {
-                builderID = builder->getUserFileType();
-            }
             names.push_back(builderID.toStdString());
         }
     }
@@ -160,9 +156,7 @@ QSharedPointer<FileBuilder> FileBuilderInterface::getFileBuilder(std::string con
     {
         for (auto builder : *fileBuilders_)
         {
-            if ((builder->getFileType() == USERFILETYPE && builder->getUserFileType() ==
-                QString::fromStdString(fileBuilderName)) ||
-                builder->getFileType() == QString::fromStdString(fileBuilderName))
+            if (builder->getFileType().type_ == QString::fromStdString(fileBuilderName))
             {
                 return builder;
             }
@@ -182,14 +176,7 @@ std::string FileBuilderInterface::getIndexedFileType(int const& itemIndex)
     if (fileBuilders_ && (itemIndex >= 0 && itemIndex < fileBuilders_->size()))
     {
         QSharedPointer<FileBuilder> builder = fileBuilders_->at(itemIndex);
-        if (builder->getFileType() == USERFILETYPE)
-        {
-            fileType = builder->getUserFileType().toStdString();
-        }
-        else
-        {
-            fileType = builder->getFileType().toStdString();
-        }
+        fileType = builder->getFileType().type_.toStdString();
     }
 
     return fileType;

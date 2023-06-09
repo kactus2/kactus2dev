@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/FileBuilderWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::FileSetWriter()
@@ -35,7 +35,8 @@ FileSetWriter::~FileSetWriter()
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFileSet()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet) const
+void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet,
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileSet"));
 
@@ -43,7 +44,7 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 
     writeGroups(writer, fileSet->getGroups());
 
-    writeFiles(writer, fileSet->getFiles());
+    writeFiles(writer, fileSet->getFiles(), docRevision);
 
     writeDefaultFileBuilders(writer, fileSet->getDefaultFileBuilders());
 
@@ -71,14 +72,14 @@ void FileSetWriter::writeGroups(QXmlStreamWriter& writer, QSharedPointer<QString
 // Function: FileSetWriter::writeFiles()
 //-----------------------------------------------------------------------------
 void FileSetWriter::writeFiles(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles) const
+    QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles, Document::Revision docRevision) const
 {
     if (!fileSetFiles->isEmpty())
     {
         FileWriter fileWriter;
         foreach (QSharedPointer<File> file, *fileSetFiles)
         {
-            fileWriter.writeFile(writer, file);
+            fileWriter.writeFile(writer, file, docRevision);
         }
     }
 }
@@ -209,7 +210,7 @@ void FileSetWriter::writeFunctionSourceFiles(QXmlStreamWriter& writer,
 
         writer.writeStartElement(QStringLiteral("ipxact:fileType"));
 
-        if (FileTypes::isIpXactFileType(source->getFileType()))
+        if (FileTypes::isIpXactFileType(source->getFileType(), Document::Revision::Std14))
         {
             writer.writeCharacters(source->getFileType());
         }

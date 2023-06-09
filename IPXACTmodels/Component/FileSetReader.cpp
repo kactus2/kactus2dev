@@ -34,7 +34,7 @@ FileSetReader::~FileSetReader()
 //-----------------------------------------------------------------------------
 // Function: FileSetReader::createFileSetFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileSet> FileSetReader::createFileSetFrom(QDomNode const& fileSetNode) const
+QSharedPointer<FileSet> FileSetReader::createFileSetFrom(QDomNode const& fileSetNode, Document::Revision docRevision) const
 {
     QDomElement fileSetElement = fileSetNode.toElement();
     QSharedPointer<FileSet> newFileSet (new FileSet());
@@ -44,7 +44,7 @@ QSharedPointer<FileSet> FileSetReader::createFileSetFrom(QDomNode const& fileSet
 
     parseGroups(fileSetElement, newFileSet);
 
-    parseFiles(fileSetElement, newFileSet);
+    parseFiles(fileSetElement, newFileSet, docRevision);
 
     parseDefaultFileBuilders(fileSetElement, newFileSet);
 
@@ -74,7 +74,7 @@ void FileSetReader::parseGroups(QDomElement const& fileSetElement, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: FileSetReader::parseFiles()
 //-----------------------------------------------------------------------------
-void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet) const
+void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer<FileSet> newFileSet, Document::Revision docRevision) const
 {
 	// Find all file-elements.
     QDomNodeList fileNodeList = fileSetElement.elementsByTagName(QStringLiteral("ipxact:file"));
@@ -85,7 +85,7 @@ void FileSetReader::parseFiles(QDomElement const& fileSetElement, QSharedPointer
         for (int fileIndex = 0; fileIndex < fileNodeList.count(); ++fileIndex)
 		{
 			// Read each file with the file reader.
-            QSharedPointer<File> newFile = fileReader.createFileFrom(fileNodeList.at(fileIndex));
+            QSharedPointer<File> newFile = fileReader.createFileFrom(fileNodeList.at(fileIndex), docRevision);
 			// Then append the file to the list.
             newFileSet->getFiles()->append(newFile);
         }

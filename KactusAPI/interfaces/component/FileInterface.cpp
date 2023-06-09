@@ -464,7 +464,7 @@ bool FileInterface::addFileType(std::string const& fileName, std::string const n
         return false;
     }
 
-    editedFile->getFileTypes()->append(QString::fromStdString(newFileType));
+    editedFile->getFileTypes()->append(FileType(QString::fromStdString(newFileType)));
     return true;
 }
 
@@ -479,9 +479,9 @@ bool FileInterface::addMultipleFileTypes(std::string const& fileName, std::vecto
         return false;
     }
 
-    for (auto fileType : newFileTypes)
+    for (auto const& fileType : newFileTypes)
     {
-        editedFile->getFileTypes()->append(QString::fromStdString(fileType));
+        editedFile->getFileTypes()->append(FileType(QString::fromStdString(fileType)));
     }
 
     return true;
@@ -691,9 +691,9 @@ std::vector<std::string> FileInterface::getFileTypes(std::string const& fileName
     QSharedPointer<File> editedFile = getFile(fileName);
     if (editedFile)
     {
-        for (auto type : *editedFile->getFileTypes())
+        for (auto const& type : *editedFile->getFileTypes())
         {
-            fileTypes.push_back(type.toStdString());
+            fileTypes.push_back(type.type_.toStdString());
         }
     }
 

@@ -11,7 +11,7 @@
 
 #include "File.h"
 
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
@@ -28,7 +28,7 @@ name_(filePath)
 
     if (!fileType.isEmpty())
     {
-        fileTypes_->append(fileType);
+        fileTypes_->append(FileType(fileType));
     }
 }
 
@@ -181,7 +181,7 @@ void File::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: File::getFileTypes()
 //-----------------------------------------------------------------------------
-QSharedPointer<QStringList> File::getFileTypes() const
+QSharedPointer<QList<FileType> > File::getFileTypes() const
 {
     return fileTypes_;
 }
@@ -189,9 +189,8 @@ QSharedPointer<QStringList> File::getFileTypes() const
 //-----------------------------------------------------------------------------
 // Function: File::setFileTypes()
 //-----------------------------------------------------------------------------
-void File::setFileTypes( QSharedPointer<QStringList> fileTypes )
+void File::setFileTypes( QSharedPointer<QList<FileType> > fileTypes )
 {
-    fileTypes_->clear();
     fileTypes_ = fileTypes;
 }
 
@@ -386,13 +385,12 @@ void File::setDescription(QString const& description)
 //-----------------------------------------------------------------------------
 QString File::getLastHash() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:hash"));
+
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:hash"))
-        {
-            QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
-            return hashExtension->value();
-        }
+        QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
+        return hashExtension->value();
     }
 
     return QString();
@@ -403,27 +401,21 @@ QString File::getLastHash() const
 //-----------------------------------------------------------------------------
 void File::setLastHash(QString const& newHash)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:hash"))
-        {
-            if (newHash.isEmpty())
-            {
-                getVendorExtensions()->removeAll(extension);
-            }
-            else
-            {
-                QSharedPointer<Kactus2Value> hashExtension = extension.dynamicCast<Kactus2Value>();
-                hashExtension->setValue(newHash);
-            }
-            return;
-        }
-    }
+    auto extension = findVendorExtension(QStringLiteral("kactus2:hash")).dynamicCast<Kactus2Value>();
 
-    if (!newHash.isEmpty())
+    if (newHash.isEmpty())
     {
-        QSharedPointer<Kactus2Value> hashExtension (new Kactus2Value(QStringLiteral("kactus2:hash"), newHash));
-        getVendorExtensions()->append(hashExtension);
+        getVendorExtensions()->removeAll(extension);
+    }
+    else
+    {
+        if (extension == nullptr)
+        {
+            extension = QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:hash"), QString()));
+            getVendorExtensions()->append(extension);
+        }
+
+        extension->setValue(newHash);
     }
 }
 
@@ -448,8 +440,8 @@ void File::setPendingHash(QString const& hash)
 //-----------------------------------------------------------------------------
 bool File::matchesFileType(const QStringList& fileTypes) const
 {
-    return std::any_of(fileTypes_.cbegin(), fileTypes_.cend(),
-        [&fileTypes](auto const& fileType) { return fileTypes.contains(fileType->getType()); };
+    return std::any_of(fileTypes_->cbegin(), fileTypes_->cend(),
+        [&fileTypes](auto const& fileType) { return fileTypes.contains(fileType.type_); });
 }
 
 //-----------------------------------------------------------------------------
@@ -457,7 +449,8 @@ bool File::matchesFileType(const QStringList& fileTypes) const
 //-----------------------------------------------------------------------------
 bool File::matchesFileType( const QString& fileType ) const
 {
-    return (fileTypes_->contains(fileType));
+    return std::any_of(fileTypes_->cbegin(), fileTypes_->cend(),
+        [&fileType](auto const& type) { return type.type_.compare(fileType) == 0; });
 }
 
 //-----------------------------------------------------------------------------
@@ -468,18 +461,21 @@ void File::setFileTypes( QSettings& settings )
     QFileInfo info(name_);
     QStringList types = FileTypes::getFileTypes(settings, info.suffix());
 
-    QSharedPointer<QStringList> fileTypes (new QStringList(types));
-    setFileTypes(fileTypes);
+    fileTypes_.clear();
+    for (auto const& fileType : types)
+    {
+        fileTypes_->append(FileType(fileType));
+    }
 }
 
 //-----------------------------------------------------------------------------
 // Function: File::addFileType()
 //-----------------------------------------------------------------------------
-void File::addFileType(const QString fileType)
+void File::addFileType( QString const& fileType, QString const& libext)
 {
-    if (!fileTypes_->contains(fileType))
+    if (matchesFileType(fileType) == false)
     {
-        fileTypes_->append(FileTypes::FileType(fileType));
+        fileTypes_->append(FileType(fileType, libext));
     }
 }
 
@@ -550,11 +546,11 @@ bool File::isRTLFile() const
 //-----------------------------------------------------------------------------
 bool File::isVhdlFile() const
 {
-    for (QString const& fileType : *fileTypes_)
+    for (auto const& fileType : *fileTypes_)
     {
-        if (fileType.compare(QLatin1String("vhdlSource"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QLatin1String("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QLatin1String("vhdlSource-93"), Qt::CaseInsensitive) == 0)
+        if (fileType.type_.compare(QLatin1String("vhdlSource"), Qt::CaseInsensitive) == 0 ||
+            fileType.type_.compare(QLatin1String("vhdlSource-87"), Qt::CaseInsensitive) == 0 ||
+            fileType.type_.compare(QLatin1String("vhdlSource-93"), Qt::CaseInsensitive) == 0)
         {
             return true;
         }
@@ -567,11 +563,11 @@ bool File::isVhdlFile() const
 //-----------------------------------------------------------------------------
 bool File::isVerilogFile() const
 {
-    for (QString const& fileType : *fileTypes_)
+    for (auto const& fileType : *fileTypes_)
     {
-        if (fileType.compare(QLatin1String("verilogSource"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QLatin1String("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
-            fileType.compare(QLatin1String("verilogSource-2001"), Qt::CaseInsensitive) == 0 )
+        if (fileType.type_.compare(QLatin1String("verilogSource"), Qt::CaseInsensitive) == 0 ||
+            fileType.type_.compare(QLatin1String("verilogSource-95"), Qt::CaseInsensitive) == 0 ||
+            fileType.type_.compare(QLatin1String("verilogSource-2001"), Qt::CaseInsensitive) == 0 )
         {
             return true;
         }
@@ -630,7 +626,7 @@ void File::copyBuildCommand(const File& other)
 {
     if (other.buildCommand_)
     {
-        buildCommand_ = QSharedPointer<BuildCommand> (new BuildCommand(*other.buildCommand_.data()));
+        buildCommand_ = QSharedPointer<BuildCommand> (new BuildCommand(*other.buildCommand_));
     }
 }
 
@@ -655,20 +651,15 @@ void File::copyDefines(const File& other)
 //-----------------------------------------------------------------------------
 void File::copyStringLists(const File& other)
 {
-    for (QString const& fileType : *other.fileTypes_)
+    for (auto const& fileType : *other.fileTypes_)
     {
         fileTypes_->append(fileType);
     }
-    for (QString const& exportedName : *other.exportedNames_)
-    {
-        exportedNames_->append(exportedName);
-    }
-    for (QString const& dependency : *other.dependencies_)
-    {
-        dependencies_->append(dependency);
-    }
-    for (QString const& imageType : *other.imageTypes_)
-    {
-        imageTypes_->append(imageType);
-    }
+
+    exportedNames_->append(*other.exportedNames_);
+
+    dependencies_->append(*other.dependencies_);
+
+    imageTypes_->append(*other.imageTypes_);
+
 }

@@ -57,28 +57,28 @@ public:
          *
          *      @return The name of the source.
          */
-        QString getSourceName() const;
+		IPXACTMODELS_EXPORT QString getSourceName() const;
 
         /*!
          *  Set the source name.
          *
          *      @param [in] newSourceName   The new name for the source.
          */
-        void setSourceName(QString const& newSourceName);
+		IPXACTMODELS_EXPORT void setSourceName(QString const& newSourceName);
 
         /*!
          *  Get the file type of the source.
          *
          *      @return The source file type.
          */
-        QString getFileType() const;
+		IPXACTMODELS_EXPORT QString getFileType() const;
 
         /*!
          *  Set the file type for the source.
          *
          *      @param [in] newFileType     The new source file type.
          */
-        void setFileType(QString const& newFileType);
+		IPXACTMODELS_EXPORT void setFileType(QString const& newFileType);
 	};
 
     /*!

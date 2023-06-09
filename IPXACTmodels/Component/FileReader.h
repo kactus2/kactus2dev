@@ -15,6 +15,7 @@
 #include "File.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -39,7 +40,7 @@ public:
      *
      *      @param [in] fileNode    XML description of the file.
      */
-    QSharedPointer<File> createFileFrom(QDomNode const& fileNode) const;
+    QSharedPointer<File> createFileFrom(QDomNode const& fileNode, Document::Revision docRevision) const;
 
 private:
 
@@ -61,7 +62,7 @@ private:
      *      @param [in] fileElement     XML description of the file.
      *      @param [in] newFile         The new file item.
      */
-    void parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile) const;
+    void parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile, Document::Revision docRevision) const;
 
     /*!
      *  Parses the structural status.

@@ -258,7 +258,7 @@ void SWStackParser::parseStackObjects(QSharedPointer<Component> softComponent,
 	// Find build command of matching file type from the software view.
 	QSharedPointer<FileBuilder> softViewBuildCmd;
 
-	foreach(QSharedPointer<FileBuilder> buildCmd, *softInstantiation->getDefaultFileBuilders())
+	for (QSharedPointer<FileBuilder> buildCmd : *softInstantiation->getDefaultFileBuilders())
 	{
 		if (buildCmd->getFileType() == makeData->hardPart->buildCmd->getFileType())
 		{

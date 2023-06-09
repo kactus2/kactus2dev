@@ -6,7 +6,7 @@
 */
 
 #include "filetypesview.h"
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <QMenu>
 

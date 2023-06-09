@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: FileTypes.h
+// File: FileType.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
@@ -14,64 +14,91 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include "Document.h"
+
 #include <QString>
 #include <QSettings>
 #include <QStringList>
 #include <QFileInfo>
+
+struct FileType
+{
+	QString type_;
+	QString libext_;
+
+	FileType() : type_(), libext_() {};
+
+	explicit FileType(QString const& fileType, QString const& libext = QString()) :
+		type_(fileType), libext_(libext) {};
+
+	bool operator==(FileType const& rhs) const { return type_ == rhs.type_ && libext_ == rhs.libext_; };
+};
 
 //-----------------------------------------------------------------------------
 //! NameSpace FileTypes is used to store functions related to file types.
 //-----------------------------------------------------------------------------
 namespace FileTypes
 {
-	struct FileType
-	{
-		QString type_;
-		QString libExt_;
-
-		QString getType() const { return type_; }
-		QString getLibExt() const { return libExt_; }
-
-		explicit FileType(QString const& fileType) : type_(fileType) {};
-	};
-
-    //! The number of supported file type definitions
-    const unsigned int FILE_TYPE_COUNT = 33;
-
 	//! The file types specified in the IP-Xact
 	const QStringList FILE_TYPES = {
-		QLatin1String("asmSource"),
-		QLatin1String("cSource"),
-		QLatin1String("cppSource"),
-		QLatin1String("eSource"),
-		QLatin1String("OVASource"),
-		QLatin1String("perlSource"),
-		QLatin1String("pslSource"),
-		QLatin1String("SVASource"),
-		QLatin1String("tclSource"),
-		QLatin1String("veraSource"),
-		QLatin1String("systemCSource"),
-		QLatin1String("systemCSource-2.0"),
-		QLatin1String("systemCSource-2.0.1"),
-		QLatin1String("systemCSource-2.1"),
-		QLatin1String("systemCSource-2.2"),
-		QLatin1String("systemVerilogSource"),
-		QLatin1String("systemVerilogSource-3.0"),
-		QLatin1String("systemVerilogSource-3.1"),
-		QLatin1String("systemVerilogSource-3.1a"),
-		QLatin1String("verilogSource"),
-		QLatin1String("verilogSource-95"),
-		QLatin1String("verilogSource-2001"),
-		QLatin1String("vhdlSource"),
-		QLatin1String("vhdlSource-87"),
-		QLatin1String("vhdlSource-93"),
-		QLatin1String("swObject"),
-		QLatin1String("swObjectLibrary"),
-		QLatin1String("vhdlBinaryLibrary"),
-		QLatin1String("verilogBinaryLibrary"),
-		QLatin1String("executableHdl"),
-		QLatin1String("unelaboratedHdl"),
-		QLatin1String("SDC")
+		QStringLiteral("asmSource"),
+		QStringLiteral("cSource"),
+		QStringLiteral("cppSource"),
+		QStringLiteral("eSource"),
+		QStringLiteral("OVASource"),
+		QStringLiteral("perlSource"),
+		QStringLiteral("pslSource"),
+		QStringLiteral("SVASource"),
+		QStringLiteral("tclSource"),
+		QStringLiteral("veraSource"),
+		QStringLiteral("systemCSource"),
+		QStringLiteral("systemCSource-2.0"),
+		QStringLiteral("systemCSource-2.0.1"),
+		QStringLiteral("systemCSource-2.1"),
+		QStringLiteral("systemCSource-2.2"),
+		QStringLiteral("systemVerilogSource"),
+		QStringLiteral("systemVerilogSource-3.0"),
+		QStringLiteral("systemVerilogSource-3.1"),
+		QStringLiteral("systemVerilogSource-3.1a"),
+		QStringLiteral("verilogSource"),
+		QStringLiteral("verilogSource-95"),
+		QStringLiteral("verilogSource-2001"),
+		QStringLiteral("verilogSource-2005"),
+		QStringLiteral("vhdlSource"),
+		QStringLiteral("vhdlSource-87"),
+		QStringLiteral("vhdlSource-93"),
+		QStringLiteral("swObject"),
+		QStringLiteral("swObjectLibrary"),
+		QStringLiteral("vhdlBinaryLibrary"),
+		QStringLiteral("verilogBinaryLibrary"),
+		QStringLiteral("executableHdl"),
+		QStringLiteral("unelaboratedHdl"),
+		QStringLiteral("systemVerilogSource"),
+		QStringLiteral("systemVerilogSource-3.0"),
+		QStringLiteral("systemVerilogSource-3.1"),
+		QStringLiteral("systemVerilogSource-3.1a"),
+		QStringLiteral("SDC"),
+		QStringLiteral("unknown")
+	};
+
+	const QStringList FILE_TYPES_2022
+	{
+		QStringLiteral("vhdlSource2002"),
+		QStringLiteral("vhdlSource2008"),
+		QStringLiteral("systemVerilogSource-2009"),
+		QStringLiteral("systemVerilogSource-2012"),
+		QStringLiteral("systemVerilogSource-2017"),
+		QStringLiteral("vhdlAmsSource"),
+		QStringLiteral("verilogAmsSource"),
+		QStringLiteral("systemCAmsSource"),
+		QStringLiteral("libertySource"),
+		QStringLiteral("spiceSource"),
+		QStringLiteral("systemRDL"),
+		QStringLiteral("systemRDL-1.0"),
+		QStringLiteral("systemRDL-2.0"),
+		QStringLiteral("systemCSource-2.3"),
+		QStringLiteral("systemCSourceBinaryLibrary"),
+
 	};
 
 	/*!
@@ -81,7 +108,7 @@ namespace FileTypes
      *
      *      @return True if the file type is one of the specified ones, false otherwise.
 	 */
-	IPXACTMODELS_EXPORT bool isIpXactFileType(const QString& fileType);
+	IPXACTMODELS_EXPORT bool isIpXactFileType(QString const& fileType, Document::Revision docRevision);
 
 	/*!
 	 *  Get the file types which are associated with the given file suffix.
@@ -91,7 +118,7 @@ namespace FileTypes
      *
      *      @return QStringlist containing the file types.
 	 */
-	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QString& fileSuffix);
+	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, QString const& fileSuffix);
 
     /*!
 	 *  Get the file types which are associated with the given file suffix.
@@ -101,7 +128,7 @@ namespace FileTypes
      *
      *      @return The file types.
 	 */
-	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, const QFileInfo& file);
+	IPXACTMODELS_EXPORT QStringList getFileTypes(QSettings& settings, QFileInfo const& file);
 
 }
 

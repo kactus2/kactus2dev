@@ -12,7 +12,7 @@
 #include "FileSet.h"
 
 #include <IPXACTmodels/common/VendorExtension.h>
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <IPXACTmodels/utilities/Search.h>
@@ -277,9 +277,9 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
 
     for (QString const& fileType : types)
     {
-        if (!file->getFileTypes()->contains(fileType))
+        if (!file->matchesFileType(fileType))
         {
-            file->getFileTypes()->append(fileType);
+            file->getFileTypes()->append(FileType(fileType));
         }
 	}
 
@@ -384,11 +384,11 @@ QString FileSet::getDefaultCommand(QSharedPointer<File> file) const
         return QString();
     }
 
-    for (QString const& fileType : *file->getFileTypes())
+    for (auto const& fileType : *file->getFileTypes())
     {
         for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders_)
         {
-            if (fileBuilder->hasFileType(fileType))
+            if (fileBuilder->hasFileType(fileType.type_))
             {
                 return fileBuilder->getCommand();
             }
@@ -408,11 +408,11 @@ QString FileSet::getDefaultFlags(QSharedPointer<File> file) const
         return QString();
     }
     
-    for(QString const& fileType : *file->getFileTypes())
+    for (auto const& fileType : *file->getFileTypes())
     {
-        foreach (QSharedPointer<FileBuilder> fileBuilder, *defaultFileBuilders_)
+        for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders_)
         {
-            if (fileBuilder->hasFileType(fileType))
+            if (fileBuilder->hasFileType(fileType.type_))
             {
                 return fileBuilder->getFlags();
             }

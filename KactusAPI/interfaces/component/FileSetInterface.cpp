@@ -348,7 +348,7 @@ int FileSetInterface::getAllReferencesToIdInItem(const std::string& itemName, st
         for (auto builder : *selectedFileSet->getDefaultFileBuilders())
         {
             totalReferencesToParameter +=
-                fileBuilderInterface_->getAllReferencesToIdInItem(builder->getFileType().toStdString(), valueID);
+                fileBuilderInterface_->getAllReferencesToIdInItem(builder->getFileType().type_.toStdString(), valueID);
         }
     }
 

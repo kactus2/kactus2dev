@@ -15,6 +15,7 @@
 #include "FileSet.h"
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
@@ -43,7 +44,8 @@ public:
      *      @param [in] writer  The used xml writer.
      *      @param [in] file    The file set to be written.
      */
-    void writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet) const;
+    void writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet,
+        Document::Revision docRevision) const;
 
 private:
 
@@ -65,7 +67,8 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] fileSetFiles    The files.
      */
-    void writeFiles(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles) const;
+    void writeFiles(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the default file builders.

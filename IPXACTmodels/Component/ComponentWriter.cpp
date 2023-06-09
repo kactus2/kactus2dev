@@ -361,9 +361,9 @@ void ComponentWriter::writeFileSets(QXmlStreamWriter& writer, QSharedPointer<Com
 
         writer.writeStartElement(QStringLiteral("ipxact:fileSets"));
 
-        foreach (QSharedPointer<FileSet> fileSet, *component->getFileSets())
+        for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
         {
-            setWriter.writeFileSet(writer, fileSet);
+            setWriter.writeFileSet(writer, fileSet, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:fileSets

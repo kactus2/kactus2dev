@@ -118,14 +118,14 @@ public:
 	*
 	*       @return Pointer to a QList containing the file types.
 	*/
-    QSharedPointer<QStringList> getFileTypes() const;
+    QSharedPointer<QList<FileType> > getFileTypes() const;
 
 	/*! 
     *   Set the file types for this file
 	*
 	*       @param [in] fileTypes   QList containing the new file types.
 	*/
-	void setFileTypes(QSharedPointer<QStringList> newFileTypes);
+	void setFileTypes(QSharedPointer<QList<FileType> > newFileTypes);
 
     /*!
      *  Check if the file contains structural RTL.
@@ -339,7 +339,7 @@ public:
 	 *
 	 *      @param [in] fileType    The name of the file type.
 	 */
-	void addFileType(const QString fileType);
+	void addFileType(QString const& fileType, QString const& libext = QString());
 
 	/*!
      *  Clear all the fileTypes and userFileTypes
@@ -450,7 +450,8 @@ private:
     QString isPresent_;
 
 	//! Contains the file types of the file.
-	QList<FileTypes::FileType> fileTypes_;
+	QSharedPointer<QList<FileType> > fileTypes_ = 
+		QSharedPointer<QList<FileType> >(new QList<FileType>);
 
     //! Holds whether the file contains a structural RTL or not.
     bool structural_ = false;
@@ -474,7 +475,7 @@ private:
 	QSharedPointer<BuildCommand> buildCommand_ = nullptr;
 
 	//! Contains paths to the directories containing dependency files.
-    QSharedPointer<QStringList> dependencies_;
+    QSharedPointer<QStringList> dependencies_ = QSharedPointer<QStringList>(new QStringList);
 
 	//! Specifies the define symbols to use in the source file.
     QSharedPointer<QList<QSharedPointer<NameValuePair> > > defines_ =

@@ -9,7 +9,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <QStringList>
 
@@ -83,10 +83,8 @@ const QString label /*= tr("Select a file type or set your own file type")*/ ) {
 	selector.setOkButtonText(tr("Ok"));
 
 	// add items to the box
-	QStringList comboItems;
-	for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i) {
-		comboItems.append(QString(FileTypes::FILE_TYPES[i]));
-	}
+	QStringList comboItems = FileTypes::FILE_TYPES;
+
 	selector.setComboBoxItems(comboItems);
 
 	selector.setTextValue(selected);

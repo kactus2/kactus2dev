@@ -242,9 +242,9 @@ bool ComponentEditorFileItem::useKactusCSourceEditor() const
 {
 	QSettings settings;
 
-	foreach(QString fileType, *file_->getFileTypes())
+	for (auto const& fileType : *file_->getFileTypes())
 	{
-		QString key = "FileTypes/" + fileType + "/EditInKactus";
+		QString key = "FileTypes/" + fileType.type_ + "/EditInKactus";
 
 		if (settings.value(key).toBool())
 		{
@@ -270,9 +270,9 @@ QString ComponentEditorFileItem::executablePath() const
 {
     QSettings settings;
 
-    foreach(QString fileType, *file_->getFileTypes())
+    for (auto const& fileType : *file_->getFileTypes())
     {
-        QString key = "FileTypes/" + fileType + "/Executable";
+        QString key = "FileTypes/" + fileType.type_ + "/Executable";
         QString executableName = settings.value(key).toString();
 
         executableName = resolveEnvironmentVariables(executableName);

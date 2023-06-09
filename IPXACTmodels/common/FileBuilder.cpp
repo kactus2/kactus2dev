@@ -10,16 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "FileBuilder.h"
-#include "FileTypes.h"
+#include "FileType.h"
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::FileBuilder()
 //-----------------------------------------------------------------------------
 FileBuilder::FileBuilder() :
 BuildModel(),
-Extendable(),
-fileType_(),
-userFileType_()
+Extendable()
 {
 
 }
@@ -29,9 +27,7 @@ userFileType_()
 //-----------------------------------------------------------------------------
 FileBuilder::FileBuilder( const QString& fileType ):
 BuildModel(),
-Extendable(),
-fileType_(),
-userFileType_()
+Extendable()
 {
     setFileType(fileType);
 }
@@ -42,8 +38,7 @@ userFileType_()
 FileBuilder::FileBuilder( const FileBuilder &other ):
 BuildModel(other),
 Extendable(other),
-fileType_(other.fileType_),
-userFileType_(other.userFileType_)
+fileType_(other.fileType_)
 {
 
 }
@@ -59,7 +54,6 @@ FileBuilder & FileBuilder::operator=( const FileBuilder &other )
         Extendable::operator=(other);
 
         fileType_ = other.fileType_;
-        userFileType_ = other.userFileType_;
 	}
 	return *this;
 }
@@ -75,45 +69,23 @@ FileBuilder::~FileBuilder()
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::getFileType()
 //-----------------------------------------------------------------------------
-QString FileBuilder::getFileType() const
+FileType FileBuilder::getFileType() const
 {
     return fileType_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileBuilder::getUserFileType()
-//-----------------------------------------------------------------------------
-QString FileBuilder::getUserFileType() const
-{
-    return userFileType_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileBuilder::setFileType()
 //-----------------------------------------------------------------------------
-void FileBuilder::setFileType( const QString& newFileType )
+void FileBuilder::setFileType(QString const& newFileType)
 {
-    if (FileTypes::isIpXactFileType(newFileType))
-    {
-        fileType_ = newFileType;
-        userFileType_.clear();
-    }
-	else if (!newFileType.isEmpty())
-    {
-        fileType_ = QStringLiteral("user");
-        userFileType_ = newFileType;
-    }
-    else
-    {
-        fileType_.clear();
-        userFileType_.clear();
-    }
+    fileType_.type_ = newFileType;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilder::hasFileType()
 //-----------------------------------------------------------------------------
-bool FileBuilder::hasFileType(const QString& fileType) const
+bool FileBuilder::hasFileType(QString const& fileType) const
 {
-    return fileType_ == fileType || userFileType_ == fileType;
+    return fileType_.type_ == fileType;
 }

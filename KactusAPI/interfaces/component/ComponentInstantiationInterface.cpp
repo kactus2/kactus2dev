@@ -215,11 +215,7 @@ int ComponentInstantiationInterface::getAllReferencesToIdInItem(
         fileBuilderInterface_->setFileBuilders(selectedItem->getDefaultFileBuilders());
         for (auto builder : *selectedItem->getDefaultFileBuilders())
         {
-            QString builderID = builder->getFileType();
-            if (builderID == USERFILETYPE)
-            {
-                builderID = builder->getUserFileType();
-            }
+            QString builderID = builder->getFileType().type_;
 
             referencesInFileBuilders +=
                 fileBuilderInterface_->getAllReferencesToIdInItem(builderID.toStdString(), valueID);

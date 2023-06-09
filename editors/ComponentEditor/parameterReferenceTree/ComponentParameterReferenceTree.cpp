@@ -195,11 +195,7 @@ void ComponentParameterReferenceTree::createReferencesForFileBuilders(
 void ComponentParameterReferenceTree::createReferencesForSingleFileBuilder(QSharedPointer<FileBuilder> fileBuilder,
     QTreeWidgetItem* parentItem)
 {
-    QString fileType = fileBuilder->getFileType();
-    if (fileType == QLatin1String("user"))
-    {
-        fileType = fileBuilder->getUserFileType();
-    }
+    QString fileType = fileBuilder->getFileType().type_;
 
     QString fileTypeIdentifier = QObject::tr("File type: %1").arg(fileType);
 

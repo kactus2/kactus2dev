@@ -11,7 +11,7 @@
 
 #include "FileBuilderWriter.h"
 #include "FileBuilder.h"
-#include "FileTypes.h"
+#include "FileType.h"
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::FileBuilderWriter()
@@ -53,11 +53,15 @@ void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<F
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileType"));
 
-    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType()))
+    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType().type_, Document::Revision::Std14))
     {
-        writer.writeAttribute(QStringLiteral("user"), fileBuilder->getUserFileType());
+        writer.writeAttribute(QStringLiteral("user"), fileBuilder->getFileType().type_);
+        writer.writeCharacters(QStringLiteral("user"));
     }
-    writer.writeCharacters(fileBuilder->getFileType());
+    else
+    {
+        writer.writeCharacters(fileBuilder->getFileType().type_);
+    }
 
     writer.writeEndElement(); // ipxact:fileType
 }

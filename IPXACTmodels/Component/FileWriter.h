@@ -15,6 +15,7 @@
 #include "File.h"
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QXmlStreamWriter>
@@ -44,7 +45,7 @@ public:
      *      @param [in] writer  The used xml writer.
      *      @param [in] file    The file to be written.
      */
-    void writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+    void writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
 
 private:
 
@@ -58,7 +59,7 @@ private:
      *      @param [in] writer  The used xml writer.
      *      @param [in] file    The file to be written.
      */
-    void writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
+    void writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
 
     /*!
      *  Write the file attributes.
@@ -131,14 +132,6 @@ private:
      *      @param [in] file    The file to be written.
      */
     void writeImageTypes(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
-
-    /*!
-     *  Write the description of the file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
-     */
-    void writeDescription(QXmlStreamWriter& writer, QSharedPointer<File> file) const;
 
     /*!
      *  Write the file extensions.

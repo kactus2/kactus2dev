@@ -247,7 +247,7 @@ bool InstantiationsValidator::componentInstantiationFileBuildersAreValid(
 {
     for ( QSharedPointer<FileBuilder> currentFileBuilder : *instantiation->getDefaultFileBuilders() )
     {
-        if ( !hasValidName( currentFileBuilder->getFileType() ) ||
+        if ( !hasValidName( currentFileBuilder->getFileType().type_ ) ||
             !fileBuilderReplaceDefaultFlagsIsValid(currentFileBuilder) )
         {
             return false;
@@ -352,7 +352,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 
 	for ( QSharedPointer<FileBuilder> currentFileBuilder : *instantiation->getDefaultFileBuilders() )
 	{
-		if ( !hasValidName( currentFileBuilder->getFileType() ) )
+		if ( !hasValidName( currentFileBuilder->getFileType().type_ ) )
 		{
 			errors.append(QObject::tr("The type of default file builder is empty."));
 		}
