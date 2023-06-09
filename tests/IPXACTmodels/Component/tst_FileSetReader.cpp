@@ -61,8 +61,7 @@ void tst_FileSetReader::readSimpleFileSet()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
 
@@ -76,7 +75,7 @@ void tst_FileSetReader::readSimpleFileSet()
 
     document.setContent(documentContent);
     fileSetNode = document.firstChildElement("ipxact:fileSet");
-    testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("otherFileSet"));
     QCOMPARE(testFileSet->displayName(), QString("fileSetDisplay"));
@@ -101,8 +100,7 @@ void tst_FileSetReader::readGroups()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
     QCOMPARE(testFileSet->getGroups()->size(), 1);
@@ -131,8 +129,7 @@ void tst_FileSetReader::readFiles()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
     QCOMPARE(testFileSet->getFiles()->size(), 1);
@@ -170,8 +167,7 @@ void tst_FileSetReader::readDefaultFileBuilders()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
 
@@ -213,8 +209,7 @@ void tst_FileSetReader::read2022DefaultFileBuilders()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std22);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std22);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
 
@@ -249,8 +244,7 @@ void tst_FileSetReader::readDependencies()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
     QCOMPARE(testFileSet->getDependencies()->size(), 2);
@@ -294,8 +288,7 @@ void tst_FileSetReader::readFunctions()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
     QCOMPARE(testFileSet->getFunctions()->size(), 1);
@@ -342,8 +335,7 @@ void tst_FileSetReader::readID()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
 
@@ -372,8 +364,7 @@ void tst_FileSetReader::readVendorExtensions()
 
     QDomNode fileSetNode = document.firstChildElement("ipxact:fileSet");
 
-    FileSetReader fileSetReader;
-    QSharedPointer<FileSet> testFileSet = fileSetReader.createFileSetFrom(fileSetNode, Document::Revision::Std14);
+    QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std14);
 
     QCOMPARE(testFileSet->name(), QString("testFileSet"));
 

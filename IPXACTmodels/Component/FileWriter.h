@@ -42,8 +42,9 @@ public:
     /*!
      *  Write a file to an XML file.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
+     *      @param [in] writer          The used xml writer.
+     *      @param [in] file            The file to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writeFile(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
 
@@ -56,8 +57,9 @@ private:
     /*!
      *  Write the file types.
      *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] file    The file to be written.
+     *      @param [in] writer          The used xml writer.
+     *      @param [in] file            The file to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writeFileTypes(QXmlStreamWriter& writer, QSharedPointer<File> file, Document::Revision docRevision) const;
 

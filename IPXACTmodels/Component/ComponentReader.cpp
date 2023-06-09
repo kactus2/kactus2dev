@@ -434,13 +434,11 @@ void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointe
 
     if (!fileSetsElement.isNull())
     {
-        FileSetReader setReader;
-
         QDomNodeList fileSetNodeList = fileSetsElement.elementsByTagName(QStringLiteral("ipxact:fileSet"));
         for (int fileSetIndex = 0; fileSetIndex < fileSetNodeList.count(); ++fileSetIndex)
         {
             QDomNode fileSetNode = fileSetNodeList.at(fileSetIndex);
-            QSharedPointer<FileSet> newFileSet = setReader.createFileSetFrom(fileSetNode, newComponent->getRevision());
+            QSharedPointer<FileSet> newFileSet = FileSetReader::createFileSetFrom(fileSetNode, newComponent->getRevision());
 
             newComponent->getFileSets()->append(newFileSet);
         }

@@ -84,6 +84,14 @@ void FileBuilder::setFileType(QString const& newFileType, QString const& libext)
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileBuilder::setFileType()
+//-----------------------------------------------------------------------------
+void FileBuilder::setFileType(FileType const& fileType)
+{
+    fileType_ = fileType;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileBuilder::hasFileType()
 //-----------------------------------------------------------------------------
 bool FileBuilder::hasFileType(QString const& fileType) const
