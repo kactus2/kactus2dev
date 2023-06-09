@@ -24,12 +24,11 @@ public:
 
 private slots:
 
-    void initTestCase();
-    void cleanupTestCase();
     void init();
-    void cleanup();
 
     void writeSimpleFileSet();
+    void writeSimple2022FileSet();
+
     void writeGroups();
     void writeFiles();
     void writeDefaultFileBuilders();
@@ -53,35 +52,11 @@ tst_FileSetWriter::tst_FileSetWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_FileSetWriter::initTestCase()
-//-----------------------------------------------------------------------------
-void tst_FileSetWriter::initTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_FileSetWriter::cleanupTestCase()
-//-----------------------------------------------------------------------------
-void tst_FileSetWriter::cleanupTestCase()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: tst_FileSetWriter::init()
 //-----------------------------------------------------------------------------
 void tst_FileSetWriter::init()
 {
     testFileSet_ = QSharedPointer<FileSet> (new FileSet("testFileSet"));
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_FileSetWriter::cleanup()
-//-----------------------------------------------------------------------------
-void tst_FileSetWriter::cleanup()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -92,19 +67,14 @@ void tst_FileSetWriter::writeSimpleFileSet()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
+    testFileSet_->setDisplayName("fileSetDisplay");
+    testFileSet_->setDescription("fileSetDescription");
+
     QString expectedOutput(
         "<ipxact:fileSet>"
             "<ipxact:name>testFileSet</ipxact:name>"
         "</ipxact:fileSet>"
         );
-
-    FileSetWriter::writeFileSet(xmlStreamWriter, testFileSet_, Document::Revision::Std14);
-    QCOMPARE(output, expectedOutput);
-
-    output.clear();
-    
-    testFileSet_->setDisplayName("fileSetDisplay");
-    testFileSet_->setDescription("fileSetDescription");
 
     expectedOutput = 
         "<ipxact:fileSet>"
@@ -115,6 +85,30 @@ void tst_FileSetWriter::writeSimpleFileSet()
         ;
 
     FileSetWriter::writeFileSet(xmlStreamWriter, testFileSet_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileSetWriter::writeSimple2022FileSet()
+//-----------------------------------------------------------------------------
+void tst_FileSetWriter::writeSimple2022FileSet()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testFileSet_->setDisplayName("fileSetDisplay");
+    testFileSet_->setShortDescription("brief");
+    testFileSet_->setDescription("fileSetDescription");
+
+    QString  expectedOutput =
+        "<ipxact:fileSet>"
+        "<ipxact:name>testFileSet</ipxact:name>"
+        "<ipxact:displayName>fileSetDisplay</ipxact:displayName>"
+        "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+        "<ipxact:description>fileSetDescription</ipxact:description>"
+        "</ipxact:fileSet>";
+
+    FileSetWriter::writeFileSet(xmlStreamWriter, testFileSet_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 

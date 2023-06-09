@@ -43,12 +43,8 @@ void FileBuilderWriter::Details::writeBuildModel(QXmlStreamWriter& writer, QShar
 {
     writer.writeTextElement(QStringLiteral("ipxact:command"), fileBuilder->getCommand());
 
-    if (!fileBuilder->getFlags().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:flags"), fileBuilder->getFlags());
-    }
-    if (!fileBuilder->getReplaceDefaultFlags().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), fileBuilder->getReplaceDefaultFlags());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:flags"), fileBuilder->getFlags());
+
+    CommonItemsWriter::writeNonEmptyElement(writer, 
+        QStringLiteral("ipxact:replaceDefaultFlags"), fileBuilder->getReplaceDefaultFlags());
 }

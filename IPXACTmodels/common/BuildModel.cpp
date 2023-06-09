@@ -14,10 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: BuildModel::BuildModel()
 //-----------------------------------------------------------------------------
-BuildModel::BuildModel() :
-command_(),
-flags_(),
-replaceDefaultFlags_()
+BuildModel::BuildModel()
 {
 
 }

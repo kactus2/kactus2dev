@@ -229,7 +229,7 @@ private:
     void copySourceFiles(const Function& other);
 
 	 //! When true, the generator compiles a separate object module for each instance of the component.
-	 bool replicate_;
+	 bool replicate_ = false;
 
 	 //! The entry point name for the function or subroutine.
 	 QString entryPoint_;
@@ -241,7 +241,8 @@ private:
 	 QString returnType_;
 
 	 //! Contains arguments passed when this function is called.
-     QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments_;
+     QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments_ =
+		 QSharedPointer<QList<QSharedPointer<NameValuePair> > >(new QList<QSharedPointer<NameValuePair> >);
 
 	 //! Holds whether the software function is disabled or not.
      QString disabled_;
@@ -250,7 +251,8 @@ private:
 	 QMap<QString, QString> disabledAttributes_;
 
 	 //!  References any source files. The order of the source files must be maintained.
-     QSharedPointer<QList<QSharedPointer<SourceFile> > > sourceFiles_;
+	 QSharedPointer<QList<QSharedPointer<SourceFile> > > sourceFiles_ =
+		 QSharedPointer<QList<QSharedPointer<SourceFile> > >(new QList<QSharedPointer<SourceFile> >);
 };
 
 #endif // FUNCTION_H

@@ -32,6 +32,12 @@ namespace FileReader
      */
     IPXACTMODELS_EXPORT QSharedPointer<File> createFileFrom(QDomNode const& fileNode, Document::Revision docRevision);
 
+    /*!
+     *  Creates a new file type from a given node.
+     *
+     *      @param [in] fileTypeNode    XML description of the file type.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
+     */
     FileType parseFileType(QDomNode const& fileTypeNode, Document::Revision docRevision);
 
 

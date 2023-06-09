@@ -18,12 +18,11 @@
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
-#include <QObject>
 
 //-----------------------------------------------------------------------------
 //! File dependency class.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT FileDependency : public QObject, public VendorExtension
+class IPXACTMODELS_EXPORT FileDependency : public VendorExtension
 {
 public:
     //-----------------------------------------------------------------------------
@@ -191,16 +190,16 @@ private:
     QString desc_;
 
     //! If true, the dependency is locked and cannot be modified.
-    bool locked_;
+    bool locked_ = false;
 
     //! If true, the dependency is bidirectional.
-    bool bidirectional_;
+    bool bidirectional_ = false;
 
     //! If true, the dependency is a manually created one.
-    bool manual_;
+    bool manual_ = false;
 
     //! The status of the dependency.
-    Status status_;
+    Status status_ = STATUS_UNCHANGED;
 };
 
 #endif // FILEDEPENDENCY_H

@@ -16,15 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
-FileDependency::FileDependency() :
-QObject(),
-file1_(),
-file2_(),
-desc_(),
-locked_(false),
-bidirectional_(false),
-manual_(false),
-status_(STATUS_UNCHANGED)
+FileDependency::FileDependency()
 {
 
 }
@@ -33,7 +25,6 @@ status_(STATUS_UNCHANGED)
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
 FileDependency::FileDependency(FileDependency const& rhs) :
-QObject(),
 file1_(rhs.file1_),
 file2_(rhs.file2_),
 desc_(rhs.desc_),
@@ -48,15 +39,7 @@ status_(rhs.status_)
 //-----------------------------------------------------------------------------
 // Function: FileDependency::FileDependency()
 //-----------------------------------------------------------------------------
-FileDependency::FileDependency(QDomNode const& node) :
-QObject(),
-file1_(),
-file2_(),
-desc_(),
-locked_(false),
-bidirectional_(false),
-manual_(false),
-status_(STATUS_UNCHANGED)
+FileDependency::FileDependency(QDomNode const& node)
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {

@@ -59,12 +59,9 @@ void FileSetWriter::Details::writeGroups(QXmlStreamWriter& writer, QSharedPointe
 void FileSetWriter::Details::writeFiles(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles, Document::Revision docRevision)
 {
-    if (!fileSetFiles->isEmpty())
+    for (QSharedPointer<File> file : *fileSetFiles)
     {
-        for (QSharedPointer<File> file : *fileSetFiles)
-        {
-            FileWriter::writeFile(writer, file, docRevision);
-        }
+        FileWriter::writeFile(writer, file, docRevision);
     }
 }
 
@@ -72,15 +69,12 @@ void FileSetWriter::Details::writeFiles(QXmlStreamWriter& writer,
 // Function: FileSetWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
 void FileSetWriter::Details::writeDefaultFileBuilders(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders, 
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders,
     Document::Revision docRevision)
 {
-    if (!defaultFileBuilders->isEmpty())
+    for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders)
     {
-        for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders)
-        {
-            FileBuilderWriter::writeDefaultFileBuilder(writer, fileBuilder, docRevision);
-        }
+        FileBuilderWriter::writeDefaultFileBuilder(writer, fileBuilder, docRevision);
     }
 }
 
@@ -132,10 +126,7 @@ void FileSetWriter::Details::writeFunctions(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 void FileSetWriter::Details::writeFunctionEntryPoint(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getEntryPoint().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:entryPoint"), function->getEntryPoint());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:entryPoint"), function->getEntryPoint());
 }
 
 //-----------------------------------------------------------------------------
@@ -143,10 +134,7 @@ void FileSetWriter::Details::writeFunctionEntryPoint(QXmlStreamWriter& writer, Q
 //-----------------------------------------------------------------------------
 void FileSetWriter::Details::writeFunctionReturnType(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getReturnType().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:returnType"), function->getReturnType());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:returnType"), function->getReturnType());
 }
 
 //-----------------------------------------------------------------------------
@@ -174,10 +162,7 @@ void FileSetWriter::Details::writeFunctionArguments(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 void FileSetWriter::Details::writeFunctionDisabledValue(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getDisabled().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:disabled"), function->getDisabled());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:disabled"), function->getDisabled());
 }
 
 //-----------------------------------------------------------------------------

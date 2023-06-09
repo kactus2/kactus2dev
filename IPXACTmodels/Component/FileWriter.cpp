@@ -194,10 +194,9 @@ void FileWriter::Details::writeBuildCommand(QXmlStreamWriter& writer, QSharedPoi
         writer.writeStartElement(QStringLiteral("ipxact:buildCommand"));
 
         QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
-        if (!buildCommand->getCommand().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:command"), buildCommand->getCommand());
-        }
+
+        CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:command"), buildCommand->getCommand());
+
         if (!buildCommand->getFlags().isEmpty())
         {
             writer.writeStartElement(QStringLiteral("ipxact:flags"));
@@ -210,14 +209,12 @@ void FileWriter::Details::writeBuildCommand(QXmlStreamWriter& writer, QSharedPoi
             writer.writeCharacters(buildCommand->getFlags());
             writer.writeEndElement(); // ipxact:flags
         }
-        if (!buildCommand->getReplaceDefaultFlags().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), buildCommand->getReplaceDefaultFlags());
-        }
-        if (!buildCommand->getTargetName().isEmpty())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:targetName"), buildCommand->getTargetName());
-        }
+
+        CommonItemsWriter::writeNonEmptyElement(writer,
+            QStringLiteral("ipxact:replaceDefaultFlags"), buildCommand->getReplaceDefaultFlags());
+
+        CommonItemsWriter::writeNonEmptyElement(writer,
+            QStringLiteral("ipxact:targetName"), buildCommand->getTargetName());
 
         writer.writeEndElement(); // ipxact:buildCommand
     }

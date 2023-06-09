@@ -191,6 +191,7 @@ void tst_FileSetReader::read2022DefaultFileBuilders()
     QString documentContent(
         "<ipxact:fileSet>"
             "<ipxact:name>testFileSet</ipxact:name>"
+            "<ipxact:shortDescription>brief test</ipxact:shortDescription>"
             "<ipxact:defaultFileBuilder>"
                 "<ipxact:fileType user=\"userFile\" libext=\"ext\">user</ipxact:fileType>"
                 "<ipxact:command>4+5+6-14</ipxact:command>"
@@ -211,7 +212,7 @@ void tst_FileSetReader::read2022DefaultFileBuilders()
 
     QSharedPointer<FileSet> testFileSet = FileSetReader::createFileSetFrom(fileSetNode, Document::Revision::Std22);
 
-    QCOMPARE(testFileSet->name(), QString("testFileSet"));
+    QCOMPARE(testFileSet->shortDescription(), QString("brief test"));
 
     QCOMPARE(testFileSet->getDefaultFileBuilders()->size(), 1);
 
@@ -312,7 +313,7 @@ void tst_FileSetReader::readFunctions()
     QCOMPARE(testFunction->getSourceFiles()->size(), 1);
     QSharedPointer<Function::SourceFile> testSource = testFunction->getSourceFiles()->first();
     QCOMPARE(testSource->getSourceName(), QString("sourcery"));
-    QCOMPARE(testSource->getFileType(), QString("swObject"));
+    QCOMPARE(testSource->getFileType().type_, QString("swObject"));
 }
 
 //-----------------------------------------------------------------------------

@@ -24,8 +24,7 @@ QSharedPointer<FileSet> FileSetReader::createFileSetFrom(QDomNode const& fileSet
     QDomElement fileSetElement = fileSetNode.toElement();
     QSharedPointer<FileSet> newFileSet (new FileSet());
 
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(fileSetNode, newFileSet);
+    NameGroupReader::parseNameGroup(fileSetNode, newFileSet);
 
     Details::parseGroups(fileSetElement, newFileSet);
 

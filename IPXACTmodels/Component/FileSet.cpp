@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
-FileSet::FileSet(const QString& name /* = QString() */, const QString& group /* = QString() */) :
+FileSet::FileSet(QString const& name, QString const& group) :
 NameGroup(name),
 Extendable()
 {
@@ -175,7 +175,7 @@ void FileSet::setDependencies(QSharedPointer<QStringList> newDependencies)
 //-----------------------------------------------------------------------------
 // Function: FileSet::addDependency()
 //-----------------------------------------------------------------------------
-void FileSet::addDependency( const QString& path )
+void FileSet::addDependency( QString const& path )
 {
     dependencies_->append(path);
 }
@@ -244,7 +244,7 @@ void FileSet::addFile(QSharedPointer<File> file)
 //-----------------------------------------------------------------------------
 // Function: FileSet::addFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settings)
+QSharedPointer<File> FileSet::addFile(QString const& filePath, QSettings& settings)
 {
     QSharedPointer<File> file = Search::findByName(filePath, *files_);
     
