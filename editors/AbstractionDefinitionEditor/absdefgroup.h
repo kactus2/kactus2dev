@@ -29,6 +29,7 @@ class VLNVEditor;
 class LibraryInterface;
 class AbstractionDefinitionPortsSortFilter;
 class PortAbstractionInterface;
+class DocumentNameGroupEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -98,11 +99,6 @@ signals:
 
 private slots:
 
-	/*!
-     *  Handler for changing the description of the abstraction definition.
-     */
-    void onDescriptionChanged();
-
     /*!
      *  Handle the change in abstraction definition extend.
      */
@@ -150,17 +146,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Displays the VLNV of the abstraction definition.
-    VLNVDisplayer* vlnvDisplay_;
+    //! Editor for abstraction definition document name group
+    DocumentNameGroupEditor* documentNameGroupEditor_;
 
     //! Editor for the abstraction definition extend.
     VLNVEditor* extendEditor_;
 
     //! Displays the VLNV of the referenced bus definition.
     VLNVDisplayer* busDisplay_;
-
-    //! Editor for the description of the abstraction definition.
-    QPlainTextEdit* descriptionEditor_;
 
     //! Contains tabs for wire and transactional ports.
     QTabWidget portTabs_;
