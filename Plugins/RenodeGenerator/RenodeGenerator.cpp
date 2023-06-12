@@ -16,15 +16,14 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
-#include <QFileInfo>
+#include <QCoreApplication>
 #include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::RenodeGenerator()
 //-----------------------------------------------------------------------------
 RenodeGenerator::RenodeGenerator(LibraryInterface* library):
-library_(library),
-generatedFiles_()
+library_(library)
 {
 
 }
@@ -32,16 +31,17 @@ generatedFiles_()
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::generate()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer, bool createCpuFile, bool createMemoryFile,
-    bool createPeripheralFile)
+void RenodeGenerator::generate(QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer,
+    bool createCpuFile, QString const& cpuFileName, bool createMemoryFile, QString const& memoryFileName,
+    bool createPeripheralFile, QString const& peripheralFileName)
 {
-    QStringList cpuNames;
+    QStringList fileNames;
     if (cpuContainer->getRoutes().empty() == false)
     {
         if (createCpuFile || createMemoryFile || createPeripheralFile)
         {
-            writeFile(topComponent, componentPath, cpuContainer, cpuNames, createCpuFile, createMemoryFile, createPeripheralFile);
+            writeFiles(componentPath, cpuContainer, fileNames, createCpuFile, cpuFileName,
+                createMemoryFile, memoryFileName, createPeripheralFile, peripheralFileName);
         }
     }
 }
@@ -55,10 +55,11 @@ QStringList RenodeGenerator::getGeneratedFiles() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeGenerator::writeFile()
+// Function: RenodeGenerator::writeFiles()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeFile(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<RenodeCpuRoutesContainer> cpuRoute, QStringList& fileNames, bool createCpuFile, bool createMemoryFile, bool createPeripheralFile)
+void RenodeGenerator::writeFiles(QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
+    QStringList& fileNames, bool createCpuFile, QString const& cpuFileName, bool createMemoryFile,
+    QString const& memoryFileName, bool createPeripheralFile, QString const& peripheralFileName)
 {
     QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getRoutes().first()->cpuInterface_;
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
@@ -66,29 +67,36 @@ void RenodeGenerator::writeFile(QSharedPointer<Component> topComponent, QString 
         ConnectivityGraphUtilities::getInterfacedComponent(library_, routeComponent);
     if (interfaceComponent)
     {
-        QSharedPointer<Cpu> interfaceCPU = cpuRoute->getCpu();
-
-        QString fileName = topComponent->getVlnv().getName() + "_" + interfaceCPU->name();
-        if (fileNames.contains(interfaceCPU->name()))
-        {
-            fileName = fileName + "_" + QString::number(getFileNumberExtension(fileNames, fileName));
-        }
-
-        QString renodeFilePath = componentPath + "/" + fileName;
+        QString renodeFilePath = componentPath + "/";
 
         if (createCpuFile)
         {
-            writeCPU(renodeFilePath, cpuRoute);
+            writeCPU(renodeFilePath, cpuRoute, getUniqueFileName(fileNames, cpuFileName));
         }
         if (createMemoryFile)
         {
-            writeMemories(renodeFilePath, cpuRoute);
+            writeMemories(renodeFilePath, cpuRoute, getUniqueFileName(fileNames, memoryFileName));
         }
         if (createPeripheralFile)
         {
-            writePeripherals(renodeFilePath, componentPath, cpuRoute);
+            writePeripherals(renodeFilePath, componentPath, cpuRoute, getUniqueFileName(fileNames, peripheralFileName));
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodeGenerator::getUniqueFileName()
+//-----------------------------------------------------------------------------
+QString RenodeGenerator::getUniqueFileName(QStringList& fileNames, QString const& currentFileName) const
+{
+    QString modifiedFileName = currentFileName;
+    if (fileNames.contains(modifiedFileName))
+    {
+        modifiedFileName = currentFileName + "_" + QString::number(getFileNumberExtension(fileNames, currentFileName));
+    }
+
+    fileNames.append(modifiedFileName);
+    return modifiedFileName;
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +105,7 @@ void RenodeGenerator::writeFile(QSharedPointer<Component> topComponent, QString 
 int RenodeGenerator::getFileNumberExtension(QStringList const& fileNames, QString const& fileName) const
 {
     int extensionNumber = -1;
-    for (auto file : fileNames)
+    for (QString file : fileNames)
     {
         if (file.contains(fileName))
         {
@@ -111,9 +119,9 @@ int RenodeGenerator::getFileNumberExtension(QStringList const& fileNames, QStrin
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeCPU()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> cpuContainer)
+void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> cpuContainer, QString const& fileName)
 {
-    QString cpuFilePath = filePath + "_" + RenodeConstants::RENODECPUFILENAME + "." + RenodeConstants::RENODEFILETYPE;
+    QString cpuFilePath = filePath + fileName + "." + RenodeConstants::RENODEFILETYPE;
 
     QFile outputFile(cpuFilePath);
     if (!outputFile.open(QIODevice::WriteOnly))
@@ -134,14 +142,15 @@ void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpu
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writePeripherals()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writePeripherals(QString const& filePath, QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection)
+void RenodeGenerator::writePeripherals(QString const& filePath, QString const& peripheralPath,
+    QSharedPointer<RenodeCpuRoutesContainer> renodeCollection, QString const& fileName)
 {
     if (renodeCollection->getPeripherals().isEmpty())
     {
         return;
     }
 
-    QString peripheralFilePath = filePath + "_" + RenodeConstants::RENODEPERIPHERALFILENAME + "." + RenodeConstants::RENODEFILETYPE;
+    QString peripheralFilePath = filePath + fileName + "." + RenodeConstants::RENODEFILETYPE;
 
     QFile outputFile(peripheralFilePath);
     if (!outputFile.open(QIODevice::WriteOnly))
@@ -154,7 +163,7 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& c
     QString tab = "\t";
     for (auto peripheral : renodeCollection->getPeripherals())
     {
-        writePeripheral(stream, peripheral, tab, componentPath);
+        writePeripheral(stream, peripheral, tab, peripheralPath);
 
         if (peripheral != renodeCollection->getPeripherals().last())
         {
@@ -168,47 +177,67 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& c
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writePeripheral()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripherals> peripheral, QString const& tab, QString const& renodeFilePath)
+void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripheral> peripheral, QString const& tab, QString const& renodeFilePath)
 {
-    QString filePath = peripheral->filePath_;
-    if (filePath.last(1) != "/")
-    {
-        filePath.append("/");
-    }
-
-    QString fileName = filePath + peripheral->peripheralName_ + "." + RenodeConstants::PYTHONFILETYPE;
-
     stream << peripheral->peripheralName_ << ": " << peripheral->className_ << " @ sysbus " << peripheral->baseAddress_ << Qt::endl;
     stream << tab << "size: " << peripheral->size_ << Qt::endl;
-    stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
-    stream << tab << "filename: " << fileName << Qt::endl;
 
-    QString directoryPath = renodeFilePath + "/" + peripheral->filePath_;
-    QDir pathDirectory(directoryPath);
-    if (!pathDirectory.exists())
+    if (peripheral->className_ == RenodeConstants::PYTHONPERIPHERAL)
     {
-        QDir currentDirectory(renodeFilePath);
-        currentDirectory.mkdir(peripheral->filePath_);
+        QString filePath = peripheral->filePath_;
+        if (filePath.last(1) != "/")
+        {
+            filePath.append("/");
+        }
+
+        QString fileName = filePath + peripheral->peripheralName_ + "." + RenodeConstants::PYTHONFILETYPE;
+
+        stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
+        stream << tab << "filename: " << fileName << Qt::endl;
+
+        QString directoryPath = renodeFilePath + "/" + peripheral->filePath_;
+        QDir pathDirectory(directoryPath);
+        if (!pathDirectory.exists())
+        {
+            QDir currentDirectory(renodeFilePath);
+            currentDirectory.mkdir(peripheral->filePath_);
+        }
+
+        QString peripheralFilePath = renodeFilePath + "/" + fileName;
+        QFile peripheralOutputFile(peripheralFilePath);
+        peripheralOutputFile.open(QIODevice::WriteOnly);
+
+        if (peripheral->template_)
+        {
+            QString templatePath = QCoreApplication::applicationDirPath() + "/" + peripheral->template_->template_;
+            QFile templateFile(templatePath);
+            if (templateFile.open(QIODevice::ReadOnly))
+            {
+                QTextStream templateStream(&templateFile);
+                QTextStream peripheralStream(&peripheralOutputFile);
+
+                while (!templateStream.atEnd())
+                {
+                    peripheralStream << templateStream.readAll();
+                }
+            }
+        }
+
+        generatedFiles_.append(peripheralFilePath);
     }
-
-    QString peripheralFilePath = renodeFilePath + "/" + fileName;
-    QFile peripheralOutputFile(peripheralFilePath);
-    peripheralOutputFile.open(QIODevice::WriteOnly);
-
-    generatedFiles_.append(peripheralFilePath);
 }
 
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeMemories()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeMemories(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection)
+void RenodeGenerator::writeMemories(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection, QString const& fileName)
 {
     if (renodeCollection->getMemories().isEmpty())
     {
         return;
     }
 
-    QString memoryFilePath = filePath + "_" + RenodeConstants::RENODEMEMORYFILENAME + "." + RenodeConstants::RENODEFILETYPE;
+    QString memoryFilePath = filePath + fileName + "." + RenodeConstants::RENODEFILETYPE;
     QFile outputFile(memoryFilePath);
     if (!outputFile.open(QIODevice::WriteOnly))
     {

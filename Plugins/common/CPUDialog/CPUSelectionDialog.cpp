@@ -26,13 +26,15 @@
 #include <QFormLayout>
 #include <QIcon>
 #include <QFileDialog>
+#include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
 CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType,
-    QWidget* extraEditor, QWidget *parent, QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
+    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor,
+    QString const& dialogType, QWidget* extraEditor, QWidget *parent, int minimumWidth,
+    QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
     QString const& configurationView):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
@@ -72,9 +74,9 @@ extraEditor_(extraEditor)
 
     connect(viewSelection_, SIGNAL(currentIndexChanged(int)), this, SLOT(onViewChanged()), Qt::UniqueConnection);
 
-    connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SIGNAL(changeInSelectedPath(QString const&)), Qt::UniqueConnection);
+	connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SLOT(setupFolderPath(QString const&)), Qt::UniqueConnection);
 
-    setMinimumWidth(840);
+    setMinimumWidth(minimumWidth);
 }
 
 //-----------------------------------------------------------------------------
@@ -113,47 +115,45 @@ void CPUSelectionDialog::onViewChanged()
 //-----------------------------------------------------------------------------
 void CPUSelectionDialog::setupLayout()
 {
-    QLabel* viewLabel(new QLabel("Select view:"));
+	auto viewLabel(new QLabel("Select view:"));
 
-    QHBoxLayout* viewLayout(new QHBoxLayout());
+	auto viewLayout(new QHBoxLayout());
     viewLayout->addWidget(viewLabel);
     viewLayout->addWidget(viewSelection_, 1);
 
-    QVBoxLayout* filesetLayout(new QVBoxLayout());
+	auto filesetLayout(new QVBoxLayout());
     filesetLayout->addWidget(fileSetSelection_);
     fileSetBox_->setLayout(filesetLayout);
 
-    QPushButton* openFolderButton(
-        new QPushButton(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this));
+	auto openFolderButton(new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"), QString(), this));
 
     connect(openFolderButton, SIGNAL(clicked()), this, SLOT(onChangeTargetFolder()), Qt::UniqueConnection);
 
-    QHBoxLayout* folderLayout(new QHBoxLayout());
+	auto folderLayout(new QHBoxLayout());
     folderLayout->addWidget(folderLine_, 1);
     folderLayout->addWidget(openFolderButton);
     folderLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-    QGroupBox* folderbox(new QGroupBox("Select destination folder"));
+	auto folderbox(new QGroupBox("Select destination folder"));
     folderbox->setLayout(folderLayout);
 
-    QVBoxLayout* leftLayout(new QVBoxLayout());
+	auto leftLayout(new QVBoxLayout());
     leftLayout->addLayout(viewLayout);
     leftLayout->addWidget(fileSetBox_);
     leftLayout->addWidget(folderbox);
 
-    if (extraEditor_ != 0)
+	if (extraEditor_ != nullptr)
     {
         leftLayout->addWidget(extraEditor_);
     }
 
     leftLayout->addStretch(2);
 
-    QHBoxLayout* topLayout(new QHBoxLayout());
+	auto topLayout(new QHBoxLayout());
     topLayout->addLayout(leftLayout);
     topLayout->addWidget(cpuDetailEditor_, 1);
 
-    QDialogButtonBox* dialogButtons = new QDialogButtonBox(QDialogButtonBox::Cancel,
-        Qt::Horizontal);
+	auto dialogButtons(new QDialogButtonBox(QDialogButtonBox::Cancel, Qt::Horizontal));
     QPushButton* writeButton = dialogButtons->addButton("Ok", QDialogButtonBox::AcceptRole);
     writeButton->setDefault(false);
     writeButton->setAutoDefault(false);
@@ -161,7 +161,7 @@ void CPUSelectionDialog::setupLayout()
     connect(dialogButtons, SIGNAL(accepted()), this, SLOT(accept()), Qt::UniqueConnection);
     connect(dialogButtons, SIGNAL(rejected()), this, SLOT(reject()), Qt::UniqueConnection);
 
-    QVBoxLayout* masterLayout(new QVBoxLayout(this));
+	auto masterLayout(new QVBoxLayout(this));
     masterLayout->addLayout(topLayout);
     masterLayout->addWidget(dialogButtons);
 }

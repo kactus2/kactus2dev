@@ -54,6 +54,7 @@ public:
      *      @param [in] dialogType              The type text for dialog.
      *      @param [in] extraEditor             An extra editor.
 	 *      @param [in] parent                  Parent widget.
+     *      @param [in] minimumWidth            The minimum width of the dialog.
      *      @param [in] configurationFolder     Folder path for the generator.
      *      @param [in] saveToFileSet           Flag for save to file set.
      *      @param [in] configurationFileSet    Name of the target file set.
@@ -67,6 +68,7 @@ public:
         QString const& dialogType,
         QWidget* extraEditor,
         QWidget *parent,
+        int minimumWidth = 840,
         QString const& configurationFolder = "",
         bool saveToFileSet = true,
         QString const& configurationFileSet = "",

@@ -54,8 +54,8 @@ QJsonObject RenodeConfigurationManager::getConfigurationObject(QSharedPointer<Co
 //-----------------------------------------------------------------------------
 void RenodeConfigurationManager::createConfigureFile(QSharedPointer<RenodeCpuRoutesContainer> renodeData,
     QString const& selectedView, bool saveToFileSet, QString const& selectedFileSet, QString const& folderPath,
-    bool writeCPU, bool writeMemory, bool writePeripherals, QString const& selectedCpu,
-    QSharedPointer<Component> topComponent)
+    bool writeCPU, QString const& cpuFileName, bool writeMemory, QString const& memoryFileName, bool writePeripherals,
+    QString const& peripheralsFileName, QString const& selectedCpu, QSharedPointer<Component> topComponent)
 {
     QFile configurationFile(getPathToConfigurationFile(topComponent, RenodeConstants::CONFIGURATIONFILEEXTENSION));
     if (!configurationFile.open(QIODevice::WriteOnly))
@@ -63,8 +63,8 @@ void RenodeConfigurationManager::createConfigureFile(QSharedPointer<RenodeCpuRou
         return;
     }
 
-    QJsonDocument document = createJsonDocument(
-        renodeData, selectedView, saveToFileSet, selectedFileSet, folderPath, writeCPU, writeMemory, writePeripherals, selectedCpu);
+    QJsonDocument document = createJsonDocument(renodeData, selectedView, saveToFileSet, selectedFileSet, folderPath,
+        writeCPU, cpuFileName, writeMemory, memoryFileName, writePeripherals, peripheralsFileName, selectedCpu);
     configurationFile.write(document.toJson());
 
     writeModelToFile(topComponent);
@@ -75,7 +75,8 @@ void RenodeConfigurationManager::createConfigureFile(QSharedPointer<RenodeCpuRou
 //-----------------------------------------------------------------------------
 QJsonDocument RenodeConfigurationManager::createJsonDocument(QSharedPointer<RenodeCpuRoutesContainer> renodeCpu,
     QString const& selectedView, bool saveToFileSetFlag, QString const& selectedFileSet, QString const& folderPath,
-    bool writeCPU, bool writeMemory, bool writePeripherals, QString const& selectedCpu)
+    bool writeCPU, QString const& cpuFileName, bool writeMemory, QString const& memoryFileName, bool writePeripherals,
+    QString const& peripheralsFileName, QString const& selectedCpu)
 {
     QJsonObject configurationObject;
 
@@ -117,6 +118,11 @@ QJsonDocument RenodeConfigurationManager::createJsonDocument(QSharedPointer<Reno
             peripheralObject.insert(RenodeConstants::PERIPHERALINITABLE, peripheral->initable_);
             peripheralObject.insert(RenodeConstants::PERIPHERALPATH, peripheral->filePath_);
 
+            if (peripheral->template_)
+            {
+                peripheralObject.insert(RenodeConstants::PERIPHERALTEMPLATE, peripheral->template_->identifier_);
+            }
+
             peripheralArray.push_back(peripheralObject);
         }
 
@@ -137,6 +143,19 @@ QJsonDocument RenodeConfigurationManager::createJsonDocument(QSharedPointer<Reno
     writeFlagsObject.insert(RenodeConstants::SINGLECPU, writeCPU);
     writeFlagsObject.insert(RenodeConstants::MEMORY, writeMemory);
     writeFlagsObject.insert(RenodeConstants::PERIPHERALS, writePeripherals);
+
+    if (!cpuFileName.isEmpty())
+    {
+        writeFlagsObject.insert(RenodeConstants::RENODECPUFILEIDENTIFIER, cpuFileName);
+    }
+    if (!memoryFileName.isEmpty())
+    {
+        writeFlagsObject.insert(RenodeConstants::RENODEMEMORYFILEIDENTIFIER, memoryFileName);
+    }
+    if (!peripheralsFileName.isEmpty())
+    {
+        writeFlagsObject.insert(RenodeConstants::RENODEPERIPHERALFILEIDENTIFIER, peripheralsFileName);
+    }
 
     configurationObject.insert(RenodeConstants::WRITEFILES, writeFlagsObject);
 

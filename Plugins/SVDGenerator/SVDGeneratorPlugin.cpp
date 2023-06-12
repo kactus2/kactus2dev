@@ -95,7 +95,7 @@ QString SVDGeneratorPlugin::getLicenseHolder() const
 //-----------------------------------------------------------------------------
 QWidget* SVDGeneratorPlugin::getSettingsWidget()
 {
-    return new QWidget();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -103,7 +103,7 @@ QWidget* SVDGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* SVDGeneratorPlugin::getSettingsModel()
 {
-    return NULL;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,8 +168,9 @@ void SVDGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Co
     SVDCPUEditor* cpuEditor(new SVDCPUEditor(configurationObject));
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames,
-        component->getFileSetNames(), cpuEditor, "SVD", 0, utility->getParentWidget(),
-        configurationFolderPath, saveToFileSetFlag, configurationFileSet, configurationView);
+        component->getFileSetNames(), cpuEditor, "SVD", nullptr, utility->getParentWidget(),
+        840, configurationFolderPath, saveToFileSetFlag, configurationFileSet,
+        configurationView);
     if (selectionDialog.exec() == QDialog::Accepted)
     {
         QVector<QSharedPointer<CpuRoutesContainer> > cpuRoutes = selectionDialog.getSelectedCPUs();

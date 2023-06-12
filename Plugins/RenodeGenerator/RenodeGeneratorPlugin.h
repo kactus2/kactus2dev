@@ -19,6 +19,8 @@
 #include <KactusAPI/include/IPluginUtility.h>
 #include <KactusAPI/include/CLIGenerator.h>
 
+#include <Plugins/RenodeGenerator/RenodeSettingsModel.h>
+
 class LibraryInterface;
 class FileSet;
 class File;
@@ -180,6 +182,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The settings model for Renode generator.
+    RenodeSettingsModel* settingsModel_ = new RenodeSettingsModel();
 };
 
 #endif // RENODEGENERATORPLUGIN_H

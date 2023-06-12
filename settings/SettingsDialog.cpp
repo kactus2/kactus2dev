@@ -23,8 +23,7 @@
 // Function: SettingsDialog()
 //-----------------------------------------------------------------------------
 SettingsDialog::SettingsDialog(QWidget* parent): 
-PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent),
-      settings_()
+PropertyPageDialog(QSize(24, 24), 1, VIEW_LIST, APPLY_ALL, parent)
 {
     setWindowTitle(tr("Settings"));
 

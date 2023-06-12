@@ -112,7 +112,7 @@ QVector<QSharedPointer<SingleCpuRoutesContainer> > ConnectivityGraphUtilities::g
                 {
                     QString checkBoxText = interfaceCPU->name() + " [" + routeComponent->getName() + "]";
 
-                    QSharedPointer<SingleCpuRoutesContainer> existingRoute = getCpuDetailRoute(interfaceCPU, defaultCPUs);
+                    QSharedPointer<SingleCpuRoutesContainer> existingRoute = getCpuDetailRoute(checkBoxText, defaultCPUs);
                     if (existingRoute)
                     {
                         QSharedPointer<CpuRouteStructs::CpuRoute> cpuRouteDetail = getRouteForInterface(master, existingRoute->getRoutes());
@@ -169,12 +169,12 @@ QSharedPointer<CpuRouteStructs::CpuRoute> ConnectivityGraphUtilities::getRouteFo
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphUtilities::getCpuDetailRoute()
 //-----------------------------------------------------------------------------
-QSharedPointer<SingleCpuRoutesContainer> ConnectivityGraphUtilities::getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu,
+QSharedPointer<SingleCpuRoutesContainer> ConnectivityGraphUtilities::getCpuDetailRoute(QString const& cpuText,
     QVector<QSharedPointer<SingleCpuRoutesContainer>> existingRoutes)
 {
     for (auto currentRoute : existingRoutes)
     {
-        if (currentRoute->getCpu() == comparisonCpu)
+        if (currentRoute->getFileID() == cpuText)
         {
             return currentRoute;
         }
