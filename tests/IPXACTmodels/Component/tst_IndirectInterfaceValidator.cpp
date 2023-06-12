@@ -25,8 +25,8 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
-#include <editors/ComponentEditor/common/ExpressionParser.h>
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -74,7 +74,7 @@ private:
 // Function: tst_IndirectInterfaceValidator::tst_IndirectInterfaceValidator()
 //-----------------------------------------------------------------------------
 tst_IndirectInterfaceValidator::tst_IndirectInterfaceValidator():
-containingComponent_ (new Component()),
+containingComponent_ (new Component(VLNV(), Document::Revision::Std14)),
     expressionParser_(new SystemVerilogExpressionParser()),
     parameterValidator_(new ParameterValidator(expressionParser_, 
     QSharedPointer<QList<QSharedPointer<Choice> > >(0)))
@@ -245,7 +245,7 @@ void tst_IndirectInterfaceValidator::testValidateTransparentBridges()
 
     IndirectInterfaceValidator validator(containingComponent_, expressionParser_, parameterValidator_);
 
-    QCOMPARE(validator.hasValidTransparentBridges(testInterface), isValid);
+    QCOMPARE(validator.hasValidTransparentBridges(testInterface->getTransparentBridges()), isValid);
 }
 
 //-----------------------------------------------------------------------------

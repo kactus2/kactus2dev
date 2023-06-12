@@ -14,12 +14,14 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Extendable.h>
+
 #include <QString>
 
 //-----------------------------------------------------------------------------
 //! Implementation of ipxact:transparentBridge element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT TransparentBridge 
+class IPXACTMODELS_EXPORT TransparentBridge : public Extendable
 {
 public:
 
@@ -39,9 +41,9 @@ public:
     /*!
      *  Set the master interface reference.
      *
-     *      @param [in] masterInterfaceName   The master interface name to reference.
+     *      @param [in] interfaceName   The master interface name to reference.
      */
-    void setMasterRef(QString const& masterInterfaceName);
+    void setMasterRef(QString const& interfaceName);
 
     /*!
      *  Get the referenced master interface name.
@@ -49,6 +51,20 @@ public:
      *      @return The name of the referenced master interface.
      */
     QString getMasterRef() const;
+
+    /*!
+     *  Set the initiator interface reference.
+     *
+     *      @param [in] interfaceName   The initiator interface name to reference.
+     */
+    void setInitiatorRef(QString const& interfaceName);
+
+    /*!
+     *  Get the referenced initiator interface name.
+     *
+     *      @return The name of the referenced initiator interface.
+     */
+    QString getInitiatorRef() const;
 
     /*!
      *  Sets the presence for the transparent bridge.
@@ -69,8 +85,8 @@ private:
 	// Disable assignment.
 	TransparentBridge& operator=(TransparentBridge const& rhs);
    
-    //! Reference to a master interface.
-    QString masterRef_;
+    //! Reference to an initiator interface.
+    QString initiatorRef_;
 
     //! Presence of the transparent bridge.
     QString isPresent_;

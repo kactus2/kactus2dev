@@ -16,79 +16,47 @@
 #include <QDomNode>
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/Document.h>
+
+#include <IPXACTmodels/ipxactmodels_global.h>
 
 class IndirectInterface;
 
 //-----------------------------------------------------------------------------
 //! XML writer class for IP-XACT Indirect Interface element.
 //-----------------------------------------------------------------------------
-class IndirectInterfaceWriter : public CommonItemsWriter
+namespace  IndirectInterfaceWriter
 {
-public:
-
-	//! The constructor.
-	IndirectInterfaceWriter();
-
-	//! The destructor.
-	virtual ~IndirectInterfaceWriter();
-
-    void writeIndirectInterface(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface) const;
-
-private:
-
-	// Disable copying.
-	IndirectInterfaceWriter(IndirectInterfaceWriter const& rhs);
-	IndirectInterfaceWriter& operator=(IndirectInterfaceWriter const& rhs);
-
     /*!
      *  Write the name group of the indirect interface.
      *
      *      @param [in] writer              The used XML writer.
      *      @param [in] indirectInterface   The indirect interface being written.
+     *      @param [in] docRevision         The applied IP-XACT standard revision.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface) const;
+    IPXACTMODELS_EXPORT void writeIndirectInterface(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface,
+        Document::Revision docRevision) ;
 
-    /*!
-     *  Write the indirect address and data fields of the indirect interface.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     */
-    void writeIndirectFields(QXmlStreamWriter &writer, QSharedPointer<IndirectInterface> indirectInterface) const;
-    
-    /*!
-     *  Write the memory map reference of the indirect interface.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     */
-    void writeMemoryMapReference(QXmlStreamWriter& writer,
-        QSharedPointer<IndirectInterface> indirectInterface) const;
-    
-    /*!
-     *  Write the transparent bridges of the indirect interface.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     */
-    void writeTransparentBridges(QXmlStreamWriter& writer,
-        QSharedPointer<IndirectInterface> indirectInterface) const;
-         
-    /*!
-     *  Write the bits in lau of the indirect interface.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     */
-    void writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface) const;
+    namespace Details
+    {
+        /*!
+         *  Write the indirect address and data fields of the indirect interface.
+         *
+         *      @param [in] writer              The used XML writer.
+         *      @param [in] indirectInterface   The indirect interface being written.
+         */
+        void writeIndirectFields(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface);
 
-    /*!
-     *  Write the endianness of the indirect interface.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] indirectInterface   The indirect interface being written.
-     */
-    void writeEndianness(QXmlStreamWriter& writer, QSharedPointer<IndirectInterface> indirectInterface) const;
+        /*!
+         *  Write the transparent bridges of the indirect interface.
+         *
+         *      @param [in] writer              The used XML writer.
+         *      @param [in] indirectInterface   The indirect interface being written.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         */
+        void writeTransparentBridges(QXmlStreamWriter& writer,
+            QSharedPointer<IndirectInterface> indirectInterface, Document::Revision docRevision);
+    }
 };
 
 #endif // INDIRECTINTERFACEWriter_H

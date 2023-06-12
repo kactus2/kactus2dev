@@ -34,6 +34,8 @@ private slots:
 
     void writeIndirectInterfaceWithBridges();
 
+    void writeIndirectInterfaceWith2022Bridges();
+
     void writeIndirectInterfaceWithParameters();
 
     void writeIndirectInterfaceWithVendorExtensions();
@@ -54,8 +56,6 @@ void tst_IndirectInterfaceWriter::writeSimpleIndirectInterface()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    IndirectInterfaceWriter writer;
-
     QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface1"));
     testInterface->setDisplayName("testDisplay");
     testInterface->setDescription("testDescription");
@@ -75,7 +75,7 @@ void tst_IndirectInterfaceWriter::writeSimpleIndirectInterface()
             "<ipxact:memoryMapRef>targetMap</ipxact:memoryMapRef>"
         "</ipxact:indirectInterface>");
 
-    writer.writeIndirectInterface(xmlStreamWriter, testInterface);
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -86,8 +86,6 @@ void tst_IndirectInterfaceWriter::writeEndiannessAndLauInInterface()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-
-    IndirectInterfaceWriter writer;
 
     QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface1"));
     testInterface->setIndirectAddressRef("addressId");
@@ -106,7 +104,7 @@ void tst_IndirectInterfaceWriter::writeEndiannessAndLauInInterface()
             "<ipxact:endianness>big</ipxact:endianness>"
         "</ipxact:indirectInterface>");
 
-    writer.writeIndirectInterface(xmlStreamWriter, testInterface);
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -117,8 +115,6 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithBridges()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-
-    IndirectInterfaceWriter writer;
 
     QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface"));
     testInterface->setIndirectAddressRef("addr");
@@ -142,7 +138,46 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithBridges()
             "</ipxact:transparentBridge>"
         "</ipxact:indirectInterface>");
 
-    writer.writeIndirectInterface(xmlStreamWriter, testInterface);
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IndirectInterfaceWriter::writeIndirectInterfaceWith2022Bridges()
+//-----------------------------------------------------------------------------
+void tst_IndirectInterfaceWriter::writeIndirectInterfaceWith2022Bridges()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface"));
+    testInterface->setIndirectAddressRef("addr");
+    testInterface->setIndirectDataRef("data");
+
+    QSharedPointer<TransparentBridge> firstBridge(new TransparentBridge("initiator1"));
+    testInterface->getTransparentBridges()->append(firstBridge);
+
+    QSharedPointer<TransparentBridge> extendedBridge(new TransparentBridge("initiator2"));
+    extendedBridge->setIsPresent("true");
+    extendedBridge->getVendorExtensions()->append(
+        QSharedPointer<VendorExtension>(new Kactus2Value("testExtension", "testValue")));
+
+    testInterface->getTransparentBridges()->append(extendedBridge);
+
+    QString expectedOutput( 
+        "<ipxact:indirectInterface>"
+            "<ipxact:name>interface</ipxact:name>"
+            "<ipxact:indirectAddressRef>addr</ipxact:indirectAddressRef>"
+            "<ipxact:indirectDataRef>data</ipxact:indirectDataRef>"
+            "<ipxact:transparentBridge initiatorRef=\"initiator1\"/>"
+            "<ipxact:transparentBridge initiatorRef=\"initiator2\">"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension>testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:transparentBridge>"
+        "</ipxact:indirectInterface>");
+
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -153,8 +188,6 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithParameters()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-
-    IndirectInterfaceWriter writer;
 
     QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface1"));
     testInterface->setIndirectAddressRef("addressId");
@@ -180,7 +213,7 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithParameters()
             "</ipxact:parameters>"
         "</ipxact:indirectInterface>");
 
-    writer.writeIndirectInterface(xmlStreamWriter, testInterface);
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -191,8 +224,6 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithVendorExtensions()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-
-    IndirectInterfaceWriter writer;
 
     QSharedPointer<IndirectInterface> testInterface(new IndirectInterface("interface1"));
     testInterface->setIndirectAddressRef("addressId");
@@ -211,7 +242,7 @@ void tst_IndirectInterfaceWriter::writeIndirectInterfaceWithVendorExtensions()
             "</ipxact:vendorExtensions>"
         "</ipxact:indirectInterface>");
 
-    writer.writeIndirectInterface(xmlStreamWriter, testInterface);
+    IndirectInterfaceWriter::writeIndirectInterface(xmlStreamWriter, testInterface, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

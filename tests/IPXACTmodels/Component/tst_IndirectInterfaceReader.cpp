@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/IndirectInterfaceReader.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QDomDocument>
 #include <QDomNode>
@@ -29,6 +30,7 @@ private slots:
     void simpleIndirectInterface();
     void fullIndirectInterface();
     void indirectInterfaceWithTransparentBridges();
+    void indirectInterfaceWithTransparentBridges2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -59,8 +61,7 @@ void tst_IndirectInterfaceReader::simpleIndirectInterface()
 
     QDomNode interfaceNode = document.firstChildElement("ipxact:indirectInterface");
 
-    IndirectInterfaceReader reader;
-    QSharedPointer<IndirectInterface> testInterface = reader.createIndirectInterfaceFrom(interfaceNode);
+    QSharedPointer<IndirectInterface> testInterface = IndirectInterfaceReader::createIndirectInterfaceFrom(interfaceNode, Document::Revision::Std14);
 
     QCOMPARE(testInterface->name(), QString("interface1"));
     QCOMPARE(testInterface->displayName(), QString("interfaceDisplay"));
@@ -108,8 +109,7 @@ void tst_IndirectInterfaceReader::fullIndirectInterface()
 
     QDomNode interfaceNode = document.firstChildElement("ipxact:indirectInterface");
 
-    IndirectInterfaceReader reader;
-    QSharedPointer<IndirectInterface> testInterface = reader.createIndirectInterfaceFrom(interfaceNode);
+    QSharedPointer<IndirectInterface> testInterface = IndirectInterfaceReader::createIndirectInterfaceFrom(interfaceNode, Document::Revision::Std14);
 
     QCOMPARE(testInterface->getAttributes().count(), 1);
     QCOMPARE(testInterface->getAttributes().value("testAttribute"), QString("testValue"));
@@ -139,7 +139,7 @@ void tst_IndirectInterfaceReader::indirectInterfaceWithTransparentBridges()
             "<ipxact:name>interface2</ipxact:name>"
             "<ipxact:indirectAddressRef>addressId</ipxact:indirectAddressRef>"
             "<ipxact:indirectDataRef>dataId</ipxact:indirectDataRef>"
-            "<ipxact:transparentBridge masterRef=\"masterInterface\">"                         
+            "<ipxact:transparentBridge masterRef=\"firstInterface\">"                         
                 "<ipxact:isPresent>true</ipxact:isPresent>"
             "</ipxact:transparentBridge>"
             "<ipxact:transparentBridge masterRef=\"secondInterface\">"                         
@@ -153,16 +153,55 @@ void tst_IndirectInterfaceReader::indirectInterfaceWithTransparentBridges()
 
     QDomNode interfaceNode = document.firstChildElement("ipxact:indirectInterface");
 
-    IndirectInterfaceReader reader;
-    QSharedPointer<IndirectInterface> testInterface = reader.createIndirectInterfaceFrom(interfaceNode);
+    QSharedPointer<IndirectInterface> testInterface = IndirectInterfaceReader::createIndirectInterfaceFrom(interfaceNode, Document::Revision::Std14);
 
     QCOMPARE(testInterface->getTransparentBridges()->count(), 2);
 
-    QCOMPARE(testInterface->getTransparentBridges()->first()->getMasterRef(), QString("masterInterface"));
+    QCOMPARE(testInterface->getTransparentBridges()->first()->getMasterRef(), QString("firstInterface"));
     QCOMPARE(testInterface->getTransparentBridges()->first()->getIsPresent(), QString("true"));
 
     QCOMPARE(testInterface->getTransparentBridges()->last()->getMasterRef(), QString("secondInterface"));
     QCOMPARE(testInterface->getTransparentBridges()->last()->getIsPresent(), QString("1"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_IndirectInterfaceReader::indirectInterfaceWithTransparentBridges2022()
+//-----------------------------------------------------------------------------
+void tst_IndirectInterfaceReader::indirectInterfaceWithTransparentBridges2022()
+{
+    QString documentContent(
+        "<ipxact:indirectInterface>"
+            "<ipxact:name>interface2</ipxact:name>"
+            "<ipxact:indirectAddressRef>addressId</ipxact:indirectAddressRef>"
+            "<ipxact:indirectDataRef>dataId</ipxact:indirectDataRef>"
+            "<ipxact:transparentBridge initiatorRef=\"firstInterface\">"                         
+                "<ipxact:isPresent>true</ipxact:isPresent>"
+            "</ipxact:transparentBridge>"
+            "<ipxact:transparentBridge initiatorRef=\"secondInterface\">"                         
+                "<ipxact:isPresent>1</ipxact:isPresent>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:transparentBridge>"
+        "</ipxact:indirectInterface>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode interfaceNode = document.firstChildElement("ipxact:indirectInterface");
+
+    QSharedPointer<IndirectInterface> testInterface = IndirectInterfaceReader::createIndirectInterfaceFrom(interfaceNode, Document::Revision::Std22);
+
+    QCOMPARE(testInterface->getTransparentBridges()->count(), 2);
+
+    QCOMPARE(testInterface->getTransparentBridges()->first()->getInitiatorRef(), QString("firstInterface"));
+    QCOMPARE(testInterface->getTransparentBridges()->first()->getIsPresent(), QString("")); //!< No isPresent should be available.
+
+    QCOMPARE(testInterface->getTransparentBridges()->last()->getInitiatorRef(), QString("secondInterface"));
+    QCOMPARE(testInterface->getTransparentBridges()->last()->getIsPresent(), QString("")); //!< No isPresent should be available.
+    QCOMPARE(testInterface->getTransparentBridges()->last()->getVendorExtensions()->count(), 1);
+    QCOMPARE(testInterface->getTransparentBridges()->last()->getVendorExtensions()->first()->type(), QString("testExtension"));
 }
 
 QTEST_APPLESS_MAIN(tst_IndirectInterfaceReader)

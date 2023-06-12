@@ -16,45 +16,30 @@
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
 //-----------------------------------------------------------------------------
-// Function: IndirectInterfaceReader::IndirectInterfaceReader()
-//-----------------------------------------------------------------------------
-IndirectInterfaceReader::IndirectInterfaceReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: IndirectInterfaceReader::~IndirectInterfaceReader()
-//-----------------------------------------------------------------------------
-IndirectInterfaceReader::~IndirectInterfaceReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::createIndirectInterfaceFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<IndirectInterface> IndirectInterfaceReader::createIndirectInterfaceFrom(QDomNode const& interfaceNode) const
+QSharedPointer<IndirectInterface> IndirectInterfaceReader::createIndirectInterfaceFrom(QDomNode const& interfaceNode,
+    Document::Revision docRevision)
 {
     QSharedPointer<IndirectInterface> newIndirectInterface(new IndirectInterface());
 
-    parseAttributes(interfaceNode, newIndirectInterface);
+    Details::parseAttributes(interfaceNode, newIndirectInterface);
 
-    parseNameGroup(interfaceNode, newIndirectInterface);
+    NameGroupReader::parseNameGroup(interfaceNode, newIndirectInterface);
 
-    parseIndirectAddressAndData(interfaceNode, newIndirectInterface);
+    Details::parseIndirectAddressAndData(interfaceNode, newIndirectInterface);
 
-    parseMemoryMapRef(interfaceNode, newIndirectInterface);
+    Details::parseMemoryMapRef(interfaceNode, newIndirectInterface);
 
-    parseTransparentBridges(interfaceNode, newIndirectInterface);
+    Details::parseTransparentBridges(interfaceNode, newIndirectInterface, docRevision);
 
-    parseBitsInLau(interfaceNode, newIndirectInterface);
+    Details::parseBitsInLau(interfaceNode, newIndirectInterface);
 
-    parseEndianness(interfaceNode, newIndirectInterface);
+    Details::parseEndianness(interfaceNode, newIndirectInterface);
 
-    parseParameters(interfaceNode, newIndirectInterface);
+    Details::parseParameters(interfaceNode, newIndirectInterface, docRevision);
 
-    parseVendorExtensions(interfaceNode, newIndirectInterface);
+    CommonItemsReader::parseVendorExtensions(interfaceNode, newIndirectInterface);
 
     return newIndirectInterface;
 }
@@ -62,8 +47,8 @@ QSharedPointer<IndirectInterface> IndirectInterfaceReader::createIndirectInterfa
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseAttributes()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseAttributes(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseAttributes(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface)
 {
     QMap<QString, QString> attributes;
 
@@ -79,20 +64,10 @@ void IndirectInterfaceReader::parseAttributes(QDomNode const& interfaceNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: IndirectInterfaceReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseNameGroup(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
-{
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(interfaceNode, indirectInterface);
-}
-
-//-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseIndirectAddressAndData()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseIndirectAddressAndData(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseIndirectAddressAndData(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface)
 {
     QString indirectAddress = 
         interfaceNode.firstChildElement(QStringLiteral("ipxact:indirectAddressRef")).firstChild().nodeValue();
@@ -107,8 +82,8 @@ void IndirectInterfaceReader::parseIndirectAddressAndData(QDomNode const& interf
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseMemoryMapRef()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseMemoryMapRef(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseMemoryMapRef(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface)
 {
     QString memoryMapRef = 
         interfaceNode.firstChildElement(QStringLiteral("ipxact:memoryMapRef")).firstChild().nodeValue();
@@ -119,8 +94,8 @@ void IndirectInterfaceReader::parseMemoryMapRef(QDomNode const& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseTransparentBridges()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseTransparentBridges(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseTransparentBridges(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface, Document::Revision docRevision)
 {
     QDomNodeList bridgeNodes = 
         interfaceNode.toElement().elementsByTagName(QStringLiteral("ipxact:transparentBridge"));
@@ -130,12 +105,29 @@ void IndirectInterfaceReader::parseTransparentBridges(QDomNode const& interfaceN
     {
         QDomElement bridgeNode = bridgeNodes.at(i).toElement();
 
-        QString masterReference = bridgeNode.attributes().namedItem(QStringLiteral("masterRef")).firstChild().nodeValue();
-        QString isPresent = bridgeNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+        QString initiatorReference;
+        if (docRevision == Document::Revision::Std14)
+        {
+            initiatorReference = bridgeNode.attributes().namedItem(QStringLiteral("masterRef")).firstChild().nodeValue();
+        }
+        else if (docRevision == Document::Revision::Std22)
+        {
+            initiatorReference = bridgeNode.attributes().namedItem(QStringLiteral("initiatorRef")).firstChild().nodeValue();
+        }
 
-        QSharedPointer<TransparentBridge> newBridge(new TransparentBridge(masterReference));
-        newBridge->setIsPresent(isPresent);
+        QSharedPointer<TransparentBridge> newBridge(new TransparentBridge(initiatorReference));
+
+        if (docRevision == Document::Revision::Std14)
+        {
+            QString isPresent = bridgeNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
+            newBridge->setIsPresent(isPresent);
+        }
         
+        if (docRevision == Document::Revision::Std22)
+        {
+            CommonItemsReader::parseVendorExtensions(bridgeNode, newBridge);
+        }
+
         indirectInterface->getTransparentBridges()->append(newBridge);
     }
 }
@@ -143,8 +135,8 @@ void IndirectInterfaceReader::parseTransparentBridges(QDomNode const& interfaceN
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseEndianness()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseEndianness(QDomNode const& interfaceNode, 
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseEndianness(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface)
 {
     QString endianness = 
         interfaceNode.firstChildElement(QStringLiteral("ipxact:endianness")).firstChild().nodeValue();
@@ -155,8 +147,8 @@ void IndirectInterfaceReader::parseEndianness(QDomNode const& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseBitsInLau()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseBitsInLau(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseBitsInLau(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface)
 {
     QDomElement lauElement = interfaceNode.firstChildElement(QStringLiteral("ipxact:bitsInLau"));
 
@@ -167,8 +159,9 @@ void IndirectInterfaceReader::parseBitsInLau(QDomNode const& interfaceNode,
 //-----------------------------------------------------------------------------
 // Function: IndirectInterfaceReader::parseParameters()
 //-----------------------------------------------------------------------------
-void IndirectInterfaceReader::parseParameters(QDomNode const& interfaceNode,
-    QSharedPointer<IndirectInterface> indirectInterface) const
+void IndirectInterfaceReader::Details::parseParameters(QDomNode const& interfaceNode,
+    QSharedPointer<IndirectInterface> indirectInterface, Document::Revision docRevision) 
 {
-    indirectInterface->getParameters()->append(*CommonItemsReader::parseAndCreateParameters(interfaceNode));
+    indirectInterface->getParameters()->append(
+        *CommonItemsReader::parseAndCreateParameters(interfaceNode, docRevision));
 }

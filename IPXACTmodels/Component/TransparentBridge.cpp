@@ -15,8 +15,8 @@
 // Function: TransparentBridge::TransparentBridge()
 //-----------------------------------------------------------------------------
 TransparentBridge::TransparentBridge(QString const& masterInterfaceRef):
-masterRef_(masterInterfaceRef), 
-    isPresent_()
+    Extendable(),
+    initiatorRef_(masterInterfaceRef)
 {
 
 }
@@ -24,10 +24,11 @@ masterRef_(masterInterfaceRef),
 //-----------------------------------------------------------------------------
 // Function: TransparentBridge::TransparentBridge()
 //-----------------------------------------------------------------------------
-TransparentBridge::TransparentBridge(TransparentBridge const& other)
+TransparentBridge::TransparentBridge(TransparentBridge const& other) :
+    initiatorRef_(other.initiatorRef_),
+    isPresent_(other.isPresent_)
 {
-    masterRef_ = other.masterRef_;
-    isPresent_ = other.isPresent_;
+
 }
 
 //-----------------------------------------------------------------------------
@@ -41,9 +42,9 @@ TransparentBridge::~TransparentBridge()
 //-----------------------------------------------------------------------------
 // Function: TransparentBridge::setMasterRef()
 //-----------------------------------------------------------------------------
-void TransparentBridge::setMasterRef(QString const& masterInterfaceName)
+void TransparentBridge::setMasterRef(QString const& interfaceName)
 {
-    masterRef_ = masterInterfaceName;
+    setInitiatorRef(interfaceName);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +52,23 @@ void TransparentBridge::setMasterRef(QString const& masterInterfaceName)
 //-----------------------------------------------------------------------------
 QString TransparentBridge::getMasterRef() const
 {
-    return masterRef_;
+    return getInitiatorRef();
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransparentBridge::getMasterRef()
+//-----------------------------------------------------------------------------
+void TransparentBridge::setInitiatorRef(QString const& interfaceName)
+{
+    initiatorRef_ = interfaceName;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TransparentBridge::getMasterRef()
+//-----------------------------------------------------------------------------
+QString TransparentBridge::getInitiatorRef() const
+{
+    return initiatorRef_;
 }
 
 //-----------------------------------------------------------------------------
