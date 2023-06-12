@@ -166,6 +166,7 @@
     <ClCompile Include="CPUDialog\RenodePeripheralsEditor.cpp" />
     <ClCompile Include="CPUDialog\RenodePeripheralsModel.cpp" />
     <ClCompile Include="CPUDialog\RenodeUtilities.cpp" />
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.cpp" />
     <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateDelegate.cpp" />
     <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateEditor.cpp" />
     <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateModel.cpp" />
@@ -183,6 +184,7 @@
     <QtRcc Include="RenodeGenerator.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.h" />
     <ClInclude Include="RenodeSettingsModel.h" />
     <QtMoc Include="RenodeSettingsWidget.h" />
     <QtMoc Include="..\..\common\views\EditableTableView\editabletableview.h" />
@@ -233,7 +235,7 @@
     <ClInclude Include="..\PluginSystem\GeneratorPlugin\ViewSelection.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="peripherals.txt" />
+    <Text Include="..\..\executable\assets\peripherals.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

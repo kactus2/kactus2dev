@@ -31,8 +31,10 @@ public:
 
     /*!
      *  The constructor.
+     * 
+     *      @param [in] parentWidget    The parent widget.
      */
-    RenodePeripheralsDelegate(QObject* parent = 0);
+    RenodePeripheralsDelegate(QWidget* parentWidget);
 
 	/*!
      *  The destructor.
@@ -105,6 +107,18 @@ protected:
 
 private:
 
+    /*!
+     *  Handler for editor events in file path editor.
+     *	
+     *      @param [in] event   The event that triggered the editing.
+     *      @param [in] model   The underlying model to edit.
+     *      @param [in] option  Style options for rendering the item.
+     *      @param [in] index   The index being edited.
+     *
+     *      @return True, if the event is handled, otherwise false.
+     */
+    bool handleEditorEventForPath(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, QModelIndex const& index);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -116,10 +130,13 @@ private:
     Qt::CheckState booleanState_ = Qt::Unchecked;
 
     //! The current folder location.
-    QString currentFolder_ = QString("");
+    QString generatorTargetFolder_ = QString("");
 
     //! List of the available peripheral templates.
     QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > pythonTemplates_;
+
+    //! The parent widget.
+    QWidget* parentWidget_;
 };
 
 #endif // RENODEPERIPHERALSDELEGATE_H

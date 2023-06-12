@@ -25,8 +25,10 @@
 RenodeSettingsWidget::RenodeSettingsWidget(RenodeSettingsModel* settingsModel, QWidget *parent /* = 0 */):
 QWidget(parent),
 settingsModel_(settingsModel),
-templatePathEditor_(new QLineEdit(settingsModel_->getFolderPath(), this))
+templatePathEditor_(new QLineEdit(settingsModel_->getFilePath(), this))
 {
+    templatePathEditor_->setToolTip(templatePathEditor_->text());
+
     setupLayout();
 
     connect(templatePathEditor_, SIGNAL(textChanged(QString const&)), this, SLOT(onPathChanged(QString const&)), Qt::UniqueConnection);
@@ -56,7 +58,7 @@ void RenodeSettingsWidget::setupLayout()
 void RenodeSettingsWidget::onBrowseTemplatePath()
 {
 	QString newTemplatePath = QFileDialog::getOpenFileName(
-        this, tr("Select template settings file"), templatePathEditor_->text(), tr("INI file (*.ini)"));
+        this, tr("Select peripheral template configuration file"), templatePathEditor_->text(), tr("JSON file (*.json)"));
 
     if (!newTemplatePath.isEmpty())
     {
@@ -69,5 +71,6 @@ void RenodeSettingsWidget::onBrowseTemplatePath()
 //-----------------------------------------------------------------------------
 void RenodeSettingsWidget::onPathChanged(QString const& newPath)
 {
-    settingsModel_->setFolderPath(newPath);
+    settingsModel_->setFilePath(newPath);
+    templatePathEditor_->setToolTip(newPath);
 }

@@ -32,8 +32,9 @@
 // Function: CPUSelectionDialog::CPUSelectionDialog()
 //-----------------------------------------------------------------------------
 CPUSelectionDialog::CPUSelectionDialog(QSharedPointer<Component> topComponent, LibraryInterface* library,
-    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor, QString const& dialogType,
-    QWidget* extraEditor, QWidget *parent, QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
+    QStringList const& viewNames, QStringList const& fileSetNames, CPUEditor* cpuEditor,
+    QString const& dialogType, QWidget* extraEditor, QWidget *parent, int minimumWidth,
+    QString const& configurationFolder, bool saveToFileSet, QString const& configurationFileSet,
     QString const& configurationView):
 QDialog(parent),
 viewSelection_(new QComboBox(this)),
@@ -75,7 +76,7 @@ extraEditor_(extraEditor)
 
 	connect(folderLine_, SIGNAL(textChanged(QString const&)), cpuDetailEditor_, SLOT(setupFolderPath(QString const&)), Qt::UniqueConnection);
 
-    setMinimumWidth(840);
+    setMinimumWidth(minimumWidth);
 }
 
 //-----------------------------------------------------------------------------

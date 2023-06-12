@@ -59,7 +59,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The current folder location.
-    QString currentFolder_;
+    QString generatorTargetFolder_;
 
     //! The parent widget.
     QWidget* parentWidget_;

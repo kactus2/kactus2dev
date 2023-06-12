@@ -26,6 +26,7 @@ class RenodeCpuRoutesContainer;
 class RenodePeripheralsEditor;
 class RenodeMemoriesEditor;
 class IPluginUtility;
+class PeripheralTemplateConfigurer;
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -45,9 +46,13 @@ public:
      *
      *      @param [in] utility                 Utility for plugins.
      *      @param [in] configurationObject     JSON object containing the editor configuration.
+     *      @param [in] templateConfigurer      Configurer for peripheral templates.
      *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent = 0);
+    RenodeCpuEditor(IPluginUtility* utility,
+        QJsonObject const& configurationObject,
+        PeripheralTemplateConfigurer* templateConfigurer,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -193,6 +198,9 @@ private:
 
     //! JSON object containing the editor configuration.
     QJsonObject configurationObject_;
+
+    //! Configurer for peripheral templates.
+    PeripheralTemplateConfigurer* templateConfigurer_;
 };
 
 #endif // RENODECPUEDITOR_H

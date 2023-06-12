@@ -15,6 +15,7 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeMemoriesEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+#include <Plugins/RenodeGenerator/CPUDialog/TemplateEditor/PeripheralTemplateConfigurer.h>
 
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
@@ -22,24 +23,23 @@
 #include <KactusAPI/include/IPluginUtility.h>
 
 #include <QVBoxLayout>
-#include <QDir>
 #include <QFormLayout>
 #include <QLabel>
-#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 // Function: RenodeCpuEditor::RenodeCpuEditor()
 //-----------------------------------------------------------------------------
-RenodeCpuEditor::RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent /* = 0 */):
+RenodeCpuEditor::RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, PeripheralTemplateConfigurer* templateConfigurer, QWidget* parent):
 CPUEditor(parent),
 utility_(utility),
-peripheralEditor_(new RenodePeripheralsEditor(this)),
+peripheralEditor_(new RenodePeripheralsEditor(templateConfigurer, this)),
 memoryEditor_(new RenodeMemoriesEditor(this)),
 cpuSelector_(new QComboBox(this)),
 cpuClassCombo_(new QComboBox(this)),
 cpuTypeEditor_(new QLineEdit(this)),
 cpuTimeProviderEditor_(new QLineEdit(this)),
-configurationObject_(configurationObject)
+configurationObject_(configurationObject),
+templateConfigurer_(templateConfigurer)
 {
     setupCpuClassEditor();
 
@@ -161,7 +161,7 @@ void RenodeCpuEditor::onHandleTimeProviderChange(QString const& newTimeProvider)
 //-----------------------------------------------------------------------------
 void RenodeCpuEditor::setupCPUDetails(LibraryInterface* library, QSharedPointer<Component> component, QString const& activeView)
 {
-    availableCpuContainers_ = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView);
+    availableCpuContainers_ = RenodeUtilities::getRenodeCpuRoutes(configurationObject_, library, component, activeView, templateConfigurer_->getTemplates());
     if (!availableCpuContainers_.isEmpty())
     {
         setupActiveCpuContainer();

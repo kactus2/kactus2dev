@@ -14,6 +14,7 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsDelegate.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodePeripheralsModel.h>
 #include <Plugins/RenodeGenerator/CPUDialog/TemplateEditor/PeripheralTemplatesDialog.h>
+#include <Plugins/RenodeGenerator/CPUDialog/TemplateEditor/PeripheralTemplateConfigurer.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
@@ -23,12 +24,15 @@
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsEditor::RenodePeripheralsEditor()
 //-----------------------------------------------------------------------------
-RenodePeripheralsEditor::RenodePeripheralsEditor(QWidget *parent):
+RenodePeripheralsEditor::RenodePeripheralsEditor(PeripheralTemplateConfigurer* templateConfigurer, QWidget* parent):
 QWidget(parent),
 view_(new QTableView(this)),
 model_(new RenodePeripheralsModel(this)),
-peripheralDelegate_(new RenodePeripheralsDelegate(parent))
+peripheralDelegate_(new RenodePeripheralsDelegate(parent)),
+templateConfigurer_(templateConfigurer)
 {
+    setupPeripheralTemplates(templateConfigurer_->getTemplates());
+
     auto proxy(new QSortFilterProxyModel(this));
     proxy->setSourceModel(model_);
 
@@ -73,12 +77,21 @@ void RenodePeripheralsEditor::setupFolderPath(QString const& newFolderPath)
 void RenodePeripheralsEditor::openTemplatesDialog()
 {
     PeripheralTemplatesDialog templateDialog(generationFolder_, this);
-    templateDialog.setupTemplates(peripheralTemplates_);
+    templateDialog.setupTemplates(templateConfigurer_->getTemplates());
 
     if (templateDialog.exec() == QDialog::Accepted)
     {
-        peripheralTemplates_ = templateDialog.getTemplates();
-        model_->setupTemplates(peripheralTemplates_);
-        peripheralDelegate_->setupTemplates(peripheralTemplates_);
+        QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates = templateDialog.getTemplates();
+        templateConfigurer_->setTemplates(newTemplates);
+        setupPeripheralTemplates(newTemplates);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsEditor::setupPeripheralTemplates()
+//-----------------------------------------------------------------------------
+void RenodePeripheralsEditor::setupPeripheralTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate>> templates)
+{
+    model_->setupTemplates(templates);
+    peripheralDelegate_->setupTemplates(templates);
 }

@@ -19,13 +19,16 @@
 namespace
 {
     //! Key for peripheral template configuration folder.
-	QString const TEMPLATEFOLDERKEY = "PythonPeripheralTemplateFolder";
+	QString const TEMPLATEFILEKEY = "PythonPeripheralTemplateFile";
+
+    //! Path to the default Renode generator peripheral template configuration.
+    QString const DEFAULTPATH = QCoreApplication::applicationDirPath() + QString("/templates/defaultTemplateConfiguration.json");
 };
 
 //-----------------------------------------------------------------------------
 // Function: RenodeSettingsModel::RenodeSettingsModel()
 //-----------------------------------------------------------------------------
-RenodeSettingsModel::RenodeSettingsModel():
+RenodeSettingsModel::RenodeSettingsModel() :
 PluginSettingsModel()
 {
 
@@ -36,10 +39,7 @@ PluginSettingsModel()
 //-----------------------------------------------------------------------------
 void RenodeSettingsModel::loadSettings(QSettings& settings)
 {
-// 	QString currentPath = QDir::currentPath();
-// 	QString executablePath = QCoreApplication::applicationDirPath();
-
-	templateFolderPath_ = settings.value(TEMPLATEFOLDERKEY).toString();
+    templateFilePath_ = settings.value(TEMPLATEFILEKEY).toString();
 }
 
 //-----------------------------------------------------------------------------
@@ -47,15 +47,13 @@ void RenodeSettingsModel::loadSettings(QSettings& settings)
 //-----------------------------------------------------------------------------
 void RenodeSettingsModel::saveSettings(QSettings& settings)
 {
-// 	bool testi = false;
-
-	if (templateFolderPath_.isEmpty())
+	if (templateFilePath_.isEmpty() || !QFile::exists(templateFilePath_))
 	{
-		settings.remove(TEMPLATEFOLDERKEY);
+		settings.remove(TEMPLATEFILEKEY);
 	}
 	else
 	{
-		settings.setValue(TEMPLATEFOLDERKEY, templateFolderPath_);
+		settings.setValue(TEMPLATEFILEKEY, templateFilePath_);
 	}
 }
 
@@ -68,17 +66,31 @@ bool RenodeSettingsModel::validateSettings() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeSettingsModel::getFolderPath()
+// Function: RenodeSettingsModel::getFilePath()
 //-----------------------------------------------------------------------------
-QString RenodeSettingsModel::getFolderPath() const
+QString RenodeSettingsModel::getFilePath() const
 {
-	return templateFolderPath_;
+    if (!templateFilePath_.isEmpty())
+    {
+        return templateFilePath_;
+    }
+    else
+    {
+        return DEFAULTPATH;
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodeSettingsModel::setFolderPath()
+// Function: RenodeSettingsModel::setFilePath()
 //-----------------------------------------------------------------------------
-void RenodeSettingsModel::setFolderPath(QString const& newFolderPath)
+void RenodeSettingsModel::setFilePath(QString const& newFolderPath)
 {
-	templateFolderPath_ = newFolderPath;
+    if (newFolderPath == DEFAULTPATH)
+    {
+        templateFilePath_.clear();
+    }
+    else
+    {
+        templateFilePath_ = newFolderPath;
+    }
 }

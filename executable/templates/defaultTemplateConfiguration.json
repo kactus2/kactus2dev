@@ -1,0 +1,9 @@
+{
+    "Templates": [
+        {
+            "name": "example",
+            "template": "templates/exampleTemplate.py",
+            "targetPath": "python_peripherals"
+        }
+    ]
+}

@@ -22,12 +22,15 @@
 #include <QPainter>
 #include <QComboBox>
 #include <QDir>
+#include <QCoreApplication>
+#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsDelegate::RenodePeripheralsDelegate()
 //-----------------------------------------------------------------------------
-RenodePeripheralsDelegate::RenodePeripheralsDelegate(QObject* parent /* = 0 */):
-QStyledItemDelegate(parent)
+RenodePeripheralsDelegate::RenodePeripheralsDelegate(QWidget* parentWidget):
+QStyledItemDelegate(parentWidget),
+parentWidget_(parentWidget)
 {
 
 }
@@ -45,7 +48,7 @@ void RenodePeripheralsDelegate::setupTemplates(QVector<QSharedPointer<RenodeStru
 //-----------------------------------------------------------------------------
 void RenodePeripheralsDelegate::onFolderChanged(QString const& newFolder)
 {
-    currentFolder_ = newFolder;
+    generatorTargetFolder_ = newFolder;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,8 +81,7 @@ void RenodePeripheralsDelegate::setEditorData(QWidget* editor, QModelIndex const
             if (index.column() == PeripheralColumns::CLASS)
             {
 				comboEditor->setEditable(true);
-				QString filePath = QDir::currentPath() + "/Plugins/RenodeGenerator/peripherals.txt";
-				//             QFile peripheralClassFile(filePath);
+                QString filePath = QCoreApplication::applicationDirPath() + "/assets/peripherals.txt";
 				if (QFile peripheralClassFile(filePath); peripheralClassFile.open(QIODevice::ReadOnly))
 				{
 					QTextStream fileStream(&peripheralClassFile);
@@ -121,6 +123,10 @@ bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* m
     if (event->type() == QEvent::MouseButtonRelease)
     {
         booleanModify_ = false;
+        if (index.column() == PeripheralColumns::FILEPATH)
+        {
+            return handleEditorEventForPath(event, model, option, index);
+        }
     }
 
     // Make sure that the item is checkable.
@@ -226,4 +232,43 @@ void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem co
     }
 
     QStyledItemDelegate::paint(painter, viewItemOption, index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::handleEditorEventForPath()
+//-----------------------------------------------------------------------------
+bool RenodePeripheralsDelegate::handleEditorEventForPath(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, QModelIndex const& index)
+{
+    const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+    
+    QStyleOptionViewItem::Position iconPosition = option.decorationPosition;
+    int iconWidth = option.decorationSize.width();
+    
+    QRect rectangleIsinideCheckRect(option.rect.x() + (2 * textMargin),
+        option.rect.y(),
+        option.rect.width() - (2 * textMargin),
+        option.rect.height());
+    
+    QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft, option.decorationSize, rectangleIsinideCheckRect);
+    if (checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+    {
+        QString newPath = "";
+        newPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Open Directory"), generatorTargetFolder_,
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+        if (!newPath.isEmpty())
+        {
+            QDir appDirectory(generatorTargetFolder_);
+            newPath = appDirectory.relativeFilePath(newPath);
+        }
+
+        if (!newPath.isEmpty())
+        {
+            model->setData(index, newPath);
+        }
+
+        return true;
+    }
+
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

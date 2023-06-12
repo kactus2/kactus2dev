@@ -7,8 +7,10 @@
 message("You are running qmake on a generated .pro file. This may not work!")
 
 
-HEADERS += ./RenodeConfigurationManager.h \
+HEADERS += ./RenodeSettingsModel.h \
+    ./RenodeConfigurationManager.h \
     ./RenodeGenerator.h \
+    ./RenodeSettingsWidget.h \
     ./RenodeGeneratorPlugin.h \
     ../PluginSystem/GeneratorPlugin/GenerationControl.h \
     ../PluginSystem/GeneratorPlugin/OutputControl.h \
@@ -44,19 +46,20 @@ HEADERS += ./RenodeConfigurationManager.h \
     ../common/CPUDialog/CPUSelectionDialog.h \
     ./CPUDialog/TemplateEditor/PeripheralTemplatesDialog.h \
     ./CPUDialog/TemplateEditor/PeripheralTemplateEditor.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.h \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.h \
     ../common/ConfigurationManager.h \
     ../common/ConnectivityGraphUtilities.h \
     ../common/CpuRoutesContainer.h \
     ../common/PluginConfigurationManager.h \
     ../common/SingleCpuRoutesContainer.h \
     ../../common/views/EditableTableView/editabletableview.h \
-    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.h \
-    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.h \
-    ./RenodeSettingsWidget.h \
-    ./RenodeSettingsModel.h
+    ./CPUDialog/TemplateEditor/PeripheralTemplateConfigurer.h
 SOURCES += ./RenodeConfigurationManager.cpp \
     ./RenodeGenerator.cpp \
     ./RenodeGeneratorPlugin.cpp \
+    ./RenodeSettingsModel.cpp \
+    ./RenodeSettingsWidget.cpp \
     ../PluginSystem/GeneratorPlugin/GenerationControl.cpp \
     ../PluginSystem/GeneratorPlugin/MessagePasser.cpp \
     ../PluginSystem/GeneratorPlugin/OutputControl.cpp \
@@ -86,16 +89,15 @@ SOURCES += ./RenodeConfigurationManager.cpp \
     ./CPUDialog/RenodePeripheralsEditor.cpp \
     ./CPUDialog/RenodePeripheralsModel.cpp \
     ./CPUDialog/RenodeUtilities.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.cpp \
     ./CPUDialog/TemplateEditor/PeripheralTemplateEditor.cpp \
+    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.cpp \
     ./CPUDialog/TemplateEditor/PeripheralTemplatesDialog.cpp \
+    ../../common/views/EditableTableView/editabletableview.cpp \
     ../common/ConfigurationManager.cpp \
     ../common/ConnectivityGraphUtilities.cpp \
     ../common/CpuRoutesContainer.cpp \
     ../common/PluginConfigurationManager.cpp \
     ../common/SingleCpuRoutesContainer.cpp \
-    ../../common/views/EditableTableView/editabletableview.cpp \
-    ./CPUDialog/TemplateEditor/PeripheralTemplateModel.cpp \
-    ./CPUDialog/TemplateEditor/PeripheralTemplateDelegate.cpp \
-    ./RenodeSettingsWidget.cpp \
-    ./RenodeSettingsModel.cpp
+    ./CPUDialog/TemplateEditor/PeripheralTemplateConfigurer.cpp
 RESOURCES += RenodeGenerator.qrc

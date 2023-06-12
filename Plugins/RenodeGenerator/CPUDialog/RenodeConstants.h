@@ -15,7 +15,7 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-// Function: RenodeUtilities::RenodeConstants()
+//! Utility constants for Renode generator.
 //-----------------------------------------------------------------------------
 namespace RenodeConstants
 {
@@ -88,6 +88,9 @@ namespace RenodeConstants
     //! Identifier for peripheral file path configuration.
     const QString PERIPHERALPATH = "filePath";
 
+    //! Identifier for peripheral template configuration.
+    const QString PERIPHERALTEMPLATE = "template";
+
     //! Identifier for view selection.
     const QString VIEW = "view";
 
@@ -114,6 +117,24 @@ namespace RenodeConstants
 
     //! Default memory class.
     const QString MAPPEDMEMORY = "Memory.MappedMemory";
+};
+
+//-----------------------------------------------------------------------------
+//! Utility constants for Renode generator peripheral templates.
+//-----------------------------------------------------------------------------
+namespace RenodeTemplateConstants
+{
+    //! Identifier for template array.
+    const QString TEMPLATEARRAYKEY = "Templates";
+
+    //! Identifier for template name.
+    const QString TEMPLATENAME = "name";
+
+    //! Identifier for template path.
+    const QString TEMPLATEFILE = "template";
+
+    //! Identifier for template target folder.
+    const QString TARGETPATH = "targetPath";
 };
 
 #endif // RENODECONSTANTS_H

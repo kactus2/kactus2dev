@@ -14,7 +14,8 @@
 #include <common/KactusColors.h>
 
 #include <QColor>
-
+#include <QCoreApplication>
+#include <QFile>
 #include <QIcon>
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
@@ -135,6 +136,10 @@ QVariant PeripheralTemplateModel::data(QModelIndex const& index, int role) const
     {
         return tooltipForIndex(index);
     }
+    else if (role == Qt::ForegroundRole)
+    {
+        return blackForValidRedForInvalidIndex(index);
+    }
     else if (role == Qt::DecorationRole &&
         (index.column() == PeripheralTemplateColumns::TEMPLATE || index.column() == PeripheralTemplateColumns::PATH))
     {
@@ -211,14 +216,31 @@ QVariant PeripheralTemplateModel::tooltipForIndex(QModelIndex const& index) cons
     }
 	else if (index.column() == PeripheralTemplateColumns::TEMPLATE)
 	{
-        return QString("The template python file");
+        return QString("The template python file path relative to the installation folder.\n" + data(index).toString());
 	}
 	else if (index.column() == PeripheralTemplateColumns::PATH)
 	{
-		return QString("Relative path to the created python file");
+		return QString("The folder path for the created python file relative to the generation destination folder.\n" + data(index).toString());
 	}
 
     return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PeripheralTemplateModel::blackForValidRedForInvalidIndex()
+//-----------------------------------------------------------------------------
+QVariant PeripheralTemplateModel::blackForValidRedForInvalidIndex(QModelIndex const& index) const
+{
+    if (index.column() == PeripheralTemplateColumns::TEMPLATE)
+    {
+        QString templatePath = QCoreApplication::applicationDirPath() + "/" + index.data().toString();
+        if (!QFile::exists(templatePath))
+        {
+            return KactusColors::ERROR;
+        }
+    }
+
+    return KactusColors::REGULAR_TEXT;
 }
 
 //-----------------------------------------------------------------------------

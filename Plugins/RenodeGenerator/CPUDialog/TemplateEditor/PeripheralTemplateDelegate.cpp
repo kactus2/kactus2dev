@@ -20,9 +20,10 @@
 //-----------------------------------------------------------------------------
 // Function: PeripheralTemplateDelegate::PeripheralTemplateDelegate()
 //-----------------------------------------------------------------------------
-PeripheralTemplateDelegate::PeripheralTemplateDelegate(QString const& generationDestinationFolder, QWidget* parentWidget, QObject* parent /* = 0 */):
+PeripheralTemplateDelegate::PeripheralTemplateDelegate(QString const& generationDestinationFolder,
+    QWidget* parentWidget, QObject* parent):
 QStyledItemDelegate(parent),
-currentFolder_(generationDestinationFolder),
+generatorTargetFolder_(generationDestinationFolder),
 parentWidget_(parentWidget)
 {
 
@@ -51,22 +52,37 @@ bool PeripheralTemplateDelegate::editorEvent(QEvent *event, QAbstractItemModel* 
             option.rect.height());
 
 		QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft, option.decorationSize, rectangleIsinideCheckRect);
-        QPoint mousePosition = static_cast<QMouseEvent*>(event)->pos();
-
         if (checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
         {
             QString newPath = "";
             if (index.column() == PeripheralTemplateColumns::PATH)
             {
-				newPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Open Directory"), currentFolder_,
+				newPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Open Directory"), generatorTargetFolder_,
 					QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+                if (!newPath.isEmpty())
+                {
+                    QDir appDirectory(generatorTargetFolder_);
+                    newPath = appDirectory.relativeFilePath(newPath);
+                }
             }
             else if (index.column() == PeripheralTemplateColumns::TEMPLATE)
             {
-                newPath = QFileDialog::getOpenFileName(parentWidget_, tr("Select python template"), currentFolder_, tr("Python files (*.py)"));
+                QString binaryFolder = QCoreApplication::applicationDirPath();
+
+                newPath = QFileDialog::getOpenFileName(parentWidget_, tr("Select python template"), binaryFolder, tr("Python files (*.py)"));
+
+                if (!newPath.isEmpty())
+                {
+                    QDir appDirectory(binaryFolder);
+                    newPath = appDirectory.relativeFilePath(newPath);
+                }
             }
 
-            model->setData(index, newPath);
+            if (!newPath.isEmpty())
+            {
+                model->setData(index, newPath);
+            }
 
             return true;
         }

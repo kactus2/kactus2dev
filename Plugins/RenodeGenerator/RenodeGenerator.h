@@ -52,7 +52,6 @@ public:
     /*!
      *  Generates slave memory listing for the given component.
      *
-     *      @param [in] topComponent            The top component in the hierarchy to generate listing for.
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuContainer            CPU and its connected routes.
      *      @param [in] createCpuFile           Flag for creating a CPU file.
@@ -62,8 +61,7 @@ public:
      *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
      *      @param [in] peripheralFileName      Name of the peripherals file.
      */
-    void generate(QSharedPointer<Component> topComponent,
-        QString const& componentPath,
+    void generate(QString const& componentPath,
         QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer,
         bool createCpuFile,
         QString const& cpuFileName,
@@ -84,7 +82,6 @@ private:
     /*!
      *  Writes the CPU listing into Renode platform files.
      *
-     *      @param [in] topComponent            Top component of the design.
      *      @param [in] componentPath           Path to the component folder.
      *      @param [in] cpuRoute                The selected CPU route container.
      *      @param [in] fileNames               Names of the generated Renode files.
@@ -95,8 +92,7 @@ private:
      *      @param [in] createPeripheralFile    Flag for creating a peripherals file.
      *      @param [in] peripheralFileName      Name of the peripherals file.
      */
-    void writeFiles(QSharedPointer<Component> topComponent,
-        QString const& componentPath,
+    void writeFiles(QString const& componentPath,
         QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
         QStringList& fileNames,
         bool createCpuFile,
@@ -114,7 +110,7 @@ private:
      *
      *      @return Unique file name.
      */
-    QString getUniqueFileName(QStringList& fileNames, QString const& currentFileName);
+    QString getUniqueFileName(QStringList& fileNames, QString const& currentFileName) const;
 
     /*!
      *  Get the number of files containing the selected name.

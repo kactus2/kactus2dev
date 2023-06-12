@@ -34,14 +34,16 @@ namespace RenodeUtilities
      *      @param [in] library                 Interface for accessing the library.
      *      @param [in] component               Top component of the design.
      *      @param [in] viewName                The currently active view.
+     *      @param [in] templates               List of available peripheral templates.
      *
-     *      @return List of cpu detail routes for Renode generator.
+     *      @return List of CPU detail routes for Renode generator.
      */
     QVector<QSharedPointer<RenodeCpuRoutesContainer> > getRenodeCpuRoutes(
         QJsonObject const& configurationObject,
         LibraryInterface* library,
         QSharedPointer<Component> component,
-        QString const& viewName);
+        QString const& viewName,
+        QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates);
 
     /*!
      *  Get the available peripheral template names.

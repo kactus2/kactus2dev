@@ -169,6 +169,15 @@ private:
      */
     QVariant tooltipForIndex(QModelIndex const& index) const;
 
+    /*!
+     *  Get the color for the selected index.
+     *	
+     *      @param [in] index   The selected index.
+     *
+     *      @return Color of the selected index. Black for valid index, red for invalid index.
+     */
+    QVariant blackForValidRedForInvalidIndex(QModelIndex const& index) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

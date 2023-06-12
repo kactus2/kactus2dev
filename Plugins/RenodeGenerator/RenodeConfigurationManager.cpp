@@ -118,6 +118,11 @@ QJsonDocument RenodeConfigurationManager::createJsonDocument(QSharedPointer<Reno
             peripheralObject.insert(RenodeConstants::PERIPHERALINITABLE, peripheral->initable_);
             peripheralObject.insert(RenodeConstants::PERIPHERALPATH, peripheral->filePath_);
 
+            if (peripheral->template_)
+            {
+                peripheralObject.insert(RenodeConstants::PERIPHERALTEMPLATE, peripheral->template_->identifier_);
+            }
+
             peripheralArray.push_back(peripheralObject);
         }
 

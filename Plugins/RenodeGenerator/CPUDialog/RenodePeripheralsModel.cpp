@@ -49,14 +49,6 @@ void RenodePeripheralsModel::setupTemplates(QVector<QSharedPointer<RenodeStructs
 }
 
 //-----------------------------------------------------------------------------
-// Function: RenodePeripheralsModel::setFolderPath()
-//-----------------------------------------------------------------------------
-void RenodePeripheralsModel::setFolderPath(QString const& newFolderPath)
-{
-    folderPath_ = newFolderPath;
-}
-
-//-----------------------------------------------------------------------------
 // Function: RenodePeripheralsModel::rowCount()
 //-----------------------------------------------------------------------------
 int RenodePeripheralsModel::rowCount(QModelIndex const& parent) const
@@ -205,6 +197,10 @@ QVariant RenodePeripheralsModel::data(QModelIndex const& index, int role) const
             return QVariant();
         }
     }
+    else if (role == Qt::DecorationRole && index.column() == PeripheralColumns::FILEPATH)
+    {
+        return QIcon(QString(":/icons/common/graphics/opened-folder.png"));
+    }
 
     return QVariant();
 }
@@ -238,8 +234,7 @@ bool RenodePeripheralsModel::setData(QModelIndex const& index, QVariant const& v
             indexedPeripheral->template_ = selectedTemplate;
             if (selectedTemplate)
             {
-                QDir folderDirectory(folderPath_);
-				indexedPeripheral->filePath_ = folderDirectory.relativeFilePath(selectedTemplate->path_);
+                indexedPeripheral->filePath_ = selectedTemplate->path_;
 
 				QModelIndex pathIndex = index.sibling(index.row(), PeripheralColumns::FILEPATH);
 				emit dataChanged(pathIndex, pathIndex);

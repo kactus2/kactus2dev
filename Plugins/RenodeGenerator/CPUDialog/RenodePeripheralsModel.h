@@ -54,13 +54,6 @@ public:
 	void setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates);
 
 	/*!
-     *  Setup the folder path for the generated renode files.
-     *
-	 *      @param [in] newFolderPath   The new folder path.
-	 */
-	void setFolderPath(QString const& newFolderPath);
-
-	/*!
      *  Get the number of rows an item contains.
 	 *
 	 *      @param [in] parent  Identifies the parent that's row count is requested.

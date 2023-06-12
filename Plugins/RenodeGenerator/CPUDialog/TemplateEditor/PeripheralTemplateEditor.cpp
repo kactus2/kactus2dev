@@ -57,6 +57,8 @@ void PeripheralTemplateEditor::connectSignals() const
 void PeripheralTemplateEditor::setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplars)
 {
     model_->setupTemplates(newTemplars);
+
+    view_->resizeColumnsToContents();
 }
 
 //-----------------------------------------------------------------------------

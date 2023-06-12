@@ -12,15 +12,15 @@
 #ifndef RENODEPERIPHERALSEDITOR_H
 #define RENODEPERIPHERALSEDITOR_H
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
+
 #include <QWidget>
 #include <QObject>
 #include <QTableView>
-#include <QGroupBox>
-
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
 
 class RenodePeripheralsModel;
 class RenodePeripheralsDelegate;
+class PeripheralTemplateConfigurer;
 
 //-----------------------------------------------------------------------------
 //! Editor for CPU peripheral details in renode generation.
@@ -34,9 +34,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent  Pointer to the owner of this widget.
+     *      @param [in] templateConfigurer  Handles configuration of peripheral templates.
+     *      @param [in] parent              Pointer to the owner of this widget.
      */
-    RenodePeripheralsEditor(QWidget *parent = 0);
+    RenodePeripheralsEditor(PeripheralTemplateConfigurer* templateConfigurer, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -70,6 +71,13 @@ private slots:
 
 private:
 
+    /*!
+     *  Setup the peripheral templates.
+     *	
+     *      @param [in] templates   List of new peripheral templates.
+     */
+    void setupPeripheralTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -86,8 +94,8 @@ private:
     //! Target folder for the Renode generator.
     QString generationFolder_;
 
-    //! List of the available peripheral templates.
-    QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > peripheralTemplates_;
+    //! Configurer for peripheral templates.
+    PeripheralTemplateConfigurer* templateConfigurer_;
 };
 
 #endif // RENODEPERIPHERALSEDITOR_H

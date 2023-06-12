@@ -16,15 +16,14 @@
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
 
-#include <QFileInfo>
+#include <QCoreApplication>
 #include <QDir>
 
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::RenodeGenerator()
 //-----------------------------------------------------------------------------
 RenodeGenerator::RenodeGenerator(LibraryInterface* library):
-library_(library),
-generatedFiles_()
+library_(library)
 {
 
 }
@@ -32,9 +31,8 @@ generatedFiles_()
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::generate()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::generate(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer, bool createCpuFile,
-    QString const& cpuFileName, bool createMemoryFile, QString const& memoryFileName,
+void RenodeGenerator::generate(QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> const& cpuContainer,
+    bool createCpuFile, QString const& cpuFileName, bool createMemoryFile, QString const& memoryFileName,
     bool createPeripheralFile, QString const& peripheralFileName)
 {
     QStringList fileNames;
@@ -42,7 +40,7 @@ void RenodeGenerator::generate(QSharedPointer<Component> topComponent, QString c
     {
         if (createCpuFile || createMemoryFile || createPeripheralFile)
         {
-            writeFiles(topComponent, componentPath, cpuContainer, fileNames, createCpuFile, cpuFileName,
+            writeFiles(componentPath, cpuContainer, fileNames, createCpuFile, cpuFileName,
                 createMemoryFile, memoryFileName, createPeripheralFile, peripheralFileName);
         }
     }
@@ -59,10 +57,9 @@ QStringList RenodeGenerator::getGeneratedFiles() const
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeFiles()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeFiles(QSharedPointer<Component> topComponent, QString const& componentPath,
-    QSharedPointer<RenodeCpuRoutesContainer> cpuRoute, QStringList& fileNames, bool createCpuFile,
-    QString const& cpuFileName, bool createMemoryFile, QString const& memoryFileName,
-    bool createPeripheralFile, QString const& peripheralFileName)
+void RenodeGenerator::writeFiles(QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
+    QStringList& fileNames, bool createCpuFile, QString const& cpuFileName, bool createMemoryFile,
+    QString const& memoryFileName, bool createPeripheralFile, QString const& peripheralFileName)
 {
     QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getRoutes().first()->cpuInterface_;
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
@@ -90,7 +87,7 @@ void RenodeGenerator::writeFiles(QSharedPointer<Component> topComponent, QString
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::getUniqueFileName()
 //-----------------------------------------------------------------------------
-QString RenodeGenerator::getUniqueFileName(QStringList& fileNames, QString const& currentFileName)
+QString RenodeGenerator::getUniqueFileName(QStringList& fileNames, QString const& currentFileName) const
 {
     QString modifiedFileName = currentFileName;
     if (fileNames.contains(modifiedFileName))
@@ -108,7 +105,7 @@ QString RenodeGenerator::getUniqueFileName(QStringList& fileNames, QString const
 int RenodeGenerator::getFileNumberExtension(QStringList const& fileNames, QString const& fileName) const
 {
     int extensionNumber = -1;
-    for (auto file : fileNames)
+    for (QString file : fileNames)
     {
         if (file.contains(fileName))
         {
@@ -182,19 +179,19 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& p
 //-----------------------------------------------------------------------------
 void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripheral> peripheral, QString const& tab, QString const& renodeFilePath)
 {
-    QString filePath = peripheral->filePath_;
-    if (filePath.last(1) != "/")
-    {
-        filePath.append("/");
-    }
-
-    QString fileName = filePath + peripheral->peripheralName_ + "." + RenodeConstants::PYTHONFILETYPE;
-
     stream << peripheral->peripheralName_ << ": " << peripheral->className_ << " @ sysbus " << peripheral->baseAddress_ << Qt::endl;
     stream << tab << "size: " << peripheral->size_ << Qt::endl;
 
     if (peripheral->className_ == RenodeConstants::PYTHONPERIPHERAL)
     {
+        QString filePath = peripheral->filePath_;
+        if (filePath.last(1) != "/")
+        {
+            filePath.append("/");
+        }
+
+        QString fileName = filePath + peripheral->peripheralName_ + "." + RenodeConstants::PYTHONFILETYPE;
+
         stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
         stream << tab << "filename: " << fileName << Qt::endl;
 
@@ -209,6 +206,22 @@ void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<Renode
         QString peripheralFilePath = renodeFilePath + "/" + fileName;
         QFile peripheralOutputFile(peripheralFilePath);
         peripheralOutputFile.open(QIODevice::WriteOnly);
+
+        if (peripheral->template_)
+        {
+            QString templatePath = QCoreApplication::applicationDirPath() + "/" + peripheral->template_->template_;
+            QFile templateFile(templatePath);
+            if (templateFile.open(QIODevice::ReadOnly))
+            {
+                QTextStream templateStream(&templateFile);
+                QTextStream peripheralStream(&peripheralOutputFile);
+
+                while (!templateStream.atEnd())
+                {
+                    peripheralStream << templateStream.readAll();
+                }
+            }
+        }
 
         generatedFiles_.append(peripheralFilePath);
     }

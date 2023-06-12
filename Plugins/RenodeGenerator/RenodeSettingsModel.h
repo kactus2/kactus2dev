@@ -14,6 +14,8 @@
 
 #include <KactusAPI/include/PluginSettingsModel.h>
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
+
 #include <QSettings>
 
 //-----------------------------------------------------------------------------
@@ -57,14 +59,14 @@ public:
      *	
      *      @return Path to the current peripheral template configuration.
      */
-    QString getFolderPath() const;
+    QString getFilePath() const;
 
     /*!
      *  Set a new path for peripheral template configuration file.
      *	
      *      @param [in] newFolderPath   The new path to peripheral template configuration file.
      */
-    void setFolderPath(QString const& newFolderPath);
+    void setFilePath(QString const& newFolderPath);
 
 private:
 
@@ -73,7 +75,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Path to the peripheral template configuration file.
-    QString templateFolderPath_ = QString("");
+    QString templateFilePath_ = QString("");
 };
 
 //-----------------------------------------------------------------------------

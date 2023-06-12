@@ -20,13 +20,13 @@
 #include <Plugins/PluginSystem/GeneratorPlugin/GenerationControl.h>
 #include <Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h>
 
+#include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
+#include <Plugins/RenodeGenerator/RenodeSettingsWidget.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeCpuRoutesContainer.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeFileEditor.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
-
-#include <Plugins/RenodeGenerator/RenodeConfigurationManager.h>
-#include <Plugins/RenodeGenerator/RenodeSettingsWidget.h>
+#include <Plugins/RenodeGenerator/CPUDialog/TemplateEditor/PeripheralTemplateConfigurer.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -124,7 +124,9 @@ QIcon RenodeGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component, QSharedPointer<Design const> design, QSharedPointer<DesignConfiguration const> designConfiguration) const
+bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+    QSharedPointer<Design const> design,
+    QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
     // Must be ran on a design.
     return (design != 0 && designConfiguration != 0);
@@ -133,7 +135,8 @@ bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration)
+void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
 
@@ -149,21 +152,22 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
         viewNames.append(view->name());
     }
 
-    RenodeConfigurationManager* configManager(new RenodeConfigurationManager(utility));
+    auto configManager(new RenodeConfigurationManager(utility));
     QJsonObject configurationObject = configManager->getConfigurationObject(component);
+    auto templateConfigurationManager(new PeripheralTemplateConfigurer(settingsModel_));
 
     QString configurationFolderPath = configurationObject.value(RenodeConstants::FOLDERPATH).toString("");
     QString configurationView = configurationObject.value(RenodeConstants::VIEW).toString("");
     QString configurationFileSet = configurationObject.value(RenodeConstants::FILESET).toString("");
     bool saveToFileSetFlag = configurationObject.value(RenodeConstants::SAVETOFILESET).toBool(true);
 
-    RenodeFileEditor* fileEditor(new RenodeFileEditor(configurationObject));
-    RenodeCpuEditor* cpuEditor(new RenodeCpuEditor(utility, configurationObject));
+    auto fileEditor(new RenodeFileEditor(configurationObject));
+    auto cpuEditor(new RenodeCpuEditor(utility, configurationObject, templateConfigurationManager));
 
     connect(cpuEditor, SIGNAL(cpuChanged(QString const&)), fileEditor, SLOT(changeFileNames(QString const&)), Qt::UniqueConnection);
 
     CPUSelectionDialog selectionDialog(component, utility->getLibraryInterface(), viewNames, component->getFileSetNames(),
-        cpuEditor, "Renode platform", fileEditor, utility->getParentWidget(), configurationFolderPath,
+        cpuEditor, "Renode platform", fileEditor, utility->getParentWidget(), 1000, configurationFolderPath,
         saveToFileSetFlag, configurationFileSet, configurationView);
 
     if (selectionDialog.exec() == QDialog::Accepted)
@@ -189,7 +193,7 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                 QString peripheralFileName = fileEditor->getPeripheralFileName();
 
                 RenodeGenerator generator(utility->getLibraryInterface());
-                generator.generate(component, xmlFilePath, renodeCpu, writeCpuFlag, cpuFileName, writeMemoryFlag,
+                generator.generate(xmlFilePath, renodeCpu, writeCpuFlag, cpuFileName, writeMemoryFlag,
                     memoryFileName, writePeripheralFlag, peripheralFileName);
 
                 QString cpuFileEditorText = fileEditor->getCpuEditorText();
@@ -228,7 +232,8 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::saveToFileset()
 //-----------------------------------------------------------------------------
-void RenodeGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList const& renodeFiles, QSharedPointer<Component> component, QString const& fileSetName)
+void RenodeGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList const& renodeFiles,
+    QSharedPointer<Component> component, QString const& fileSetName)
 {
     if (renodeFiles.isEmpty())
     {
@@ -284,7 +289,9 @@ void RenodeGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList c
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
-void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, QString const& viewName, QString const& outputDirectory)
+void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
+    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
+    QString const& viewName, QString const& outputDirectory)
 {
     utility->printInfo(tr("Running %1 %2.").arg(getName(), getVersion()));
     utility->printInfo(tr("Running generation for %1 and view '%2'.").arg(component->getVlnv().toString(), viewName));
@@ -328,7 +335,7 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
     QString peripheralFileName = cpuName + "_" + RenodeConstants::RENODEPERIPHERALFILENAME;
 
     RenodeGenerator generator(utilityLibrary);
-    generator.generate(component, outputDirectory, renodeCPUs.first(), true, cpuFileName, true, memoryFileName, true, peripheralFileName);
+    generator.generate(outputDirectory, renodeCPUs.first(), true, cpuFileName, true, memoryFileName, true, peripheralFileName);
 
     utility->printInfo(tr("Generation complete."));
 }

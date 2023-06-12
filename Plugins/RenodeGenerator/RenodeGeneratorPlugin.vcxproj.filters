@@ -217,6 +217,9 @@
     <ClCompile Include="RenodeSettingsModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -367,6 +370,9 @@
     <ClInclude Include="RenodeSettingsModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="RenodeGenerator.qrc">
@@ -374,7 +380,7 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="peripherals.txt">
+    <Text Include="..\..\executable\assets\peripherals.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

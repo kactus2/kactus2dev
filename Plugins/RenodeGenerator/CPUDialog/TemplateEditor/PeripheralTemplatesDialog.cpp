@@ -28,7 +28,7 @@ templatesEditor_(new PeripheralTemplateEditor(generationFolder, this))
 
     setupLayout();
 
-    setMinimumWidth(600);
+    setMinimumWidth(800);
 }
 
 //-----------------------------------------------------------------------------
