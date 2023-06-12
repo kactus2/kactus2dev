@@ -67,6 +67,14 @@ const
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstanceInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> ComponentInstanceInterface::getItem(std::string const& instanceName) const
+{
+    return getComponentInstance(instanceName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstanceInterface::getItemIndex()
 //-----------------------------------------------------------------------------
 int ComponentInstanceInterface::getItemIndex(std::string const& itemName) const

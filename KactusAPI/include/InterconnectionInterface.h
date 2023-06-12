@@ -218,6 +218,15 @@ private:
      */
     QSharedPointer<Interconnection> getInterconnection(std::string const& connectionName) const;
 
+    /*!
+     *  Get the interconnection with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] connectionName   Name of the selected parameter.
+     *
+     *      @return The sliced interconnection with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& connectionName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

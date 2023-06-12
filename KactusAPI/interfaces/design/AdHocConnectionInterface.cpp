@@ -57,6 +57,14 @@ const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AdHocConnectionInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> AdHocConnectionInterface::getItem(std::string const& connectionName) const
+{
+    return getAdHocConnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AdHocConnectionInterface::getItemIndex()
 //-----------------------------------------------------------------------------
 int AdHocConnectionInterface::getItemIndex(std::string const& itemName) const
