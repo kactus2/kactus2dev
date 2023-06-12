@@ -65,9 +65,11 @@ void PacketValidator::findErrorsIn(QStringList& errors, QSharedPointer<Packet> p
         errors.append(QObject::tr("No packet field defined for packet %1 in %2").arg(packet->name(), context));
     }
     
+    auto fieldContext = QStringLiteral("packet ") + packet->name() + QStringLiteral(" within ") + context;
+
     for (auto const& packetField : *packet->getPacketFields())
     {
-        findErrorsInPacketField(errors, context, packetField);
+        findErrorsInPacketField(errors, fieldContext, packetField);
     }
 }
 
@@ -211,8 +213,24 @@ void PacketValidator::findErrorsInPacketFieldValue(QStringList& errors, QString 
 {
     if (!hasValidFieldValue(packetField, resolvedFieldWidth))
     {
-        errors.append(QObject::tr("Invalid packet field value in packet field %1 within %2.").arg(
+        errors.append(QObject::tr("Invalid packet field value within packet field %1 in %2.").arg(
             packetField->name(), context));
+    }
+    
+    auto value = packetField->getValue();
+
+    // Check if value is constant.
+    bool valueIsConstant = expressionParser_->isPlainValue(value);
+    QString resolvedValue;
+
+    if (!valueIsConstant)
+    {
+        // Value must be fixed, if opcode qualifier is set.
+        if (packetField->getQualifier()->hasType(Qualifier::Type::Opcode))
+        {
+            errors.append(QObject::tr("Value of packet field %1 in %2 must be constant when qualifier is opcode.").arg(
+                packetField->name(), context));
+        }
     }
 }
 
