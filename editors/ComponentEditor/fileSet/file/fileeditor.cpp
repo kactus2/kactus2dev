@@ -31,7 +31,7 @@ FileEditor::FileEditor(LibraryInterface* handler, QSharedPointer<Component> comp
 ItemEditor(component, handler, parent),
 fileName_(fileName),
 nameEditor_(fileName, fileInterface, this),
-fileTypeEditor_(this, fileName, fileInterface),
+fileTypeEditor_(component->getRevision(), this, fileName, fileInterface),
 generalEditor_(this, fileName, fileInterface),
 exportedNamesEditor_(tr("Exported names"), this),
 buildCommand_(fileName, fileInterface, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
@@ -40,13 +40,19 @@ imageTypesEditor_(tr("Image types"), this),
 dependenciesEditor_(tr("Dependent directories"), handler->getDirectoryPath(component->getVlnv()), this),
 editButton_(new QPushButton(QIcon(":/icons/common/graphics/edit.png"), tr("Edit file"), this)),
 runButton_(new QPushButton(QIcon(":/icons/common/graphics/script-run-file.png"), tr("Run file"), this)),
-openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"),
-    tr("Open containing folder"), this)),
+openFolderButton_(new QPushButton(QIcon(":/icons/common/graphics/opened-folder.png"), tr("Open file location"), this)),
 fileInterface_(fileInterface),
 availableFiles_(files)
-FILEINTERFACE_H
 {
     fileInterface_->setFiles(availableFiles_);
+
+    editButton_->setFlat(true);
+    runButton_->setFlat(true);
+    openFolderButton_->setFlat(true);
+
+    exportedNamesEditor_.setFlat(true);
+    imageTypesEditor_.setFlat(true);
+    dependenciesEditor_.setFlat(true);
 
     setupLayout();
     
@@ -211,6 +217,7 @@ void FileEditor::setupLayout()
     buttonLayout->addWidget(editButton_);
     buttonLayout->addWidget(runButton_);
     buttonLayout->addWidget(openFolderButton_);
+    buttonLayout->setSpacing(1);
     buttonLayout->addStretch(1);
 
     QWidget* topWidget = new QWidget(scrollArea);
@@ -225,15 +232,10 @@ void FileEditor::setupLayout()
     topLayout->addWidget(&exportedNamesEditor_, 1, 1, 1, 1);
     topLayout->addWidget(&buildCommand_, 2, 0, 1, 1);
     topLayout->addWidget(&imageTypesEditor_, 2, 1, 1, 1);
-    topLayout->addWidget(&dependenciesEditor_, 3, 0, 1, 1);
-    topLayout->addLayout(buttonLayout, 4, 0, 1, 2);
+    topLayout->addLayout(buttonLayout, 3, 0, 1, 2, Qt::AlignTop);
+    topLayout->addWidget(&dependenciesEditor_, 3, 1, 1, 1);
 
-    topLayout->setRowStretch(0, 1);
-    topLayout->setRowStretch(1, 1);
-    topLayout->setRowStretch(2, 1);
     topLayout->setRowStretch(3, 2);
-    topLayout->setRowStretch(4, 1);
-    topLayout->setRowStretch(5, 6);    
 
     scrollArea->setWidget(topWidget);
 }

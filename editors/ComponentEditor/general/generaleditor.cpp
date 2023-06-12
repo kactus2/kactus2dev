@@ -31,29 +31,28 @@
 #include <QSplitter>
 #include <QStringList>
 #include <QVBoxLayout>
+#include <QFormLayout>
 
 //-----------------------------------------------------------------------------
 // Function: GeneralEditor::GeneralEditor()
 //-----------------------------------------------------------------------------
 GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
     ItemEditor(component, libHandler, parent),
-    vlnvDisplayer_(new VLNVDisplayer(this, component->getVlnv())),
+    nameGroupEditor_(new DocumentNameGroupEditor(this)),
     attributeEditor_(new KactusAttributeEditor(this)),
     authorEditor_(new QLineEdit(this)),
     licenseEditor_(new QLineEdit(this)),
-    descriptionEditor_(new QPlainTextEdit(this)),
     headerEditor_(new QPlainTextEdit(this)),
     finder_(new ParameterCache(component)),
     parser_(new IPXactSystemVerilogParser(finder_)),
-    validator_(new ComponentValidator(parser_, libHandler))
-
+    validator_(new ComponentValidator(parser_, libHandler)),
+    library_(libHandler)
 {
     Q_ASSERT(libHandler != 0);
     Q_ASSERT(component != 0);
 
     const QString xmlPath = libHandler->getPath(component->getVlnv());
-    vlnvDisplayer_->setTitle(tr("Component VLNV and location"));
-	vlnvDisplayer_->setPath(xmlPath);
+    nameGroupEditor_->setTitle(tr("Component VLNV and location"));
 
     validityIcon_->setFixedSize(24, 24);
 
@@ -64,8 +63,8 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Compon
 
     setupLayout();
 
+    connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()), Qt::UniqueConnection);
-    connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
     connect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()), Qt::UniqueConnection);
     connect(authorEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onAuthorChange()), Qt::UniqueConnection);
@@ -88,6 +87,8 @@ bool GeneralEditor::isValid() const
 //-----------------------------------------------------------------------------
 void GeneralEditor::refresh()
 {
+    nameGroupEditor_->setDocumentNameGroup(component(), library_->getPath(component()->getVlnv()));
+
 	disconnect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()));
 
     if (component()->getImplementation() == KactusAttribute::HW)
@@ -114,10 +115,6 @@ void GeneralEditor::refresh()
     licenseEditor_->setText(component()->getLicense());
     connect(licenseEditor_, SIGNAL(textChanged(const QString &)),
         this, SLOT(onLicenseChange()), Qt::UniqueConnection);
-
-	disconnect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()));
-	descriptionEditor_->setPlainText(component()->getDescription());
-	connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChange()), Qt::UniqueConnection);
 
 	disconnect(headerEditor_, SIGNAL(textChanged()), this, SLOT(onHeaderChange()));
 	QString comment = component()->getTopComments().join("\n");
@@ -167,15 +164,6 @@ void GeneralEditor::onAttributesChange()
 }
 
 //-----------------------------------------------------------------------------
-// Function: GeneralEditor::onDescriptionChange()
-//-----------------------------------------------------------------------------
-void GeneralEditor::onDescriptionChange()
-{
-	component()->setDescription(descriptionEditor_->toPlainText());
-	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
 // Function: GeneralEditor::showEvent()
 //-----------------------------------------------------------------------------
 void GeneralEditor::showEvent( QShowEvent* event )
@@ -219,11 +207,6 @@ void GeneralEditor::setupLayout()
     QGridLayout* layout = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* descriptionBox = new QGroupBox("Description", this);
-
-    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionBox);
-    descriptionLayout->addWidget(descriptionEditor_);
-
     QGroupBox* commentBox = new QGroupBox("XML header", this);
 
     QVBoxLayout* commentLayout = new QVBoxLayout(commentBox);
@@ -247,12 +230,14 @@ void GeneralEditor::setupLayout()
     errorLayout->addWidget(errorView_);
 
     layout->addWidget(new SummaryLabel(tr("Component summary"), this), 0, 0, 1, 2, Qt::AlignCenter);
-    layout->addWidget(vlnvDisplayer_, 1, 0, 1, 2);
+    layout->addWidget(nameGroupEditor_, 1, 0, 1, 2);
     layout->addWidget(attributeEditor_, 2, 0, 1, 1);
     layout->addWidget(authorBox, 2, 1, 1, 1);    
-    layout->addWidget(descriptionBox, 3, 0, 1, 1);
-    layout->addWidget(commentBox, 3, 1, 1, 1);
+    layout->addWidget(commentBox, 3, 0, 1, 2);
     layout->addWidget(errorBox, 4, 0, 1, 2);
+
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 1);
 
 }
 

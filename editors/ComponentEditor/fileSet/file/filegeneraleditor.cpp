@@ -33,6 +33,8 @@ includeFile_(tr("File is include file"), this),
 externalDec_(tr("File contains external declarations"), this),
 fileInterface_(fileInterface)
 {
+    setFlat(true);
+
 	QLabel* logicNameLabel = new QLabel(tr("Logical name:"), this);
 	logicNameLabel->setToolTip(tr("Logical name for the file or directory.\n"
 		"For example VHDL library name for a vhdl-file"));

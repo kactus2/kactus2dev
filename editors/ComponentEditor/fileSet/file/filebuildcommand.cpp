@@ -45,6 +45,9 @@ flagsEditor_(this),
 replaceDefaultEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser)
 {
+    setFlat(true);
+    browseTargetButton_.setFlat(true);
+
     Q_ASSERT_X(
         fileInterface_, "FileBuildCommand constructor", "Null File interface-pointer given to the constructor");
 

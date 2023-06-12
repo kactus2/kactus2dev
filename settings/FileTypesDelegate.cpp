@@ -22,7 +22,8 @@
 //-----------------------------------------------------------------------------
 // Function: FileTypesDelegate::FileTypesDelegate()
 //-----------------------------------------------------------------------------
-FileTypesDelegate::FileTypesDelegate(QObject* parent): QStyledItemDelegate(parent)
+FileTypesDelegate::FileTypesDelegate(QObject* parent): 
+    QStyledItemDelegate(parent)
 {
 
 }
@@ -39,8 +40,10 @@ QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
         // Get all file types that have been defined already.
         QStringList usedTypes = index.model()->data(index, Qt::UserRole).toStringList();
         usedTypes.append(FileTypes::FILE_TYPES);
+        usedTypes.append(FileTypes::FILE_TYPES_2022);
         usedTypes.removeDuplicates();
 
+        combo->addItems(usedTypes);
         combo->setEditable(true);
         return combo;
     }

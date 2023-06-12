@@ -35,7 +35,7 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
     MemoryMapInterface* mapInterface, bool isMemoryRemap, QWidget* parent):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap, this, tr("Memory remap name and description")),
+nameEditor_(memoryRemap, component->getRevision(), this, tr("Memory remap name and description")),
 addressBlockEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser,
     mapInterface->getAddressBlockInterface(), memoryRemap->getMemoryBlocks(), this)),
 subspaceMapEditor_(new SubspaceMapsEditor(component, parameterFinder, expressionParser,

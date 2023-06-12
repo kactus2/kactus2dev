@@ -30,7 +30,7 @@ SystemViewEditor::SystemViewEditor(FileSetInterface* fileSetInterface, QSharedPo
     QSharedPointer<SystemView> systemView, LibraryInterface* libHandler, QWidget* parent):
 ItemEditor(component, libHandler, parent), 
     view_(systemView.data()),
-    nameEditor_(systemView, this, tr("Name and description")),
+    nameEditor_(systemView, component->getRevision(), this, tr("Name and description")),
     hierRefEditor_(NULL),
     HWViewRefEditor_(NULL),
     fileSetRefEditor_(NULL)

@@ -179,7 +179,7 @@ int KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool 
     }
     else
     {
-        existingComponent = QSharedPointer<Component const>(new Component(targetVLNV));
+        existingComponent = QSharedPointer<Component const>(new Component(targetVLNV, Document::Revision::Std14));
     }
 
     QSharedPointer<ComponentParameterFinder> parameterFinder(new ComponentParameterFinder(existingComponent));

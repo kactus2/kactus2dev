@@ -1398,7 +1398,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
     Q_ASSERT(vlnv.isValid());
 
     // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 
     // Set Kactus attributes.
     component->setHierarchy(prodHier);
@@ -1437,7 +1437,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
         vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
     // Create a component and a hierarchical view .
-    QSharedPointer<Component> component(new Component(vlnv));
+    QSharedPointer<Component> component(new Component(vlnv, Document::Revision::Std14));
 
     // Set Kactus2 attributes.
     component->setHierarchy(prodHier);
@@ -1675,7 +1675,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
         vlnv.getName().remove(".comp") + ".swdesigncfg", vlnv.getVersion());
 
     // Create a component and a hierarchical view .
-    QSharedPointer<Component> component(new Component(vlnv));
+    QSharedPointer<Component> component(new Component(vlnv, Document::Revision::Std14));
 
     // Set Kactus attributes.
     component->setImplementation(KactusAttribute::SW);
@@ -1918,7 +1918,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     else
     {
         // Otherwise create a system component to encapsulate the system design.
-        parentComp = QSharedPointer<Component>(new Component(sysVLNV));
+        parentComp = QSharedPointer<Component>(new Component(sysVLNV, Document::Revision::Std14));
         parentComp->setHierarchy(KactusAttribute::PRODUCT);
         parentComp->setFirmness(KactusAttribute::FIXED);
         parentComp->setImplementation(KactusAttribute::SYSTEM);
@@ -3223,8 +3223,7 @@ void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
     Q_ASSERT(vlnv.isValid());
 
     // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component());
-    component->setVlnv(vlnv);
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
     component->setVersion(VersionHelper::versionFileStr());
 
     // Set Kactus attributes.

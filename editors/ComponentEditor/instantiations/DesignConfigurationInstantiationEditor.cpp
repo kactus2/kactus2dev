@@ -42,7 +42,7 @@ DesignConfigurationInstantiationEditor::DesignConfigurationInstantiationEditor(Q
     LibraryInterface* libHandler, QWidget* parent):
 ParameterItemEditor(component, libHandler, parent), 
 instantiation_(instantiation),
-nameGroupEditor_(new NameGroupEditor(instantiation, this,
+nameGroupEditor_(new NameGroupEditor(instantiation, component->getRevision(), this,
     tr("Design configuration instance name and description"))),
 designConfigurationEditor_(0),
 parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),

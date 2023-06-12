@@ -14,7 +14,9 @@
 
 #include <QStyledItemDelegate>
 
-class BasicLineContentMatcher;
+#include <IPXACTmodels/common/Document.h>
+
+#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
 //-----------------------------------------------------------------------------
 //! Provides editor to select a type for a file.
@@ -30,7 +32,7 @@ public:
 	 *      @param [in] parent  The owner of this delegate.
 	 *
 	*/
-	FileTypeEditorDelegate(QObject *parent);
+	FileTypeEditorDelegate(Document::Revision docRevision, QObject *parent);
 	
 	//! The destructor
 	virtual ~FileTypeEditorDelegate();
@@ -71,7 +73,9 @@ private:
     void updateSuggestedItems() const;
 
     //! Matcher for assisting editing with type suggestions.
-    BasicLineContentMatcher* matcher_;
+    BasicLineContentMatcher* matcher_ = new BasicLineContentMatcher;
+
+	Document::Revision revision_;
 };
 
 #endif // FILETYPEEDITORDELEGATE_H

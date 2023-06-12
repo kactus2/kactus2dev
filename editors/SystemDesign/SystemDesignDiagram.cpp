@@ -1278,7 +1278,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
                     "the library").arg(instance->getComponentRef()->getName(), design->getVlnv().getName()));
 
                 // Create an unpackaged component so that we can still visualize the component instance->
-                component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+                component = QSharedPointer<Component>(new Component(*instance->getComponentRef(), getEditedComponent()->getRevision()));
                 component->setImplementation(KactusAttribute::HW);
             }
 
@@ -1335,7 +1335,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
         if(!component)
         {
             // Create an unpackaged component so that we can still visualize the component instance->
-            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef(), getEditedComponent()->getRevision()));
             component->setImplementation(KactusAttribute::SW);
         }
 
@@ -1833,7 +1833,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
                                  "found in the library").arg(instance->getComponentRef()->toString()));
 
             // Create an unpackaged component so that we can still visualize the component instance->
-            component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+            component = QSharedPointer<Component>(new Component(*instance->getComponentRef(), getEditedComponent()->getRevision()));
             component->setImplementation(KactusAttribute::SW);
         }
 
@@ -2327,8 +2327,7 @@ void SystemDesignDiagram::draftAt(QPointF const& clickedPosition)
                 QString name = createInstanceName("instance");
 
                 // Create a component model without a valid vlnv.
-                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-                comp->setVlnv(VLNV());
+                QSharedPointer<Component> comp = QSharedPointer<Component>(new Component(VLNV(), getEditedComponent()->getRevision()));
                 comp->setImplementation(KactusAttribute::SW);
 
 				// Create the corresponding diagram component.

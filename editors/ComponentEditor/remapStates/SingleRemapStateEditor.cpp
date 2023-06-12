@@ -26,7 +26,7 @@ SingleRemapStateEditor::SingleRemapStateEditor(QSharedPointer<Component> compone
     QWidget* parent /* = 0 */):
 ItemEditor(component, libHandler, parent),
 remapState_(remapState),
-nameEditor_(remapState_, this, tr("Remap state name and description")),
+nameEditor_(remapState_, component->getRevision(), this, tr("Remap state name and description")),
 remapConditionEditor_(new RemapConditionEditor(remapState->getRemapPorts(), component, parameterFinder,
 expressionFormatter, this))
 {

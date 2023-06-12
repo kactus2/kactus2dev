@@ -12,9 +12,8 @@
 #include "filetypeeditordelegate.h"
 
 #include <common/widgets/assistedLineEdit/AssistedLineEdit.h>
-#include <common/widgets/assistedLineEdit/BasicLineContentMatcher.h>
 
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <QStringList>
 #include <QSettings>
@@ -22,9 +21,9 @@
 //-----------------------------------------------------------------------------
 // Function: FileTypeEditorDelegate::FileTypeEditorDelegate()
 //-----------------------------------------------------------------------------
-FileTypeEditorDelegate::FileTypeEditorDelegate(QObject *parent):
+FileTypeEditorDelegate::FileTypeEditorDelegate(Document::Revision docRevision, QObject *parent):
 QStyledItemDelegate(parent),
-    matcher_(new BasicLineContentMatcher())
+    revision_(docRevision)
 {
 
 }
@@ -86,13 +85,12 @@ void FileTypeEditorDelegate::updateSuggestedItems() const
     QStringList typeNames = settings.childGroups();
     settings.endGroup();
 
-    if (typeNames.isEmpty())
+    typeNames.append(FileTypes::FILE_TYPES);
+    if (revision_ == Document::Revision::Std22)
     {
-        for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; i++)
-        {
-            typeNames.append(FileTypes::FILE_TYPES[i]);
-        }
+        typeNames.append(FileTypes::FILE_TYPES_2022);
     }
+    typeNames.removeDuplicates();
 
     matcher_->setItems(typeNames);
 }

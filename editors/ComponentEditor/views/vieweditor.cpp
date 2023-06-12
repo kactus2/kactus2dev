@@ -44,7 +44,7 @@ ViewEditor::ViewEditor(QSharedPointer<Component> component, QSharedPointer<View>
     QWidget *parent) :
 ItemEditor(component, libHandler, parent),
 view_(view),
-nameEditor_(new NameGroupEditor(view, this, tr("View name and description"))),
+nameEditor_(new NameGroupEditor(view, component->getRevision(), this, tr("View name and description"))),
 envIdentifier_(new EnvIdentifierEditor(view, this)),
 componentInstantiationSelector_(new ReferenceSelector(this)),
 designConfigurationInstantiationSelector_(new ReferenceSelector(this)),

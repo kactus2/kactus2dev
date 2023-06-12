@@ -28,7 +28,7 @@ descriptionEditor_(this),
 fileName_(fileName),
 fileInterface_(fileInterface)
 {
-    setMaximumHeight(150);
+    setFlat(true);
 
     fileNameLabel_.setWordWrap(true);
 

@@ -23,6 +23,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 
@@ -39,7 +40,7 @@ DesignInstantiationEditor::DesignInstantiationEditor(QSharedPointer<Component> c
     QSharedPointer<ParameterFinder> componentParameterFinder, QWidget* parent):
 ItemEditor(component, libHandler, parent),
 instantiation_(instantiation),
-nameGroupEditor_(new NameGroupEditor(instantiation, this, tr("Design instance name and description"))),
+nameGroupEditor_(new NameGroupEditor(instantiation, component->getRevision(), this, tr("Design instance name and description"))),
 designEditor_(0),
 elementEditor_(0),
 designParameterFinder_(new ListParameterFinder())

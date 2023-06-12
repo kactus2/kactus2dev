@@ -59,16 +59,21 @@ ComponentReader::~ComponentReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument const& componentDocument) const
 {
-    QSharedPointer<Component> newComponent (new Component());
+    QDomNode componentNode = componentDocument.firstChildElement();
+
+    Document::Revision revision = DocumentReader::getXMLDocumentRevision(componentNode);
+
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(componentNode, VLNV::COMPONENT);
+
+    QSharedPointer<Component> newComponent (new Component(vlnv, revision));
 
     parseTopComments(componentDocument, newComponent);
 
     parseXMLProcessingInstructions(componentDocument, newComponent);
 
-    QDomNode componentNode = componentDocument.firstChildElement();
     parseNamespaceDeclarations(componentNode, newComponent);
 
-    parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
+   // parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
 
     parseBusInterfaces(componentNode, newComponent);
 

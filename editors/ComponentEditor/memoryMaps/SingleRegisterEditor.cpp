@@ -41,7 +41,7 @@ SingleRegisterEditor::SingleRegisterEditor(QSharedPointer<Register> selectedRegi
     QSharedPointer<QList<QSharedPointer<RegisterBase>>> containingRegisterData, QWidget* parent):
 ItemEditor(component, handler, parent),
 registerName_(selectedRegister->name().toStdString()),
-nameEditor_(selectedRegister, this, tr("Register name and description")),
+nameEditor_(selectedRegister, component->getRevision(), this, tr("Register name and description")),
 fieldsEditor_(new RegisterEditor(selectedRegister->getFields(), component, handler, parameterFinder,
     registerInterface->getSubInterface(), this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),

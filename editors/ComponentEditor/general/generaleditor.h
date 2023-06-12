@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
+#include <editors/common/DocumentNameGroupEditor.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/ParameterFinder.h>
@@ -57,6 +57,10 @@ public:
      */
     ~GeneralEditor() final = default;
 
+    // Disable copying.
+    GeneralEditor(const GeneralEditor& other) = delete;
+    GeneralEditor& operator=(const GeneralEditor& other) = delete;
+
     /*!
      *  Check for the validity of the edited item.
      *
@@ -86,9 +90,6 @@ private slots:
 	//! Handler for changes in attribute editor.
 	void onAttributesChange();
 
-	//! Handler for changes in description.
-	void onDescriptionChange();
-
 	//! Handler for changes in XML header.
 	void onHeaderChange();
 
@@ -100,9 +101,6 @@ private slots:
 
 private:
 
-    // Disable copying.
-    GeneralEditor(const GeneralEditor& other);
-    GeneralEditor& operator=(const GeneralEditor& other);
 
     //! Sets the widget layout.
     void setupLayout();
@@ -117,7 +115,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The VLNV displayer.
-    VLNVDisplayer* vlnvDisplayer_;
+    DocumentNameGroupEditor* nameGroupEditor_;
 
     //! Kactus attribute editor.
     KactusAttributeEditor* attributeEditor_;
@@ -127,9 +125,6 @@ private:
 
     //! Editor for component license.
     QLineEdit* licenseEditor_;
-
-    //! The description editor.
-    QPlainTextEdit* descriptionEditor_;
 
 	//! The editor to view/edit the header of the XML-file.
 	QPlainTextEdit* headerEditor_;
@@ -154,6 +149,9 @@ private:
 
     //! Validator for checking the component compliance.
     QSharedPointer<ComponentValidator> validator_;
+
+    //! The available library.
+    LibraryInterface* library_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

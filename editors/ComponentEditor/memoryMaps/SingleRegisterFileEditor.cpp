@@ -28,10 +28,10 @@ SingleRegisterFileEditor::SingleRegisterFileEditor(RegisterInterface* registerIn
     QSharedPointer<RegisterFile> registerFile, QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<RegisterFileValidator> registerFileValidator,
-    QWidget* parent):
-ItemEditor(component, handler, parent),
-registerFile_(registerFile),
-nameEditor_(registerFile, this, tr("Register file name and description")),
+    QWidget* parent) :
+    ItemEditor(component, handler, parent),
+    registerFile_(registerFile),
+    nameEditor_(registerFile, component->getRevision(), this, tr("Register file name and description")),
 registersEditor_(new AddressBlockEditor(
     registerFile->getRegisterData(), registerInterface, component, handler, parameterFinder, this)),
 registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,

@@ -46,8 +46,8 @@
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component(const VLNV &vlnv):
-Document(vlnv),
+Component::Component(const VLNV &vlnv, Document::Revision revision):
+Document(vlnv, revision),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
 indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
 channels_(new QList<QSharedPointer<Channel> > ()),

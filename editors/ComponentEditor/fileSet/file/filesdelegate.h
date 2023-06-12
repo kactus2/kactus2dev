@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QStyledItemDelegate>
 
 //-----------------------------------------------------------------------------
@@ -33,10 +35,14 @@ public:
 	 *
 	 *      @param [in] parent  Pointer to the owner of the delegate.
 	 */
-	FilesDelegate(QObject *parent);
+	FilesDelegate(Document::Revision docRevision, QObject *parent);
 	
 	//! The destructor.
-	~FilesDelegate();
+	virtual ~FilesDelegate();
+
+	//! No copying. No assignment.
+	FilesDelegate(const FilesDelegate& other) = delete;
+	FilesDelegate& operator=(const FilesDelegate& other) = delete;
 
 	/*!
      *  Create a new editor for the given item.
@@ -81,9 +87,7 @@ private slots:
 
 private:
 
-	//! No copying. No assignment.
-	FilesDelegate(const FilesDelegate& other);
-	FilesDelegate& operator=(const FilesDelegate& other);
+	Document::Revision revision_;
 };
 
 #endif // FILESDELEGATE_H

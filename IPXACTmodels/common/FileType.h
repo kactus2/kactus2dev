@@ -97,8 +97,7 @@ namespace FileTypes
 		QStringLiteral("systemRDL-1.0"),
 		QStringLiteral("systemRDL-2.0"),
 		QStringLiteral("systemCSource-2.3"),
-		QStringLiteral("systemCSourceBinaryLibrary"),
-
+		QStringLiteral("systemCSourceBinaryLibrary")
 	};
 
 	/*!

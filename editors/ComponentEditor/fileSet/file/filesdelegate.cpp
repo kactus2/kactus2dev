@@ -22,8 +22,9 @@
 //-----------------------------------------------------------------------------
 // Function: FilesDelegate::FilesDelegate()
 //-----------------------------------------------------------------------------
-FilesDelegate::FilesDelegate(QObject *parent):
-MultilineDescriptionDelegate(parent)
+FilesDelegate::FilesDelegate(Document::Revision docRevision, QObject *parent):
+MultilineDescriptionDelegate(parent),
+revision_(docRevision)
 {
 
 }
@@ -53,7 +54,7 @@ QWidget* FilesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem
         listEditor->setMinimumHeight(FilesDelegate::LIST_EDITOR_MIN_HEIGHT);
 
         // create the delegate for the editor
-        FileTypeEditorDelegate* delegate = new FileTypeEditorDelegate(parent);
+        FileTypeEditorDelegate* delegate = new FileTypeEditorDelegate(revision_, parent);
         listEditor->setItemDelegate(delegate);
 
         return listEditor;

@@ -185,36 +185,36 @@ void FileDependencyEditor::scanDirectories()
     // First scan the source directories.
     if (isEnabled())
     {
-        foreach (QString const& sourcePath, component_->getSourceDirectories())
+        for (QString const& sourcePath: component_->getSourceDirectories())
         {
             scanFiles(sourcePath);
         }
     }
 
     // Then add files that are part of the file sets but were not added in the file scan.
-    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *component_->getFileSets())
     {
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
+        for (QSharedPointer<File> file : *fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
             if (!(Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch()) &&
-                model_.findFileItem(file->name()) == 0)
+                model_.findFileItem(file->name()) == nullptr)
             {
                 QFileInfo info(file->name());
                 QString folderPath = info.path();
 
                 // Create a folder item for the file if not already created.
                 FileDependencyItem* folderItem = model_.findFolderItem(folderPath);
-                if (folderItem == 0)
+                if (folderItem == nullptr)
                 {
                     folderItem = model_.addFolder(folderPath);
                 }
 
                 // Create a file item.
                 QList<QSharedPointer<File> > fileRefs;
-                foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+                for (QSharedPointer<FileSet> fileSet : *component_->getFileSets())
                 {
-                    foreach (QSharedPointer<File> filesetFile, *fileSet->getFiles())
+                    for (QSharedPointer<File> filesetFile : *fileSet->getFiles())
                     {
                         if (filesetFile->name() == file->name())
                         {
@@ -232,7 +232,7 @@ void FileDependencyEditor::scanDirectories()
 
     timer_->stop();
     delete timer_;
-    timer_ = 0;
+    timer_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -310,7 +310,7 @@ void FileDependencyEditor::scanFiles(QString const& path)
     QFileInfoList list = QDir(General::getAbsolutePath(basePath_ + "/", path)).entryInfoList(
         QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot);
 
-    foreach (QFileInfo const& info, list)
+    for (QFileInfo const& info : list)
     {
         // Check if the entry is a directory.
         if (info.isDir())

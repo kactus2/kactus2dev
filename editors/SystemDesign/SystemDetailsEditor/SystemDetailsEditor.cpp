@@ -413,7 +413,7 @@ void SystemDetailsEditor::removeMapping()
     handler_->writeModelToFile(component_);
 
     // Create a new system component and add the system view to it.
-    QSharedPointer<Component> newComponent(new Component(dialog.getVLNV()));
+    QSharedPointer<Component> newComponent(new Component(dialog.getVLNV(), component_->getRevision()));
     newComponent->setImplementation(KactusAttribute::SYSTEM);
 
 	QList<QSharedPointer<SystemView> > newSystemViews = newComponent->getSystemViews();
@@ -479,7 +479,7 @@ void SystemDetailsEditor::exportSW()
     newView->setHierarchyRef(desConfVLNV);
 
     // Create a new system component and add the system view to it.
-    QSharedPointer<Component> newComponent(new Component(vlnv));
+    QSharedPointer<Component> newComponent(new Component(vlnv, component_->getRevision()));
     newComponent->setImplementation(KactusAttribute::SYSTEM);
 
 	QList<QSharedPointer<SystemView> > newSystemViews;

@@ -21,11 +21,13 @@
 //-----------------------------------------------------------------------------
 // Function: filetypeeditor::FileTypeEditor()
 //-----------------------------------------------------------------------------
-FileTypeEditor::FileTypeEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface):
+FileTypeEditor::FileTypeEditor(Document::Revision docRevision, QWidget *parent, std::string const& fileName, FileInterface* fileInterface):
 ListManager(tr("File types"), parent), 
 fileName_(fileName),
-fileInterface_(fileInterface)
+fileInterface_(fileInterface),
+revision_(docRevision)
 {
+    setFlat(true);
     Q_ASSERT_X(fileInterface_, "FileTypeEditor constructor", "Null File interface-pointer given as parameter");
 }
 
@@ -40,7 +42,7 @@ void FileTypeEditor::apply()
 	// remove all previous file types and userFileTypes from the model
     fileInterface_->clearFileTypes(fileName_);
 
-    foreach (QString fileType, items)
+    for (QString const& fileType : items)
     {
         fileInterface_->addFileType(fileName_, fileType.toStdString());
     }
@@ -53,7 +55,7 @@ void FileTypeEditor::restore()
 {
     QStringList fileTypes;
     std::vector<std::string> types = fileInterface_->getFileTypes(fileName_);
-    for (auto singleType : types)
+    for (auto const& singleType : types)
     {
         fileTypes.append(QString::fromStdString(singleType));
     }
@@ -78,13 +80,13 @@ bool FileTypeEditor::isValid() const
 //-----------------------------------------------------------------------------
 // Function: filetypeeditor::initialize()
 //-----------------------------------------------------------------------------
-void FileTypeEditor::initialize( const QStringList& items /*= QStringList()*/ )
+void FileTypeEditor::initialize(QStringList const& items)
 {
 	ListManager::initialize(items);
 
 	view_->setProperty("mandatoryField", true);
 
-	view_->setItemDelegate(new FileTypeEditorDelegate(this));
+	view_->setItemDelegate(new FileTypeEditorDelegate(revision_, this));
 
 	restore();
 }

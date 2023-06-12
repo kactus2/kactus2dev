@@ -14,17 +14,31 @@
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::NameGroupEditor()
 //-----------------------------------------------------------------------------
-NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, 
-    QWidget* parent, const QString& title) :
+NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, Document::Revision docRevision,
+    QWidget* parent, QString const& title) :
 QGroupBox(title, parent),
     nameGroup_(nameGroup),
     nameEdit_(this),
     displayNameEdit_(this),
+    shortDescriptionEdit_(this),
     descriptionEdit_(this)
 {
+    setFlat(true);
+
     descriptionEdit_.setTabChangesFocus(true);
 
-    setupLayout();
+    shortDescriptionEdit_.setVisible(docRevision == Document::Revision::Std22);
+    setupLayout(docRevision);
+
+    connect(&nameEdit_, SIGNAL(textEdited(QString const&)),
+        this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
+    connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
+    connect(&displayNameEdit_, SIGNAL(textEdited(QString const&)),
+        this, SLOT(onDisplayNameChanged(QString const&)), Qt::UniqueConnection);
+    connect(&shortDescriptionEdit_, SIGNAL(textEdited(QString const&)),
+            this, SLOT(onShortDescriptionChanged(QString const&)), Qt::UniqueConnection);
+    connect(&descriptionEdit_, SIGNAL(textChanged()),
+        this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +75,7 @@ QString NameGroupEditor::description() const
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::onNameChanged()
 //-----------------------------------------------------------------------------
-void NameGroupEditor::onNameChanged( const QString& newName )
+void NameGroupEditor::onNameChanged(QString const& newName )
 {
 	nameGroup_->setName(newName);
 	emit contentChanged();
@@ -70,10 +84,19 @@ void NameGroupEditor::onNameChanged( const QString& newName )
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::onDisplayNameChanged()
 //-----------------------------------------------------------------------------
-void NameGroupEditor::onDisplayNameChanged( const QString& newName )
+void NameGroupEditor::onDisplayNameChanged(QString const& newDisplayName )
 {
-	nameGroup_->setDisplayName(newName);
+	nameGroup_->setDisplayName(newDisplayName);
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroupEditor::onShortDescriptionChanged()
+//-----------------------------------------------------------------------------
+void NameGroupEditor::onShortDescriptionChanged(QString const& newShortDescription)
+{
+    nameGroup_->setShortDescription(newShortDescription);
+    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +132,7 @@ void NameGroupEditor::refresh()
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void NameGroupEditor::setupLayout()
+void NameGroupEditor::setupLayout(Document::Revision docRevision)
 {
     // the layout manager for this widget
     QGridLayout* layout = new QGridLayout(this);
@@ -130,18 +153,19 @@ void NameGroupEditor::setupLayout()
     displayNameEdit_.setToolTip(tr("Set the display name for the element"));
     layout->addWidget(&displayNameEdit_, 1, 1, 1, 1);
 
+    if (docRevision == Document::Revision::Std22)
+    {
+        QLabel* shortDescriptionLabel = new QLabel(tr("Short Description:"), this);
+        layout->addWidget(shortDescriptionLabel, 2, 0, 1, 1);
+
+        shortDescriptionEdit_.setToolTip(tr("Set the short description for the element"));
+        layout->addWidget(&shortDescriptionEdit_, 2, 1, 1, 1);
+    }
+
     QLabel* descriptionLabel = new QLabel(tr("Description:"), this);
-    layout->addWidget(descriptionLabel, 2, 0, 1, 1, Qt::AlignTop);
+    layout->addWidget(descriptionLabel, 3, 0, 1, 1, Qt::AlignTop);
 
     descriptionEdit_.setToolTip(tr("Set the description for the element"));
-    layout->addWidget(&descriptionEdit_, 2, 1, 1, 1);
-    layout->setRowStretch(2,1);
-
-    connect(&nameEdit_, SIGNAL(textEdited(const QString&)),
-        this, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
-    connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
-    connect(&displayNameEdit_, SIGNAL(textEdited(const QString&)),
-        this, SLOT(onDisplayNameChanged(const QString&)), Qt::UniqueConnection);
-    connect(&descriptionEdit_, SIGNAL(textChanged()),
-        this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    layout->addWidget(&descriptionEdit_, 3, 1, 1, 1);
+    layout->setRowStretch(3,1);
 }
