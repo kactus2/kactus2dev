@@ -129,35 +129,6 @@ bool FileSetInterface::setName(std::string const& currentName, std::string const
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileSetInterface::getDescription()
-//-----------------------------------------------------------------------------
-std::string FileSetInterface::getDescription(std::string const& itemName) const
-{
-    QSharedPointer<FileSet> editedFileSet = getFileSet(itemName);
-    if (editedFileSet)
-    {
-        return editedFileSet->description().toStdString();
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool FileSetInterface::setDescription(std::string const& itemName, std::string const& newDescription)
-{
-    QSharedPointer<FileSet> editedFileSet = getFileSet(itemName);
-    if (!editedFileSet)
-    {
-        return false;
-    }
-
-    editedFileSet->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileSetInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool FileSetInterface::validateItems() const
@@ -393,10 +364,20 @@ const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileSetInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> FileSetInterface::getItem(std::string const& fileSetName) const
+{
+    return getFileSet(fileSetName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileSetInterface::fileSetExists()
 //-----------------------------------------------------------------------------
 bool FileSetInterface::fileSetExists(std::string const& fileSetName) const
 {
+
+
     QString fileSetNameQ = QString::fromStdString(fileSetName);
     foreach(QSharedPointer<FileSet> fileSet, *fileSets_)
     {

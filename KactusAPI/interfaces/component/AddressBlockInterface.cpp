@@ -533,3 +533,11 @@ bool AddressBlockInterface::hasRegisters(std::string const& blockName) const
 
     return false;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> AddressBlockInterface::getItem(std::string const& itemName) const
+{
+    return getAddressBlock(itemName);
+}

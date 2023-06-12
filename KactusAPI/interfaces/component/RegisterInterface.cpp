@@ -161,35 +161,6 @@ bool RegisterInterface::setName(string const& currentName, string const& newName
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterInterface::getDescription()
-//-----------------------------------------------------------------------------
-string RegisterInterface::getDescription(string const& itemName) const
-{
-    QSharedPointer<Register> editedRegister = getRegister(itemName);
-    if (editedRegister)
-    {
-        return editedRegister->description().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::setDescription(string const& itemName, string const& newDescription)
-{
-    QSharedPointer<Register> editedRegister = getRegister(itemName);
-    if (!editedRegister)
-    {
-        return false;
-    }
-
-    editedRegister->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterInterface::getOffsetValue()
 //-----------------------------------------------------------------------------
 string RegisterInterface::getOffsetValue(std::string const& registerName, int const& baseNumber) const
@@ -797,4 +768,12 @@ std::vector<std::string> RegisterInterface::
 FieldInterface* RegisterInterface::getSubInterface() const
 {
     return subInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> RegisterInterface::getItem(std::string const& registerName) const
+{
+    return getRegister(registerName);
 }

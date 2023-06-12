@@ -140,35 +140,6 @@ bool FieldInterface::setName(string const& currentName, string const& newName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::getDescription()
-//-----------------------------------------------------------------------------
-string FieldInterface::getDescription(string const& itemName) const
-{
-    QSharedPointer<Field> editedField = getField(itemName);
-    if (editedField)
-    {
-        return editedField->description().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool FieldInterface::setDescription(string const& itemName, string const& newDescription)
-{
-    QSharedPointer<Field> editedField = getField(itemName);
-    if (!editedField)
-    {
-        return false;
-    }
-
-    editedField->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: FieldInterface::getOffsetValue()
 //-----------------------------------------------------------------------------
 string FieldInterface::getOffsetValue(string const& fieldName, int const& baseNumber) const
@@ -1233,4 +1204,12 @@ bool FieldInterface::setID(std::string const& fieldName, std::string const& newI
 
     field->setId(QString::fromStdString(newID));
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> FieldInterface::getItem(std::string const& fieldName) const
+{
+    return getField(fieldName);
 }

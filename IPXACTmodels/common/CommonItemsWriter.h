@@ -136,6 +136,18 @@ public:
 
     static void writeNonEmptyElement(QXmlStreamWriter& writer, QString const& elementName, std::string const& value);
 
+    /*!
+     * Writes an XML attribute, if the provided value is not empty.
+     *
+     *     @param [in] writer        The XML writer to use.
+     *     @param [in] elementName   The name of the attribute.
+     *     @param [in] value         The value of the attribute.
+     */
+    static void writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, QString const& value);
+    
+    static void writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, std::string const& value);
+
+
 	static void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier);
 
 };

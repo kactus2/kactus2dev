@@ -126,25 +126,6 @@ public:
     bool setDisplayName(std::string const& itemName, std::string const& newDisplayName);
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Calculate all the references to the selected ID in the selected item.
      *
      *      @param [in] itemName    Name of the selected item.
@@ -377,16 +358,27 @@ public:
      */
     bool setFileSetReferences(std::string const& instantiationName, std::vector<std::string> const& newReferences);
 
+
 private:
 
     /*!
-     *  Get the selected address block.
+     *  Get the selected component instantiation.
      *
-     *      @param [in] blockName   Name of the selected address block.
+     *      @param [in] itemName   Name of the selected component instantiation.
      *
-     *      @return The selected address block.
+     *      @return The selected component instantiation.
      */
     QSharedPointer<ComponentInstantiation> getComponentInstantiation(std::string const& itemName) const;
+    
+
+    /*!
+     *  Get the component instantiation with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected component instantiation.
+     *
+     *      @return The sliced component instantiation with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

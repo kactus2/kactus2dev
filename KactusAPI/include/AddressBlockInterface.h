@@ -297,6 +297,15 @@ public:
      */
     bool hasRegisters(std::string const& blockName) const;
 
+    /*!
+     *  Get the address block with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected address block.
+     *
+     *      @return The sliced address block with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
+
 private:
 
     /*!

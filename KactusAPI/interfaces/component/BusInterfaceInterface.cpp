@@ -185,6 +185,14 @@ QSharedPointer<BusInterface> BusInterfaceInterface::getBusInterface(std::string 
 }
 
 //-----------------------------------------------------------------------------
+// Function: BusInterfaceInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> BusInterfaceInterface::getItem(std::string const& busName) const
+{
+    return getBusInterface(busName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: BusInterfaceInterface::getMasterInterface()
 //-----------------------------------------------------------------------------
 QSharedPointer<MasterInterface> BusInterfaceInterface::getMasterInterface(std::string const& busName) const
@@ -407,35 +415,6 @@ bool BusInterfaceInterface::setName(std::string const& currentName, std::string 
     {
         return false;
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::getDescription()
-//-----------------------------------------------------------------------------
-std::string BusInterfaceInterface::getDescription(std::string const& itemName) const
-{
-    QSharedPointer<BusInterface> editedBus = getBusInterface(itemName);
-    if (editedBus)
-    {
-        return editedBus->description().toStdString();
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool BusInterfaceInterface::setDescription(std::string const& itemName, std::string const& newDescription)
-{
-    QSharedPointer<BusInterface> editedBus = getBusInterface(itemName);
-    if (!editedBus)
-    {
-        return false;
-    }
-
-    editedBus->setDescription(QString::fromStdString(newDescription));
-    return true;
 }
 
 //-----------------------------------------------------------------------------

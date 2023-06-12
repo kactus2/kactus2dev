@@ -130,6 +130,14 @@ bool ModuleParameterInterface::removeModuleParameter(std::string const& paramete
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModuleParameterInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> ModuleParameterInterface::getItem(std::string const& parameterName) const
+{
+    return getModuleParameter(parameterName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModuleParameterInterface::getParameter()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ModuleParameterInterface::getParameter(std::string const& parameterName) const

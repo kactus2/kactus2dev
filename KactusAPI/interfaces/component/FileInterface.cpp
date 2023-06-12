@@ -950,3 +950,11 @@ bool FileInterface::setBuildCommandTarget(std::string const& fileName, std::stri
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: FileInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> FileInterface::getItem(std::string const& fileName) const
+{
+    return nullptr;
+}

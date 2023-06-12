@@ -120,16 +120,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Set a new description for the selected port abstraction.
-     *
-     *      @param [in] portName        Name of the selected port abstraction.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Validates the contained port abstractions.
      *
      *      @return True, if all the port abstractions are valid, false otherwise.
@@ -146,13 +136,13 @@ public:
     virtual bool itemHasValidName(std::string const& itemName) const override final;
 
     /*!
-     *  Get the description of the selected port abstraction.
-     *
-     *      @param [in] portName    Name of the selected port abstraction.
-     *
-     *      @return Description of the selected port abstraction.
+     *	Get the match status of the selected signal.
+     *  
+     *      @param [in] portIndex	Index of the selected signal.
+     *		
+     * 		@return True, if signal port has match, otherwise false.
      */
-    virtual std::string getDescription(std::string const& itemName) const override final;
+    bool getMatch(int const& portIndex) const;
 
     /*!
      *  Get the names of the available port abstractions.
@@ -731,6 +721,15 @@ public:
     PortAbstractionInterface& operator=(const PortAbstractionInterface& other) = delete;
 
 private:
+
+    /*!
+     *  Get the port abstraction with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] portName    Name of the selected port.
+     *
+     *      @return The sliced port abstraction with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& portName) const override;
 
     //! SignalRow represents a single row in the table by grouping the port abstraction and transactional elements.
     struct SignalRow

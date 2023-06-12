@@ -284,20 +284,6 @@ bool MemoryMapInterface::setRemapName(std::string const& mapName, std::string co
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::getDescription()
-//-----------------------------------------------------------------------------
-string MemoryMapInterface::getDescription(string const& itemName) const
-{
-    QSharedPointer<MemoryMap> editedItem = getMemoryMap(itemName);
-    if (editedItem)
-    {
-        return editedItem->description().toStdString();
-    }
-
-    return string("");
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::setRemapDescription()
 //-----------------------------------------------------------------------------
 std::string MemoryMapInterface::getRemapDescription(std::string const& mapName, std::string const& remapName) const
@@ -309,21 +295,6 @@ std::string MemoryMapInterface::getRemapDescription(std::string const& mapName, 
     }
 
     return string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool MemoryMapInterface::setDescription(string const& itemName, string const& newDescription)
-{
-    QSharedPointer<MemoryMap> editedItem = getMemoryMap(itemName);
-    if (!editedItem)
-    {
-        return false;
-    }
-
-    editedItem->setDescription(QString::fromStdString(newDescription));
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -964,6 +935,14 @@ MemoryRemap* MemoryMapInterface::getRemapPointer(std::string const& mapName, std
     }
 
     return reMapPointer;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> MemoryMapInterface::getItem(std::string const& itemName) const
+{
+    return getMemoryMap(itemName);
 }
 
 //-----------------------------------------------------------------------------

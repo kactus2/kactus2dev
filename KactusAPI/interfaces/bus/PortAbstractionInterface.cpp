@@ -154,6 +154,14 @@ QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string co
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> PortAbstractionInterface::getItem(std::string const& portName) const
+{
+    return getPort(portName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getSignal()
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstractionInterface::SignalRow> PortAbstractionInterface::getSignal(int const& signalIndex)
@@ -365,32 +373,16 @@ bool PortAbstractionInterface::setName(std::string const& currentName, std::stri
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::getDescription()
+// Function: PortAbstractionInterface::getMatch()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getDescription(std::string const& itemName) const
+bool PortAbstractionInterface::getMatch(int const& portIndex) const
 {
-    QSharedPointer<PortAbstraction> editedPort = getPort(itemName);
-    if (editedPort)
+    if (auto const& signal = getSignal(portIndex); signal)
     {
-        return editedPort->description().toStdString();
+        return signal->abstraction_->getMatch();
     }
 
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool PortAbstractionInterface::setDescription(std::string const& itemName, std::string const& newDescription)
-{
-    QSharedPointer<PortAbstraction> editedPort = getPort(itemName);
-    if (!editedPort)
-    {
-        return false;
-    }
-
-    editedPort->setDescription(QString::fromStdString(newDescription));
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------

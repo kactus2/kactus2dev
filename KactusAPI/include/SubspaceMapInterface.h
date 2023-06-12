@@ -169,6 +169,15 @@ private:
     QSharedPointer<SubSpaceMap> getSubspaceMap(std::string const& itemName) const;
 
     /*!
+     *  Get the subspace map with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected subspace map.
+     *
+     *      @return The sliced subspace map with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
+
+    /*!
      *  Get the default name for a subspace map.
      *
      *      @return Default name for a subspace map.

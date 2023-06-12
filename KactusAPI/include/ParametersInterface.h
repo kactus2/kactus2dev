@@ -97,6 +97,7 @@ public:
      */
     bool removeParameter(std::string const& parameterName);
 
+
     //! No copying. No assignment.
     ParametersInterface(const ParametersInterface& other) = delete;
     ParametersInterface& operator=(const ParametersInterface& other) = delete;
@@ -111,6 +112,15 @@ private:
      *      @return The selected parameter.
      */
     virtual QSharedPointer<Parameter> getParameter(std::string const& parameterName) const override final;
+
+    /*!
+     *  Get the parameter with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] parameterName   Name of the selected parameter.
+     *
+     *      @return The sliced parameter with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& parameterName) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

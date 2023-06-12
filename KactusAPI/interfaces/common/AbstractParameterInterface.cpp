@@ -62,35 +62,6 @@ bool AbstractParameterInterface::setName(std::string const& currentName, std::st
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractParameterInterface::getDescription()
-//-----------------------------------------------------------------------------
-std::string AbstractParameterInterface::getDescription(std::string const& itemName) const
-{
-    QSharedPointer<Parameter> editedParameter = getParameter(itemName);
-    if (editedParameter)
-    {
-        return editedParameter->description().toStdString();
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractParameterInterface::setDescription()
-//-----------------------------------------------------------------------------
-bool AbstractParameterInterface::setDescription(std::string const& itemName, std::string const& newDescription)
-{
-    QSharedPointer<Parameter> editedParameter = getParameter(itemName);
-    if (!editedParameter)
-    {
-        return false;
-    }
-
-    editedParameter->setDescription(QString::fromStdString(newDescription));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractParameterInterface::getDisplayName()
 //-----------------------------------------------------------------------------
 std::string AbstractParameterInterface::getDisplayName(std::string const& parameterName) const

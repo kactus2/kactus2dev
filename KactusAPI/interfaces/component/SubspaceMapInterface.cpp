@@ -39,6 +39,14 @@ validator_(subspaceValidator)
 }
 
 //-----------------------------------------------------------------------------
+// Function: SubspaceMapInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> SubspaceMapInterface::getItem(std::string const& itemName) const
+{
+    return getSubspaceMap(itemName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::getValidator()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryBlockValidator> SubspaceMapInterface::getValidator() const

@@ -127,25 +127,6 @@ public:
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
-
-    /*!
      *  Get the calculated base address value of the selected memory block.
      *
      *      @param [in] blockName   Name of the selected memory block.

@@ -162,15 +162,6 @@ public:
     bool setRemapName(std::string const& mapName, std::string const& currentName, std::string const& newName);
 
     /*!
-     *  Get the description of the selected item.
-     *
-     *      @param [in] itemName    Name of the selected item.
-     *
-     *      @return Description of the selected item.
-     */
-    virtual std::string getDescription(std::string const& itemName) const override final;
-
-    /*!
      *  Get the description of the selected memory remap.
      *
      *      @param [in] mapName     Name of the memory map containing the selected memory remap.
@@ -179,16 +170,6 @@ public:
      *      @return Description of the selected memory remap.
      */
     std::string getRemapDescription(std::string const& mapName, std::string const& remapName) const;
-
-    /*!
-     *  Set a new description for the selected item.
-     *
-     *      @param [in] itemName        Name of the selected item.
-     *      @param [in] newDescription  New description.
-     *
-     *      @return True, if successful, false otherwise.
-     */
-    virtual bool setDescription(std::string const& itemName, std::string const& newDescription) override final;
 
     /*!
      *  Set a new description for the selected memory remap.
@@ -493,6 +474,15 @@ private:
      *      @return The selected memory map.
      */
     QSharedPointer<MemoryMap> getMemoryMap(std::string const& itemName) const;
+
+    /*!
+     *  Get the memory map with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected memory map.
+     *
+     *      @return The sliced memory map with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
 
     /*!
      *  Get the selected memory remap.
