@@ -31,7 +31,7 @@ AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, Libr
     AddressBlockInterface* blockInterface, QWidget* parent):
 ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
-nameEditor_(addrSpace, this),
+nameEditor_(addrSpace, component->getRevision(), this),
 generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder, expressionParser,
     this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,

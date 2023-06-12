@@ -50,7 +50,7 @@ void Function::SourceFile::setSourceName(QString const& newSourceName)
 //-----------------------------------------------------------------------------
 // Function: Function::getFileType()
 //-----------------------------------------------------------------------------
-QString Function::SourceFile::getFileType() const
+FileType Function::SourceFile::getFileType() const
 {
     return fileType_;
 }
@@ -58,7 +58,7 @@ QString Function::SourceFile::getFileType() const
 //-----------------------------------------------------------------------------
 // Function: Function::setFileType()
 //-----------------------------------------------------------------------------
-void Function::SourceFile::setFileType(QString const& newFileType)
+void Function::SourceFile::setFileType(FileType const& newFileType)
 {
     fileType_ = newFileType;
 }
@@ -66,15 +66,8 @@ void Function::SourceFile::setFileType(QString const& newFileType)
 //-----------------------------------------------------------------------------
 // Function: Function::Function()
 //-----------------------------------------------------------------------------
-Function::Function(QString const& fileReference /* = QString() */) :
-replicate_(false),
-entryPoint_(),
-fileRef_(fileReference),
-returnType_(),
-arguments_(new QList<QSharedPointer<NameValuePair> > ()),
-disabled_(),
-disabledAttributes_(),
-sourceFiles_(new QList<QSharedPointer<SourceFile> > ())
+Function::Function(QString const& fileReference) :
+    fileRef_(fileReference)
 {
 
 }
@@ -87,10 +80,8 @@ replicate_(other.replicate_),
 entryPoint_(other.entryPoint_),
 fileRef_(other.fileRef_),
 returnType_(other.returnType_),
-arguments_(new QList<QSharedPointer<NameValuePair> > ()),
 disabled_(other.disabled_),
-disabledAttributes_(other.disabledAttributes_),
-sourceFiles_(new QList<QSharedPointer<SourceFile> > ())
+disabledAttributes_(other.disabledAttributes_)
 {
     copyArguments(other);
     copySourceFiles(other);
@@ -112,6 +103,7 @@ Function& Function::operator=(const Function& other)
 
         arguments_->clear();
         copyArguments(other);
+
         sourceFiles_->clear();
         copySourceFiles(other);
     }
@@ -124,8 +116,7 @@ Function& Function::operator=(const Function& other)
 //-----------------------------------------------------------------------------
 Function::~Function()
 {
-    arguments_.clear();
-    sourceFiles_.clear();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -267,13 +258,10 @@ void Function::setSourceFiles(QSharedPointer<QList<QSharedPointer<Function::Sour
 //-----------------------------------------------------------------------------
 void Function::copyArguments(const Function& other)
 {
-    foreach (QSharedPointer<NameValuePair> argument, *other.arguments_)
+    for (QSharedPointer<NameValuePair> argument : *other.arguments_)
     {
-        if (argument)
-        {
-            QSharedPointer<NameValuePair> copy = QSharedPointer<NameValuePair>(new NameValuePair(*argument.data()));
-            arguments_->append(copy);
-        }
+        QSharedPointer<NameValuePair> copy = QSharedPointer<NameValuePair>(new NameValuePair(*argument));
+        arguments_->append(copy);
     }
 }
 
@@ -282,12 +270,9 @@ void Function::copyArguments(const Function& other)
 //-----------------------------------------------------------------------------
 void Function::copySourceFiles(const Function& other)
 {
-    foreach (QSharedPointer<SourceFile> sourceFile, *other.sourceFiles_)
+    for (QSharedPointer<SourceFile> sourceFile : *other.sourceFiles_)
     {
-        if (sourceFile)
-        {
-            QSharedPointer<SourceFile> copy = QSharedPointer<SourceFile>(new SourceFile(*sourceFile.data()));
-            sourceFiles_->append(copy);
-        }
+        QSharedPointer<SourceFile> copy = QSharedPointer<SourceFile>(new SourceFile(*sourceFile));
+        sourceFiles_->append(copy);
     }
 }

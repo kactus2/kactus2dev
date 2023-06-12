@@ -203,7 +203,7 @@ void MemoryViewGeneratorPlugin::saveToFileset(QString const& targetFile, QShared
     if (!file)
     {
         file = QSharedPointer<File>(new File(relativeFilePath));
-        file->getFileTypes()->append(QStringLiteral("unknown"));
+        file->getFileTypes()->append(FileType(QStringLiteral("unknown")));
 
         targetFileset->addFile(file);
         utility->printInfo(tr("Added file %1 to top component file set %2.").arg(targetFile, filesetName));

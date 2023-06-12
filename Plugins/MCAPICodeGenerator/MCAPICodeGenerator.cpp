@@ -113,7 +113,7 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
     // Check if there is already a builder for c sources specified.
     foreach ( QSharedPointer<FileBuilder> builder, *fblist )
     {
-        if ( builder->getFileType() == "cSource" )
+        if ( builder->getFileType().type_ == "cSource" )
         {
             hasCBuild = true;
             break;

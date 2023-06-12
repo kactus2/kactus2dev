@@ -132,7 +132,7 @@ void AlteraBSPGeneratorDialog::updateCommand() {
 		}
 
 		// search the for the source file
-		QString sourceFileType = com->getFileType();
+		QString sourceFileType = com->getFileType().type_;
 		QStringList sourceFiles = component_->findFilesByFileType(sourceFileType);
 		
 		// if theres exactly one file that matches

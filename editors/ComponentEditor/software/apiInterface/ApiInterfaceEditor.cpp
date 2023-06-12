@@ -12,6 +12,8 @@
 #include "ApiInterfaceEditor.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 
 #include <QApplication>
@@ -31,7 +33,7 @@ ApiInterfaceEditor::ApiInterfaceEditor(LibraryInterface* libHandler,
 ItemEditor(component, libHandler, parent),
     libInterface_(libHandler),
     apiIf_(APIInterface),
-    nameEditor_(APIInterface, this, tr("Name and description")),
+    nameEditor_(APIInterface, component->getRevision(), this, tr("Name and description")),
     apiType_(NULL),
     detailsGroup_(tr("Details"), this),
     dependencyCombo_(this)

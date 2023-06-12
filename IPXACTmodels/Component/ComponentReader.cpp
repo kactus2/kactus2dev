@@ -59,16 +59,21 @@ ComponentReader::~ComponentReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument const& componentDocument) const
 {
-    QSharedPointer<Component> newComponent (new Component());
+    QDomNode componentNode = componentDocument.firstChildElement();
+
+    Document::Revision revision = DocumentReader::getXMLDocumentRevision(componentNode);
+
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(componentNode, VLNV::COMPONENT);
+
+    QSharedPointer<Component> newComponent (new Component(vlnv, revision));
 
     parseTopComments(componentDocument, newComponent);
 
     parseXMLProcessingInstructions(componentDocument, newComponent);
 
-    QDomNode componentNode = componentDocument.firstChildElement();
     parseNamespaceDeclarations(componentNode, newComponent);
 
-    parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
+   // parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
 
     parseBusInterfaces(componentNode, newComponent);
 
@@ -253,7 +258,7 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 
         parseViews(modelElement, newmodel);
 
-        parseInstantiations(modelElement, newmodel);
+        parseInstantiations(modelElement, newmodel, newComponent->getRevision());
 
         parsePorts(modelElement, newmodel);
 
@@ -286,12 +291,13 @@ void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::parseInstantiations()
 //-----------------------------------------------------------------------------
-void ComponentReader::parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
+void ComponentReader::parseInstantiations(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomElement instantiationsElement = modelElement.firstChildElement(QStringLiteral("ipxact:instantiations"));
     if (!instantiationsElement.isNull())
     {
-        parseComponentInstantiations(instantiationsElement, newModel);
+        parseComponentInstantiations(instantiationsElement, newModel, docRevision);
 
         parseDesignInstantiations(instantiationsElement, newModel);
 
@@ -303,7 +309,8 @@ void ComponentReader::parseInstantiations(QDomElement const& modelElement, QShar
 // Function: ComponentReader::parseComponentInstantiations()
 //-----------------------------------------------------------------------------
 void ComponentReader::parseComponentInstantiations(QDomElement const& instantiationsElement,
-    QSharedPointer<Model> newModel) const
+    QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomNodeList componentInstantiationNodeList =
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:componentInstantiation"));
@@ -315,7 +322,7 @@ void ComponentReader::parseComponentInstantiations(QDomElement const& instantiat
         {
             QDomNode componentInstantiationNode = componentInstantiationNodeList.at(i);
             QSharedPointer<ComponentInstantiation> newInstantiation =
-                instantiationsReader.createComponentInstantiationFrom(componentInstantiationNode);
+                instantiationsReader.createComponentInstantiationFrom(componentInstantiationNode, docRevision);
 
             newModel->getComponentInstantiations()->append(newInstantiation);
         }
@@ -432,13 +439,11 @@ void ComponentReader::parseFileSets(QDomNode const& componentNode, QSharedPointe
 
     if (!fileSetsElement.isNull())
     {
-        FileSetReader setReader;
-
         QDomNodeList fileSetNodeList = fileSetsElement.elementsByTagName(QStringLiteral("ipxact:fileSet"));
         for (int fileSetIndex = 0; fileSetIndex < fileSetNodeList.count(); ++fileSetIndex)
         {
             QDomNode fileSetNode = fileSetNodeList.at(fileSetIndex);
-            QSharedPointer<FileSet> newFileSet = setReader.createFileSetFrom(fileSetNode);
+            QSharedPointer<FileSet> newFileSet = FileSetReader::createFileSetFrom(fileSetNode, newComponent->getRevision());
 
             newComponent->getFileSets()->append(newFileSet);
         }

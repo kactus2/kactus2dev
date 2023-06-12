@@ -16,6 +16,8 @@
 #include "DesignInstantiation.h"
 #include "DesignConfigurationInstantiation.h"
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
 #include <QSharedPointer>
@@ -62,8 +64,8 @@ public:
      *
      *      @return The created component instantiation.
      */
-    QSharedPointer<ComponentInstantiation> createComponentInstantiationFrom(QDomNode const& instantiationNode)
-        const;
+    QSharedPointer<ComponentInstantiation> createComponentInstantiationFrom(QDomNode const& instantiationNode,
+        Document::Revision docRevision) const;
 
 private:
 
@@ -114,7 +116,8 @@ private:
      *      @param [in] instantiation       The selected instantiation.
      */
     void parseDefaultFileBuilders(QDomNode const& instantiationNode,
-        QSharedPointer<ComponentInstantiation> instantiation) const;
+        QSharedPointer<ComponentInstantiation> instantiation,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the file set references from XLM.

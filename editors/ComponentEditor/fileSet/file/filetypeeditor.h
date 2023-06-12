@@ -14,6 +14,8 @@
 
 #include <common/widgets/listManager/listmanager.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 
 class File;
@@ -35,7 +37,7 @@ public:
 	 *      @param [in] fileName        Name of the file being edited
      *      @param [in] fileInterface   Interface for accessing files.
 	 */
-    FileTypeEditor(QWidget *parent, std::string const& fileName, FileInterface* fileInterface);
+    FileTypeEditor(Document::Revision docRevision, QWidget *parent, std::string const& fileName, FileInterface* fileInterface);
 
 	/*!
      *  The destructor.
@@ -86,6 +88,8 @@ private:
 
     //! Interface for accessing files.
     FileInterface* fileInterface_;
+
+	Document::Revision revision_;
 };
 
 #endif // FILETYPEEDITOR_H

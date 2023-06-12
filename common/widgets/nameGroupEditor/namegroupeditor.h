@@ -9,6 +9,7 @@
 #define NAMEGROUPEDITOR_H
 
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QGroupBox>
 #include <QLineEdit>
@@ -24,14 +25,20 @@ class NameGroupEditor : public QGroupBox {
 public:
 
 	//! The maximum height for the editor
-	static const int MAX_EDITOR_HEIGHT = 130;
+	const int MAX_EDITOR_HEIGHT = 130;
 
     NameGroupEditor(QSharedPointer<NameGroup> nameGroup,
+		Document::Revision docRevision,
         QWidget *parent,
-        const QString& title = QString("Names"));
+        QString const& title = QString("Names"));
 
 	//! The destructor
 	virtual ~NameGroupEditor();
+
+	//! No copying
+	NameGroupEditor(const NameGroupEditor& other) = delete;
+	//! No assignment
+	NameGroupEditor& operator=(const NameGroupEditor& other) = delete;
 
 	/*! Get the name of the name group.
 	 *
@@ -81,14 +88,19 @@ private slots:
 	 * \param newName The new name for the name group.
 	 *
 	*/
-	void onNameChanged(const QString& newName);
+	void onNameChanged(QString const& newName);
 
 	/*! Handler for editing of the display name field.
 	 *
 	 * \param newName The new display name for the name group.
 	 *
 	*/
-	void onDisplayNameChanged(const QString& newName);
+	void onDisplayNameChanged(QString const& newDisplayName);
+
+	/*! Handler for editing of the description field.
+	 *
+	*/
+	void onShortDescriptionChanged(QString const& newShortDescription);
 
 	/*! Handler for editing of the description field.
 	 *
@@ -96,12 +108,8 @@ private slots:
 	void onDescriptionChanged();
 
 private:
-	//! No copying
-	NameGroupEditor(const NameGroupEditor& other);
-    void setupLayout();
-
-	//! No assignment
-	NameGroupEditor& operator=(const NameGroupEditor& other);
+	//! Setup the widget layout.
+    void setupLayout(Document::Revision docRevision);
 
 	//! The name group to edit.
 	QSharedPointer<NameGroup> nameGroup_;
@@ -111,6 +119,9 @@ private:
 
 	//! Line edit to set the displayName.
 	QLineEdit displayNameEdit_;
+
+	//! Line edit to set the displayName.
+	QLineEdit shortDescriptionEdit_;
 
 	//! Editor to write the description.
 	QPlainTextEdit descriptionEdit_;

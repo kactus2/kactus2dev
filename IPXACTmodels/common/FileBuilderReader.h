@@ -17,54 +17,46 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
+#include "Document.h"
+
 #include <QDomNode>
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! Reader class for file builder element.
 //-----------------------------------------------------------------------------
-class FileBuilderReader : public CommonItemsReader
+namespace FileBuilderReader
 {
-public:
-
-    //! The constructor.
-    FileBuilderReader();
-
-    /*!
-     *  The destructor.
-     */
-    ~FileBuilderReader();
-
     /*!
      *  Reads the default file builder.
      *
      *      @param [in] fileBuilderNode     XML description of the default file builder.
+     *      @param [in] docRevision         The applied IP-XACT standard revision.
      *
      *      @return The created default file builder.
      */
-    QSharedPointer<FileBuilder> createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode) const;
+    IPXACTMODELS_EXPORT QSharedPointer<FileBuilder> createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
+        /*!
+         *  Reads the file builder file type.
+         *
+         *      @param [in] filebuilderNode     XML description of the file builder.
+         *      @param [in] newFileBuilder      The selected file builder.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
+         */
+        void parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
+            Document::Revision docRevision);
 
-    // Disable copying.
-    FileBuilderReader(FileBuilderReader const& rhs);
-    FileBuilderReader& operator=(FileBuilderReader const& rhs);
-
-    /*!
-     *  Reads the file builder file type.
-     *
-     *      @param [in] filebuilderNode     XML description of the file builder.
-     *      @param [in] newFileBuilder      The selected file builder.
-     */
-    void parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder) const;
-
-    /*!
-     *  Reads the file builder command, flags and replace default flags value.
-     *
-     *      @param [in] filebuilderNode     XML description of the file builder.
-     *      @param [in] newFileBuilder      The selected file builder.
-     */
-    void parseBuildModel(QDomNode const& fileBuilderNode, QSharedPointer<FileBuilder> newFileBuilder) const;
+        /*!
+         *  Reads the file builder command, flags and replace default flags value.
+         *
+         *      @param [in] filebuilderNode     XML description of the file builder.
+         *      @param [in] newFileBuilder      The selected file builder.
+         */
+        void parseBuildModel(QDomNode const& fileBuilderNode, QSharedPointer<FileBuilder> newFileBuilder);
+    }
 };
 
 #endif // FILEBUILDERREADER_H

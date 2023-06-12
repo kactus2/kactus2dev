@@ -236,13 +236,13 @@ QStringList FileDependencyItem::getFileTypes() const
 {
     QStringList list;
 
-    foreach (QSharedPointer<File> file, fileRefs_)
+    for (QSharedPointer<File> file : fileRefs_)
     {
-        foreach (QString const& type, *file->getFileTypes())
+        for (auto const& type : *file->getFileTypes())
         {
-            if (!list.contains(type))
+            if (!list.contains(type.type_))
             {
-                list.append(type);
+                list.append(type.type_);
             }
         }
     }
@@ -386,7 +386,11 @@ void FileDependencyItem::setFileSets(QList<QSharedPointer<FileSet> > fileSets)
             {
                 // Otherwise create a new file reference.
                 QSharedPointer<File> file(new File(path_));
-                file->getFileTypes()->append(fileTypes);
+
+                for (auto const& fileType : fileTypes)
+                {
+                    file->getFileTypes()->append(FileType(fileType));
+                }
 
                 fileSet->addFile(file);
 

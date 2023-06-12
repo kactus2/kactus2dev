@@ -526,8 +526,12 @@ bool PadsPartGenerator::addFileToFileset(QSharedPointer<FileSet> fileSet,
 
     // Add a new file to fileset.
     QSharedPointer<File> partFile(new File(relativePath, 0));    
-    partFile->setIncludeFile(false);        
-    partFile->getFileTypes()->append(fileTypes);
+    partFile->setIncludeFile(false);   
+
+    for (auto const& fileType : fileTypes)
+    {
+        partFile->getFileTypes()->append(FileType(fileType));
+    }
   
     fileSet->addFile(partFile);
     return true;

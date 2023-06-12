@@ -274,9 +274,9 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
         docFile->setDescription(tr("File that contains the documentation "
             "for this component and subcomponents"));
 
-        if (!docFile->getFileTypes()->contains(docFileType))
+        if (!docFile->matchesFileType(docFileType))
         {
-            docFile->getFileTypes()->append(docFileType);
+            docFile->getFileTypes()->append(FileType(docFileType));
         }
 
         // add all created pictures to the file set
@@ -290,9 +290,9 @@ void DocumentGenerator::writeDocumentation(QTextStream& stream, QString targetPa
             picFile->setIncludeFile(false);
             picFile->setDescription(tr("Preview picture needed by the documentation."));
 
-            if (!picFile->getFileTypes()->contains(picFileType))
+            if (!picFile->matchesFileType(picFileType))
             {
-                picFile->getFileTypes()->append(picFileType);
+                picFile->getFileTypes()->append(FileType(picFileType));
             }
         }
 

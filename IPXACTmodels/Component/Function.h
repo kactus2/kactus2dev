@@ -13,6 +13,7 @@
 #define FUNCTION_H
 
 #include <IPXACTmodels/common/NameValuePair.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -39,7 +40,7 @@ public:
 		QString sourceName_;
 
 		//! Specifies the file type known by IP-Xact.
-		QString fileType_;
+		FileType fileType_;
 		
 		/*!
 		 *  The constructor.
@@ -47,7 +48,7 @@ public:
 		 *      @param [in] sourceName  The name of the source file.
 		 *      @param [in] fileType    The file type.
 		 */
-		SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
+		IPXACTMODELS_EXPORT SourceFile(QString const& sourceName = QString(), QString const& fileType = QString());
 
         //! Copy constructor.
         SourceFile(const SourceFile& other);
@@ -57,28 +58,28 @@ public:
          *
          *      @return The name of the source.
          */
-        QString getSourceName() const;
+		IPXACTMODELS_EXPORT QString getSourceName() const;
 
         /*!
          *  Set the source name.
          *
          *      @param [in] newSourceName   The new name for the source.
          */
-        void setSourceName(QString const& newSourceName);
+		IPXACTMODELS_EXPORT void setSourceName(QString const& newSourceName);
 
         /*!
          *  Get the file type of the source.
          *
          *      @return The source file type.
          */
-        QString getFileType() const;
+		IPXACTMODELS_EXPORT FileType getFileType() const;
 
         /*!
          *  Set the file type for the source.
          *
          *      @param [in] newFileType     The new source file type.
          */
-        void setFileType(QString const& newFileType);
+		IPXACTMODELS_EXPORT void setFileType(FileType const& newFileType);
 	};
 
     /*!
@@ -228,7 +229,7 @@ private:
     void copySourceFiles(const Function& other);
 
 	 //! When true, the generator compiles a separate object module for each instance of the component.
-	 bool replicate_;
+	 bool replicate_ = false;
 
 	 //! The entry point name for the function or subroutine.
 	 QString entryPoint_;
@@ -240,7 +241,8 @@ private:
 	 QString returnType_;
 
 	 //! Contains arguments passed when this function is called.
-     QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments_;
+     QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments_ =
+		 QSharedPointer<QList<QSharedPointer<NameValuePair> > >(new QList<QSharedPointer<NameValuePair> >);
 
 	 //! Holds whether the software function is disabled or not.
      QString disabled_;
@@ -249,7 +251,8 @@ private:
 	 QMap<QString, QString> disabledAttributes_;
 
 	 //!  References any source files. The order of the source files must be maintained.
-     QSharedPointer<QList<QSharedPointer<SourceFile> > > sourceFiles_;
+	 QSharedPointer<QList<QSharedPointer<SourceFile> > > sourceFiles_ =
+		 QSharedPointer<QList<QSharedPointer<SourceFile> > >(new QList<QSharedPointer<SourceFile> >);
 };
 
 #endif // FUNCTION_H

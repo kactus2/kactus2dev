@@ -13,6 +13,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
@@ -36,7 +37,7 @@ ComInterfaceEditor::ComInterfaceEditor(LibraryInterface* libHandler,
 ItemEditor(component, libHandler, parent),
 libInterface_(libHandler),
 comIf_(comInterface),
-nameEditor_(comInterface, this, tr("Name and description")),
+nameEditor_(comInterface, component->getRevision(), this, tr("Name and description")),
 comTypeEditor_(0),
 detailsGroup_(tr("Details"), this),
 transferTypeCombo_(this),

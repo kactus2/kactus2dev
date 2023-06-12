@@ -54,7 +54,7 @@ SingleFieldEditor::SingleFieldEditor(QSharedPointer<Field> fieldItem, QSharedPoi
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<FieldValidator> fieldValidator,
     FieldInterface* fieldInterface, QSharedPointer<Register> containingRegister, QWidget* parent):
 ItemEditor(component, handler, parent),
-nameEditor_(fieldItem, this, tr("Field name and description")),
+nameEditor_(fieldItem, component->getRevision(), this, tr("Field name and description")),
 resetsEditor_(new ResetsEditor(fieldInterface->getSubInterface(), component->getResetTypes(), expressionParser,
     parameterFinder, fieldItem, this)),
 enumerationsEditor_(new FieldEditor(fieldItem->getEnumeratedValues(),

@@ -31,7 +31,7 @@ FileSetEditor::FileSetEditor(LibraryInterface* handler, QSharedPointer<Component
     FileSetInterface* fileSetInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 baseLocation_(handler->getPath(component->getVlnv())),
-nameEditor_(fileSet, this),
+nameEditor_(fileSet, component->getRevision(), this),
 groupsEditor_(tr("Group identifiers"), this),
 fileBuilderEditor_(fileSetInterface->getFileBuilderInterface(), parameterFinder, expressionParser,
     expressionFormatter, fileSet->getDefaultFileBuilders(), this),
@@ -41,6 +41,10 @@ fileSetInterface_(fileSetInterface),
 availableFileSets_(component->getFileSets())
 {
     nameEditor_.setTitle("File set name and description");
+
+    groupsEditor_.setFlat(true);
+    fileBuilderEditor_.setFlat(true);
+    dependencies_.setFlat(true);
 
     setupLayout();
 
@@ -152,11 +156,12 @@ void FileSetEditor::setupLayout()
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topLayout->addWidget(&groupsEditor_, 0, 1, 1, 1);
     topLayout->addWidget(&files_, 1, 0, 1, 2);    
-    topLayout->addWidget(&dependencies_, 2, 0, 1, 1);
-    topLayout->addWidget(&fileBuilderEditor_, 2, 1, 1, 1);
+    topLayout->addWidget(&fileBuilderEditor_, 2, 0, 1, 2);
+    topLayout->addWidget(&dependencies_, 3, 0, 1, 1);
     topLayout->setRowStretch(0, 1);
-    topLayout->setRowStretch(1, 10);
+    topLayout->setRowStretch(1, 4);
     topLayout->setRowStretch(2, 2);
+    topLayout->setRowStretch(3, 1);
 
     scrollArea->setWidget(topWidget);
 }

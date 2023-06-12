@@ -13,7 +13,7 @@
 
 #include "FileTypeColumns.h"
 
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -22,7 +22,8 @@
 //-----------------------------------------------------------------------------
 // Function: FileTypesDelegate::FileTypesDelegate()
 //-----------------------------------------------------------------------------
-FileTypesDelegate::FileTypesDelegate(QObject* parent): QStyledItemDelegate(parent)
+FileTypesDelegate::FileTypesDelegate(QObject* parent): 
+    QStyledItemDelegate(parent)
 {
 
 }
@@ -38,15 +39,11 @@ QWidget* FileTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem c
 
         // Get all file types that have been defined already.
         QStringList usedTypes = index.model()->data(index, Qt::UserRole).toStringList();
-        for (unsigned int i = 0; i < FileTypes::FILE_TYPE_COUNT; ++i)
-        {
-            // if the file type is not yet defined then add it to the list of possible types
-            if (!usedTypes.contains(FileTypes::FILE_TYPES[i]))
-            {
-                combo->addItem(FileTypes::FILE_TYPES[i]);
-            }
-        }
+        usedTypes.append(FileTypes::FILE_TYPES);
+        usedTypes.append(FileTypes::FILE_TYPES_2022);
+        usedTypes.removeDuplicates();
 
+        combo->addItems(usedTypes);
         combo->setEditable(true);
         return combo;
     }

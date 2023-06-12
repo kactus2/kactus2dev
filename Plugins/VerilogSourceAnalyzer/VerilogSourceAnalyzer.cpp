@@ -241,7 +241,7 @@ bool VerilogSourceAnalyzer::isOfSupportedFileType(QSharedPointer<File> file)
 {
 	for (auto const& filetype : *file->getFileTypes())
 	{
-		if (getSupportedFileTypes().contains(filetype))
+		if (getSupportedFileTypes().contains(filetype.type_))
 		{
 			return true;
 		}

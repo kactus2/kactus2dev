@@ -14,44 +14,30 @@
 
 #include <IPXACTmodels/common/FileBuilderWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 
-//-----------------------------------------------------------------------------
-// Function: FileSetWriter::FileSetWriter()
-//-----------------------------------------------------------------------------
-FileSetWriter::FileSetWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileSetWriter::~FileSetWriter()
-//-----------------------------------------------------------------------------
-FileSetWriter::~FileSetWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFileSet()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet) const
+void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSet> fileSet,
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileSet"));
 
     NameGroupWriter::writeNameGroup(writer, fileSet);
 
-    writeGroups(writer, fileSet->getGroups());
+    Details::writeGroups(writer, fileSet->getGroups());
 
-    writeFiles(writer, fileSet->getFiles());
+    Details::writeFiles(writer, fileSet->getFiles(), docRevision);
 
-    writeDefaultFileBuilders(writer, fileSet->getDefaultFileBuilders());
+    Details::writeDefaultFileBuilders(writer, fileSet->getDefaultFileBuilders(), docRevision);
 
-    writeDependencies(writer, fileSet->getDependencies());
+    Details::writeDependencies(writer, fileSet->getDependencies());
 
-    writeFunctions(writer, fileSet->getFunctions());
+    Details::writeFunctions(writer, fileSet->getFunctions(), docRevision);
 
-    writeVendorExtensions(writer, fileSet);
+    CommonItemsWriter::writeVendorExtensions(writer, fileSet);
 
     writer.writeEndElement(); // ipxact:file
 }
@@ -59,9 +45,9 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeGroups()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeGroups(QXmlStreamWriter& writer, QSharedPointer<QStringList> groups) const
+void FileSetWriter::Details::writeGroups(QXmlStreamWriter& writer, QSharedPointer<QStringList> groups)
 {
-    foreach (QString singleGroup, *groups)
+    for (QString const& singleGroup : *groups)
     {
         writer.writeTextElement(QStringLiteral("ipxact:group"), singleGroup);
     }
@@ -70,42 +56,34 @@ void FileSetWriter::writeGroups(QXmlStreamWriter& writer, QSharedPointer<QString
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFiles()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFiles(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles) const
+void FileSetWriter::Details::writeFiles(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<File> > > fileSetFiles, Document::Revision docRevision)
 {
-    if (!fileSetFiles->isEmpty())
+    for (QSharedPointer<File> file : *fileSetFiles)
     {
-        FileWriter fileWriter;
-        foreach (QSharedPointer<File> file, *fileSetFiles)
-        {
-            fileWriter.writeFile(writer, file);
-        }
+        FileWriter::writeFile(writer, file, docRevision);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders) const
+void FileSetWriter::Details::writeDefaultFileBuilders(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders,
+    Document::Revision docRevision)
 {
-    if (!defaultFileBuilders->isEmpty())
+    for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders)
     {
-        FileBuilderWriter fileBuilderWriter;
-
-        foreach (QSharedPointer<FileBuilder> fileBuilder, *defaultFileBuilders)
-        {
-            fileBuilderWriter.writeDefaultFileBuilder(writer, fileBuilder);
-        }
+        FileBuilderWriter::writeDefaultFileBuilder(writer, fileBuilder, docRevision);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeDependencies()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeDependencies(QXmlStreamWriter& writer, QSharedPointer<QStringList> dependencies) const
+void FileSetWriter::Details::writeDependencies(QXmlStreamWriter& writer, QSharedPointer<QStringList> dependencies)
 {
-    foreach (QString singleDependency, *dependencies)
+    for (QString const& singleDependency : *dependencies)
     {
         writer.writeTextElement(QStringLiteral("ipxact:dependency"), singleDependency);
     }
@@ -114,10 +92,11 @@ void FileSetWriter::writeDependencies(QXmlStreamWriter& writer, QSharedPointer<Q
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFunctions()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctions(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<Function> > > functions) const
+void FileSetWriter::Details::writeFunctions(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<Function> > > functions, 
+    Document::Revision docRevision)
 {
-    foreach (QSharedPointer<Function> singleFunction, *functions)
+    for (QSharedPointer<Function> singleFunction : *functions)
     {
         writer.writeStartElement(QStringLiteral("ipxact:function"));
 
@@ -136,7 +115,7 @@ void FileSetWriter::writeFunctions(QXmlStreamWriter& writer,
 
         writeFunctionDisabledValue(writer, singleFunction);
 
-        writeFunctionSourceFiles(writer, singleFunction->getSourceFiles());
+        writeFunctionSourceFiles(writer, singleFunction->getSourceFiles(), docRevision);
 
         writer.writeEndElement(); // ipxact:function
     }
@@ -145,32 +124,26 @@ void FileSetWriter::writeFunctions(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFunctionEntryPoint()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctionEntryPoint(QXmlStreamWriter& writer, QSharedPointer<Function> function) const
+void FileSetWriter::Details::writeFunctionEntryPoint(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getEntryPoint().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:entryPoint"), function->getEntryPoint());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:entryPoint"), function->getEntryPoint());
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeReturnType()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctionReturnType(QXmlStreamWriter& writer, QSharedPointer<Function> function) const
+void FileSetWriter::Details::writeFunctionReturnType(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getReturnType().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:returnType"), function->getReturnType());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:returnType"), function->getReturnType());
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFunctionArguments()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctionArguments(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments) const
+void FileSetWriter::Details::writeFunctionArguments(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<NameValuePair> > > arguments)
 {
-    foreach (QSharedPointer<NameValuePair> singleArgument, *arguments)
+    for (QSharedPointer<NameValuePair> singleArgument : *arguments)
     {
         writer.writeStartElement(QStringLiteral("ipxact:argument"));
 
@@ -178,7 +151,7 @@ void FileSetWriter::writeFunctionArguments(QXmlStreamWriter& writer,
 
         writer.writeTextElement(QStringLiteral("ipxact:value"), singleArgument->getValue());
 
-        writeVendorExtensions(writer, singleArgument);
+        CommonItemsWriter::writeVendorExtensions(writer, singleArgument);
 
         writer.writeEndElement(); // ipxact:argument
     }
@@ -187,39 +160,25 @@ void FileSetWriter::writeFunctionArguments(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFunctionDisabledValue()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctionDisabledValue(QXmlStreamWriter& writer, QSharedPointer<Function> function) const
+void FileSetWriter::Details::writeFunctionDisabledValue(QXmlStreamWriter& writer, QSharedPointer<Function> function)
 {
-    if (!function->getDisabled().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:disabled"), function->getDisabled());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:disabled"), function->getDisabled());
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSetWriter::writeFunctionSourceFiles()
 //-----------------------------------------------------------------------------
-void FileSetWriter::writeFunctionSourceFiles(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<Function::SourceFile> > > sourceFiles) const
+void FileSetWriter::Details::writeFunctionSourceFiles(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<Function::SourceFile> > > sourceFiles,
+    Document::Revision docRevision)
 {
-    foreach (QSharedPointer<Function::SourceFile> source, *sourceFiles)
+    for (QSharedPointer<Function::SourceFile> source : *sourceFiles)
     {
         writer.writeStartElement(QStringLiteral("ipxact:sourceFile"));
 
         writer.writeTextElement(QStringLiteral("ipxact:sourceName"), source->getSourceName());
 
-        writer.writeStartElement(QStringLiteral("ipxact:fileType"));
-
-        if (FileTypes::isIpXactFileType(source->getFileType()))
-        {
-            writer.writeCharacters(source->getFileType());
-        }
-        else
-        {
-            writer.writeAttribute(QStringLiteral("user"), source->getFileType());
-            writer.writeCharacters(QStringLiteral("user"));
-        }
-
-        writer.writeEndElement(); // ipxact:fileType
+        FileWriter::writeFileType(writer, source->getFileType(), docRevision);
 
         writer.writeEndElement(); // ipxact:sourceFile
     }

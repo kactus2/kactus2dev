@@ -91,7 +91,7 @@ QSharedPointer<File> ConfigurationManager::getOrCreateConfigurationFile(QSharedP
         QString configurationFileName = containingComponent->getVlnv().getName() + "." + containingComponent->getVlnv().getVersion() + "_" + fileTypeName + "." + JSONFILETYPE;
 
         configurationFileItem = QSharedPointer<File>(new File(configurationFileName));
-        configurationFileItem->getFileTypes()->append(JSONFILETYPE);
+        configurationFileItem->getFileTypes()->append(FileType(JSONFILETYPE));
 
         configurationFileSet->getFiles()->append(configurationFileItem);
     }

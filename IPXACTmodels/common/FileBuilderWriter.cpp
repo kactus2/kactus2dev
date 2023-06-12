@@ -11,70 +11,40 @@
 
 #include "FileBuilderWriter.h"
 #include "FileBuilder.h"
-#include "FileTypes.h"
+#include "FileType.h"
 
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::FileBuilderWriter()
-//-----------------------------------------------------------------------------
-FileBuilderWriter::FileBuilderWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::~FileBuilderWriter()
-//-----------------------------------------------------------------------------
-FileBuilderWriter::~FileBuilderWriter()
-{
-
-}
+#include <IPXACTmodels/Component/FileWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeDefaultFileBuilder()
 //-----------------------------------------------------------------------------
-void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)
-    const
+void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:defaultFileBuilder"));
 
-    writeFileType(writer, fileBuilder);
+    FileWriter::writeFileType(writer, fileBuilder->getFileType(), docRevision);
 
-    writeBuildModel(writer, fileBuilder);
+    Details::writeBuildModel(writer, fileBuilder);
 
-    writeVendorExtensions(writer, fileBuilder);
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeVendorExtensions(writer, fileBuilder);
+    }
 
     writer.writeEndElement(); // ipxact:defaultFileBuilder
 }
 
-//-----------------------------------------------------------------------------
-// Function: FileBuilderWriter::writeFileType()
-//-----------------------------------------------------------------------------
-void FileBuilderWriter::writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
-{
-    writer.writeStartElement(QStringLiteral("ipxact:fileType"));
-
-    if (!FileTypes::isIpXactFileType(fileBuilder->getFileType()))
-    {
-        writer.writeAttribute(QStringLiteral("user"), fileBuilder->getUserFileType());
-    }
-    writer.writeCharacters(fileBuilder->getFileType());
-
-    writer.writeEndElement(); // ipxact:fileType
-}
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeBuildCommand()
 //-----------------------------------------------------------------------------
-void FileBuilderWriter::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const
+void FileBuilderWriter::Details::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)
 {
     writer.writeTextElement(QStringLiteral("ipxact:command"), fileBuilder->getCommand());
 
-    if (!fileBuilder->getFlags().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:flags"), fileBuilder->getFlags());
-    }
-    if (!fileBuilder->getReplaceDefaultFlags().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:replaceDefaultFlags"), fileBuilder->getReplaceDefaultFlags());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:flags"), fileBuilder->getFlags());
+
+    CommonItemsWriter::writeNonEmptyElement(writer, 
+        QStringLiteral("ipxact:replaceDefaultFlags"), fileBuilder->getReplaceDefaultFlags());
 }

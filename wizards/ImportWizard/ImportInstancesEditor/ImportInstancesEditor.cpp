@@ -260,7 +260,7 @@ bool ImportInstancesEditor::fileIsVerilogFile(QSharedPointer<File> file) const
 {
     for (auto const& fileType : *file->getFileTypes())
     {
-        if (fileType.contains(QStringLiteral("verilog"), Qt::CaseInsensitive))
+        if (fileType.type_.contains(QStringLiteral("verilog"), Qt::CaseInsensitive))
         {
             return true;
         }

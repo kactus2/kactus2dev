@@ -96,7 +96,7 @@ mapValidator_()
     componentParameterInterface_ =
         new ParametersInterface(parameterValidator_, expressionParser_, expressionFormatter_);
 
-    QSharedPointer<Component> temporaryComponent(new Component());
+    QSharedPointer<Component> temporaryComponent(new Component(VLNV(), Document::Revision::Unknown));
     busInterface_ = BusInterfaceInterfaceFactory::createBusInterface(
         parameterFinder_, expressionFormatter_, expressionParser_, temporaryComponent, library_);
 
@@ -351,7 +351,7 @@ bool PythonAPI::createComponent(std::string const& vendor, std::string const& li
         return false;
     }
 
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(newComponentVLNV, Document::Revision::Std14));
 
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);

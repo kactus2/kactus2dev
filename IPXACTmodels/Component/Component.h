@@ -67,7 +67,7 @@ public:
 	 *
 	 *      param [in] vlnv     The vlnv that is set for the component.
 	 */
-	explicit Component(const VLNV &vlnv = VLNV());
+	explicit Component(const VLNV &vlnv, Document::Revision revision);
 
 	//! Copy constructor.
 	Component(const Component &other);

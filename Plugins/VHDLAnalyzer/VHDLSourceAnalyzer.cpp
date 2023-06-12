@@ -166,13 +166,16 @@ void VHDLSourceAnalyzer::scanDefinitions(Component const* component, QString con
     {
         for (auto const& file : *fileset->getFiles())
         {
-            if (file->getFileTypes()->contains("vhdlSource"))
+            for (auto const& fileType : *file->getFileTypes())
             {
-				QString filename = General::getAbsolutePath(componentPath, file->name());
-				QString source = getSourceData(filename);
+                if (fileType.type_.contains("vhdlSource"))
+                {
+                    QString filename = General::getAbsolutePath(componentPath, file->name());
+                    QString source = getSourceData(filename);
 
-				scanEntities(source, filename);
-				scanPackages(source, filename);
+                    scanEntities(source, filename);
+                    scanPackages(source, filename);
+                }
             }
         }
     }

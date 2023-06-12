@@ -252,7 +252,7 @@ void RenodeGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList c
                 fileType = RenodeConstants::PYTHONFILETYPE;
             }
 
-            file->getFileTypes()->append(fileType);
+            file->getFileTypes()->append(FileType(fileType));
 
             targetFileset->addFile(file);
             utility->printInfo(tr("Added file %1 to top component file set %2.").arg(fileName, fileSetName));

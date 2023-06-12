@@ -33,7 +33,7 @@ BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<Bu
     BusInterfaceInterface* busInterface, std::string busName, QWidget* parent, QWidget* parentWnd):
 QWidget(parent),
 busInterface_(busInterface),
-nameEditor_(busif, this, tr("Name and description")),
+nameEditor_(busif, component->getRevision(), this, tr("Name and description")),
 busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
 abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busInterface_->getAbstractionTypeInterface(),
     parentWnd, this)),

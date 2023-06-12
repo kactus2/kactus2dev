@@ -11,34 +11,23 @@
 
 #include "FileBuilderReader.h"
 
-//-----------------------------------------------------------------------------
-// Function: FileBuilderReader::FileBuilderReader()
-//-----------------------------------------------------------------------------
-FileBuilderReader::FileBuilderReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileBuilderReader::~FileBuilderReader()
-//-----------------------------------------------------------------------------
-FileBuilderReader::~FileBuilderReader()
-{
-
-}
+#include <IPXACTmodels/Component/FileReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::createDefaultFileBuilderFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode) const
+QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision)
 {
     QSharedPointer<FileBuilder> newFilebuilder (new FileBuilder());
 
-    parseFileType(fileBuilderNode, newFilebuilder);
+    Details::parseFileType(fileBuilderNode, newFilebuilder, docRevision);
 
-    parseBuildModel(fileBuilderNode, newFilebuilder);
+    Details::parseBuildModel(fileBuilderNode, newFilebuilder);
 
-    parseVendorExtensions(fileBuilderNode, newFilebuilder);
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsReader::parseVendorExtensions(fileBuilderNode, newFilebuilder);
+    }
 
     return newFilebuilder;
 }
@@ -46,25 +35,19 @@ QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDom
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::parseFileType()
 //-----------------------------------------------------------------------------
-void FileBuilderReader::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder)
-    const
+void FileBuilderReader::Details::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
+    Document::Revision docRevision)
 {
     QDomElement fileTypeElement = filebuilderNode.firstChildElement(QStringLiteral("ipxact:fileType"));
 
-    QString fileType = fileTypeElement.firstChild().nodeValue();
-    if (fileType == QLatin1String("user"))
-    {
-        fileType = fileTypeElement.attribute(QStringLiteral("user"));
-    }
-
-    newFileBuilder->setFileType(fileType);
+    newFileBuilder->setFileType(FileReader::parseFileType(fileTypeElement, docRevision));
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::parseBuildModel()
 //-----------------------------------------------------------------------------
-void FileBuilderReader::parseBuildModel(QDomNode const& fileBuilderNode,
-    QSharedPointer<FileBuilder> newFileBuilder) const
+void FileBuilderReader::Details::parseBuildModel(QDomNode const& fileBuilderNode,
+    QSharedPointer<FileBuilder> newFileBuilder)
 {
     QString command = fileBuilderNode.firstChildElement(QStringLiteral("ipxact:command")).firstChild().nodeValue();
     QString flags = fileBuilderNode.firstChildElement(QStringLiteral("ipxact:flags")).firstChild().nodeValue();

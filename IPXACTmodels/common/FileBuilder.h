@@ -15,6 +15,7 @@
 #include <IPXACTmodels/common/BuildModel.h>
 
 #include <IPXACTmodels/common/Extendable.h>
+#include <IPXACTmodels/common/FileType.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -41,12 +42,12 @@ public:
 	 *
 	 *      @param [in] fileType    The type of the file.
 	 */
-	FileBuilder(const QString& fileType);
+	FileBuilder(QString const& fileType);
 
 	/*!
 	 *  Copy constructor.
 	 */
-	FileBuilder(const FileBuilder &other);
+	FileBuilder(FileBuilder const& other);
 
 	/*!
 	 *  Assignment operator.
@@ -63,21 +64,22 @@ public:
 	 *
      *      @return The type of the file.
 	 */
-	QString getFileType() const;
-
-    /*!
-     *  Get the user set file type.
-     *
-     *      @return The user set file type.
-     */
-    QString getUserFileType() const;
+	FileType getFileType() const;
 
 	/*!
 	 *  Set a file type.
 	 *
 	 *      @param [in] newFileType     The new file type.
+	 *      @param [in] libext		    The new libext attribute for the type.
 	 */
-	void setFileType(const QString& newFileType);
+	void setFileType(QString const& newFileType, QString const& libext = QString());
+
+	/*!
+	 *  Set a file type.
+	 *
+	 *      @param [in] fileType     The new file type.
+	 */
+	void setFileType(FileType const& fileType);
 
 	/*!
 	 *  Check if the file builde is meant for a given file type.
@@ -86,14 +88,11 @@ public:
      *
      *      @return True, if the file type is contained within the file builder, false otherwise.
 	 */
-	bool hasFileType(const QString& fileType) const;
+	bool hasFileType(QString const& fileType) const;
 
 private:
 
     //! The file type.
-    QString fileType_;
-
-    //! The user defined file type.
-    QString userFileType_;
+    FileType fileType_;
 };
 #endif // FILEBUILDER_H

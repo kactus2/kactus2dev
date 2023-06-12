@@ -1855,8 +1855,7 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     QString name = createInstanceName("instance");
 
     // Create a component model without a valid vlnv.
-    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component());
-    comp->setVlnv(VLNV());
+    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component(VLNV(), getEditedComponent()->getRevision()));
     comp->setImplementation(getEditedComponent()->getImplementation());
 
     // Create the corresponding diagram component.
@@ -1960,7 +1959,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
     if(!component)
     {
         // Create an unpackaged component so that we can still visualize the component instance.
-        component = QSharedPointer<Component>(new Component(*instance->getComponentRef()));
+        component = QSharedPointer<Component>(new Component(*instance->getComponentRef(), getEditedComponent()->getRevision()));
         component->setImplementation(KactusAttribute::HW);
     }
     

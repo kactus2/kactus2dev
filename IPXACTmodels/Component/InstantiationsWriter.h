@@ -64,7 +64,8 @@ public:
      *      @param [in] instantiation   The instantiation to be written.
      */
     void writeComponentInstantiation(QXmlStreamWriter& writer,
-        QSharedPointer<ComponentInstantiation> instantiation) const;
+        QSharedPointer<ComponentInstantiation> instantiation,
+        Document::Revision docRevision) const;
 
 private:
 
@@ -115,7 +116,8 @@ private:
      *      @param [in] defautlFileBuilders     The file builders to be written.
      */
     void writeDefaultFileBuilders(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders) const;
+        QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders,
+        Document::Revision docRevision) const;
 
     /*!
      *  Writes the file set references.

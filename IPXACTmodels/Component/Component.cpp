@@ -46,8 +46,8 @@
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
-Component::Component(const VLNV &vlnv):
-Document(vlnv),
+Component::Component(const VLNV &vlnv, Document::Revision revision):
+Document(vlnv, revision),
 busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
 indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
 channels_(new QList<QSharedPointer<Channel> > ()),
@@ -1272,19 +1272,15 @@ QStringList Component::getFilesFromFileSets( const QStringList& fileSetNames, co
 {
     QStringList files;
 
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
+    for (QSharedPointer<FileSet> fileSet : *fileSets_)
     {
         if (fileSetNames.contains(fileSet->name()))
         {
-            foreach (QSharedPointer<File> file, *fileSet->getFiles())
+            for (QSharedPointer<File> file : *fileSet->getFiles())
             {
-                foreach (QString fileType, *file->getFileTypes())
+                if (file->matchesFileType(fileTypes))
                 {
-                    if (fileTypes.contains(fileType))
-                    {
-                        files.append(file->name());
-                        break;
-                    }
+                    files.append(file->name());
                 }
             }
         }

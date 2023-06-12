@@ -811,7 +811,7 @@ void MarkdownWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointe
     for (auto const& defaultBuilder : *defaultFileBuilders)
     {
         QStringList builderCells(QStringList()
-            << defaultBuilder->getFileType()
+            << defaultBuilder->getFileType().type_
             << defaultBuilder->getCommand()
             << defaultBuilder->getFlags()
             << expressionFormatter_->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
@@ -870,7 +870,11 @@ void MarkdownWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> f
 
     QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
 
-    QStringList fileTypes = *file->getFileTypes();
+    QStringList fileTypes;
+    for (auto const& fileType : *file->getFileTypes())
+    {
+        fileTypes.append(fileType.type_);
+    }
 
     QStringList fileTableCells(QStringList()
         << "[" + fileInfo.fileName() + "]" + "(" + pathFromDocToFile + ")"
@@ -970,7 +974,7 @@ void MarkdownWriter::writeFileBuildCommands(QTextStream& stream,
     for (auto const& defaultBuilder : *instantiation->getDefaultFileBuilders())
     {
         QStringList builderCells(QStringList()
-            << defaultBuilder->getFileType()
+            << defaultBuilder->getFileType().type_
             << defaultBuilder->getCommand()
             << defaultBuilder->getFlags()
             << formatter->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())

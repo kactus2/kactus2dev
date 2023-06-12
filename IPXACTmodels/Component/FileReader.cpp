@@ -11,67 +11,79 @@
 
 #include "FileReader.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: FileReader::FileReader()
-//-----------------------------------------------------------------------------
-FileReader::FileReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FileReader::~FileReader()
-//-----------------------------------------------------------------------------
-FileReader::~FileReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: FileReader::createFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode) const
+QSharedPointer<File> FileReader::createFileFrom(QDomNode const& fileNode, Document::Revision docRevision)
 {
     QDomElement fileElement = fileNode.toElement();
     QString fileName = fileNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue();
 
     QSharedPointer<File> newFile (new File(fileName));
 
-    parseFileAttributes(fileElement, newFile);
+    Details::parseFileAttributes(fileElement, newFile);
 
-    newFile->setIsPresent(parseIsPresent(fileNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
+    if (docRevision == Document::Revision::Std14)
+    {
+        auto isPresent = CommonItemsReader::parseIsPresent(fileNode.firstChildElement(QStringLiteral("ipxact:isPresent")));
+        newFile->setIsPresent(isPresent);
+    }
 
-    parseFileTypes(fileElement, newFile);
+    Details::parseFileTypes(fileElement, newFile, docRevision);
 
-    parseIsStructural(fileElement, newFile);
+    Details::parseIsStructural(fileElement, newFile);
 
-    parseIsIncludeFile(fileElement, newFile);
+    Details::parseIsIncludeFile(fileElement, newFile);
 
-    parseLogicalName(fileElement, newFile);
+    Details::parseLogicalName(fileElement, newFile);
 
-    parseExportedNames(fileElement, newFile);
+    Details::parseExportedNames(fileElement, newFile);
 
-    parseBuildCommand(fileElement, newFile);
+    Details::parseBuildCommand(fileElement, newFile);
 
-    parseDependencies(fileElement, newFile);
+    Details::parseDependencies(fileElement, newFile);
 
-    parseDefines(fileElement, newFile);
+    Details::parseDefines(fileElement, newFile);
 
-    parseImageTypes(fileElement, newFile);
+    Details::parseImageTypes(fileElement, newFile);
 
-    parseDescription(fileElement, newFile);
+    Details::parseDescription(fileElement, newFile);
 
-    parseFileExtensions(fileElement, newFile);
+    Details::parseFileExtensions(fileElement, newFile);
 
     return newFile;
 }
 
 //-----------------------------------------------------------------------------
+// Function: FileReader::parseFileType()
+//-----------------------------------------------------------------------------
+FileType FileReader::parseFileType(QDomNode const& fileTypeNode, Document::Revision docRevision)
+{
+    QString fileType = fileTypeNode.firstChild().nodeValue();
+
+    QDomNamedNodeMap fileTypeAttributes = fileTypeNode.attributes();
+    if (fileType == QLatin1String("user"))
+    {
+        fileType = fileTypeAttributes.namedItem(QStringLiteral("user")).nodeValue();
+    }
+
+    FileType type(fileType);
+
+    if (docRevision == Document::Revision::Std22)
+    {
+        type.libext_ = fileTypeAttributes.namedItem(QStringLiteral("libext")).nodeValue();
+    }
+
+    return type;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileReader::parseFileAttributes()
 //-----------------------------------------------------------------------------
-void FileReader::parseFileAttributes(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseFileAttributes(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomNamedNodeMap fileAttributes = fileElement.attributes();
 
@@ -106,29 +118,22 @@ void FileReader::parseFileAttributes(QDomElement const& fileElement, QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseFileTypes()
 //-----------------------------------------------------------------------------
-void FileReader::parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseFileTypes(QDomElement const& fileElement, QSharedPointer<File> newFile, Document::Revision docRevision)
 {
     QDomNodeList fileTypeNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:fileType"));
     
     for (int fileTypeIndex = 0; fileTypeIndex < fileTypeNodeList.count(); ++fileTypeIndex)
     {
         QDomNode fileTypeNode = fileTypeNodeList.at(fileTypeIndex);
-        QString fileType = fileTypeNode.firstChild().nodeValue();
 
-        if (fileType == QLatin1String("user"))
-        {
-            QDomNamedNodeMap fileTypeAttributes = fileTypeNode.attributes();
-            fileType = fileTypeAttributes.namedItem(QStringLiteral("user")).nodeValue();
-        }
-
-        newFile->getFileTypes()->append(fileType);
+        newFile->getFileTypes()->append(parseFileType(fileTypeNode, docRevision));
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseIsStructural()
 //-----------------------------------------------------------------------------
-void FileReader::parseIsStructural(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseIsStructural(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomElement structuralElement = fileElement.firstChildElement(QStringLiteral("ipxact:isStructural"));
 
@@ -141,7 +146,7 @@ void FileReader::parseIsStructural(QDomElement const& fileElement, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseIsIncludeFile()
 //-----------------------------------------------------------------------------
-void FileReader::parseIsIncludeFile(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseIsIncludeFile(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomElement includeElement = fileElement.firstChildElement(QStringLiteral("ipxact:isIncludeFile"));
 
@@ -159,7 +164,7 @@ void FileReader::parseIsIncludeFile(QDomElement const& fileElement, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseLogicalName()
 //-----------------------------------------------------------------------------
-void FileReader::parseLogicalName(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseLogicalName(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomElement logicalNameElement = fileElement.firstChildElement(QStringLiteral("ipxact:logicalName"));
 
@@ -178,7 +183,7 @@ void FileReader::parseLogicalName(QDomElement const& fileElement, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseExportedNames()
 //-----------------------------------------------------------------------------
-void FileReader::parseExportedNames(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseExportedNames(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomNodeList exportedNameNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:exportedName"));
 
@@ -192,7 +197,7 @@ void FileReader::parseExportedNames(QDomElement const& fileElement, QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseBuildCommand()
 //-----------------------------------------------------------------------------
-void FileReader::parseBuildCommand(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseBuildCommand(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomElement buildCommandElement = fileElement.firstChildElement(QStringLiteral("ipxact:buildCommand"));
 
@@ -217,8 +222,8 @@ void FileReader::parseBuildCommand(QDomElement const& fileElement, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseBuildCommandCommand()
 //-----------------------------------------------------------------------------
-void FileReader::parseBuildCommandCommand(QDomElement const& buildCommandElement,
-    QSharedPointer<BuildCommand> newBuildCommand) const
+void FileReader::Details::parseBuildCommandCommand(QDomElement const& buildCommandElement,
+    QSharedPointer<BuildCommand> newBuildCommand)
 {
     QDomElement commandElement = buildCommandElement.firstChildElement(QStringLiteral("ipxact:command"));
     if (!commandElement.isNull())
@@ -230,8 +235,8 @@ void FileReader::parseBuildCommandCommand(QDomElement const& buildCommandElement
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseBuildCommandFlags()
 //-----------------------------------------------------------------------------
-void FileReader::parseBuildCommandFlags(QDomElement const& buildCommandElement,
-    QSharedPointer<BuildCommand> newBuildCommand) const
+void FileReader::Details::parseBuildCommandFlags(QDomElement const& buildCommandElement,
+    QSharedPointer<BuildCommand> newBuildCommand)
 {
     QDomElement flagsElement = buildCommandElement.firstChildElement(QStringLiteral("ipxact:flags"));
     if (!flagsElement.isNull())
@@ -254,8 +259,8 @@ void FileReader::parseBuildCommandFlags(QDomElement const& buildCommandElement,
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseBuildCommandReplaceFlags()
 //-----------------------------------------------------------------------------
-void FileReader::parseBuildCommandReplaceFlags(QDomElement const& buildCommandElement,
-    QSharedPointer<BuildCommand> newBuildCommand) const
+void FileReader::Details::parseBuildCommandReplaceFlags(QDomElement const& buildCommandElement,
+    QSharedPointer<BuildCommand> newBuildCommand)
 {
     QDomElement replaceFlagsElement = buildCommandElement.firstChildElement(QStringLiteral("ipxact:replaceDefaultFlags"));
     if (!replaceFlagsElement.isNull())
@@ -267,8 +272,8 @@ void FileReader::parseBuildCommandReplaceFlags(QDomElement const& buildCommandEl
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseBuildCommandTargets()
 //-----------------------------------------------------------------------------
-void FileReader::parseBuildCommandTarget(QDomElement const& buildCommandElement,
-    QSharedPointer<BuildCommand> newBuildCommand) const
+void FileReader::Details::parseBuildCommandTarget(QDomElement const& buildCommandElement,
+    QSharedPointer<BuildCommand> newBuildCommand)
 {
     QDomElement targetElement = buildCommandElement.firstChildElement(QStringLiteral("ipxact:targetName"));
     if (!targetElement.isNull())
@@ -280,7 +285,7 @@ void FileReader::parseBuildCommandTarget(QDomElement const& buildCommandElement,
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseDependencies()
 //-----------------------------------------------------------------------------
-void FileReader::parseDependencies(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseDependencies(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomNodeList dependencyNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:dependency"));
 
@@ -294,7 +299,7 @@ void FileReader::parseDependencies(QDomElement const& fileElement, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseDefines()
 //-----------------------------------------------------------------------------
-void FileReader::parseDefines(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseDefines(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomNodeList defineNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:define"));
 
@@ -313,7 +318,7 @@ void FileReader::parseDefines(QDomElement const& fileElement, QSharedPointer<Fil
             QString value = defineNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
             newDefine->setValue(value);
 
-            parseVendorExtensions(defineNode, newDefine);
+            CommonItemsReader::parseVendorExtensions(defineNode, newDefine);
 
             newFile->getDefines()->append(newDefine);
         }
@@ -323,7 +328,7 @@ void FileReader::parseDefines(QDomElement const& fileElement, QSharedPointer<Fil
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseImageTypes()
 //-----------------------------------------------------------------------------
-void FileReader::parseImageTypes(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseImageTypes(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomNodeList imagetTypeNodeList = fileElement.elementsByTagName(QStringLiteral("ipxact:imageType"));
 
@@ -337,7 +342,7 @@ void FileReader::parseImageTypes(QDomElement const& fileElement, QSharedPointer<
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseDescription()
 //-----------------------------------------------------------------------------
-void FileReader::parseDescription(QDomElement const& fileElement, QSharedPointer<File> newFile) const
+void FileReader::Details::parseDescription(QDomElement const& fileElement, QSharedPointer<File> newFile)
 {
     QDomElement descriptionNameElement = fileElement.firstChildElement(QStringLiteral("ipxact:description"));
 
@@ -351,7 +356,7 @@ void FileReader::parseDescription(QDomElement const& fileElement, QSharedPointer
 //-----------------------------------------------------------------------------
 // Function: FileReader::parseFileExtensions()
 //-----------------------------------------------------------------------------
-void FileReader::parseFileExtensions(QDomNode const& fileNode, QSharedPointer<File> newFile) const
+void FileReader::Details::parseFileExtensions(QDomNode const& fileNode, QSharedPointer<File> newFile)
 {
     QDomElement extensionsElement = fileNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
@@ -362,5 +367,5 @@ void FileReader::parseFileExtensions(QDomNode const& fileNode, QSharedPointer<Fi
         newFile->setLastHash(hash);
     }
 
-    parseVendorExtensions(fileNode, newFile);
+    CommonItemsReader::parseVendorExtensions(fileNode, newFile);
 }

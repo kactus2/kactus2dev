@@ -43,6 +43,10 @@ public:
      */
 	virtual ~FileNameEditor() = default;
 
+    //! No copying. No assignment.
+    FileNameEditor(const FileNameEditor& other) = delete;
+    FileNameEditor& operator=(const FileNameEditor& other) = delete;
+
 	/*!
      *  Refresh the editor.
      */
@@ -71,9 +75,6 @@ private slots:
 
 private:
 
-	//! No copying. No assignment.
-	FileNameEditor(const FileNameEditor& other);
-	FileNameEditor& operator=(const FileNameEditor& other);
 	
 	//! The label to display the file name.
     QLabel fileNameLabel_;

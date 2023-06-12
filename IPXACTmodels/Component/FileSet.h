@@ -186,7 +186,7 @@ public:
 	 *
 	 *      @return Pointer to the File instance, null pointer if none is found.
 	 */
-	QSharedPointer<File> getFile(const QString logicalName) const;
+	QSharedPointer<File> getFile(QString const& logicalName) const;
 
 	/*! 
      *  Get the name elements of the files stored within this file set.
@@ -321,19 +321,22 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Describes the function or purpose of the file set.
-	QSharedPointer<QStringList> groups_;
+	QSharedPointer<QStringList> groups_ = QSharedPointer<QStringList>(new QStringList);
 
 	//! The contained files.
-	QSharedPointer<QList<QSharedPointer<File> > > files_;
+	QSharedPointer<QList<QSharedPointer<File> > > files_ =
+		QSharedPointer<QList<QSharedPointer<File> > >(new QList<QSharedPointer<File> >);
 
 	//! The contained default file builders.
-	QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_;
+	QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_ =
+		QSharedPointer<QList<QSharedPointer<FileBuilder> > >(new QList<QSharedPointer<FileBuilder> >);
 
 	//! Contains paths to directories containing dependency files
-	QSharedPointer<QStringList> dependencies_;
+	QSharedPointer<QStringList> dependencies_ = QSharedPointer<QStringList>(new QStringList);
 
 	//! The contained functions.
-	QSharedPointer<QList<QSharedPointer<Function> > > functions_;
+	QSharedPointer<QList<QSharedPointer<Function> > > functions_ =
+		QSharedPointer<QList<QSharedPointer<Function> > >(new QList<QSharedPointer<Function> >);
 };
 
 #endif // FILESET_H

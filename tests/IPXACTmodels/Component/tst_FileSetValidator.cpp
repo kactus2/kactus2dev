@@ -13,7 +13,7 @@
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 
@@ -150,7 +150,7 @@ void tst_FileSetValidator::hasValidFile()
 	file->setName("osat.txt");
 
 	file->setIsPresent("1");
-	file->getFileTypes()->append("part");
+	file->addFileType("part");
 	file->getDefines()->append(QSharedPointer<NameValuePair>(new NameValuePair("halkasija","kolme") ));
 
 	QSharedPointer<BuildCommand> bc( new BuildCommand );

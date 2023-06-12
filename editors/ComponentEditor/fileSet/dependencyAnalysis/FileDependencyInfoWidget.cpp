@@ -25,9 +25,10 @@ QGroupBox(tr("Dependency information"), parent),
     descEdit_(this),
     bidirectionalCheck_(tr("Bidirectional"), this),
     lockedCheck_(tr("Locked"), this),
-    directionButton_(tr("Reverse direction"), this),
+    directionButton_(QIcon(":icons/common/graphics/imported.png"), tr("Reverse direction"), this),
     dependency_(0)
 {
+    setFlat(true);
     setupLayout();
 
     connect(&bidirectionalCheck_, SIGNAL(stateChanged(int)), this, SLOT(directionChanged(int)));
@@ -40,6 +41,7 @@ QGroupBox(tr("Dependency information"), parent),
     bidirectionalCheck_.setEnabled(false);
     lockedCheck_.setEnabled(false);
     directionButton_.setEnabled(false);
+    directionButton_.setFlat(true);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,15 +194,17 @@ void FileDependencyInfoWidget::lockEverything(bool isLocked)
 //-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::setupLayout()
 {
-    bidirectionalCheck_.setFixedWidth(150);
+    //bidirectionalCheck_.setFixedWidth(150);
     //descEdit_.setMaximumHeight(80);
 
-    QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(new QLabel(tr("Description:"), this), 0, 0, 1, 1);
-    topLayout->addWidget(&descEdit_, 1, 0, 4, 1);
-    topLayout->addWidget(&bidirectionalCheck_, 1, 1, 1, 1);
-    topLayout->addWidget(&lockedCheck_, 2, 1, 1, 1);
-    topLayout->addWidget(&directionButton_, 3, 1, 1, 1);
+    auto buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(&bidirectionalCheck_);
+    buttonLayout->addWidget(&lockedCheck_);
+    buttonLayout->addWidget(&directionButton_);
+    buttonLayout->addStretch();
 
-    topLayout->setRowStretch(4, 5);
+    auto topLayout = new QGridLayout(this);
+    topLayout->addLayout(buttonLayout, 0, 0, 1, 1);
+    topLayout->addWidget(new QLabel(tr("Description:"), this), 1, 0, 1, 1);
+    topLayout->addWidget(&descEdit_, 2, 0, 1, 1);
 }

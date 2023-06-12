@@ -37,6 +37,8 @@ model_(handler, component, fileInterface, this),
 fileInterface_(fileInterface),
 availableFiles_(availableFiles)
 {
+	setFlat(true);
+
     fileInterface_->setFiles(availableFiles_);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -57,7 +59,7 @@ availableFiles_(availableFiles)
 	view_.setItemsDraggable(true);
 
 	// set the delegate to provide editors
-	view_.setItemDelegate(new FilesDelegate(this));
+	view_.setItemDelegate(new FilesDelegate(component->getRevision(), this));
 
 	connect(&view_, SIGNAL(addItemByBrowsing()), this, SLOT(onAddFiles()), Qt::UniqueConnection);
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
@@ -103,7 +105,7 @@ void FilesEditor::onAddFiles()
 	QStringList filePaths = QFileDialog::getOpenFileNames(this, tr("Select files to add."),
 		handler_->getPath(component_->getVlnv()));
 
-	foreach (QString const& file, filePaths)
+	for (QString const& file : filePaths)
     {
 		model_.onAddItem(QModelIndex(), file);
 	}

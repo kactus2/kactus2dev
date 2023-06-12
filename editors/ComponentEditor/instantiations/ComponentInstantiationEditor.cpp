@@ -34,7 +34,7 @@ ComponentInstantiationEditor::ComponentInstantiationEditor(QSharedPointer<Compon
     ComponentInstantiationInterface* instantiationInterface, QWidget *parent):
 ParameterItemEditor(component, library, parent),
 component_(component),
-nameGroupEditor_(componentInstantiation, this, tr("Component instance name and description")),
+nameGroupEditor_(componentInstantiation, component->getRevision(), this, tr("Component instance name and description")),
 languageEditor_(this), 
 languageStrict_(tr("strict"), this),
 libraryEditor_(this),

@@ -12,7 +12,7 @@
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/File.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 #include <QSharedPointer>
@@ -52,7 +52,7 @@ void tst_FileValidator::baseCase()
 	file->setName("ruokalista.txt");
 
 	file->setIsPresent("1");
-	file->getFileTypes()->append("text");
+	file->getFileTypes()->append(FileType("text"));
 	file->getDefines()->append(QSharedPointer<NameValuePair>(new NameValuePair("Lihapullia","viis") ));
 	
 	QSharedPointer<BuildCommand> bc( new BuildCommand );
@@ -79,6 +79,7 @@ void tst_FileValidator::failFileTypes()
 	validator.findErrorsIn(errorList, file, "test");
 
 	QCOMPARE( errorList.size(), 1 );
+	QCOMPARE( errorList.first(), QString("File ruokalista.txt must have at least one file type defined."));
 	QVERIFY( !validator.validate(file) );
 }
 
@@ -91,13 +92,14 @@ void tst_FileValidator::failName()
     FileValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 	file->setName(" \t\n\r");
 
-	file->getFileTypes()->append("text");
+	file->getFileTypes()->append(FileType("text"));
 	file->getDefines()->append(QSharedPointer<NameValuePair>(new NameValuePair("Lihapullia", "viis") ));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, file, "test");
 
 	QCOMPARE( errorList.size(), 1 );
+	QCOMPARE(errorList.first(), QString("The file name ' \t\n\r' is invalid within test."));
 	QVERIFY( !validator.validate(file) );
 }
 
@@ -110,13 +112,14 @@ void tst_FileValidator::failDefine()
 	FileValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 	file->setName("joku.txt");
 
-	file->getFileTypes()->append("text");
+	file->getFileTypes()->append(FileType("text"));
 	file->getDefines()->append(QSharedPointer<NameValuePair>(new NameValuePair(" \t\r\n", "viis") ));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, file, "test");
 
 	QCOMPARE( errorList.size(), 1 );
+	QCOMPARE( errorList.first(), QString("The name ' \t\r\n' of a define is invalid within file joku.txt."));
 	QVERIFY( !validator.validate(file) );
 }
 
@@ -129,7 +132,7 @@ void tst_FileValidator::failReplace()
     FileValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 	file->setName("joku.txt");
 
-	file->getFileTypes()->append("text");
+	file->getFileTypes()->append(FileType("text"));
 	QSharedPointer<BuildCommand> bc( new BuildCommand );
 	bc->setReplaceDefaultFlags("rertthyju");
 	file->setBuildcommand( bc );
@@ -138,6 +141,8 @@ void tst_FileValidator::failReplace()
 	validator.findErrorsIn(errorList, file, "test");
 
 	QCOMPARE( errorList.size(), 1 );
+	QCOMPARE( errorList.first(), 
+		QString("Invalid \"replace default flags\" value set for build command in file joku.txt. Value must evaluate to 0 or 1."));
 	QVERIFY( !validator.validate(file) );
 }
 

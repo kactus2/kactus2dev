@@ -25,14 +25,19 @@ public:
 	/*!
 	 *  Constructor.
      *
-	 *      @param [in] parent Pointer to the owner of this instance.
+	 *      @param [in] revision	The applied IP-XACT standard.
+	 *      @param [in] parent		Pointer to the owner of this instance.
 	 */
-	FileTypesDelegate(QObject* parent = 0);
+	FileTypesDelegate(QObject* parent = nullptr);
 	
 	/*!
      *  Destructor.
      */
 	virtual ~FileTypesDelegate() = default;
+
+	// Disable copying.
+	FileTypesDelegate(FileTypesDelegate const& rhs) = delete;
+	FileTypesDelegate& operator=(FileTypesDelegate const& rhs) = delete;
 
 	/*!
      *  Creates a new editor for the given item.
@@ -65,10 +70,6 @@ public:
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, 
 		                      QModelIndex const& index) const;
 
-private:
-    // Disable copying.
-    FileTypesDelegate(FileTypesDelegate const& rhs);
-    FileTypesDelegate& operator=(FileTypesDelegate const& rhs);
 };
 
 #endif // FILETYPESDELEGATE_H

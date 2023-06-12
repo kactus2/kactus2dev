@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
 
@@ -24,49 +26,29 @@ class FileBuilder;
 //-----------------------------------------------------------------------------
 //! Writer class for fileBuilder element.
 //-----------------------------------------------------------------------------
-class FileBuilderWriter : public CommonItemsWriter
+namespace FileBuilderWriter 
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    FileBuilderWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~FileBuilderWriter();
-
     /*!
      *  Write the default file builder.
      *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] nameGroup   The selected file builder.
+     *      @param [in] writer          The used xml writer.
+     *      @param [in] nameGroup       The selected file builder.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
+    void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
+        Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
 
-    // Disable copying.
-    FileBuilderWriter(FileBuilderWriter const& rhs);
-    FileBuilderWriter& operator=(FileBuilderWriter const& rhs);
-
-    /*!
-     *  Write the file type.
-     *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] fileBuilder     The selected file builder.
-     */
-    void writeFileType(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
-
-    /*!
-     *  Write the build model of the file builder.
-     *
-     *      @param [in] writer          Used XML writer.
-     *      @param [in] fileBuilder     The selected file builder.
-     */
-    void writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder) const;
+        /*!
+         *  Write the build model of the file builder.
+         *
+         *      @param [in] writer          Used XML writer.
+         *      @param [in] fileBuilder     The selected file builder.
+         */
+        void writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder);
+    }
 };
 
 #endif // FILEBUILDERWRITER_H

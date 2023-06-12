@@ -142,9 +142,9 @@ QSharedPointer<File> QuartusGenerator::getQuartusPinMap(QSharedPointer<Component
     {
         for (QSharedPointer<File> currentFile : *fileSet->getFiles())
         {
-            for (QString fileType : *currentFile->getFileTypes())
+            for (auto const& fileType : *currentFile->getFileTypes())
             {
-                if (pinTypes.contains(fileType))
+                if (pinTypes.contains(fileType.type_))
                 {
                     return currentFile;
                 }

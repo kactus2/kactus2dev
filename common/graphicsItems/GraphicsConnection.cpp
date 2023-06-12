@@ -58,7 +58,14 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
         }
     }
 
-    setRoute(route_->getRoute());
+    if (route_->getRoute().isEmpty())
+    {
+        createRoute(endpoint1_, endpoint2_);
+    }
+    else
+    {
+        setRoute(route_->getRoute());
+    }
 
     setDefaultColor();
 }

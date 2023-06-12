@@ -59,7 +59,7 @@ handler_(handler)
 
     blockInterface->setMemoryBlocks(localMemoryMap_->getMemoryBlocks());
 
-    nameEditor_ = (new NameGroupEditor(localMemoryMap_, this));
+    nameEditor_ = (new NameGroupEditor(localMemoryMap_, component->getRevision(), this));
 
     setCheckable(true);
     setChecked(hasLocalMemoryMap);

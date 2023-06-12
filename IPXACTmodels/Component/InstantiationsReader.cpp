@@ -107,7 +107,8 @@ bool InstantiationsReader::parseLanguageStrictnessFrom(QDomNode const& instantia
 // Function: InstantiationsReader::createComponentInstantiationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInstantiationFrom(
-    QDomNode const& instantiationNode) const
+    QDomNode const& instantiationNode,
+    Document::Revision docRevision) const
 {
     QSharedPointer<ComponentInstantiation> newInstantiation (new ComponentInstantiation());
 
@@ -126,7 +127,7 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
 
     parseModuleParameters(instantiationNode, newInstantiation);
 
-    parseDefaultFileBuilders(instantiationNode, newInstantiation);
+    parseDefaultFileBuilders(instantiationNode, newInstantiation, docRevision);
 
     parseFileSetReferences(instantiationNode, newInstantiation);
 
@@ -201,7 +202,8 @@ void InstantiationsReader::parseModuleParameters(QDomNode const& instantiationNo
 // Function: InstantiationsReader::parseDefaultFileBuilders()
 //-----------------------------------------------------------------------------
 void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+    QSharedPointer<ComponentInstantiation> instantiation,
+    Document::Revision docRevision) const
 {
     QDomElement instantiationElement = instantiationNode.toElement();
 
@@ -209,12 +211,10 @@ void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiatio
 
     if (!defaultFileBuilderNodeList.isEmpty())
     {
-        FileBuilderReader defaultFileBuilderReader;
-
         for (int i = 0; i < defaultFileBuilderNodeList.count(); ++i)
         {
             QSharedPointer<FileBuilder> defaultFileBuilder =
-                defaultFileBuilderReader.createDefaultFileBuilderFrom(defaultFileBuilderNodeList.at(i));
+                FileBuilderReader::createDefaultFileBuilderFrom(defaultFileBuilderNodeList.at(i), docRevision);
             instantiation->getDefaultFileBuilders()->append(defaultFileBuilder);
         }
     }

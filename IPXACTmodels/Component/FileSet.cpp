@@ -12,7 +12,7 @@
 #include "FileSet.h"
 
 #include <IPXACTmodels/common/VendorExtension.h>
-#include <IPXACTmodels/common/FileTypes.h>
+#include <IPXACTmodels/common/FileType.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
 #include <IPXACTmodels/utilities/Search.h>
@@ -22,14 +22,9 @@
 //-----------------------------------------------------------------------------
 // Function: FileSet::FileSet()
 //-----------------------------------------------------------------------------
-FileSet::FileSet(const QString& name /* = QString() */, const QString& group /* = QString() */) :
+FileSet::FileSet(QString const& name, QString const& group) :
 NameGroup(name),
-Extendable(),
-groups_(new QStringList()),
-files_(new QList<QSharedPointer<File> > ()),
-defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-dependencies_(new QStringList()),
-functions_(new QList<QSharedPointer<Function> > ())
+Extendable()
 {
     if (!group.isEmpty())
     {
@@ -42,12 +37,7 @@ functions_(new QList<QSharedPointer<Function> > ())
 //-----------------------------------------------------------------------------
 FileSet::FileSet(const FileSet &other) :
 NameGroup(other),
-Extendable(other),
-groups_(new QStringList()),
-files_(new QList<QSharedPointer<File> > ()),
-defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-dependencies_(new QStringList()),
-functions_(new QList<QSharedPointer<Function> > ())
+Extendable(other)
 {
     copyFiles(other);
     copyDefaultFileBuilders(other);
@@ -84,9 +74,7 @@ FileSet& FileSet::operator=(const FileSet& other)
 //-----------------------------------------------------------------------------
 FileSet::~FileSet()
 {
-    files_.clear();
-    defaultFileBuilders_.clear();
-    functions_->clear();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +97,7 @@ void FileSet::setGroups(QSharedPointer<QStringList> newGroups)
 //-----------------------------------------------------------------------------
 // Function: FileSet::setGroups()
 //-----------------------------------------------------------------------------
-void FileSet::setGroups( const QString& groupName )
+void FileSet::setGroups(QString const& groupName )
 {
     groups_->clear();
     groups_->append(groupName);
@@ -126,11 +114,11 @@ QSharedPointer<QList<QSharedPointer<File> > > FileSet::getFiles() const
 //-----------------------------------------------------------------------------
 // Function: FileSet::getFiles()
 //-----------------------------------------------------------------------------
-QStringList FileSet::getFileNames( const QStringList& fileTypes ) const
+QStringList FileSet::getFileNames(QStringList const& fileTypes ) const
 {
     QStringList files;
 
-    foreach (QSharedPointer<File> file, *files_)
+    for (QSharedPointer<File> file : *files_)
     {
         if (file->matchesFileType(fileTypes))
         {
@@ -187,7 +175,7 @@ void FileSet::setDependencies(QSharedPointer<QStringList> newDependencies)
 //-----------------------------------------------------------------------------
 // Function: FileSet::addDependency()
 //-----------------------------------------------------------------------------
-void FileSet::addDependency( const QString& path )
+void FileSet::addDependency( QString const& path )
 {
     dependencies_->append(path);
 }
@@ -215,7 +203,7 @@ void FileSet::setFunctions(QSharedPointer<QList<QSharedPointer<Function> > > new
 QStringList FileSet::getVhdlLibraryNames() const
 {
     QStringList libraries;
-    foreach (QSharedPointer<File> file, *files_)
+    for (QSharedPointer<File> file : *files_)
     {
         if (file->isVhdlFile() && !file->getLogicalName().isEmpty() && !libraries.contains(file->getLogicalName()))
         {
@@ -232,10 +220,9 @@ QStringList FileSet::getFilePaths() const
 {
     QStringList filePaths;
 
-    for (int i = 0; i < files_->size(); ++i)
-    {
-        filePaths.append(files_->at(i)->name());
-    }
+    std::for_each(files_->cbegin(), files_->cend(), 
+        [&filePaths](auto const& file) { filePaths.append(file->name()); });
+
     return filePaths;
 }
 
@@ -244,25 +231,20 @@ QStringList FileSet::getFilePaths() const
 //-----------------------------------------------------------------------------
 void FileSet::addFile(QSharedPointer<File> file)
 {
-	// If a duplicate exists, remove it.
-    for (int i = 0; i < files_->size(); ++i)
+    auto fileName = file->name();
+    auto it = std::find_if(files_->cbegin(), files_->cend(),
+        [&fileName](auto const& existingFile) { return existingFile->name() == fileName; });
+
+    if (it == files_->cend())
     {
-        if (files_->at(i)->name() == file->name())
-        {
-            files_->removeAt(i);
-
-            break;
-        }
+        files_->append(file);
     }
-
-	// At any rate, append the file to the list.
-    files_->append(file);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSet::addFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settings)
+QSharedPointer<File> FileSet::addFile(QString const& filePath, QSettings& settings)
 {
     QSharedPointer<File> file = Search::findByName(filePath, *files_);
     
@@ -277,9 +259,9 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
 
     for (QString const& fileType : types)
     {
-        if (!file->getFileTypes()->contains(fileType))
+        if (!file->matchesFileType(fileType))
         {
-            file->getFileTypes()->append(fileType);
+            file->addFileType(fileType);
         }
 	}
 
@@ -289,17 +271,17 @@ QSharedPointer<File> FileSet::addFile(const QString& filePath, QSettings& settin
 //-----------------------------------------------------------------------------
 // Function: FileSet::getFile()
 //-----------------------------------------------------------------------------
-QSharedPointer<File> FileSet::getFile(const QString logicalName) const
+QSharedPointer<File> FileSet::getFile(QString const& logicalName) const
 {
-    for (int i = 0; i < files_->size(); ++i)
+    auto it = std::find_if(files_->cbegin(), files_->cend(),
+        [&logicalName](auto const& file) { return file->getLogicalName() == logicalName; });
+
+    if (it != files_->cend())
     {
-        if (files_->at(i)->getLogicalName() == logicalName)
-        {
-            return files_->at(i);
-        }
+        return *it;
     }
 
-    return QSharedPointer<File>();
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -307,18 +289,13 @@ QSharedPointer<File> FileSet::getFile(const QString logicalName) const
 //-----------------------------------------------------------------------------
 QStringList FileSet::getFileNames() const
 {
-    QStringList fileNames;
-    for (int i = 0; i < files_->size(); ++i)
-    {
-        fileNames.append(files_->at(i)->name());
-    }
-    return fileNames;
+    return getFilePaths();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FileSet::findFilesByFileType()
 //-----------------------------------------------------------------------------
-QStringList FileSet::findFilesByFileType( const QString& fileType ) const
+QStringList FileSet::findFilesByFileType(QString const& fileType ) const
 {
     QStringList files;
     for (QSharedPointer<const File> file : *files_)
@@ -335,17 +312,11 @@ QStringList FileSet::findFilesByFileType( const QString& fileType ) const
 //-----------------------------------------------------------------------------
 // Function: FileSet::removeFile()
 //-----------------------------------------------------------------------------
-void FileSet::removeFile( const QString& fileName )
+void FileSet::removeFile(QString const& fileName )
 {
-    for (int i = 0; i < files_->size(); ++i)
-    {
-        if (files_->at(i)->name() == fileName)
-        {
-            files_->value(i).clear();
-            files_->removeAt(i);
-            return;
-        }
-    }
+    QSharedPointer<File> file = Search::findByName(fileName, *files_);
+
+    files_->removeOne(file);
 }
 
 //-----------------------------------------------------------------------------
@@ -353,15 +324,7 @@ void FileSet::removeFile( const QString& fileName )
 //-----------------------------------------------------------------------------
 void FileSet::removeFile(QSharedPointer<File> file)
 {
-    for (int i = 0; i < files_->size(); ++i)
-    {
-        if (*files_->at(i) == *file)
-        {
-            files_->value(i).clear();
-            files_->removeAt(i);
-            return;
-        }
-    }
+    files_->removeOne(file);
 }
 
 //-----------------------------------------------------------------------------
@@ -384,11 +347,11 @@ QString FileSet::getDefaultCommand(QSharedPointer<File> file) const
         return QString();
     }
 
-    for (QString const& fileType : *file->getFileTypes())
+    for (auto const& fileType : *file->getFileTypes())
     {
         for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders_)
         {
-            if (fileBuilder->hasFileType(fileType))
+            if (fileBuilder->hasFileType(fileType.type_))
             {
                 return fileBuilder->getCommand();
             }
@@ -408,11 +371,11 @@ QString FileSet::getDefaultFlags(QSharedPointer<File> file) const
         return QString();
     }
     
-    for(QString const& fileType : *file->getFileTypes())
+    for (auto const& fileType : *file->getFileTypes())
     {
-        foreach (QSharedPointer<FileBuilder> fileBuilder, *defaultFileBuilders_)
+        for (QSharedPointer<FileBuilder> fileBuilder : *defaultFileBuilders_)
         {
-            if (fileBuilder->hasFileType(fileType))
+            if (fileBuilder->hasFileType(fileType.type_))
             {
                 return fileBuilder->getFlags();
             }
@@ -440,7 +403,7 @@ QList<QSharedPointer<File> > FileSet::getRTLFiles() const
 //-----------------------------------------------------------------------------
 // Function: FileSet::contains()
 //-----------------------------------------------------------------------------
-bool FileSet::contains( const QString& fileName ) const
+bool FileSet::contains(QString const& fileName ) const
 {
     return Search::findByName(fileName, *files_).isNull() == false;
 }
@@ -448,7 +411,7 @@ bool FileSet::contains( const QString& fileName ) const
 //-----------------------------------------------------------------------------
 // Function: FileSet::changeFileName()
 //-----------------------------------------------------------------------------
-void FileSet::changeFileName( const QString& from, const QString& to )
+void FileSet::changeFileName(QString const& from, QString const& to )
 {
     QSharedPointer<File> file = Search::findByName(from, *files_);
     if (file.isNull() == false)
@@ -468,15 +431,13 @@ void FileSet::clearFiles()
 //-----------------------------------------------------------------------------
 // Function: FileSet::getFileSetId()
 //-----------------------------------------------------------------------------
-QString FileSet::getFileSetId() const 
+QString FileSet::getFileSetId() const
 {
-    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
+    auto extension = findVendorExtension(QStringLiteral("kactus2:fileSetId"));
+    if (extension != nullptr)
     {
-        if (extension->type() == QLatin1String("kactus2:fileSetId"))
-        {
-            QSharedPointer<Kactus2Value> idExtension = extension.dynamicCast<Kactus2Value>();
-            return idExtension->value();
-        }
+        QSharedPointer<Kactus2Value> idExtension = extension.dynamicCast<Kactus2Value>();
+        return idExtension->value();
     }
 
     return QString();
@@ -485,20 +446,22 @@ QString FileSet::getFileSetId() const
 //-----------------------------------------------------------------------------
 // Function: FileSet::setFileSetId()
 //-----------------------------------------------------------------------------
-void FileSet::setFileSetId( const QString& id ) 
+void FileSet::setFileSetId(QString const& id )
 {
-    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:fileSetId"))
-        {
-            getVendorExtensions()->removeAll(extension);
-        }
-    }
-
+    auto extension = findVendorExtension(QStringLiteral("kactus2:fileSetId")).dynamicCast<Kactus2Value>();
     if (!id.isEmpty())
     {
-        QSharedPointer<Kactus2Value> idExtension (new Kactus2Value(QStringLiteral("kactus2:fileSetId"), id));
-        getVendorExtensions()->append(idExtension);
+        if (extension == nullptr)
+        {
+            extension = QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:fileSetId"), QString()));
+            getVendorExtensions()->append(extension);
+        }
+
+        extension->setValue(id);
+    }
+    else
+    {
+        getVendorExtensions()->removeAll(extension);
     }
 }
 
@@ -507,13 +470,10 @@ void FileSet::setFileSetId( const QString& id )
 //-----------------------------------------------------------------------------
 void FileSet::copyFiles(const FileSet& other)
 {
-    foreach (QSharedPointer<File> file, *other.files_)
+    for (QSharedPointer<File> file : *other.files_)
     {
-        if (file)
-        {
-            QSharedPointer<File> copy = QSharedPointer<File>(new File(*file.data()));
-            files_->append(copy);
-        }
+        QSharedPointer<File> copy = QSharedPointer<File>(new File(*file));
+        files_->append(copy);
     }
 }
 
@@ -524,7 +484,7 @@ void FileSet::copyDefaultFileBuilders(const FileSet& other)
 {
     for (QSharedPointer<FileBuilder> fileBuilder : *other.defaultFileBuilders_)
     {
-        QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*fileBuilder.data()));
+        QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*fileBuilder));
         defaultFileBuilders_->append(copy);
     }
 }
@@ -536,7 +496,7 @@ void FileSet::copyFunctions(const FileSet& other)
 {
     for (QSharedPointer<Function> funcion : *other.functions_)
     {
-        QSharedPointer<Function> copy = QSharedPointer<Function>(new Function(*funcion.data()));
+        QSharedPointer<Function> copy = QSharedPointer<Function>(new Function(*funcion));
         functions_->append(copy);
     }
 }
@@ -546,13 +506,7 @@ void FileSet::copyFunctions(const FileSet& other)
 //-----------------------------------------------------------------------------
 void FileSet::copyStringLists(const FileSet& other)
 {
-    for (QString singleGroup : *other.groups_)
-    {
-        groups_->append(singleGroup);
-    }
+    groups_->append(*other.groups_);
 
-    for (QString dependency : *other.dependencies_)
-    {
-        dependencies_->append(dependency);
-    }
+    dependencies_->append(*other.dependencies_);
 }

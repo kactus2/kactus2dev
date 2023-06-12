@@ -901,7 +901,7 @@ void HtmlWriter::writeDefaultFileBuilders(QTextStream& stream, QSharedPointer<Fi
     for (auto const& defaultBuilder : *defaultFileBuilders)
     {
         QStringList builderCells(QStringList()
-            << defaultBuilder->getFileType()
+            << defaultBuilder->getFileType().type_
             << defaultBuilder->getCommand()
             << defaultBuilder->getFlags()
             << expressionFormatter_->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())
@@ -967,7 +967,11 @@ void HtmlWriter::writeSingleFile(QTextStream& stream, QSharedPointer<File> file)
 
     QSharedPointer<BuildCommand> buildCommand = file->getBuildCommand();
 
-    QStringList fileTypes = *file->getFileTypes();
+    QStringList fileTypes;
+    for (auto const& fileType : *file->getFileTypes())
+    {
+        fileTypes.append(fileType.type_);
+    }
 
     QStringList fileTableCells(QStringList()
         << "<a href=\"" + pathFromDocToFile + "\">" + file->name() + "</a>"
@@ -1090,7 +1094,7 @@ void HtmlWriter::writeFileBuildCommands(QTextStream& stream, QSharedPointer<Comp
     for (auto const& defaultBuilder : *instantiation->getDefaultFileBuilders())
     {
         QStringList builderCells(QStringList()
-            << defaultBuilder->getFileType()
+            << defaultBuilder->getFileType().type_
             << defaultBuilder->getCommand()
             << defaultBuilder->getFlags()
             << instantiationFormatter->formatReferringExpression(defaultBuilder->getReplaceDefaultFlags())

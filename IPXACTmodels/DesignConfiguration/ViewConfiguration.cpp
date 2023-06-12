@@ -36,8 +36,7 @@ ViewConfiguration::ViewConfiguration(const ViewConfiguration& other):
     Extendable(other),
 instanceName_(other.instanceName_),
 isPresent_(other.isPresent_),
-viewRef_(other.viewRef_),
-viewConfigurables_(new QList<QSharedPointer<ConfigurableElementValue> > )
+viewRef_(other.viewRef_)
 {
     for (QSharedPointer<ConfigurableElementValue> configurable : *other.viewConfigurables_)
     {

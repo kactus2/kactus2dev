@@ -797,7 +797,7 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 	else 
     {
 		// create the component 
-		newComponent = QSharedPointer<Component>(new Component(vlnv));
+		newComponent = QSharedPointer<Component>(new Component(vlnv, getEditedComponent()->getRevision()));
 	}
 
     getLibraryInterface()->writeModelToFile(path, newComponent);
