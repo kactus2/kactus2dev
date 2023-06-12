@@ -216,6 +216,102 @@ QString Qualifier::getUserDefined() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Qualifier::getAttribute()
+//-----------------------------------------------------------------------------
+QString Qualifier::getAttribute(QString const& attributeName, Type qualifierType) const
+{
+    if (attributeName == QStringLiteral("level"))
+    {
+        if (qualifierType == Reset)
+        {
+            return getResetLevel();
+        }
+        
+        if (qualifierType == ClockEnable)
+        {
+            return getClockEnableLevel();
+        }
+
+        if (qualifierType == PowerEnable)
+        {
+            return getPowerEnableLevel();
+        }
+    }
+    else if (attributeName == QStringLiteral("powerDomainRef"))
+    {
+        if (qualifierType == PowerEnable)
+        {
+            return getPowerDomainRef();
+        }
+    }
+    else if (attributeName == QStringLiteral("flowType"))
+    {
+        if (qualifierType == FlowControl)
+        {
+            return getFlowType();
+        }
+    }
+    else if (attributeName == QStringLiteral("user"))
+    {
+        if (qualifierType == FlowControl)
+        {
+            return getUserFlowType();
+        }
+
+        if (qualifierType == User)
+        {
+            return getUserDefined();
+        }
+    }
+
+    return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::setAttribute()
+//-----------------------------------------------------------------------------
+void Qualifier::setAttribute(QString const& attributeName, QString const& attributeValue, Type qualifierType)
+{
+    if (attributeName == QStringLiteral("level"))
+    {
+        if (qualifierType == Reset)
+        {
+            setResetLevel(attributeValue);
+        }
+
+        else if (qualifierType == ClockEnable)
+        {
+            setClockEnableLevel(attributeValue);
+        }
+
+        else if (qualifierType == PowerEnable)
+        {
+            setPowerEnableLevel(attributeValue);
+        }
+    }
+    else if (attributeName == QStringLiteral("powerDomainRef") && qualifierType == PowerEnable)
+    {
+        setPowerDomainRef(attributeValue);
+    }
+    else if (attributeName == QStringLiteral("flowType") && qualifierType == FlowControl)
+    {
+        setFlowType(attributeValue);
+    }
+    else if (attributeName == QStringLiteral("user"))
+    {
+        if (qualifierType == FlowControl)
+        {
+            setUserFlowType(attributeValue);
+        }
+
+        if (qualifierType == User)
+        {
+            setUserDefined(attributeValue);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: Qualifier::operator==()
 //-----------------------------------------------------------------------------
 bool Qualifier::operator==(Qualifier const& other)

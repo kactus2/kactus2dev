@@ -186,6 +186,25 @@ public:
      */
     QString getUserDefined() const;
     
+    /*!
+     *	Get a selected attribute by qualifier type, e.g. attribute 'level' for qualifier type Reset.
+     *  
+     *      @param [in] attributeName	The attribute name.
+     *      @param [in] qualifierType	The qualifier type.
+     *		
+     * 		@return The attribute as a string.
+     */
+    QString getAttribute(QString const& attributeName, Qualifier::Type qualifierType) const;
+
+    /*!
+     *	Sets a given attribute for a specific qualifier type.
+     *  
+     *      @param [in] attributeName	The attribute name to set.
+     *      @param [in] attributeValue	The attribute value to set.
+     *      @param [in] qualifierType	The qualifier type to set the attribute to.
+     */
+    void setAttribute(QString const& attributeName, QString const& attributeValue, Qualifier::Type qualifierType);
+
     bool operator==(Qualifier const& other);
 
     bool operator!=(Qualifier const& other);
