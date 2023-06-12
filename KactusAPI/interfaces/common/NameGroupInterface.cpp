@@ -12,6 +12,34 @@
 #include "NameGroupInterface.h"
 
 //-----------------------------------------------------------------------------
+// Function: NameGroupInterface::getDisplayName()
+//-----------------------------------------------------------------------------
+std::string NameGroupInterface::getDisplayName(std::string const& itemName) const
+{
+    if (QSharedPointer<NameGroup> item = getItem(itemName); item != nullptr)
+    {
+        return item->displayName().toStdString();
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: NameGroupInterface::setDisplayName()
+//-----------------------------------------------------------------------------
+bool NameGroupInterface::setDisplayName(std::string const& itemName, std::string const& newDisplayName) const
+{
+    QSharedPointer<NameGroup> item = getItem(itemName);
+    if (item)
+    {
+        return false;
+    }
+
+    item->setDisplayName(QString::fromStdString(newDisplayName));
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: NameGroupInterface::getDescription()
 //-----------------------------------------------------------------------------
 std::string NameGroupInterface::getDescription(std::string const& itemName) const
