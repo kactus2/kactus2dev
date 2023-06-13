@@ -36,6 +36,12 @@ public:
 	*/
     virtual ~Kactus2Position();
 
+    // Disable copying.
+    Kactus2Position(Kactus2Position const& rhs) = delete;
+
+    // Disable assignment.
+    Kactus2Position& operator=(Kactus2Position const& rhs) = delete;
+
     /*!
      *  Clones the vendor extension.
      *
@@ -57,6 +63,8 @@ public:
      */
     virtual void write(QXmlStreamWriter& writer) const;
 
+    void parsePosition(QDomNode const& positionNode);
+
     /*!
      *  Gets the position.
      *
@@ -72,12 +80,6 @@ public:
     void setPosition(QPointF const& pos);
 
 private:
-	// Disable copying.
-	Kactus2Position(Kactus2Position const& rhs);
-
-	// Disable assignment.
-	Kactus2Position& operator=(Kactus2Position const& rhs);
-    
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------

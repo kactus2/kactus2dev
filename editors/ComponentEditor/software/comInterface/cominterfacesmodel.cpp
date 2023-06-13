@@ -43,13 +43,6 @@ QAbstractTableModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComInterfacesModel::~ComInterfacesModel()
-//-----------------------------------------------------------------------------
-ComInterfacesModel::~ComInterfacesModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComInterfacesModel::rowCount()
 //-----------------------------------------------------------------------------
 int ComInterfacesModel::rowCount(QModelIndex const& parent) const
@@ -108,6 +101,10 @@ QVariant ComInterfacesModel::headerData( int section, Qt::Orientation orientatio
     {
         return tr("Name");
     }
+    else if (section == ComInterfaceColumns::DISPLAY_NAME)
+    {
+        return tr("Display name");
+    }
     else if (section == ComInterfaceColumns::COM_DEFINITION)
     {
         return tr("COM definition");
@@ -145,6 +142,10 @@ QVariant ComInterfacesModel::data(QModelIndex const& index, int role) const
         if (index.column() == ComInterfaceColumns::NAME)
         {
             return comIfs_.at(index.row())->name();
+        }
+        else if (index.column() == ComInterfaceColumns::DISPLAY_NAME)
+        {
+            return comIfs_.at(index.row())->displayName();
         }
         else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
         {
@@ -229,7 +230,11 @@ bool ComInterfacesModel::setData(QModelIndex const& index, const QVariant& value
     if (index.column() == ComInterfaceColumns::NAME)
     {
         comIfs_[index.row()]->setName(value.toString());
-    }                                    
+    }
+    if (index.column() == ComInterfaceColumns::DISPLAY_NAME)
+    {
+        comIfs_[index.row()]->setDisplayName(value.toString());
+    }
     else if (index.column() == ComInterfaceColumns::COM_DEFINITION)
     {
         VLNV comDef = VLNV(VLNV::COMDEFINITION, value.toString(), ":");

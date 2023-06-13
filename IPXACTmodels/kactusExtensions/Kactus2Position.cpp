@@ -56,6 +56,15 @@ void Kactus2Position::write(QXmlStreamWriter& writer) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Kactus2Extension::parsePosition()
+//-----------------------------------------------------------------------------
+void Kactus2Position::parsePosition(QDomNode const& positionNode)
+{
+    position_.setX(positionNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
+    position_.setY(positionNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
+}
+
+//-----------------------------------------------------------------------------
 // Function: Kactus2Position::position()
 //-----------------------------------------------------------------------------
 QPointF Kactus2Position::position() const

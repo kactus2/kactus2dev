@@ -20,6 +20,8 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
+#include "Kactus2Position.h"
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -148,7 +150,7 @@ public:
     /*!
      *  Returns the default position in the parent component's graphical representation.
      */
-    QPointF const& getDefaultPos() const;
+    QPointF getDefaultPos() const;
 
     /*!
      *  Assignment operator.
@@ -177,14 +179,6 @@ private:
      */
     void parsePropertyValues(QDomNode& node);
 
-    /*!
-     *  Write the com interface position.
-     *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] pos     Com interface position.
-     */
-    void writePosition(QXmlStreamWriter& writer, QPointF const& pos) const;
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -196,7 +190,7 @@ private:
     QString transferType_;
 
     //! Dependency direction.
-    DirectionTypes::Direction dir_;    
+    DirectionTypes::Direction dir_ = DirectionTypes::INOUT;
 
     //! The set property values.
     QMap<QString, QString> propertyValues_;
@@ -205,7 +199,8 @@ private:
 	 VLNV comImplementation_;
 
      //! The default position in the parent component's graphical representation (optional).
-     QPointF defaultPos_;
+     Kactus2Position defaultPos_ = Kactus2Position(QPoint());
+
 };
 
 //-----------------------------------------------------------------------------

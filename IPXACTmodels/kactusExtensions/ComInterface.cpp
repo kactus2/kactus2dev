@@ -19,13 +19,7 @@
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface() :
-NameGroup(),
-comType_(),
-transferType_(),
-dir_(DirectionTypes::INOUT),
-propertyValues_(),
-comImplementation_(),
-defaultPos_()
+NameGroup()
 {
 
 }
@@ -40,7 +34,7 @@ transferType_(rhs.transferType_),
 dir_(rhs.dir_),
 propertyValues_(rhs.propertyValues_),
 comImplementation_(rhs.comImplementation_),
-defaultPos_(rhs.defaultPos_)
+defaultPos_(rhs.getDefaultPos())
 {
 
 }
@@ -49,13 +43,7 @@ defaultPos_(rhs.defaultPos_)
 // Function: ComInterface::ComInterface()
 //-----------------------------------------------------------------------------
 ComInterface::ComInterface(QDomNode& node) :
-NameGroup(),
-comType_(),
-transferType_(),
-dir_(DirectionTypes::INOUT),
-propertyValues_(),
-comImplementation_(),
-defaultPos_()
+NameGroup()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -73,6 +61,10 @@ defaultPos_()
         else if (childNode.nodeName() == QLatin1String("ipxact:displayName"))
         {
             setDisplayName(childNode.firstChild().nodeValue());
+        }
+        else if (childNode.nodeName() == QLatin1String("ipxact:shortDescription"))
+        {
+            setShortDescription(childNode.firstChild().nodeValue());
         }
         else if (childNode.nodeName() == QLatin1String("ipxact:description"))
         {
@@ -100,8 +92,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
-            defaultPos_.setX(childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
-            defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
+            defaultPos_.parsePosition(childNode);
         }
     }
 }
@@ -145,10 +136,7 @@ void ComInterface::write(QXmlStreamWriter& writer) const
 
     // Write communication type, data type and communication direction.
     writer.writeEmptyElement(QStringLiteral("kactus2:comType"));
-    writer.writeAttribute(QStringLiteral("vendor"), comType_.getVendor());
-    writer.writeAttribute(QStringLiteral("library"), comType_.getLibrary());
-    writer.writeAttribute(QStringLiteral("name"), comType_.getName());
-    writer.writeAttribute(QStringLiteral("version"), comType_.getVersion());
+    CommonItemsWriter::writeVLNVAttributes(writer, comType_);
 
     writer.writeTextElement(QStringLiteral("kactus2:transferType"), transferType_);
     writer.writeTextElement(QStringLiteral("kactus2:comDirection"), DirectionTypes::direction2Str(dir_));
@@ -170,14 +158,11 @@ void ComInterface::write(QXmlStreamWriter& writer) const
     writer.writeEndElement(); // kactus2:propertyValues
 
 	writer.writeEmptyElement(QStringLiteral("kactus2:comImplementationRef"));
-    writer.writeAttribute(QStringLiteral("vendor"), comImplementation_.getVendor());
-    writer.writeAttribute(QStringLiteral("library"), comImplementation_.getLibrary());
-    writer.writeAttribute(QStringLiteral("name"), comImplementation_.getName());
-    writer.writeAttribute(QStringLiteral("version"), comImplementation_.getVersion());
+    CommonItemsWriter::writeVLNVAttributes(writer, comImplementation_);
 
-    if (!defaultPos_.isNull())
+    if (getDefaultPos().isNull() == false)
     {
-        writePosition(writer, defaultPos_);
+        defaultPos_.write(writer);
     }
 
     writer.writeEndElement(); // kactus2:comInterface
@@ -267,7 +252,7 @@ void ComInterface::setComType(VLNV const& vlnv, QList< QSharedPointer<ComPropert
 {
 	comType_ = vlnv;
 
-	if ( properties != NULL )
+	if ( properties != nullptr )
 	{
 		for (QSharedPointer<ComProperty const> prop : *properties)
 		{
@@ -387,23 +372,13 @@ void ComInterface::setComImplementation( const VLNV& implementationVLNV )
 //-----------------------------------------------------------------------------
 void ComInterface::setDefaultPos(QPointF const& pos)
 {
-    defaultPos_ = pos;
+    defaultPos_.setPosition(pos);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComInterface::getDefaultPos()
 //-----------------------------------------------------------------------------
-QPointF const& ComInterface::getDefaultPos() const
+QPointF ComInterface::getDefaultPos() const
 {
-    return defaultPos_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterface::writePosition()
-//-----------------------------------------------------------------------------
-void ComInterface::writePosition(QXmlStreamWriter& writer, QPointF const& pos) const
-{
-    writer.writeEmptyElement(QStringLiteral("kactus2:position"));
-    writer.writeAttribute(QStringLiteral("x"), QString::number(int(pos.x())));
-    writer.writeAttribute(QStringLiteral("y"), QString::number(int(pos.y())));
+    return defaultPos_.position();
 }

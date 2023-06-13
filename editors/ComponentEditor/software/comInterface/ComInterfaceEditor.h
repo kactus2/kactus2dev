@@ -50,7 +50,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComInterfaceEditor();
+    virtual ~ComInterfaceEditor() = default;
+
+    // Disable copying.
+    ComInterfaceEditor(ComInterfaceEditor const& rhs) = delete;
+    ComInterfaceEditor& operator=(ComInterfaceEditor const& rhs) = delete;
 
     /*!
      *  Checks for the validity of the edited COM interface.
@@ -88,9 +92,6 @@ private slots:
 	void onComImplementationChange();
 
 private:
-    // Disable copying.
-    ComInterfaceEditor(ComInterfaceEditor const& rhs);
-    ComInterfaceEditor& operator=(ComInterfaceEditor const& rhs);
     
     /*!
      *  Updates the editors for showing values associated with the given COM definition.

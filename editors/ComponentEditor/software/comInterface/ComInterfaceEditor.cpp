@@ -47,7 +47,7 @@ comImplementation_(0)
 {
     // find the main window for VLNV editor
     QWidget* parentWindow = nullptr;
-    foreach(QWidget * widget, QApplication::topLevelWidgets())
+    for (QWidget * widget : QApplication::topLevelWidgets())
     {
         QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
         if (mainWnd)
@@ -96,13 +96,6 @@ comImplementation_(0)
 	
 	connect(comImplementation_, SIGNAL(vlnvEdited()), 
         this, SLOT(onComImplementationChange()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComInterfaceEditor::~ComInterfaceEditor()
-//-----------------------------------------------------------------------------
-ComInterfaceEditor::~ComInterfaceEditor()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -287,11 +280,11 @@ void ComInterfaceEditor::setupLayout()
 
     // Create the layout for the actual editor.
     QGridLayout* layout = new QGridLayout(topWidget);
-    layout->addWidget(&nameEditor_, 0, 0, 1, 1);
-    layout->addWidget(&detailsGroup_, 0, 1, 1, 1);
-    layout->addWidget(comTypeEditor_, 1, 0, 1, 1);
+    layout->addWidget(&nameEditor_, 0, 0, 2, 1);
+    layout->addWidget(comTypeEditor_, 0, 1, 1, 1);
     layout->addWidget(comImplementation_, 1, 1, 1, 1);
-    layout->addWidget(&propertyValueEditor_, 2, 0, 1, 2);
+    layout->addWidget(&detailsGroup_, 2, 0, 1, 1);
+    layout->addWidget(&propertyValueEditor_, 3, 0, 1, 2);
     layout->setContentsMargins(0, 0, 0, 0);
 
     scrollArea->setWidget(topWidget);

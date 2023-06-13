@@ -20,6 +20,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
+#include "Kactus2Position.h"
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -144,7 +146,7 @@ public:
     /*!
      *  Returns the default position in the parent component's graphical representation.
      */
-    QPointF const& getDefaultPos() const;
+    QPointF getDefaultPos() const;
 
     /*!
      *  Assignment operator.
@@ -166,7 +168,7 @@ private:
     DependencyDirection dependencyDir_ = DEPENDENCY_PROVIDER;
 
     //! The default position in the parent component's graphical representation (optional).
-    QPointF defaultPos_;
+    Kactus2Position defaultPos_ = Kactus2Position(QPoint());
 
 };
 

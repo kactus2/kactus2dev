@@ -65,13 +65,6 @@ ItemEditor(component, handler, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiInterfacesEditor::~ApiInterfacesEditor()
-//-----------------------------------------------------------------------------
-ApiInterfacesEditor::~ApiInterfacesEditor()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiInterfacesEditor::isValid()
 //-----------------------------------------------------------------------------
 bool ApiInterfacesEditor::isValid() const

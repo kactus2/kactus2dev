@@ -39,7 +39,13 @@ public:
 	ComInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component, QObject *parent);
 	
 	//! The destructor
-	virtual ~ComInterfacesModel();
+	virtual ~ComInterfacesModel() = default;
+
+    //! No copying
+    ComInterfacesModel(const ComInterfacesModel& other) = delete;
+
+    //! No assignment
+    ComInterfacesModel& operator=(const ComInterfacesModel& other) = delete;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -164,17 +170,11 @@ signals:
 	void comIfRemoved(int index);
 
 private:
-	
-	//! No copying
-	ComInterfacesModel(const ComInterfacesModel& other);
-
-	//! No assignment
-	ComInterfacesModel& operator=(const ComInterfacesModel& other);
 
 	//! The instance that manages the library.
-	LibraryInterface* libHandler_;
+	LibraryInterface* libHandler_ = nullptr;
 
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
 
 	//! Contains the COM interfaces to edit.
 	QList<QSharedPointer<ComInterface> > comIfs_;
