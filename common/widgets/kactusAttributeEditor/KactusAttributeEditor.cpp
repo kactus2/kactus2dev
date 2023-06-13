@@ -30,21 +30,22 @@ KactusAttributeEditor::KactusAttributeEditor(QWidget* parent) : QGroupBox(tr("Ka
     implementationValue_(new QLabel(tr(""), this)),
     tagEditor_(new TagEditorContainer(this))
 {
+    setFlat(true);
+
     // The implementation label and value label are set to invisible by default.
     implementationLabel_->setVisible(false);
     implementationValue_->setVisible(false);
 
-    for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-    {
-        KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(i);
-        prodHierCombo_->addItem(KactusAttribute::hierarchyToString(val));
-    }
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/square.png"), "Flat");
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/box.png"), "Product");
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/circuit.png"), "Board");
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/chip.png"), "Chip");
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/soc.png"), "SoC");
+    prodHierCombo_->addItem(QIcon(":icons/common/graphics/capacitor.png"), "IP");
 
-    for (unsigned int i = 0; i < KactusAttribute::KTS_REUSE_LEVEL_COUNT; ++i)
-    {
-        KactusAttribute::Firmness val = static_cast<KactusAttribute::Firmness>(i);
-        firmnessCombo_->addItem(KactusAttribute::firmnessToString(val));
-    }
+    firmnessCombo_->addItem(QIcon(":icons/common/graphics/mutable.png"), "Mutable");
+    firmnessCombo_->addItem(QIcon(":icons/common/graphics/template.png"), "Template");
+    firmnessCombo_->addItem(QIcon(":icons/common/graphics/fixed.png"), "Fixed");
 
     QFormLayout* layout = new QFormLayout(this);
     layout->addRow(prodHierLabel_, prodHierCombo_);

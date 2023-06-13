@@ -155,6 +155,7 @@ void DocumentNameGroupEditor::setupLayout()
 
     topLayout->addWidget(docNameGroupInfo);
     topLayout->addWidget(descriptionEditorBox);
+    topLayout->setContentsMargins(0, 0, 0, 0);
     
     setLayout(topLayout);
 }

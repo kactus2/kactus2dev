@@ -206,28 +206,33 @@ void GeneralEditor::onLicenseChange()
 //-----------------------------------------------------------------------------
 void GeneralEditor::setupLayout()
 {
-    QGridLayout* layout = new QGridLayout(this);
+    nameGroupEditor_->setFlat(true);
+
+    auto layout = new QGridLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    QGroupBox* commentBox = new QGroupBox("XML header", this);
+    auto commentBox = new QGroupBox("XML header", this);
+    commentBox->setFlat(true);
 
-    QVBoxLayout* commentLayout = new QVBoxLayout(commentBox);
+    auto commentLayout = new QVBoxLayout(commentBox);
     commentLayout->addWidget(headerEditor_);
 
-    QGroupBox* authorBox = new QGroupBox("Copyright information", this);
+    auto authorBox = new QGroupBox("Copyright information", this);
+    authorBox->setFlat(true);
 
-    QFormLayout* copyrightLayout = new QFormLayout(authorBox);
+    auto copyrightLayout = new QFormLayout(authorBox);
     copyrightLayout->addRow(tr("Author:"), authorEditor_);
     copyrightLayout->addRow(tr("License:"), licenseEditor_);
 
-    QGroupBox* errorBox = new QGroupBox("Validation", this);
+    auto errorBox = new QGroupBox("Validation", this);
+    errorBox->setFlat(true);
 
-    QHBoxLayout* labelLayout = new QHBoxLayout();
+    auto labelLayout = new QHBoxLayout();
     labelLayout->addWidget(validityIcon_);
     labelLayout->addWidget(validityStatus_);
     labelLayout->addStretch();
 
-    QVBoxLayout* errorLayout = new QVBoxLayout(errorBox);
+    auto errorLayout = new QVBoxLayout(errorBox);
     errorLayout->addLayout(labelLayout);
     errorLayout->addWidget(errorView_);
 
