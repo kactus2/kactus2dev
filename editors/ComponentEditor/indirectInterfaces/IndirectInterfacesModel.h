@@ -18,7 +18,7 @@
 #include <QList>
 
 class IndirectInterface;
-//class IndirectInterfaceValidator;
+class IndirectInterfaceValidator;
 class Component;
 class ParameterFinder;
 class Parameter;
@@ -36,12 +36,12 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] component           The component being edited.
-	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] validator			The validator for items.
 	 *      @param [in] parent              The owner of this model.
 	 */
 	IndirectInterfacesModel(QSharedPointer<Component> component,
-        //QSharedPointer<IndirectInterfaceValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
+        QSharedPointer<IndirectInterfaceValidator> validator,
+        QObject *parent);
 	
     //! No copying
     IndirectInterfacesModel(const IndirectInterfacesModel& other) = delete;
@@ -164,10 +164,8 @@ private:
     //! The indirect interfaces being edited.
     QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
 
-    //! The parameter finder.
-    QSharedPointer<ParameterFinder> parameterFinder_;
-
-    // QSharedPointer<IndirectInterfaceValidator> validator_;
+	//! The validator to use.
+    QSharedPointer<IndirectInterfaceValidator> validator_;
 
 };
 

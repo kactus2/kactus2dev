@@ -17,6 +17,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
+#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
+
 #include <common/KactusColors.h>
 
 #include <QCoreApplication>
@@ -30,14 +32,12 @@
 // Function: IndirectInterfacesModel::IndirectInterfacesModel()
 //-----------------------------------------------------------------------------
 IndirectInterfacesModel::IndirectInterfacesModel(QSharedPointer<Component> component,
-    //QSharedPointer<IndirectInterfaceValidator> validator,
-    QSharedPointer<ParameterFinder> parameterFinder, 
+    QSharedPointer<IndirectInterfaceValidator> validator,
     QObject *parent):
 QAbstractTableModel(parent),
     component_(component),
     indirectInterfaces_(component->getIndirectInterfaces()),
- //   validator_(validator),
-    parameterFinder_(parameterFinder)
+    validator_(validator)
 {
 
 }
@@ -79,6 +79,12 @@ Qt::ItemFlags IndirectInterfacesModel::flags(QModelIndex const& index) const
 	}
 
     if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES)
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
+    }
+
+    if (index.column() == IndirectInterfaceColumns::MEMORY_MAP_REF &&
+        indirectInterfaces_->at(index.row())->getTransparentBridges()->isEmpty() == false)
     {
         return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
@@ -165,12 +171,12 @@ QVariant IndirectInterfacesModel::data(QModelIndex const& index, int role) const
         }
         else if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES)
         {
-            QStringList masterRefs;
-            foreach (QSharedPointer<TransparentBridge> bridge, *indirectInterface->getTransparentBridges())
+            QStringList initiatorRefs;
+            for (QSharedPointer<TransparentBridge> bridge : *indirectInterface->getTransparentBridges())
             {
-                masterRefs.append(bridge->getMasterRef());
+                initiatorRefs.append(bridge->getInitiatorRef());
             }
-            return masterRefs.join(", ");
+            return initiatorRefs.join(", ");
         }
         else if (index.column() == IndirectInterfaceColumns::DESCRIPTION)
         {
@@ -189,7 +195,8 @@ QVariant IndirectInterfacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == IndirectInterfaceColumns::NAME )// && validator_->hasValidName(IndirectInterface))
+        if (index.column() == IndirectInterfaceColumns::NAME &&
+            validator_->hasValidName(indirectInterface))
         {
             return KactusColors::REGULAR_TEXT;     
         }
@@ -197,19 +204,23 @@ QVariant IndirectInterfacesModel::data(QModelIndex const& index, int role) const
         {
             return KactusColors::REGULAR_TEXT;   
         }
-        else if (index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF)
+        else if (index.column() == IndirectInterfaceColumns::INDIRECT_ADDRESS_REF && 
+            validator_->hasValidAddressReference(indirectInterface))
         {
             return KactusColors::REGULAR_TEXT;  
         }
-        else if (index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF)   
+        else if (index.column() == IndirectInterfaceColumns::INDIRECT_DATA_REF && 
+            validator_->hasValidDataReference(indirectInterface))
         {
             return KactusColors::REGULAR_TEXT;  
         }
-        else if (index.column() == IndirectInterfaceColumns::MEMORY_MAP_REF)
+        else if (index.column() == IndirectInterfaceColumns::MEMORY_MAP_REF && 
+            validator_->hasValidMemoryMapReference(indirectInterface))
         {
             return KactusColors::REGULAR_TEXT;  
         }
-        else if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES)
+        else if (index.column() == IndirectInterfaceColumns::TRANSPARENT_BRIDGES &&
+            validator_->hasValidTransparentBridges(indirectInterface->getTransparentBridges()))
         {
             return KactusColors::DISABLED_TEXT;  
         }

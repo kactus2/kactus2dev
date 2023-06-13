@@ -85,7 +85,7 @@ bool IndirectInterfaceValidator::hasValidAddressReference(QSharedPointer<Indirec
     return isValidFieldReference(indirectInterface->getIndirectAddressRef(), indirectInterface->getMemoryMapRef()) &&
         addressField->getAccess() != AccessTypes::READ_ONLY &&
         addressField->getAccess() != AccessTypes::READ_WRITEONCE &&
-        addressField->getAccess() != AccessTypes::WRITEONCE;;;
+        addressField->getAccess() != AccessTypes::WRITEONCE;
 }
 
 //-----------------------------------------------------------------------------
@@ -106,14 +106,9 @@ bool IndirectInterfaceValidator::hasValidMemoryMapReference(QSharedPointer<Indir
         return true;
     }
 
-    for (QSharedPointer<MemoryMap> const& map : *component_->getMemoryMaps())
-    {
-        if (map->name().compare(indirectInterface->getMemoryMapRef()) == 0)
-        {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(component_->getMemoryMaps()->cbegin(), component_->getMemoryMaps()->cend(),
+        [&indirectInterface](auto const& map)
+        { return map->name().compare(indirectInterface->getMemoryMapRef()) == 0; });
 }
 
 //-----------------------------------------------------------------------------

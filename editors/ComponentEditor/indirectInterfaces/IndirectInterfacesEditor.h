@@ -40,12 +40,12 @@ public:
 	 *
 	 *      @param [in] library             The IP library.
 	 *      @param [in] component           The component being edited.
-	 *      @param [in] parameterFinder     The parameter finder.
+	 *      @param [in] validator			The validator for indirect interfaces.
 	 *      @param [in] parent              The owner of this editor.
 	 */
 	IndirectInterfacesEditor(LibraryInterface* library, QSharedPointer<Component> component,
-//        QSharedPointer<IndirectInterfaceValidator> validator,
-        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
+        QSharedPointer<IndirectInterfaceValidator> validator,
+		QWidget* parent = 0);
 	
 	//! The destructor
 	virtual ~IndirectInterfacesEditor();

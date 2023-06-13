@@ -16,6 +16,7 @@
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
+#include <QCheckBox>
 #include <QComboBox>
 #include <QWidget>
 
@@ -168,7 +169,9 @@ private:
     //! Selection editor for endianness.
     QComboBox* endiannessSelector_;
 
-    QGroupBox* memoryMapBox_;
+    QCheckBox* memoryMapSelection_;
+
+    QCheckBox* bridgeSelection_;
 
     //! Selection editor for memory map reference.
     ReferenceSelector* memoryMapSelector_;

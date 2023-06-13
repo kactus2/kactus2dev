@@ -38,7 +38,7 @@ busInterface_(busInterface)
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-    foreach(QSharedPointer<IndirectInterface> indirectInterface, *indirectInterfaces_)
+    for (QSharedPointer<IndirectInterface> indirectInterface : *indirectInterfaces_)
     {
 		QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(new SingleIndirectInterfaceItem(
             indirectInterface, model, libHandler, component, referenceCounter_, parameterFinder_,
@@ -76,7 +76,7 @@ ItemEditor* ComponentEditorIndirectInterfacesItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new IndirectInterfacesEditor(libHandler_, component_, parameterFinder_);
+		editor_ = new IndirectInterfacesEditor(libHandler_, component_, validator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);

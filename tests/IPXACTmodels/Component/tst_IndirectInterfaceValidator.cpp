@@ -300,7 +300,7 @@ void tst_IndirectInterfaceValidator::testValidateOnlyMemoryMapOrTransparentBridg
     QTest::newRow("Memory map only is valid") << "targetMemoryMap" << false << true;
     QTest::newRow("Transparent bridge only is valid") << "" << true << true;
     QTest::newRow("No transparent bridge or memory map is invalid") << "" << false << false;
-    QTest::newRow("Bot transparent bridge and memory map is invalid") << "targetMemoryMap" << true << false;
+    QTest::newRow("Both transparent bridge and memory map is invalid") << "targetMemoryMap" << true << false;
 }
 
 //-----------------------------------------------------------------------------
