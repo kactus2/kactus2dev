@@ -19,7 +19,6 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/HierApiInterconnection.h \
     ./kactusExtensions/HierComInterconnection.h \
     ./kactusExtensions/InterfaceGraphicsData.h \
-    ./kactusExtensions/Kactus2Array.h \
     ./kactusExtensions/Kactus2Group.h \
     ./kactusExtensions/Kactus2Placeholder.h \
     ./kactusExtensions/Kactus2Position.h \
@@ -288,7 +287,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/HierApiInterconnection.cpp \
     ./kactusExtensions/HierComInterconnection.cpp \
     ./kactusExtensions/InterfaceGraphicsData.cpp \
-    ./kactusExtensions/Kactus2Array.cpp \
     ./kactusExtensions/Kactus2Group.cpp \
     ./kactusExtensions/Kactus2Placeholder.cpp \
     ./kactusExtensions/Kactus2Position.cpp \

@@ -254,9 +254,6 @@
     <ClCompile Include="kactusExtensions\HierComInterconnection.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
-    <ClCompile Include="kactusExtensions\Kactus2Array.cpp">
-      <Filter>Source Files\kactusExtensions</Filter>
-    </ClCompile>
     <ClCompile Include="kactusExtensions\Kactus2Group.cpp">
       <Filter>Source Files\kactusExtensions</Filter>
     </ClCompile>
@@ -1016,9 +1013,6 @@
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\HierComInterconnection.h">
-      <Filter>Header Files\kactusExtensions</Filter>
-    </ClInclude>
-    <ClInclude Include="kactusExtensions\Kactus2Array.h">
       <Filter>Header Files\kactusExtensions</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\Kactus2Group.h">
