@@ -75,7 +75,7 @@ libraryHandler_(libraryHandler)
     connect(transactionalPortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    connect(documentNameGroupEditor_, SIGNAL(contentChanged()), this, SLOT(contentChanged()), Qt::UniqueConnection);
+    connect(documentNameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 
@@ -163,6 +163,8 @@ void AbsDefGroup::setupExtendedAbstraction()
             extendSignals(extendedAbstraction);
         }
     }
+
+    documentNameGroupEditor_->setPlaceholderDescription(extendDescription);
 }
 
 //-----------------------------------------------------------------------------

@@ -57,6 +57,13 @@ public:
      */
     void setDocumentNameGroup(QSharedPointer<Document> document, QString const& documentPath);
 
+    /*!
+     *	Set a placeholder text for description editor.
+     *  
+     *      @param [in] placeholder	    The placeholder text to set.
+     */
+    void setPlaceholderDescription(QString const& placeholder);
+
 signals:
     
     void contentChanged();
