@@ -38,7 +38,11 @@ public:
 	/*!
      *  Destructor.
      */
-	virtual ~PropertyValueModel();
+	virtual ~PropertyValueModel() = default;
+
+    // Disable copying.
+    PropertyValueModel(PropertyValueModel const& rhs) = delete;
+    PropertyValueModel& operator=(PropertyValueModel const& rhs) = delete;
 
     /*!
      *  Synchronizes the model to match with the given list of allowed properties.
@@ -74,7 +78,7 @@ public:
 	 *
 	 *      @return Number of rows currently in the model.
 	 */
-	virtual int rowCount(QModelIndex const& parent = QModelIndex()) const;
+	int rowCount(QModelIndex const& parent = QModelIndex()) const final;
 
 	/*! 
      *  Returns the number of columns in the model.
@@ -84,7 +88,7 @@ public:
 	 *
 	 *      @return Always returns 2.
 	 */
-	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
+	int columnCount(QModelIndex const& parent = QModelIndex()) const final;
 
 	/*!
      *  Returns the data for the specified item for specified role.
@@ -94,7 +98,7 @@ public:
 	 *
 	 *      @return QVariant containing the data.
 	 */
-	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
+	QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Returns the data for the headers.
@@ -105,8 +109,8 @@ public:
 	 *
 	 *      @return QVariant containing the header data.
 	 */
-	virtual QVariant headerData(int section, Qt::Orientation orientation, 
-		                        int role = Qt::DisplayRole) const;
+	QVariant headerData(int section, Qt::Orientation orientation, 
+		                        int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Returns information on how specified item can be handled.
@@ -115,7 +119,7 @@ public:
 	 *
 	 *      @return Item flags that define how object can be handled.
 	 */
-	virtual Qt::ItemFlags flags(QModelIndex const& index) const;
+	Qt::ItemFlags flags(QModelIndex const& index) const final;
 
 	/*!
      *  Returns the data for specified item.
@@ -126,8 +130,7 @@ public:
 	 *
 	 *      @return True if data was successfully set.
 	 */
-	virtual bool setData(QModelIndex const& index, QVariant const& value, 
-		                 int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole) final;
 
 public slots:
     void onAddItem(QModelIndex const& index);
@@ -144,10 +147,6 @@ signals:
 	void noticeMessage(const QString& msg) const;
 
 private:
-    // Disable copying.
-    PropertyValueModel(PropertyValueModel const& rhs);
-    PropertyValueModel& operator=(PropertyValueModel const& rhs);
-    
 
     //! NameValuePair type.
     typedef QPair<QString, QString> NameValuePair;
@@ -166,7 +165,7 @@ private:
     QList< QSharedPointer<ComProperty> > allowedProperties_;
 
     //! Lock for disabling editing.
-    bool locked_;
+    bool locked_ = false;
 };
 
 //-----------------------------------------------------------------------------

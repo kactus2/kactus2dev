@@ -48,7 +48,13 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ApiInterfaceEditor();
+    virtual ~ApiInterfaceEditor() = default;
+
+    // Disable copying.
+    ApiInterfaceEditor(ApiInterfaceEditor const& rhs) = delete;
+
+    //! Disable assignment.
+    ApiInterfaceEditor& operator=(ApiInterfaceEditor const& rhs) = delete;
 
     /*!
      *  Checks for the validity of the edited API interface.
@@ -59,7 +65,7 @@ public:
 
 	/*! Reload the information from the model to the editor.
 	*/
-	virtual void refresh();
+	void refresh() final;
 
 private slots:
 
@@ -75,30 +81,30 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private:
-    // Disable copying.
-    ApiInterfaceEditor(ApiInterfaceEditor const& rhs);
-    ApiInterfaceEditor& operator=(ApiInterfaceEditor const& rhs);
 
     /*!
      *  Restores changes made to the contents.
      */
     void restoreChanges();
 
+    //! Setup the widget layout.
+    void setupLayout();
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The library handler.
-    LibraryInterface* libInterface_;
+    LibraryInterface* libInterface_ = nullptr;
 
     //! The bus interface being edited.
-    QSharedPointer<ApiInterface> apiIf_;
+    QSharedPointer<ApiInterface> apiIf_ = nullptr;
 
     //! Contains the name, display name and description of the API interface.
     NameGroupEditor nameEditor_;
 
     //! Editor for setting the API definition.
-    VLNVEditor* apiType_;
+    VLNVEditor* apiType_ = nullptr;
 
     //! Details group box.
     QGroupBox detailsGroup_;

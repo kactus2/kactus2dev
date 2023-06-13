@@ -25,16 +25,7 @@ QString const PropertyValueModel::IP_ADDRESS_REGEX("^(25[0-5]|2[0-4][0-9]|[01]?[
 //-----------------------------------------------------------------------------
 // Function: PropertyValueModel::PropertyValueModel()
 //-----------------------------------------------------------------------------
-PropertyValueModel::PropertyValueModel(QObject *parent): QAbstractTableModel(parent), allowedProperties_(), 
-    locked_(false)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PropertyValueModel::~PropertyValueModel()
-//-----------------------------------------------------------------------------
-PropertyValueModel::~PropertyValueModel()
+PropertyValueModel::PropertyValueModel(QObject *parent): QAbstractTableModel(parent)
 {
 
 }
@@ -49,7 +40,7 @@ void PropertyValueModel::setAllowedProperties(QList< QSharedPointer<ComProperty>
     allowedProperties_ = properties;
 
     // Check that at least all required properties are found in the values.
-    foreach (QSharedPointer<ComProperty const> comProperty, properties)
+    for (QSharedPointer<ComProperty const> comProperty : properties)
     {
         if (comProperty->isRequired())
         {
@@ -99,7 +90,7 @@ QMap<QString, QString> PropertyValueModel::getData() const
 {
     QMap<QString, QString> values;
 
-    foreach (NameValuePair const& pair, table_)
+    for (NameValuePair const& pair : table_)
     {
         values[pair.first] = pair.second;
     }
@@ -169,7 +160,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::FontRole && index.column() == 0)
     {
-        foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
+        for (QSharedPointer<ComProperty const> comProperty : allowedProperties_)
         {
             if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
             {
@@ -187,7 +178,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
         if (index.column() == 0)
         {
             // Check if the property value is found from the list of allowed properties.
-            foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
+            for (QSharedPointer<ComProperty const> comProperty : allowedProperties_)
             {
                 if (comProperty->name() == table_.at(index.row()).first)
                 {
@@ -202,7 +193,7 @@ QVariant PropertyValueModel::data(QModelIndex const& index, int role) const
         else if (index.column() == 1)
         {
             // Validate the property value against the data type defined in the property definition.
-            foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
+            for (QSharedPointer<ComProperty const> comProperty : allowedProperties_)
             {
                 // Check if we found a match.
                 if (comProperty->name() == table_.at(index.row()).first)
@@ -278,7 +269,7 @@ Qt::ItemFlags PropertyValueModel::flags(QModelIndex const& index) const
     {
         QString const& propertyName = table_.at(index.row()).first;
 
-        foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
+        for (QSharedPointer<ComProperty const> comProperty : allowedProperties_)
         {
             if (comProperty->name().compare(propertyName) == 0 && comProperty->isRequired())
             {
@@ -361,7 +352,7 @@ void PropertyValueModel::onRemoveItem(QModelIndex const& index)
     }
 
     // Required property values cannot be deleted.
-    foreach (QSharedPointer<ComProperty const> comProperty, allowedProperties_)
+    for (QSharedPointer<ComProperty const> comProperty : allowedProperties_)
     {
         if (comProperty->name() == table_.at(index.row()).first && comProperty->isRequired())
         {

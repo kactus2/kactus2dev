@@ -34,7 +34,6 @@ ItemEditor(component, libHandler, parent),
     libInterface_(libHandler),
     apiIf_(APIInterface),
     nameEditor_(APIInterface, component->getRevision(), this, tr("Name and description")),
-    apiType_(NULL),
     detailsGroup_(tr("Details"), this),
     dependencyCombo_(this)
 {
@@ -43,9 +42,9 @@ ItemEditor(component, libHandler, parent),
 
 	// find the main window for VLNV editor
 	QWidget* parentWindow = nullptr;
-	foreach (QWidget* widget, QApplication::topLevelWidgets())
+	for (QWidget* widget : QApplication::topLevelWidgets())
     {
-		QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
+		auto mainWnd = dynamic_cast<QMainWindow*>(widget);
 		if (mainWnd)
         {
 			parentWindow = mainWnd;
@@ -59,41 +58,8 @@ ItemEditor(component, libHandler, parent),
     apiType_->setTitle(tr("API definition"));
     apiType_->setMandatory(false);
 
-    // Initialize the details group.
-    QLabel* directionLabel = new QLabel(tr("Dependency:"), &detailsGroup_);
-    dependencyCombo_.addItem(tr("requester"));
-    dependencyCombo_.addItem(tr("provider"));
-    dependencyCombo_.setCurrentIndex(0);
+	setupLayout();
 
-    QGridLayout* detailsLayout = new QGridLayout(&detailsGroup_);
-    detailsLayout->addWidget(directionLabel, 0, 0, 1, 1);
-    detailsLayout->addWidget(&dependencyCombo_, 0, 1, 1, 1);
-
-    detailsLayout->setColumnMinimumWidth(1, 100);
-    detailsLayout->setColumnStretch(2, 1);
-
-    // Create the scroll area.
-    QScrollArea* scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-	scrollArea->setFrameShape(QFrame::NoFrame);
-
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
-    scrollLayout->addWidget(scrollArea);
-	scrollLayout->setContentsMargins(0, 0, 0, 0);
-
-    // Create the top widget and set it under the scroll area.
-    QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    // Create the layout for the actual editor.
-    QVBoxLayout* layout = new QVBoxLayout(topWidget);
-    layout->addWidget(&nameEditor_);
-    layout->addWidget(apiType_);
-    layout->addWidget(&detailsGroup_);
-    layout->addStretch();
-	layout->setContentsMargins(0, 0, 0, 0);
-
-    scrollArea->setWidget(topWidget);
 
 	connect(&nameEditor_, SIGNAL(contentChanged()),
 		this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -103,13 +69,6 @@ ItemEditor(component, libHandler, parent),
 		this, SLOT(onDependencyChange(int)), Qt::UniqueConnection);
 
     refresh();
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiInterfaceEditor::~ApiInterfaceEditor()
-//-----------------------------------------------------------------------------
-ApiInterfaceEditor::~ApiInterfaceEditor()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -163,4 +122,48 @@ void ApiInterfaceEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/apiinterface.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterfaceEditor::ApiInterfaceEditor()
+//-----------------------------------------------------------------------------
+void ApiInterfaceEditor::setupLayout()
+{
+    // Initialize the details group.
+    auto directionLabel = new QLabel(tr("Dependency:"), &detailsGroup_);
+    dependencyCombo_.addItem(tr("requester"));
+    dependencyCombo_.addItem(tr("provider"));
+    dependencyCombo_.setCurrentIndex(0);
+
+    detailsGroup_.setFlat(true);
+    auto detailsLayout = new QGridLayout(&detailsGroup_);
+    detailsLayout->addWidget(directionLabel, 0, 0, 1, 1);
+    detailsLayout->addWidget(&dependencyCombo_, 0, 1, 1, 1);
+    detailsLayout->setRowStretch(1, 1);
+
+    detailsLayout->setColumnMinimumWidth(1, 100);
+    detailsLayout->setColumnStretch(2, 1);
+
+    // Create the scroll area.
+    auto scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    auto scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    // Create the top widget and set it under the scroll area.
+    auto topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
+    // Create the layout for the actual editor.
+    auto layout = new QGridLayout(topWidget);
+    layout->addWidget(&nameEditor_, 0, 0, 2, 1);
+    layout->addWidget(apiType_, 0, 1, 1, 1, Qt::AlignTop);
+    layout->addWidget(&detailsGroup_, 1, 1, 1, 1);
+    layout->setRowStretch(2, 1);
+    layout->setContentsMargins(0, 0, 0, 0);
+
+    scrollArea->setWidget(topWidget);
 }

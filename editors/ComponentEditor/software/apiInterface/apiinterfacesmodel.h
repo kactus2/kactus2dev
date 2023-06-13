@@ -35,7 +35,13 @@ public:
 	ApiInterfacesModel(QSharedPointer<Component> component,	QObject* parent);
 	
 	//! The destructor
-	virtual ~ApiInterfacesModel();
+	virtual ~ApiInterfacesModel() = default;
+
+    //! No copying
+    ApiInterfacesModel(const ApiInterfacesModel& other) = delete;
+
+    //! No assignment
+    ApiInterfacesModel& operator=(const ApiInterfacesModel& other) = delete;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -157,12 +163,6 @@ signals:
 
 private:
 	
-	//! No copying
-	ApiInterfacesModel(const ApiInterfacesModel& other);
-
-	//! No assignment
-	ApiInterfacesModel& operator=(const ApiInterfacesModel& other);
-
     QSharedPointer<Component> component_;
 
 	//! Contains the api interfaces being edited.
