@@ -87,7 +87,9 @@ bool GeneralEditor::isValid() const
 //-----------------------------------------------------------------------------
 void GeneralEditor::refresh()
 {
+    disconnect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     nameGroupEditor_->setDocumentNameGroup(component(), library_->getPath(component()->getVlnv()));
+    connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	disconnect(attributeEditor_, SIGNAL(contentChanged()), this, SLOT(onAttributesChange()));
 
