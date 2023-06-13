@@ -328,13 +328,6 @@ void DesignConfigurationReader::Details::parseDesignConfigurationExtensions(QDom
 {
     QDomNode extensionsNode = designConfigurationNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
-    QDomElement configurableElementsNode = extensionsNode.firstChildElement(
-        QStringLiteral("kactus2:configurableElementValues"));
-    if (!configurableElementsNode.isNull())
-    {
-        parseInstanceConfigurableElementValues(configurableElementsNode, newDesignConfiguration);
-    }
-
     QDomElement viewOverridesNode = extensionsNode.firstChildElement(QStringLiteral("kactus2:viewOverrides"));
     if (!viewOverridesNode.isNull())
     {
@@ -342,40 +335,6 @@ void DesignConfigurationReader::Details::parseDesignConfigurationExtensions(QDom
     }
 
     DocumentReader::parseKactusAndVendorExtensions(designConfigurationNode, newDesignConfiguration);
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignConfigurationReader::parseConfigurableElementValues()
-//-----------------------------------------------------------------------------
-void DesignConfigurationReader::Details::parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
-    QSharedPointer<DesignConfiguration> newDesignConfiguration)
-{
-    QDomNodeList componentInstanceList =
-        configurableElementsNode.elementsByTagName(QStringLiteral("kactus2:componentInstance"));
-    for (int instanceIndex = 0; instanceIndex < componentInstanceList.count(); ++instanceIndex)
-    {
-        QDomNode instance = componentInstanceList.at(instanceIndex);
-        QDomElement instanceElement = instance.toElement();
-
-        if (!instanceElement.isNull())
-        {
-            QString instanceUUID = instanceElement.firstChildElement(QStringLiteral("kactus2:uuid")).firstChild().nodeValue();
-            QMap<QString, QString> configurableElementValues;
-
-            QDomNodeList elementNodes = instanceElement.elementsByTagName(QStringLiteral("kactus2:configurableElementValue"));
-            for (int elementIndex = 0; elementIndex < elementNodes.count(); ++elementIndex)
-            {
-                QDomNode singleElementNode = elementNodes.at(elementIndex);
-                QDomNamedNodeMap elementAttributes = singleElementNode.attributes();
-
-                QString referenceID = elementAttributes.namedItem(QStringLiteral("referenceId")).nodeValue();
-                QString configuredValue = elementAttributes.namedItem(QStringLiteral("value")).nodeValue();
-                configurableElementValues.insert(referenceID, configuredValue);
-            }
-
-            newDesignConfiguration->setConfigurableElementValues(instanceUUID, configurableElementValues);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------
