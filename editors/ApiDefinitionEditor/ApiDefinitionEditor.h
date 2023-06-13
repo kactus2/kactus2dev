@@ -18,6 +18,8 @@
 #include <common/widgets/listManager/listmanager.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <editors/common/DocumentNameGroupEditor.h>
+
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <QSharedPointer>
@@ -51,7 +53,7 @@ public:
 	/*!
      *  Destructor.
      */
-	virtual ~ApiDefinitionEditor();
+	virtual ~ApiDefinitionEditor() = default;
 
 	/*! \brief Get the VLNV that can be used to identify the API definition.
 	 *
@@ -121,6 +123,8 @@ private:
 
 	//! The API definition being edited.
 	QSharedPointer<ApiDefinition> apiDef_;
+
+    DocumentNameGroupEditor nameGroup_;
 
     //! VLNV editor for the linked COM definition.
     VLNVEditor comDefVLNVEdit_;

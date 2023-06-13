@@ -16,7 +16,6 @@
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/validators/ComDefinitionValidator.h>
 
-#include <QVBoxLayout>
 #include <QGridLayout>
 #include <QMessageBox>
 #include <QCoreApplication>
@@ -29,20 +28,27 @@ ComDefinitionEditor::ComDefinitionEditor(QWidget *parent, LibraryInterface* libH
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
     libHandler_(libHandler),
     comDef_(comDef),
+    nameGroup_(this),
     dataTypeList_(tr("Transfer types"), this),
     propertyEditor_(this)
 {
     // Initialize the editors.
+    nameGroup_.setDocumentNameGroup(comDef_, libHandler_->getPath(comDef_->getVlnv()));
+    nameGroup_.setTitle(tr("COM definition"));
     dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
+    nameGroup_.setFlat(true);
+
+    connect(&nameGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&propertyEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     
     // Setup the layout.
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(&dataTypeList_);
-    layout->addWidget(&propertyEditor_, 1);
+    auto layout = new QGridLayout(this);
+    layout->addWidget(&nameGroup_, 0, 0, 1, 1);
+    layout->addWidget(&dataTypeList_, 0, 1, 1, 1);
+    layout->addWidget(&propertyEditor_, 1, 0, 1, 2);
     
     setModified(false);
 
@@ -53,13 +59,6 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ~ComDefinitionEditor()
-//-----------------------------------------------------------------------------
-ComDefinitionEditor::~ComDefinitionEditor()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -88,6 +87,7 @@ void ComDefinitionEditor::refresh()
     comDef_ = libComp.staticCast<ComDefinition>();
 
     // Initialize the editors.
+    nameGroup_.setDocumentNameGroup(comDef_, libHandler_->getPath(comDef_->getVlnv()));
     dataTypeList_.initialize(*comDef_->getTransferTypes());
     propertyEditor_.setProperties(comDef_->getProperties());
 
@@ -168,9 +168,9 @@ void ComDefinitionEditor::applyChanges()
 {
     QList< QSharedPointer<ComProperty> > properties;
 
-    foreach (QSharedPointer<ComProperty> prop, propertyEditor_.getProperties())
+    for (QSharedPointer<ComProperty> prop : propertyEditor_.getProperties())
     {
-        properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop.data())));
+        properties.append(QSharedPointer<ComProperty>(new ComProperty(*prop)));
     }
 
     comDef_->setProperties(properties);

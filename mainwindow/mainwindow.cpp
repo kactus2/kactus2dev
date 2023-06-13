@@ -2279,7 +2279,7 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
     //apiDefVLNV.setName(vlnv.getName() + ".apiDef");
 
     // Create an empty API definition and save it.
-    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV));
+    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV, Document::Revision::Std22));
     apiDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, apiDef))

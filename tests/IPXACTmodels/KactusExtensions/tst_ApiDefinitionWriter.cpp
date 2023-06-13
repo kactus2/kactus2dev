@@ -46,7 +46,7 @@ tst_ApiDefinitionWriter::tst_ApiDefinitionWriter()
 //-----------------------------------------------------------------------------
 void tst_ApiDefinitionWriter::init()
 {
-	testApiDefinition_ = QSharedPointer<ApiDefinition>(new ApiDefinition());
+	testApiDefinition_ = QSharedPointer<ApiDefinition>(new ApiDefinition(VLNV(), Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------
@@ -112,8 +112,7 @@ void tst_ApiDefinitionWriter::baseCase()
 		"</kactus2:apiDefinition>\n"
 		);
 
-	ApiDefinitionWriter apiDefinitionWriter;
-	apiDefinitionWriter.writeApiDefinition(xmlStreamWriter, testApiDefinition_);
+	ApiDefinitionWriter::writeApiDefinition(xmlStreamWriter, testApiDefinition_);
 	QCOMPARE(output, expectedOutput);
 }
 

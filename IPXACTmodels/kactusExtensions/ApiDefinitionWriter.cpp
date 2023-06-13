@@ -13,50 +13,26 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
-//-----------------------------------------------------------------------------
-// Function: ApiDefinitionWriter::ApiDefinitionWriter()
-//-----------------------------------------------------------------------------
-ApiDefinitionWriter::ApiDefinitionWriter(): DocumentWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinitionWriter::~ApiDefinitionWriter()
-//-----------------------------------------------------------------------------
-ApiDefinitionWriter::~ApiDefinitionWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionWriter::writeApiDefinitionFrom()
 //-----------------------------------------------------------------------------
-void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPointer<ApiDefinition> apiDefinition) const
+void ApiDefinitionWriter::writeApiDefinition(QXmlStreamWriter& writer, QSharedPointer<ApiDefinition> apiDefinition)
 {
     writer.writeStartDocument();
     
     DocumentWriter::writeTopComments(writer, apiDefinition);
-	
+
     writer.writeStartElement(QStringLiteral("kactus2:apiDefinition"));
 	DocumentWriter::writeNamespaceDeclarations(writer, apiDefinition);
 
-	// Write basic information.
-	writer.writeTextElement(QStringLiteral("ipxact:vendor"), apiDefinition->getVlnv().getVendor());
-	writer.writeTextElement(QStringLiteral("ipxact:library"), apiDefinition->getVlnv().getLibrary());
-	writer.writeTextElement(QStringLiteral("ipxact:name"), apiDefinition->getVlnv().getName());
-	writer.writeTextElement(QStringLiteral("ipxact:version"), apiDefinition->getVlnv().getVersion());
-
-	CommonItemsWriter::writeDescription(writer, apiDefinition->getDescription());
+	DocumentWriter::writeDocumentNameGroup(writer, apiDefinition);
 
 	// Write COM definition reference.
 	VLNV comDefRef = apiDefinition->getComDefinitionRef();
 
 	writer.writeEmptyElement(QStringLiteral("kactus2:comDefinitionRef"));
-	writer.writeAttribute(QStringLiteral("vendor"), comDefRef.getVendor());
-	writer.writeAttribute(QStringLiteral("library"), comDefRef.getLibrary());
-	writer.writeAttribute(QStringLiteral("name"), comDefRef.getName());
-	writer.writeAttribute(QStringLiteral("version"), comDefRef.getVersion());
+	CommonItemsWriter::writeVLNVAttributes(writer, comDefRef);
 
 	// Write data types.
 	writer.writeStartElement(QStringLiteral("kactus2:dataTypes"));
