@@ -16,12 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty():
-name_(),
-    required_(true),
-    type_(QStringLiteral("string")),
-    defaultValue_(),
-    desc_()
+ComProperty::ComProperty()
 {
 
 }
@@ -34,7 +29,7 @@ name_(rhs.name_),
     required_(rhs.required_),
     type_(rhs.type_),
     defaultValue_(rhs.defaultValue_),
-    desc_(rhs.desc_)
+    description_(rhs.description_)
 {
 
 }
@@ -42,18 +37,13 @@ name_(rhs.name_),
 //-----------------------------------------------------------------------------
 // Function: ComProperty::ComProperty()
 //-----------------------------------------------------------------------------
-ComProperty::ComProperty(QDomNode const& node):
-name_(),
-    required_(true),
-    type_(QStringLiteral("string")),
-    defaultValue_(),
-    desc_()
+ComProperty::ComProperty(QDomNode const& node)
 {
     name_ = node.attributes().namedItem(QStringLiteral("name")).nodeValue();
     required_ = General::str2Bool(node.attributes().namedItem(QStringLiteral("required")).nodeValue(), false);
     type_ = node.attributes().namedItem(QStringLiteral("propertyType")).nodeValue();
     defaultValue_ = node.attributes().namedItem(QStringLiteral("defaultValue")).nodeValue();
-    desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
+    description_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +80,7 @@ void ComProperty::write(QXmlStreamWriter& writer) const
     writer.writeAttribute(QStringLiteral("required"), General::bool2Str(required_));
     writer.writeAttribute(QStringLiteral("propertyType"), type_);
     writer.writeAttribute(QStringLiteral("defaultValue"), defaultValue_);
-    writer.writeAttribute(QStringLiteral("description"), desc_);
+    writer.writeAttribute(QStringLiteral("description"), description_);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,7 +146,7 @@ void ComProperty::setDefaultValue(QString const& defaultValue)
 //-----------------------------------------------------------------------------
 void ComProperty::setDescription(QString const& description)
 {
-    desc_ = description;
+    description_ = description;
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +186,7 @@ QString ComProperty::getDefaultValue() const
 //-----------------------------------------------------------------------------
 QString ComProperty::getDescription() const
 {
-    return desc_;
+    return description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +200,7 @@ ComProperty& ComProperty::operator=(ComProperty const& rhs)
         required_ = rhs.required_;
         type_ = rhs.type_;
         defaultValue_ = rhs.defaultValue_;
-        desc_ = rhs.desc_;
+        description_ = rhs.description_;
     }
 
     return *this;
