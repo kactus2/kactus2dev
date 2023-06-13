@@ -17,8 +17,7 @@
 // Function: ApiInterconnection::ApiInterconnection()
 //-----------------------------------------------------------------------------
 ApiInterconnection::ApiInterconnection() :
-Interconnection(),
-imported_(false)
+Interconnection()
 {
 
 }

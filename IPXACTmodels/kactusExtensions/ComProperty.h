@@ -151,16 +151,16 @@ private:
     QString name_;
 
     //! If true, the property is a required one.
-    bool required_;
+    bool required_ = true;
 
     //! The property type.
-    QString type_;
+    QString type_ = QStringLiteral("string");
 
     //! The default value.
     QString defaultValue_;
 
     //! The property description.
-    QString desc_;
+    QString description_;
 };
 
 //-----------------------------------------------------------------------------

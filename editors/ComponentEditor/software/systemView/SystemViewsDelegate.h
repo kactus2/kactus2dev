@@ -26,9 +26,9 @@ public:
 	//! The column numbers for columns
 	enum Column
     {
-		NAME_COLUMN = 0,
+        NAME_COLUMN = 0,
+        DISPLAY_NAME_COLUMN,
 		HIER_REF_COLUMN,
-		DISPLAY_NAME_COLUMN,
 		DESCRIPTION_COLUMN,
 		COLUMN_COUNT
 	};
