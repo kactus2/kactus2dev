@@ -46,19 +46,16 @@ void tst_ComDefinitionReader::testProperty()
         " xmlns:kactus2=\"http://kactus2.cs.tut.fi\""
         " xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/"
         " http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-        "<kactus2:properties>"
-        "<kactus2:property name=\"default_target\" required=\"true\""
-        "propertyType=\"string\" defaultValue=\"moon\""
-        "description=\"Where stuff is sent by default.\"/>"
-        "</kactus2:properties>"
+            "<kactus2:properties>"
+                "<kactus2:property name=\"default_target\" required=\"true\" propertyType=\"string\" defaultValue=\"moon\" description=\"Where stuff is sent by default.\"/>"
+            "</kactus2:properties>"
         "</kactus2:comDefinition>\n"
         );
 
     QDomDocument document;
     document.setContent(documentContent);
 
-    ComDefinitionReader ComDefinitionReader;
-    QSharedPointer<ComDefinition> testComDefinition = ComDefinitionReader.createComDefinitionFrom(document);
+    QSharedPointer<ComDefinition> testComDefinition = ComDefinitionReader::createComDefinitionFrom(document);
 
     QCOMPARE(testComDefinition->getProperties()->size(), 1);
 
@@ -83,28 +80,25 @@ void tst_ComDefinitionReader::allFields()
         " xmlns:kactus2=\"http://kactus2.cs.tut.fi\""
         " xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/"
         " http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-        "<ipxact:vendor>me</ipxact:vendor>"
-        "<ipxact:library>kurjasto</ipxact:library>"
-        "<ipxact:name>def</ipxact:name>"
-        "<ipxact:version>0.11</ipxact:version>"
-        "<kactus2:transferTypes/>"
-        "<kactus2:properties>"
-        "<kactus2:property name=\"max_transfer_size\" required=\"true\""
-        "propertyType=\"integer\" defaultValue=\"128\""
-        "description=\"Maximum size of a single transfer\"/>"
-        "</kactus2:properties>"
-        "<ipxact:vendorExtensions>"
-        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
-        "<kactus2:version>3.0.0</kactus2:version>"
-        "</ipxact:vendorExtensions>"
+            "<ipxact:vendor>me</ipxact:vendor>"
+            "<ipxact:library>kurjasto</ipxact:library>"
+            "<ipxact:name>def</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<kactus2:transferTypes/>"
+            "<kactus2:properties>"
+                "<kactus2:property name=\"max_transfer_size\" required=\"true\" propertyType=\"integer\" defaultValue=\"128\" description=\"Maximum size of a single transfer\"/>"
+            "</kactus2:properties>"
+            "<ipxact:vendorExtensions>"
+                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                "<kactus2:version>3.0.0</kactus2:version>"
+            "</ipxact:vendorExtensions>"
         "</kactus2:comDefinition>\n"
         );
 
     QDomDocument document;
     document.setContent(documentContent);
 
-    ComDefinitionReader ComDefinitionReader;
-    QSharedPointer<ComDefinition> testComDefinition = ComDefinitionReader.createComDefinitionFrom(document);
+    QSharedPointer<ComDefinition> testComDefinition = ComDefinitionReader::createComDefinitionFrom(document);
 
     QCOMPARE(testComDefinition->getVlnv().getVendor(), QString("me"));
     QCOMPARE(testComDefinition->getVlnv().getLibrary(), QString("kurjasto"));

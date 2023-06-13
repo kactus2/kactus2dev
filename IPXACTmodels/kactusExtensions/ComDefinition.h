@@ -29,7 +29,7 @@ public:
      *
      *      @param [in] vlnv The VLNV of the communication definition.
      */
-    ComDefinition(VLNV const& vlnv = VLNV());
+    ComDefinition(VLNV const& vlnv, Document::Revision revision);
 
     /*!
      *  Copy constructor.

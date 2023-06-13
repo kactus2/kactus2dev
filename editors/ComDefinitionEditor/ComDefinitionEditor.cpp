@@ -39,6 +39,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     propertyEditor_.setProperties(comDef_->getProperties());
 
     nameGroup_.setFlat(true);
+    propertyEditor_.setFlat(true);
 
     connect(&nameGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&dataTypeList_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

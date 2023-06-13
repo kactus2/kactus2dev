@@ -19,7 +19,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::ComDefinition()
 //-----------------------------------------------------------------------------
-ComDefinition::ComDefinition(VLNV const& vlnv) : Document(vlnv),
+ComDefinition::ComDefinition(VLNV const& vlnv, Document::Revision revision) : 
+    Document(vlnv, revision),
     transferTypes_(new QStringList),
     properties_(new QList<QSharedPointer<ComProperty> >)
 {

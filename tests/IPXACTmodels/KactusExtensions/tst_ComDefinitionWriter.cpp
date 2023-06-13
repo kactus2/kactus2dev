@@ -47,7 +47,7 @@ tst_ComDefinitionWriter::tst_ComDefinitionWriter()
 //-----------------------------------------------------------------------------
 void tst_ComDefinitionWriter::init()
 {
-	testComDefinition_ = QSharedPointer<ComDefinition>(new ComDefinition());
+	testComDefinition_ = QSharedPointer<ComDefinition>(new ComDefinition(VLNV(), Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------
@@ -97,8 +97,7 @@ void tst_ComDefinitionWriter::testProperty()
         "</kactus2:comDefinition>\n"
         );
 
-    ComDefinitionWriter comDefinitionWriter;
-    comDefinitionWriter.writeComDefinition(xmlStreamWriter, testComDefinition_);
+    ComDefinitionWriter::writeComDefinition(xmlStreamWriter, testComDefinition_);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -153,8 +152,7 @@ void tst_ComDefinitionWriter::allFields()
 		"</kactus2:comDefinition>\n"
 		);
 
-	ComDefinitionWriter comDefinitionWriter;
-	comDefinitionWriter.writeComDefinition(xmlStreamWriter, testComDefinition_);
+    ComDefinitionWriter::writeComDefinition(xmlStreamWriter, testComDefinition_);
 	QCOMPARE(output, expectedOutput);
 }
 

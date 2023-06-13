@@ -2253,7 +2253,7 @@ void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
     Q_ASSERT(!directory.isEmpty());
 
     // Create an empty COM definition and save it.
-    QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv));
+    QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv, Document::Revision::Std22));
     comDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, comDef))
