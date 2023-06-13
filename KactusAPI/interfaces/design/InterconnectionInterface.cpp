@@ -58,6 +58,14 @@ const
 }
 
 //-----------------------------------------------------------------------------
+// Function: InterconnectionInterface::getItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<NameGroup> InterconnectionInterface::getItem(std::string const& connectionName) const
+{
+    return getInterconnection(connectionName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: InterconnectionInterface::getItemIndex()
 //-----------------------------------------------------------------------------
 int InterconnectionInterface::getItemIndex(std::string const& itemName) const

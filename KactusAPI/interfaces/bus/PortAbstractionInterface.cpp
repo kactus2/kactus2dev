@@ -386,6 +386,21 @@ bool PortAbstractionInterface::getMatch(int const& portIndex) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::setMatch()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::setMatch(int const& portIndex, bool match) const
+{
+    auto const& signal = getSignal(portIndex);
+    if (!signal)
+    {
+        return false;
+    }
+
+    signal->abstraction_->setMatch(match);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::validateItems()
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::validateItems() const
@@ -525,28 +540,6 @@ bool PortAbstractionInterface::setSystemGroup(int const& portIndex, std::string 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::getQualifierString()
-//-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getQualifierString(int const& portIndex) const
-{
-    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
-    if (selectedSignal)
-    {
-        if (selectedSignal->wire_)
-        {
-            return qualifierToString(*(selectedSignal->abstraction_->getWire()->getQualifier())).toStdString();
-        }
-        if (selectedSignal->transactional_)
-        {
-            return qualifierToString(
-                *(selectedSignal->abstraction_->getTransactional()->getQualifier())).toStdString();
-        }
-    }
-
-    return std::string("");
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getQualifierList()
 //-----------------------------------------------------------------------------
 std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int const& portIndex) const
@@ -679,6 +672,64 @@ bool PortAbstractionInterface::setQualifierList(int const& portIndex, std::vecto
             selectedSignal->abstraction_->getTransactional()->addQualifier(
                 Qualifier::stringToType(QString::fromStdString(qualifier)));
         }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getQualifierAttribute()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getQualifierAttribute(int const& portIndex,
+    std::string const& qualifierTypeString, std::string const& attributeName) const
+{
+    auto qualifierType = Qualifier::stringToType(QString::fromStdString(qualifierTypeString));
+
+    auto selectedSignal = getSignal(portIndex);
+    if (!selectedSignal)
+    {
+        return std::string("");
+    }
+    
+    std::string attribute;
+
+    if (selectedSignal->wire_)
+    {
+        attribute = selectedSignal->abstraction_->getWire()->getQualifier()->getAttribute(
+            QString::fromStdString(attributeName), qualifierType).toStdString();
+    }
+    else if (selectedSignal->transactional_)
+    {
+        attribute = selectedSignal->abstraction_->getTransactional()->getQualifier()->getAttribute(
+            QString::fromStdString(attributeName), qualifierType).toStdString();
+    }
+
+    return attribute;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::setQualifierAttribute()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::setQualifierAttribute(int const& portIndex, std::string const& attributeName,
+    std::string const& attributeValue, QString const& qualifierTypeString) const
+{
+    auto qualifierType = Qualifier::stringToType(qualifierTypeString);
+
+    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
+    if (!selectedSignal)
+    {
+        return false;
+    }
+
+    if (selectedSignal->wire_)
+    {
+        selectedSignal->abstraction_->getWire()->getQualifier()->setAttribute(
+            QString::fromStdString(attributeName), QString::fromStdString(attributeValue), qualifierType);
+    }
+    else if (selectedSignal->transactional_)
+    {
+        selectedSignal->abstraction_->getTransactional()->getQualifier()->setAttribute(
+            QString::fromStdString(attributeName), QString::fromStdString(attributeValue), qualifierType);
     }
 
     return true;

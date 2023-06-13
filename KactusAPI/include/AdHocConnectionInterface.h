@@ -213,11 +213,20 @@ private:
     /*!
      *  Get the selected ad hoc connection.
      *
-     *      @param [in] busName     Name of the selected ad hoc connection.
+     *      @param [in] connectionName     Name of the selected ad hoc connection.
      *
      *      @return The selected ad hoc connection.
      */
     QSharedPointer<AdHocConnection> getAdHocConnection(std::string const& connectionName) const;
+
+    /*!
+     *  Get the ad hoc connection with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] connectionName   Name of the selected ad hoc connection.
+     *
+     *      @return The sliced ad hoc connection with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& connectionName) const;
 
     //-----------------------------------------------------------------------------
     // Data.

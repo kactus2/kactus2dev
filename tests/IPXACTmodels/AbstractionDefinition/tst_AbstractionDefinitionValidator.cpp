@@ -1013,7 +1013,8 @@ void tst_AbstractionDefinitionValidator::packetFieldValueWhenOpcode()
 
     QVector<QString> errorList;
     validator.findErrorsIn(errorList, abstraction);
-    QCOMPARE(errorList.size(), 1);
+    QCOMPARE(errorList.size(), 2);
+    QVERIFY(errorList.contains(QStringLiteral("Value of packet field testPacketField in packet testPacket within port testPort must be constant when qualifier is opcode.")));
     QVERIFY(!validator.validate(abstraction));
 
     testPacketField->setValue("128");

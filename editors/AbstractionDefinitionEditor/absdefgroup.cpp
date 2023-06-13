@@ -20,6 +20,8 @@
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <editors/common/DocumentNameGroupEditor.h>
+
 #include "AbstractionDefinitionPortsSortFilter.h"
 #include "AbstractionPortsModel.h"
 #include "LogicalPortColumns.h"
@@ -36,10 +38,9 @@ AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterf
     PortAbstractionInterface* extendInterface,
     QWidget *parent):
 QWidget(parent),
-vlnvDisplay_(new VLNVDisplayer(this, VLNV())),
+documentNameGroupEditor_(new DocumentNameGroupEditor(this)),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
 busDisplay_(new VLNVDisplayer(this, VLNV())),
-descriptionEditor_(new QPlainTextEdit(this)),
 portTabs_(this),
 portInterface_(portInterface),
 extendInterface_(extendInterface),
@@ -48,7 +49,7 @@ wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portM
 transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
 libraryHandler_(libraryHandler)
 {
-    vlnvDisplay_->setTitle(QStringLiteral("Abstraction definition"));
+    documentNameGroupEditor_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);
 
@@ -74,7 +75,7 @@ libraryHandler_(libraryHandler)
     connect(transactionalPortsEditor_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
 
-    connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    connect(documentNameGroupEditor_, SIGNAL(contentChanged()), this, SLOT(contentChanged()), Qt::UniqueConnection);
 
     connect(extendEditor_, SIGNAL(vlnvEdited()), this, SLOT(onExtendChanged()), Qt::UniqueConnection);
 
@@ -106,7 +107,7 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     wirePortsEditor_->setBusDef(busDefinition);
     transactionalPortsEditor_->setBusDef(busDefinition);
 
-    vlnvDisplay_->setVLNV(absDef->getVlnv());
+    documentNameGroupEditor_->setDocumentNameGroup(absDef, libraryHandler_->getPath(absDef->getVlnv()));
 
     extendEditor_->setVLNV(absDef->getExtends());
 
@@ -121,11 +122,6 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     {
         setupExtendedAbstraction();
     }
-
-    if (!absDef->getDescription().isEmpty())
-    {
-        descriptionEditor_->setPlainText(absDef->getDescription());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -135,15 +131,6 @@ bool AbsDefGroup::abstractionContainsTransactionalPorts() const
 {
     return std::any_of(abstraction_->getLogicalPorts()->cbegin(), abstraction_->getLogicalPorts()->cend(), 
         [](auto const& logicalPort) {return logicalPort->hasTransactional();});
-}
-
-//-----------------------------------------------------------------------------
-// Function: absdefgroup::onDescriptionChanged()
-//-----------------------------------------------------------------------------
-void AbsDefGroup::onDescriptionChanged()
-{
-    abstraction_->setDescription(descriptionEditor_->toPlainText());
-    emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
@@ -176,8 +163,6 @@ void AbsDefGroup::setupExtendedAbstraction()
             extendSignals(extendedAbstraction);
         }
     }
-
-    descriptionEditor_->setPlaceholderText(extendDescription);
 }
 
 //-----------------------------------------------------------------------------
@@ -231,15 +216,12 @@ void AbsDefGroup::removeSignalsFromExtendedDefinition()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setupLayout()
 {
-    QGroupBox* descriptionGroup = new QGroupBox(tr("Description"), this);
-
-    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionGroup);
-    descriptionLayout->addWidget(descriptionEditor_);
+    QVBoxLayout* documentNameGroupLayout = new QVBoxLayout();
+    documentNameGroupLayout->addWidget(documentNameGroupEditor_);
 
     QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(vlnvDisplay_, 0, 0, 1, 1);
     topLayout->addWidget(extendEditor_, 0, 1, 1, 1);
-    topLayout->addWidget(descriptionGroup, 1, 0, 1, 1);
+    topLayout->addWidget(documentNameGroupEditor_, 0, 0, 2, 1);
     topLayout->addWidget(busDisplay_, 1, 1, 1, 1);
     topLayout->addWidget(&portTabs_, 2, 0, 1, 2);
 

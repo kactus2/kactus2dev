@@ -191,6 +191,15 @@ private:
      */
     QSharedPointer<ComponentInstance> getComponentInstance(std::string const& instanceName) const;
 
+    /*!
+     *  Get the paracomponent instancemeter with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] instanceName   Name of the selected component instance.
+     *
+     *      @return The sliced component instance with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& instanceName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

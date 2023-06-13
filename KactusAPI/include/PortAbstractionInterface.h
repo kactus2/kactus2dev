@@ -145,6 +145,16 @@ public:
     bool getMatch(int const& portIndex) const;
 
     /*!
+     *	Set the match status of the selected signal.
+     *
+     *      @param [in] portIndex	Index of the selected signal.
+     *      @param [in] match       Match flag to set.
+     *
+     * 		@return True, if match could be set, otherwise false.
+     */
+    bool setMatch(int const& portIndex, bool match) const;
+
+    /*!
      *  Get the names of the available port abstractions.
      *
      *      @return Names of the available ports abstractions.
@@ -219,15 +229,6 @@ public:
     bool setSystemGroup(int const& portIndex, std::string const& newSystem);
 
     /*!
-     *  Get the qualifier of the selected signal in string form.
-     *
-     *      @param [in] portIndex   Index of the selected signal.
-     *
-     *      @return Qualifier string of the selected signal.
-     */
-    std::string getQualifierString(int const& portIndex) const;
-
-    /*!
      *  Get the list of qualifiers of the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.
@@ -255,6 +256,31 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setQualifierList(int const& portIndex, std::vector<std::string> const& newQualifierList);
+
+    /*!
+     *	Get a chosen attribute of a qualifier.
+     *  
+     *      @param [in] portIndex	            Index of the selected signal.
+     *      @param [in] attributeName	        The name of the attribute to get.
+     *      @param [in] qualifierTypeString	    The qualifier type.
+     *		
+     * 		@return The chosen attribute.
+     */
+    std::string getQualifierAttribute(int const& portIndex, std::string const& attributeName,
+        std::string const& qualifierTypeString) const;
+
+    /*!
+     *	Set a qualifier attribute for a specific qualifier type.
+     *  
+     *      @param [in] portIndex	            Index of the selected signal.
+     *      @param [in] attributeName	        The name of the attribute to set.
+     *      @param [in] attributeValue	        The value of the attribute to set.
+     *      @param [in] qualifierTypeString	    The qualifier type.
+     *		
+     * 		@return True, if attribute was successfully set, otherwise false.
+     */
+    bool setQualifierAttribute(int const& portIndex, std::string const& attributeName, 
+        std::string const& attributeValue, QString const& qualifierTypeString) const;
 
     /*!
      *  Get the direction of the selected signal in string form.
@@ -608,7 +634,7 @@ public:
      *      @param [in] newPortName     Name of the new port.
      */
     virtual void addTransactionalPort(std::string const& newPortName = std::string("")) override final;
-    
+
     /*!
      *  Add a wire signal with the selected interface mode to the selected port abstraction.
      *

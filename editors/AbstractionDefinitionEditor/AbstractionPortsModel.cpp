@@ -790,7 +790,7 @@ void AbstractionPortsModel::extendWireMode(std::string const& port, General::Int
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
 
         portInterface_->setDirection(index, extendInterface_->getDirectionString(extendIndex));
-        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
+        portInterface_->setQualifierList(index, extendInterface_->getQualifierStringList(extendIndex));
     }
 }
 
@@ -822,7 +822,7 @@ void AbstractionPortsModel::extendTransactionalMode(std::string const& port, Gen
 
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
 
-        portInterface_->setQualifier(index, extendInterface_->getQualifierString(extendIndex));
+        portInterface_->setQualifierList(index, extendInterface_->getQualifierStringList(extendIndex));
         portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
         portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
         portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));

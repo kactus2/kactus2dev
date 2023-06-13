@@ -64,6 +64,25 @@ public:
      *      @return True, if successful, false otherwise.
      */
     virtual bool setName(std::string const& currentName, std::string const& newName) = 0;
+    
+    /*!
+     *	Get the display name of the selected item.
+     *  
+     *      @param [in] itemName	The name of the item whose display name to get.
+     *		
+     * 		@return The item display name.
+     */
+    virtual std::string getDisplayName(std::string const& itemName) const;
+
+    /*!
+     *	Set the display name of the selected item.
+     *  
+     *      @param [in] itemName	Description
+     *      @param [in] newDisplayName	Description
+     *		
+     * 		@return True, if display name was set successfully, otherwise false.
+     */
+    virtual bool setDisplayName(std::string const& itemName, std::string const& newDisplayName) const;
 
     /*!
      *  Get the description of the selected item.
