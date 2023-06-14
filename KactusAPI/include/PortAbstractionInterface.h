@@ -937,6 +937,15 @@ private:
     DirectionTypes::Direction getMirroredDirectionForSignal(QString const& portName,
         General::InterfaceMode const& opposingMode) const;
 
+    /*!
+     *	Get the corresponding qualifier attribute for a given string.
+     *  
+     *      @param [in] attributeName	The attribute name to convert to attribute type.
+     *		
+     * 		@return The matching qualifier attribute type, or attribute type COUNT if there was no match.
+     */
+    Qualifier::Attribute getQualifierAttributeType(std::string const& attributeName) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

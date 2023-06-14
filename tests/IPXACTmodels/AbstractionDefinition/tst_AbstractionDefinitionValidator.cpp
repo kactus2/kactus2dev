@@ -829,7 +829,7 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
 
 	QSharedPointer<Qualifier> wireQualifier(new Qualifier());
 	wireQualifier->setType(Qualifier::Protection);
-	wireQualifier->setPowerEnableLevel("super high");
+	wireQualifier->setAttribute(Qualifier::Attribute::PowerEnableLevel, QStringLiteral("super high"));
 	wire->setQualifier(wireQualifier);
 
     VLNV absVLNV2(VLNV::ABSTRACTIONDEFINITION, "vendor", "library", "name2", "version");
@@ -846,8 +846,8 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
 
     QSharedPointer<Qualifier> wireQualifier2(new Qualifier());
     wireQualifier2->setType(Qualifier::PowerEnable);
-    wireQualifier2->setPowerEnableLevel("high");
-    wireQualifier2->setPowerDomainRef("testPowerDomain"); // port qualifier must not have powerDomainRef set when in an absDef
+    wireQualifier2->setAttribute(Qualifier::Attribute::PowerEnableLevel, QStringLiteral("high"));
+    wireQualifier2->setAttribute(Qualifier::Attribute::PowerDomainReference, QStringLiteral("testPowerDomain")); // port qualifier must not have powerDomainRef set when in an absDef
 
 	wire2->setQualifier(wireQualifier2);
 
@@ -863,7 +863,7 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
 	wireQualifier->setType(Qualifier::Address);
 	wireQualifier->setType(Qualifier::Data);
 
-	wireQualifier2->setPowerDomainRef("");
+	wireQualifier2->setAttribute(Qualifier::Attribute::PowerDomainReference, QStringLiteral(""));
 
 	errorList.clear();
     validator.findErrorsIn(errorList, abstraction);

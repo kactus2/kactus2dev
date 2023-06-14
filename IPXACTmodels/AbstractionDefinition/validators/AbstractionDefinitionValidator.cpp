@@ -571,7 +571,8 @@ bool AbstractionDefinitionValidator::isValidPortQualifier(QSharedPointer<Qualifi
         return false;
     }
 
-    if (qualifier->hasType(Qualifier::PowerEnable) && !qualifier->getPowerDomainRef().isEmpty())
+    if (qualifier->hasType(Qualifier::PowerEnable) && 
+        !qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).isEmpty())
     {
         return false;
     }
@@ -590,7 +591,7 @@ void AbstractionDefinitionValidator::findErrorsInPortQualifier(QVector<QString>&
 
     if (qualifier->hasType(Qualifier::PowerEnable))
     {
-        if (!qualifier->getPowerDomainRef().isEmpty())
+        if (!qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).isEmpty())
         {
             errors.append(QObject::tr("Illegal attribute powerDomainRef set for power enable qualifier "
                 "of %1 within abstraction definition %2.").arg(context, abstraction->getVlnv().toString()));

@@ -124,7 +124,7 @@ bool QualifierValidator::Details::hasValidAttributes(QSharedPointer<Qualifier> q
         << QStringLiteral("busy")
         << QStringLiteral("user"));
 
-    if (auto const& resetLevel = qualifier->getResetLevel();
+    if (auto const& resetLevel = qualifier->getAttribute(Qualifier::Attribute::ResetLevel);
         !resetLevel.isEmpty())
     {
         if (!validResetLevels.contains(resetLevel))
@@ -133,7 +133,7 @@ bool QualifierValidator::Details::hasValidAttributes(QSharedPointer<Qualifier> q
         }
     }
 
-    if (auto const& clockEnableLevel = qualifier->getClockEnableLevel();
+    if (auto const& clockEnableLevel = qualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel);
         !clockEnableLevel.isEmpty())
     {
         if (!validResetLevels.contains(clockEnableLevel))
@@ -142,7 +142,7 @@ bool QualifierValidator::Details::hasValidAttributes(QSharedPointer<Qualifier> q
         }
     }
 
-    if (auto const& powerEnableLevel = qualifier->getPowerEnableLevel();
+    if (auto const& powerEnableLevel = qualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel);
         !powerEnableLevel.isEmpty())
     {
         if (!powerEnableLevel.isEmpty() && !validResetLevels.contains(powerEnableLevel))
@@ -151,7 +151,7 @@ bool QualifierValidator::Details::hasValidAttributes(QSharedPointer<Qualifier> q
         }
     }
 
-    if (auto const& flowType = qualifier->getFlowType();
+    if (auto const& flowType = qualifier->getAttribute(Qualifier::Attribute::FlowType);
         !flowType.isEmpty())
     {
         if (!validFlowTypes.contains(flowType))
@@ -184,7 +184,7 @@ void QualifierValidator::Details::findErrorsInAttributes(QVector<QString>& error
         << QStringLiteral("busy")
         << QStringLiteral("user"));
 
-    if (auto const& resetLevel = qualifier->getResetLevel();
+    if (auto const& resetLevel = qualifier->getAttribute(Qualifier::Attribute::ResetLevel);
         !resetLevel.isEmpty())
     {
         if (!validResetLevels.contains(resetLevel))
@@ -193,7 +193,7 @@ void QualifierValidator::Details::findErrorsInAttributes(QVector<QString>& error
         }
     }
 
-    if (auto const& clockEnableLevel = qualifier->getClockEnableLevel();
+    if (auto const& clockEnableLevel = qualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel);
         !clockEnableLevel.isEmpty())
     {
         if (!validResetLevels.contains(clockEnableLevel))
@@ -202,7 +202,7 @@ void QualifierValidator::Details::findErrorsInAttributes(QVector<QString>& error
         }
     }
     
-    if (auto powerEnableLevel = qualifier->getPowerEnableLevel(); 
+    if (auto const& powerEnableLevel = qualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel);
         !powerEnableLevel.isEmpty())
     {
         if (!powerEnableLevel.isEmpty() && !validResetLevels.contains(powerEnableLevel))
@@ -211,7 +211,7 @@ void QualifierValidator::Details::findErrorsInAttributes(QVector<QString>& error
         }
     }
 
-    if (auto const& flowType = qualifier->getFlowType();
+    if (auto const& flowType = qualifier->getAttribute(Qualifier::Attribute::FlowType);
         !flowType.isEmpty())
     {
         if (!validFlowTypes.contains(flowType))

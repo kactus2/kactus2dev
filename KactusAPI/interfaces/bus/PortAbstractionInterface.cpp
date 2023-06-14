@@ -656,12 +656,12 @@ std::string PortAbstractionInterface::getQualifierAttribute(int const& portIndex
     if (selectedSignal->wire_)
     {
         attribute = selectedSignal->abstraction_->getWire()->getQualifier()->getAttribute(
-            QString::fromStdString(attributeName)).toStdString();
+            getQualifierAttributeType(attributeName)).toStdString();
     }
     else if (selectedSignal->transactional_)
     {
         attribute = selectedSignal->abstraction_->getTransactional()->getQualifier()->getAttribute(
-            QString::fromStdString(attributeName)).toStdString();
+            getQualifierAttributeType(attributeName)).toStdString();
     }
 
     return attribute;
@@ -684,12 +684,12 @@ bool PortAbstractionInterface::setQualifierAttribute(int const& portIndex, std::
     if (selectedSignal->wire_)
     {
         selectedSignal->abstraction_->getWire()->getQualifier()->setAttribute(
-            QString::fromStdString(attributeName), QString::fromStdString(attributeValue));
+            getQualifierAttributeType(attributeName), QString::fromStdString(attributeValue));
     }
     else if (selectedSignal->transactional_)
     {
         selectedSignal->abstraction_->getTransactional()->getQualifier()->setAttribute(
-            QString::fromStdString(attributeName), QString::fromStdString(attributeValue));
+            getQualifierAttributeType(attributeName), QString::fromStdString(attributeValue));
     }
 
     return true;
@@ -724,7 +724,7 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
 
     for (auto const& [name, value] : attributes)
     {
-        activeQualifier->setAttribute(QString::fromStdString(name), QString::fromStdString(value));
+        activeQualifier->setAttribute(getQualifierAttributeType(name), QString::fromStdString(value));
     }
 
     return true;
@@ -759,12 +759,12 @@ std::unordered_map<std::string, std::string> PortAbstractionInterface::getQualif
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    attributes.try_emplace(QStringLiteral("resetLevel").toStdString(), activeQualifier->getAttribute(QStringLiteral("resetLevel")).toStdString());
-    attributes.try_emplace(QStringLiteral("clockEnableLevel").toStdString(), activeQualifier->getAttribute(QStringLiteral("powerEnableLevel")).toStdString());
-    attributes.try_emplace(QStringLiteral("powerDomainReference").toStdString(), activeQualifier->getAttribute(QStringLiteral("powerDomainReference")).toStdString());
-    attributes.try_emplace(QStringLiteral("flowType").toStdString(), activeQualifier->getAttribute(QStringLiteral("flowType")).toStdString());
-    attributes.try_emplace(QStringLiteral("userFlowType").toStdString(), activeQualifier->getAttribute(QStringLiteral("userFlowType")).toStdString());
-    attributes.try_emplace(QStringLiteral("user").toStdString(), activeQualifier->getAttribute(QStringLiteral("user")).toStdString());
+    attributes.try_emplace(QStringLiteral("resetLevel").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::ResetLevel).toStdString());
+    attributes.try_emplace(QStringLiteral("clockEnableLevel").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel).toStdString());
+    attributes.try_emplace(QStringLiteral("powerDomainReference").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel).toStdString());
+    attributes.try_emplace(QStringLiteral("flowType").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::FlowType).toStdString());
+    attributes.try_emplace(QStringLiteral("userFlowType").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::UserFlowType).toStdString());
+    attributes.try_emplace(QStringLiteral("user").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::UserDefined).toStdString());
 
     return attributes;
 }
@@ -1640,6 +1640,43 @@ DirectionTypes::Direction PortAbstractionInterface::getMirroredDirectionForSigna
     }
 
     return DirectionTypes::DIRECTION_INVALID;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getQualifierAttributeType()
+//-----------------------------------------------------------------------------
+Qualifier::Attribute PortAbstractionInterface::getQualifierAttributeType(std::string const& attributeName) const
+{
+    if (attributeName == "resetLevel")
+    {
+        return Qualifier::Attribute::ResetLevel;
+    }
+    else if (attributeName == "clockEnableLevel")
+    {
+        return Qualifier::Attribute::ClockEnableLevel;
+    }
+    else if (attributeName == "powerEnableLevel")
+    {
+        return Qualifier::Attribute::PowerEnableLevel;
+    }
+    else if (attributeName == "powerDomainReference")
+    {
+        return Qualifier::Attribute::PowerDomainReference;
+    }
+    else if (attributeName == "flowType")
+    {
+        return Qualifier::Attribute::FlowType;
+    }
+    else if (attributeName == "userFlowType")
+    {
+        return Qualifier::Attribute::UserFlowType;
+    }
+    else if (attributeName == "userDefined")
+    {
+        return Qualifier::Attribute::UserDefined;
+    }
+
+    return Qualifier::Attribute::COUNT;
 }
 
 //-----------------------------------------------------------------------------
