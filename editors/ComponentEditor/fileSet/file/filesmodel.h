@@ -197,24 +197,6 @@ private:
 	FilesModel& operator=(const FilesModel& other);
 
     /*!
-     *  Check if the file path exists for the given file.
-     *
-     *      @param [in] fileName    Name of the selected file.
-     *
-     *      @return True, if the file path is found, otherwise false.
-     */
-    bool filePathExists(std::string const& fileName) const;
-
-    /*!
-     *  Checks if the file path is a valid URI.
-     *
-     *      @param [in] fileName    Name of the selected file.
-     *
-     *      @return True, if the URI is valid, otherwise false.
-     */
-    bool isValidURI(std::string const& fileName) const;
-
-    /*!
      *  Get the file types of the selected file as a combined string.
      *
      *      @param [in] fileName    Name of the selected file.

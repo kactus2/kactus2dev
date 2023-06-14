@@ -45,14 +45,6 @@ QGroupBox(tr("Dependency information"), parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: FileDependencyInfoWidget::~FileDependencyInfoWidget()
-//-----------------------------------------------------------------------------
-FileDependencyInfoWidget::~FileDependencyInfoWidget()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FileDependencyInfoWidget::setEditedDependency()
 //-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::setEditedDependency(FileDependency* dependency)
@@ -194,13 +186,10 @@ void FileDependencyInfoWidget::lockEverything(bool isLocked)
 //-----------------------------------------------------------------------------
 void FileDependencyInfoWidget::setupLayout()
 {
-    //bidirectionalCheck_.setFixedWidth(150);
-    //descEdit_.setMaximumHeight(80);
-
     auto buttonLayout = new QHBoxLayout();
+    buttonLayout->addWidget(&directionButton_);
     buttonLayout->addWidget(&bidirectionalCheck_);
     buttonLayout->addWidget(&lockedCheck_);
-    buttonLayout->addWidget(&directionButton_);
     buttonLayout->addStretch();
 
     auto topLayout = new QGridLayout(this);

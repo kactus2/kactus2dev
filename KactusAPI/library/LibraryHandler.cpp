@@ -13,7 +13,7 @@
 
 #include "MessageMediator.h"
 
-#include "utils.h"
+#include "FileHandler.h"
 
 #include "TagManager.h"
 
@@ -76,7 +76,6 @@ QObject(parent),
     messageChannel_(messageChannel),
     loader_(messageChannel),
     documentCache_(),
-    urlTester_(Utils::URL_VALIDITY_REG_EXP, this),
     validator_(this),
     treeModel_(new LibraryTreeModel(this, this)),
     hierarchyModel_(new HierarchyModel(this, this)),
@@ -889,8 +888,7 @@ bool LibraryHandler::validateDependentDirectories(QSharedPointer<Document> docum
 {
     for (QString const& directoryPath : document->getDependentDirs())
     {
-        QFileInfo directory(General::getAbsolutePath(documentPath, directoryPath));
-        if (directory.exists() == false)
+        if (FileHandler::isValidURI(documentPath, directoryPath) == false)
         {
             return false;
         }
@@ -907,10 +905,9 @@ void LibraryHandler::findErrorsInDependentDirectories(QSharedPointer<const Docum
 {
     for (QString const& directoryPath : document->getDependentDirs())
     {
-        QFileInfo directory(General::getAbsolutePath(documentPath, directoryPath));
-        if (directory.exists() == false)
+        if (FileHandler::isValidURI(documentPath, directoryPath) == false)
         {
-            errorList.append(tr("\tDirectory %1 was not found in the file system.").arg(directoryPath));
+            errorList.append(tr("Directory %1 was not found in the file system.").arg(directoryPath));
         }
     }
 }
@@ -920,24 +917,15 @@ void LibraryHandler::findErrorsInDependentDirectories(QSharedPointer<const Docum
 //-----------------------------------------------------------------------------
 bool LibraryHandler::validateDependentFiles(QSharedPointer<Document> document, QString const& documentPath)
 {
-    for (QString filePath : document->getDependentFiles())
+    for (QString const& filePath : document->getDependentFiles())
     {
-        int pos = 0;
-        if (urlTester_.validate(filePath, pos) != QValidator::Acceptable)
+        if (FileHandler::isValidURI(documentPath, filePath) == false)
         {
-            if (QFileInfo(filePath).isRelative())
-            {
-                filePath = General::getAbsolutePath(documentPath, filePath);
-            }
-
-            if (QFileInfo(filePath).exists() == false)
-            {
-                return false;
-            }
-            else
-            {
-                checkResults_.fileCount++;
-            }
+            return false;
+        }
+        else
+        {
+            checkResults_.fileCount++;
         }
     }
 
@@ -950,28 +938,17 @@ bool LibraryHandler::validateDependentFiles(QSharedPointer<Document> document, Q
 void LibraryHandler::findErrorsInDependentFiles(QSharedPointer<const Document> document,
     QString const& documentPath, QVector<QString>& errorList)
 {
-    for (QString filePath : document->getDependentFiles())
+    for (QString const& filePath : document->getDependentFiles())
     {
-        // Check if the path is actually a URL to (external) location.
-        int pos = 0;
-        if (urlTester_.validate(filePath, pos) == QValidator::Acceptable)
+        QString resolvedURI = FileHandler::resolveURI(filePath);
+
+        if (FileHandler::isValidURI(documentPath, resolvedURI) == false)
+        {
+            errorList.append(tr("File %1 was not found in the file system.").arg(filePath));
+        }
+        else 
         {
             checkResults_.fileCount++;
-        }
-
-        // The path was not URL so it must be file reference on the disk.
-        else
-        {
-            QString absolutePath = filePath;
-            if (QFileInfo(absolutePath).isRelative())
-            {
-                absolutePath = General::getAbsolutePath(documentPath, filePath);
-            }
-
-            if (QFileInfo(absolutePath).exists() == false)
-            {
-                errorList.append(tr("File %1 was not found in the file system.").arg(filePath));
-            }
         }
     }
 }

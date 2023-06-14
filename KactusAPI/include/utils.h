@@ -13,7 +13,6 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <QRegularExpression>
 #include <QObject>
 
 namespace Utils
@@ -129,12 +128,6 @@ namespace Utils
         */
         KACTUS2_API FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
     };
-
-
-    //! Regular expression to validate URLs.
-    const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(
-        "^[a-z]{3,9}[:][/]{2}[a-z0-9]+([-.][a-z0-9]+)*([/][-a-z0-9_.;,?=&%#~+]*)*$",
-        QRegularExpression::CaseInsensitiveOption);
 
     /*!
      *  Retrieves and returns the name of the current user.

@@ -59,7 +59,7 @@ bool FileValidator::validate(QSharedPointer<File> file) const
 		return false;
 	}
 
-	foreach (QSharedPointer<NameValuePair> currentPair, *file->getDefines())
+	for (QSharedPointer<NameValuePair> currentPair : *file->getDefines())
 	{
 		if (!hasValidName(currentPair->name()))
 		{
@@ -119,7 +119,7 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 		errors.append(QObject::tr("File %1 must have at least one file type defined.").arg(file->name()));
 	}
 
-	foreach (QSharedPointer<NameValuePair> currentPair, *file->getDefines())
+	for (QSharedPointer<NameValuePair> currentPair : *file->getDefines())
 	{
 		if (!hasValidName(currentPair->name()))
 		{
@@ -141,12 +141,5 @@ void FileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<File> 
 //-----------------------------------------------------------------------------
 bool FileValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
-
-	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
-	{
-		return false;
-	}
-
-	return true;
+	return !(name.isEmpty() || name.trimmed().isEmpty());
 }

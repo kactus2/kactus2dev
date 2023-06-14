@@ -51,15 +51,6 @@ private:
 	DirListManagerModel(const DirListManagerModel& other);
 	DirListManagerModel& operator=(const DirListManagerModel& other);
 
-    /*!
-     *  Check if the file exists for the given path.
-     *
-     *      @param [in] relativePath    The path to the file.
-     *
-     *      @return True, if the path exists, otherwise false.
-     */
-    bool directoryExistsForPath(QString const& relativePath) const;
-
 	//! The path to start relative paths from.
 	QString basePath_;
 };

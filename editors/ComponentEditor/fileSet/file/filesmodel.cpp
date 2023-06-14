@@ -12,7 +12,7 @@
 #include "filesmodel.h"
 #include "FileColumns.h"
 
-#include <KactusAPI/include/utils.h>
+#include <KactusAPI/include/FileHandler.h>
 #include <common/KactusColors.h>
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -25,6 +25,7 @@
 
 #include <QFileInfo>
 #include <QMimeData>
+#include <QProcessEnvironment>
 #include <QRegularExpression>
 #include <QStringList>
 #include <QUrl>
@@ -136,13 +137,13 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         if (index.column() == FileColumns::NAME_COLUMN)
         {
             QFileInfo fileInfo(QString::fromStdString(fileName));
-            QString fileName = fileInfo.fileName();
-            if (fileName.isEmpty())
+            QString name = fileInfo.fileName();
+            if (name.isEmpty())
             {
-                fileName = tr("unnamed");
+                name = tr("unnamed");
             }
 
-            return fileName;            
+            return name;
         }
         else if (index.column() == FileColumns::PATH_COLUMN)
         {
@@ -187,7 +188,8 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
                 return KactusColors::REGULAR_TEXT;
             }
         }
-        if (index.column() == FileColumns::PATH_COLUMN && !(filePathExists(fileName) || isValidURI(fileName)))
+        if (index.column() == FileColumns::PATH_COLUMN && 
+            !(FileHandler::isValidURI(handler_->getPath(component_->getVlnv()),QString::fromStdString(fileName))))
         {
             return KactusColors::ERROR;
         }
@@ -199,19 +201,18 @@ QVariant FilesModel::data(QModelIndex const& index, int role) const
         {
             return QString::fromStdString(fileInterface_->getDescription(fileName));
         }
-        else if (!filePathExists(fileName) && !isValidURI(fileName))
+        else if (!FileHandler::isValidURI(handler_->getPath(component_->getVlnv()),
+            QString::fromStdString(fileName)))
         {
             return tr("File path is not found or defines an invalid URI.");
         }
     }
 
-	else if (role == Qt::BackgroundRole)
+    else if (role == Qt::BackgroundRole && (index.column() == FileColumns::PATH_COLUMN ||
+        index.column() == FileColumns::TYPES_COLUMN))
     {
-        if (index.column() == FileColumns::PATH_COLUMN || index.column() == FileColumns::TYPES_COLUMN)
-        {
-            return KactusColors::MANDATORY_FIELD;
-        }
-	}
+        return KactusColors::MANDATORY_FIELD;
+    }
 
     return QVariant();
 }
@@ -382,9 +383,10 @@ void FilesModel::onAddItem(QModelIndex const& index, const QString& filePath)
 	}
 
 	// if the file is already contained in the list
-    for (auto fileName : fileInterface_->getItemNames())
+    auto const relativePath = relPath.toStdString();
+    for (auto const& fileName : fileInterface_->getItemNames())
     {
-        if (QString::fromStdString(fileName) == relPath)
+        if (fileName == relativePath)
         {
             return;
         }
@@ -465,30 +467,4 @@ void FilesModel::onMoveItem(QModelIndex const& originalPos, QModelIndex const& n
 	emit fileMoved(source, target);
 
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: filesmodel::fileExists()
-//-----------------------------------------------------------------------------
-bool FilesModel::filePathExists(std::string const& fileName) const
-{
-    if (fileName.empty())
-    {
-        return false;
-    }
-
-    QString xmlPath = handler_->getPath(component_->getVlnv());
-    QString absFilePath = General::getAbsolutePath(xmlPath, QString::fromStdString(fileName));
-
-    QFileInfo fileInfo(absFilePath);
-
-    return fileInfo.exists();
-}
-
-//-----------------------------------------------------------------------------
-// Function: filesmodel::isValidURI()
-//-----------------------------------------------------------------------------
-bool FilesModel::isValidURI(std::string const& fileName) const
-{
-    return Utils::URL_VALIDITY_REG_EXP.match(QString::fromStdString(fileName)).hasMatch();
 }

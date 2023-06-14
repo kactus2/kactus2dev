@@ -15,8 +15,6 @@
 #include "FileDependencyItem.h"
 #include "FileDependencyDelegate.h"
 
-#include <KactusAPI/include/utils.h>
-
 #include <KactusAPI/include/FileHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -197,10 +195,10 @@ void FileDependencyEditor::scanDirectories()
         for (QSharedPointer<File> file : *fileSet->getFiles())
         {
             // For non-url files, check if the model does not contain a corresponding file item.
-            if (!(Utils::URL_VALIDITY_REG_EXP.match(file->name()).hasMatch()) &&
+            if (FileHandler::isURI(FileHandler::resolveURI(file->name())) == false && 
                 model_.findFileItem(file->name()) == nullptr)
             {
-                QFileInfo info(file->name());
+                QFileInfo info(FileHandler::resolvePath(file->name()));
                 QString folderPath = info.path();
 
                 // Create a folder item for the file if not already created.
@@ -326,11 +324,11 @@ void FileDependencyEditor::scanFiles(QString const& path)
             QString relativePath = General::getRelativePath(basePath_, info.absoluteFilePath());
 
             QList<QSharedPointer<File> > fileRefs;
-            foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+            for (QSharedPointer<FileSet> fileSet : *component_->getFileSets())
             {
-                foreach (QSharedPointer<File> file, *fileSet->getFiles())
+                for (QSharedPointer<File> file : *fileSet->getFiles())
                 {
-                    if (file->name() == relativePath)
+                    if (FileHandler::resolvePath(file->name()) == relativePath)
                     {
                         fileRefs.append(file);
                     }

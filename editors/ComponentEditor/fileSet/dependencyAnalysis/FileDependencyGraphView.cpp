@@ -332,7 +332,7 @@ void FileDependencyGraphView::onDependencyAdded(FileDependency* dependency, bool
         return;
     }
 
-    if (fromItem != 0 && toItem != 0)
+    if (fromItem != nullptr && toItem != nullptr)
     {
         // Determine the y coordinates for the dependency.
         int fromY = 0;
