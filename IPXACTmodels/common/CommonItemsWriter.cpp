@@ -242,7 +242,7 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:isReset"));
 
-        if (auto level = qualifier->getResetLevel(); !level.isEmpty())
+        if (auto level = qualifier->getAttribute(Qualifier::Attribute::ResetLevel); !level.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("level"), level);
         }
@@ -254,7 +254,7 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:isClockEn"));
 
-        if (auto level = qualifier->getClockEnableLevel(); !level.isEmpty())
+        if (auto level = qualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel); !level.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("level"), level);
         }
@@ -266,12 +266,13 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:isPowerEn"));
 
-        if (auto const& level = qualifier->getPowerEnableLevel(); !level.isEmpty())
+        if (auto level = qualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel); !level.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("level"), level);
         }
 
-        if (auto const& reference = qualifier->getPowerDomainRef(); !reference.isEmpty())
+        if (auto const& reference = qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference);
+            !reference.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("powerDomainRef"), reference);
         }
@@ -292,7 +293,7 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:isFlowControl"));
         
-        auto const& type = qualifier->getFlowType();
+        auto const& type = qualifier->getAttribute(Qualifier::Attribute::FlowType);
         if (!type.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("flowType"), type);
@@ -300,7 +301,8 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
 
         if (type == QStringLiteral("user"))
         {
-            if (auto const& userType = qualifier->getUserFlowType(); !userType.isEmpty())
+            if (auto const& userType = qualifier->getAttribute(Qualifier::Attribute::UserFlowType);
+                !userType.isEmpty())
             {
                 writer.writeAttribute(QStringLiteral("user"), userType);
             }
@@ -314,7 +316,7 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:isUser"));
 
-        if (auto const& userDefined = qualifier->getUserDefined();
+        if (auto const& userDefined = qualifier->getAttribute(Qualifier::Attribute::UserDefined);
             !userDefined.isEmpty())
         {
             writer.writeAttribute(QStringLiteral("user"), userDefined);

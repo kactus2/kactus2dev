@@ -376,7 +376,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
             qualifierList.push_back(qualifier.toStdString());
         }
 
-        portInterface_->setQualifierList(index.row(), qualifierList);
+        portInterface_->setQualifierStringList(index.row(), qualifierList);
     }
     else if (index.column() == LogicalPortColumns::WIDTH)
     {
@@ -790,7 +790,8 @@ void AbstractionPortsModel::extendWireMode(std::string const& port, General::Int
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
 
         portInterface_->setDirection(index, extendInterface_->getDirectionString(extendIndex));
-        portInterface_->setQualifierList(index, extendInterface_->getQualifierStringList(extendIndex));
+        portInterface_->setQualifierStringList(index, extendInterface_->getQualifierStringList(extendIndex));
+        portInterface_->setQualifierAttributes(index, extendInterface_->getQualifierAttributes(extendIndex));
     }
 }
 
@@ -822,7 +823,8 @@ void AbstractionPortsModel::extendTransactionalMode(std::string const& port, Gen
 
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
 
-        portInterface_->setQualifierList(index, extendInterface_->getQualifierStringList(extendIndex));
+        portInterface_->setQualifierStringList(index, extendInterface_->getQualifierStringList(extendIndex));
+        portInterface_->setQualifierAttributes(index, extendInterface_->getQualifierAttributes(extendIndex));
         portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
         portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
         portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));

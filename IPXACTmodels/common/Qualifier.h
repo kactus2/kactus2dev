@@ -43,6 +43,18 @@ public:
         Any
     };
 
+    enum Attribute
+    {
+        ResetLevel = 0,
+        ClockEnableLevel,
+        PowerEnableLevel,
+        PowerDomainReference,
+        FlowType,
+        UserFlowType,
+        UserDefined,
+        COUNT
+    };
+
     //! Map of qualifier type and string pairs.
     static const QMap<Qualifier::Type, QString> QUALIFIER_TYPE_STRING;
 
@@ -87,128 +99,27 @@ public:
      * 		@return A list of set types.
      */
     QSharedPointer<QList<Type> > getTypes() const;
-
-    /*!
-     *	Sets the level attribute of the reset qualifier.
-     *  
-     *      @param [in] level	The level to set.
-     */
-    void setResetLevel(QString const& level);
-
-    /*!
-     *	Gets the level attribute of the reset qualifier.
-     *
-     *      @return The reset level.
-     */
-    QString getResetLevel() const;
-
-    /*!
-     *	Sets the level attribute of the clock enable qualifier.
-     *
-     *      @param [in] level	The level to set.
-     */
-    void setClockEnableLevel(QString const& level);
-
-    /*!
-     *	Gets the level attribute of the clock enable qualifier.
-     *
-     *      @return The reset level.
-     */
-    QString getClockEnableLevel() const;
-
-    /*!
-     *	Sets the level attribute of the power enable qualifier.
-     *
-     *      @param [in] level	The level to set.
-     */
-    void setPowerEnableLevel(QString const& level);
-
-    /*!
-     *	Gets the level attribute of the power enable qualifier.
-     *
-     *      @return The reset level.
-     */
-    QString getPowerEnableLevel() const;
-
-    /*!
-     *	Sets the powerDomainRef attribute of the power enable qualifier.
-     *
-     *      @param [in] reference	The power domain reference to set.
-     */
-    void setPowerDomainRef(QString const& reference);
-
-    /*!
-     *	Gets the powerDomainRef attribute of the power enable qualifier.
-     *
-     *      @return The power domain reference.
-     */
-    QString getPowerDomainRef() const;
-
-    /*!
-     *	Sets the flowType attribute of the flow control qualifier.
-     *
-     *      @param [in] flowType    The flow type to set.
-     */
-    void setFlowType(QString const& flowType);
-
-    /*!
-     *	Gets the flowType attribute of the flow control qualifier.
-     *
-     *      @return The flow type.
-     */
-    QString getFlowType() const;
-
-    /*!
-     *	Sets the user attribute of the flow control qualifier.
-     *
-     *      @param [in] userFlowType    The user defined flow type to set.
-     */
-    void setUserFlowType(QString const& userFlowType);
-
-    /*!
-     *	Gets the user attribute of the flow control qualifier.
-     *
-     *      @return The user defined flow type.
-     */
-    QString getUserFlowType() const;
-
-    /*!
-     *	Sets the user attribute of the user qualifier.
-     *
-     *      @param [in] userDefined     The user defined qualifier.
-     */
-    void setUserDefined(QString const& userDefined);
-
-    /*!
-     *	Gets the user attribute of the user qualifier.
-     *
-     *      @return The user defined qualifier.
-     */
-    QString getUserDefined() const;
     
     /*!
-     *	Get a selected attribute by qualifier type, e.g. attribute 'level' for qualifier type Reset.
+     *	Get a selected attribute.
      *  
      *      @param [in] attributeName	The attribute name.
-     *      @param [in] qualifierType	The qualifier type.
      *		
      * 		@return The attribute as a string.
      */
-    QString getAttribute(QString const& attributeName, Qualifier::Type qualifierType) const;
+    QString getAttribute(Attribute attribute) const;
 
     /*!
-     *	Sets a given attribute for a specific qualifier type.
+     *	Sets a given qualifier attribute.
      *  
      *      @param [in] attributeName	The attribute name to set.
      *      @param [in] attributeValue	The attribute value to set.
-     *      @param [in] qualifierType	The qualifier type to set the attribute to.
      */
-    void setAttribute(QString const& attributeName, QString const& attributeValue, Qualifier::Type qualifierType);
+    void setAttribute(Attribute attribute, QString const& attributeValue);
 
     bool operator==(Qualifier const& other);
 
     bool operator!=(Qualifier const& other);
-
 
     /*!
      *	Gets a qualifier type as string.
@@ -232,26 +143,8 @@ private:
     //! The list of types assigned to this qualifier.
     QSharedPointer<QList<Type> > types_ = QSharedPointer<QList<Type> >(new QList<Type>());
 
-    //! The level attribute for qualifier Reset.
-    QString resetLevel_;
-
-    //! The level attribute for qualifier Clock Enable.
-    QString clockEnableLevel_;
-    
-    //! The level attribute for qualifier Power Enable.
-    QString powerEnableLevel_;
-
-    //! The powerDomainRef attribute for qualifier Power Enable.
-    QString powerDomainRef_;
-
-    //! The flowType attribute for qualifier Flow Control.
-    QString flowType_;
-
-    //! The user attribute for qualifier Flow Control.
-    QString userFlowType_;
-
-    //! The user attribute for qualifier User.
-    QString userDefined_;
+    //! The list of attributes set for the qualifier.
+    std::array<QString, Attribute::COUNT> attributes_;
 };
 
 #endif // QUALIFIER_H

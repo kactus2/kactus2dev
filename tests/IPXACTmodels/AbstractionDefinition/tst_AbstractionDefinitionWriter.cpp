@@ -373,8 +373,8 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
 
     QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
     fieldQualifier->setType(Qualifier::FlowControl);
-    fieldQualifier->setFlowType(QStringLiteral("user"));
-    fieldQualifier->setUserFlowType("user flow type");
+    fieldQualifier->setAttribute(Qualifier::Attribute::FlowType, QStringLiteral("user"));
+    fieldQualifier->setAttribute(Qualifier::Attribute::UserFlowType, QStringLiteral("user flow type"));
     testPacketField->setQualifier(fieldQualifier);
 
     QDomDocument document2;

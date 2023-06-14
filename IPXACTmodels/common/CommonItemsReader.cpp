@@ -227,7 +227,7 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
         
         if (isStd22)
         {
-            qualifier->setResetLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+            qualifier->setAttribute(Qualifier::Attribute::ResetLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
         }
     }
 
@@ -253,7 +253,7 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
     {
         qualifier->setType(Qualifier::ClockEnable);
 
-        qualifier->setClockEnableLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+        qualifier->setAttribute(Qualifier::Attribute::ClockEnableLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
     }
 
     if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isPowerEn"));
@@ -261,8 +261,8 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
     {
         qualifier->setType(Qualifier::PowerEnable);
 
-        qualifier->setPowerEnableLevel(node.attributes().namedItem(QStringLiteral("level")).nodeValue());
-        qualifier->setPowerDomainRef(node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue());
+        qualifier->setAttribute(Qualifier::Attribute::PowerEnableLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
+        qualifier->setAttribute(Qualifier::Attribute::PowerDomainReference, node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue());
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isOpcode")).firstChild().nodeValue()
@@ -287,11 +287,11 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
         auto attributes = node.attributes();
 
         auto flowType = attributes.namedItem(QStringLiteral("flowType")).nodeValue();
-        qualifier->setFlowType(flowType);
+        qualifier->setAttribute(Qualifier::Attribute::FlowType, flowType);
 
         if (flowType == QStringLiteral("user"))
         {
-            qualifier->setUserFlowType(attributes.namedItem(QStringLiteral("user")).nodeValue());
+            qualifier->setAttribute(Qualifier::Attribute::UserFlowType, attributes.namedItem(QStringLiteral("user")).nodeValue());
         }
     }
 
@@ -300,7 +300,7 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
     {
         qualifier->setType(Qualifier::User);
 
-        qualifier->setUserDefined(node.attributes().namedItem(QStringLiteral("user")).nodeValue());
+        qualifier->setAttribute(Qualifier::Attribute::UserDefined, node.attributes().namedItem(QStringLiteral("user")).nodeValue());
     }
 
     if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isRequest")).firstChild().nodeValue()

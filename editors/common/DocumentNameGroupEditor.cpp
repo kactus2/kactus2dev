@@ -69,6 +69,14 @@ void DocumentNameGroupEditor::setDocumentNameGroup(QSharedPointer<Document> docu
 }
 
 //-----------------------------------------------------------------------------
+// Function: DocumentNameGroupEditor::setPlaceholderDescription()
+//-----------------------------------------------------------------------------
+void DocumentNameGroupEditor::setPlaceholderDescription(QString const& placeholder)
+{
+    descriptionEditor_.setPlaceholderText(placeholder);
+}
+
+//-----------------------------------------------------------------------------
 // Function: DocumentNameGroupEditor::onDisplayNameChanged()
 //-----------------------------------------------------------------------------
 void DocumentNameGroupEditor::onDisplayNameChanged()
