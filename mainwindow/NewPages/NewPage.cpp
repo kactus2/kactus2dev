@@ -44,6 +44,10 @@ descLabel_(new QLabel(description,this))
     revisionSelector_->addItem(Document::toString(Document::Revision::Std22));
     revisionSelector_->addItem(Document::toString(Document::Revision::Std14));
 
+    QSettings settings;
+    auto defaultRevision = settings.value("General/Revision", Document::toString(Document::Revision::Std22)).toString();
+    revisionSelector_->setCurrentText(defaultRevision);
+
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
     connect(vlnvEditor_, SIGNAL(contentChanged()), this, SLOT(updateDirectory()));
 
