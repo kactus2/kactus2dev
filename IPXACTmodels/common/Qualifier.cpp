@@ -218,96 +218,72 @@ QString Qualifier::getUserDefined() const
 //-----------------------------------------------------------------------------
 // Function: Qualifier::getAttribute()
 //-----------------------------------------------------------------------------
-QString Qualifier::getAttribute(QString const& attributeName, Type qualifierType) const
+QString Qualifier::getAttribute(QString const& attributeName) const
 {
-    if (attributeName == QStringLiteral("level"))
+    if (attributeName == QStringLiteral("resetLevel"))
     {
-        if (qualifierType == Reset)
-        {
-            return getResetLevel();
-        }
-        
-        if (qualifierType == ClockEnable)
-        {
-            return getClockEnableLevel();
-        }
-
-        if (qualifierType == PowerEnable)
-        {
-            return getPowerEnableLevel();
-        }
+        return getResetLevel();
     }
-    else if (attributeName == QStringLiteral("powerDomainRef"))
+    else if (attributeName == QStringLiteral("clockEnableLevel"))
     {
-        if (qualifierType == PowerEnable)
-        {
-            return getPowerDomainRef();
-        }
+        return getClockEnableLevel();
+    }
+    else if (attributeName == QStringLiteral("powerEnableLevel"))
+    {
+        return getPowerEnableLevel();
+    }
+    else if (attributeName == QStringLiteral("powerDomainReference"))
+    {
+        return getPowerDomainRef();
     }
     else if (attributeName == QStringLiteral("flowType"))
     {
-        if (qualifierType == FlowControl)
-        {
-            return getFlowType();
-        }
+        return getFlowType();
     }
-    else if (attributeName == QStringLiteral("user"))
+    else if (attributeName == QStringLiteral("userFlowType"))
     {
-        if (qualifierType == FlowControl)
-        {
-            return getUserFlowType();
-        }
-
-        if (qualifierType == User)
-        {
-            return getUserDefined();
-        }
+        return getUserFlowType();
     }
-
+    else if (attributeName == QStringLiteral("userDefined"))
+    {
+        return getUserDefined();
+    }
+    
     return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: Qualifier::setAttribute()
 //-----------------------------------------------------------------------------
-void Qualifier::setAttribute(QString const& attributeName, QString const& attributeValue, Type qualifierType)
+void Qualifier::setAttribute(QString const& attributeName, QString const& attributeValue)
 {
-    if (attributeName == QStringLiteral("level"))
+    if (attributeName == QStringLiteral("resetLevel"))
     {
-        if (qualifierType == Reset)
-        {
-            setResetLevel(attributeValue);
-        }
-
-        else if (qualifierType == ClockEnable)
-        {
-            setClockEnableLevel(attributeValue);
-        }
-
-        else if (qualifierType == PowerEnable)
-        {
-            setPowerEnableLevel(attributeValue);
-        }
+        setResetLevel(attributeValue);
     }
-    else if (attributeName == QStringLiteral("powerDomainRef") && qualifierType == PowerEnable)
+    else if (attributeName == QStringLiteral("clockEnableLevel"))
+    {
+        setClockEnableLevel(attributeValue);
+    }
+    else if (attributeName == QStringLiteral("powerEnableLevel"))
+    {
+        setPowerEnableLevel(attributeValue);
+    }
+    else if (attributeName == QStringLiteral("powerDomainReference"))
     {
         setPowerDomainRef(attributeValue);
     }
-    else if (attributeName == QStringLiteral("flowType") && qualifierType == FlowControl)
+    else if (attributeName == QStringLiteral("flowType"))
     {
         setFlowType(attributeValue);
     }
+    else if (attributeName == QStringLiteral("userFlowType"))
+    {
+        setUserFlowType(attributeValue);
+    }
     else if (attributeName == QStringLiteral("user"))
     {
-        if (qualifierType == FlowControl)
-        {
-            setUserFlowType(attributeValue);
-        }
-
-        if (qualifierType == User)
-        {
-            setUserDefined(attributeValue);
-        }
+        setUserDefined(attributeValue);
     }
 }
 

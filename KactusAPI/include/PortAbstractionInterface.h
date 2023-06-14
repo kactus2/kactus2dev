@@ -255,7 +255,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setQualifierList(int const& portIndex, std::vector<std::string> const& newQualifierList);
+    bool setQualifierStringList(int const& portIndex, std::vector<std::string> const& newQualifierList);
 
     /*!
      *	Get a chosen attribute of a qualifier.
@@ -281,6 +281,25 @@ public:
      */
     bool setQualifierAttribute(int const& portIndex, std::string const& attributeName, 
         std::string const& attributeValue, QString const& qualifierTypeString) const;
+
+    /*!
+     *	Set all qualifier attributes at once.
+     *  
+     *      @param [in] portIndex	Index of the selected signal.
+     *      @param [in] attributes	Map of attributes to set as name-value pairs.
+     *		
+     * 		@return True, if attributes were set, otherwise false.
+     */
+    bool setQualifierAttributes(int const& portIndex, std::unordered_map<std::string, std::string> const& attributes) const;
+
+    /*!
+     *	Get all of the qualifier's attributes.
+     *  
+     *      @param [in] portIndex	Index of the selected signal.
+     *		
+     * 		@return A map of attributes as name-value pairs.
+     */
+    std::unordered_map<std::string, std::string> getQualifierAttributes(int const& portIndex) const;
 
     /*!
      *  Get the direction of the selected signal in string form.
@@ -856,25 +875,7 @@ private:
      *      @return The type of the selected protocol.
      */
     QString getProtocolTypeText(QSharedPointer<Protocol> portProtocol) const;
-
-    /*!
-     *  Convert qualifier to string.
-     *
-     *      @param [in]  qualifier The Qualifier to convert.
-     *
-     *      @return A string representation for the Qualifier.
-     */
-    QString qualifierToString(Qualifier const& qualifier) const;
     
-    /*!
-     *  Convert a string to PortQualifier.
-	 *
-	 *      @param [in] str The string to convert.
-	 *
-	 *      @return A qualifier that matches the string.
-     */
-	//Qualifier::Type stringToQualifier(std::string const& str) const;
-
     /*!
      *  Create a wire signal.
      *
