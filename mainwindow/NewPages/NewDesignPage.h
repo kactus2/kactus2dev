@@ -39,8 +39,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewDesignPage();
+    virtual ~NewDesignPage() = default;
 
+    // Disable copying.
+    NewDesignPage(NewDesignPage const& rhs) = delete;
+    NewDesignPage& operator=(NewDesignPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -49,42 +52,39 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
      *      @return False, if the page change should be rejected. Otherwise true.
      */
-    bool onPageChange();
-
-public slots:
-
-    //! Called when the user changes the product hierarchy attribute.
-    void onProductHierarchyChanged();
+    bool onPageChange() final;
     
 
 signals:
     //! Signaled when a design should be created.
     void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory);
+
+protected:
+
+    KactusAttribute::ProductHierarchy getProductHierarchy() const final;
 
 private:
-    // Disable copying.
-    NewDesignPage(NewDesignPage const& rhs);
-    NewDesignPage& operator=(NewDesignPage const& rhs);
-  
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Attribute editor.
     KactusAttributeEditor* attributeEditor_;
+
 };
 
 //-----------------------------------------------------------------------------

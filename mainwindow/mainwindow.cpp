@@ -1335,53 +1335,53 @@ void MainWindow::createNew()
     dialog.setWindowTitle(tr("New"));
 
     NewBusDefinitionPage* busPage = new NewBusDefinitionPage(libraryHandler_, &dialog);
-    connect(busPage, SIGNAL(createBus(VLNV const&, QString const&)),
-        this, SLOT(createBus(VLNV const&, QString const&)), Qt::UniqueConnection);
+    connect(busPage, SIGNAL(createBus(VLNV const&, Document::Revision, QString const&)),
+        this, SLOT(createBus(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/bus-def.png"), tr("Bus Definition"), busPage);
 
     NewCatalogPage* catalogPage = new NewCatalogPage(libraryHandler_, &dialog);
-    connect(catalogPage, SIGNAL(createCatalog(VLNV const&, QString const&)),
-        this, SLOT(createCatalog(VLNV const&, QString const&)), Qt::UniqueConnection);
+    connect(catalogPage, SIGNAL(createCatalog(VLNV const&, Document::Revision, QString const&)),
+        this, SLOT(createCatalog(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/catalog.png"), tr("Catalog"), catalogPage);
 
     // Add pages to the dialog.
     NewComponentPage* compPage = new NewComponentPage(libraryHandler_, &dialog);
     connect(compPage, SIGNAL(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, QString const&)),
+            QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, QString const&)));
+            QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-component.png"), tr("HW Component"), compPage);
 
     NewDesignPage* designPage = new NewDesignPage(libraryHandler_, &dialog);
     connect(designPage, SIGNAL(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, QString const&)),
+            QVector<TagData>, VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createDesign(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness,
-            QVector<TagData>, VLNV const&, QString const&)));
+            QVector<TagData>, VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
     NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
-    connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, QString const&)),
-        this, SLOT(createSWComponent(VLNV const&, QString const&)));
+    connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, Document::Revision revision, QString const&)),
+        this, SLOT(createSWComponent(VLNV const&, Document::Revision revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
     NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
-    connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, QString const&)),
-            this, SLOT(createSWDesign(VLNV const&, QString const&)), Qt::UniqueConnection);
+    connect(swDesignPage, SIGNAL(createSWDesign(VLNV const&, Document::Revision, QString const&)),
+            this, SLOT(createSWDesign(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/sw-design48x48.png"), tr("SW Design"), swDesignPage);
 
     NewSystemPage* sysPage = new NewSystemPage(libraryHandler_, &dialog);
-    connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)),
-        this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, QString const&)));
+    connect(sysPage, SIGNAL(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)),
+        this, SLOT(createSystem(VLNV const&, QString const&, VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/system-component.png"), tr("System"), sysPage);
 
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
-    connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, QString const&)),
+    connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, Document::Revision, QString const&)),
         this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);
-    connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, QString const&)),
-            this, SLOT(createComDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
+    connect(comDefPage, SIGNAL(createComDefinition(VLNV const&, Document::Revision, QString const&)),
+            this, SLOT(createComDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-com_definition.png"), tr("COM Definition"), comDefPage);
 
     dialog.finalizePages();
@@ -1393,12 +1393,12 @@ void MainWindow::createNew()
 // Function: mainwindow::createComponent()
 //-----------------------------------------------------------------------------
 void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-    QVector<TagData> tags, VLNV const& vlnv, QString const& directory)
+    QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 
     // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, revision));
 
     // Set Kactus attributes.
     component->setHierarchy(prodHier);
@@ -1427,7 +1427,7 @@ void MainWindow::createComponent(KactusAttribute::ProductHierarchy prodHier, Kac
 // Function: mainwindow::createDesign()
 //-----------------------------------------------------------------------------
 void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-    QVector<TagData> tags, VLNV const& vlnv, QString const& directory)
+    QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 
@@ -1437,7 +1437,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
         vlnv.getName().remove(".comp") + ".designcfg", vlnv.getVersion());
 
     // Create a component and a hierarchical view .
-    QSharedPointer<Component> component(new Component(vlnv, Document::Revision::Std14));
+    QSharedPointer<Component> component(new Component(vlnv, revision));
 
     // Set Kactus2 attributes.
     component->setHierarchy(prodHier);
@@ -1465,11 +1465,11 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     Q_ASSERT(!viewNames.isEmpty());
 
     // Create the design and design configuration.
-    QSharedPointer<Design> design(new Design(designVLNV, Document::Revision::Std14));
+    QSharedPointer<Design> design(new Design(designVLNV, revision));
     design->setDesignImplementation(KactusAttribute::HW);
     design->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, revision));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1572,12 +1572,12 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     component->getDesignConfigurationInstantiations()->append(hierarchyInstantiation);
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), component->getRevision()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::HW);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), component->getRevision()));
     newDesign->setDesignImplementation(KactusAttribute::HW);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1640,13 +1640,12 @@ void MainWindow::unlockNewlyCreatedDocument(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: mainwindow::createCatalog()
 //-----------------------------------------------------------------------------
-void MainWindow::createCatalog(VLNV const& catalogVLNV, QString const& directory)
+void MainWindow::createCatalog(VLNV const& catalogVLNV, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(catalogVLNV.isValid());
 
     // Create the catalog.
-    QSharedPointer<Catalog> catalog = QSharedPointer<Catalog>(new Catalog());
-    catalog->setVlnv(catalogVLNV);
+    QSharedPointer<Catalog> catalog = QSharedPointer<Catalog>(new Catalog(catalogVLNV, revision));
     catalog->setVersion(VersionHelper::versionFileStr());
 
     // create the file for the abstraction definition
@@ -1665,7 +1664,7 @@ void MainWindow::createCatalog(VLNV const& catalogVLNV, QString const& directory
 //-----------------------------------------------------------------------------
 // Function: MainWindow::createSWDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
+void MainWindow::createSWDesign(VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 
@@ -1675,7 +1674,7 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
         vlnv.getName().remove(".comp") + ".swdesigncfg", vlnv.getVersion());
 
     // Create a component and a hierarchical view .
-    QSharedPointer<Component> component(new Component(vlnv, Document::Revision::Std14));
+    QSharedPointer<Component> component(new Component(vlnv, revision));
 
     // Set Kactus attributes.
     component->setImplementation(KactusAttribute::SW);
@@ -1696,11 +1695,11 @@ void MainWindow::createSWDesign(VLNV const& vlnv, QString const& directory)
     component->getViews()->append(view);
 
     // Create the design and design configuration.
-    QSharedPointer<Design> design(new Design(designVLNV, Document::Revision::Std14));
+    QSharedPointer<Design> design(new Design(designVLNV, revision));
     design->setDesignImplementation(KactusAttribute::SW);
     design->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, revision));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -1813,12 +1812,12 @@ void MainWindow::createSWDesign(VLNV const& vlnv)
     component->setVersion(VersionHelper::versionFileStr());
 
     // Create the design and design configuration objects.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), component->getRevision()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SW);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
+    QSharedPointer<Design> newDesign(new Design(dialog.getDesignVLNV(), component->getRevision()));
     newDesign->setDesignImplementation(KactusAttribute::SW);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1895,7 +1894,7 @@ void MainWindow::openSettings()
 // Function: mainwindow::createSystem()
 //-----------------------------------------------------------------------------
 void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLNV const& sysVLNV,
-                              QString const& directory)
+    Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(sysVLNV.isValid());
 
@@ -1918,7 +1917,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     else
     {
         // Otherwise create a system component to encapsulate the system design.
-        parentComp = QSharedPointer<Component>(new Component(sysVLNV, Document::Revision::Std14));
+        parentComp = QSharedPointer<Component>(new Component(sysVLNV, revision));
         parentComp->setHierarchy(KactusAttribute::PRODUCT);
         parentComp->setFirmness(KactusAttribute::FIXED);
         parentComp->setImplementation(KactusAttribute::SYSTEM);
@@ -1944,7 +1943,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     parentComp->setSystemViews(systemViews);
 
     // Flat-out the hierarchy to form the system design.
-    QSharedPointer<Design> sysDesign(new Design(designVLNV, Document::Revision::Std14));
+    QSharedPointer<Design> sysDesign(new Design(designVLNV, revision));
     sysDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     sysDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -1956,7 +1955,7 @@ void MainWindow::createSystem(VLNV const& compVLNV, QString const& viewName, VLN
     generateSystemDesignV2(libraryHandler_, parentComp->getHierRef(viewName), *sysDesign);
 
     // Create the design configuration.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, revision));
     designConf->setDesignRef(designVLNV);
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());
@@ -2060,12 +2059,12 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
     component->setSystemViews(systemViews);
 
     // Create the design and design configuration objects to the same folder as the component.
-    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), Document::Revision::Std14));
+    QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(dialog.getDesignConfVLNV(), component->getRevision()));
     designConf->setDesignRef(dialog.getDesignVLNV());
     designConf->setDesignConfigImplementation(KactusAttribute::SYSTEM);
     designConf->setVersion(VersionHelper::versionFileStr());
 
-    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), Document::Revision::Std14));
+    QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(dialog.getDesignVLNV(), component->getRevision()));
     newDesign->setDesignImplementation(KactusAttribute::SYSTEM);
     newDesign->setVersion(VersionHelper::versionFileStr());
 
@@ -2112,7 +2111,7 @@ void MainWindow::createSystemDesign(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: mainwindow::createBus()
 //-----------------------------------------------------------------------------
-void MainWindow::createBus(VLNV const& vlnv, QString const& directory)
+void MainWindow::createBus(VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
     Q_ASSERT(!directory.isEmpty());
@@ -2150,8 +2149,7 @@ void MainWindow::createBus(VLNV const& vlnv, QString const& directory)
     }
 
     // Create a bus definition.
-    QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition());
-    busDef->setVlnv(busVLNV);
+    QSharedPointer<BusDefinition> busDef = QSharedPointer<BusDefinition>(new BusDefinition(busVLNV, revision));
     busDef->setVersion(VersionHelper::versionFileStr());
 
     // Create the file for the bus definition.
@@ -2163,8 +2161,8 @@ void MainWindow::createBus(VLNV const& vlnv, QString const& directory)
     }
 
     // create an abstraction definition
-    QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
-    absDef->setVlnv(absVLNV);
+    QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(
+        new AbstractionDefinition(absVLNV, revision));
     absDef->setVersion(VersionHelper::versionFileStr());
 
     // set reference from abstraction definition to bus definition
@@ -2247,13 +2245,13 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory 
 //-----------------------------------------------------------------------------
 // Function: MainWindow::createComDefinition()
 //-----------------------------------------------------------------------------
-void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
+void MainWindow::createComDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
     Q_ASSERT(!directory.isEmpty());
 
     // Create an empty COM definition and save it.
-    QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv, Document::Revision::Std22));
+    QSharedPointer<ComDefinition> comDef(new ComDefinition(vlnv, revision));
     comDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, comDef))
@@ -2270,16 +2268,15 @@ void MainWindow::createComDefinition(VLNV const& vlnv, QString const& directory)
 //-----------------------------------------------------------------------------
 // Function: MainWindow::createApiDefinition()
 //-----------------------------------------------------------------------------
-void MainWindow::createApiDefinition(VLNV const& vlnv, QString const& directory)
+void MainWindow::createApiDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
     Q_ASSERT(!directory.isEmpty());
 
     VLNV apiDefVLNV = vlnv;
-    //apiDefVLNV.setName(vlnv.getName() + ".apiDef");
 
     // Create an empty API definition and save it.
-    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV, Document::Revision::Std22));
+    QSharedPointer<ApiDefinition> apiDef(new ApiDefinition(apiDefVLNV, revision));
     apiDef->setVersion(VersionHelper::versionFileStr());
 
     if (!libraryHandler_->writeModelToFile(directory, apiDef))
@@ -3218,12 +3215,12 @@ void MainWindow::redo()
 //-----------------------------------------------------------------------------
 // Function: mainwindow::createSWComponent()
 //-----------------------------------------------------------------------------
-void MainWindow::createSWComponent(VLNV const& vlnv, QString const& directory)
+void MainWindow::createSWComponent(VLNV const& vlnv, Document::Revision revision, QString const& directory)
 {
     Q_ASSERT(vlnv.isValid());
 
     // Create a component.
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, revision));
     component->setVersion(VersionHelper::versionFileStr());
 
     // Set Kactus attributes.

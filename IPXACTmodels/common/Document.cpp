@@ -547,6 +547,24 @@ std::string Document::toStdString(Revision revision)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Document::toRevision()
+//-----------------------------------------------------------------------------
+Document::Revision Document::toRevision(QString const& revision)
+{
+    if (revision == QStringLiteral("1685-2014"))
+    {
+        return Revision::Std14;
+    }
+
+    if (revision == QStringLiteral("1685-2022"))
+    {
+        return Revision::Std22;
+    }
+
+    return Revision::Unknown;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Document::addDefaultNameSpaces()
 //-----------------------------------------------------------------------------
 void Document::addDefaultNameSpaces(Revision revision)

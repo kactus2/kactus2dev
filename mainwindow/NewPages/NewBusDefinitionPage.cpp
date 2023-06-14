@@ -30,14 +30,6 @@ NewPage(libHandler, VLNV::BUSDEFINITION, tr("New Bus Definition"), tr("Creates a
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewBusPage()
-//-----------------------------------------------------------------------------
-NewBusDefinitionPage::~NewBusDefinitionPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewBusDefinitionPage::validate()
@@ -58,5 +50,5 @@ bool NewBusDefinitionPage::validate()
 //-----------------------------------------------------------------------------
 void NewBusDefinitionPage::apply()
 {
-	 emit createBus(vlnvEditor_->getVLNV(), selectedPath());
+	 emit createBus(vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }

@@ -35,7 +35,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewCatalogPage();
+    virtual ~NewCatalogPage() = default;
+
+    // Disable copying.
+    NewCatalogPage(NewCatalogPage const& rhs) = delete;
+    NewCatalogPage& operator=(NewCatalogPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -44,24 +48,18 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
 
 signals:
     //! Signaled when a API definition should be created.
-    void createCatalog(VLNV const& vlnv, QString const& directory);
+    void createCatalog(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
-private:
-
-    // Disable copying.
-    NewCatalogPage(NewCatalogPage const& rhs);
-    NewCatalogPage& operator=(NewCatalogPage const& rhs);
-       
 };
 
 //-----------------------------------------------------------------------------

@@ -36,7 +36,7 @@ CatalogReader::~CatalogReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& document) const
 {
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(VLNV(), Document::Revision::Unknown));
 
     parseTopComments(document, catalog);
 

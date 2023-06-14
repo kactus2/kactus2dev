@@ -40,14 +40,6 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New HW Design"), tr("Creates a hierar
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewDesignPage()
-//-----------------------------------------------------------------------------
-NewDesignPage::~NewDesignPage()
-{
-}
-
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewDesignPage::validate()
@@ -88,7 +80,7 @@ bool NewDesignPage::validate()
 void NewDesignPage::apply()
 {
     emit createDesign(attributeEditor_->getProductHierarchy(), attributeEditor_->getFirmness(),
-        attributeEditor_->getTags(), vlnvEditor_->getVLNV(), selectedPath());
+        attributeEditor_->getTags(), vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }
 
 //-----------------------------------------------------------------------------
@@ -103,29 +95,9 @@ bool NewDesignPage::onPageChange()
 }
 
 //-----------------------------------------------------------------------------
-// Function: onProductHierarchyChanged()
+// Function: NewDesignPage::getProductHierarchy()
 //-----------------------------------------------------------------------------
-void NewDesignPage::onProductHierarchyChanged()
+KactusAttribute::ProductHierarchy NewDesignPage::getProductHierarchy() const
 {
-    // Update the VLNV's library field if it is either empty or any of the predefined ones.
-    VLNV vlnv = vlnvEditor_->getVLNV();
-
-    if (vlnv.getLibrary().isEmpty())
-    {
-        vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
-    }
-    else
-    {
-        for (unsigned int i = 0; i < KactusAttribute::KTS_PRODHIER_COUNT; ++i)
-        {
-            if (vlnv.getLibrary().toLower() ==
-                KactusAttribute::hierarchyToString(static_cast<KactusAttribute::ProductHierarchy>(i)).toLower())
-            {
-                vlnv.setLibrary(KactusAttribute::hierarchyToString(attributeEditor_->getProductHierarchy()).toLower());
-                break;
-            }
-        }
-    }
-
-    vlnvEditor_->setVLNV(vlnv);
+    return attributeEditor_->getProductHierarchy();
 }

@@ -13,9 +13,13 @@
 #define NEWPAGE_H
 
 #include <common/dialogs/propertyPageDialog/PropertyPageView.h>
+
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
 #include <QLabel>
+#include <QComboBox>
 
 class LibraryInterface;
 class VLNVEditor;
@@ -41,7 +45,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewPage();
+    virtual ~NewPage() = default;
+
+    // Disable copying.
+    NewPage(NewPage const& rhs) = delete;
+    NewPage& operator=(NewPage const& rhs) = delete;
 
     /*!
      *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
@@ -76,8 +84,18 @@ public slots:
      */
     void updateDirectory();
 
+    //! Updates the VLNV library based on selected product hierarchy.
+    void onProductHierarchyChanged();
+
 protected:
     
+    /*!
+     *  Gets the selected product hierarchy level, if selected.
+     *
+     *      @return The selected product hierarchy.
+     */
+    virtual KactusAttribute::ProductHierarchy getProductHierarchy() const;
+
     /*!
      *  Checks if the given VLNV is not found in the library.
      *
@@ -101,7 +119,21 @@ protected:
      */
     void showErrorForReservedVLVN(VLNV const& vlnv);
 
+    /*!
+     *  Gets the name of the VLNV type
+     *
+     *      @param [in] type    The type whose name to get.
+     *
+     *      @return The name of the VLNV document type.
+     */
     QString type2Show(VLNV::IPXactType const& type);
+
+    /*!
+     *  Gets the selected document revision.
+     *
+     *      @return The selected IP-XACT revision.
+     */
+    Document::Revision selectedRevision() const;
 
     //! VLNV editor.
     VLNVEditor* vlnvEditor_;
@@ -110,14 +142,14 @@ protected:
     LibraryInterface* libInterface_;
 
 private:
-    // Disable copying.
-    NewPage(NewPage const& rhs);
-    NewPage& operator=(NewPage const& rhs);
 
     /*!
      *  Sets the basic layout for the page.
      */
     void setupLayout();
+
+    //! IP-XACT standard revision selector.
+    QComboBox* revisionSelector_;
 
     //! Library selector.
     LibrarySelectorWidget* librarySelector_;

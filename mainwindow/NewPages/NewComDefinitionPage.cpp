@@ -29,14 +29,6 @@ NewPage(libInterface, VLNV::COMDEFINITION, tr("New COM definition"), tr("Creates
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewComDefinitionPage()
-//-----------------------------------------------------------------------------
-NewComDefinitionPage::~NewComDefinitionPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewComDefinitionPage::validate()
@@ -57,5 +49,5 @@ bool NewComDefinitionPage::validate()
 //-----------------------------------------------------------------------------
 void NewComDefinitionPage::apply()
 {
-    emit createComDefinition(vlnvEditor_->getVLNV(), selectedPath());
+    emit createComDefinition(vlnvEditor_->getVLNV(),selectedRevision(), selectedPath());
 }
