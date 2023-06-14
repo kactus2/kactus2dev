@@ -25,7 +25,7 @@ void FileSetWriter::writeFileSet(QXmlStreamWriter& writer, QSharedPointer<FileSe
 {
     writer.writeStartElement(QStringLiteral("ipxact:fileSet"));
 
-    NameGroupWriter::writeNameGroup(writer, fileSet);
+    NameGroupWriter::writeNameGroup(writer, fileSet, docRevision);
 
     Details::writeGroups(writer, fileSet->getGroups());
 

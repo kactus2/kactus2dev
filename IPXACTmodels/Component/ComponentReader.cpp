@@ -505,7 +505,6 @@ void ComponentReader::parseResetTypes(QDomNode const& componentNode, QSharedPoin
     if (!resetTypesElement.isNull())
     {
         QDomNodeList resetTypeList = resetTypesElement.childNodes();
-        NameGroupReader nameReader;
 
         for (int i = 0; i < resetTypeList.size(); ++i)
         {
@@ -513,7 +512,7 @@ void ComponentReader::parseResetTypes(QDomNode const& componentNode, QSharedPoin
 
             QSharedPointer<ResetType> newResetType(new ResetType());
 
-            nameReader.parseNameGroup(resetTypeNode, newResetType);
+            NameGroupReader::parseNameGroup(resetTypeNode, newResetType);
 
             parseVendorExtensions(resetTypeNode, newResetType);
 

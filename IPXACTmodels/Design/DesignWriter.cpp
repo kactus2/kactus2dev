@@ -111,7 +111,7 @@ void DesignWriter::Details::writeSingleInterconncetion(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:interconnection"));
 
-    NameGroupWriter::writeNameGroup(writer, currentInterconnection);
+    NameGroupWriter::writeNameGroup(writer, currentInterconnection, docRevision);
 
     if (docRevision == Document::Revision::Std14)
     {
@@ -215,7 +215,7 @@ void DesignWriter::Details::writeMonitorInterconnection(QXmlStreamWriter& writer
 {
     writer.writeStartElement(QStringLiteral("ipxact:monitorInterconnection"));
 
-    NameGroupWriter::writeNameGroup(writer, monitorConnection);
+    NameGroupWriter::writeNameGroup(writer, monitorConnection, docRevision);
 
     CommonItemsWriter::writeIsPresent(writer, monitorConnection->getIsPresent());
 
@@ -290,7 +290,7 @@ void DesignWriter::Details::writeSingleAdHocConnection(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:adHocConnection"));
 
-    NameGroupWriter::writeNameGroup(writer, adHocConnection);
+    NameGroupWriter::writeNameGroup(writer, adHocConnection, docRevision);
 
     CommonItemsWriter::writeIsPresent(writer, adHocConnection->getIsPresent());
 

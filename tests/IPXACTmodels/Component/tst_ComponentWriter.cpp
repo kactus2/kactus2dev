@@ -83,6 +83,7 @@ private slots:
     void writeCPUs();
     void writeOtherClockDrivers();
     void writeResetTypes();
+    void writeResetTypes2022();
 
     void writeParameters();
     void writeAssertions();
@@ -134,8 +135,7 @@ void tst_ComponentWriter::cleanupTestCase()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::init()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
-    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -151,6 +151,9 @@ void tst_ComponentWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSimpleComponent()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -186,6 +189,9 @@ void tst_ComponentWriter::writeSimpleComponent()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeXMLProcessingInstructions()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -221,6 +227,9 @@ void tst_ComponentWriter::writeXMLProcessingInstructions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeXMLNameSpaces()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+    
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -256,6 +265,9 @@ void tst_ComponentWriter::writeXMLNameSpaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeBusInterfaces()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -303,6 +315,9 @@ void tst_ComponentWriter::writeBusInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeIndirectInterfaces()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -349,6 +364,9 @@ void tst_ComponentWriter::writeIndirectInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeChannels()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -402,6 +420,9 @@ void tst_ComponentWriter::writeChannels()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeRemapStates()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -443,6 +464,9 @@ void tst_ComponentWriter::writeRemapStates()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeAddressSpace()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -489,6 +513,9 @@ void tst_ComponentWriter::writeAddressSpace()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeMemoryMap()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -530,6 +557,9 @@ void tst_ComponentWriter::writeMemoryMap()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeView()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -573,6 +603,9 @@ void tst_ComponentWriter::writeView()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeInstantiations()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -641,6 +674,9 @@ void tst_ComponentWriter::writeInstantiations()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writePorts()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -692,6 +728,9 @@ void tst_ComponentWriter::writePorts()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeComponentGenerators()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -736,6 +775,9 @@ void tst_ComponentWriter::writeComponentGenerators()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeChoices()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -783,6 +825,9 @@ void tst_ComponentWriter::writeChoices()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeFileSets()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -824,6 +869,9 @@ void tst_ComponentWriter::writeFileSets()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeCPUs()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -870,6 +918,9 @@ void tst_ComponentWriter::writeCPUs()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeOtherClockDrivers()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -923,6 +974,9 @@ void tst_ComponentWriter::writeOtherClockDrivers()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeResetTypes()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -932,6 +986,7 @@ void tst_ComponentWriter::writeResetTypes()
     QSharedPointer<ResetType> testResetType(new ResetType());
     testResetType->setName(QLatin1String("SOFT"));
     testResetType->setDisplayName(QLatin1String("Soft Reset"));
+    testResetType->setShortDescription(QLatin1String("brief")); //!< Should not be written in XML.
     testResetType->setDescription(QLatin1String("Reset the software"));
 
     testComponent_->getResetTypes()->append(testResetType);
@@ -965,10 +1020,64 @@ void tst_ComponentWriter::writeResetTypes()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeResetTypes2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeResetTypes2022()
+{
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<ResetType> testResetType(new ResetType());
+    testResetType->setName(QLatin1String("SOFT"));
+    testResetType->setDisplayName(QLatin1String("Soft Reset"));
+    testResetType->setShortDescription(QLatin1String("brief"));
+    testResetType->setDescription(QLatin1String("Reset the software"));
+
+    testComponent_->getResetTypes()->append(testResetType);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:resetTypes>\n"
+                "\t\t<ipxact:resetType>\n"
+                    "\t\t\t<ipxact:name>SOFT</ipxact:name>\n"
+                    "\t\t\t<ipxact:displayName>Soft Reset</ipxact:displayName>\n"
+                    "\t\t\t<ipxact:shortDescription>brief</ipxact:shortDescription>\n"
+                    "\t\t\t<ipxact:description>Reset the software</ipxact:description>\n"
+                "\t\t</ipxact:resetType>\n"
+            "\t</ipxact:resetTypes>\n"
+        "</ipxact:component>\n"
+    );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentWriter::writeParameters()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeParameters()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1014,6 +1123,9 @@ void tst_ComponentWriter::writeParameters()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeAssertions()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1062,6 +1174,9 @@ void tst_ComponentWriter::writeAssertions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeVendorExtensions()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1111,6 +1226,9 @@ void tst_ComponentWriter::writeVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeKactusAttributes()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1151,6 +1269,9 @@ void tst_ComponentWriter::writeKactusAttributes()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSwProperties()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1203,6 +1324,9 @@ void tst_ComponentWriter::writeSwProperties()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSystemViews()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1267,6 +1391,9 @@ void tst_ComponentWriter::writeSystemViews()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeComInterfaces()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1339,6 +1466,9 @@ void tst_ComponentWriter::writeComInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeApiInterfaces()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1395,6 +1525,9 @@ void tst_ComponentWriter::writeApiInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeFileDependencies()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1452,6 +1585,9 @@ void tst_ComponentWriter::writeFileDependencies()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeTags()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
@@ -1504,6 +1640,9 @@ void tst_ComponentWriter::writeTags()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeErasedTags()
 {
+    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
+
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
