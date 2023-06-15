@@ -144,13 +144,12 @@ void ComponentReader::parseIndirectInterfaces(QDomNode const& componentNode, QSh
 
     if (!interfaceElement.isNull())
     {
-        IndirectInterfaceReader interfaceReader;
-
         QDomNodeList interfaceList = interfaceElement.elementsByTagName(QStringLiteral("ipxact:indirectInterface"));
         for (int i = 0; i < interfaceList.count(); ++i)
         {
             QDomNode interfaceNode = interfaceList.at(i);
-            QSharedPointer<IndirectInterface> newInterface = interfaceReader.createIndirectInterfaceFrom(interfaceNode);
+            QSharedPointer<IndirectInterface> newInterface = 
+                IndirectInterfaceReader::createIndirectInterfaceFrom(interfaceNode, newComponent->getRevision());
 
             newComponent->getIndirectInterfaces()->append(newInterface);
         }

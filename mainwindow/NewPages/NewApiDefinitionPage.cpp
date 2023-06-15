@@ -28,14 +28,6 @@ NewPage(libInterface, VLNV::APIDEFINITION, tr("New API definition"), tr("Creates
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewApiDefinitionPage()
-//-----------------------------------------------------------------------------
-NewApiDefinitionPage::~NewApiDefinitionPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewApiDefinitionPage::validate()
@@ -56,5 +48,5 @@ bool NewApiDefinitionPage::validate()
 //-----------------------------------------------------------------------------
 void NewApiDefinitionPage::apply()
 {
-    emit createApiDefinition(vlnvEditor_->getVLNV(), selectedPath());
+    emit createApiDefinition(vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }

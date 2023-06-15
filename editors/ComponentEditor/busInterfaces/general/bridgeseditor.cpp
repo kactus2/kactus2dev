@@ -41,7 +41,9 @@ bridges_(bridges)
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-	view_.setColumnWidth(BridgeColumns::MASTER_COLUMN, 200);    
+	view_.setColumnWidth(BridgeColumns::INITIATOR_COLUMN, 200);    
+
+    setFlat(true);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);

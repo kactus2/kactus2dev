@@ -52,7 +52,8 @@ addressSelector_(new ReferenceSelector(this)),
 dataSelector_(new ReferenceSelector(this)),
 bitsInLauEditor_(new QLineEdit(this)),
 endiannessSelector_(new QComboBox(this)),
-memoryMapBox_(new QGroupBox(tr("Indirect memory map"), this)),
+memoryMapSelection_(new QCheckBox(tr("Memory map"), this)),
+bridgeSelection_(new QCheckBox(tr("Transparent bridge"), this)),
 memoryMapSelector_(new ReferenceSelector(this)),
 transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), this)),
 parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(), finder,
@@ -65,8 +66,8 @@ parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), com
     endiannessSelector_->addItem(QString("big"));
     endiannessSelector_->addItem(QString(""));
 
-    memoryMapBox_->setCheckable(true);
-    transparentBridgesEditor_->setCheckable(true);
+    transparentBridgesEditor_->setHidden(true);
+    memoryMapSelector_->setHidden(true);
 
     setupLayout();
 
@@ -76,8 +77,10 @@ parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), com
     connect(endiannessSelector_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onEndiannessChanged()));
     connect(memoryMapSelector_, SIGNAL(itemSelected(QString const&)), this, SLOT(onMemoryMapChanged()));
  
-    connect(memoryMapBox_, SIGNAL(clicked(bool)), this, SLOT(onMemoryMapSelected(bool)));
-    connect(transparentBridgesEditor_, SIGNAL(clicked(bool)), this, SLOT(onTransparentBridgeSelected(bool)));
+    connect(memoryMapSelection_, SIGNAL(clicked(bool)), this, SLOT(onMemoryMapSelected(bool)));
+    connect(memoryMapSelection_, SIGNAL(toggled(bool)), memoryMapSelector_, SLOT(setVisible(bool)));
+    connect(bridgeSelection_, SIGNAL(clicked(bool)), this, SLOT(onTransparentBridgeSelected(bool)));
+    connect(bridgeSelection_, SIGNAL(toggled(bool)), transparentBridgesEditor_, SLOT(setVisible(bool)));
 
     connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));   
     connect(transparentBridgesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()));
@@ -126,12 +129,14 @@ void SingleIndirectInterfaceEditor::refresh()
     
     endiannessSelector_->setCurrentIndex(endiannessSelector_->findText(indirectInterface_->getEndianness()));
 
-    memoryMapBox_->setChecked(!indirectInterface_->getMemoryMapRef().isEmpty());
+    memoryMapSelection_->setChecked(!indirectInterface_->getMemoryMapRef().isEmpty());
     memoryMapSelector_->refresh(component_->getMemoryMapNames());
     memoryMapSelector_->selectItem(indirectInterface_->getMemoryMapRef());
+    memoryMapSelector_->setVisible(memoryMapSelection_->isChecked());
 
-    transparentBridgesEditor_->setChecked(!indirectInterface_->getTransparentBridges()->isEmpty());
+    bridgeSelection_->setChecked(!indirectInterface_->getTransparentBridges()->isEmpty());
     transparentBridgesEditor_->refresh();
+    transparentBridgesEditor_->setVisible(bridgeSelection_->isChecked());
 }
 
 //-----------------------------------------------------------------------------
@@ -199,16 +204,14 @@ void SingleIndirectInterfaceEditor::onMemoryMapChanged()
 //-----------------------------------------------------------------------------
 void SingleIndirectInterfaceEditor::onMemoryMapSelected(bool checked)
 {
-    bool canChange = checked && indirectInterface_->getTransparentBridges()->isEmpty();
+    bool canChange = indirectInterface_->getTransparentBridges()->isEmpty();
     if (canChange)
     {
-        memoryMapBox_->setChecked(true);
-        transparentBridgesEditor_->setChecked(false);
-        
+        bridgeSelection_->setChecked(false);
     }
     else
     {
-        memoryMapBox_->setChecked(!checked);
+        memoryMapSelection_->setChecked(!checked);
     }
 }
 
@@ -217,15 +220,14 @@ void SingleIndirectInterfaceEditor::onMemoryMapSelected(bool checked)
 //-----------------------------------------------------------------------------
 void SingleIndirectInterfaceEditor::onTransparentBridgeSelected(bool checked)
 {
-    bool canChange = checked && indirectInterface_->getMemoryMapRef().isEmpty();
+    bool canChange = indirectInterface_->getMemoryMapRef().isEmpty();
     if (canChange)
     {
-        transparentBridgesEditor_->setChecked(true);
-        memoryMapBox_->setChecked(false);
+        memoryMapSelection_->setChecked(false);
     }
     else
     {
-        transparentBridgesEditor_->setChecked(!checked);
+        bridgeSelection_->setChecked(!checked);
     }
 }
 
@@ -280,19 +282,19 @@ void SingleIndirectInterfaceEditor::setMemoryMapColorByValidity()
 QStringList SingleIndirectInterfaceEditor::findAvailableReferences() const
 {
     QStringList fields;
-    foreach (QSharedPointer<MemoryMap> map, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> map : *component_->getMemoryMaps())
     {
-        foreach (QSharedPointer<MemoryBlockBase> block, *map->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> block : *map->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                for (QSharedPointer<RegisterBase> registerBase : *addressBlock->getRegisterData())
                 {
                     QSharedPointer<Register> reg = registerBase.dynamicCast<Register>();
                     if (reg)
                     {
-                        foreach (QSharedPointer<Field> field, *reg->getFields())
+                        for (QSharedPointer<Field> field : *reg->getFields())
                         {
                             if (!field->getId().isEmpty())
                             {
@@ -332,14 +334,18 @@ void SingleIndirectInterfaceEditor::setupLayout()
     detailsLayout->addRow(tr("Endianness:"), endiannessSelector_);
 
     QGroupBox* memoryBox = new QGroupBox(tr("Indirect access target"), this);
+    memoryBox->setFlat(true);
 
-    QHBoxLayout* mapLayout = new QHBoxLayout(memoryMapBox_);
-    mapLayout->addWidget(memoryMapSelector_);
+    auto selectionLayout = new QHBoxLayout();
+    selectionLayout->addWidget(memoryMapSelection_);
+    selectionLayout->addWidget(bridgeSelection_);
+    selectionLayout->addStretch();
 
-    QGridLayout* memoryLayout = new QGridLayout(memoryBox);
-    memoryLayout->addWidget(memoryMapBox_, 0, 0, 1, 2);
-    memoryLayout->addWidget(transparentBridgesEditor_, 1, 0, 1, 2);
-    memoryLayout->setColumnStretch(1, 1);
+    auto memoryLayout = new QVBoxLayout(memoryBox);
+    memoryLayout->addLayout(selectionLayout);
+    memoryLayout->addWidget(memoryMapSelector_);
+    memoryLayout->addWidget(transparentBridgesEditor_);
+    memoryLayout->addStretch();
 
     QGridLayout* topLayout = new QGridLayout(topWidget);    
     topLayout->addWidget(nameEditor_, 0, 0, 1, 1);
@@ -347,5 +353,6 @@ void SingleIndirectInterfaceEditor::setupLayout()
     topLayout->addWidget(memoryBox, 0, 1, 2, 1);
     topLayout->addWidget(parametersEditor_, 2, 0, 1, 2);
     topLayout->setRowStretch(2, 10);
+
     scrollArea->setWidget(topWidget);
 }

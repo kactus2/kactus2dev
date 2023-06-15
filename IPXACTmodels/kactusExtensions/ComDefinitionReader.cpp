@@ -16,36 +16,27 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinitionReader::ComDefinitionReader()
-//-----------------------------------------------------------------------------
-ComDefinitionReader::ComDefinitionReader(): DocumentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinitionReader::~ComDefinitionReader()
-//-----------------------------------------------------------------------------
-ComDefinitionReader::~ComDefinitionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::createComDefinitionFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomNode const& document) const
+QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomNode const& document)
 {
-    QSharedPointer<ComDefinition> comDefinition(new ComDefinition());
+    QDomElement comNode = document.firstChildElement();
+	auto vlnv = DocumentReader::createVLNVFrom(comNode, VLNV::COMDEFINITION);
+	auto revision = DocumentReader::getXMLDocumentRevision(document);
+	if (revision == Document::Revision::Unknown)
+	{
+		revision = Document::Revision::Std22;
+	}
+
+    QSharedPointer<ComDefinition> comDefinition(new ComDefinition(vlnv, revision));
 
     DocumentReader::parseTopComments(document, comDefinition);
 
 	DocumentReader::parseXMLProcessingInstructions(document, comDefinition);
 
-    QDomElement comNode = document.firstChildElement();
 	DocumentReader::parseNamespaceDeclarations(comNode, comDefinition);
 
-	comDefinition->setVlnv(createVLNVFrom(comNode, VLNV::COMDEFINITION));
+	DocumentReader::parseDocumentNameGroup(document, comDefinition);
 
 	// Parse child nodes.
 	for (int i = 0; i < comNode.childNodes().count(); ++i)
@@ -57,17 +48,13 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 			continue;
 		}
 
-		if (childNode.nodeName() == QLatin1String("ipxact:description"))
+		if (childNode.nodeName() == QLatin1String("kactus2:transferTypes"))
 		{
-			comDefinition->setDescription(childNode.childNodes().at(0).nodeValue());
-		}
-		else if (childNode.nodeName() == QLatin1String("kactus2:transferTypes"))
-		{
-			parseTransferTypes(childNode, comDefinition);
+			Details::parseTransferTypes(childNode, comDefinition);
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:properties"))
 		{
-			parseProperties(childNode, comDefinition);
+			Details::parseProperties(childNode, comDefinition);
 		}
     }
 
@@ -79,7 +66,7 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::parseTransferTypes()
 //-----------------------------------------------------------------------------
-void ComDefinitionReader::parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition) const
+void ComDefinitionReader::Details::parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition)
 {
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{
@@ -96,7 +83,7 @@ void ComDefinitionReader::parseTransferTypes(QDomNode& node, QSharedPointer<ComD
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::parseProperties()
 //-----------------------------------------------------------------------------
-void ComDefinitionReader::parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition) const
+void ComDefinitionReader::Details::parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition)
 {
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{

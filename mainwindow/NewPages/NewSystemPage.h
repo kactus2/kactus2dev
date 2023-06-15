@@ -44,7 +44,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewSystemPage();
+    virtual ~NewSystemPage() = default;
+
+    // Disable copying.
+    NewSystemPage(NewSystemPage const& rhs) = delete;
+    NewSystemPage& operator=(NewSystemPage const& rhs) = delete;
 
     /*!
      *  Pre-validates the contents of the page. This is used for enabling/disabling the OK button.
@@ -54,7 +58,7 @@ public:
      *
      *      @remarks Must not show any message boxes.
      */
-    bool prevalidate() const;
+    bool prevalidate() const final;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -63,19 +67,19 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
      *      @return False, if the page change should be rejected. Otherwise true.
      */
-    bool onPageChange();
+    bool onPageChange() final;
 
 public slots:
 
@@ -87,17 +91,14 @@ public slots:
 signals:
     //! Signaled when a system design should be created.
     void createSystem(VLNV const& compVLNV, QString const& viewName,
-                      VLNV const& sysVLNV, QString const& directory);
+                      VLNV const& sysVLNV, Document::Revision revision, QString const& directory);
 
 private slots:
     //! Called when radio button for mapping options selection is clicked.
     void actionChanged(QAbstractButton* button);
 
 private:
-    // Disable copying.
-    NewSystemPage(NewSystemPage const& rhs);
-    NewSystemPage& operator=(NewSystemPage const& rhs);
-        
+
     /*!
      *  Initializes the top component selection listing for HW mapping.
      *

@@ -33,13 +33,6 @@ QAbstractTableModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiInterfacesModel::~ApiInterfacesModel()
-//-----------------------------------------------------------------------------
-ApiInterfacesModel::~ApiInterfacesModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiInterfacesModel::rowCount()
 //-----------------------------------------------------------------------------
 int ApiInterfacesModel::rowCount(QModelIndex const& parent) const
@@ -234,15 +227,7 @@ bool ApiInterfacesModel::setData(QModelIndex const& index, const QVariant& value
 //-----------------------------------------------------------------------------
 bool ApiInterfacesModel::isValid() const
 {	
-	foreach (QSharedPointer<ApiInterface> apiIf, apis_)
-    {
-		if (!apiIf->isValid())
-        {
-			return false;
-		}
-	}
-
-	return true;
+    return std::all_of(apis_.cbegin(), apis_.cend(), [](auto const& api) { return api->isValid(); });
 }
 
 //-----------------------------------------------------------------------------

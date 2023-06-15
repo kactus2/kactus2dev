@@ -23,19 +23,8 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT ComDefinition element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComDefinitionWriter : public DocumentWriter
+namespace ComDefinitionWriter 
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    ComDefinitionWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~ComDefinitionWriter();
 
     /*!
      *  Write a view to an XML file.
@@ -43,13 +32,8 @@ public:
      *      @param [in] writer  The used xml writer.
      *      @param [in] ComDefinition		The ComDefinition to be written.
      */
-    void writeComDefinition(QXmlStreamWriter& writer, QSharedPointer<ComDefinition> ComDefinition) const;
-
-private:
-
-    //! No copying allowed.
-    ComDefinitionWriter(ComDefinitionWriter const& rhs);
-    ComDefinitionWriter& operator=(ComDefinitionWriter const& rhs);
+    IPXACTMODELS_EXPORT void writeComDefinition(QXmlStreamWriter& writer,
+        QSharedPointer<ComDefinition> ComDefinition);
 };
 
 #endif // ComDefinitionWriter_H

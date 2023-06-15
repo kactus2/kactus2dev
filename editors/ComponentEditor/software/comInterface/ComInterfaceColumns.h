@@ -21,6 +21,7 @@ namespace ComInterfaceColumns
     enum Column
     {
         NAME = 0,
+        DISPLAY_NAME,
         COM_DEFINITION,
         TRANSFER_TYPE,
         DIRECTION,

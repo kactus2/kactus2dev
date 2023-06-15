@@ -132,15 +132,6 @@ namespace DesignConfigurationReader
             QSharedPointer<DesignConfiguration> newDesignConfiguration);
 
         /*!
-         *  Reads the configurable element values of the component instances.
-         *
-         *      @param [in] configurableElementsNode    XML description of the configurable elements.
-         *      @param [in] newDesignConfiguration      The new design configuration item.
-         */
-        void parseInstanceConfigurableElementValues(QDomElement const& configurableElementsNode,
-            QSharedPointer<DesignConfiguration> newDesignConfiguration);
-
-        /*!
          *  Reads the view overrides.
          *
          *      @param [in] viewOverridesNode       XML description of the view overrides.

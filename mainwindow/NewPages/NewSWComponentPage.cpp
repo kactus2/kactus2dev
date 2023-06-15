@@ -33,14 +33,6 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New SW Component"), tr("Creates a SW 
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewSWComponentPage()
-//-----------------------------------------------------------------------------
-NewSWComponentPage::~NewSWComponentPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewSWComponentPage::validate()
@@ -61,5 +53,5 @@ bool NewSWComponentPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWComponentPage::apply()
 {
-    emit createSWComponent(vlnvEditor_->getVLNV(), selectedPath());
+    emit createSWComponent(vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }

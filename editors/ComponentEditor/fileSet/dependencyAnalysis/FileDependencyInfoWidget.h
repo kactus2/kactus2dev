@@ -39,7 +39,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~FileDependencyInfoWidget();
+    ~FileDependencyInfoWidget() final = default;
 
     /*!
      *  Returns the currently edited dependency.

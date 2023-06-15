@@ -17,6 +17,9 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/listManager/listmanager.h>
+
+#include <editors/common/DocumentNameGroupEditor.h>
+
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
@@ -51,7 +54,11 @@ public:
 	/*!
      *  Destructor.
      */
-	virtual ~ComDefinitionEditor();
+	virtual ~ComDefinitionEditor() = default;
+
+    // Disable copying.
+    ComDefinitionEditor(ComDefinitionEditor const& rhs) = delete;
+    ComDefinitionEditor& operator=(ComDefinitionEditor const& rhs) = delete;
 
 	/*! Get the VLNV that can be used to identify the COM definition.
 	 *
@@ -97,9 +104,6 @@ protected:
     virtual void showEvent(QShowEvent* event);
 
 private:
-    // Disable copying.
-    ComDefinitionEditor(ComDefinitionEditor const& rhs);
-    ComDefinitionEditor& operator=(ComDefinitionEditor const& rhs);
 
     /*!
      *  Applies the changes made in the editor to the document.
@@ -115,6 +119,8 @@ private:
 
 	//! The COM definition being edited.
 	QSharedPointer<ComDefinition> comDef_;
+
+    DocumentNameGroupEditor nameGroup_;
 
     //! The data type list manager.
     ListManager dataTypeList_;

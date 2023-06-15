@@ -17,6 +17,7 @@
 #include <KactusAPI/include/FileSetInterface.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/FileHandler.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -45,19 +46,11 @@ fileSetInterface_(fileSetInterface)
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
 
-    int childCount = files_->size();
+    int const childCount = files_->count();
     for (int i = 0; i < childCount; i++)
     {
-        createChild(i);
+        ComponentEditorFileSetItem::createChild(i);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorFileSetItem::~ComponentEditorFileSetItem()
-//-----------------------------------------------------------------------------
-ComponentEditorFileSetItem::~ComponentEditorFileSetItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -81,11 +74,9 @@ bool ComponentEditorFileSetItem::isValid() const
 	// check that the dependent directories exist
 	QString xmlPath = libHandler_->getPath(component_->getVlnv());
 
-	foreach (QString const& relDirPath, *fileSet_->getDependencies())
+	for (QString const& relDirPath : *fileSet_->getDependencies())
     {
-		QString absPath = General::getAbsolutePath(xmlPath, relDirPath);
-
-		if (!QFileInfo(absPath).exists())
+		if (FileHandler::isValidURI(xmlPath, relDirPath) == false)
         {
 			return false;
 		}
@@ -102,7 +93,7 @@ ItemEditor* ComponentEditorFileSetItem::editor()
 	if (!editor_)
     {
         editor_ = new FileSetEditor(libHandler_, component_, fileSet_, parameterFinder_, expressionParser_,
-            expressionFormatter_, fileSetInterface_, NULL);
+            expressionFormatter_, fileSetInterface_, nullptr);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -150,12 +141,12 @@ void ComponentEditorFileSetItem::createChild(int index)
 //-----------------------------------------------------------------------------
 void ComponentEditorFileSetItem::onFileAdded(File* file)
 {
-    if (files_->at(files_->size() - 1) != file)
+    if (files_->at(files_->count() - 1) != file)
     {
         Q_ASSERT(false);
     }
 
-    onAddChild(files_->size() - 1);
+    onAddChild(files_->count() - 1);
     emit contentChanged();
 }
 

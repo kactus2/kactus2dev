@@ -17,13 +17,16 @@
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
-SystemView::SystemView(QDomNode& viewNode) : NameGroup(), hierarchyRef_(), fileSetRefs_()
+SystemView::SystemView(QDomNode& viewNode) :
+    NameGroup()
 {
     QDomElement systemViewElement = viewNode.toElement();
 
     setName(systemViewElement.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
 
     setDisplayName(systemViewElement.firstChildElement(QStringLiteral("ipxact:displayName")).firstChild().nodeValue());
+
+    setShortDescription(systemViewElement.firstChildElement(QStringLiteral("ipxact:shortDescription")).firstChild().nodeValue());
 
     setDescription(systemViewElement.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue());
     
@@ -47,18 +50,12 @@ SystemView::SystemView(QDomNode& viewNode) : NameGroup(), hierarchyRef_(), fileS
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
 //-----------------------------------------------------------------------------
-SystemView::SystemView(QString const& name): NameGroup(name), hierarchyRef_(), hwViewRef_(), fileSetRefs_()
+SystemView::SystemView(QString const& name): 
+    NameGroup(name)
 {
 
 }
 
-//-----------------------------------------------------------------------------
-// Function: SystemView::SystemView()
-//-----------------------------------------------------------------------------
-SystemView::SystemView(): NameGroup(),  hierarchyRef_(), hwViewRef_(), fileSetRefs_()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: SystemView::SystemView()
@@ -123,16 +120,15 @@ void SystemView::write(QXmlStreamWriter& writer) const
 
     CommonItemsWriter::writeDisplayName(writer, displayName());
 
+    CommonItemsWriter::writeShortDescription(writer, shortDescription());
+
     CommonItemsWriter::writeDescription(writer, description());
 
     // write hierarchyRef if one exists
     if (!hierarchyRef_.isEmpty())
     {
         writer.writeEmptyElement(QStringLiteral("kactus2:hierarchyRef"));
-        writer.writeAttribute(QStringLiteral("vendor"), hierarchyRef_.getVendor());
-        writer.writeAttribute(QStringLiteral("library"), hierarchyRef_.getLibrary());
-        writer.writeAttribute(QStringLiteral("name"), hierarchyRef_.getName());
-        writer.writeAttribute(QStringLiteral("version"), hierarchyRef_.getVersion());
+        CommonItemsWriter::writeVLNVAttributes(writer, hierarchyRef_);
     }
 
     // Write HW view reference.

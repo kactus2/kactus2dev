@@ -53,10 +53,7 @@ QString dependencyDirection2Str(DependencyDirection dir)
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface() :
-NameGroup(),
-apiType_(),
-dependencyDir_(DEPENDENCY_PROVIDER),
-defaultPos_()
+NameGroup()
 {
 
 }
@@ -68,7 +65,7 @@ ApiInterface::ApiInterface(ApiInterface const& rhs) :
 NameGroup(rhs),
 apiType_(rhs.apiType_),
 dependencyDir_(rhs.dependencyDir_),
-defaultPos_(rhs.defaultPos_)
+defaultPos_(rhs.getDefaultPos())
 {
 
 }
@@ -77,10 +74,7 @@ defaultPos_(rhs.defaultPos_)
 // Function: ApiInterface::ApiInterface()
 //-----------------------------------------------------------------------------
 ApiInterface::ApiInterface(QDomNode& node) :
-NameGroup(),
-apiType_(),
-dependencyDir_(DEPENDENCY_PROVIDER),
-defaultPos_()
+NameGroup()
 {
     for (int i = 0; i < node.childNodes().count(); ++i)
     {
@@ -99,6 +93,10 @@ defaultPos_()
         {
             setDisplayName(childNode.firstChild().nodeValue());
         }
+        else if (childNode.nodeName() == QLatin1String("ipxact:shortDescription"))
+        {
+            setShortDescription(childNode.firstChild().nodeValue());
+        }
         else if (childNode.nodeName() == QLatin1String("ipxact:description"))
         {
             setDescription(childNode.firstChild().nodeValue());
@@ -113,8 +111,7 @@ defaultPos_()
         }
         else if (childNode.nodeName() == QLatin1String("kactus2:position"))
         {
-            defaultPos_.setX(childNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
-            defaultPos_.setY(childNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
+            defaultPos_.parsePosition(childNode);
         }
     }
 }
@@ -152,22 +149,20 @@ void ApiInterface::write(QXmlStreamWriter& writer) const
 
     writer.writeTextElement(QStringLiteral("ipxact:name"), name());
 
-
     CommonItemsWriter::writeDisplayName(writer, displayName());
+
+    CommonItemsWriter::writeShortDescription(writer, shortDescription());
 
     CommonItemsWriter::writeDescription(writer, description());
 
     writer.writeEmptyElement(QStringLiteral("kactus2:apiType"));
-    writer.writeAttribute(QStringLiteral("vendor"), apiType_.getVendor());
-    writer.writeAttribute(QStringLiteral("library"), apiType_.getLibrary());
-    writer.writeAttribute(QStringLiteral("name"), apiType_.getName());
-    writer.writeAttribute(QStringLiteral("version"), apiType_.getVersion());
+    CommonItemsWriter::writeVLNVAttributes(writer, apiType_);
 
     writer.writeTextElement(QStringLiteral("kactus2:dependencyDirection"), dependencyDirection2Str(dependencyDir_));
 
-    if (!defaultPos_.isNull())
+    if (!defaultPos_.position().isNull())
     {
-        writePosition(writer, defaultPos_);
+        defaultPos_.write(writer);
     }
 
     writer.writeEndElement(); // kactus2:apiInterface
@@ -256,15 +251,15 @@ ApiInterface& ApiInterface::operator=(ApiInterface const& rhs)
 //-----------------------------------------------------------------------------
 void ApiInterface::setDefaultPos(QPointF const& pos)
 {
-    defaultPos_ = pos;
+    defaultPos_.setPosition(pos);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterface::getDefaultPos()
 //-----------------------------------------------------------------------------
-QPointF const& ApiInterface::getDefaultPos() const
+QPointF ApiInterface::getDefaultPos() const
 {
-    return defaultPos_;
+    return defaultPos_.position();
 }
 
 //-----------------------------------------------------------------------------

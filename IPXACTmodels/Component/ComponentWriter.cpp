@@ -130,13 +130,11 @@ void ComponentWriter::writeIndirectInterfaces(QXmlStreamWriter& writer, QSharedP
 {
     if (!component->getIndirectInterfaces()->isEmpty())
     {
-        IndirectInterfaceWriter interfaceWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:indirectInterfaces"));
 
-        foreach (QSharedPointer<IndirectInterface> indirectInterface, *component->getIndirectInterfaces())
+        for (QSharedPointer<IndirectInterface> indirectInterface : *component->getIndirectInterfaces())
         {
-            interfaceWriter.writeIndirectInterface(writer, indirectInterface);
+            IndirectInterfaceWriter::writeIndirectInterface(writer, indirectInterface, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:indirectInterfaces

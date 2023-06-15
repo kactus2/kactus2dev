@@ -36,7 +36,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewSWComponentPage();
+    virtual ~NewSWComponentPage() = default;
+
+    // Disable copying.
+    NewSWComponentPage(NewSWComponentPage const& rhs) = delete;
+    NewSWComponentPage& operator=(NewSWComponentPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -45,22 +49,18 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
 
 signals:
     //! Signaled when a SW component should be created.
-    void createSWComponent(VLNV const& vlnv, QString const& directory);
+    void createSWComponent(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
-private:
-    // Disable copying.
-    NewSWComponentPage(NewSWComponentPage const& rhs);
-    NewSWComponentPage& operator=(NewSWComponentPage const& rhs);
 };
 
 //-----------------------------------------------------------------------------

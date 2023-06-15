@@ -23,6 +23,7 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
       filter_(this),
       model_(this)
 {
+
     // Set the model source and other options for the view.
     filter_.setSourceModel(&model_);
 
@@ -30,6 +31,8 @@ PropertyValueEditor::PropertyValueEditor(QWidget* parent)
     view_.setSortingEnabled(true);
     view_.setItemsDraggable(false);
     view_.setItemDelegate(&delegate_);
+
+    setFlat(true);
 
     QHBoxLayout* layout = new QHBoxLayout(this);
     layout->addWidget(&view_);

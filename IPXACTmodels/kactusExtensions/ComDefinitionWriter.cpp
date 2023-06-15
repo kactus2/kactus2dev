@@ -13,41 +13,22 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
-//-----------------------------------------------------------------------------
-// Function: ComDefinitionWriter::ComDefinitionWriter()
-//-----------------------------------------------------------------------------
-ComDefinitionWriter::ComDefinitionWriter(): DocumentWriter()
-{
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComDefinitionWriter::~ComDefinitionWriter()
-//-----------------------------------------------------------------------------
-ComDefinitionWriter::~ComDefinitionWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionWriter::writeComDefinitionFrom()
 //-----------------------------------------------------------------------------
-void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPointer<ComDefinition> comDefinition) const
+void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPointer<ComDefinition> comDefinition)
 {
     writer.writeStartDocument();
     
-    writeTopComments(writer, comDefinition);
+    DocumentWriter::writeTopComments(writer, comDefinition);
 	
     writer.writeStartElement(QStringLiteral("kactus2:comDefinition"));
-    writeNamespaceDeclarations(writer, comDefinition);
+    DocumentWriter::writeNamespaceDeclarations(writer, comDefinition);
 
 	// Write basic information.
-	writer.writeTextElement(QStringLiteral("ipxact:vendor"), comDefinition->getVlnv().getVendor());
-	writer.writeTextElement(QStringLiteral("ipxact:library"), comDefinition->getVlnv().getLibrary());
-	writer.writeTextElement(QStringLiteral("ipxact:name"), comDefinition->getVlnv().getName());
-	writer.writeTextElement(QStringLiteral("ipxact:version"), comDefinition->getVlnv().getVersion());
-
-    CommonItemsWriter::writeDescription(writer, comDefinition->getDescription());
+    DocumentWriter::writeDocumentNameGroup(writer, comDefinition);
 
     // Write data types.
     writer.writeStartElement(QStringLiteral("kactus2:transferTypes"));
@@ -70,7 +51,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
 
 	writer.writeEndElement(); // kactus2:properties
 
-    writeVendorExtensions(writer, comDefinition);
+    DocumentWriter::writeVendorExtensions(writer, comDefinition);
 
     writer.writeEndElement(); // kactus2:comDefinition
     writer.writeEndDocument();

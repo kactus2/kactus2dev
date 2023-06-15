@@ -15,6 +15,8 @@
 
 #include <common/KactusColors.h>
 
+#include <KactusAPI/include/FileHandler.h>
+
 #include <QFileInfo>
 
 #include <QIcon>
@@ -54,7 +56,7 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role) const
     // if there are items to display then check the validity of them
     else if (role == Qt::ForegroundRole && items_.isEmpty() == false)
     {
-        if (directoryExistsForPath(items_.at(index.row())))
+        if (FileHandler::isValidURI(basePath_, items_.at(index.row())))
         {
             return KactusColors::REGULAR_TEXT;
         }
@@ -66,7 +68,7 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::DecorationRole && !items_.isEmpty())
     {
-        if (directoryExistsForPath(items_.at(index.row())) == false)
+        if (FileHandler::isValidURI(basePath_, items_.at(index.row())) == false)
         {
             return QIcon(QPixmap(":/icons/common/graphics/exclamation.png"));
         }
@@ -81,15 +83,4 @@ QVariant DirListManagerModel::data(QModelIndex const& index, int role) const
     {
         return ListManagerModel::data(index, role);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: dirlistmanagermodel::directoryExistsForItem()
-//-----------------------------------------------------------------------------
-bool DirListManagerModel::directoryExistsForPath(QString const& relativePath) const
-{
-    QString absDirPath = General::getAbsolutePath(basePath_, relativePath);
-    
-    QFileInfo dirInfo(absDirPath);
-    return dirInfo.exists();
 }

@@ -82,9 +82,9 @@ QVariant BridgesModel::headerData(int section, Qt::Orientation orientation, int 
         return QVariant();
     }
 
-    if (section == BridgeColumns::MASTER_COLUMN)
+    if (section == BridgeColumns::INITIATOR_COLUMN)
     {
-        return tr("Master bus interface");
+        return tr("Initiator bus interface");
     }
     else
     {
@@ -106,7 +106,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
 
     if (role == Qt::DisplayRole) 
     {
-        if (index.column() == BridgeColumns::MASTER_COLUMN)
+        if (index.column() == BridgeColumns::INITIATOR_COLUMN)
         {
             return masterReference;
         }
@@ -129,7 +129,7 @@ QVariant BridgesModel::data(QModelIndex const& index, int role) const
 	}
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == BridgeColumns::MASTER_COLUMN)
+        if (index.column() == BridgeColumns::INITIATOR_COLUMN)
         {
             return KactusColors::MANDATORY_FIELD;
         }
@@ -157,7 +157,7 @@ bool BridgesModel::setData(QModelIndex const& index, const QVariant& value, int 
 
     if (role == Qt::EditRole)
     {
-        if (index.column() == BridgeColumns::MASTER_COLUMN)
+        if (index.column() == BridgeColumns::INITIATOR_COLUMN)
         {
             std::string currentMaster = bridgeInterface_->getIndexedMasterReference(index.row());
             bridgeInterface_->setMasterReference(currentMaster, value.toString().toStdString());

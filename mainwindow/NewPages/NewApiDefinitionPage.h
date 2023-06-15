@@ -35,7 +35,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewApiDefinitionPage();
+    virtual ~NewApiDefinitionPage() = default;
+
+    // Disable copying.
+    NewApiDefinitionPage(NewApiDefinitionPage const& rhs) = delete;
+    NewApiDefinitionPage& operator=(NewApiDefinitionPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -44,22 +48,18 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
 
 signals:
     //! Signaled when a API definition should be created.
-    void createApiDefinition(VLNV const& vlnv, QString const& directory);
+    void createApiDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
-private:
-    // Disable copying.
-    NewApiDefinitionPage(NewApiDefinitionPage const& rhs);
-    NewApiDefinitionPage& operator=(NewApiDefinitionPage const& rhs);
        
 };
 

@@ -13,7 +13,7 @@
 
 #include "CatalogFileColumns.h"
 
-#include <KactusAPI/include/utils.h>
+#include <KactusAPI/include/FileHandler.h>
 #include <common/KactusColors.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
@@ -571,25 +571,6 @@ bool CatalogFileModel::contains(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 bool CatalogFileModel::isValidPath(QString const& path) const
 {
-    if (path.isEmpty())
-    {
-        return false;
-    }
-
-    bool isValidUri = Utils::URL_VALIDITY_REG_EXP.match(path).hasMatch();
-    if (isValidUri)
-    {
-        return true;
-    }
-
-    QFileInfo fileInfo(path);
-    if (fileInfo.isRelative())
-    {
-        QString basePath = library_->getPath(catalog_->getVlnv());
-        QString absFilePath = General::getAbsolutePath(basePath, path);
-
-        fileInfo.setFile(absFilePath);
-    }
-
-    return fileInfo.exists();
+    QString basePath = library_->getPath(catalog_->getVlnv());
+    return FileHandler::isValidURI(basePath, path);
 }

@@ -361,6 +361,8 @@ public:
      */
     static std::string toStdString(Revision revision);
 
+    static Document::Revision toRevision(QString const& revision);
+
 private:
 
     /*

@@ -17,36 +17,28 @@
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: ApiDefinitionReader::ApiDefinitionReader()
-//-----------------------------------------------------------------------------
-ApiDefinitionReader::ApiDefinitionReader(): DocumentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ApiDefinitionReader::~ApiDefinitionReader()
-//-----------------------------------------------------------------------------
-ApiDefinitionReader::~ApiDefinitionReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiDefinitionReader::createApiDefinitionFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomNode const& document) const
+QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomNode const& document)
 {
-    QSharedPointer<ApiDefinition> apiDefinition(new ApiDefinition());
-
-    parseTopComments(document, apiDefinition);
-
-    parseXMLProcessingInstructions(document, apiDefinition);
-
     QDomElement apiNode = document.firstChildElement();
-    parseNamespaceDeclarations(apiNode, apiDefinition);
+	auto vlnv = DocumentReader::createVLNVFrom(apiNode, VLNV::APIDEFINITION);
 
-    apiDefinition->setVlnv(createVLNVFrom(apiNode, VLNV::APIDEFINITION));
+	auto revision = DocumentReader::getXMLDocumentRevision(document);
+	if (revision == Document::Revision::Unknown)
+	{
+		revision = Document::Revision::Std22;
+	}
+
+    QSharedPointer<ApiDefinition> apiDefinition(new ApiDefinition(vlnv, revision));
+
+    DocumentReader::parseTopComments(document, apiDefinition);
+
+	DocumentReader::parseXMLProcessingInstructions(document, apiDefinition);
+
+	DocumentReader::parseNamespaceDeclarations(apiNode, apiDefinition);
+
+    DocumentReader::parseDocumentNameGroup(apiNode, apiDefinition);
 
 	// Parse child nodes.
 	for (int i = 0; i < apiNode.childNodes().count(); ++i)
@@ -58,11 +50,7 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 			continue;
 		}
 
-		if (childNode.nodeName() == QLatin1String("ipxact:description"))
-		{
-			apiDefinition->setDescription( childNode.childNodes().at(0).nodeValue() );
-		}
-		else if (childNode.nodeName() == QLatin1String("kactus2:language"))
+		if (childNode.nodeName() == QLatin1String("kactus2:language"))
 		{
 			apiDefinition->setLanguage( childNode.childNodes().at(0).nodeValue() );
 		}
@@ -73,15 +61,15 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:dataTypes"))
 		{
-			parseDataTypes(childNode, apiDefinition);
+			Details::parseDataTypes(childNode, apiDefinition);
 		}
 		else if (childNode.nodeName() == QLatin1String("kactus2:functions"))
 		{
-			parseFunctions(childNode, apiDefinition);
+			Details::parseFunctions(childNode, apiDefinition);
 		}
     }
 
-    parseKactusAndVendorExtensions(apiNode, apiDefinition);
+	DocumentReader::parseKactusAndVendorExtensions(apiNode, apiDefinition);
 
     return apiDefinition;
 }
@@ -90,7 +78,7 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionReaderReader::parseDataTypes()
 //-----------------------------------------------------------------------------
-void ApiDefinitionReader::parseDataTypes(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition) const
+void ApiDefinitionReader::Details::parseDataTypes(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition)
 {
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{
@@ -107,7 +95,7 @@ void ApiDefinitionReader::parseDataTypes(QDomNode& node, QSharedPointer<ApiDefin
 //-----------------------------------------------------------------------------
 // Function: ApiDefinitionReader::parseFunctions()
 //-----------------------------------------------------------------------------
-void ApiDefinitionReader::parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition) const
+void ApiDefinitionReader::Details::parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition)
 {
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{

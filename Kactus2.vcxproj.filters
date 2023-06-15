@@ -4379,9 +4379,6 @@
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
     </QtMoc>
@@ -5709,6 +5706,9 @@
       <Filter>Header Files\wizards\BusInterfaceWizard</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
   </ItemGroup>

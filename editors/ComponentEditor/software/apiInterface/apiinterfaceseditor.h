@@ -54,7 +54,13 @@ public:
 	ApiInterfacesEditor(QSharedPointer<Component> component, LibraryInterface* handler,	QWidget* parent = 0);
 	
 	//! The destructor
-	virtual ~ApiInterfacesEditor();
+	virtual ~ApiInterfacesEditor() = default;
+
+    //! No copying
+    ApiInterfacesEditor(const ApiInterfacesEditor& other) = delete;
+
+    //! No assignment
+    ApiInterfacesEditor& operator=(const ApiInterfacesEditor& other) = delete;
 
 	/*! Check for the validity of the editor
 	* 
@@ -73,11 +79,6 @@ protected:
 
 private:
 	
-	//! No copying
-	ApiInterfacesEditor(const ApiInterfacesEditor& other);
-
-	//! No assignment
-	ApiInterfacesEditor& operator=(const ApiInterfacesEditor& other);
 
 	//! The view to display the API interface info.
 	EditableTableView view_;

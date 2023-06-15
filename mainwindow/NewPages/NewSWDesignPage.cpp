@@ -31,13 +31,6 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New SW Design"), tr("Creates a hierar
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewSWDesignPage()
-//-----------------------------------------------------------------------------
-NewSWDesignPage::~NewSWDesignPage()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewSWDesignPage::validate()
@@ -70,6 +63,6 @@ bool NewSWDesignPage::validate()
 //-----------------------------------------------------------------------------
 void NewSWDesignPage::apply()
 {
-    emit createSWDesign(vlnvEditor_->getVLNV(), selectedPath());
+    emit createSWDesign(vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }
 

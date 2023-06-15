@@ -555,9 +555,6 @@ private:
      */
     QMap<VLNV, DocumentInfo> documentCache_;
 
-    //! Checks if the given string is a URL (invalids are allowed) or not.
-    QRegularExpressionValidator urlTester_;
-
     //! Validator for IP-XACT documents in the library.
     DocumentValidator validator_;
 

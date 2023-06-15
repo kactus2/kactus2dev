@@ -98,13 +98,11 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
 
     else if (toCreate == VLNV::APIDEFINITION)
     {
-        ApiDefinitionReader reader;
-        return reader.createApiDefinitionFrom(doc);
+        return ApiDefinitionReader::createApiDefinitionFrom(doc);
     }
     else if (toCreate == VLNV::COMDEFINITION)
     {
-        ComDefinitionReader reader;
-        return reader.createComDefinitionFrom(doc);
+        return ComDefinitionReader::createComDefinitionFrom(doc);
     }
     else
     {
@@ -166,16 +164,14 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
 
     else if (documentType == VLNV::APIDEFINITION)
     {
-        ApiDefinitionWriter apiDefinitionWriter;
         QSharedPointer<ApiDefinition> apiDefinition = model.dynamicCast<ApiDefinition>();
-        apiDefinitionWriter.writeApiDefinition(xmlWriter, apiDefinition);
+        ApiDefinitionWriter::writeApiDefinition(xmlWriter, apiDefinition);
     }
 
     else if (documentType == VLNV::COMDEFINITION)
     {
-        ComDefinitionWriter comDefinitionWriter;
         QSharedPointer<ComDefinition> comDefinition = model.dynamicCast<ComDefinition>();
-        comDefinitionWriter.writeComDefinition(xmlWriter, comDefinition);
+        ComDefinitionWriter::writeComDefinition(xmlWriter, comDefinition);
     }
     else
     {

@@ -23,15 +23,8 @@ class ComDefinition;
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ComDefinitionReader : public DocumentReader
+namespace  ComDefinitionReader
 {
-public:
-
-	//! The constructor.
-	ComDefinitionReader();
-
-	//! The destructor.
-	~ComDefinitionReader();
 
     /*!
      *  Creates a Com definition from XML description.
@@ -40,27 +33,24 @@ public:
      *
      *      @return The created Com definition.
      */
-    QSharedPointer<ComDefinition> createComDefinitionFrom(QDomNode const& document) const;
+    IPXACTMODELS_EXPORT QSharedPointer<ComDefinition> createComDefinitionFrom(QDomNode const& document);
  
-private:
+    namespace Details
+    {
+        /*!
+         *  Parses all found transfer types from the given XML node.
+         *
+         *      @param [in] node The source XML node.
+         */
+        void parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition);
 
-    /*!
-     *  Parses all found transfer types from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition) const;
-
-    /*!
-     *  Parses all found properties from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition) const;
-
-	//! Disable copying.
-	ComDefinitionReader(ComDefinitionReader const& rhs);
-	ComDefinitionReader& operator=(ComDefinitionReader const& rhs);
+        /*!
+         *  Parses all found properties from the given XML node.
+         *
+         *      @param [in] node The source XML node.
+         */
+        void parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition);
+    }
 };
 
 #endif // COMDEFINITIONREADER_H

@@ -64,14 +64,6 @@ NewPage(libInterface, VLNV::COMPONENT, tr("New System"), tr("Creates SW architec
 }
 
 //-----------------------------------------------------------------------------
-// Function: NewSystemPage::~NewSystemPage()
-//-----------------------------------------------------------------------------
-NewSystemPage::~NewSystemPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: NewSystemPage::prevalidate()
 //-----------------------------------------------------------------------------
 bool NewSystemPage::prevalidate() const
@@ -142,11 +134,11 @@ void NewSystemPage::apply()
         QVariant data = compTreeWidget_->currentItem()->data(0, Qt::UserRole);
 
         emit createSystem(data.value<VLNV>(), viewComboBox_->currentText(),
-            vlnvEditor_->getVLNV(), selectedPath());
+            vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
     }
     else
     {
-        emit createSystem(VLNV(), QString(), vlnvEditor_->getVLNV(), selectedPath());
+        emit createSystem(VLNV(), QString(), vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
     }
 }
 
@@ -157,7 +149,7 @@ bool NewSystemPage::onPageChange()
 {
     // Discard the VLNV and collapse the tree widget.
     compTreeWidget_->collapseAll();
-    compTreeWidget_->setCurrentItem(0);
+    compTreeWidget_->setCurrentItem(nullptr);
 
     return NewPage::onPageChange();
 }
@@ -167,7 +159,7 @@ bool NewSystemPage::onPageChange()
 //-----------------------------------------------------------------------------
 void NewSystemPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidgetItem*)
 {
-    if (current != 0)
+    if (current != nullptr)
     {
         // Check if the item has a VLNV (i.e. is a leaf item).
         QVariant data = current->data(0, Qt::UserRole);

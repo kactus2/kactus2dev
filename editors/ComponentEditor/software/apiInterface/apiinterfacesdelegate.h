@@ -30,7 +30,13 @@ public:
 	ApiInterfacesDelegate(QObject *parent);
 	
 	//! The destructor
-	virtual ~ApiInterfacesDelegate();
+	virtual ~ApiInterfacesDelegate() = default;
+
+    //! No copying
+    ApiInterfacesDelegate(const ApiInterfacesDelegate& other) = delete;
+
+    //! No assignment
+    ApiInterfacesDelegate& operator=(const ApiInterfacesDelegate& other) = delete;
 
 	/*! Create a new editor for the given item
 	 *
@@ -64,13 +70,6 @@ private slots:
 	//! Commit the data from the sending editor and close the editor.	 
 	void commitAndCloseEditor();
 
-private:
-	
-	//! No copying
-	ApiInterfacesDelegate(const ApiInterfacesDelegate& other);
-
-	//! No assignment
-	ApiInterfacesDelegate& operator=(const ApiInterfacesDelegate& other);
 };
 
 #endif // APIINTERFACESDELEGATE_H

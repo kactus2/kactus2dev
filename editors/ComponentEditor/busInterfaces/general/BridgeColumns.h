@@ -17,7 +17,7 @@ namespace BridgeColumns
     //! Contains the columns for bridge properties.
     enum Column
     {
-        MASTER_COLUMN = 0,
+        INITIATOR_COLUMN = 0,
         COLUMN_COUNT
     };
 

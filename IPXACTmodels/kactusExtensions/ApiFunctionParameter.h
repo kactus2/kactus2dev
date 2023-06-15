@@ -173,16 +173,16 @@ private:
     QString comTransferType_;
 
     //! COM direction.
-    DirectionTypes::Direction comDirection_;
+    DirectionTypes::Direction comDirection_ = DirectionTypes::DIRECTION_INVALID;
 
     //! The name of the source for content assist.
     QString contentSource_;
 
     //! Dependent parameter index.
-    int dependentParamIndex_;
+    int dependentParamIndex_ = -1;
 
     //! The parameter description.
-    QString desc_;
+    QString description_;
 };
 
 //-----------------------------------------------------------------------------

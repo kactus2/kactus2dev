@@ -14,6 +14,7 @@
 
 #include "SettingsPage.h"
 
+#include <QComboBox>
 #include <QLineEdit>
 #include <QSettings>
 
@@ -59,6 +60,9 @@ private:
 
     //! Username line edit.
     QLineEdit* usernameEdit_;
+
+    //! Default revision selector.
+    QComboBox* revisionEdit_;
 };
 
 //-----------------------------------------------------------------------------

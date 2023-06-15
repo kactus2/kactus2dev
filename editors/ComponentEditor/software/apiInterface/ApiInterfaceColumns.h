@@ -20,9 +20,9 @@ namespace ApiInterfaceColumns
     enum Columns
     {
         NAME = 0,
+        DISPLAY_NAME,
         API_DEFINITION,
         DEPENDENCY,
-        DISPLAY_NAME,
         DESCRIPTION,
         COLUMN_COUNT
     };

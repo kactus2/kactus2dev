@@ -204,15 +204,6 @@ public:
 	KactusAttribute::Implementation getDesignConfigImplementation() const;
     
     /*!
-     *  Sets the override configurable elemnt values for a given component instance.
-     *
-     *      @param [in] instanceUUID                The id for instance to get the values.
-     *      @param [in] configurableElementValues   The values to be saved in the design configuration.
-     */
-    void setConfigurableElementValues(QString const& instanceUUID, 
-        QMap<QString, QString> const& configurableElementValues);
-
-    /*!
      *  Finds and creates instance extensions.
      *
      *      @param [in] instanceUUID    The id of the instance whose extension is being searched.
@@ -220,15 +211,6 @@ public:
      *      @return The instance extension.
      */
     QSharedPointer<VendorExtension> findOrCreateInstanceExtension(QString const& instanceUUID);
-
-    /*!
-     *  Gets the override configurable element values for a given component instance identified by UUID.
-     *
-     *      @param [in] instanceUUID   The uuid for the instance to get the values.
-     *
-     *      @return Configurable element values for the instance.
-     */
-    QMap<QString, QString> getConfigurableElementValues(QString const& instanceUUID) const;
 
     /*!
      *  Gets the override view configuration.

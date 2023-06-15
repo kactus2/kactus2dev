@@ -34,7 +34,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewSWDesignPage();
+    virtual ~NewSWDesignPage() = default;
+
+    // Disable copying.
+    NewSWDesignPage(NewSWDesignPage const& rhs) = delete;
+    NewSWDesignPage& operator=(NewSWDesignPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -43,21 +47,17 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
 signals:
     //! Signaled when a design should be created.
-    void createSWDesign(VLNV const& vlnv, QString const& directory);
+    void createSWDesign(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
-private:
-    // Disable copying.
-    NewSWDesignPage(NewSWDesignPage const& rhs);
-    NewSWDesignPage& operator=(NewSWDesignPage const& rhs);
     
 };
 

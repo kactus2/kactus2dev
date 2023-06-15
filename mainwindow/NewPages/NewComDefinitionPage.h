@@ -36,7 +36,11 @@ public:
     /*!
      *  Destructor.
      */
-    ~NewComDefinitionPage();
+    virtual ~NewComDefinitionPage() = default;
+
+    // Disable copying.
+    NewComDefinitionPage(NewComDefinitionPage const& rhs) = delete;
+    NewComDefinitionPage& operator=(NewComDefinitionPage const& rhs) = delete;
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -45,22 +49,17 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
 signals:
     //! Signaled when a COM definition should be created.
-    void createComDefinition(VLNV const& vlnv, QString const& directory);
+    void createComDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
-private:
-    // Disable copying.
-    NewComDefinitionPage(NewComDefinitionPage const& rhs);
-    NewComDefinitionPage& operator=(NewComDefinitionPage const& rhs);
-    
 };
 
 //-----------------------------------------------------------------------------

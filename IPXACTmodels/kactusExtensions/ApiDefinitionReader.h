@@ -23,16 +23,8 @@ class ApiDefinition;
 //-----------------------------------------------------------------------------
 //! XML reader class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ApiDefinitionReader : public DocumentReader
+namespace ApiDefinitionReader
 {
-public:
-
-	//! The constructor.
-	ApiDefinitionReader();
-
-	//! The destructor.
-	virtual ~ApiDefinitionReader();
-
     /*!
      *  Creates a Api definition from XML description.
      *
@@ -40,27 +32,26 @@ public:
      *
      *      @return The created Api definition.
      */
-    QSharedPointer<ApiDefinition> createApiDefinitionFrom(QDomNode const& document) const;
+    IPXACTMODELS_EXPORT QSharedPointer<ApiDefinition> createApiDefinitionFrom(QDomNode const& document);
 
-    //! Disable copying.
-    ApiDefinitionReader(ApiDefinitionReader const& rhs) = delete;
-    ApiDefinitionReader& operator=(ApiDefinitionReader const& rhs) = delete;
 
-private:
+    namespace Details
+    {
 
-    /*!
-     *  Parses all found data types from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseDataTypes(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition) const;
+        /*!
+         *  Parses all found data types from the given XML node.
+         *
+         *      @param [in] node The source XML node.
+         */
+        void parseDataTypes(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition);
 
-    /*!
-     *  Parses all found API functions from the given XML node.
-     *
-     *      @param [in] node The source XML node.
-     */
-    void parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition) const;
+        /*!
+         *  Parses all found API functions from the given XML node.
+         *
+         *      @param [in] node The source XML node.
+         */
+        void parseFunctions(QDomNode& node, QSharedPointer<ApiDefinition> apiDefinition);
+    }
 };
 
 #endif // ApiDEFINITIONREADER_H

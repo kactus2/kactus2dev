@@ -28,8 +28,9 @@ private slots:
 	void baseCase();
 	void failFileTypes();
 	void failName();
+	void testIpxactURIinName();
 	void failDefine();
-	void failReplace();
+	void failReplaceDefaultFlags();
 
 private:
 };
@@ -93,7 +94,6 @@ void tst_FileValidator::failName()
 	file->setName(" \t\n\r");
 
 	file->getFileTypes()->append(FileType("text"));
-	file->getDefines()->append(QSharedPointer<NameValuePair>(new NameValuePair("Lihapullia", "viis") ));
 
 	QVector<QString> errorList;
 	validator.findErrorsIn(errorList, file, "test");
@@ -101,6 +101,24 @@ void tst_FileValidator::failName()
 	QCOMPARE( errorList.size(), 1 );
 	QCOMPARE(errorList.first(), QString("The file name ' \t\n\r' is invalid within test."));
 	QVERIFY( !validator.validate(file) );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FileValidator::testIpxactURIinName()
+//-----------------------------------------------------------------------------
+void tst_FileValidator::testIpxactURIinName()
+{
+    QSharedPointer<File> file(new File);
+    FileValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
+    file->setName("${SRC_PATH}test.sv");
+
+    file->getFileTypes()->append(FileType("SystemVerilogSource"));
+
+    QVector<QString> errorList;
+    validator.findErrorsIn(errorList, file, "test");
+
+    QVERIFY(validator.hasValidName(file->name()));
+    QCOMPARE(errorList.size(), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -124,9 +142,9 @@ void tst_FileValidator::failDefine()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_FileValidator::failReplace()
+// Function: tst_FileValidator::failReplaceDefaultFlags()
 //-----------------------------------------------------------------------------
-void tst_FileValidator::failReplace()
+void tst_FileValidator::failReplaceDefaultFlags()
 {
 	QSharedPointer<File> file( new File );
     FileValidator validator(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));

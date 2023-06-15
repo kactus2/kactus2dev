@@ -28,14 +28,6 @@ NewPage(libInterface, VLNV::CATALOG, tr("New Catalog"), tr("Creates a catalog fo
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~NewCatalogPage()
-//-----------------------------------------------------------------------------
-NewCatalogPage::~NewCatalogPage()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: validate()
 //-----------------------------------------------------------------------------
 bool NewCatalogPage::validate()
@@ -56,5 +48,5 @@ bool NewCatalogPage::validate()
 //-----------------------------------------------------------------------------
 void NewCatalogPage::apply()
 {
-    emit createCatalog(vlnvEditor_->getVLNV(), selectedPath());
+    emit createCatalog(vlnvEditor_->getVLNV(), selectedRevision(), selectedPath());
 }

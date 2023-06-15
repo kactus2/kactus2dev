@@ -37,7 +37,7 @@ ItemEditor(component, libHandler, parent),
 {
     // find the main window for VLNV editor
     QWidget* parentWindow = nullptr;
-    foreach(QWidget * widget, QApplication::topLevelWidgets())
+    for (QWidget * widget : QApplication::topLevelWidgets())
     {
         QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
         if (mainWnd)
@@ -84,7 +84,7 @@ bool SystemViewEditor::isValid() const
     }
 
     // check the file set references that they are to valid file sets.
-    foreach (QString const& ref, fileSetRefEditor_->items())
+    for (QString const& ref : fileSetRefEditor_->items())
     {
         // if the component does not contain the referenced file set.
         if (!component()->hasFileSet(ref))
@@ -160,39 +160,32 @@ void SystemViewEditor::onHWViewChange(QString const& /*viewName*/)
 //-----------------------------------------------------------------------------
 void SystemViewEditor::setupLayout()
 {
-    QScrollArea* scrollArea = new QScrollArea(this);
+    auto scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
 
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    auto scrollLayout = new QHBoxLayout(this);
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_);
-    topOfPageLayout->addWidget(hierRefEditor_, 0, Qt::AlignTop);
-    
-    QGroupBox* HWViewGroup = new QGroupBox(tr("HW View"));
-    QLabel* HWViewLabel = new QLabel(tr("Used HW view"), HWViewGroup);
+    auto HWViewGroup = new QGroupBox(tr("HW View"));
+    auto HWViewLabel = new QLabel(tr("Used HW view"), HWViewGroup);
+    HWViewGroup->setFlat(true);
 
-    QHBoxLayout* groupLayout = new QHBoxLayout(HWViewGroup);
-    groupLayout->addWidget(HWViewLabel);
-    groupLayout->addWidget(HWViewRefEditor_);
+    auto groupLayout = new QHBoxLayout(HWViewGroup);
+    groupLayout->addWidget(HWViewLabel, 0, Qt::AlignTop);
+    groupLayout->addWidget(HWViewRefEditor_, 0, Qt::AlignTop);
     groupLayout->addStretch();
+    hierRefEditor_->setFlat(true);
 
-    HWViewGroup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-
-    QHBoxLayout* middleLayout = new QHBoxLayout();
-    middleLayout->addWidget(fileSetRefEditor_);
-    middleLayout->addWidget(HWViewGroup, 0, Qt::AlignTop);
-
-    QWidget* topWidget = new QWidget(scrollArea);
+    auto topWidget = new QWidget(scrollArea);
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(topWidget);
 
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(topOfPageLayout);
-    topLayout->addLayout(middleLayout);
-    topLayout->addStretch();
+    auto topLayout = new QGridLayout(topWidget);
+    topLayout->addWidget(&nameEditor_, 0, 0, 2, 1);
+    topLayout->addWidget(hierRefEditor_, 0, 1, 1, 1, Qt::AlignTop);
+    topLayout->addWidget(HWViewGroup, 1, 1, 1, 1);
+    topLayout->addWidget(fileSetRefEditor_, 2, 0, 1, 1);
     topLayout->setContentsMargins(0, 0, 0, 0);
 }

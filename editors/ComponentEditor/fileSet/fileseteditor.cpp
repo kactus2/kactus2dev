@@ -89,7 +89,6 @@ void FileSetEditor::refresh()
         fileSetDependencies.append(QString::fromStdString(singleDependency));
     }
 
-
     dependencies_.initialize(fileSetDependencies);
 }
 

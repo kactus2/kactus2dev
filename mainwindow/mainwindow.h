@@ -18,6 +18,7 @@
 
 #include <editors/common/DrawMode.h>
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/TagData.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
@@ -252,22 +253,24 @@ public slots:
      *      @param [in] firmness	The firmness attribute.
      *      @param [in] tags        Document tags.
      *      @param [in] vlnv        The component's VLNV.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a SW component to the library.
      *
      *      @param [in] vlnv        The component's VLNV.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The component editor is opened automatically after successful creation.
      */
-    void createSWComponent(VLNV const& vlnv, QString const& directory);
+    void createSWComponent(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a new design.
@@ -276,12 +279,13 @@ public slots:
      *      @param [in] firmness	The firmness attribute.
      *      @param [in] tags        Document tags.
      *      @param [in] vlnv        The component's VLNV.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The HW design editor is opened automatically after successful creation.
      */
     void createDesign(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a new design for an existing component.
@@ -294,17 +298,25 @@ public slots:
 
     void unlockNewlyCreatedDocument(VLNV const& vlnv);
 
-    void createCatalog(VLNV const& catalogVLNV, QString const& directory);
+    /*!
+     *  Creates a new Catalog
+     *
+     *      @param [in] catalogVLNV The VLNV for the catalog.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
+     *      @param [in] directory   The directory where to save the catalog.
+     */
+    void createCatalog(VLNV const& catalogVLNV, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a new hierarchical SW component with an SW design.
      *
      *      @param [in] vlnv        The component's VLNV.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the component.
      *
      *      @remarks The SW design editor is opened automatically after successful creation.
      */
-    void createSWDesign(VLNV const& vlnv, QString const& directory);
+    void createSWDesign(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a SW design for an existing component.
@@ -321,20 +333,22 @@ public slots:
      *      @param [in] compVLNV   The VLNV of an existing component.
      *      @param [in] viewName   The name of the view to which the system design will be based on.
      *      @param [in] sysVLNV    The VLNV of the system to be created.
+     *      @param [in] revision   The IP-XACT standard revision to comply to.
      *      @param [in] directory  The directory where to save the system.
      */
     void createSystem(VLNV const& compVLNV, QString const& viewName, VLNV const& sysVLNV,
-        QString const& directory);
+        Document::Revision , QString const& directory);
 
     void createSystemDesign(VLNV const& vlnv);
 
     /*!
      *  Creates a new bus definition and abstraction definition
 	 *
-	 *      @param [in] vlnv        The vlnv for the bus definition
+     *      @param [in] vlnv        The vlnv for the bus definition
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
 	 *      @param [in] directory   The directory where to save the bus definition and abstraction definition.
 	 */
-	void createBus(VLNV const& vlnv, QString const& directory);
+	void createBus(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
 	/*!
      *  Creates a new abstraction definition for given bus definition.
@@ -348,21 +362,23 @@ public slots:
      *  Creates a new COM definition.
      *
      *      @param [in] vlnv        VLNV for the COM definition.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the design.
      *
      *      @remarks The COM definition editor is opened automatically after successful creation.
      */
-    void createComDefinition(VLNV const& vlnv, QString const& directory);
+    void createComDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Creates a new API definition.
      *
      *      @param [in] vlnv        VLNV for the API definition.
+     *      @param [in] revision    The IP-XACT standard revision to comply to.
      *      @param [in] directory   The directory where to save the design.
      *
      *      @remarks The API definition editor is opened automatically after successful creation.
      */
-    void createApiDefinition(VLNV const& vlnv, QString const& directory);
+    void createApiDefinition(VLNV const& vlnv, Document::Revision revision, QString const& directory);
 
     /*!
      *  Opens the settings dialog.

@@ -229,11 +229,10 @@ void FileInterface::addFile(int const& row, std::string const& newFileName)
 {
     QString fileName = getUniqueName(newFileName, FILE_TYPE);
 
-    QSharedPointer<File> newFile(new File());
+    QSharedPointer<File> newFile(new File(fileName));
 
     QSettings settings;
     newFile->setFileTypes(settings);
-    newFile->setName(fileName);
 
     files_->insert(row, newFile);
 }

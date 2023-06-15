@@ -39,8 +39,9 @@ tst_ApiDefinitionValidator::tst_ApiDefinitionValidator()
 //-----------------------------------------------------------------------------
 void tst_ApiDefinitionValidator::baseCase()
 {
-	QSharedPointer<ApiDefinition> apiDefinition(new ApiDefinition);
-	apiDefinition->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
+	QSharedPointer<ApiDefinition> apiDefinition(new ApiDefinition(
+		VLNV(VLNV::APIDEFINITION, "me", "kurjasto", "def", "0.11"), Document::Revision::Std14));
+
 
 	QVector<QString> errorList;
     ApiDefinitionValidator validator;

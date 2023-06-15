@@ -31,7 +31,7 @@ class IPXACTMODELS_EXPORT Catalog: public Document
 public:
 
 	//! The default constructor.
-	Catalog(VLNV const & vlnv = VLNV());
+	Catalog(VLNV const & vlnv, Document::Revision revision);
 
 	//! Copy constructor.
 	Catalog(Catalog const& other);

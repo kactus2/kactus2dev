@@ -66,8 +66,7 @@ void tst_ApiDefinitionReader::baseCase()
     QDomDocument document;
     document.setContent(documentContent);
 
-    ApiDefinitionReader ApiDefinitionReader;
-    QSharedPointer<ApiDefinition> testApiDefinition = ApiDefinitionReader.createApiDefinitionFrom(document);
+    QSharedPointer<ApiDefinition> testApiDefinition = ApiDefinitionReader::createApiDefinitionFrom(document);
 
 	QCOMPARE(testApiDefinition->getVlnv().getVendor(), QString("me"));
 	QCOMPARE(testApiDefinition->getVlnv().getLibrary(), QString("kurjasto"));

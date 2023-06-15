@@ -46,7 +46,12 @@ public:
     /*!
      *  Destructor.
      */
-    ~ApiFunctionEditor();
+    virtual ~ApiFunctionEditor();
+
+    // Disable copying.
+    ApiFunctionEditor(ApiFunctionEditor const& rhs) = delete;
+
+    ApiFunctionEditor& operator=(ApiFunctionEditor const& rhs) = delete;
 
     /*!
      *  Sets the linked COM definition.
@@ -91,9 +96,8 @@ signals:
     void contentChanged();
 
 private:
-    // Disable copying.
-    ApiFunctionEditor(ApiFunctionEditor const& rhs);
-    ApiFunctionEditor& operator=(ApiFunctionEditor const& rhs);
+
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.

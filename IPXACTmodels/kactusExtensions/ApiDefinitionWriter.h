@@ -22,19 +22,8 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT ApiDefinition element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ApiDefinitionWriter : public DocumentWriter
+namespace ApiDefinitionWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    ApiDefinitionWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~ApiDefinitionWriter();
 
     /*!
      *  Write a view to an XML file.
@@ -42,13 +31,9 @@ public:
      *      @param [in] writer  The used xml writer.
      *      @param [in] ApiDefinition		The ApiDefinition to be written.
      */
-    void writeApiDefinition(QXmlStreamWriter& writer, QSharedPointer<ApiDefinition> apiDefinition) const;
+    IPXACTMODELS_EXPORT void writeApiDefinition(QXmlStreamWriter& writer, 
+        QSharedPointer<ApiDefinition> apiDefinition);
 
-private:
-
-    //! No copying allowed.
-    ApiDefinitionWriter(ApiDefinitionWriter const& rhs);
-    ApiDefinitionWriter& operator=(ApiDefinitionWriter const& rhs);
 };
 
 #endif // ApiDefinitionWriter_H

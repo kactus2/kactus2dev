@@ -365,7 +365,6 @@
     <ClCompile Include="kactusExtensions\HierApiInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\HierComInterconnection.cpp" />
     <ClCompile Include="kactusExtensions\InterfaceGraphicsData.cpp" />
-    <ClCompile Include="kactusExtensions\Kactus2Array.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Group.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Placeholder.cpp" />
     <ClCompile Include="kactusExtensions\Kactus2Position.cpp" />
@@ -1330,7 +1329,6 @@
     <ClInclude Include="kactusExtensions\HierApiInterconnection.h" />
     <ClInclude Include="kactusExtensions\HierComInterconnection.h" />
     <ClInclude Include="kactusExtensions\InterfaceGraphicsData.h" />
-    <ClInclude Include="kactusExtensions\Kactus2Array.h" />
     <ClInclude Include="kactusExtensions\Kactus2Group.h" />
     <ClInclude Include="kactusExtensions\Kactus2Placeholder.h" />
     <ClInclude Include="kactusExtensions\Kactus2Position.h" />

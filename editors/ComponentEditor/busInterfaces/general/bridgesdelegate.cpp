@@ -38,7 +38,7 @@ opaqueGroupModify_(false)
 QWidget* BridgesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option,
     QModelIndex const& index) const
 {
-    if (index.column() == BridgeColumns::MASTER_COLUMN)
+    if (index.column() == BridgeColumns::INITIATOR_COLUMN)
     {
         return new InterfaceSelector(busInterface_, parent, General::MASTER);
     }
@@ -53,7 +53,7 @@ QWidget* BridgesDelegate::createEditor(QWidget* parent, const QStyleOptionViewIt
 //-----------------------------------------------------------------------------
 void BridgesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == BridgeColumns::MASTER_COLUMN)
+    if (index.column() == BridgeColumns::INITIATOR_COLUMN)
     {
         InterfaceSelector* selector = qobject_cast<InterfaceSelector*>(editor);
         Q_ASSERT(selector);
@@ -73,7 +73,7 @@ void BridgesDelegate::setEditorData(QWidget* editor, QModelIndex const& index) c
 //-----------------------------------------------------------------------------
 void BridgesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
-    if (index.column() == BridgeColumns::MASTER_COLUMN)
+    if (index.column() == BridgeColumns::INITIATOR_COLUMN)
     {
         InterfaceSelector* selector = qobject_cast<InterfaceSelector*>(editor);
         Q_ASSERT(selector);

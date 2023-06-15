@@ -17,13 +17,6 @@
 // Function: ApiFunctionParameter::ApiFunctionParameter()
 //-----------------------------------------------------------------------------
 ApiFunctionParameter::ApiFunctionParameter()
-    : name_(),
-      type_(),
-      comTransferType_(),
-      comDirection_(DirectionTypes::DIRECTION_INVALID),
-      contentSource_(),
-      dependentParamIndex_(-1),
-      desc_()
 {
 }
 
@@ -37,7 +30,7 @@ ApiFunctionParameter::ApiFunctionParameter(ApiFunctionParameter const& rhs)
       comDirection_(rhs.comDirection_),
       contentSource_(rhs.contentSource_),
       dependentParamIndex_(rhs.dependentParamIndex_),
-      desc_(rhs.desc_)
+      description_(rhs.description_)
 {
 }
 
@@ -45,24 +38,20 @@ ApiFunctionParameter::ApiFunctionParameter(ApiFunctionParameter const& rhs)
 // Function: ApiFunctionParameter::ApiFunctionParameter()
 //-----------------------------------------------------------------------------
 ApiFunctionParameter::ApiFunctionParameter(QDomNode& node)
-    : name_(),
-      type_(),
-      comTransferType_(),
-      comDirection_(DirectionTypes::DIRECTION_INVALID),
-      contentSource_(),
-      dependentParamIndex_(-1),
-      desc_()
 {
     Q_ASSERT(node.nodeName() == QStringLiteral("kactus2:functionParameter"));
 
     name_ = node.attributes().namedItem(QStringLiteral("name")).nodeValue();
     type_ = node.attributes().namedItem(QStringLiteral("type")).nodeValue();
+
     comTransferType_ = node.attributes().namedItem(QStringLiteral("transferType")).nodeValue();
+
     comDirection_ = DirectionTypes::str2Direction(node.attributes().namedItem(
         QStringLiteral("comDirection")).nodeValue(), DirectionTypes::DIRECTION_INVALID);
+
     contentSource_ = node.attributes().namedItem(QStringLiteral("contentSource")).nodeValue();
     dependentParamIndex_ = node.attributes().namedItem(QStringLiteral("dependentParamIndex")).nodeValue().toInt();
-    desc_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
+    description_ = node.attributes().namedItem(QStringLiteral("description")).nodeValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +78,7 @@ void ApiFunctionParameter::write(QXmlStreamWriter& writer)
 
     writer.writeAttribute(QStringLiteral("contentSource"), contentSource_);
     writer.writeAttribute(QStringLiteral("dependentParamIndex"), QString::number(dependentParamIndex_));
-    writer.writeAttribute(QStringLiteral("description"), desc_);
+    writer.writeAttribute(QStringLiteral("description"), description_);
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +160,7 @@ void ApiFunctionParameter::setDependentParameterIndex(int index)
 //-----------------------------------------------------------------------------
 void ApiFunctionParameter::setDescription(QString const& desc)
 {
-    desc_ = desc;
+    description_ = desc;
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +216,7 @@ int ApiFunctionParameter::getDependentParameterIndex() const
 //-----------------------------------------------------------------------------
 QString const& ApiFunctionParameter::getDescription() const
 {
-    return desc_;
+    return description_;
 }
 
 //-----------------------------------------------------------------------------
@@ -243,7 +232,7 @@ ApiFunctionParameter& ApiFunctionParameter::operator=(ApiFunctionParameter const
         comDirection_ = rhs.comDirection_;
         contentSource_ = rhs.contentSource_;
         dependentParamIndex_ = rhs.dependentParamIndex_;
-        desc_ = rhs.desc_;
+        description_ = rhs.description_;
     }
 
     return *this;

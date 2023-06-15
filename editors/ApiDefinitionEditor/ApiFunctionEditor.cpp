@@ -56,32 +56,8 @@ ApiFunctionEditor::ApiFunctionEditor(QWidget* parent): QGroupBox(tr("Functions")
     paramView_.verticalHeader()->show();
     paramView_.setItemsDraggable(true);
 
-    // Create the layouts.
-    QGroupBox* functionsBox = new QGroupBox(tr("Available functions"), this);
-    QVBoxLayout* functionsLayout = new QVBoxLayout(functionsBox);
+    setupLayout();
 
-    functionsLayout->addWidget(&functionList_);
-
-    QGroupBox* detailsBox = new QGroupBox(tr("Function details"), this);
-    QFormLayout* detailsLayout = new QFormLayout(detailsBox);
-
-    detailsLayout->addRow(tr("Function description:"), &descEdit_);
-    detailsLayout->addRow(tr("Return value type:"),  &returnTypeCombo_);
-    detailsLayout->addRow(tr("Return value description:"), &returnValueDesc_);
-
-    QGroupBox* parameterBox = new QGroupBox(tr("Function parameters"), this);
-
-    QVBoxLayout* parameterLayout = new QVBoxLayout(parameterBox);
-    parameterLayout->addWidget(&paramView_);
-
-    QGridLayout* layout = new QGridLayout(this);
-
-    layout->addWidget(functionsBox, 0, 0, 2, 1);
-    layout->addWidget(detailsBox, 0, 1, 1, 1);
-    layout->addWidget(parameterBox, 1, 1, 1, 1);
-
-    layout->setColumnStretch(0, 1);
-    layout->setColumnStretch(1, 3);
 
     connect(&paramModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&functionModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -223,3 +199,43 @@ void ApiFunctionEditor::setComDefinition(QSharedPointer<ComDefinition const> com
 {
     paramDelegate_.setComDefinition(comDefinition);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ApiFunctionEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void ApiFunctionEditor::setupLayout()
+{
+    setFlat(true);
+
+    // Create the layouts.
+    QGroupBox* functionsBox = new QGroupBox(tr("Available functions"), this);
+    QVBoxLayout* functionsLayout = new QVBoxLayout(functionsBox);
+    functionsBox->setFlat(true);
+
+    functionsLayout->addWidget(&functionList_);
+
+    QGroupBox* detailsBox = new QGroupBox(tr("Function details"), this);
+    detailsBox->setFlat(true);
+
+    QFormLayout* detailsLayout = new QFormLayout(detailsBox);
+
+    detailsLayout->addRow(tr("Function description:"), &descEdit_);
+    detailsLayout->addRow(tr("Return value type:"), &returnTypeCombo_);
+    detailsLayout->addRow(tr("Return value description:"), &returnValueDesc_);
+
+    QGroupBox* parameterBox = new QGroupBox(tr("Function parameters"), this);
+    parameterBox->setFlat(true);
+
+    QVBoxLayout* parameterLayout = new QVBoxLayout(parameterBox);
+    parameterLayout->addWidget(&paramView_);
+
+    QGridLayout* layout = new QGridLayout(this);
+
+    layout->addWidget(functionsBox, 0, 0, 2, 1);
+    layout->addWidget(detailsBox, 0, 1, 1, 1);
+    layout->addWidget(parameterBox, 1, 1, 1, 1);
+
+    layout->setColumnStretch(0, 1);
+    layout->setColumnStretch(1, 3);
+}
+

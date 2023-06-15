@@ -21,8 +21,8 @@
 //-----------------------------------------------------------------------------
 // Function: Catalog::Catalog()
 //-----------------------------------------------------------------------------
-Catalog::Catalog(VLNV const & vlnv): 
-Document(vlnv),
+Catalog::Catalog(VLNV const & vlnv, Document::Revision revision):
+Document(vlnv, revision),
     catalogs_(new QList<QSharedPointer<IpxactFile> >()),
     busDefinitions_(new QList<QSharedPointer<IpxactFile> >()),
     abstractionDefinitions_(new QList<QSharedPointer<IpxactFile> >()),

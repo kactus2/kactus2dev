@@ -26,13 +26,12 @@
 //-----------------------------------------------------------------------------
 IndirectInterfacesEditor::IndirectInterfacesEditor(LibraryInterface* handler,
     QSharedPointer<Component> component,
-    //QSharedPointer<IndirectInterfaceValidator> validator,
-    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<IndirectInterfaceValidator> validator,
     QWidget* parent):
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, parameterFinder, this)
+    model_(component, validator, this)
 {
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Indirect interfaces summary"), this);
 

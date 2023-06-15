@@ -24,13 +24,6 @@ ApiInterfacesDelegate::ApiInterfacesDelegate(QObject *parent): QStyledItemDelega
 }
 
 //-----------------------------------------------------------------------------
-// Function: ApiInterfacesDelegate::~ApiInterfacesDelegate()
-//-----------------------------------------------------------------------------
-ApiInterfacesDelegate::~ApiInterfacesDelegate()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ApiInterfacesDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* ApiInterfacesDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, 

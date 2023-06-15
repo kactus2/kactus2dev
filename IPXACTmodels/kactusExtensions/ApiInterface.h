@@ -20,6 +20,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
+#include "Kactus2Position.h"
+
 #include <QString>
 #include <QDomNode>
 #include <QXmlStreamWriter>
@@ -83,19 +85,19 @@ public:
      *
      *      @return A cloned api interface.
      */
-    virtual ApiInterface* clone() const;
+    ApiInterface* clone() const final;
 
     /*!
      *  Gets the api interface type.
      *
      *      @return The type of the api interface.
      */
-    virtual QString type() const;
+    QString type() const final;
 
     /*!
      *  Writes the contents of the API interface to an XML stream.
      */
-    virtual void write(QXmlStreamWriter& writer) const;
+    void write(QXmlStreamWriter& writer) const final;
 
     /*!
      *  Returns true if the contents of the API interface are valid.
@@ -144,7 +146,7 @@ public:
     /*!
      *  Returns the default position in the parent component's graphical representation.
      */
-    QPointF const& getDefaultPos() const;
+    QPointF getDefaultPos() const;
 
     /*!
      *  Assignment operator.
@@ -163,10 +165,11 @@ private:
     VLNV apiType_;
 
     //! Dependency direction.
-    DependencyDirection dependencyDir_;
+    DependencyDirection dependencyDir_ = DEPENDENCY_PROVIDER;
 
     //! The default position in the parent component's graphical representation (optional).
-    QPointF defaultPos_;
+    Kactus2Position defaultPos_ = Kactus2Position(QPoint());
+
 };
 
 //-----------------------------------------------------------------------------

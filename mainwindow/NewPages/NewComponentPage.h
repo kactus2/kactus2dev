@@ -42,7 +42,12 @@ public:
     /*!
      *  The destructor.
      */
-    ~NewComponentPage();
+    virtual ~NewComponentPage() = default;
+
+    // Disable copying.
+    NewComponentPage(NewComponentPage const& rhs) = delete;
+    NewComponentPage& operator=(NewComponentPage const& rhs) = delete;
+
 
     /*!
      *  Validates the contents of the page thoroughly.
@@ -51,27 +56,19 @@ public:
      *
      *      @remarks Showing message boxes for errors is allowed.
      */
-    bool validate();
+    bool validate() final;
 
     /*!
      *  Applies the changes that were done in the page.
      */
-    void apply();
+    void apply() final;
 
     /*!
      *  Called when the page is to be changed and this page would be hidden.
      *
      *      @return False, if the page change should be rejected. Otherwise true.
      */
-    bool onPageChange();
-
-public slots:
-
-
-    /*!
-     *  Called when the user changes the product hierarchy attribute.
-     */
-    void onProductHierarchyChanged();
+    bool onPageChange() final;
 
 signals:
 
@@ -79,19 +76,20 @@ signals:
      *  Signaled when a component should be created.
      */
     void createComponent(KactusAttribute::ProductHierarchy prodHier, KactusAttribute::Firmness firmness,
-        QVector<TagData> tags, VLNV const& vlnv, QString const& directory);
+        QVector<TagData> tags, VLNV const& vlnv, Document::Revision revision, QString const& directory);
+
+protected:
+
+    KactusAttribute::ProductHierarchy getProductHierarchy() const final;
 
 private:
-    // Disable copying.
-    NewComponentPage(NewComponentPage const& rhs);
-    NewComponentPage& operator=(NewComponentPage const& rhs);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Attribute editor.
     KactusAttributeEditor* attributeEditor_;
+
 };
 
 //-----------------------------------------------------------------------------

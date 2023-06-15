@@ -41,12 +41,8 @@ public:
      *
 	 *      @param [in] name The name of the view.
 	 */
-	SystemView(QString const& name);
+	SystemView(QString const& name = QString());
 
-	/*!
-     *  Default constructor.
-	 */
-	SystemView();
 
 	//! Copy constructor.
 	SystemView(const SystemView &other);

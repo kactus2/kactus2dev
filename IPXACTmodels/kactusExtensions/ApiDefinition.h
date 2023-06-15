@@ -33,7 +33,7 @@ public:
      *
      *      @param [in] vlnv The VLNV of the API definition.
      */
-    ApiDefinition(VLNV const& vlnv = VLNV());
+    ApiDefinition(VLNV const& vlnv, Document::Revision revision);
 
     /*!
      *  Copy constructor.

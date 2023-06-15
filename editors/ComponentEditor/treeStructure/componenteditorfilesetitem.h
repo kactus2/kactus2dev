@@ -66,42 +66,46 @@ public:
         ComponentEditorItem* parent);
 
     //! The destructor.
-	virtual ~ComponentEditorFileSetItem();
+	virtual ~ComponentEditorFileSetItem() = default;
+
+    //! No copying. No assignment.
+    ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other) = delete;
+    ComponentEditorFileSetItem& operator=(const ComponentEditorFileSetItem& other) = delete;
 
 	/*!
      *  Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
 	 */
-	virtual QString getTooltip() const;
+	QString getTooltip() const final;
 
 	/*!
      *  Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return QString Contains the text to display.
 	 */
-	virtual QString text() const;
+	QString text() const final;
 
 	/*!
      *  Check the validity of this item and sub items.
 	 *
 	 *      @return bool True if item is in valid state.
 	 */
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*!
      *  Get The editor of this item.
 	 *
 	 *      @return The editor to use for this item.
 	 */
-	virtual ItemEditor* editor();
+	ItemEditor* editor() final;
 
 	/*!
      *  Add a new child to the item.
 	 *
 	 *      @param [in] index   The index to add the child into.
 	 */
-	virtual void createChild(int index);
+	void createChild(int index) final;
 
     /*!
      *  Handles the addition of a file outside the editor.
@@ -131,10 +135,6 @@ signals:
     void fileRenamed(std::string const& oldName, std::string const& newName);
 
 private:
-
-    //! No copying. No assignment.
-	ComponentEditorFileSetItem(const ComponentEditorFileSetItem& other);
-	ComponentEditorFileSetItem& operator=(const ComponentEditorFileSetItem& other);
     
 	//! The file set being edited.
 	QSharedPointer<FileSet> fileSet_;
