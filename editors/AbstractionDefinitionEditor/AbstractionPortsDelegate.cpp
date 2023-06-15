@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
