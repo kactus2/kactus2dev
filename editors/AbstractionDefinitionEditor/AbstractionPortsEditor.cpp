@@ -170,14 +170,14 @@ void AbstractionPortsEditor::setBusDef(QSharedPointer<BusDefinition> busDefiniti
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsEditor::setStdRevision()
 //-----------------------------------------------------------------------------
-void AbstractionPortsEditor::setStdRevision(Document::Revision revision) const
+void AbstractionPortsEditor::setStdRevision(Document::Revision revision)
 {
     if (revision != Document::Revision::Std22)
     {
         portView_.horizontalHeader()->hideSection(LogicalPortColumns::MATCH);
     }
-
     portDelegate_->setRevision(revision);
+    portView_.setRevision(revision);
 }
 
 //-----------------------------------------------------------------------------

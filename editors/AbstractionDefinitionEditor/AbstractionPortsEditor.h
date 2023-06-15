@@ -74,7 +74,7 @@ public:
      *  
      *      @param [in] revision	The standard revision the abstraction definition is using.
      */
-    void setStdRevision(Document::Revision revision) const;
+    void setStdRevision(Document::Revision revision);
 
 signals:
 
