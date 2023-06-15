@@ -89,7 +89,7 @@ void FileSetReader::Details::parseDefaultFileBuilders(QDomElement const& fileSet
         for (int fileBuilderIndex = 0; fileBuilderIndex < fileBuilderNodeList.count(); ++fileBuilderIndex)
         {
             QSharedPointer<FileBuilder> newFileBuilder =
-                FileBuilderReader::createDefaultFileBuilderFrom(fileBuilderNodeList.at(fileBuilderIndex), docRevision);
+                FileBuilderReader::createFileBuilderFrom(fileBuilderNodeList.at(fileBuilderIndex), docRevision);
             newFileSet->getDefaultFileBuilders()->append(newFileBuilder);
         }
     }

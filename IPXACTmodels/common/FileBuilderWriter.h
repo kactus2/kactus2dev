@@ -37,7 +37,7 @@ namespace FileBuilderWriter
      */
     void writeDefaultFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder,
         Document::Revision docRevision);
-
+    void writeFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder>fileBuilder, Document::Revision docRevision);
     namespace Details
     {
 

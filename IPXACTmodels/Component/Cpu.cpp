@@ -16,8 +16,7 @@
 // Function: Cpu::AddressSpaceRef::AddressSpaceRef()
 //-----------------------------------------------------------------------------
 Cpu::AddressSpaceRef::AddressSpaceRef(QString const& addressSpaceReference) :
-addressSpaceRef_(addressSpaceReference),
-isPresent_()
+addressSpaceRef_(addressSpaceReference)
 {
 
 }
@@ -59,10 +58,7 @@ void Cpu::AddressSpaceRef::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 Cpu::Cpu(QString const& name) :
 NameGroup(name),
-Extendable(),
-isPresent_(),
-addressSpaceRefs_(new QList<QSharedPointer<AddressSpaceRef> > ()),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+Extendable()
 {
 
 }
@@ -73,12 +69,12 @@ parameters_(new QList<QSharedPointer<Parameter> > ())
 Cpu::Cpu(Cpu const& other):
 NameGroup(other),
 Extendable(other),
-isPresent_(other.isPresent_),
-addressSpaceRefs_(new QList<QSharedPointer<AddressSpaceRef> > ()),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+isPresent_(other.isPresent_)
 {
     copyParameters(other);
     copyAddressSpaceRefs(other);
+    copyRegions(other);
+    copyExecutableImages(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,6 +90,12 @@ Cpu & Cpu::operator=(Cpu const& other)
         addressSpaceRefs_->clear();
         copyAddressSpaceRefs(other);
 
+        regions_->clear();
+        copyRegions(other);
+
+        executableImages_->clear();
+        copyExecutableImages(other);
+
         parameters_->clear();
         copyParameters(other);
 	}
@@ -105,8 +107,7 @@ Cpu & Cpu::operator=(Cpu const& other)
 //-----------------------------------------------------------------------------
 Cpu::~Cpu()
 {
-    addressSpaceRefs_.clear();
-	parameters_.clear();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +141,7 @@ QStringList Cpu::getAddressSpaceRefs() const
 {
     QStringList references;
 
-    foreach (QSharedPointer<Cpu::AddressSpaceRef> addressSpaceRef, *addressSpaceRefs_)
+    for (QSharedPointer<Cpu::AddressSpaceRef> addressSpaceRef : *addressSpaceRefs_)
     {
         references.append(addressSpaceRef->getAddressSpaceRef());
     }
@@ -162,7 +163,7 @@ QSharedPointer<QList<QSharedPointer<Cpu::AddressSpaceRef> > > Cpu::getAddressSpa
 void Cpu::setAddressSpaceRefs(QStringList addrSpaceNames)
 {
 	addressSpaceRefs_->clear();
-    foreach (QString const& addressSpaceName, addrSpaceNames)
+    for (QString const& addressSpaceName : addrSpaceNames)
     {
         QSharedPointer<AddressSpaceRef> addressSpaceRef(new AddressSpaceRef(addressSpaceName));
         addressSpaceRefs_->append(addressSpaceRef);
@@ -179,17 +180,94 @@ void Cpu::setAddressSpaceReferences(QSharedPointer<QList<QSharedPointer<AddressS
 }
 
 //-----------------------------------------------------------------------------
+// Function: Cpu::getRange()
+//-----------------------------------------------------------------------------
+QString Cpu::getRange() const
+{
+    return range_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::setRange()
+//-----------------------------------------------------------------------------
+void Cpu::setRange(QString const& range)
+{
+    range_ = range;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::getWidth()
+//-----------------------------------------------------------------------------
+QString Cpu::getWidth() const
+{
+    return width_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::setWidth()
+//-----------------------------------------------------------------------------
+void Cpu::setWidth(QString const& width)
+{
+    width_ = width;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::getMemoryMapReference()
+//-----------------------------------------------------------------------------
+QString Cpu::getMemoryMapReference() const
+{
+    return memoryMapReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::setMemoryMapReference()
+//-----------------------------------------------------------------------------
+void Cpu::setMemoryMapReference(QString const& memoryMapRef)
+{
+    memoryMapReference_ = memoryMapRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::getRegions()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Region> > > Cpu::getRegions() const
+{
+    return regions_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::getAddressUnitBits()
+//-----------------------------------------------------------------------------
+QString Cpu::getAddressUnitBits() const
+{
+    return addressUnitBits_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::getExecutableImages()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ExecutableImage> > > Cpu::getExecutableImages()
+{
+    return executableImages_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::setAddressUnitBits()
+//-----------------------------------------------------------------------------
+void Cpu::setAddressUnitBits(QString const& addressUnitBits)
+{
+    addressUnitBits_ = addressUnitBits;
+}
+
+//-----------------------------------------------------------------------------
 // Function: cpu::copyParameters()
 //-----------------------------------------------------------------------------
 void Cpu::copyParameters(Cpu const& other)
 {
-    foreach (QSharedPointer<Parameter> param, *other.parameters_)
+    for (QSharedPointer<Parameter> param : *other.parameters_)
     {
-        if (param)
-        {
-            QSharedPointer<Parameter> copy(new Parameter(*param.data()));
-            parameters_->append(copy);
-        }
+        QSharedPointer<Parameter> copy(new Parameter(*param));
+        parameters_->append(copy);
     }
 }
 
@@ -198,12 +276,33 @@ void Cpu::copyParameters(Cpu const& other)
 //-----------------------------------------------------------------------------
 void Cpu::copyAddressSpaceRefs(Cpu const& other)
 {
-    foreach (QSharedPointer<Cpu::AddressSpaceRef> reference, *other.addressSpaceRefs_)
+    for (QSharedPointer<Cpu::AddressSpaceRef> reference : *other.addressSpaceRefs_)
     {
-        if (reference)
-        {
-            QSharedPointer<Cpu::AddressSpaceRef> copy (new AddressSpaceRef(*reference.data()));
-            addressSpaceRefs_->append(copy);
-        }
+        QSharedPointer<Cpu::AddressSpaceRef> copy(new AddressSpaceRef(*reference));
+        addressSpaceRefs_->append(copy);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::copyRegions()
+//-----------------------------------------------------------------------------
+void Cpu::copyRegions(Cpu const& other)
+{
+    for (QSharedPointer<Region> region: *other.regions_)
+    {
+        QSharedPointer<Region> copy(new Region(*region));
+        regions_->append(copy);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Cpu::copyExecutableImages()
+//-----------------------------------------------------------------------------
+void Cpu::copyExecutableImages(Cpu const& other)
+{
+    for (QSharedPointer<ExecutableImage> image : *other.executableImages_)
+    {
+        QSharedPointer<ExecutableImage> copy(new ExecutableImage(*image));
+        executableImages_->append(copy);
     }
 }

@@ -37,6 +37,25 @@ void FileBuilderWriter::writeDefaultFileBuilder(QXmlStreamWriter& writer, QShare
 
 
 //-----------------------------------------------------------------------------
+// Function: FileBuilderWriter::writeFileBuilder()
+//-----------------------------------------------------------------------------
+void FileBuilderWriter::writeFileBuilder(QXmlStreamWriter& writer, QSharedPointer<FileBuilder>fileBuilder, Document::Revision docRevision)
+{
+    writer.writeStartElement(QStringLiteral("ipxact:fileBuilder"));
+
+    FileWriter::writeFileType(writer, fileBuilder->getFileType(), docRevision);
+
+    Details::writeBuildModel(writer, fileBuilder);
+
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeVendorExtensions(writer, fileBuilder);
+    }
+
+    writer.writeEndElement(); // ipxact:fileBuilder
+}
+
+//-----------------------------------------------------------------------------
 // Function: FileBuilderWriter::writeBuildCommand()
 //-----------------------------------------------------------------------------
 void FileBuilderWriter::Details::writeBuildModel(QXmlStreamWriter& writer, QSharedPointer<FileBuilder> fileBuilder)

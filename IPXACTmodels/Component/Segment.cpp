@@ -15,12 +15,7 @@
 // Function: Segment::Segment()
 //-----------------------------------------------------------------------------
 Segment::Segment(QString const& name, QString const& addressOffset, QString const& range):
-NameGroup(name),
-Extendable(),
-addressOffset_(addressOffset),
-offsetAttributes_(),
-range_(range),
-rangeAttributes_()
+Region(name, addressOffset, range)
 {
 
 }
@@ -29,11 +24,8 @@ rangeAttributes_()
 // Function: Segment::Segment()
 //-----------------------------------------------------------------------------
 Segment::Segment( const Segment& other ):
-NameGroup(other),
-    Extendable(other),
-    addressOffset_(other.addressOffset_),
+	Region(other),
     offsetAttributes_(other.offsetAttributes_),
-    range_(other.range_),
     rangeAttributes_(other.rangeAttributes_)
 {
 
@@ -54,12 +46,9 @@ Segment& Segment::operator=( const Segment& other )
 {
 	if (this != &other)
     {
-		NameGroup::operator=(other);
-        Extendable::operator=(other);
+		Region::operator=(other);
 
-		addressOffset_ = other.addressOffset_;
 		offsetAttributes_ = other.offsetAttributes_;
-		range_ = other.range_;
 		rangeAttributes_ = other.rangeAttributes_;
 	}
 	return *this;
@@ -82,22 +71,6 @@ void Segment::setIsPresent(QString const& newIsPresent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Segment::getAddressOffset()
-//-----------------------------------------------------------------------------
-QString Segment::getAddressOffset() const
-{
-	return addressOffset_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Segment::setOffset()
-//-----------------------------------------------------------------------------
-void Segment::setOffset( QString const& addressOffset )
-{
-    addressOffset_ = addressOffset;
-}
-
-//-----------------------------------------------------------------------------
 // Function: Segment::getOffsetAttributes()
 //-----------------------------------------------------------------------------
 QMap<QString, QString> Segment::getOffsetAttributes() const
@@ -111,22 +84,6 @@ QMap<QString, QString> Segment::getOffsetAttributes() const
 void Segment::setOffsetAttributes( QMap<QString, QString> offsetAttributes )
 {
     offsetAttributes_ = offsetAttributes;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Segment::getRange()
-//-----------------------------------------------------------------------------
-QString Segment::getRange() const
-{
-	return range_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Segment::setRange()
-//-----------------------------------------------------------------------------
-void Segment::setRange( QString const& range )
-{
-    range_ = range;
 }
 
 //-----------------------------------------------------------------------------

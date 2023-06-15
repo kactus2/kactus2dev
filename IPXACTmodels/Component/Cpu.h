@@ -15,6 +15,9 @@
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
 
+#include <IPXACTmodels/Component/Region.h>
+#include <IPXACTmodels/Component/ExecutableImage.h>
+
 #include <QString>
 #include <QStringList>
 #include <QSharedPointer>
@@ -134,6 +137,32 @@ public:
      */
     void setAddressSpaceReferences(QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > newAddressSpaceRefs);
 
+    QString getRange() const;
+
+    void setRange(QString const& range);
+
+    QString getWidth() const;
+
+    void setWidth(QString const& width);
+
+    QString getMemoryMapReference() const;
+
+    void setMemoryMapReference(QString const& memoryMapRef);
+
+    QSharedPointer<QList<QSharedPointer<Region> > > getRegions() const;
+
+    /*!
+     *  Get the address unit bits
+     *
+     *      @return The address unit bits.
+     */
+    QString getAddressUnitBits() const;
+
+
+    QSharedPointer<QList<QSharedPointer<ExecutableImage> > > getExecutableImages();
+
+    void setAddressUnitBits(QString const& addressUnitBits);
+
 	/*!
      *  Get the parameters of the cpu.
 	 *
@@ -157,14 +186,37 @@ private:
      */
     void copyAddressSpaceRefs(const Cpu& other);
 
-	//! Presence of the CPU.
+    void copyRegions(Cpu const& other);
+
+    void copyExecutableImages(Cpu const& other);
+
+
+    //! Presence of the CPU.
 	QString isPresent_;
 
-	//! References a name of an address space within component.
-    QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > addressSpaceRefs_;
+    //! References a name of an address space within component.
+    QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > > addressSpaceRefs_ =
+        QSharedPointer<QList<QSharedPointer<AddressSpaceRef> > >(new QList<QSharedPointer<AddressSpaceRef> >);
+
+    QString range_;
+
+    QString width_;
+
+
+    QSharedPointer<QList<QSharedPointer<Region> > > regions_ =
+        QSharedPointer<QList<QSharedPointer<Region> > >(new QList<QSharedPointer<Region> >);
+
+    QString addressUnitBits_;
+
+    QSharedPointer<QList<QSharedPointer<ExecutableImage> > > executableImages_ =
+        QSharedPointer<QList<QSharedPointer<ExecutableImage> > >(new QList<QSharedPointer<ExecutableImage> >);
+
+    QString memoryMapReference_;
 
 	//! Specifies any cpu-type parameters.
-	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ =
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >);
+
 };
 
 #endif // CPU_H

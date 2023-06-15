@@ -373,13 +373,11 @@ void ComponentWriter::writeCPUs(QXmlStreamWriter& writer, QSharedPointer<Compone
 {
     if (!component->getCpus()->isEmpty())
     {
-        CPUWriter cpuWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:cpus"));
 
-        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        for (QSharedPointer<Cpu> cpu : *component->getCpus())
         {
-            cpuWriter.writeCPU(writer, cpu);
+            CPUWriter::writeCPU(writer, cpu, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:cpus

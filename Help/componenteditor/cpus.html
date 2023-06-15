@@ -19,8 +19,12 @@
         <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-	  <b>Address space</b> references specify the
-      logical address space of the cpu. When a master <i>bus interface</i>
+      <b>Short description</b> <span style="background-color: #32BC8F">1865-2022</span> is an
+      optional field for compact description of the <i>cpu</i>.
+    </p>
+    <p>
+	  <b>Address space references</b> <span style="background-color: #A5C3EF">1865-2014</span> 
+      specify the logical address space of the cpu. When a master <i>bus interface</i>
       of a component references the same address spaces, there's a
       link link between the programmable core and the interface. This
       information helps in generating a board support
@@ -46,7 +50,8 @@
     </ul>
     <hr>
     <p>
-      EXAMPLE. Example SoC has two CPUs. Both refer to an address
+      EXAMPLE. </b><span style="background-color: #A5C3EF">1865-2014</span> 
+      Example SoC has two CPUs. Both refer to an address
       space. The first address space is bound to a master interface
       whereas the second is local. Consequently, cpuA has access to
       the upper master interface and cpuB does not.  <br><img

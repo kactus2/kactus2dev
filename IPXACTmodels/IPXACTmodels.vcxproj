@@ -228,6 +228,7 @@
     <ClCompile Include="Component\EnumeratedValue.cpp" />
     <ClCompile Include="Component\EnumeratedValueReader.cpp" />
     <ClCompile Include="Component\EnumeratedValueWriter.cpp" />
+    <ClCompile Include="Component\ExecutableImage.cpp" />
     <ClCompile Include="Component\Field.cpp" />
     <ClCompile Include="Component\FieldReader.cpp" />
     <ClCompile Include="Component\FieldReset.cpp" />
@@ -244,6 +245,7 @@
     <ClCompile Include="Component\IndirectInterfaceWriter.cpp" />
     <ClCompile Include="Component\InstantiationsReader.cpp" />
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
+    <ClCompile Include="Component\LanguageTools.cpp" />
     <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
@@ -265,6 +267,7 @@
     <ClCompile Include="Component\PortMap.cpp" />
     <ClCompile Include="Component\PortReader.cpp" />
     <ClCompile Include="Component\PortWriter.cpp" />
+    <ClCompile Include="Component\Region.cpp" />
     <ClCompile Include="Component\Register.cpp" />
     <ClCompile Include="Component\RegisterBase.cpp" />
     <ClCompile Include="Component\RegisterDefinition.cpp" />
@@ -390,9 +393,12 @@
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
+    <ClInclude Include="Component\ExecutableImage.h" />
     <ClInclude Include="Component\FieldReset.h" />
+    <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
+    <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />

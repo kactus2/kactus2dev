@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 
@@ -36,7 +36,6 @@ private slots:
 	void failPresense();
 	void failRefPresense();
 
-private:
 };
 
 //-----------------------------------------------------------------------------
