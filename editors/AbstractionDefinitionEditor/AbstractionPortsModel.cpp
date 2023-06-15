@@ -45,7 +45,8 @@ namespace {
         LogicalPortColumns::PROTOCOLTYPE,
         LogicalPortColumns::PAYLOADNAME,
         LogicalPortColumns::PAYLOADTYPE,
-        LogicalPortColumns::PAYLOADEXTENSION
+        LogicalPortColumns::PAYLOADEXTENSION,
+        LogicalPortColumns::MATCH
         });
 };
 
@@ -135,6 +136,10 @@ QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientat
     else if (section == LogicalPortColumns::QUALIFIER)
     {
         return tr("Qualifier");
+    }
+    else if (section == LogicalPortColumns::MATCH)
+    {
+        return tr("Port match");
     }
     else if (section == LogicalPortColumns::WIDTH)
     {
@@ -235,6 +240,10 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
             }
 
             return qualifierList.join(" ");
+        }
+        else if (index.column() == LogicalPortColumns::MATCH)
+        {
+            return General::bool2Str(portInterface_->getMatch(index.row()));
         }
         else if (index.column() == LogicalPortColumns::WIDTH)
         {
@@ -377,6 +386,10 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
         }
 
         portInterface_->setQualifierStringList(index.row(), qualifierList);
+    }
+    else if (index.column() == LogicalPortColumns::MATCH)
+    {
+        portInterface_->setMatch(index.row(), value.toBool());
     }
     else if (index.column() == LogicalPortColumns::WIDTH)
     {
@@ -790,6 +803,7 @@ void AbstractionPortsModel::extendWireMode(std::string const& port, General::Int
         int index = portInterface_->getItemIndex(port, mode, systemGroup);
 
         portInterface_->setDirection(index, extendInterface_->getDirectionString(extendIndex));
+        portInterface_->setMatch(index, extendInterface_->getMatch(extendIndex));
         portInterface_->setQualifierStringList(index, extendInterface_->getQualifierStringList(extendIndex));
         portInterface_->setQualifierAttributes(index, extendInterface_->getQualifierAttributes(extendIndex));
     }
@@ -828,6 +842,7 @@ void AbstractionPortsModel::extendTransactionalMode(std::string const& port, Gen
         portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
         portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
         portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));
+        portInterface_->setMatch(index, extendInterface_->getMatch(extendIndex));
 
         portInterface_->setProtocolType(index, extendInterface_->getProtocolType(extendIndex));
         portInterface_->setPayloadName(index, extendInterface_->getPayloadName(extendIndex));

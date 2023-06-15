@@ -82,6 +82,14 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
             return 0;
         }
     }
+    else if (index.column() == LogicalPortColumns::MATCH)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItems({"true", "false"});
+
+        connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return box;
+    }
     else
     {
         return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
@@ -146,7 +154,7 @@ bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 {
     return indexColumn == LogicalPortColumns::MODE || indexColumn == LogicalPortColumns::PRESENCE ||
         indexColumn == LogicalPortColumns::SYSTEM_GROUP || indexColumn == LogicalPortColumns::PROTOCOLTYPE ||
-        indexColumn == LogicalPortColumns::PAYLOADTYPE;
+        indexColumn == LogicalPortColumns::PAYLOADTYPE || indexColumn == LogicalPortColumns::MATCH;
 }
 
 //-----------------------------------------------------------------------------

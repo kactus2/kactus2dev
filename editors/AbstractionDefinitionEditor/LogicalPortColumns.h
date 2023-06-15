@@ -28,6 +28,7 @@ namespace LogicalPortColumns
         DEFAULT_VALUE,
         DRIVER,
         QUALIFIER,
+        MATCH,
         SYSTEM_GROUP,
         PROTOCOLTYPE,
         PAYLOADNAME,

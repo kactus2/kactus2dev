@@ -42,7 +42,8 @@ NameGroup(other),
     Extendable(other),
     isPresent_(),
     wire_(),
-    transactional_()
+    transactional_(),
+    match_(other.match_)
 {
 
  	if (other.wire_)
@@ -75,6 +76,7 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
 		NameGroup::operator=(other);
         Extendable::operator=(other);
         isPresent_ = other.isPresent_;
+        match_ = other.match_;
 
 		if (other.wire_)
         {

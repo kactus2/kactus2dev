@@ -778,6 +778,7 @@ bool AbstractionDefinitionValidator::hasValidExtendPorts(QSharedPointer<Abstract
             QSharedPointer<PortAbstraction> extendPort = getMatchingExtendPort(portAbstraction, extendAbstraction);
             if (extendPort &&
                 (*portAbstraction->getQualifier() != *extendPort->getQualifier() ||
+                portAbstraction->getMatch() != extendPort->getMatch() ||
                 ((portAbstraction->hasWire() && !extendWirePortIsValid(portAbstraction, extendPort)) ||
                 (portAbstraction->hasTransactional() &&
                     !extendTransactionalPortAbstractionIsValid(portAbstraction, extendPort)))))
@@ -1063,6 +1064,12 @@ void AbstractionDefinitionValidator::findErrorsInExtendPorts(QVector<QString>& e
                 if (*portAbstraction->getQualifier() != *extendPort->getQualifier())
                 {
                     errors.append(QObject::tr("The qualifier of extended port %1 in %2 cannot be edited")
+                        .arg(extendPort->name(), context));
+                }
+
+                if (portAbstraction->getMatch() != extendPort->getMatch())
+                {
+                    errors.append(QObject::tr("Match of extended port %1 in %2 cannot be edited")
                         .arg(extendPort->name(), context));
                 }
 
