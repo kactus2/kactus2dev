@@ -50,8 +50,7 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
     {
         QComboBox* box = new QComboBox(parent);
 
-        QStringList list = { "master", "slave", "system" };
-        box->addItems(list);
+        box->addItems(modeOptions_);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
@@ -204,6 +203,21 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::setRevision()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::setRevision(Document::Revision revision)
+{
+    if (revision == Document::Revision::Std22)
+    {
+        modeOptions_ = { "initiator", "target", "system" };
+    }
+    else
+    {
+        modeOptions_ = { "master", "slave", "system" };
+    }
 }
 
 //-----------------------------------------------------------------------------

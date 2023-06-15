@@ -19,6 +19,7 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -955,6 +956,9 @@ private:
 
     //! List of signals.
     QList<QSharedPointer<SignalRow> > signals_;
+
+    //! The standard revision of the abstraction definition.
+    Document::Revision abstractionStandardRevision_ = Document::Revision::Unknown;
 };
 
 #endif // PORTABSTRACTIONINTERFACE_H

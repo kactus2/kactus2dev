@@ -6,7 +6,7 @@
 // Date: 20.6.2011
 //
 // Description:
-// Bus defition editor is an editor for Bus- and Abstraction definitions.
+// Bus defition editor is an editor for Abstraction definitions.
 //-----------------------------------------------------------------------------
 
 #ifndef ABSTRACTIONDEFINITIONEDITOR_H
@@ -29,7 +29,7 @@ class ExpressionParser;
 class PortAbstractionInterface;
 
 //-----------------------------------------------------------------------------
-//! Bus Editor is editor for Bus- and Abstraction definition.
+//! Bus Editor is editor for Abstraction definition.
 //-----------------------------------------------------------------------------
 class AbstractionDefinitionEditor : public TabDocument
 {

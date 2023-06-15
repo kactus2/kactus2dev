@@ -176,6 +176,8 @@ void AbstractionPortsEditor::setStdRevision(Document::Revision revision) const
     {
         portView_.horizontalHeader()->hideSection(LogicalPortColumns::MATCH);
     }
+
+    portDelegate_->setRevision(revision);
 }
 
 //-----------------------------------------------------------------------------

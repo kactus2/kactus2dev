@@ -27,6 +27,8 @@ namespace General
     enum InterfaceMode {
         MASTER = 0,
         SLAVE,
+        INITIATOR,
+        TARGET,
         SYSTEM,
         MIRROREDMASTER,
         MIRROREDSLAVE,
@@ -39,6 +41,8 @@ namespace General
     const QString INTERFACE_MODE_NAMES[] = {
         QLatin1String("master"),
         QLatin1String("slave"),
+        QLatin1String("initiator"),
+        QLatin1String("target"),
         QLatin1String("system"),
         QLatin1String("mirroredMaster"),
         QLatin1String("mirroredSlave"),
