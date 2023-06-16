@@ -762,6 +762,13 @@ public:
      */
     QSharedPointer<PortAbstraction> getPort(std::string const& portName) const;
 
+    /*!
+     *	Get the standard revision of the abstraction definition.
+     *  
+     * 		@return The standard revision used.
+     */
+    Document::Revision getRevision() const;
+
     //! No copying. No assignment.
     PortAbstractionInterface(const PortAbstractionInterface& other) = delete;
     PortAbstractionInterface& operator=(const PortAbstractionInterface& other) = delete;

@@ -135,7 +135,8 @@ void AbstractionDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition
         absDefGroup_.setAbsDef(absDef_);
     }
 
-    absDefGroup_.setDisabled(!absDef_);    
+    absDefGroup_.setDisabled(!absDef_);
+    
 }
 
 //-----------------------------------------------------------------------------

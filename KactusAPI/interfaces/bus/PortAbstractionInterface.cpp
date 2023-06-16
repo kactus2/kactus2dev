@@ -165,6 +165,14 @@ QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string co
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getRevision()
+//-----------------------------------------------------------------------------
+Document::Revision PortAbstractionInterface::getRevision() const
+{
+    return abstractionStandardRevision_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<NameGroup> PortAbstractionInterface::getItem(std::string const& portName) const

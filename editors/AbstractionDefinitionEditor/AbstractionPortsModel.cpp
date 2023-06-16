@@ -609,7 +609,15 @@ void AbstractionPortsModel::addTransactionalSignal()
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addMaster(QModelIndexList const& indexes)
 {
-    createNewSignal(General::MASTER, indexes);
+    if (auto revision = portInterface_->getRevision();
+        revision == Document::Revision::Std22)
+    {
+        createNewSignal(General::INITIATOR, indexes);
+    }
+    else
+    {
+        createNewSignal(General::MASTER, indexes);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -617,7 +625,15 @@ void AbstractionPortsModel::addMaster(QModelIndexList const& indexes)
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::addSlave(QModelIndexList const& indexes)
 {
-    createNewSignal(General::SLAVE, indexes);
+    if (auto revision = portInterface_->getRevision();
+        revision == Document::Revision::Std22)
+    {
+        createNewSignal(General::TARGET, indexes);
+    }
+    else
+    {
+        createNewSignal(General::SLAVE, indexes);
+    }
 }
 
 //-----------------------------------------------------------------------------
