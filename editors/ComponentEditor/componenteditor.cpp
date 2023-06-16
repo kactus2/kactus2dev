@@ -691,7 +691,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
             expressionFormatter_, expressionParser_, root)));
 
         root->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
-            new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
+            new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+                expressionFormatter_, expressionParser_, root)));
 
         root->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
             new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser_, root)));

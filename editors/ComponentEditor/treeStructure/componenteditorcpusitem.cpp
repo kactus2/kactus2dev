@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "componenteditorcpusitem.h"
+#include "SingleCpuItem.h"
 
 #include <editors/ComponentEditor/cpus/cpuseditor.h>
 
@@ -25,22 +26,27 @@
 ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model, 
     LibraryInterface* libHandler,
     QSharedPointer<Component> component,
+    QSharedPointer<ReferenceCounter> referenceCounter,
+    QSharedPointer<ParameterFinder> parameterFinder, 
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<ExpressionParser> expressionParser,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     cpus_(component->getCpus()),
+    expressionParser_(expressionParser),
     validator_(new CPUValidator(
         QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
         expressionParser, component->getAddressSpaces()))
 {
+    setParameterFinder(parameterFinder);
+    setExpressionFormatter(expressionFormatter);
+    setReferenceCounter(referenceCounter);
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorCpusItem::~ComponentEditorCpusItem()
-//-----------------------------------------------------------------------------
-ComponentEditorCpusItem::~ComponentEditorCpusItem()
-{
+    const int CHILD_COUNT = cpus_->count();
+    for (int i = 0; i < CHILD_COUNT; ++i)
+    {
+        createChild(i);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -58,7 +64,7 @@ QFont ComponentEditorCpusItem::getFont() const
 //-----------------------------------------------------------------------------
 QString ComponentEditorCpusItem::text() const
 {
-	return tr("Cpus");
+	return tr("CPUs");
 }
 
 //-----------------------------------------------------------------------------
@@ -69,7 +75,9 @@ ItemEditor* ComponentEditorCpusItem::editor()
 	if (!editor_)
     {
 		editor_ = new CpusEditor(component_, libHandler_, validator_);
-		editor_->setProtection(locked_);
+        editor_->setProtection(locked_);
+        connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 	}
@@ -92,7 +100,7 @@ bool ComponentEditorCpusItem::isValid() const
 {
     QVector<QString> cpuNames;
 
-    foreach (QSharedPointer<Cpu> cpu, *cpus_) 
+    for (QSharedPointer<Cpu> cpu : *cpus_) 
     {
         if (cpuNames.contains(cpu->name()) || !validator_->validate(cpu))
         {
@@ -103,4 +111,18 @@ bool ComponentEditorCpusItem::isValid() const
     }
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorCpusItem::createChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorCpusItem::createChild(int index)
+{
+    QSharedPointer<SingleCpuItem> cpuItem(new SingleCpuItem(cpus_->at(index), model_, libHandler_,
+        component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, 
+        validator_, this));
+
+    cpuItem->setLocked(locked_);
+
+    childItems_.insert(index, cpuItem);
 }

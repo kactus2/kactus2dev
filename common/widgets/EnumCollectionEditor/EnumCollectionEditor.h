@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~EnumCollectionEditor();
+    virtual ~EnumCollectionEditor() = default;
 
     /*!
      *  Adds a new enumerable item to the editor.
@@ -44,6 +44,8 @@ public:
      *      @param [in] selected            If true, the item is initially selected.
      */
     void addItem(QString const& text, bool isExclusivePort, bool selected);
+
+    void clearItems();
 
     /*!
      *  Returns the selected items.

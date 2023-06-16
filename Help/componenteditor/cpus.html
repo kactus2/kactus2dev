@@ -51,11 +51,21 @@
     <hr>
     <p>
       EXAMPLE. </b><span style="background-color: #A5C3EF">1865-2014</span> 
-      Example SoC has two CPUs. Both refer to an address
-      space. The first address space is bound to a master interface
-      whereas the second is local. Consequently, cpuA has access to
-      the upper master interface and cpuB does not.  <br><img
-      src="../images/cpus.png" alt="example">
+      Example SoC has two CPUs and both refer to an address space. 
+      The first CPU is bound to a master bus interface through address space 
+      AS0 whereas the second has only a local memory map in AS1. 
+      Consequently, cpuA has access to the global address space of 
+      the master bus interface and cpuB does not.<br>
+      <img src="../images/cpus.png" alt="example">
+    </p>
+    <p>
+      EXAMPLE. </b><span style="background-color: #32BC8F">1865-2022</span>
+      Example SoC has two CPUs and both refer to a memory map. 
+      The first memory map is bound to an initiator bus interface using
+      a sub-space map whereas the second has only a memory map with registers. 
+      Consequently, cpuA has access to the global address space of the 
+      initiator bus interface and cpuB does not.<br>
+      <img src="../images/cpus22.png" alt="example">
     </p>
   </body>
 </html>

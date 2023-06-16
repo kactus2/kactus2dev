@@ -90,7 +90,7 @@ ComponentEditorItem::~ComponentEditorItem()
 {
 	if (editor_)
     {
-		delete editor_;
+		editor_->deleteLater();
 		editor_ = nullptr;
 	}
 }
@@ -316,7 +316,6 @@ void ComponentEditorItem::onMoveChild( int source, int target )
 {
 	emit moveChild(this, source, target);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::moveChild()

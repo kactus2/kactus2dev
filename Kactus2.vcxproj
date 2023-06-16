@@ -508,9 +508,11 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ReferencingTableModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\componenteditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\cpus\CpuDetailsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpusdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpuseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpusmodel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\cpus\SingleCpuEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\fileBuilders\filebuildersdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\fileBuilders\filebuilderseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\fileBuilders\filebuildersmodel.cpp" />
@@ -725,6 +727,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\RemapStatesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ResetTypesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleComponentInstantiationItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleCpuItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignConfigurationInstantiationItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignInstantiationItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.cpp" />
@@ -1590,6 +1593,8 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\cpus\SingleCpuEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h" />
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h" />
@@ -1889,6 +1894,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleCpuItem.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>
