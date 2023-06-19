@@ -36,7 +36,7 @@ ComponentEditorItem(model, libHandler, component, parent),
     expressionParser_(expressionParser),
     validator_(new CPUValidator(
         QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
-        expressionParser, component->getAddressSpaces()))
+        expressionParser, component->getAddressSpaces(), component->getMemoryMaps(), component->getRevision()))
 {
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);

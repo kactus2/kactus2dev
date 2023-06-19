@@ -365,14 +365,25 @@ bool CpusModel::validateIndex(QModelIndex const& index) const
     {
         return false;
     }
-//     if (index.column() == CpuColumns::MEMORY_MAP &&
-//         !validator_->hasValidMemoryMapReference(cpus_->at(index.row())))
-//     {
-//         return false;
-//     }
-    else if (isValidExpressionColumn(index))
+    else if (index.column() == CpuColumns::MEMORY_MAP &&
+        !validator_->hasValidMemoryMapReference(cpus_->at(index.row())))
     {
-        return isValidExpression(expressionOrValueForIndex(index).toString());
+        return false;
+    }
+    else if (index.column() == CpuColumns::RANGE &&
+        !validator_->hasValidRange(cpus_->at(index.row())))
+    {
+        return false;
+    }
+    else if (index.column() == CpuColumns::WIDTH &&
+        !validator_->hasValidWidth(cpus_->at(index.row())))
+    {
+        return false;
+    }
+    else if (index.column() == CpuColumns::AUB && 
+        !validator_->hasValidAddressUnitBits(cpus_->at(index.row())))
+    {
+        return false;
     }
     else
     {

@@ -69,7 +69,11 @@ Extendable()
 Cpu::Cpu(Cpu const& other):
 NameGroup(other),
 Extendable(other),
-isPresent_(other.isPresent_)
+isPresent_(other.isPresent_),
+range_(other.range_),
+width_(other.width_),
+addressUnitBits_(other.addressUnitBits_),
+memoryMapReference_(other.memoryMapReference_)
 {
     copyParameters(other);
     copyAddressSpaceRefs(other);
@@ -86,6 +90,11 @@ Cpu & Cpu::operator=(Cpu const& other)
     {
 		NameGroup::operator=(other);
         Extendable::operator=(other);
+
+        range_ = other.range_;
+        width_ = other.width_;
+        addressUnitBits_ = other.addressUnitBits_;
+        memoryMapReference_ = other.memoryMapReference_;
 
         addressSpaceRefs_->clear();
         copyAddressSpaceRefs(other);

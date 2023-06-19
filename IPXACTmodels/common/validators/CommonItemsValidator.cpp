@@ -14,7 +14,7 @@
 
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionConfigurationValidator::hasValidName()
+// Function: CommonItemsValidator::hasValidName()
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidName(QString const& name)
 {
@@ -22,7 +22,7 @@ bool CommonItemsValidator::hasValidName(QString const& name)
 }
 
 //-----------------------------------------------------------------------------
-// Function: InterconnectionConfigurationValidator::hasValidIsPresent()
+// Function: CommonItemsValidator::hasValidIsPresent()
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidIsPresent(QString const& isPresent, QSharedPointer<ExpressionParser> parser)
 {
@@ -37,4 +37,28 @@ bool CommonItemsValidator::hasValidIsPresent(QString const& isPresent, QSharedPo
     int intValue = solvedValue.toInt(&toIntOk);
 
     return (toIntOk && intValue >= 0 && intValue < 2);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::isValidExpression()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::isValidExpression(QString const& expression, QSharedPointer<ExpressionParser> parser)
+{
+    bool expressionOk = false;
+    QString solvedValue = parser->parseExpression(expression, &expressionOk);
+
+    if (expressionOk == false)
+    {
+        return false;
+    }
+
+    bool changeOk = true;
+    quint64 intValue = solvedValue.toULongLong(&changeOk);
+
+    if (changeOk && intValue > 0)
+    {
+        return true;
+    }
+
+    return false;
 }

@@ -142,7 +142,7 @@ assertionValidator_()
     fileSetValidator_ = QSharedPointer<FileSetValidator>(new FileSetValidator(fileValidator, parser));
 
     cpuValidator_ = QSharedPointer<CPUValidator>(
-        new CPUValidator(parameterValidator_, parser, QSharedPointer<QList<QSharedPointer<AddressSpace> > > ()));
+        new CPUValidator(parameterValidator_, parser, nullptr, nullptr, Document::Revision::Unknown));
 
     otherClockDriverValidator_ = QSharedPointer<OtherClockDriverValidator>(new OtherClockDriverValidator(parser));
 
@@ -1243,7 +1243,8 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());
         portValidator_->componentChange(newComponent->getViews());
-        cpuValidator_->componentChange(newComponent->getAddressSpaces());
+        cpuValidator_->componentChange(newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
+            newComponent->getRevision());
 
         component_ = newComponent;
     }

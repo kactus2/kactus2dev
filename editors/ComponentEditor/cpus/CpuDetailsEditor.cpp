@@ -129,12 +129,12 @@ void CpuDetailsEditor::onRangeChanged()
 void CpuDetailsEditor::onWidthChanged()
 {
     widthEditor_->finishEditingCurrentWord();
-    QString width = rangeEditor_->getExpression();
+    QString width = widthEditor_->getExpression();
 
     if (cpu_->getWidth() != width)
     {
         cpu_->setWidth(width);
-        rangeEditor_->setToolTip(formattedValueFor(width));
+        widthEditor_->setToolTip(formattedValueFor(width));
 
         emit contentChanged();
     }
@@ -237,11 +237,11 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         widthCompleter->setModel(componentParametersModel);
         widthEditor_->setAppendingCompleter(widthCompleter);
 
-        connect(widthCompleter, SIGNAL(increaseReference(QString const&)),
+        connect(widthEditor_, SIGNAL(increaseReference(QString const&)),
             this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
-        connect(widthCompleter, SIGNAL(decreaseReference(QString const&)),
+        connect(widthEditor_, SIGNAL(decreaseReference(QString const&)),
             this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
-        connect(widthCompleter, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);
+        connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);
 
         aubEditor_ = new ExpressionEditor(finder, this);
         aubEditor_->setFixedHeight(24);

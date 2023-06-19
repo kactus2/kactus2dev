@@ -76,6 +76,20 @@ signals:
 	//! Emitted when contents of the model change
 	void contentChanged();
 
+    /*!
+     *  Increase the amount of references made to the given parameter.
+     *
+     *      @param [in] id  The id of the given parameter.
+     */
+    void increaseReferences(QString const& id) const;
+
+    /*!
+     *  Decrease the amount of references made to the given parameter.
+     *
+     *      @param [in] id  The id the given parameter.
+     */
+    void decreaseReferences(QString const& id) const;
+
 private slots:
 
     //! Handler for changes in isPresent.
