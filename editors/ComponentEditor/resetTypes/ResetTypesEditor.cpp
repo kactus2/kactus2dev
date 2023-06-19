@@ -77,5 +77,13 @@ void ResetTypesEditor::refresh()
 void ResetTypesEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/resetTypes.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/resetTypes2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/resetTypes.html");
+    }
 }
