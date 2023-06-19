@@ -36,8 +36,10 @@ MasterExpressionEditor(parameterFinder, this)
 void ExpressionLineEditor::setAppendingCompleter(QCompleter* completer)
 {
     MasterExpressionEditor::setAppendingCompleter(completer);
+    completer->setWidget(this);
 
-    connect(completer, SIGNAL(activated(QModelIndex const&)), this, SLOT(complete(QModelIndex const&)), Qt::UniqueConnection);
+    connect(completer, SIGNAL(activated(QModelIndex const&)), 
+        this, SLOT(complete(QModelIndex const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

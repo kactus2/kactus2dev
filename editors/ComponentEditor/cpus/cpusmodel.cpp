@@ -19,7 +19,7 @@
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 
 #include <QStringList>
-
+#include <QRegularExpression>
 
 #include <common/KactusColors.h>
 
@@ -27,19 +27,18 @@
 // Function: CpusModel::CpusModel()
 //-----------------------------------------------------------------------------
 CpusModel::CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
-    QObject* parent): QAbstractTableModel(parent),
+    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QObject* parent): 
+    ReferencingTableModel(parameterFinder, parent),
+    ParameterizableTable(parameterFinder),
     component_(component),
     cpus_(component->getCpus()),
-    validator_(validator)
+    validator_(validator),
+    expressionFormatter_(expressionFormatter)
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: CpusModel::~CpusModel()
-//-----------------------------------------------------------------------------
-CpusModel::~CpusModel()
-{
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,7 +51,7 @@ int CpusModel::rowCount(QModelIndex const& parent) const
 		return 0;
 	}
 
-	return cpus_->size();
+	return cpus_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,19 +90,39 @@ QVariant CpusModel::headerData(int section, Qt::Orientation orientation, int rol
         return QVariant();
     }
 
-    if (section == CpuColumns::NAME_COLUMN)
+    if (section == CpuColumns::NAME)
     {
         return tr("Name");
     }
-    else if (section == CpuColumns::DISPLAY_NAME_COLUMN)
+    else if (section == CpuColumns::DISPLAY_NAME)
     {
-        return tr("Display name");
+        return tr("Display\nname");
     }
-    else if (section == CpuColumns::ADDRSPACE_COLUMN)
+    else if (section == CpuColumns::SHORT_DESCRIPTION)
     {
-        return tr("Address space references");
+        return tr("Short\ndescription");
     }
-    else if (section == CpuColumns::DESCRIPTION_COLUMN)
+    else if (section == CpuColumns::ADDRSPACE)
+    {
+        return tr("Address space\nreferences");
+    }
+    else if (section == CpuColumns::MEMORY_MAP)
+    {
+        return tr("Memory map\nreference");
+    }
+    else if (section == CpuColumns::RANGE)
+    {
+        return tr("Range") + getExpressionSymbol();
+    }
+    else if (section == CpuColumns::WIDTH)
+    {
+        return tr("Width\n[bits]") + getExpressionSymbol();
+    }
+    else if (section == CpuColumns::AUB)
+    {
+        return tr("Address unit\nbits") + getExpressionSymbol();
+    }
+    else if (section == CpuColumns::DESCRIPTION)
     {
         return tr("Description");
     }
@@ -118,67 +137,71 @@ QVariant CpusModel::headerData(int section, Qt::Orientation orientation, int rol
 //-----------------------------------------------------------------------------
 QVariant CpusModel::data(QModelIndex const& index, int role) const
 {
-	if (!index.isValid() || index.row() < 0 || index.row() >= cpus_->size())
+    if (!index.isValid() || index.row() < 0 || index.row() >= cpus_->size())
     {
-		return QVariant();
-	}
-    
-    QSharedPointer<Cpu> cpu = cpus_->at(index.row());
+        return QVariant();
+    }
 
-	if (role == Qt::DisplayRole)
+    QSharedPointer<Cpu> cpu = cpus_->at(index.row());
+    const int column = index.column(); 
+
+    if (role == Qt::DisplayRole)
     {
-        if (index.column() == CpuColumns::NAME_COLUMN)
+        if (isValidExpressionColumn(index))
         {
-            return cpu->name();
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
         }
-        else if (index.column() == CpuColumns::DISPLAY_NAME_COLUMN)
+        else if (index.column() == CpuColumns::DESCRIPTION)
         {
-            return cpu->displayName();
-        }
-        else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
-        {
-            QStringList addrSpaceNames = cpu->getAddressSpaceRefs();
-            return addrSpaceNames.join(' ');
-        }
-        else if (index.column() == CpuColumns::DESCRIPTION_COLUMN)
-        {
-            return cpu->description();
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$",
+                QRegularExpression::DotMatchesEverythingOption), "...");
         }
         else
         {
-            return QVariant();
+            return valueForIndex(index).toString();
         }
-	}
-    // user display role for interface column returns a QStringList
-    else if (role == CpuColumns::USER_DISPLAY_ROLE && index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    }
+
+    else if (role == Qt::EditRole)
+    {
+        return expressionOrValueForIndex(index);
+    }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        if (isValidExpressionColumn(index))
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return expressionOrValueForIndex(index);
+        }
+    }
+    else if (role == CpuColumns::USER_DISPLAY_ROLE && column == CpuColumns::ADDRSPACE)
     {
         return cpu->getAddressSpaceRefs();
     }
     else if (role == Qt::ForegroundRole)
     {
-        if (index.column() == CpuColumns::ADDRSPACE_COLUMN && 
-            !validator_->hasValidAddressSpaceReferences(cpus_->at(index.row())))
-        {
-            return KactusColors::ERROR;
-        }
-        else
-        {
-           return KactusColors::REGULAR_TEXT;
-        }
+
+        return blackForValidOrRedForInvalidIndex(index);
     }
     else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == CpuColumns::NAME_COLUMN || index.column() == CpuColumns::ADDRSPACE_COLUMN)
+        if (column == CpuColumns::NAME || column == CpuColumns::ADDRSPACE ||
+            column == CpuColumns::MEMORY_MAP || column == CpuColumns::RANGE || column == CpuColumns::WIDTH)
         {
             return KactusColors::MANDATORY_FIELD;
         }
         else
+        {
             return KactusColors::REGULAR_FIELD;
+        }
     }
-    else
-    {
-        return QVariant();
-    }
+
+    // if unsupported role
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -192,24 +215,44 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
 	}
 
     QSharedPointer<Cpu> cpu = cpus_->at(index.row());
-
+    const int column = index.column();
     if (role == Qt::EditRole)
     {
-        if (index.column() == CpuColumns::NAME_COLUMN)
+        if (column == CpuColumns::NAME)
         {
             cpu->setName(value.toString());
         }
-        else if (index.column() == CpuColumns::DISPLAY_NAME_COLUMN)
+        else if (column == CpuColumns::DISPLAY_NAME)
         {
             cpu->setDisplayName(value.toString());		
         }
-        else if (index.column() == CpuColumns::ADDRSPACE_COLUMN)
+        else if (column == CpuColumns::SHORT_DESCRIPTION)
+        {
+            cpu->setShortDescription(value.toString());
+        }
+        else if (column == CpuColumns::ADDRSPACE)
         {
             QString str = value.toString();
             QStringList addrSpaceNames = str.split(' ', Qt::SkipEmptyParts);
             cpu->setAddressSpaceRefs(addrSpaceNames);
         }
-        else if (index.column() == CpuColumns::DESCRIPTION_COLUMN)
+        else if (column == CpuColumns::MEMORY_MAP)
+        {
+            cpu->setMemoryMapReference(value.toString());
+        }
+        else if (column == CpuColumns::RANGE)
+        {
+            cpu->setRange(value.toString());
+        }
+        else if (column == CpuColumns::WIDTH)
+        {
+            cpu->setWidth(value.toString());
+        }
+        else if (column == CpuColumns::AUB)
+        {
+            cpu->setAddressUnitBits(value.toString());
+        }
+        else if (column == CpuColumns::DESCRIPTION)
         {
             cpus_->at(index.row())->setDescription(value.toString());
         }
@@ -224,7 +267,7 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
 	}
 
 	// user edit role for interface column operates on QStringList
-    else if (role == CpuColumns::USER_EDIT_ROLE && index.column() == CpuColumns::ADDRSPACE_COLUMN)
+    else if (role == CpuColumns::USER_EDIT_ROLE && column == CpuColumns::ADDRSPACE)
     {
         cpu->setAddressSpaceRefs(value.toStringList());
         emit dataChanged(index, index);
@@ -235,6 +278,106 @@ bool CpusModel::setData(QModelIndex const& index, QVariant const& value, int rol
     {
 		return false;
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: CpusModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int CpusModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
+{
+    int total = 0;
+
+    QSharedPointer<Cpu> cpu = cpus_->at(row);
+    total += cpu->getRange().count(valueID);
+    total += cpu->getWidth().count(valueID);
+    total += cpu->getAddressUnitBits().count(valueID);
+
+    return total;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CpusModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool CpusModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    return index.column() == CpuColumns::RANGE || index.column() == CpuColumns::WIDTH ||
+        index.column() == CpuColumns::AUB;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CpusModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant CpusModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    QSharedPointer<Cpu> cpu = cpus_->at(index.row());
+    const int column = index.column();
+
+    if (column == CpuColumns::NAME)
+    {
+        return cpu->name();
+    }
+    else if (column == CpuColumns::DISPLAY_NAME)
+    {
+        return cpu->displayName();
+    }
+    else if (column == CpuColumns::SHORT_DESCRIPTION)
+    {
+        return cpu->shortDescription();
+    }
+    else if (column == CpuColumns::ADDRSPACE)
+    {
+        QStringList addrSpaceNames = cpu->getAddressSpaceRefs();
+        return addrSpaceNames.join(' ');
+    }
+    else if (column == CpuColumns::MEMORY_MAP)
+    {
+        return cpu->getMemoryMapReference();
+    }
+    else if (column == CpuColumns::RANGE)
+    {
+        return cpu->getRange();
+    }
+    else if (column == CpuColumns::WIDTH)
+    {
+        return cpu->getWidth();
+    }
+    else if (column == CpuColumns::AUB)
+    {
+        return cpu->getAddressUnitBits();
+    }
+    else if (column == CpuColumns::DESCRIPTION)
+    {
+        return cpu->description();
+    }
+    else
+    {
+        return QVariant();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CpusModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool CpusModel::validateIndex(QModelIndex const& index) const
+{
+    if (index.column() == CpuColumns::ADDRSPACE &&
+        !validator_->hasValidAddressSpaceReferences(cpus_->at(index.row())))
+    {
+        return false;
+    }
+//     if (index.column() == CpuColumns::MEMORY_MAP &&
+//         !validator_->hasValidMemoryMapReference(cpus_->at(index.row())))
+//     {
+//         return false;
+//     }
+    else if (isValidExpressionColumn(index))
+    {
+        return isValidExpression(expressionOrValueForIndex(index).toString());
+    }
+    else
+    {
+        return true;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -282,4 +425,12 @@ void CpusModel::onRemoveItem(QModelIndex const& index)
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CpusModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant CpusModel::valueForIndex(QModelIndex const& index) const
+{
+    return expressionOrValueForIndex(index);
 }

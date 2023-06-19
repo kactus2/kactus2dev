@@ -42,23 +42,28 @@ public:
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-        QSharedPointer<CPUValidator> validator, QWidget* parent = 0);
+        QSharedPointer<CPUValidator> validator,
+		QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, 
+		QWidget* parent = 0);
 	
 	//! The destructor
-	virtual ~CpusEditor();
+	virtual ~CpusEditor() = default;
+
+    //! No copying
+    CpusEditor(const CpusEditor& other) = delete;
+    CpusEditor& operator=(const CpusEditor& other) = delete;
 
 	//! Reload the information from the model to the editor.	
-	virtual void refresh();
+	void refresh() final;
 
 protected:
 
 	//! Handler for widget's show event
-	virtual void showEvent(QShowEvent* event);
+	void showEvent(QShowEvent* event) final;
 
 private:
-	//! No copying
-	CpusEditor(const CpusEditor& other);
-	CpusEditor& operator=(const CpusEditor& other);
 
 	//! The view to display the cpus
 	EditableTableView view_;

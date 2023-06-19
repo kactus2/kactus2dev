@@ -19,13 +19,24 @@
         <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-	  <b>Address space references</b> specify the logical address space of the cpu. 
-      When a master <i>bus interface</i> of a component references the same address 
-      spaces, there's a link link between the programmable core and the interface.
-      This information helps in generating a board support
-      package (BSP) and picking appropriate programmable components
-      into system design. CPU definition should not be repeated on a
-      higher level component (one that instantiates a CPU).
+      <b>Short description</b> is an optional field for compact description of the <i>cpu</i>.
+    </p>
+    <p>
+      <b>Memory map reference</b> is mandatory and maps the address space defined 
+      by range and width to a <i>memory map</i> in the <i>component</i>.
+    </p>
+    <p>
+      <b>Range</b> </b> is mandatory and defines the address range in the memory
+      map accessible by the <i>cpu</i>.
+    </p>
+    <p>
+      <b>Width</b> is mandatory and defines the bit width of a row in the memory
+      map for the <i>cpu</i>.
+    </p>
+    <p>
+      <b>Address unit bits</b> (AUB) is an optinal field that defines the number 
+      of data bits each address increment in the address space contains. 
+      The default setting for a <i>cpu</i> address space is byte addressable (8 bits).
     </p>
 	<p>
         <b>Description</b> is an optional field for textual description of the <i>cpu</i>.		
@@ -46,12 +57,12 @@
     <hr>
     <p>
       EXAMPLE.
-      Example SoC has two CPUs and both refer to an address space. 
-      The first CPU is bound to a master bus interface through address space 
-      AS0 whereas the second has only a local memory map in AS1. 
-      Consequently, cpuA has access to the global address space of 
-      the master bus interface and cpuB does not.<br>
-      <img src="../images/cpus.png" alt="example">
+      Example SoC has two CPUs and both refer to a memory map. 
+      The first memory map is bound to an initiator bus interface using
+      a sub-space map whereas the second has only a memory map with registers. 
+      Consequently, cpuA has access to the global address space of the 
+      initiator bus interface and cpuB does not.<br>
+      <img src="../images/cpus22.png" alt="example">
     </p>
   </body>
 </html>

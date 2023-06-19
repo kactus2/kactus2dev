@@ -74,7 +74,8 @@ ItemEditor* ComponentEditorCpusItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new CpusEditor(component_, libHandler_, validator_);
+		editor_ = new CpusEditor(component_, libHandler_, validator_, expressionParser_,
+            parameterFinder_, expressionFormatter_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);

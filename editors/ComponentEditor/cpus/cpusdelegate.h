@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
 
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 #include <QStyledItemDelegate>
 #include <QSharedPointer>
 
@@ -33,13 +35,21 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The owner of the delegate.
+     *      @param [in] component               The component being edited.
+     *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] parameterFinder         The parameter finder to use for for expression editor.
+	 *      @param [in] parent                  The owner of the delegate.
 	*/
-	CpusDelegate(QSharedPointer<Component> component, QObject *parent);
+	CpusDelegate(QSharedPointer<Component> component, QCompleter* parameterNameCompleter, 
+		QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
 	//! The destructor.
-	virtual ~CpusDelegate();
+	virtual ~CpusDelegate() = default;
+
+    //! No copying
+    CpusDelegate(const CpusDelegate& other) = delete;
+    CpusDelegate& operator=(const CpusDelegate& other) = delete;
+
 
 	/*! Create a new editor for the given item
 	 *
@@ -66,6 +76,27 @@ public:
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
 	*/
 	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
+
+signals:
+
+    /*!
+     *  Increase the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
+
+protected:
+
+    //! Filters events for editors.
+    bool eventFilter(QObject* editor, QEvent* event) final;
 
 private:
 	
@@ -103,12 +134,17 @@ private:
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
 
-	//! No copying
-	CpusDelegate(const CpusDelegate& other);
-	CpusDelegate& operator=(const CpusDelegate& other);
+	bool columnAcceptsExpression(int column) const;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
+
+    //!  The completer to use for parameter names in expression editor.
+	QCompleter* parameterNameCompleter_;
+
+    //! The parameter finder to use for for expression editor.
+	QSharedPointer<ParameterFinder> parameterFinder_;
+
 };
 
 #endif // CPUSDELEGATE_H

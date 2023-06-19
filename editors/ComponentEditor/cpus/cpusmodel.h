@@ -12,6 +12,11 @@
 #ifndef CPUSMODEL_H
 #define CPUSMODEL_H
 
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
+
+#include <KactusAPI/include/ExpressionFormatter.h>
+
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
@@ -23,7 +28,7 @@ class CPUValidator;
 //-----------------------------------------------------------------------------
 //! Model for cpu elements within a component.
 //-----------------------------------------------------------------------------
-class CpusModel : public QAbstractTableModel
+class CpusModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -36,10 +41,17 @@ public:
 	 *      @param [in] parent      The owner of this model.
 	*/
 	CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
+		QSharedPointer<ExpressionParser> expressionParser,
+		QSharedPointer<ParameterFinder> parameterFinder,
+		QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject* parent);
 	
 	//! The destructor
-	virtual ~CpusModel();
+	virtual ~CpusModel() = default;
+
+    //! No copying
+    CpusModel(const CpusModel& other) = delete;
+    CpusModel& operator=(const CpusModel& other) = delete;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -47,7 +59,7 @@ public:
 	 *
 	 *      @return Number of rows the item has.
 	*/
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*! Get the number of columns the item has to be displayed.
 	 *
@@ -55,7 +67,7 @@ public:
 	 *
 	 *      @return The number of columns to be displayed.
 	*/
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*! Get the item flags that defines the possible operations for the item.
 	 *
@@ -63,7 +75,7 @@ public:
 	 *
 	 *      @return Qt::ItemFlags specify the possible operations for the item.
 	*/
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(const QModelIndex& index) const final;
 
 	/*! Get the header data for specified header.
 	 *
@@ -73,7 +85,7 @@ public:
 	 *
 	 *      @return QVariant Contains the requested data.
 	*/
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const final;
 
 	/*! Get the data for specified item.
 	 *
@@ -82,7 +94,7 @@ public:
 	 *
 	 *      @return QVariant Contains the data for the item.
 	*/
-	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
+	QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const final;
 
 	/*! Save the data to the model for specified item
 	 *
@@ -90,9 +102,48 @@ public:
 	 *      @param [in] value The data that is to be saved.
 	 *      @param [in] role The role specifies what kind of data should be saved.
 	 *
-	 *      @return True if saving was successfull.
+	 *      @return True if saving was successful.
 	*/
-	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole) final;
+
+protected:
+
+	/*!
+	 *  Gets the number of all the references made to a selected id on the selected row.
+	 *
+	 *      @param [in] row         The row of the selected item.
+	 *      @param [in] valueID     The id of the referenced parameter.
+	 *
+	 *      @return The amount of references made to the selected id on the selected row.
+	 */
+    int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
+
+	/*!
+	*  Check if the column index is valid for containing expressions.
+	*
+	*      @param [in] index   The index being evaluated.
+	*
+	*      @return     True, if column can have expressions, false otherwise.
+	*/
+	bool isValidExpressionColumn(QModelIndex const& index) const final;
+
+	/*!
+	 *  Gets the expression for the given index or the plain value if expression is not available.
+	 *
+	 *      @param [in] index   The index whose expression to get.
+	 *
+	 *      @return The expression for the index if available, otherwise the value for the given index.
+	 */
+	QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
+
+	/*!
+	 *  Validates the data in an index.
+	 *
+	 *      @param [in] index   The index whose data to validate
+	 *
+	 *      @return True, if the data in the index is valid, otherwise false.
+	 */
+	bool validateIndex(QModelIndex const& index) const final;
 
 public slots:
 
@@ -126,9 +177,9 @@ signals:
 	void cpuRemoved(int index);
 
 private:
-	//! No copying
-	CpusModel(const CpusModel& other);
-	CpusModel& operator=(const CpusModel& other);
+
+	//! Gets the value of the cell in index.
+    QVariant valueForIndex(QModelIndex const& index) const;
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
@@ -136,7 +187,11 @@ private:
 	//! Contains the cpus being edited.
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
 
+	//! Validator for the CPU element.
     QSharedPointer<CPUValidator> validator_;
+
+	//! Formatter to use for expressions.
+	QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
 #endif // CPUSMODEL_H
