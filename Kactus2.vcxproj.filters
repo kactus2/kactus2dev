@@ -3196,6 +3196,9 @@
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
+    <ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -4378,6 +4381,9 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -5708,8 +5714,8 @@
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\QualifierEditor.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

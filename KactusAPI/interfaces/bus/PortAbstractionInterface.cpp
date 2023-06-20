@@ -670,10 +670,8 @@ bool PortAbstractionInterface::setQualifierStringList(int const& portIndex, std:
 // Function: PortAbstractionInterface::getQualifierAttribute()
 //-----------------------------------------------------------------------------
 std::string PortAbstractionInterface::getQualifierAttribute(int const& portIndex,
-    std::string const& qualifierTypeString, std::string const& attributeName) const
+    std::string const& attributeName) const
 {
-    auto qualifierType = Qualifier::stringToType(QString::fromStdString(qualifierTypeString));
-
     auto selectedSignal = getSignal(portIndex);
     if (!selectedSignal)
     {
@@ -700,10 +698,8 @@ std::string PortAbstractionInterface::getQualifierAttribute(int const& portIndex
 // Function: PortAbstractionInterface::setQualifierAttribute()
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::setQualifierAttribute(int const& portIndex, std::string const& attributeName,
-    std::string const& attributeValue, QString const& qualifierTypeString) const
+    std::string const& attributeValue) const
 {
-    auto qualifierType = Qualifier::stringToType(qualifierTypeString);
-
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (!selectedSignal)
     {
@@ -788,12 +784,13 @@ std::unordered_map<std::string, std::string> PortAbstractionInterface::getQualif
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    attributes.try_emplace(QStringLiteral("resetLevel").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::ResetLevel).toStdString());
-    attributes.try_emplace(QStringLiteral("clockEnableLevel").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel).toStdString());
-    attributes.try_emplace(QStringLiteral("powerDomainReference").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel).toStdString());
-    attributes.try_emplace(QStringLiteral("flowType").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::FlowType).toStdString());
-    attributes.try_emplace(QStringLiteral("userFlowType").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::UserFlowType).toStdString());
-    attributes.try_emplace(QStringLiteral("user").toStdString(), activeQualifier->getAttribute(Qualifier::Attribute::UserDefined).toStdString());
+    attributes.try_emplace(std::string("resetLevel"), activeQualifier->getAttribute(Qualifier::Attribute::ResetLevel).toStdString());
+    attributes.try_emplace(std::string("clockEnableLevel"), activeQualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel).toStdString());
+    attributes.try_emplace(std::string("powerEnableLevel"), activeQualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel).toStdString());
+    attributes.try_emplace(std::string("powerDomainRef"), activeQualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).toStdString());
+    attributes.try_emplace(std::string("flowType"), activeQualifier->getAttribute(Qualifier::Attribute::FlowType).toStdString());
+    attributes.try_emplace(std::string("userFlowType"), activeQualifier->getAttribute(Qualifier::Attribute::UserFlowType).toStdString());
+    attributes.try_emplace(std::string("user"), activeQualifier->getAttribute(Qualifier::Attribute::UserDefined).toStdString());
 
     return attributes;
 }

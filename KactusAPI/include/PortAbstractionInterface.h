@@ -267,8 +267,9 @@ public:
      *		
      * 		@return The chosen attribute.
      */
-    std::string getQualifierAttribute(int const& portIndex, std::string const& attributeName,
-        std::string const& qualifierTypeString) const;
+    std::string getQualifierAttribute(int const& portIndex, std::string const& attributeName) const;
+
+    std::string getQualifierAttribute(int const& portIndex, Qualifier::Attribute attribute) const;
 
     /*!
      *	Set a qualifier attribute for a specific qualifier type.
@@ -281,7 +282,7 @@ public:
      * 		@return True, if attribute was successfully set, otherwise false.
      */
     bool setQualifierAttribute(int const& portIndex, std::string const& attributeName, 
-        std::string const& attributeValue, QString const& qualifierTypeString) const;
+        std::string const& attributeValue) const;
 
     /*!
      *	Set all qualifier attributes at once.

@@ -13,6 +13,8 @@
 
 #include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
+#include <KactusAPI/include/PortAbstractionInterface.h>
+
 #include <QComboBox>
 #include <QStringList>
 #include <QLineEdit>
@@ -21,8 +23,8 @@
 // Function: AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate()
 //-----------------------------------------------------------------------------
 AbstractionTransactionalPortsDelegate::AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess,
-    QObject *parent):
-AbstractionPortsDelegate(libraryAccess, parent)
+    PortAbstractionInterface* portInterface, QObject *parent):
+AbstractionPortsDelegate(libraryAccess, portInterface, parent)
 {
 
 }

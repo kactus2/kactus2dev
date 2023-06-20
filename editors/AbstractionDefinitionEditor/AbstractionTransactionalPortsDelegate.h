@@ -14,6 +14,7 @@
 
 #include "AbstractionPortsDelegate.h"
 
+class PortAbstractionInterface;
 //-----------------------------------------------------------------------------
 //! The delegate that provides editors for transactional port properties in Abstraction Definition.
 //-----------------------------------------------------------------------------
@@ -27,9 +28,11 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   The port abstraction interface.
      *      @param [in] parent          The owner of this instance
      */
-    AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess, QObject *parent);
+    AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+        QObject *parent);
 
 	/*!
      *  The destructor.

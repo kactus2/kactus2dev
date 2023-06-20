@@ -20,6 +20,8 @@
 
 class BusDefinition;
 class LibraryInterface;
+class PortAbstractionInterface;
+class QualifierEditor;
 
 //-----------------------------------------------------------------------------
 //! Master delegate for abstraction definition wire and transactional ports.
@@ -34,9 +36,10 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] portInterface   The port abstraction interface.
 	 *      @param [in] parent          The owner of this instance
      */
-    AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent);
+    AbstractionPortsDelegate(LibraryInterface* libraryAcces, PortAbstractionInterface* portInterface, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -86,6 +89,8 @@ public:
      */
     void setRevision(Document::Revision revision);
 
+    virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
+
 protected slots:
 
 	/*!
@@ -119,6 +124,8 @@ protected:
      *      @return True, if the editor used in the selected column is a combo box editor, false otherwise.
      */
     virtual bool editorIsComboBox(int indexColumn) const;
+
+    PortAbstractionInterface* getPortInterface() const;
 
 private:
 	//! No copying. No assignment.
@@ -159,6 +166,8 @@ private:
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
 
+    void setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -170,6 +179,8 @@ private:
     QSharedPointer<const BusDefinition> busDefinition_;
 
     QStringList modeOptions_ = { "initiator", "target", "system" };
+
+    PortAbstractionInterface* portInterface_;
 };
 
 #endif // ABSTRACTIONPORTSDELEGATE_H

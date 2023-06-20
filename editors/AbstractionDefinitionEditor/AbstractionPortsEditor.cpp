@@ -39,12 +39,12 @@ portDelegate_(nullptr)
     if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         portProxy_ = new AbstractionWirePortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, this);
+        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, portInterface, this);
     }
     else
     {
         portProxy_ = new AbstractionTransactionalPortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, this);
+        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, portInterface, this);
     }
 
     portProxy_->setSourceModel(portModel_);
