@@ -14,9 +14,11 @@
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 
-#include <QLineEdit>
+#include <IPXACTmodels/common/Qualifier.h>
 
+#include <QLineEdit>
 #include <QFrame>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 //! Editor for qualifiers in 2022 standard Abstraction Definition.
@@ -55,21 +57,45 @@ public:
 
 	void setUserDefined(QString const& userDefined);
 
-	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers);
+	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<Qualifier::Attribute, QString> attributes);
+
+public slots:
+
+	void onItemCheckChanged(Qt::CheckState newState);
 
 private:
 
 	void setupLayout();
 
+	void setQualifierAttribute(QPair<Qualifier::Attribute, QString> const& attribute);
+
+	QLineEdit* getAttributeEditor(Qualifier::Attribute attribute);
+
+	QLabel* getAttributeLabel(Qualifier::Attribute attribute);
+
+	void updateAttributeList(QStringList const& selectedItems);
+
+	void setQualifierAttributesVisible(Qualifier::Type qualifier, bool visible);
+
+	QList<Qualifier::Attribute> getQualifierTypeAttributes(Qualifier::Type qualifier);
+
 	EnumCollectionEditor* enumerationEditor_;
 
-	QLineEdit resetLevelLineEdit_;
-	QLineEdit clockEnableLevelLineEdit_;
-	QLineEdit powerEnableLevelLineEdit_;
-	QLineEdit powerDomainLineEdit_;
-	QLineEdit flowTypeLineEdit_;
-	QLineEdit userFlowTypeLineEdit_;
-	QLineEdit userDefinedLineEdit_;
+    QLineEdit resetLevelLineEdit_;
+    QLineEdit clockEnableLevelLineEdit_;
+    QLineEdit powerEnableLevelLineEdit_;
+    QLineEdit powerDomainLineEdit_;
+    QLineEdit flowTypeLineEdit_;
+    QLineEdit userFlowTypeLineEdit_;
+    QLineEdit userDefinedLineEdit_;
+
+	QLabel resetLevelLabel_ = QLabel(QStringLiteral("Reset level:"));
+	QLabel clockEnableLevelLabel_ = QLabel(QStringLiteral("Clock enable level:"));
+	QLabel powerEnableLevelLabel_ = QLabel(QStringLiteral("Power enable level:"));
+	QLabel powerDomainRefLabel_ = QLabel(QStringLiteral("Power domain:"));
+	QLabel flowTypeLabel_ = QLabel(QStringLiteral("Flow type:"));
+	QLabel userFlowTypeLabel_ = QLabel(QStringLiteral("User flow type:"));
+	QLabel userDefinedLabel_ = QLabel(QStringLiteral("User defined:"));
 	
 };
 

@@ -30,6 +30,8 @@ QualifierEditor::QualifierEditor(QWidget* parent):
     setAutoFillBackground(true);
 
     setupLayout();
+
+    connect(enumerationEditor_, SIGNAL(itemStateChanged(Qt::CheckState)), this, SLOT(onItemCheckChanged(Qt::CheckState)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +93,7 @@ void QualifierEditor::setUserDefined(QString const& userDefined)
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::setupEditor()
 //-----------------------------------------------------------------------------
-void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers)
+void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<Qualifier::Attribute, QString> attributes)
 {
     for (auto const& qualifier : allQualifiers)
     {
@@ -103,6 +105,22 @@ void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList 
 
         enumerationEditor_->addItem(qualifier, false, selected);
     }
+
+    for (auto attributeType : attributes.keys())
+    {
+        setQualifierAttribute(QPair<Qualifier::Attribute, QString>(attributeType, attributes[attributeType]));
+    }
+
+    updateAttributeList(enumerationEditor_->getSelectedItems());
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::onItemCheckChanged()
+//-----------------------------------------------------------------------------
+void QualifierEditor::onItemCheckChanged(Qt::CheckState newState)
+{
+    QStringList const& checkedItems = enumerationEditor_->getSelectedItems();
+    updateAttributeList(checkedItems);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,13 +144,13 @@ void QualifierEditor::setupLayout()
 
     QWidget* attributes = new QWidget();
     QFormLayout* attributesLayout = new QFormLayout();
-    attributesLayout->addRow(QStringLiteral("Reset level:"), &resetLevelLineEdit_);
-    attributesLayout->addRow(QStringLiteral("Clock enable level:"), &clockEnableLevelLineEdit_);
-    attributesLayout->addRow(QStringLiteral("Power enable level:"), &powerEnableLevelLineEdit_);
-    attributesLayout->addRow(QStringLiteral("Power domain:"), &powerDomainLineEdit_);
-    attributesLayout->addRow(QStringLiteral("Flow type:"), &flowTypeLineEdit_);
-    attributesLayout->addRow(QStringLiteral("User flow type:"), &userFlowTypeLineEdit_);
-    attributesLayout->addRow(QStringLiteral("User defined:"), &userDefinedLineEdit_);
+    attributesLayout->addRow(&resetLevelLabel_, &resetLevelLineEdit_);
+    attributesLayout->addRow(&clockEnableLevelLabel_, & clockEnableLevelLineEdit_);
+    attributesLayout->addRow(&powerEnableLevelLabel_, &powerEnableLevelLineEdit_);
+    attributesLayout->addRow(&powerDomainRefLabel_, &powerDomainLineEdit_);
+    attributesLayout->addRow(&flowTypeLabel_, &flowTypeLineEdit_);
+    attributesLayout->addRow(&userFlowTypeLabel_, &userFlowTypeLineEdit_);
+    attributesLayout->addRow(&userDefinedLabel_, &userDefinedLineEdit_);
 
     attributes->setLayout(attributesLayout);
     
@@ -145,4 +163,168 @@ void QualifierEditor::setupLayout()
     qualifiersAndAttributes->setContentsMargins(0, 0, 0, 0);
 
     editorLayout->addWidget(qualifiersAndAttributes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::setQualifierAttribute()
+//-----------------------------------------------------------------------------
+void QualifierEditor::setQualifierAttribute(QPair<Qualifier::Attribute, QString> const& attribute)
+{
+    auto type = attribute.first;
+    auto const& value = attribute.second;
+
+    QLineEdit* editor = getAttributeEditor(type);
+    //QLabel* label = getAttributeLabel(type);
+
+    if (editor != nullptr)
+    {
+        editor->setText(value);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getAttributeEditor()
+//-----------------------------------------------------------------------------
+QLineEdit* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
+{
+    if (attribute == Qualifier::Attribute::ResetLevel)
+    {
+        return &resetLevelLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::ClockEnableLevel)
+    {
+        return &clockEnableLevelLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::PowerEnableLevel)
+    {
+        return &powerEnableLevelLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::PowerDomainReference)
+    {
+        return &powerDomainLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::FlowType)
+    {
+        return &flowTypeLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::UserFlowType)
+    {
+        return &userFlowTypeLineEdit_;
+    }
+    else if (attribute == Qualifier::Attribute::UserDefined)
+    {
+        return &userDefinedLineEdit_;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getAttributeLabel()
+//-----------------------------------------------------------------------------
+QLabel* QualifierEditor::getAttributeLabel(Qualifier::Attribute attribute)
+{
+    if (attribute == Qualifier::Attribute::ResetLevel)
+    {
+        return &resetLevelLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::ClockEnableLevel)
+    {
+        return &clockEnableLevelLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::PowerEnableLevel)
+    {
+        return &powerEnableLevelLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::PowerDomainReference)
+    {
+        return &powerDomainRefLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::FlowType)
+    {
+        return &flowTypeLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::UserFlowType)
+    {
+        return &userFlowTypeLabel_;
+    }
+    else if (attribute == Qualifier::Attribute::UserDefined)
+    {
+        return &userDefinedLabel_;
+    }
+    else
+    {
+        return nullptr;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::updateAttributeList()
+//-----------------------------------------------------------------------------
+void QualifierEditor::updateAttributeList(QStringList const& selectedItems)
+{
+    for (auto const& qualifier : Qualifier::QUALIFIER_TYPE_STRING.keys())
+    {
+        if (!selectedItems.contains(Qualifier::typeToString(qualifier)))
+        {
+            setQualifierAttributesVisible(qualifier, false);
+        }
+        else
+        {
+            setQualifierAttributesVisible(qualifier, true);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::setQualifierAttributesVisible()
+//-----------------------------------------------------------------------------
+void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, bool visible)
+{
+    auto qualifierTypeAttributes = getQualifierTypeAttributes(qualifier);
+
+    for (auto attribute : qualifierTypeAttributes)
+    {
+        QLineEdit* editor = getAttributeEditor(attribute);
+        QLabel* label = getAttributeLabel(attribute);
+
+        editor->setVisible(visible);
+        editor->setText("");
+        label->setVisible(visible);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getQualifierTypeAttributes()
+//-----------------------------------------------------------------------------
+QList<Qualifier::Attribute> QualifierEditor::getQualifierTypeAttributes(Qualifier::Type qualifier)
+{
+    QList<Qualifier::Attribute> qualifierTypeAttributes;
+
+    if (qualifier == Qualifier::Reset)
+    {
+        qualifierTypeAttributes.append(Qualifier::Attribute::ResetLevel);
+    }
+    else if (qualifier == Qualifier::ClockEnable)
+    {
+        qualifierTypeAttributes.append(Qualifier::Attribute::ClockEnableLevel);
+    }
+    else if (qualifier == Qualifier::PowerEnable)
+    {
+        qualifierTypeAttributes.append(Qualifier::Attribute::PowerEnableLevel);
+        qualifierTypeAttributes.append(Qualifier::Attribute::PowerDomainReference);
+    }
+    else if (qualifier == Qualifier::FlowControl)
+    {
+        qualifierTypeAttributes.append(Qualifier::Attribute::FlowType);
+        qualifierTypeAttributes.append(Qualifier::Attribute::UserFlowType);
+    }
+    else if (qualifier == Qualifier::User)
+    {
+        qualifierTypeAttributes.append(Qualifier::Attribute::UserDefined);
+    }
+
+    return qualifierTypeAttributes;
 }

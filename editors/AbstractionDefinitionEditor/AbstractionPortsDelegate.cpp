@@ -380,13 +380,14 @@ void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const&
     auto userFlowType = portInterface_->getQualifierAttribute(realIndex, std::string("userFlowType"));
     auto userDefined = portInterface_->getQualifierAttribute(realIndex, std::string("userDefined"));
 
-    qualifierEditor->setResetEnableLevel(QString::fromStdString(resetLevel));
-    qualifierEditor->setClockEnableLevel(QString::fromStdString(clockEnableLevel));
-    qualifierEditor->setPowerEnableLevel(QString::fromStdString(powerEnableLevel));
-    qualifierEditor->setPowerDomainRef(QString::fromStdString(powerDomainRef));
-    qualifierEditor->setFlowType(QString::fromStdString(flowType));
-    qualifierEditor->setUserFlowType(QString::fromStdString(userFlowType));
-    qualifierEditor->setUserDefined(QString::fromStdString(userDefined));
+    QMap<Qualifier::Attribute, QString> attributes;
+    attributes.insert(Qualifier::Attribute::ResetLevel, QString::fromStdString(resetLevel));
+    attributes.insert(Qualifier::Attribute::ClockEnableLevel, QString::fromStdString(clockEnableLevel));
+    attributes.insert(Qualifier::Attribute::PowerEnableLevel, QString::fromStdString(powerEnableLevel));
+    attributes.insert(Qualifier::Attribute::PowerDomainReference, QString::fromStdString(powerDomainRef));
+    attributes.insert(Qualifier::Attribute::FlowType, QString::fromStdString(flowType));
+    attributes.insert(Qualifier::Attribute::UserFlowType, QString::fromStdString(userFlowType));
+    attributes.insert(Qualifier::Attribute::UserDefined, QString::fromStdString(userDefined));
 
     auto qualifierNames = getAvailableItems();
 
@@ -398,5 +399,5 @@ void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const&
         activeQualifiers << QString::fromStdString(qualifier);
     }
 
-    qualifierEditor->setupEditor(qualifierNames, activeQualifiers);
+    qualifierEditor->setupEditor(qualifierNames, activeQualifiers, attributes);
 }
