@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/common/ExpressionSet.h>
+
 #include <QList>
 
 class Cpu;
@@ -34,13 +36,12 @@ public:
 	 *      @param [in] model               The model that owns the items.
 	 *      @param [in] libHandler          The instance that manages the library.
 	 *      @param [in] component           The component being edited.
-     *      @param [in] expressionParser    Parser for expressions in cpus.
+     *      @param [in] expressions			Parser for expressions in cpus.
      *      @param [in] parent              The parent item.
      */
     ComponentEditorCpusItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+		ExpressionSet expressions,
         ComponentEditorItem* parent);
 
 	//! The destructor
@@ -95,10 +96,10 @@ private:
 	//! The cpus being edited
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
 
-	QSharedPointer<ExpressionParser> expressionParser_;
-
     //! Validator for cpu elements.
     QSharedPointer<CPUValidator> validator_;
+
+	ExpressionSet expressions_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

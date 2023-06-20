@@ -27,18 +27,16 @@
 // Function: CpusModel::CpusModel()
 //-----------------------------------------------------------------------------
 CpusModel::CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
-    QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ExpressionSet expressions,
     QObject* parent): 
-    ReferencingTableModel(parameterFinder, parent),
-    ParameterizableTable(parameterFinder),
+    ReferencingTableModel(expressions.finder, parent),
+    ParameterizableTable(expressions.finder),
     component_(component),
     cpus_(component->getCpus()),
     validator_(validator),
-    expressionFormatter_(expressionFormatter)
+    expressionFormatter_(expressions.formatter)
 {
-    setExpressionParser(expressionParser);
+    setExpressionParser(expressions.parser);
 }
 
 //-----------------------------------------------------------------------------

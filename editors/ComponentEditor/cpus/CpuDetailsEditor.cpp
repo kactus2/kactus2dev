@@ -284,11 +284,11 @@ void CpuDetailsEditor::setupLayout()
         layout->addWidget(memoryMapRefSelector_, row, 1, 1, 1);
         ++row;
 
-        layout->addWidget(new QLabel(tr("Range, f(x):"), this), row, 0, 1, 1);
+        layout->addWidget(new QLabel(tr("Range [AUB], f(x):"), this), row, 0, 1, 1);
         layout->addWidget(rangeEditor_, row, 1, 1, 1);
         ++row;
 
-        layout->addWidget(new QLabel(tr("Width, f(x):"), this), row, 0, 1, 1);
+        layout->addWidget(new QLabel(tr("Width [bits], f(x):"), this), row, 0, 1, 1);
         layout->addWidget(widthEditor_, row, 1, 1, 1);
         ++row;
 

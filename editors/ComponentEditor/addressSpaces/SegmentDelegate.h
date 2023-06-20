@@ -36,7 +36,11 @@ public:
         QObject* parent);
 
     //! The destructor.
-    ~SegmentDelegate();
+    virtual ~SegmentDelegate() = default;
+
+    // Disable copying.
+    SegmentDelegate(SegmentDelegate const& rhs) = delete;
+    SegmentDelegate& operator=(SegmentDelegate const& rhs) = delete;
 
 protected:
 
@@ -47,16 +51,11 @@ protected:
      *
      *      @return True, if the cells in the column allow expressions, otherwise false.
      */
-    virtual bool columnAcceptsExpression(int column) const;
+    bool columnAcceptsExpression(int column) const final;
 
     //! Gets the description column.
-    virtual int descriptionColumn() const;
+    int descriptionColumn() const final;
 
-private:
-
-    // Disable copying.
-    SegmentDelegate(SegmentDelegate const& rhs);
-    SegmentDelegate& operator=(SegmentDelegate const& rhs);  
 };
 
 #endif // SEGMENTDELEGATE_H

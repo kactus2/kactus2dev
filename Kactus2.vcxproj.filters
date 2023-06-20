@@ -3205,6 +3205,15 @@
     <ClCompile Include="editors\ComponentEditor\cpus\CpuDetailsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5632,6 +5641,12 @@
     <ClInclude Include="common\graphicsItems\ConnectionItem.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\cpus\RegionColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ExpressionSet.h">
+      <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5727,6 +5742,15 @@
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </QtMoc>
   </ItemGroup>

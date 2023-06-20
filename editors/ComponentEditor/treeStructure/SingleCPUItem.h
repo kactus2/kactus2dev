@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/common/ExpressionSet.h>
+
 class Cpu;
 class CPUValidator;
 
@@ -32,10 +34,9 @@ public:
      *      @param [in] cpu                     The selected cpu.
      *      @param [in] model                   The model that owns the items.
      *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] component               Tthe component being edited.
+     *      @param [in] component               The component being edited.
      *      @param [in] referenceCounter        The counter for parameter references.
-     *      @param [in] parameterFinder         Finds the referenced parameter ids.
-     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
+     *      @param [in] expressions
      *      @param [in] parent                  The parent item.
      */
     SingleCpuItem(QSharedPointer<Cpu> cpu,
@@ -43,9 +44,7 @@ public:
         LibraryInterface* libHandler,
         QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+        ExpressionSet expressions,
         QSharedPointer<CPUValidator> validator,
         ComponentEditorItem* parent);
 
@@ -95,8 +94,9 @@ private:
     //! Pointer to the currently selected remap state.
     QSharedPointer<Cpu> cpu_;
 
-
     QSharedPointer<CPUValidator> validator_;
+
+    ExpressionSet expressions_;
 };
 
 #endif // SINGLE_CPU_ITEM_H

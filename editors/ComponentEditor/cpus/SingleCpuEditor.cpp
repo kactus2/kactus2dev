@@ -14,6 +14,12 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Cpu.h>
 
+#include <KactusAPI/include/LibraryInterface.h>
+
+#include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -23,16 +29,19 @@
 //-----------------------------------------------------------------------------
 SingleCpuEditor::SingleCpuEditor(QSharedPointer<Component> component,
     QSharedPointer<Cpu> cpu, LibraryInterface* libHandler,
-    QSharedPointer<ParameterFinder> parameterFinder, 
-    QSharedPointer<ExpressionParser> expressionParser,
-    QWidget* parent):
-ItemEditor(component, libHandler, parent),
-cpu_(cpu),
-nameEditor_(cpu_, component->getRevision(), this, tr("CPU name and description")),
-detailsEditor_(component, cpu, parameterFinder, expressionParser, this)
+    ExpressionSet expressions,
+    QWidget* parent) :
+    ItemEditor(component, libHandler, parent),
+    cpu_(cpu),
+    nameEditor_(cpu_, component->getRevision(), this, tr("CPU name and description")),
+    detailsEditor_(component, cpu, expressions.finder, expressions.parser, this),
+    regionsEditor_(cpu->getRegions(), libHandler->getDirectoryPath(component->getVlnv()), expressions, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&detailsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&regionsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    regionsEditor_.setVisible(component->getRevision() == Document::Revision::Std22);
 
     setupLayout();
 }
@@ -44,6 +53,7 @@ void SingleCpuEditor::refresh()
 {
     nameEditor_.refresh();
     detailsEditor_.refresh();
+    regionsEditor_.refresh();
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +76,7 @@ void SingleCpuEditor::setupLayout()
     auto topLayout = new QGridLayout(topWidget);
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topLayout->addWidget(&detailsEditor_, 0, 1, 1, 1);
+    topLayout->addWidget(&regionsEditor_, 1, 0, 1, 2);
     topLayout->setContentsMargins(0,0,0,0);
     topLayout->setRowStretch(1, 1);
 }

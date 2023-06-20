@@ -365,6 +365,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./editors/ComponentEditor/cpus/CpuColumns.h \
+    ./editors/ComponentEditor/cpus/SingleCpuEditor.h \
+    ./editors/ComponentEditor/cpus/CpuDetailsEditor.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
@@ -424,6 +426,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
     ./editors/ComponentEditor/treeStructure/SubspaceMapItem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h \
+    ./editors/ComponentEditor/treeStructure/SingleCpuItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -824,9 +827,11 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/treeStructure/SingleCpuItem.h \
-    ./editors/ComponentEditor/cpus/SingleCpuEditor.h \
-    ./editors/ComponentEditor/cpus/CpuDetailsEditor.h
+    ./editors/ComponentEditor/cpus/RegionColumns.h \
+    ./editors/ComponentEditor/cpus/RegionsModel.h \
+    ./editors/ComponentEditor/cpus/RegionsEditor.h \
+    ./editors/common/ExpressionSet.h \
+    ./editors/ComponentEditor/cpus/RegionsDelegate.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1173,9 +1178,11 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/addressspacevisualizer.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.cpp \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.cpp \
+    ./editors/ComponentEditor/cpus/CpuDetailsEditor.cpp \
     ./editors/ComponentEditor/cpus/cpusdelegate.cpp \
     ./editors/ComponentEditor/cpus/cpuseditor.cpp \
     ./editors/ComponentEditor/cpus/cpusmodel.cpp \
+    ./editors/ComponentEditor/cpus/SingleCpuEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockmodel.cpp \
@@ -1271,6 +1278,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
+    ./editors/ComponentEditor/treeStructure/SingleCpuItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.cpp \
@@ -1561,7 +1569,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/treeStructure/SingleCpuItem.cpp \
-    ./editors/ComponentEditor/cpus/SingleCpuEditor.cpp \
-    ./editors/ComponentEditor/cpus/CpuDetailsEditor.cpp
+    ./editors/ComponentEditor/cpus/RegionsModel.cpp \
+    ./editors/ComponentEditor/cpus/RegionsEditor.cpp \
+    ./editors/ComponentEditor/cpus/RegionsDelegate.cpp
 RESOURCES += kactus.qrc

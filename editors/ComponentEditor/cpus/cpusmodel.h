@@ -15,6 +15,8 @@
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
 
+#include <editors/common/ExpressionSet.h>
+
 #include <KactusAPI/include/ExpressionFormatter.h>
 
 #include <QAbstractTableModel>
@@ -41,9 +43,7 @@ public:
 	 *      @param [in] parent      The owner of this model.
 	*/
 	CpusModel(QSharedPointer<Component> component, QSharedPointer<CPUValidator> validator,
-		QSharedPointer<ExpressionParser> expressionParser,
-		QSharedPointer<ParameterFinder> parameterFinder,
-		QSharedPointer<ExpressionFormatter> expressionFormatter,
+		ExpressionSet expressions,
         QObject* parent);
 	
 	//! The destructor

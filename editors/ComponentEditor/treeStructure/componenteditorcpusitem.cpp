@@ -27,19 +27,17 @@ ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model
     LibraryInterface* libHandler,
     QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, 
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+    ExpressionSet expressions,
     ComponentEditorItem* parent ):
 ComponentEditorItem(model, libHandler, component, parent),
     cpus_(component->getCpus()),
-    expressionParser_(expressionParser),
     validator_(new CPUValidator(
-        QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
-        expressionParser, component->getAddressSpaces(), component->getMemoryMaps(), component->getRevision()))
+        QSharedPointer<ParameterValidator>(new ParameterValidator(expressions.parser, component->getChoices())),
+        expressions.parser, component->getAddressSpaces(), component->getMemoryMaps(), component->getRevision())),
+    expressions_(expressions)
 {
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
 
     const int CHILD_COUNT = cpus_->count();
@@ -74,8 +72,7 @@ ItemEditor* ComponentEditorCpusItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new CpusEditor(component_, libHandler_, validator_, expressionParser_,
-            parameterFinder_, expressionFormatter_);
+		editor_ = new CpusEditor(component_, libHandler_, validator_, expressions_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(childRemoved(int)), this, SLOT(onRemoveChild(int)), Qt::UniqueConnection);
@@ -120,8 +117,7 @@ bool ComponentEditorCpusItem::isValid() const
 void ComponentEditorCpusItem::createChild(int index)
 {
     QSharedPointer<SingleCpuItem> cpuItem(new SingleCpuItem(cpus_->at(index), model_, libHandler_,
-        component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, 
-        validator_, this));
+        component_, referenceCounter_, expressions_, validator_, this));
 
     cpuItem->setLocked(locked_);
 

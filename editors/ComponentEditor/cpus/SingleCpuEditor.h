@@ -15,8 +15,11 @@
 #include <editors/ComponentEditor/itemeditor.h>
 
 #include "CpuDetailsEditor.h"
+#include "RegionsEditor.h"
 
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
+
+#include <editors/common/ExpressionSet.h>
 
 class Cpu;
 class ExpressionParser;
@@ -36,15 +39,13 @@ public:
 	 *      @param [in] component               The component that contains the view.
 	 *      @param [in] cpu                     The remap state being edited.
 	 *      @param [in] libHandler              The instance that manages the library.
-     *      @param [in] parameterFinder         The finder for the parameter references.
-     *      @param [in] expressionFormatter     Changes the referenced ids to parameter names.
+     *      @param [in] expressions     Changes the referenced ids to parameter names.
 	 *      @param [in] parent                  The owner of this editor.
 	 */
     SingleCpuEditor(QSharedPointer<Component> component,
         QSharedPointer<Cpu> cpu,
         LibraryInterface* libHandler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser,
+        ExpressionSet expressions,
         QWidget* parent = 0);
 
 	//! The destructor
@@ -83,7 +84,12 @@ private:
 	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
 
+    //! Editor for memory references and other details.
     CpuDetailsEditor detailsEditor_;
+
+    //! Editor for region data.
+    RegionsEditor regionsEditor_;
+
 };
 
 #endif // SINGLE_CPU_EDITOR_H

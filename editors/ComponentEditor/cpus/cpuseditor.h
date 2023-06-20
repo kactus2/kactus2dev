@@ -43,9 +43,7 @@ public:
 	*/
 	CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
         QSharedPointer<CPUValidator> validator,
-		QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, 
+		ExpressionSet expressions,
 		QWidget* parent = 0);
 	
 	//! The destructor

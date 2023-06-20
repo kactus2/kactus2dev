@@ -19,6 +19,8 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
 
+#include <editors/common/ExpressionSet.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
@@ -29,14 +31,12 @@
 //-----------------------------------------------------------------------------
 CpusEditor::CpusEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
     QSharedPointer<CPUValidator> validator, 
-	QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    ExpressionSet expressions,
 	QWidget* parent) :
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, validator, expressionParser, parameterFinder, expressionFormatter, this)
+    model_(component, validator, expressions, this)
 {
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("CPUs summary"), this);
@@ -68,13 +68,13 @@ ItemEditor(component, handler, parent),
 	view_.setAllowImportExport(true);
 	view_.setItemsDraggable(false);
 
-    ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
-    parameterModel->setExpressionParser(expressionParser);
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
+    parameterModel->setExpressionParser(expressions.parser);
 
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-	view_.setItemDelegate(new CpusDelegate(component, parameterCompleter, parameterFinder, this));
+	view_.setItemDelegate(new CpusDelegate(component, parameterCompleter, expressions.finder, this));
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(cpuAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);

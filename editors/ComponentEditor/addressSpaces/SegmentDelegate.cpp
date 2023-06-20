@@ -23,14 +23,6 @@ SegmentDelegate::SegmentDelegate(QCompleter* parameterNameCompleter, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: SegmentDelegate::~SegmentDelegate()
-//-----------------------------------------------------------------------------
-SegmentDelegate::~SegmentDelegate()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SegmentDelegate::columnAcceptsExpression()
 //-----------------------------------------------------------------------------
 bool SegmentDelegate::columnAcceptsExpression(int column) const

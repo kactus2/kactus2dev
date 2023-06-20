@@ -15,7 +15,6 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
 
@@ -28,24 +27,15 @@
 //-----------------------------------------------------------------------------
 // Function: SegmentsModel::SegmentsModel()
 //-----------------------------------------------------------------------------
-SegmentsModel::SegmentsModel(QSharedPointer<AddressSpace> addrSpace,
+SegmentsModel::SegmentsModel(QSharedPointer<QList<QSharedPointer<Segment> > > segments,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-addrSpace_(addrSpace),
-segments_(addrSpace->getSegments()),
+segments_(segments),
 expressionFormatter_(expressionFormatter)
 {
-	Q_ASSERT(addrSpace);
-}
-
-//-----------------------------------------------------------------------------
-// Function: SegmentsModel::~SegmentsModel()
-//-----------------------------------------------------------------------------
-SegmentsModel::~SegmentsModel()
-{
-
+	Q_ASSERT(segments_);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,7 +337,7 @@ bool SegmentsModel::validateIndex(QModelIndex const& index) const
     if (index.column() == SegmentColumns::NAME)
     {
         QStringList segmentNames;
-        foreach (QSharedPointer<Segment> segment, *segments_)
+        for (QSharedPointer<Segment> segment : *segments_)
         {
             segmentNames.append(segment->name());
         }
@@ -396,7 +386,7 @@ int SegmentsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const
 quint64 SegmentsModel::getLastSegmentedAddress() const
 {
     quint64 lastAddress = 0;
-    foreach (QSharedPointer<Segment> segment, *segments_)
+    for (QSharedPointer<Segment> segment : *segments_)
     {
         quint64 segmentOffset = parseExpressionToDecimal(segment->getAddressOffset()).toUInt();
         quint64 segmentSize = qMax(parseExpressionToDecimal(segment->getRange()).toUInt(), uint(1));
@@ -413,7 +403,7 @@ quint64 SegmentsModel::getLastSegmentedAddress() const
 void SegmentsModel::onCopyRows(QModelIndexList indexList)
 {
     QList<QSharedPointer<Segment> > copiedSegments;
-    foreach (QModelIndex index, indexList)
+    for (QModelIndex const& index : indexList)
     {
         QSharedPointer<Segment> segment = segments_->at(index.row());
         copiedSegments.append(segment);
@@ -450,9 +440,9 @@ void SegmentsModel::onPasteRows()
 
             beginInsertRows(QModelIndex(), rowBegin, rowEnd);
 
-            foreach(QSharedPointer<Segment> copySegment, newSegments)
+            for (QSharedPointer<Segment> copySegment : newSegments)
             {
-                QSharedPointer<Segment> newSegment (new Segment(*copySegment.data()));
+                QSharedPointer<Segment> newSegment (new Segment(*copySegment));
                 newSegment->setName(getUniqueName(newSegment->name(), getCurrentItemNames()));
 
                 segments_->append(newSegment);
@@ -475,7 +465,7 @@ void SegmentsModel::onPasteRows()
 QStringList SegmentsModel::getCurrentItemNames()
 {
     QStringList names;
-    foreach (QSharedPointer<Segment> segment, *segments_)
+    for (QSharedPointer<Segment> segment : *segments_)
     {
         names.append(segment->name());
     }

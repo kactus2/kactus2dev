@@ -12,6 +12,7 @@
 #include "SingleCpuItem.h"
 
 #include <editors/ComponentEditor/cpus/SingleCpuEditor.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
@@ -21,18 +22,16 @@
 //-----------------------------------------------------------------------------
 SingleCpuItem::SingleCpuItem(QSharedPointer<Cpu> cpu, ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions,
     QSharedPointer<CPUValidator> validator,
     ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
-    expressionParser_(expressionParser),
     cpu_(cpu),
-    validator_(validator)
+    validator_(validator),
+    expressions_(expressions)
 {
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions_.finder);
+    setExpressionFormatter(expressions_.formatter);
     setReferenceCounter(referenceCounter);
 }
 
@@ -67,8 +66,7 @@ ItemEditor* SingleCpuItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new SingleCpuEditor(component_, cpu_, libHandler_, parameterFinder_,
-            expressionParser_);
+        editor_ = new SingleCpuEditor(component_, cpu_, libHandler_, expressions_);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
