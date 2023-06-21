@@ -23,11 +23,12 @@
 #include <QSharedPointer>
 
 class ExpressionFormatter;
-class AddressSpace;
 class ReferenceCalculator;
+class AddressSpace;
+class RegionValidator;
 
 //-----------------------------------------------------------------------------
-//! The model that can be used to display the Regions to be edited.
+//! The model that can be used to display the regions to be edited.
 //-----------------------------------------------------------------------------
 class RegionsModel : public ReferencingTableModel, public ParameterizableTable
 {
@@ -38,17 +39,24 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] Regions                The Regions being edited.
-	 *      @param [in] parameterFinder         The finder for available parameter names.
-	 *      @param [in] expressionFormatter     Formatter for expressions.
-	 *      @param [in] parent                  The owner of this model.
+     *      @param [in] regions			The regions being edited.
+     *      @param [in] validator		The validator to use to check regions.
+     *      @param [in] expressions		The collection of objects for expression handling.
+	 *      @param [in] parent          The owner of this model.
 	 */
-	RegionsModel(QSharedPointer<QList<QSharedPointer<Region> > > Regions,
+	RegionsModel(QSharedPointer<QList<QSharedPointer<Region> > > regions,
+		QSharedPointer<RegionValidator> validator,
 		ExpressionSet expressions,
 		QObject *parent);
 	
 	//! The destructor.
 	virtual ~RegionsModel() = default;
+
+    //! No copying.
+    RegionsModel(const RegionsModel& other) = delete;
+
+    //! No assignment.
+    RegionsModel& operator=(const RegionsModel& other) = delete;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -57,7 +65,7 @@ public:
 	 *
 	 *      @return Number of rows the item has.
 	 */
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the number of columns the item has to be displayed.
@@ -66,7 +74,7 @@ public:
 	 *
 	 *      @return The number of columns to be displayed (always 4).
 	 */
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the header data for specified header.
@@ -77,7 +85,7 @@ public:
 	 *
 	 *      @return QVariant Contains the requested data.
 	 */
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Get the data for specified item.
@@ -87,7 +95,7 @@ public:
 	 *
 	 *      @return QVariant Contains the data for the item.
 	 */
-	virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+	QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Save the data to the model for specified item
@@ -98,7 +106,7 @@ public:
 	 *
 	 *      @return True if saving happened successfully.
 	 */
-	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) final;
 
 	/*!
      *  Get the item flags that defines the possible operations for the item.
@@ -107,14 +115,14 @@ public:
 	 *
 	 *      @return Qt::ItemFlags specify the possible operations for the item.
 	 */
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(const QModelIndex& index) const final;
 
     /*!
      *  Get the list of acceptable mime types.
      *
      *      @return The list of acceptable mime types.
      */
-    virtual QStringList mimeTypes() const;
+    QStringList mimeTypes() const final;
 
 public slots:
 
@@ -153,7 +161,7 @@ protected:
      *
      *      @return     True, if column can have expressions, false otherwise.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
 
     /*!
      *  Gets the expression for the given index or the plain value if expression is not available.
@@ -162,7 +170,7 @@ protected:
      *
      *      @return The expression for the index if available, otherwise the value for the given index.
      */
-    virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const;
+    QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
     
     /*!
      *  Validates the data in an index.
@@ -171,7 +179,7 @@ protected:
      *
      *      @return True, if the data in the index is valid, otherwise false.
      */
-    virtual bool validateIndex(QModelIndex const& index) const;
+    bool validateIndex(QModelIndex const& index) const final;
 
     /*!
      *  Gets the number of all the references made to a selected id on the selected row.
@@ -181,7 +189,7 @@ protected:
      *
      *      @return The amount of references made to the selected id on the selected row.
      */
-    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const;
+    int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
 
 signals:
 
@@ -207,11 +215,6 @@ signals:
 	void regionChanged(QSharedPointer<Region> Region);
 
 private:
-	//! No copying.
-	RegionsModel(const RegionsModel& other);
-
-	//! No assignment.
-	RegionsModel& operator=(const RegionsModel& other);
 
 	/*! Get the last address of the address space that has Region assigned to it.
 	 * 
@@ -241,8 +244,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the data structure that contains the real Regions.
+	//! Pointer to the data structure that contains the regions.
     QSharedPointer<QList<QSharedPointer<Region> > > regions_;
+
+	//! Validator for regions.
+	QSharedPointer<RegionValidator> validator_;
 
     //! Pointer to the used expression formatter.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

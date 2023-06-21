@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include "RegionValidator.h"
+
 #include <QList>
 #include <QSharedPointer>
 #include <QString>
@@ -122,6 +124,15 @@ public:
     bool hasValidAddressUnitBits(QSharedPointer<Cpu> cpu) const;
 
     /*!
+     *  Checks if the regions of a CPU are valid (1865-2022).
+     *
+     *      @param [in] cpu   The CPU whose regions to check.
+     *
+     *      @return True, if the regions are valid, otherwise false.
+     */
+    bool hasValidRegions(QSharedPointer<Cpu> testCpu) const;
+
+    /*!
      *  Finds possible errors in a CPU and creates a list of them.
      *
      *      @param [in] errors      List of found errors.
@@ -129,6 +140,22 @@ public:
      *      @param [in] context     Context to help locate the errors.
      */
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cpu, QString const& context) const;
+
+    /*!
+     *  Finds possible errors in the CPU regions and creates a list of them.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] cpu         The CPU whose region errors to find.
+     *      @param [in] context     Context to help locate the errors.
+     */   
+    void findErrorsInRegions(QVector<QString>& errors, QSharedPointer<Cpu> cpu, QString const& context) const;
+
+    /*!
+     *  Get the validator used for checking regions.
+     *
+     *      @return The validator for regions.
+     */
+    QSharedPointer<RegionValidator> getRegionValidator() const;
 
 private:
 
@@ -159,8 +186,15 @@ private:
      */
     bool isValidMemoryMapReference(QString const& reference) const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
     //! Validator for cpu parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
+
+    //! Validator for cpu regions.
+    QSharedPointer<RegionValidator> regionValidator_;
 
     //! Parser for expressions in cpu.
     QSharedPointer<ExpressionParser> expressionParser_;

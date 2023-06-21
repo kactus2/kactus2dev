@@ -36,7 +36,7 @@ public:
      *      @param [in] libHandler              The instance that manages the library.
      *      @param [in] component               The component being edited.
      *      @param [in] referenceCounter        The counter for parameter references.
-     *      @param [in] expressions
+     *      @param [in] expressions				The collection of objects for expression handling.
      *      @param [in] parent                  The parent item.
      */
     SingleCpuItem(QSharedPointer<Cpu> cpu,

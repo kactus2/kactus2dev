@@ -20,7 +20,6 @@
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Region.h>
 
 #include <QVBoxLayout>
@@ -29,10 +28,11 @@
 // Function: RegionsEditor::RegionsEditor()
 //-----------------------------------------------------------------------------
 RegionsEditor::RegionsEditor(QSharedPointer<QList<QSharedPointer<Region> > > regions,
-                             QString const& componentPath, ExpressionSet expressions, QWidget *parent ):
+    QSharedPointer<RegionValidator> regionValidator,
+    QString const& componentPath, ExpressionSet expressions, QWidget* parent) :
 QGroupBox(tr("Regions"), parent),
 view_(this),
-model_(regions, expressions, this)
+model_(regions, regionValidator, expressions, this)
 {
 	setFlat(true);
 
@@ -60,8 +60,8 @@ model_(regions, expressions, this)
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-	QString defPath = QString("%1/regionsList.csv").arg(componentPath);
-	view_.setDefaultImportExportPath(defPath);
+	QString defaultPath = QString("%1/regionsList.csv").arg(componentPath);
+	view_.setDefaultImportExportPath(defaultPath);
 	view_.setAllowImportExport(true);
 
 	view_.setSortingEnabled(true);

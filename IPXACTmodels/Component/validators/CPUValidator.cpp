@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/validators/MemoryReserve.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 
@@ -30,8 +31,9 @@ CPUValidator::CPUValidator(QSharedPointer<ParameterValidator> parameterValidator
     QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces, 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
-    Document::Revision revision):
-parameterValidator_(parameterValidator),
+    Document::Revision revision) :
+    parameterValidator_(parameterValidator),
+    regionValidator_(new RegionValidator(expressionParser)),
     expressionParser_(expressionParser),
     addressSpaces_(addressSpaces),
     memoryMaps_(memoryMaps),
@@ -79,7 +81,8 @@ bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const
 
     if (revision_ == Document::Revision::Std22 &&
         (hasValidMemoryMapReference(cpu) == false || hasValidRange(cpu) == false || 
-         hasValidWidth(cpu) == false || hasValidAddressUnitBits(cpu) == false))
+         hasValidWidth(cpu) == false || hasValidAddressUnitBits(cpu) == false) ||
+         hasValidRegions(cpu) == false)
     {
         return false;
     }
@@ -141,6 +144,44 @@ bool CPUValidator::hasValidMemoryMapReference(QSharedPointer<Cpu> cpu) const
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUValidator::hasValidRegions()
+//-----------------------------------------------------------------------------
+bool CPUValidator::hasValidRegions(QSharedPointer<Cpu> cpu) const
+{
+    if (cpu->getRegions()->isEmpty())
+    {
+        return true;
+    }
+
+    MemoryReserve reservedArea;
+
+    QStringList regionNames;
+
+    qint64 availableRange = expressionParser_->parseExpression(cpu->getRange()).toLongLong();
+
+    for (QSharedPointer<Region> region : *cpu->getRegions())
+    {
+        qint64 regionBegin = expressionParser_->parseExpression(region->getAddressOffset()).toLongLong();
+        qint64 regionRange = expressionParser_->parseExpression(region->getRange()).toLongLong();
+        qint64 regionEnd = regionBegin + regionRange - 1;
+
+        if (regionNames.contains(region->name()) ||
+            regionValidator_->validate(region) == false ||
+            regionEnd > availableRange)
+        {
+            return false;
+        }
+        else
+        {
+            regionNames.append(region->name());
+            reservedArea.addArea(region->name(), regionBegin, regionEnd);
+        }
+    }
+
+    return reservedArea.hasOverlap() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -216,6 +257,8 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
         {
             errors.append(QObject::tr("Invalid address unit bits set for CPU %1.").arg(cpu->name()));
         }
+
+        findErrorsInRegions(errors, cpu, context);
     }
 
     QString cpuContext = QObject::tr("cpu %1").arg(cpu->name());
@@ -223,6 +266,60 @@ void CPUValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cpu> cp
 	{
 		parameterValidator_->findErrorsIn(errors, currentPara, cpuContext);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUValidator::findErrorsInRegions()
+//-----------------------------------------------------------------------------
+void CPUValidator::findErrorsInRegions(QVector<QString>& errors,
+    QSharedPointer<Cpu> cpu, QString const& context) const
+{
+    if (cpu->getRegions()->isEmpty() == false)
+    {
+        qint64 availableRange = expressionParser_->parseExpression(cpu->getRange()).toLongLong();
+
+        MemoryReserve reservedArea;
+        QStringList regionNames;
+        QStringList foundNames;
+
+        for (QSharedPointer<Region> const& region : *cpu->getRegions())
+        {
+            regionValidator_->findErrorsIn(errors, region, context);
+
+            if (regionNames.contains(region->name()) && !foundNames.contains(region->name()))
+            {
+                errors.append(QObject::tr("Name %1 of regions in %2 is not unique.").arg(region->name(), context));
+                foundNames.append(region->name());
+            }
+            else
+            {
+                regionNames.append(region->name());
+            }
+
+            qint64 regionBegin = expressionParser_->parseExpression(region->getAddressOffset()).toLongLong();
+            qint64 regionRange = expressionParser_->parseExpression(region->getRange()).toLongLong();
+            qint64 regionEnd = regionBegin + regionRange - 1;
+
+            reservedArea.addArea(region->name(), regionBegin, regionEnd);
+
+            if (regionEnd > availableRange)
+            {
+                errors.append(QObject::tr("Region %1 is not contained within address space of CPU %2.").arg(
+                    region->name(), cpu->name()));
+            }
+        }
+
+        reservedArea.findErrorsInOverlap(errors, QLatin1String("Regions"),
+            QObject::tr("address space of CPU %1").arg(cpu->name()));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUValidator::getRegionValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<RegionValidator> CPUValidator::getRegionValidator() const
+{
+    return regionValidator_;
 }
 
 //-----------------------------------------------------------------------------
@@ -260,6 +357,7 @@ bool CPUValidator::isValidMemoryMapReference(QString const& reference) const
 
     return false;
 }
+
 //-----------------------------------------------------------------------------
 // Function: CPUValidator::hasValidRange()
 //-----------------------------------------------------------------------------

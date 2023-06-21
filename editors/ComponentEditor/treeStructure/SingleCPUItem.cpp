@@ -66,7 +66,7 @@ ItemEditor* SingleCpuItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new SingleCpuEditor(component_, cpu_, libHandler_, expressions_);
+        editor_ = new SingleCpuEditor(component_, cpu_, validator_->getRegionValidator(), libHandler_, expressions_);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

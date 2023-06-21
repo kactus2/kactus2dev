@@ -15,8 +15,9 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 
-#include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Region.h>
+
+#include <IPXACTmodels/Component/validators/RegionValidator.h>
 
 
 #include <QApplication>
@@ -28,11 +29,13 @@
 //-----------------------------------------------------------------------------
 // Function: RegionsModel::RegionsModel()
 //-----------------------------------------------------------------------------
-RegionsModel::RegionsModel(QSharedPointer<QList<QSharedPointer<Region> > > segments,
+RegionsModel::RegionsModel(QSharedPointer<QList<QSharedPointer<Region> > > regions,
+    QSharedPointer<RegionValidator> validator,
     ExpressionSet expressions, QObject *parent):
 ReferencingTableModel(expressions.finder, parent),
 ParameterizableTable(expressions.finder),
-regions_(segments),
+regions_(regions),
+validator_(validator),
 expressionFormatter_(expressions.formatter)
 {
     setExpressionParser(expressions.parser);
@@ -361,20 +364,14 @@ bool RegionsModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegionColumns::OFFSET)
     {
-        QString offset = regions_->at(index.row())->getAddressOffset();
-        return isValidExpression(offset);
+        return validator_->hasValidAddressOffset(regions_->at(index.row()));
     }
     else if (index.column() ==  RegionColumns::RANGE)
     {
-        QString range = regions_->at(index.row())->getRange();
-        return isValidExpression(range);
-    }
-    else if (index.column() ==  RegionColumns::DESCRIPTION)
-    {
-        return true;
+        return validator_->hasValidRange(regions_->at(index.row()));
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------

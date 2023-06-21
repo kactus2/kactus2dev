@@ -28,14 +28,15 @@
 // Function: SingleCpuEditor::SingleCpuEditor()
 //-----------------------------------------------------------------------------
 SingleCpuEditor::SingleCpuEditor(QSharedPointer<Component> component,
-    QSharedPointer<Cpu> cpu, LibraryInterface* libHandler,
+    QSharedPointer<Cpu> cpu, QSharedPointer<RegionValidator> regionValidator, 
+    LibraryInterface* libHandler,
     ExpressionSet expressions,
     QWidget* parent) :
     ItemEditor(component, libHandler, parent),
     cpu_(cpu),
     nameEditor_(cpu_, component->getRevision(), this, tr("CPU name and description")),
     detailsEditor_(component, cpu, expressions.finder, expressions.parser, this),
-    regionsEditor_(cpu->getRegions(), libHandler->getDirectoryPath(component->getVlnv()), expressions, this)
+    regionsEditor_(cpu->getRegions(), regionValidator, libHandler->getDirectoryPath(component->getVlnv()), expressions, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&detailsEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

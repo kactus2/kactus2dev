@@ -11,11 +11,9 @@
 #include <QGroupBox>
 
 class LibraryInterface;
-class ExpressionParser;
-class ExpressionFormatter;
 class Component;
-class AddressSpace;
 class Region;
+
 //-----------------------------------------------------------------------------
 //! The editor to edit the regions of an address space.
 //-----------------------------------------------------------------------------
@@ -29,16 +27,16 @@ public:
      *  The constructor
      *
      *      @param [in] regions                 The edited regions.
+     *      @param [in] regionValidator			The validator for regions.
      *      @param [in] componentPath           The path to component xml file.
-     *      @param [in] parameterFinder         Finder for available parameter names.
-     *      @param [in] expressionParser        Parser for expressions.
-     *      @param [in] expressionFormatter     Formatter for expressions.
+     *      @param [in] expressions				The collection of objects for expression handling.
      *      @param [in] parent                  Pointer to the owner of this editor.
 	 */
 	RegionsEditor(QSharedPointer<QList<QSharedPointer<Region> > > regions,
+		QSharedPointer<RegionValidator> regionValidator,
         QString const& componentPath,
 		ExpressionSet expressions,
-		QWidget *parent);
+		QWidget *parent = nullptr);
 	
 	//! The destructor.
 	virtual ~RegionsEditor() = default;

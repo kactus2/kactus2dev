@@ -9,13 +9,14 @@
 // Unit test for class AddressSpacevalidator->
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -759,8 +760,8 @@ bool tst_AddressSpaceValidator::errorIsNotFoundInErrorList(QString const& expect
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }
@@ -787,9 +788,10 @@ QSharedPointer<AddressSpaceValidator> tst_AddressSpaceValidator::createValidator
         registerValidator, parameterValidator));
     QSharedPointer<AddressBlockValidator> addressBlockValidator(
         new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator));
     QSharedPointer<MemoryMapBaseValidator> localMemoryMapValidator(
-        new MemoryMapBaseValidator(parser, addressBlockValidator));
-    
+        new MemoryMapBaseValidator(parser, addressBlockValidator, subspaceValidator));
+
     QSharedPointer<AddressSpaceValidator> validator(
         new AddressSpaceValidator(parser, localMemoryMapValidator, parameterValidator));
 
