@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
-AbsDefGroup::AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
+AbsDefGroup::AbsDefGroup(QSharedPointer<AbstractionDefinition> absDef, LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
     PortAbstractionInterface* extendInterface,
     QWidget *parent):
 QWidget(parent),
@@ -45,10 +45,13 @@ portTabs_(this),
 portInterface_(portInterface),
 extendInterface_(extendInterface),
 portModel_(new AbstractionPortsModel(libraryHandler, portInterface, extendInterface, this)),
-wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portModel_, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
-transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
+wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, absDef->getRevision(), portModel_, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
+transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, absDef->getRevision(), portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
+abstraction_(absDef),
 libraryHandler_(libraryHandler)
 {
+    portInterface_->setAbsDef(abstraction_);
+
     documentNameGroupEditor_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);
@@ -95,14 +98,8 @@ void AbsDefGroup::save()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
-    abstraction_ = absDef;
-
-    portInterface_->setAbsDef(abstraction_);
-
     wirePortsEditor_->resetPortModel();
-    wirePortsEditor_->setStdRevision(absDef->getRevision());
     transactionalPortsEditor_->resetPortModel();
-    transactionalPortsEditor_->setStdRevision(absDef->getRevision());
 
     auto busDefinition = libraryHandler_->getModel<BusDefinition>(absDef->getBusType());
 

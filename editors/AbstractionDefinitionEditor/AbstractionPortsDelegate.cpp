@@ -31,11 +31,11 @@
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
 AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, 
-    PortAbstractionInterface* portInterface, QObject *parent):
+    Document::Revision stdRevision, QObject *parent):
 EnumerationEditorConstructorDelegate(parent),
+stdRevision_(stdRevision),
 libraryAccess_(libraryAcces),
-busDefinition_(0),
-portInterface_(portInterface)
+busDefinition_(0)
 {
     setHideCheckAll(true);
 }
@@ -95,9 +95,10 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-    else if (index.column() == LogicalPortColumns::QUALIFIER && getPortInterface()->getRevision() == Document::Revision::Std22)
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
     {
         QualifierEditor* qualifierEditor = new QualifierEditor(parent);
+        connect(qualifierEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return qualifierEditor;
     }
     else
@@ -140,12 +141,14 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
             box->setCurrentText(text);
         }
     }
-    else if (index.column() == LogicalPortColumns::QUALIFIER && portInterface_->getRevision() == Document::Revision::Std22)
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
     {
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
         Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setEditorData",
             "Type conversion failed for QualifierEditor");
-        setupQualifierEditorQualifiers(index, qualifierEditor);
+        QStringList attributeItems = index.data(Qt::UserRole).toStringList();
+
+        setupQualifierEditorQualifiers(index, qualifierEditor, attributeItems);
     }
 
     else
@@ -175,14 +178,6 @@ bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::getPortInterface()
-//-----------------------------------------------------------------------------
-PortAbstractionInterface* AbstractionPortsDelegate::getPortInterface() const
-{
-    return portInterface_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setModelData()
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index)
@@ -202,7 +197,11 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
 
         model->setData(index, selector->currentText(), Qt::EditRole);
     }
-
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    {
+        QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
+        saveQualifierData(qualifierEditor, model, index);
+    }
     else
     {
         EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
@@ -251,7 +250,7 @@ void AbstractionPortsDelegate::setRevision(Document::Revision revision)
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    if (portInterface_->getRevision() != Document::Revision::Std22 || index.column() != LogicalPortColumns::QUALIFIER)
+    if (stdRevision_ != Document::Revision::Std22 || index.column() != LogicalPortColumns::QUALIFIER)
     {
         return EnumerationEditorConstructorDelegate::updateEditorGeometry(editor, option, index);
     }
@@ -305,7 +304,7 @@ void AbstractionPortsDelegate::updateEditorGeometry(QWidget* editor, const QStyl
 QStringList AbstractionPortsDelegate::getQualifierList() const
 {
     QStringList list = { "address", "data", };
-    if (portInterface_->getRevision() != Document::Revision::Std22)
+    if (stdRevision_ != Document::Revision::Std22)
     {
         return list;
     }
@@ -366,38 +365,29 @@ void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& inde
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setupQualifierEditorQualifiers()
 //-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor) const
+void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor, QStringList const& attributeItems) const
 {
-    // Index is the sorted model index, get the real index from the interface.
-    auto portName = index.sibling(index.row(), LogicalPortColumns::NAME).data().toString().toStdString();
-    auto realIndex = portInterface_->getItemIndex(portName);
+    QMap<QString, QString> attributes;
 
-    auto resetLevel = portInterface_->getQualifierAttribute(realIndex, std::string("resetLevel"));
-    auto clockEnableLevel = portInterface_->getQualifierAttribute(realIndex, std::string("clockEnableLevel"));
-    auto powerEnableLevel = portInterface_->getQualifierAttribute(realIndex, std::string("powerEnableLevel"));
-    auto powerDomainRef = portInterface_->getQualifierAttribute(realIndex, std::string("powerDomainReference"));
-    auto flowType = portInterface_->getQualifierAttribute(realIndex, std::string("flowType"));
-    auto userFlowType = portInterface_->getQualifierAttribute(realIndex, std::string("userFlowType"));
-    auto userDefined = portInterface_->getQualifierAttribute(realIndex, std::string("userDefined"));
-
-    QMap<Qualifier::Attribute, QString> attributes;
-    attributes.insert(Qualifier::Attribute::ResetLevel, QString::fromStdString(resetLevel));
-    attributes.insert(Qualifier::Attribute::ClockEnableLevel, QString::fromStdString(clockEnableLevel));
-    attributes.insert(Qualifier::Attribute::PowerEnableLevel, QString::fromStdString(powerEnableLevel));
-    attributes.insert(Qualifier::Attribute::PowerDomainReference, QString::fromStdString(powerDomainRef));
-    attributes.insert(Qualifier::Attribute::FlowType, QString::fromStdString(flowType));
-    attributes.insert(Qualifier::Attribute::UserFlowType, QString::fromStdString(userFlowType));
-    attributes.insert(Qualifier::Attribute::UserDefined, QString::fromStdString(userDefined));
-
-    auto qualifierNames = getAvailableItems();
-
-    auto activeQualifiersStdVector = portInterface_->getQualifierStringList(realIndex);
-    QStringList activeQualifiers;
-
-    for (auto const& qualifier : activeQualifiersStdVector)
+    for (int i = 0, j = 1; j < attributeItems.size(); i++, j++)
     {
-        activeQualifiers << QString::fromStdString(qualifier);
+        auto const& name = attributeItems.at(i);
+        auto& value = attributeItems.at(j);
+
+        attributes.insert(name, value);
     }
 
-    qualifierEditor->setupEditor(qualifierNames, activeQualifiers, attributes);
+    auto allQualifiers = getAvailableItems();
+    auto activeQualifiersString = index.data(Qt::DisplayRole).toString();
+    auto activeQualifiersList = activeQualifiersString.split(", ");
+
+    qualifierEditor->setupEditor(allQualifiers, activeQualifiersList, attributes);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::saveQualifierData()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::saveQualifierData(QualifierEditor* editor, QAbstractItemModel* model, QModelIndex const& index) const
+{
+
 }

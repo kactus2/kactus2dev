@@ -57,7 +57,11 @@ public:
 
 	void setUserDefined(QString const& userDefined);
 
-	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<Qualifier::Attribute, QString> attributes);
+	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> attributes);
+	
+	QStringList getSelectedItems() const;
+
+	QMap<QString, QString> getAttributes() const;
 
 public slots:
 
@@ -67,7 +71,7 @@ private:
 
 	void setupLayout();
 
-	void setQualifierAttribute(QPair<Qualifier::Attribute, QString> const& attribute);
+	void setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue);
 
 	QLineEdit* getAttributeEditor(Qualifier::Attribute attribute);
 

@@ -36,10 +36,10 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
-     *      @param [in] portInterface   The port abstraction interface.
+     *      @param [in] stdRevision     The revision of the standard used by the abstraction definition.
 	 *      @param [in] parent          The owner of this instance
      */
-    AbstractionPortsDelegate(LibraryInterface* libraryAcces, PortAbstractionInterface* portInterface, QObject *parent);
+    AbstractionPortsDelegate(LibraryInterface* libraryAcces, Document::Revision stdRevision, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -125,7 +125,7 @@ protected:
      */
     virtual bool editorIsComboBox(int indexColumn) const;
 
-    PortAbstractionInterface* getPortInterface() const;
+    Document::Revision stdRevision_;
 
 private:
 	//! No copying. No assignment.
@@ -166,7 +166,9 @@ private:
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
 
-    void setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor) const;
+    void setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor, QStringList const& attributeItems) const;
+
+    void saveQualifierData(QualifierEditor* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -179,8 +181,6 @@ private:
     QSharedPointer<const BusDefinition> busDefinition_;
 
     QStringList modeOptions_ = { "initiator", "target", "system" };
-
-    PortAbstractionInterface* portInterface_;
 };
 
 #endif // ABSTRACTIONPORTSDELEGATE_H

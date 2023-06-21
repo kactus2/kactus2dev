@@ -93,7 +93,7 @@ void QualifierEditor::setUserDefined(QString const& userDefined)
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::setupEditor()
 //-----------------------------------------------------------------------------
-void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<Qualifier::Attribute, QString> attributes)
+void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> attributes)
 {
     for (auto const& qualifier : allQualifiers)
     {
@@ -106,12 +106,39 @@ void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList 
         enumerationEditor_->addItem(qualifier, false, selected);
     }
 
-    for (auto attributeType : attributes.keys())
+    for (auto const& attributeName : attributes.keys())
     {
-        setQualifierAttribute(QPair<Qualifier::Attribute, QString>(attributeType, attributes[attributeType]));
+        auto attributeNameType = Qualifier::stringToAttributeName(attributeName);
+        setQualifierAttribute(attributeNameType, attributes[attributeName]);
     }
 
     updateAttributeList(enumerationEditor_->getSelectedItems());
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getSelectedItems()
+//-----------------------------------------------------------------------------
+QStringList QualifierEditor::getSelectedItems() const
+{
+    return enumerationEditor_->getSelectedItems();
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::getAttributes()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> QualifierEditor::getAttributes() const
+{
+    QMap<QString, QString> attributes;
+
+    attributes.insert(QStringLiteral("resetLevel"), resetLevelLineEdit_.text());
+    attributes.insert(QStringLiteral("clockEnableLevel"), clockEnableLevelLineEdit_.text());
+    attributes.insert(QStringLiteral("powerEnableLevel"), powerEnableLevelLineEdit_.text());
+    attributes.insert(QStringLiteral("powerDomainReference"), powerDomainLineEdit_.text());
+    attributes.insert(QStringLiteral("flowType"), flowTypeLineEdit_.text());
+    attributes.insert(QStringLiteral("userFlowType"), userFlowTypeLineEdit_.text());
+    attributes.insert(QStringLiteral("userDefined"), userDefinedLineEdit_.text());
+
+    return attributes;
 }
 
 //-----------------------------------------------------------------------------
@@ -168,17 +195,13 @@ void QualifierEditor::setupLayout()
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::setQualifierAttribute()
 //-----------------------------------------------------------------------------
-void QualifierEditor::setQualifierAttribute(QPair<Qualifier::Attribute, QString> const& attribute)
+void QualifierEditor::setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue)
 {
-    auto type = attribute.first;
-    auto const& value = attribute.second;
-
-    QLineEdit* editor = getAttributeEditor(type);
-    //QLabel* label = getAttributeLabel(type);
+    QLineEdit* editor = getAttributeEditor(attributeType);
 
     if (editor != nullptr)
     {
-        editor->setText(value);
+        editor->setText(attributeValue);
     }
 }
 
@@ -291,7 +314,10 @@ void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, b
         QLabel* label = getAttributeLabel(attribute);
 
         editor->setVisible(visible);
-        editor->setText("");
+        if (!visible)
+        {
+            editor->setText("");
+        }
         label->setVisible(visible);
     }
 }

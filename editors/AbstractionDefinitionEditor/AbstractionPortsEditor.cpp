@@ -28,7 +28,7 @@
 // Function: AbstractionPortsEditor::AbstractionPortsEditor()
 //-----------------------------------------------------------------------------
 AbstractionPortsEditor::AbstractionPortsEditor(LibraryInterface* libraryAccess,
-    PortAbstractionInterface* portInterface, AbstractionPortsModel* portModel,
+    PortAbstractionInterface* portInterface, Document::Revision stdRevision, AbstractionPortsModel* portModel,
     LogicalPortColumns::AbstractionType type, QWidget* parent):
 QWidget(parent),
 portView_(this),
@@ -39,12 +39,12 @@ portDelegate_(nullptr)
     if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         portProxy_ = new AbstractionWirePortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, portInterface, this);
+        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, stdRevision, this);
     }
     else
     {
         portProxy_ = new AbstractionTransactionalPortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, portInterface, this);
+        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, stdRevision, this);
     }
 
     portProxy_->setSourceModel(portModel_);
@@ -66,6 +66,7 @@ portDelegate_(nullptr)
         hideWireColumns();
     }
 
+    setStdRevision(stdRevision);
 
     connect(&portView_, SIGNAL(addMaster()), this, SLOT(onAddMaster()), Qt::UniqueConnection);
     connect(&portView_, SIGNAL(addSlave()), this, SLOT(onAddSlave()), Qt::UniqueConnection);
@@ -176,7 +177,7 @@ void AbstractionPortsEditor::setStdRevision(Document::Revision revision)
     {
         portView_.horizontalHeader()->hideSection(LogicalPortColumns::MATCH);
     }
-    portDelegate_->setRevision(revision);
+
     portView_.setRevision(revision);
 }
 

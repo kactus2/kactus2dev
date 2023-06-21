@@ -723,7 +723,7 @@ bool PortAbstractionInterface::setQualifierAttribute(int const& portIndex, std::
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::setQualifierAttributes()
 //-----------------------------------------------------------------------------
-bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std::unordered_map<std::string, std::string> const& attributes) const
+bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std::vector<std::string> const& attributes) const
 {
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (!selectedSignal)
@@ -732,6 +732,11 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
     }
 
     if (!selectedSignal->wire_ && !selectedSignal->transactional_)
+    {
+        return false;
+    }
+
+    if (attributes.size() != Qualifier::Attribute::COUNT)
     {
         return false;
     }
@@ -747,9 +752,12 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    for (auto const& [name, value] : attributes)
+    for (int i = 0, j = 1; j < attributes.size(); i++, j++)
     {
-        activeQualifier->setAttribute(getQualifierAttributeType(name), QString::fromStdString(value));
+        auto const& attributeName = attributes.at(i);
+        auto const& value = attributes.at(j);
+
+        activeQualifier->setAttribute(getQualifierAttributeType(attributeName), QString::fromStdString(value));
     }
 
     return true;
@@ -758,9 +766,9 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getQualifierAttributes()
 //-----------------------------------------------------------------------------
-std::unordered_map<std::string, std::string> PortAbstractionInterface::getQualifierAttributes(int const& portIndex) const
+std::vector<std::string> PortAbstractionInterface::getQualifierAttributes(int const& portIndex) const
 {
-    std::unordered_map<std::string, std::string> attributes;
+    std::vector<std::string> attributes;
 
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (!selectedSignal)
@@ -784,13 +792,22 @@ std::unordered_map<std::string, std::string> PortAbstractionInterface::getQualif
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    attributes.try_emplace(std::string("resetLevel"), activeQualifier->getAttribute(Qualifier::Attribute::ResetLevel).toStdString());
-    attributes.try_emplace(std::string("clockEnableLevel"), activeQualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel).toStdString());
-    attributes.try_emplace(std::string("powerEnableLevel"), activeQualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel).toStdString());
-    attributes.try_emplace(std::string("powerDomainRef"), activeQualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).toStdString());
-    attributes.try_emplace(std::string("flowType"), activeQualifier->getAttribute(Qualifier::Attribute::FlowType).toStdString());
-    attributes.try_emplace(std::string("userFlowType"), activeQualifier->getAttribute(Qualifier::Attribute::UserFlowType).toStdString());
-    attributes.try_emplace(std::string("user"), activeQualifier->getAttribute(Qualifier::Attribute::UserDefined).toStdString());
+    static const std::vector<std::string> attributeNames = {
+        std::string("resetLevel"),
+        std::string("clockEnableLevel"),
+        std::string("powerEnableLevel"),
+        std::string("powerDomainRef"),
+        std::string("flowType"),
+        std::string("userFlowType"),
+        std::string("user")
+    };
+
+    for (auto const& name : attributeNames)
+    {
+        attributes.push_back(name);
+        auto attributeType = Qualifier::stringToAttributeName(QString::fromStdString(name));
+        attributes.push_back(activeQualifier->getAttribute(attributeType).toStdString());
+    }
 
     return attributes;
 }

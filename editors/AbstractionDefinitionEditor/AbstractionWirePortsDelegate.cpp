@@ -22,8 +22,8 @@
 // Function: AbstractionWirePortsDelegate::AbstractionWirePortsDelegate()
 //-----------------------------------------------------------------------------
 AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(LibraryInterface* libraryAccess, 
-    PortAbstractionInterface* portInterface, QObject *parent):
-AbstractionPortsDelegate(libraryAccess, portInterface, parent)
+    Document::Revision stdRevision, QObject *parent):
+AbstractionPortsDelegate(libraryAccess, stdRevision, parent)
 {
 
 }
@@ -102,7 +102,7 @@ bool AbstractionWirePortsDelegate::editorIsComboBox(int indexColumn) const
 QStringList AbstractionWirePortsDelegate::getExclusiveItems() const
 {
     QStringList list;
-    if (getPortInterface()->getRevision() != Document::Revision::Std22)
+    if (stdRevision_ != Document::Revision::Std22)
     {
         list << QStringLiteral("clock") << QStringLiteral("reset");
     }

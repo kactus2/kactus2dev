@@ -292,7 +292,7 @@ public:
      *		
      * 		@return True, if attributes were set, otherwise false.
      */
-    bool setQualifierAttributes(int const& portIndex, std::unordered_map<std::string, std::string> const& attributes) const;
+    bool setQualifierAttributes(int const& portIndex, std::vector<std::string> const& attributes) const;
 
     /*!
      *	Get all of the qualifier's attributes.
@@ -301,7 +301,7 @@ public:
      *		
      * 		@return A map of attributes as name-value pairs.
      */
-    std::unordered_map<std::string, std::string> getQualifierAttributes(int const& portIndex) const;
+    std::vector<std::string> getQualifierAttributes(int const& portIndex) const;
 
     /*!
      *  Get the direction of the selected signal in string form.

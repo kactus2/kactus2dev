@@ -239,7 +239,7 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
                 qualifierList.append(QString::fromStdString(qualifier));
             }
 
-            return qualifierList.join(" ");
+            return qualifierList.join(", ");
         }
         else if (index.column() == LogicalPortColumns::MATCH)
         {
@@ -341,13 +341,26 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
             return  KactusColors::DISABLED_TEXT;
         }
     }
-    else if (role == Qt::DecorationRole && 
-             (index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE))
+    else if (role == Qt::DecorationRole && (index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE))
     {
         std::string iconPath = portInterface_->getIconPathForSignal(index.row());
         if (!iconPath.empty())
         {
             return QIcon(QString::fromStdString(iconPath));
+        }
+    }
+
+    else if (role == Qt::UserRole)
+    {
+        if (index.column() == LogicalPortColumns::QUALIFIER)
+        {
+            QStringList attributeItems;
+            for (auto const& attributeItem : portInterface_->getQualifierAttributes(index.row()))
+            {
+                attributeItems.append(QString::fromStdString(attributeItem));
+            }
+
+            return attributeItems;
         }
     }
  

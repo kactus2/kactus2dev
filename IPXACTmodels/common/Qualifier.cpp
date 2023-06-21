@@ -154,3 +154,42 @@ Qualifier::Type Qualifier::stringToType(QString const& typeString)
     }
     return Type::Any;
 }
+
+//-----------------------------------------------------------------------------
+// Function: Qualifier::stringToAttributeName()
+//-----------------------------------------------------------------------------
+Qualifier::Attribute Qualifier::stringToAttributeName(QString const& attributeName)
+{
+    if (attributeName == QStringLiteral("resetLevel"))
+    {
+        return Attribute::ResetLevel;
+    }
+    else if (attributeName == QStringLiteral("clockEnableLevel"))
+    {
+        return Attribute::ClockEnableLevel;
+    }
+    else if (attributeName == QStringLiteral("powerEnableLevel"))
+    {
+        return Attribute::PowerEnableLevel;
+    }
+    else if (attributeName == QStringLiteral("powerDomainReference"))
+    {
+        return Attribute::PowerDomainReference;
+    }
+    else if (attributeName == QStringLiteral("flowType"))
+    {
+        return Attribute::FlowType;
+    }
+    else if (attributeName == QStringLiteral("userFlowType"))
+    {
+        return Attribute::UserFlowType;
+    }
+    else if (attributeName == QStringLiteral("userDefined"))
+    {
+        return Attribute::UserDefined;
+    }
+    else
+    {
+        return Attribute::COUNT;
+    }
+}

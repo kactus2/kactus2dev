@@ -139,6 +139,8 @@ public:
      */
     static Type stringToType(QString const& typeString);
 
+    static Attribute stringToAttributeName(QString const& attributeName);
+
 private:
     //! The list of types assigned to this qualifier.
     QSharedPointer<QList<Type> > types_ = QSharedPointer<QList<Type> >(new QList<Type>());

@@ -43,11 +43,12 @@ public:
 	/*!
      *  The constructor.
 	 *
+     *      @param [in] absDef          The abstraction definition.
      *      @param [in] libraryHandler  Allows access to the library.
      *      @param [in] portInterface   Interface for accssing port abstractions.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-	AbsDefGroup(LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, 
+	AbsDefGroup(QSharedPointer<AbstractionDefinition> absDef, LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, 
         PortAbstractionInterface* extendInterface, QWidget *parent);
 	
 	/*!
@@ -174,7 +175,7 @@ private:
     AbstractionPortsEditor* transactionalPortsEditor_;
 
     //! The edited abstraction definition.
-    QSharedPointer<AbstractionDefinition> abstraction_ = nullptr;
+    QSharedPointer<AbstractionDefinition> abstraction_;
 
     //! The library interface.
     LibraryInterface* libraryHandler_;

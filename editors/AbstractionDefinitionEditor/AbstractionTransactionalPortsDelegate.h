@@ -28,10 +28,10 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
-     *      @param [in] portInterface   The port abstraction interface.
+     *      @param [in] stdRevision     The standard revision used by the abstraction definition.
      *      @param [in] parent          The owner of this instance
      */
-    AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
+    AbstractionTransactionalPortsDelegate(LibraryInterface* libraryAccess, Document::Revision stdRevision,
         QObject *parent);
 
 	/*!
