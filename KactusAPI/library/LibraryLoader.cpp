@@ -92,8 +92,13 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
         return VLNV();
     }
 
+    if (!type.startsWith("ipxact:") && !type.startsWith("kactus2:"))
+    {
+        return VLNV();
+    }
+
     // Find the first element of the VLVN.
-    while(documentReader.readNextStartElement() &&
+    while (documentReader.readNextStartElement() &&
         documentReader.qualifiedName().compare(QLatin1String("ipxact:vendor")) != 0)
     {
         // Empty loop on purpose.
@@ -101,18 +106,27 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
 
     QString vendor = documentReader.readElementText();
 
-    documentReader.readNextStartElement();
-    QString library = documentReader.readElementText();
+    QMap<QString, QString> vlnvElements;
+    for (int i = 0; i < 3; ++i)
+    {
+        documentReader.readNextStartElement();
+        vlnvElements.insert(documentReader.qualifiedName().toString(), documentReader.readElementText());
+    }
 
-    documentReader.readNextStartElement();
-    QString name = documentReader.readElementText();
-
-    documentReader.readNextStartElement();
-    QString version = documentReader.readElementText();
-    
     documentFile.close();
 
-    return VLNV(type, vendor, library, name, version);
+    QString library(vlnvElements.value(QLatin1String("ipxact:library")));
+    QString name(vlnvElements.value(QLatin1String("ipxact:name")));
+    QString version(vlnvElements.value(QLatin1String("ipxact:version")));
+
+    VLNV documentVLNV(type, vendor, library, name, version);
+    if (!documentVLNV.isValid())
+    {
+        messageChannel_->showError(QObject::tr("File %1 contains an invalid IP-XACT identifier %2:%3:%4:%5.").
+            arg(path, vendor, library, name, version));
+    }
+
+    return documentVLNV;
 }
 
 //-----------------------------------------------------------------------------
