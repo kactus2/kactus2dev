@@ -376,7 +376,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     QString newData = value.toString();
     QString oldData = data(index, Qt::DisplayRole).toString();
 
-    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() || !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
+    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() || !(flags(index) & Qt::ItemIsEditable))
     {
         return false;
     }
@@ -390,15 +390,23 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        QStringList listOfQualifiers = value.toStringList();
+        // Data is either a list of qualifiers or qualifier attributes.
+        QStringList listOfItems = value.toStringList();
 
-        std::vector<std::string> qualifierList;
-        for (auto qualifier : value.toStringList())
+        std::vector<std::string> itemsList;
+        for (auto item : value.toStringList())
         {
-            qualifierList.push_back(qualifier.toStdString());
+            itemsList.push_back(item.toStdString());
         }
 
-        portInterface_->setQualifierStringList(index.row(), qualifierList);
+        if (role == Qt::EditRole)
+        {
+            portInterface_->setQualifierStringList(index.row(), itemsList);
+        }
+        else if (role == Qt::UserRole)
+        {
+            portInterface_->setQualifierAttributes(index.row(), itemsList);
+        }
     }
     else if (index.column() == LogicalPortColumns::MATCH)
     {

@@ -84,6 +84,14 @@ void Qualifier::setType(Type type)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Qualifier::removeType()
+//-----------------------------------------------------------------------------
+void Qualifier::removeType(Type type)
+{
+    types_->removeOne(type);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Qualifier::getTypes()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<Qualifier::Type> > Qualifier::getTypes() const

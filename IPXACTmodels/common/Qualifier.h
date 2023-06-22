@@ -92,6 +92,8 @@ public:
      */
     void setType(Type type);
 
+    void removeType(Type type);
+
     /*!
      *	Gets the qualifier types that have been set.
      *  

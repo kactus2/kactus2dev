@@ -21,73 +21,28 @@
 // Function: QualifierEditor::QualifierEditor()
 //-----------------------------------------------------------------------------
 QualifierEditor::QualifierEditor(QWidget* parent):
-    QFrame(parent),
-    enumerationEditor_(new EnumCollectionEditor(parent))
+    QFrame(parent)
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoMousePropagation);
     setAutoFillBackground(true);
 
+    resetLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    clockEnableLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    powerEnableLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    
+    flowTypeSelector_.setEditable(true);
+    flowTypeSelector_.setInsertPolicy(QComboBox::InsertAtTop);
+    flowTypeSelector_.addItems({
+        QStringLiteral("creditReturn"),
+        QStringLiteral("ready"),
+        QStringLiteral("busy")
+    });
+
+    populateCheckBoxes();
+
     setupLayout();
-
-    connect(enumerationEditor_, SIGNAL(itemStateChanged(Qt::CheckState)), this, SLOT(onItemCheckChanged(Qt::CheckState)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setResetLevel()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setResetEnableLevel(QString const& level)
-{
-    resetLevelLineEdit_.setText(level);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setClockEnableLevel()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setClockEnableLevel(QString const& level)
-{
-    clockEnableLevelLineEdit_.setText(level);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setPowerEnableLevel()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setPowerEnableLevel(QString const& level)
-{
-    powerEnableLevelLineEdit_.setText(level);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setPowerDomainRef()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setPowerDomainRef(QString const& ref)
-{
-    powerDomainLineEdit_.setText(ref);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setFlowType()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setFlowType(QString const& flowType)
-{
-    flowTypeLineEdit_.setText(flowType);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setUserFlowType()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setUserFlowType(QString const& userFlowType)
-{
-    userFlowTypeLineEdit_.setText(userFlowType);
-}
-
-//-----------------------------------------------------------------------------
-// Function: QualifierEditor::setUserDefined()
-//-----------------------------------------------------------------------------
-void QualifierEditor::setUserDefined(QString const& userDefined)
-{
-    userDefinedLineEdit_.setText(userDefined);
 }
 
 //-----------------------------------------------------------------------------
@@ -103,16 +58,21 @@ void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList 
             selected = true;
         }
 
-        enumerationEditor_->addItem(qualifier, false, selected);
+        for (auto box : qualifierBoxes_)
+        {
+            if (box->text() == qualifier)
+            {
+                box->setChecked(selected);
+            }
+        }
+
+        setQualifierAttributesVisible(Qualifier::stringToType(qualifier), selected);
     }
 
     for (auto const& attributeName : attributes.keys())
     {
-        auto attributeNameType = Qualifier::stringToAttributeName(attributeName);
-        setQualifierAttribute(attributeNameType, attributes[attributeName]);
+        setQualifierAttribute(Qualifier::stringToAttributeName(attributeName), attributes[attributeName]);
     }
-
-    updateAttributeList(enumerationEditor_->getSelectedItems());
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +80,16 @@ void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList 
 //-----------------------------------------------------------------------------
 QStringList QualifierEditor::getSelectedItems() const
 {
-    return enumerationEditor_->getSelectedItems();
+    QStringList selected;
+    for (auto const& item : qualifierBoxes_)
+    {
+        if (item->isChecked())
+        {
+            selected.append(item->text());
+        }
+    }
+
+    return selected;
 }
 
 //-----------------------------------------------------------------------------
@@ -130,15 +99,50 @@ QMap<QString, QString> QualifierEditor::getAttributes() const
 {
     QMap<QString, QString> attributes;
 
-    attributes.insert(QStringLiteral("resetLevel"), resetLevelLineEdit_.text());
-    attributes.insert(QStringLiteral("clockEnableLevel"), clockEnableLevelLineEdit_.text());
-    attributes.insert(QStringLiteral("powerEnableLevel"), powerEnableLevelLineEdit_.text());
+    auto resetLevel = resetLevelSelector_.isVisible() ? resetLevelSelector_.currentText() : QString();
+    auto clockEnableLevel = clockEnableLevelSelector_.isVisible() ? clockEnableLevelSelector_.currentText() : QString();
+    auto powerEnableLevel = powerEnableLevelSelector_.isVisible() ? powerEnableLevelSelector_.currentText() : QString();
+
+    attributes.insert(QStringLiteral("resetLevel"), resetLevel);
+    attributes.insert(QStringLiteral("clockEnableLevel"), clockEnableLevel);
+    attributes.insert(QStringLiteral("powerEnableLevel"), powerEnableLevel);
     attributes.insert(QStringLiteral("powerDomainReference"), powerDomainLineEdit_.text());
-    attributes.insert(QStringLiteral("flowType"), flowTypeLineEdit_.text());
-    attributes.insert(QStringLiteral("userFlowType"), userFlowTypeLineEdit_.text());
+    
+    if (QString const& flowTypeText = flowTypeSelector_.currentText(); flowTypeText.isEmpty())
+    {
+        attributes.insert(QStringLiteral("flowType"), QString());
+        attributes.insert(QStringLiteral("userFlowType"), QString());
+    }
+    else if (!flowTypes_.contains(flowTypeText))
+    {
+        attributes.insert(QStringLiteral("flowType"), QStringLiteral("user"));
+        attributes.insert(QStringLiteral("userFlowType"), flowTypeText);
+    }
+    else
+    {
+        attributes.insert(QStringLiteral("flowType"), flowTypeText);
+        attributes.insert(QStringLiteral("userFlowType"), QString());
+    }
+
     attributes.insert(QStringLiteral("userDefined"), userDefinedLineEdit_.text());
+    qDebug() << userDefinedLineEdit_.text();
 
     return attributes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::onItemClicked()
+//-----------------------------------------------------------------------------
+void QualifierEditor::onItemClicked(bool isChecked)
+{
+    QCheckBox* sender = qobject_cast<QCheckBox*>(QObject::sender());
+    if (!sender)
+    {
+        return;
+    }
+
+    auto qualifier = Qualifier::stringToType(sender->text());
+    setQualifierAttributesVisible(qualifier, isChecked);
 }
 
 //-----------------------------------------------------------------------------
@@ -146,8 +150,22 @@ QMap<QString, QString> QualifierEditor::getAttributes() const
 //-----------------------------------------------------------------------------
 void QualifierEditor::onItemCheckChanged(Qt::CheckState newState)
 {
-    QStringList const& checkedItems = enumerationEditor_->getSelectedItems();
-    updateAttributeList(checkedItems);
+    //QStringList const& checkedItems = enumerationEditor_->getSelectedItems();
+    //updateAttributeList(checkedItems);
+}
+
+//-----------------------------------------------------------------------------
+// Function: QualifierEditor::populateCheckBoxes()
+//-----------------------------------------------------------------------------
+void QualifierEditor::populateCheckBoxes()
+{
+    for (auto const& attribute : Qualifier::QUALIFIER_TYPE_STRING.values())
+    {
+        QCheckBox* qualifierBox = new QCheckBox(attribute, this);
+        qualifierBoxes_.append(qualifierBox);
+
+        connect(qualifierBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -155,8 +173,6 @@ void QualifierEditor::onItemCheckChanged(Qt::CheckState newState)
 //-----------------------------------------------------------------------------
 void QualifierEditor::setupLayout()
 {
-    enumerationEditor_->setContentsMargins(0, 0, 0, 0);
-
     QVBoxLayout* editorLayout = new QVBoxLayout(this);
 
     QWidget* qualifiersAndAttributes = new QWidget();
@@ -165,31 +181,25 @@ void QualifierEditor::setupLayout()
 
     QScrollArea* scrollingWidget = new QScrollArea();
     scrollingWidget->setWidgetResizable(true);
-    scrollingWidget->setWidget(enumerationEditor_);
+    scrollingWidget->setWidget(qualifiersAndAttributes);
     scrollingWidget->setFrameShape(QFrame::NoFrame);
     scrollingWidget->setContentsMargins(0, 0, 0, 0);
-
-    QWidget* attributes = new QWidget();
-    QFormLayout* attributesLayout = new QFormLayout();
-    attributesLayout->addRow(&resetLevelLabel_, &resetLevelLineEdit_);
-    attributesLayout->addRow(&clockEnableLevelLabel_, & clockEnableLevelLineEdit_);
-    attributesLayout->addRow(&powerEnableLevelLabel_, &powerEnableLevelLineEdit_);
-    attributesLayout->addRow(&powerDomainRefLabel_, &powerDomainLineEdit_);
-    attributesLayout->addRow(&flowTypeLabel_, &flowTypeLineEdit_);
-    attributesLayout->addRow(&userFlowTypeLabel_, &userFlowTypeLineEdit_);
-    attributesLayout->addRow(&userDefinedLabel_, &userDefinedLineEdit_);
-
-    attributes->setLayout(attributesLayout);
     
-    qualifierAndAttributelayout->addWidget(scrollingWidget, 0, 0);
-    qualifierAndAttributelayout->addWidget(attributes, 0, 1);
-    qualifierAndAttributelayout->setColumnStretch(0, 1);
-    qualifierAndAttributelayout->setColumnStretch(1, 2);
+    for (int i = 0; i < qualifierBoxes_.size(); ++i)
+    {
+        qualifierAndAttributelayout->addWidget(qualifierBoxes_.at(i), i, 0);
+    }
+
+    qualifierAndAttributelayout->addWidget(&resetLevelSelector_, 3, 1);
+    qualifierAndAttributelayout->addWidget(&clockEnableLevelSelector_, 6, 1);
+    qualifierAndAttributelayout->addWidget(&powerEnableLevelSelector_, 7, 1);
+    qualifierAndAttributelayout->addWidget(&flowTypeSelector_, 10, 1);
+    qualifierAndAttributelayout->addWidget(&userDefinedLineEdit_, 11, 1);
 
     qualifiersAndAttributes->setLayout(qualifierAndAttributelayout);
     qualifiersAndAttributes->setContentsMargins(0, 0, 0, 0);
-
-    editorLayout->addWidget(qualifiersAndAttributes);
+    setMinimumHeight(sizeHint().height());
+    editorLayout->addWidget(scrollingWidget);
 }
 
 //-----------------------------------------------------------------------------
@@ -197,46 +207,45 @@ void QualifierEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void QualifierEditor::setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue)
 {
-    QLineEdit* editor = getAttributeEditor(attributeType);
-
-    if (editor != nullptr)
+    if (attributeType == Qualifier::UserDefined)
     {
-        editor->setText(attributeValue);
+        userDefinedLineEdit_.setText(attributeValue);
+    }
+    else if (attributeType == Qualifier::UserFlowType && !attributeValue.isEmpty())
+    {
+        flowTypeSelector_.setCurrentText(attributeValue);
+    }
+    else
+    {
+        QComboBox* editor = getAttributeEditor(attributeType);
+
+        if (editor)
+        {
+            editor->setCurrentText(attributeValue);
+        }
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::getAttributeEditor()
 //-----------------------------------------------------------------------------
-QLineEdit* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
+QComboBox* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
 {
     if (attribute == Qualifier::Attribute::ResetLevel)
     {
-        return &resetLevelLineEdit_;
+        return &resetLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::ClockEnableLevel)
     {
-        return &clockEnableLevelLineEdit_;
+        return &clockEnableLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::PowerEnableLevel)
     {
-        return &powerEnableLevelLineEdit_;
-    }
-    else if (attribute == Qualifier::Attribute::PowerDomainReference)
-    {
-        return &powerDomainLineEdit_;
+        return &powerEnableLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::FlowType)
     {
-        return &flowTypeLineEdit_;
-    }
-    else if (attribute == Qualifier::Attribute::UserFlowType)
-    {
-        return &userFlowTypeLineEdit_;
-    }
-    else if (attribute == Qualifier::Attribute::UserDefined)
-    {
-        return &userDefinedLineEdit_;
+        return &flowTypeSelector_;
     }
     else
     {
@@ -306,19 +315,32 @@ void QualifierEditor::updateAttributeList(QStringList const& selectedItems)
 //-----------------------------------------------------------------------------
 void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, bool visible)
 {
-    auto qualifierTypeAttributes = getQualifierTypeAttributes(qualifier);
-
-    for (auto attribute : qualifierTypeAttributes)
+    if (qualifier == Qualifier::User)
     {
-        QLineEdit* editor = getAttributeEditor(attribute);
-        QLabel* label = getAttributeLabel(attribute);
+        userDefinedLineEdit_.setVisible(visible);
 
-        editor->setVisible(visible);
         if (!visible)
         {
-            editor->setText("");
+            userDefinedLineEdit_.setText("");
         }
-        label->setVisible(visible);
+    }
+    else
+    {
+        auto qualifierTypeAttributes = getQualifierTypeAttributes(qualifier);
+
+        for (auto attribute : qualifierTypeAttributes)
+        {
+            QComboBox* editor = getAttributeEditor(attribute);
+            
+            if (editor)
+            {
+                editor->setVisible(visible);
+                if (!visible)
+                {
+                    editor->setCurrentText("");
+                }
+            }
+        }
     }
 }
 

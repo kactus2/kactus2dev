@@ -12,13 +12,13 @@
 #ifndef QUALIFIEREDITOR_H
 #define QUALIFIEREDITOR_H
 
-#include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
-
 #include <IPXACTmodels/common/Qualifier.h>
 
 #include <QLineEdit>
 #include <QFrame>
 #include <QLabel>
+#include <QComboBox>
+#include <QCheckBox>
 
 //-----------------------------------------------------------------------------
 //! Editor for qualifiers in 2022 standard Abstraction Definition.
@@ -43,20 +43,6 @@ public:
 	QualifierEditor(const QualifierEditor& other) = delete;
 	QualifierEditor& operator=(const QualifierEditor& other) = delete;
 
-	void setResetEnableLevel(QString const& level);
-
-	void setClockEnableLevel(QString const& level);
-
-	void setPowerEnableLevel(QString const& level);
-
-	void setPowerDomainRef(QString const& ref);
-
-	void setFlowType(QString const& flowType);
-
-	void setUserFlowType(QString const& userFlowType);
-
-	void setUserDefined(QString const& userDefined);
-
 	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> attributes);
 	
 	QStringList getSelectedItems() const;
@@ -65,15 +51,19 @@ public:
 
 public slots:
 
+	void onItemClicked(bool isChecked);
+
 	void onItemCheckChanged(Qt::CheckState newState);
 
 private:
+
+	void populateCheckBoxes();
 
 	void setupLayout();
 
 	void setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue);
 
-	QLineEdit* getAttributeEditor(Qualifier::Attribute attribute);
+	QComboBox* getAttributeEditor(Qualifier::Attribute attribute);
 
 	QLabel* getAttributeLabel(Qualifier::Attribute attribute);
 
@@ -83,15 +73,23 @@ private:
 
 	QList<Qualifier::Attribute> getQualifierTypeAttributes(Qualifier::Type qualifier);
 
-	EnumCollectionEditor* enumerationEditor_;
-
-    QLineEdit resetLevelLineEdit_;
-    QLineEdit clockEnableLevelLineEdit_;
-    QLineEdit powerEnableLevelLineEdit_;
     QLineEdit powerDomainLineEdit_;
-    QLineEdit flowTypeLineEdit_;
-    QLineEdit userFlowTypeLineEdit_;
     QLineEdit userDefinedLineEdit_;
+
+	QComboBox resetLevelSelector_;
+	QComboBox clockEnableLevelSelector_;
+	QComboBox powerEnableLevelSelector_;
+	QComboBox flowTypeSelector_;
+
+	QList<QCheckBox*> qualifierBoxes_;
+
+	QList<QComboBox*> levelSelectors_;
+
+	const QStringList flowTypes_ = {
+		QStringLiteral("credit-return"),
+		QStringLiteral("ready"),
+		QStringLiteral("busy")
+	};
 
 	QLabel resetLevelLabel_ = QLabel(QStringLiteral("Reset level:"));
 	QLabel clockEnableLevelLabel_ = QLabel(QStringLiteral("Clock enable level:"));

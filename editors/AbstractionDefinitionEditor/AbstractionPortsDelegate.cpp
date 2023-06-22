@@ -369,7 +369,7 @@ void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const&
 {
     QMap<QString, QString> attributes;
 
-    for (int i = 0, j = 1; j < attributeItems.size(); i++, j++)
+    for (int i = 0, j = 1; j < attributeItems.size(); i += 2, j += 2)
     {
         auto const& name = attributeItems.at(i);
         auto& value = attributeItems.at(j);
@@ -389,5 +389,16 @@ void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const&
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::saveQualifierData(QualifierEditor* editor, QAbstractItemModel* model, QModelIndex const& index) const
 {
+    model->setData(index, editor->getSelectedItems(), Qt::EditRole);
 
+    auto attributesAsMap = editor->getAttributes();
+    QStringList attributesList;
+
+    for (auto const& name : attributesAsMap.keys())
+    {
+        attributesList.append(name);
+        attributesList.append(attributesAsMap[name]);
+    }
+
+    model->setData(index, attributesList, Qt::UserRole);
 }

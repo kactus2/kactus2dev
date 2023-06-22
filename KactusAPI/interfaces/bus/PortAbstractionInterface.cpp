@@ -635,18 +635,13 @@ bool PortAbstractionInterface::setQualifierStringList(int const& portIndex, std:
 
     bool isWire = selectedSignal->wire_ != nullptr;
 
-    if (newQualifierList.empty())
+    if (isWire)
     {
-        if (isWire)
-        {
-            selectedSignal->abstraction_->getWire()->getQualifier()->clear();
-        }
-        else
-        {
-            selectedSignal->abstraction_->getTransactional()->getQualifier()->clear();
-        }
-
-        return true;
+        selectedSignal->abstraction_->getWire()->getQualifier()->clear();
+    }
+    else
+    {
+        selectedSignal->abstraction_->getTransactional()->getQualifier()->clear();
     }
 
     for (auto const& qualifier : newQualifierList)
@@ -736,7 +731,7 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         return false;
     }
 
-    if (attributes.size() != Qualifier::Attribute::COUNT)
+    if (attributes.size() != Qualifier::Attribute::COUNT * 2)
     {
         return false;
     }
@@ -752,7 +747,7 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    for (int i = 0, j = 1; j < attributes.size(); i++, j++)
+    for (int i = 0, j = 1; j < attributes.size(); i += 2, j += 2)
     {
         auto const& attributeName = attributes.at(i);
         auto const& value = attributes.at(j);
@@ -796,10 +791,10 @@ std::vector<std::string> PortAbstractionInterface::getQualifierAttributes(int co
         std::string("resetLevel"),
         std::string("clockEnableLevel"),
         std::string("powerEnableLevel"),
-        std::string("powerDomainRef"),
+        std::string("powerDomainReference"),
         std::string("flowType"),
         std::string("userFlowType"),
-        std::string("user")
+        std::string("userDefined")
     };
 
     for (auto const& name : attributeNames)
