@@ -11,7 +11,7 @@
 
 #include "AbstractionTransactionalPortsDelegate.h"
 
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
 #include <QComboBox>
 #include <QStringList>

@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QStyledItemDelegate>
 
 class BusDefinition;
@@ -76,6 +78,13 @@ public:
 	 *      @param [in] busDefinition  The referenced bus definition.
      */
     void setBusDef(QSharedPointer<const BusDefinition> busDefinition);
+
+    /*!
+     *	Modifies the editor depending on document standard revision.
+     *
+     *      @param [in] revision	The revision of the document standard.
+     */
+    void setRevision(Document::Revision revision);
 
 protected slots:
 
@@ -159,6 +168,8 @@ private:
 
     //! The bus definition referenced by the edited abstraction definition.
     QSharedPointer<const BusDefinition> busDefinition_;
+
+    QStringList modeOptions_ = { "initiator", "target", "system" };
 };
 
 #endif // ABSTRACTIONPORTSDELEGATE_H

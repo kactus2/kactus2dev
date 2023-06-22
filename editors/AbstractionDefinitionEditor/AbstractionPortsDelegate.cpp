@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -50,8 +50,7 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
     {
         QComboBox* box = new QComboBox(parent);
 
-        QStringList list = { "master", "slave", "system" };
-        box->addItems(list);
+        box->addItems(modeOptions_);
 
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
@@ -81,6 +80,14 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         {
             return 0;
         }
+    }
+    else if (index.column() == LogicalPortColumns::MATCH)
+    {
+        QComboBox* box = new QComboBox(parent);
+        box->addItems({"true", "false"});
+
+        connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return box;
     }
     else
     {
@@ -146,7 +153,7 @@ bool AbstractionPortsDelegate::editorIsComboBox(int indexColumn) const
 {
     return indexColumn == LogicalPortColumns::MODE || indexColumn == LogicalPortColumns::PRESENCE ||
         indexColumn == LogicalPortColumns::SYSTEM_GROUP || indexColumn == LogicalPortColumns::PROTOCOLTYPE ||
-        indexColumn == LogicalPortColumns::PAYLOADTYPE;
+        indexColumn == LogicalPortColumns::PAYLOADTYPE || indexColumn == LogicalPortColumns::MATCH;
 }
 
 //-----------------------------------------------------------------------------
@@ -196,6 +203,21 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> busDefinition)
 {
     busDefinition_ = busDefinition;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::setRevision()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::setRevision(Document::Revision revision)
+{
+    if (revision == Document::Revision::Std22)
+    {
+        modeOptions_ = { "initiator", "target", "system" };
+    }
+    else
+    {
+        modeOptions_ = { "master", "slave", "system" };
+    }
 }
 
 //-----------------------------------------------------------------------------

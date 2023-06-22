@@ -14,7 +14,7 @@
 #include <common/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
-#include <editors/BusDefinitionEditor/LogicalPortColumns.h>
+#include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTransactionalPortsSortFilter::AbstractionTransactionalPortsSortFilter()

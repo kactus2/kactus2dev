@@ -13,6 +13,7 @@
 #define ABSTRACTIONPORTSVIEW_H
 
 #include <common/views/EditableTableView/editabletableview.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QAction>
 #include <QContextMenuEvent>
@@ -46,6 +47,8 @@ public:
 	 *      @return The model indexes of the selected items.
      */
 	QModelIndexList selected() const;
+
+    void setRevision(Document::Revision revision);
 
 signals:
 

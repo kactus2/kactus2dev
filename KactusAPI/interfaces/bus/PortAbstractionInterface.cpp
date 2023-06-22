@@ -48,6 +48,17 @@ void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition co
         return;
     }
 
+    abstractionStandardRevision_ = absDef->getRevision();
+
+    // Set the right mode depending on std revision.
+    General::InterfaceMode initiatorMode = General::INITIATOR;
+    General::InterfaceMode targetMode = General::TARGET;
+    if (abstractionStandardRevision_ != Document::Revision::Std22)
+    {
+        initiatorMode = General::MASTER;
+        targetMode = General::SLAVE;
+    }
+
     ports_ = absDef->getLogicalPorts();
 
     for (auto port : *ports_)
@@ -56,14 +67,14 @@ void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition co
         {
             bool hasValidPort = false;
             QSharedPointer<WireAbstraction> wire = port->getWire();
-            if (wire->hasMasterPort())
+            if (wire->hasInitiatorPort())
             {
-                createWireSignal(port, wire->getMasterPort(), General::MASTER);
+                createWireSignal(port, wire->getInitiatorPort(), initiatorMode);
                 hasValidPort = true;
             }
-            if (port->getWire()->hasSlavePort())
+            if (port->getWire()->hasTargetPort())
             {
-                createWireSignal(port, wire->getSlavePort(), General::SLAVE);
+                createWireSignal(port, wire->getTargetPort(), targetMode);
                 hasValidPort = true;
             }
             for (auto systemPort : *wire->getSystemPorts())
@@ -81,14 +92,14 @@ void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition co
         {
             bool hasValidPort = false;
             QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
-            if (transactional->hasMasterPort())
+            if (transactional->hasInitiatorPort())
             {
-                createTransactionalSignal(port, transactional->getMasterPort(), General::MASTER);
+                createTransactionalSignal(port, transactional->getInitiatorPort(), initiatorMode);
                 hasValidPort = true;
             }
-            if (transactional->hasSlavePort())
+            if (transactional->hasTargetPort())
             {
-                createTransactionalSignal(port, transactional->getSlavePort(), General::SLAVE);
+                createTransactionalSignal(port, transactional->getTargetPort(), targetMode);
                 hasValidPort = true;
             }
             for (auto systemPort : *transactional->getSystemPorts())
@@ -151,6 +162,14 @@ QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string co
     }
 
     return QSharedPointer<PortAbstraction>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getRevision()
+//-----------------------------------------------------------------------------
+Document::Revision PortAbstractionInterface::getRevision() const
+{
+    return abstractionStandardRevision_;
 }
 
 //-----------------------------------------------------------------------------
@@ -274,33 +293,43 @@ int PortAbstractionInterface::signalCount(std::string const& portName) const
 bool PortAbstractionInterface::portHasMultiplesOfMasterOrSlave(std::string const& portName,
     std::string const& mode)
 {
+    General::InterfaceMode initiatorMode = General::INITIATOR;
+    General::InterfaceMode targetMode = General::TARGET;
+
     General::InterfaceMode actualMode =
         General::str2Interfacemode(QString::fromStdString(mode), General::INTERFACE_MODE_COUNT);
-    if (actualMode == General::MASTER || actualMode == General::SLAVE)
+    if (actualMode == General::MASTER || actualMode == General::SLAVE ||
+        actualMode == General::INITIATOR || actualMode == General::TARGET)
     {
+        if (actualMode == General::MASTER || actualMode == General::SLAVE)
+        {
+            initiatorMode = General::MASTER;
+            targetMode = General::SLAVE;
+        }
+
         QString portNameQ(QString::fromStdString(portName));
-        int masterModes = 0;
-        int slaveModes = 0;
+        int initiatorModes = 0;
+        int targetModes = 0;
         for (auto currentSignal : signals_)
         {
             if (currentSignal->abstraction_->name() == portNameQ)
             {
-                if (currentSignal->mode_ == General::MASTER)
+                if (currentSignal->mode_ == initiatorMode)
                 {
-                    masterModes++;
+                    initiatorModes++;
                 }
-                else if (currentSignal->mode_ == General::SLAVE)
+                else if (currentSignal->mode_ == targetMode)
                 {
-                    slaveModes++;
+                    targetModes++;
                 }
             }
         }
 
-        if (actualMode == General::MASTER && masterModes > 1)
+        if (actualMode == initiatorMode && initiatorModes > 1)
         {
             return true;
         }
-        else if (actualMode == General::SLAVE && slaveModes > 1)
+        else if (actualMode == targetMode && targetModes > 1)
         {
             return true;
         }
@@ -1493,6 +1522,14 @@ void PortAbstractionInterface::addModeSpecificWireSignal(std::string const& port
             {
                 opposingSignal = General::SLAVE;
             }
+            else if (newMode == General::INITIATOR)
+            {
+                opposingSignal = General::TARGET;
+            }
+            else if (newMode == General::TARGET)
+            {
+                opposingSignal = General::INITIATOR;
+            }
 
             DirectionTypes::Direction mirroredDirection =
                 getMirroredDirectionForSignal(selectedPort->getLogicalName(), opposingSignal);
@@ -1575,14 +1612,22 @@ void PortAbstractionInterface::addTransactionalSystemSignal(std::string const& p
 bool PortAbstractionInterface::modeExistsForPort(General::InterfaceMode const& mode, QString const& portName,
     QString const& systemGroup /* = "" */) const
 {
+    General::InterfaceMode initiatorMode = General::INITIATOR;
+    General::InterfaceMode targetMode = General::TARGET;
+    if (abstractionStandardRevision_ != Document::Revision::Std22)
+    {
+        initiatorMode = General::MASTER;
+        targetMode = General::SLAVE;
+    }
+
     General::InterfaceMode selectedMode = mode;
     if (selectedMode == General::MIRROREDMASTER)
     {
-        selectedMode = General::MASTER;
+        selectedMode = initiatorMode;
     }
     else if (selectedMode == General::MIRROREDSLAVE)
     {
-        selectedMode = General::SLAVE;
+        selectedMode = targetMode;
     }
     else if (selectedMode == General::MIRROREDSYSTEM)
     {
@@ -1916,8 +1961,8 @@ void PortAbstractionInterface::save()
             QSharedPointer<TransactionalAbstraction> transactional = currentPort->getTransactional();
             if (wire)
             {
-                currentPort->getWire()->setMasterPort(QSharedPointer<WirePort>());
-                currentPort->getWire()->setSlavePort(QSharedPointer<WirePort>());
+                currentPort->getWire()->setInitiatorPort(QSharedPointer<WirePort>());
+                currentPort->getWire()->setTargetPort(QSharedPointer<WirePort>());
                 currentPort->getWire()->getSystemPorts()->clear();
 
                 // Save the port for the first mode.
@@ -1934,8 +1979,8 @@ void PortAbstractionInterface::save()
             }
             if (transactional)
             {
-                transactional->setMasterPort(QSharedPointer<TransactionalPort>());
-                transactional->setSlavePort(QSharedPointer<TransactionalPort>());
+                transactional->setInitiatorPort(QSharedPointer<TransactionalPort>());
+                transactional->setTargetPort(QSharedPointer<TransactionalPort>());
                 transactional->getSystemPorts()->clear();
 
                 // Save the port for the first mode.
@@ -1963,16 +2008,24 @@ void PortAbstractionInterface::savePort(QSharedPointer<PortAbstraction> portAbs,
 {
     QSharedPointer<PortAbstractionInterface::SignalRow> sourceSignal = signals_.at(i);
 
+    General::InterfaceMode initiatorMode = General::INITIATOR;
+    General::InterfaceMode targetMode = General::TARGET;
+    if (abstractionStandardRevision_ != Document::Revision::Std22)
+    {
+        initiatorMode = General::MASTER;
+        targetMode = General::SLAVE;
+    }
+
     if (sourceSignal->wire_)
     {
         // Set the wirePort placement according to the mode in the table.
-        if (sourceSignal->mode_ == General::MASTER)
+        if (sourceSignal->mode_ == initiatorMode)
         {
-            portAbs->getWire()->setMasterPort(sourceSignal->wire_);
+            portAbs->getWire()->setInitiatorPort(sourceSignal->wire_);
         }
-        else if (sourceSignal->mode_ == General::SLAVE)
+        else if (sourceSignal->mode_ == targetMode)
         {
-            portAbs->getWire()->setSlavePort(sourceSignal->wire_);
+            portAbs->getWire()->setTargetPort(sourceSignal->wire_);
         }
         else if (sourceSignal->mode_ == General::SYSTEM)
         {
@@ -1981,13 +2034,13 @@ void PortAbstractionInterface::savePort(QSharedPointer<PortAbstraction> portAbs,
     }
     if (sourceSignal->transactional_)
     {
-        if (sourceSignal->mode_ == General::MASTER)
+        if (sourceSignal->mode_ == initiatorMode)
         {
-            portAbs->getTransactional()->setMasterPort(sourceSignal->transactional_);
+            portAbs->getTransactional()->setInitiatorPort(sourceSignal->transactional_);
         }
-        else if (sourceSignal->mode_ == General::SLAVE)
+        else if (sourceSignal->mode_ == targetMode)
         {
-            portAbs->getTransactional()->setSlavePort(sourceSignal->transactional_);
+            portAbs->getTransactional()->setTargetPort(sourceSignal->transactional_);
         }
         else if (sourceSignal->mode_ == General::SYSTEM)
         {

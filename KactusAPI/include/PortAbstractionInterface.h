@@ -19,6 +19,7 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -761,6 +762,13 @@ public:
      */
     QSharedPointer<PortAbstraction> getPort(std::string const& portName) const;
 
+    /*!
+     *	Get the standard revision of the abstraction definition.
+     *  
+     * 		@return The standard revision used.
+     */
+    Document::Revision getRevision() const;
+
     //! No copying. No assignment.
     PortAbstractionInterface(const PortAbstractionInterface& other) = delete;
     PortAbstractionInterface& operator=(const PortAbstractionInterface& other) = delete;
@@ -955,6 +963,9 @@ private:
 
     //! List of signals.
     QList<QSharedPointer<SignalRow> > signals_;
+
+    //! The standard revision of the abstraction definition.
+    Document::Revision abstractionStandardRevision_ = Document::Revision::Unknown;
 };
 
 #endif // PORTABSTRACTIONINTERFACE_H

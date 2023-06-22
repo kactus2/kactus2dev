@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include "AbstractionPortsView.h"
 #include "LogicalPortColumns.h"
 
@@ -66,6 +68,13 @@ public:
      *      @param [in] busDefinition   The referenced bus definition.
      */
     void setBusDef(QSharedPointer<BusDefinition> busDefinition);
+
+    /*!
+     *	Setup the editor according to document standard revision.
+     *  
+     *      @param [in] revision	The standard revision the abstraction definition is using.
+     */
+    void setStdRevision(Document::Revision revision);
 
 signals:
 

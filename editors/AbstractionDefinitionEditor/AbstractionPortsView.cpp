@@ -50,6 +50,23 @@ QModelIndexList AbstractionPortsView::selected() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionPortsView::setRevision()
+//-----------------------------------------------------------------------------
+void AbstractionPortsView::setRevision(Document::Revision revision)
+{
+    if (revision == Document::Revision::Std22)
+    {
+        addMasterAction_.setText(QStringLiteral("Add initiator signal"));
+        addSlaveAction_.setText(QStringLiteral("Add target signal"));
+    }
+    else
+    {
+        addMasterAction_.setText(QStringLiteral("Add master signal"));
+        addSlaveAction_.setText(QStringLiteral("Add slave signal"));
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionPortsView::contextMenuEvent()
 //-----------------------------------------------------------------------------
 void AbstractionPortsView::contextMenuEvent(QContextMenuEvent* event)
