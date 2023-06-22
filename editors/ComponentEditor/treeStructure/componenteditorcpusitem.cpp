@@ -11,7 +11,7 @@
 
 #include "componenteditorcpusitem.h"
 
-#include <editors/ComponentEditor//treeStructure/SingleCpuItem.h>
+#include <editors/ComponentEditor/treeStructure/SingleCpuItem.h>
 #include <editors/ComponentEditor/cpus/cpuseditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
