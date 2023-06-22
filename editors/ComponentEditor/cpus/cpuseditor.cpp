@@ -74,7 +74,16 @@ ItemEditor(component, handler, parent),
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
-	view_.setItemDelegate(new CpusDelegate(component, parameterCompleter, expressions.finder, this));
+	auto delegate = new CpusDelegate(component, parameterCompleter, expressions.finder, this);
+	view_.setItemDelegate(delegate);
+
+    connect(delegate, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(cpuAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);

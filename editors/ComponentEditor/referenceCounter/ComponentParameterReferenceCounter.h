@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/MirroredSlaveInterface.h>
 
 class Component;
+class Cpu;
 class FileBuilder;
 class FileSet;
 class File;
@@ -39,6 +40,7 @@ class Port;
 class AddressSpace;
 class RegisterBase;
 class BusInterface;
+class Region;
 class RemapState;
 class RemapPort;
 class AbstractParameterInterface;
@@ -66,6 +68,10 @@ public:
      *  The destructor.
      */
     virtual ~ComponentParameterReferenceCounter() = default;
+
+    //! No copying. No assignment.
+    ComponentParameterReferenceCounter(const ComponentParameterReferenceCounter& other) = delete;
+    ComponentParameterReferenceCounter& operator=(const ComponentParameterReferenceCounter& other) = delete;
 
     /*!
      *  Set a new component.
@@ -564,6 +570,45 @@ public:
     int countRefrencesInSingleIndirectInterface(QString const& parameterID,
         QSharedPointer<IndirectInterface> indirectInterface) const;
 
+    /*!
+     *  Count the references made to the selected parameter in CPUs.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the CPUs.
+     */
+    int countReferencesInCpus(QString const& parameterID) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected CPU.
+     *
+     *      @param [in] parameterID         ID of the selected parameter.
+     *      @param [in] cpu                 The selected CPU.
+     *
+     *      @return The amount of references made to the selected parameter in the selected CPU.
+     */
+    int countReferencesInSingleCpu(QString const& parameterID, QSharedPointer<Cpu> cpu) const;
+
+    /*!
+     *  Count the references made to the selected parameter in CPU regions interfaces.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] regions         The selected CPU regions.
+     *
+     *      @return The amount of references made to the selected parameter in the CPU regions.
+     */
+    int countReferencesInRegions(QString const& parameterID, QSharedPointer<QList<QSharedPointer<Region> > > regions) const;
+    
+    /*!
+     *  Count the references made to the selected parameter in the selected CPU region.
+     *
+     *      @param [in] parameterID         ID of the selected parameter.
+     *      @param [in] region              The selected CPU region.
+     *
+     *      @return The amount of references made to the selected parameter in the selected CPU region.
+     */
+    int countReferencesInSingleRegion(QString const& parameterID, QSharedPointer<Region> region) const;
+
 public slots:
 
     /*!
@@ -587,10 +632,6 @@ private:
      */
     int countReferencesInWriteConstraint(QString const& parameterID,
         QSharedPointer<WriteValueConstraint> writeConstraint) const;
-
-	//! No copying. No assignment.
-    ComponentParameterReferenceCounter(const ComponentParameterReferenceCounter& other);
-    ComponentParameterReferenceCounter& operator=(const ComponentParameterReferenceCounter& other);
 
     //-----------------------------------------------------------------------------
     // Data.

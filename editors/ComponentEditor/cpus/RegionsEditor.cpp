@@ -46,7 +46,7 @@ model_(regions, regionValidator, expressions, this)
 	connect(&model_, SIGNAL(noticeMessage(const QString&)),
 		this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-	connect(&model_, SIGNAL(regionAdded(QSharedPointer<>)),
+	connect(&model_, SIGNAL(regionAdded(QSharedPointer<Region>)),
 		this, SIGNAL(regionAdded(QSharedPointer<Region>)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(regionRemoved(const QString&)),
 		this, SIGNAL(regionRemoved(const QString&)), Qt::UniqueConnection);
@@ -74,7 +74,16 @@ model_(regions, regionValidator, expressions, this)
     ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
     parameterCompleter->setModel(completionModel);
 
-	view_.setItemDelegate(new RegionsDelegate(parameterCompleter, expressions.finder, this));
+	auto delegate = new RegionsDelegate(parameterCompleter, expressions.finder, this);
+	view_.setItemDelegate(delegate);
+
+    connect(delegate, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressions.parser, this);
     proxy->setColumnToAcceptExpressions(RegionColumns::OFFSET);

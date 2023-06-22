@@ -74,6 +74,7 @@ ItemEditor* SingleCpuItem::editor()
             this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
     }
 

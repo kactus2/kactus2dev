@@ -32,6 +32,7 @@ class Port;
 class MemoryMapBase;
 class MemoryMap;
 class MemoryRemap;
+class Region;
 class AddressBlock;
 class RegisterBase;
 class Register;
@@ -68,7 +69,11 @@ public:
 	/*!
      *  The destructor.
      */
-    ~ComponentParameterReferenceTree();
+    virtual ~ComponentParameterReferenceTree() = default;
+
+    // Disable copying.
+    ComponentParameterReferenceTree(ComponentParameterReferenceTree const& rhs) = delete;
+    ComponentParameterReferenceTree& operator=(ComponentParameterReferenceTree const& rhs) = delete;
 
     /*!
      *  Set a new component.
@@ -78,10 +83,6 @@ public:
     void setComponent(QSharedPointer<Component> newComponent);
 
 private:
-    
-	// Disable copying.
-    ComponentParameterReferenceTree(ComponentParameterReferenceTree const& rhs);
-    ComponentParameterReferenceTree& operator=(ComponentParameterReferenceTree const& rhs);
 
     /*!
      *  Setup the reference tree.
@@ -265,6 +266,19 @@ private:
      *  Create references for indirect interfaces.
      */
     void createReferencesForIndirectInterfaces();
+
+    /*!
+     *  Create references for CPUs.
+     */
+    void createReferencesForCpus();
+
+    /*!
+     *  Create tree items for a region that is referencing this parameter.
+     *
+     *      @param [in] region      The referencing region.
+     *      @param [in] parent      The parent of the upcoming item.
+     */
+    void createItemsForRegion(QSharedPointer<Region> region, QTreeWidgetItem* parent);
 
     /*!
      *  Create tree items for a port that is referencing this parameter.

@@ -81,14 +81,14 @@ signals:
      *
      *      @param [in] id      The id of the parameter being searched for.
      */
-    void increaseReferences(QString id);
+    void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter corresponding to the id.
      *
      *      @param [in] id      The id of the parameter being searched for.
      */
-    void decreaseReferences(QString id);
+    void decreaseReferences(QString const& id);
 
 protected:
 

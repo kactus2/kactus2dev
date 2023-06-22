@@ -426,6 +426,7 @@ void CpusModel::onRemoveItem(QModelIndex const& index)
 
 	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+    removeReferencesInItemOnRow(index.row());
 	cpus_->removeAt(index.row());
 	endRemoveRows();
 

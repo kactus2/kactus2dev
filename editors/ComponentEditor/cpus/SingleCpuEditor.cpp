@@ -44,6 +44,16 @@ SingleCpuEditor::SingleCpuEditor(QSharedPointer<Component> component,
 
     regionsEditor_.setVisible(component->getRevision() == Document::Revision::Std22);
 
+    connect(&detailsEditor_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&detailsEditor_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(&regionsEditor_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(&regionsEditor_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     setupLayout();
 }
 

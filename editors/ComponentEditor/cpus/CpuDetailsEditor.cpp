@@ -66,17 +66,23 @@ void CpuDetailsEditor::refresh()
         memoryMapRefSelector_->refresh(component_->getMemoryMapNames());
         memoryMapRefSelector_->selectItem(cpu_->getMemoryMapReference());
 
+        rangeEditor_->blockSignals(true);
         auto range = cpu_->getRange();
         rangeEditor_->setExpression(cpu_->getRange());
         rangeEditor_->setToolTip(formattedValueFor(range));
+        rangeEditor_->blockSignals(false);
 
+        widthEditor_->blockSignals(true);
         auto width = cpu_->getWidth();
         widthEditor_->setExpression(width);
         widthEditor_->setToolTip(formattedValueFor(width));
+        widthEditor_->blockSignals(false);
 
+        aubEditor_->blockSignals(true);
         auto aub = cpu_->getAddressUnitBits();
         aubEditor_->setExpression(aub);
         aubEditor_->setToolTip(formattedValueFor(aub));
+        aubEditor_->blockSignals(false);
     }
 }
 

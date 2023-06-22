@@ -34,7 +34,7 @@ ReferencingTableModel::~ReferencingTableModel()
 //-----------------------------------------------------------------------------
 void ReferencingTableModel::removeReferencesInItemOnRow(const int& row) const
 {
-    foreach (QString const& valueID, parameterFinder_->getAllParameterIds())
+    for (QString const& valueID : parameterFinder_->getAllParameterIds())
     {
         int totalreferences = getAllReferencesToIdInItemOnRow(row, valueID);
         for (int i = 0; i < totalreferences; ++i)
@@ -50,7 +50,7 @@ void ReferencingTableModel::removeReferencesInItemOnRow(const int& row) const
 void ReferencingTableModel::removeReferencesFromSingleExpression(QString const& expression) const
 {
     QStringList allParameterIds = parameterFinder_->getAllParameterIds();
-    foreach (QString valueID, allParameterIds)
+    for (QString const& valueID : allParameterIds)
     {
         int referencesToId = expression.count(valueID);
         for (int i = 0; i < referencesToId; ++i)
@@ -72,7 +72,7 @@ QString ReferencingTableModel::getUniqueName(QString const& originalName, QStrin
     while (match)
     {
         match = false;        
-        for(int row = 0; row < currentNames.size(); row++)
+        for (int row = 0; row < currentNames.size(); row++)
         {
             if (name.compare(currentNames.at(row)) == 0)
             {

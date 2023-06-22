@@ -58,10 +58,10 @@ QWidget* CpusDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const&
         auto editor = new ExpressionEditor(parameterFinder_, parent);
         editor->setAppendingCompleter(parameterNameCompleter_);
 
-        connect(editor, SIGNAL(increaseReference(QString)),
-            this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-        connect(editor, SIGNAL(decreaseReference(QString)),
-            this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+        connect(editor, SIGNAL(increaseReference(QString const&)),
+            this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+        connect(editor, SIGNAL(decreaseReference(QString const&)),
+            this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
         return editor;
     }
