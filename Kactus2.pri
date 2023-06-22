@@ -365,8 +365,12 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/localaddrblockgraphitem.h \
     ./editors/ComponentEditor/addressSpaces/addressSpaceVisualizer/segmentgraphitem.h \
     ./editors/ComponentEditor/cpus/CpuColumns.h \
+    ./editors/ComponentEditor/cpus/RegionColumns.h \
     ./editors/ComponentEditor/cpus/SingleCpuEditor.h \
     ./editors/ComponentEditor/cpus/CpuDetailsEditor.h \
+    ./editors/ComponentEditor/cpus/RegionsModel.h \
+    ./editors/ComponentEditor/cpus/RegionsEditor.h \
+    ./editors/ComponentEditor/cpus/RegionsDelegate.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
@@ -609,6 +613,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/common/diagramgrid.h \
     ./editors/common/DiagramUtil.h \
     ./editors/common/DrawMode.h \
+    ./editors/common/ExpressionSet.h \
     ./editors/common/GraphicsItemLabel.h \
     ./editors/common/ImageExporter.h \
     ./editors/common/NamelabelWidth.h \
@@ -826,12 +831,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/cpus/RegionColumns.h \
-    ./editors/ComponentEditor/cpus/RegionsModel.h \
-    ./editors/ComponentEditor/cpus/RegionsEditor.h \
-    ./editors/common/ExpressionSet.h \
-    ./editors/ComponentEditor/cpus/RegionsDelegate.h
+    ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1182,6 +1182,9 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/cpus/cpusdelegate.cpp \
     ./editors/ComponentEditor/cpus/cpuseditor.cpp \
     ./editors/ComponentEditor/cpus/cpusmodel.cpp \
+    ./editors/ComponentEditor/cpus/RegionsDelegate.cpp \
+    ./editors/ComponentEditor/cpus/RegionsEditor.cpp \
+    ./editors/ComponentEditor/cpus/RegionsModel.cpp \
     ./editors/ComponentEditor/cpus/SingleCpuEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/addressblockeditor.cpp \
@@ -1568,8 +1571,5 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/cpus/RegionsModel.cpp \
-    ./editors/ComponentEditor/cpus/RegionsEditor.cpp \
-    ./editors/ComponentEditor/cpus/RegionsDelegate.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp
 RESOURCES += kactus.qrc

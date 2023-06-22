@@ -88,7 +88,7 @@ public:
      *      @param [in] region          The selected region.
      *      @param [in] context         Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Region> region,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
 
 private:
