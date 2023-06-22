@@ -94,21 +94,8 @@ signals:
     //! Signal that user wants to create a new abstraction definition for given bus definition.
     void createAbsDef(VLNV const& busDefVLNV, const QString& directory);
 
-    //! Signal that user wants to create a new bus with given vlnv
-    void createBus(VLNV const& vlnv, const QString& directory);
-    
-    //! Signal that user wants to create a new component with given vlnv
-    void createComponent(KactusAttribute::ProductHierarchy, KactusAttribute::Firmness, QVector<TagData> tags,
-        VLNV const& vlnv, const QString& directory);
-
     //! Signal that user wants to create a new design for the given component.
     void createDesignForExistingComponent(VLNV const& vlnv);
-
-    //! Signal that user wants to create a new API definition with given vlnv
-    void createApiDef(VLNV const& vlnv, const QString& directory);
-
-    //! Signal that user wants to create a new COM definition with given vlnv
-    void createComDef(VLNV const& vlnv, const QString& directory);
 
     //! Signal that user wants to create a new SW design for the given component.
     void createSWDesign(VLNV const& vlnv);
@@ -126,22 +113,12 @@ public slots:
      *      @param [in] vlnv The VLNV of the library item.
      */
     void onShowErrors(VLNV const& vlnv);
-
-    /*! Create a new item for given vlnv.
- *
- * The type of the vlnv defines the type of the object to create.
- * After creating the object an editor for it is opened.
- *
- *      @param [in] vlnv Identifies the object to create
- *
-*/
-    void onCreateNewItem(VLNV const& vlnv);
     
     /*! Create a new abstraction definition for given bus definition.
- *
- *      @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
- *
-*/
+     *
+     *      @param [in] busDefVLNV Identifies the bus definition to create the abs def for.
+     *
+     */
     void onCreateAbsDef(VLNV const& busDefVLNV);
 
     /*! Create new design with given vlnv.

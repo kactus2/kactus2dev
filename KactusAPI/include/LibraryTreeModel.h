@@ -152,14 +152,8 @@ signals:
 	//! Open the component in a component editor.
 	void editItem(VLNV const& vlnv);
 
-	//! Create a new bus definition.
-	void createBus(VLNV const& vlnv);
-
 	//! Create a new abstraction definition for given bus definition.
 	void createAbsDef(VLNV const& vlnv);
-
-	//! Create a new component with given vlnv.
-	void createComponent(VLNV const& vlnv);
 
 	//! Create new design with given vlnv.
 	void createDesign(VLNV const& vlnv);
@@ -169,12 +163,6 @@ signals:
 
 	//! Create new system design with given vlnv.
 	void createSystemDesign(VLNV const& vlnv);
-
-	//! Create a new COM definition.
-	void createComDef(VLNV const& vlnv);
-
-	//! Create a new API definition.
-	void createApiDef(VLNV const& vlnv);
 
 	//! Remove the specified VLNV from the library
 	void removeVLNV(QList<VLNV> vlnvs);
@@ -208,9 +196,6 @@ public slots:
 	//! Open the selected document e.g. component or bus definition.
 	void onOpenDocument(QModelIndex const& index);
 
-	//! Create new component
-	void onCreateNewComponent(QModelIndex const& index);
-
 	//! Create new design
 	void onCreateNewDesign(QModelIndex const& index);
 
@@ -229,17 +214,8 @@ public slots:
 	//! Shows errors about the item at the given index.
 	void onShowErrors(QModelIndex const& index);
 
-	//! Create a new bus definition
-	void onCreateBus(QModelIndex const& index);
-
 	//! Create a new abstraction definition for given bus definition.
 	void onCreateAbsDef(QModelIndex const& index);
-
-	//! Create a new COM definition
-	void onCreateComDef(QModelIndex const& index);
-
-	//! Create a new API definition
-	void onCreateApiDef(QModelIndex const& index);
 
 	//! Remove the specified vlnv branch from the tree.
 	void onRemoveVLNV(VLNV const& vlnv);

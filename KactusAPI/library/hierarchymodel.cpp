@@ -511,24 +511,6 @@ void HierarchyModel::onOpenItem(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewComponent()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewComponent(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-    	return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-
-    VLNV componentVLNV = item->getVLNV();
-    componentVLNV.setType(VLNV::COMPONENT);
-    
-    emit createComponent(componentVLNV);
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyModel::onCreateNewDesign()
 //-----------------------------------------------------------------------------
 void HierarchyModel::onCreateNewDesign(QModelIndex const& index)
@@ -583,24 +565,6 @@ void HierarchyModel::onCreateNewSystemDesign(QModelIndex const& index)
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewBus()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewBus(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-    	return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-
-    VLNV busVLNV = item->getVLNV();
-    busVLNV.setType(VLNV::BUSDEFINITION);
-
-    emit createBus(busVLNV);
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyModel::onCreateNewAbsDef()
 //-----------------------------------------------------------------------------
 void HierarchyModel::onCreateNewAbsDef(QModelIndex const& index)
@@ -616,42 +580,6 @@ void HierarchyModel::onCreateNewAbsDef(QModelIndex const& index)
     abstractionVNLV.setType(VLNV::BUSDEFINITION);
 
     emit createAbsDef(abstractionVNLV);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewComDef()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewComDef(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-
-    VLNV comVLNV = item->getVLNV();
-    comVLNV.setType(VLNV::COMDEFINITION);
-
-    emit createComDef(comVLNV);
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyModel::onCreateNewApiDef()
-//-----------------------------------------------------------------------------
-void HierarchyModel::onCreateNewApiDef(QModelIndex const& index) 
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    HierarchyItem* item = static_cast<HierarchyItem*>(index.internalPointer());
-
-    VLNV apiVLNV = item->getVLNV();
-    apiVLNV.setType(VLNV::APIDEFINITION);
-
-    emit createApiDef(apiVLNV);
 }
 
 //-----------------------------------------------------------------------------

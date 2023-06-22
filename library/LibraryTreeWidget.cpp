@@ -75,9 +75,6 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel)
     connect(&view_, SIGNAL(openSystemDesign(QModelIndex const&)), 
         dataModel, SLOT(onOpenSystemDesign(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createNewComponent(QModelIndex const&)),
-		    dataModel, SLOT(onCreateNewComponent(QModelIndex const&)), Qt::UniqueConnection);
-
 	connect(&view_, SIGNAL(createNewDesign(QModelIndex const&)),
 		    dataModel, SLOT(onCreateNewDesign(QModelIndex const&)), Qt::UniqueConnection);
 
@@ -93,23 +90,14 @@ void LibraryTreeWidget::setupConnections(LibraryTreeModel* dataModel)
     connect(&view_, SIGNAL(openCatalog(QModelIndex const&)),
         dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-	connect(&view_, SIGNAL(createBus(QModelIndex const&)),
-		    dataModel, SLOT(onCreateBus(QModelIndex const&)), Qt::UniqueConnection);
-
 	connect(&view_, SIGNAL(createAbsDef(QModelIndex const&)),
 		    dataModel, SLOT(onCreateAbsDef(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(openComDef(QModelIndex const&)),
             dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createComDef(QModelIndex const&)),
-            dataModel, SLOT(onCreateComDef(QModelIndex const&)), Qt::UniqueConnection);
-
     connect(&view_, SIGNAL(openApiDef(QModelIndex const&)),
             dataModel, SLOT(onOpenDocument(QModelIndex const&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(createApiDef(QModelIndex const&)),
-            dataModel, SLOT(onCreateApiDef(QModelIndex const&)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(deleteItem(QModelIndex const&)),
 		    dataModel, SLOT(onDeleteItem(QModelIndex const&)), Qt::UniqueConnection);

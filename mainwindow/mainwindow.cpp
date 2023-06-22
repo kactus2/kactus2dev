@@ -1360,8 +1360,8 @@ void MainWindow::createNew()
     dialog.addPage(QIcon(":icons/common/graphics/hw-design.png"), tr("HW Design"), designPage);
 
     NewSWComponentPage* swCompPage = new NewSWComponentPage(libraryHandler_, &dialog);
-    connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, Document::Revision revision, QString const&)),
-        this, SLOT(createSWComponent(VLNV const&, Document::Revision revision, QString const&)));
+    connect(swCompPage, SIGNAL(createSWComponent(VLNV const&, Document::Revision, QString const&)),
+        this, SLOT(createSWComponent(VLNV const&, Document::Revision, QString const&)));
     dialog.addPage(QIcon(":icons/common/graphics/sw-component48x48.png"), tr("SW Component"), swCompPage);
 
     NewSWDesignPage* swDesignPage = new NewSWDesignPage(libraryHandler_, &dialog);
@@ -1376,7 +1376,7 @@ void MainWindow::createNew()
 
     NewApiDefinitionPage* apiDefPage = new NewApiDefinitionPage(libraryHandler_, &dialog);
     connect(apiDefPage, SIGNAL(createApiDefinition(VLNV const&, Document::Revision, QString const&)),
-        this, SLOT(createApiDefinition(VLNV const&, QString const&)), Qt::UniqueConnection);
+        this, SLOT(createApiDefinition(VLNV const&, Document::Revision, QString const&)), Qt::UniqueConnection);
     dialog.addPage(QIcon(":icons/common/graphics/new-api_definition.png"), tr("API Definition"), apiDefPage);
 
     NewComDefinitionPage* comDefPage = new NewComDefinitionPage(libraryHandler_, &dialog);

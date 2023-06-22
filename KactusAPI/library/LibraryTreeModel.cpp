@@ -540,25 +540,6 @@ LibraryItem* LibraryTreeModel::getRoot() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateBus()
-//-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateBus(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv;
-    vlnv.setType(VLNV::BUSDEFINITION);
-    item->setVlnv(vlnv);
-
-    emit createBus(vlnv);
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryTreeModel::onCreateAbsDef()
 //-----------------------------------------------------------------------------
 void LibraryTreeModel::onCreateAbsDef(QModelIndex const& index)
@@ -575,44 +556,6 @@ void LibraryTreeModel::onCreateAbsDef(QModelIndex const& index)
     item->setVlnv(vlnv);
 
     emit createAbsDef(vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateComDef()
-//-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateComDef(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv;
-    vlnv.setType(VLNV::COMDEFINITION);
-    item->setVlnv(vlnv);
-
-    emit createComDef(vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateApiDef()
-//-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateApiDef(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv;
-    vlnv.setType(VLNV::APIDEFINITION);
-    item->setVlnv(vlnv);
-
-    emit createApiDef(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -711,25 +654,6 @@ void LibraryTreeModel::onOpenSystemDesign(QModelIndex const& index)
     {
         emit openSystemDesign(vlnv);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeModel::onCreateNewComponent()
-//-----------------------------------------------------------------------------
-void LibraryTreeModel::onCreateNewComponent(QModelIndex const& index)
-{
-    if (!index.isValid())
-    {
-        return;
-    }
-
-    LibraryItem* item = static_cast<LibraryItem*>(index.internalPointer());
-
-    VLNV vlnv;
-    vlnv.setType(VLNV::COMPONENT);
-    item->setVlnv(vlnv);
-
-    emit createComponent(vlnv);
 }
 
 //-----------------------------------------------------------------------------

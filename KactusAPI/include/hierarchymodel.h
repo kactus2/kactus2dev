@@ -181,9 +181,6 @@ public slots:
    //! Open the selected component.
     void onOpenItem(QModelIndex const& index);
 
-    //! Create new component
-    void onCreateNewComponent(QModelIndex const& index);
-
     //! Create new design
     void onCreateNewDesign(QModelIndex const& index);
 
@@ -193,17 +190,8 @@ public slots:
     //! Create new system design
     void onCreateNewSystemDesign(QModelIndex const& index);
 
-    //! Create new bus
-    void onCreateNewBus(QModelIndex const& index);
-
     //! Create new abstraction definition
     void onCreateNewAbsDef(QModelIndex const& index);
-
-    //! Create new COM definition
-    void onCreateNewComDef(QModelIndex const& index);
-
-    //! Create new API definition
-    void onCreateNewApiDef(QModelIndex const& index);
 
     //! When export is selected in search view
     void onExportItem(QModelIndex const& index);
@@ -248,15 +236,6 @@ signals:
     //! Open the component in a component editor.
     void editItem(VLNV const& vlnv);
 
-    //! Create a new bus definition.
-    void createBusDef(VLNV const& vlnv);
-
-    //! Create a new component with given vlnv.
-    void createComponent(VLNV const& vlnv);
-
-    //! Create a new bus with given vlnv.
-    void createBus(VLNV const& vlnv);
-
     //! Create a new abstraction definition for given bus definition.
     void createAbsDef(VLNV const& busDefVLNV);
 
@@ -268,12 +247,6 @@ signals:
 
     //! Create new system design with given vlnv.
     void createSystemDesign(VLNV const& vlnv);
-
-    //! Create a new COM definition with given vlnv.
-    void createComDef(VLNV const& vlnv);
-
-    //! Create a new API definition with given vlnv.
-    void createApiDef(VLNV const& vlnv);
 
     //! Export an item to a new location.
     void exportItem(VLNV const& vlnv);

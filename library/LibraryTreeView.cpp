@@ -422,14 +422,6 @@ void LibraryTreeView::onOpenComponent()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeView::onCreateComponent()
-//-----------------------------------------------------------------------------
-void LibraryTreeView::onCreateComponent()
-{
-	emit createNewComponent(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryTreeView::onCreateDesign()
 //-----------------------------------------------------------------------------
 void LibraryTreeView::onCreateDesign()
@@ -494,27 +486,11 @@ void LibraryTreeView::onOpenComDef()
 }
 
 //-----------------------------------------------------------------------------
-// Function: LibraryTreeView::onCreateComDef()
-//-----------------------------------------------------------------------------
-void LibraryTreeView::onCreateComDef()
-{
-    emit createComDef(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryTreeView::onOpenApiDef()
 //-----------------------------------------------------------------------------
 void LibraryTreeView::onOpenApiDef()
 {
     emit openApiDef(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryTreeView::onCreateApiDef()
-//-----------------------------------------------------------------------------
-void LibraryTreeView::onCreateApiDef()
-{
-    emit createApiDef(filter_->mapToSource(currentIndex()));
 }
 
 //-----------------------------------------------------------------------------

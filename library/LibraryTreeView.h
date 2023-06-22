@@ -63,9 +63,6 @@ signals:
 	//! Open the given object in the component editor
 	void openComponent(QModelIndex const& index);
 
-	//! Create new component
-	void createNewComponent(QModelIndex const& index);
-
 	//! Create new design
 	void createNewDesign(QModelIndex const& index);
 
@@ -102,12 +99,6 @@ signals:
 	//! Create a new abstraction definition for given bus def.
 	void createAbsDef(QModelIndex const& index);
 
-	//! Create a new COM definition
-	void createComDef(QModelIndex const& index);
-
-	//! Create a new API definition
-	void createApiDef(QModelIndex const& index);
-
 	//! A drag operation has been initiated.
 	void dragInitiated(QModelIndex const& index);
 
@@ -136,9 +127,6 @@ public slots:
 
     //! Open component editor
     void onOpenComponent();
-
-    //! Create new component
-    void onCreateComponent();
 
     //! Create new design
     void onCreateDesign();
@@ -169,12 +157,6 @@ public slots:
 
     //! Create new bus.
     void onCreateBus();
-
-    //! Create new COM definition.
-    void onCreateComDef();
-
-    //! Create new API definition.
-    void onCreateApiDef();
 
     //! Create new abstraction definition for selected bus definition.
     void onAddSignals();
