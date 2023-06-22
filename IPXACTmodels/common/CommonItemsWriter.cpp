@@ -250,6 +250,14 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
         
         writer.writeEndElement();
     }
+    if (qualifier->hasType(Qualifier::Valid))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isValid"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Interrupt))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isInterrupt"), QStringLiteral("true"));
+    }
     if (qualifier->hasType(Qualifier::ClockEnable))
     {
         writer.writeStartElement(QStringLiteral("ipxact:isClockEn"));
