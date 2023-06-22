@@ -49,6 +49,12 @@ public:
 
 	QMap<QString, QString> getAttributes() const;
 
+signals:
+
+	void finishEditing();
+
+	void cancelEditing();
+
 public slots:
 
 	void onItemClicked(bool isChecked);
@@ -73,13 +79,13 @@ private:
 
 	QList<Qualifier::Attribute> getQualifierTypeAttributes(Qualifier::Type qualifier);
 
-    QLineEdit powerDomainLineEdit_;
-    QLineEdit userDefinedLineEdit_;
+    QLineEdit* powerDomainLineEdit_;
+    QLineEdit* userDefinedLineEdit_;
 
-	QComboBox resetLevelSelector_;
-	QComboBox clockEnableLevelSelector_;
-	QComboBox powerEnableLevelSelector_;
-	QComboBox flowTypeSelector_;
+	QComboBox* resetLevelSelector_;
+	QComboBox* clockEnableLevelSelector_;
+	QComboBox* powerEnableLevelSelector_;
+	QComboBox* flowTypeSelector_;
 
 	QList<QCheckBox*> qualifierBoxes_;
 

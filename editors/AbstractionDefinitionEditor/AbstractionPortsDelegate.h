@@ -98,6 +98,8 @@ protected slots:
 	 */
 	void commitAndCloseEditor();
 
+    void onEditingCanceled();
+
 protected:
 
     /*!

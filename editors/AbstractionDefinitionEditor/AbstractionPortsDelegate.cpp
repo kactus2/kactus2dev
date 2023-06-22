@@ -98,7 +98,8 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
     else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
     {
         QualifierEditor* qualifierEditor = new QualifierEditor(parent);
-        connect(qualifierEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        connect(qualifierEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        connect(qualifierEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
         return qualifierEditor;
     }
     else
@@ -220,6 +221,18 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 		emit commitData(editor);
 		emit closeEditor(editor);
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::onEditingCanceled()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::onEditingCanceled()
+{
+    QWidget* edit = qobject_cast<QWidget*>(sender());
+    if (edit)
+    {
+        emit closeEditor(edit);
+    }
 }
 
 //-----------------------------------------------------------------------------

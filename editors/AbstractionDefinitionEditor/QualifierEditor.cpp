@@ -16,25 +16,32 @@
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QScrollBar>
+#include <QPushButton>
 
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::QualifierEditor()
 //-----------------------------------------------------------------------------
 QualifierEditor::QualifierEditor(QWidget* parent):
-    QFrame(parent)
+    QFrame(parent),
+    powerDomainLineEdit_(new QLineEdit()),
+    userDefinedLineEdit_(new QLineEdit()),
+    resetLevelSelector_(new QComboBox()),
+    clockEnableLevelSelector_(new QComboBox()),
+    powerEnableLevelSelector_(new QComboBox()),
+    flowTypeSelector_(new QComboBox())
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_NoMousePropagation);
     setAutoFillBackground(true);
 
-    resetLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
-    clockEnableLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
-    powerEnableLevelSelector_.addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    resetLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    clockEnableLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
+    powerEnableLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
     
-    flowTypeSelector_.setEditable(true);
-    flowTypeSelector_.setInsertPolicy(QComboBox::InsertAtTop);
-    flowTypeSelector_.addItems({
+    flowTypeSelector_->setEditable(true);
+    flowTypeSelector_->setInsertPolicy(QComboBox::InsertAtTop);
+    flowTypeSelector_->addItems({
         QStringLiteral("creditReturn"),
         QStringLiteral("ready"),
         QStringLiteral("busy")
@@ -99,16 +106,16 @@ QMap<QString, QString> QualifierEditor::getAttributes() const
 {
     QMap<QString, QString> attributes;
 
-    auto resetLevel = resetLevelSelector_.isVisible() ? resetLevelSelector_.currentText() : QString();
-    auto clockEnableLevel = clockEnableLevelSelector_.isVisible() ? clockEnableLevelSelector_.currentText() : QString();
-    auto powerEnableLevel = powerEnableLevelSelector_.isVisible() ? powerEnableLevelSelector_.currentText() : QString();
+    auto resetLevel = resetLevelSelector_->isVisible() ? resetLevelSelector_->currentText() : QString();
+    auto clockEnableLevel = clockEnableLevelSelector_->isVisible() ? clockEnableLevelSelector_->currentText() : QString();
+    auto powerEnableLevel = powerEnableLevelSelector_->isVisible() ? powerEnableLevelSelector_->currentText() : QString();
 
     attributes.insert(QStringLiteral("resetLevel"), resetLevel);
     attributes.insert(QStringLiteral("clockEnableLevel"), clockEnableLevel);
     attributes.insert(QStringLiteral("powerEnableLevel"), powerEnableLevel);
-    attributes.insert(QStringLiteral("powerDomainReference"), powerDomainLineEdit_.text());
+    attributes.insert(QStringLiteral("powerDomainReference"), powerDomainLineEdit_->text());
     
-    if (QString const& flowTypeText = flowTypeSelector_.currentText(); flowTypeText.isEmpty())
+    if (QString const& flowTypeText = flowTypeSelector_->currentText(); flowTypeText.isEmpty())
     {
         attributes.insert(QStringLiteral("flowType"), QString());
         attributes.insert(QStringLiteral("userFlowType"), QString());
@@ -124,8 +131,8 @@ QMap<QString, QString> QualifierEditor::getAttributes() const
         attributes.insert(QStringLiteral("userFlowType"), QString());
     }
 
-    attributes.insert(QStringLiteral("userDefined"), userDefinedLineEdit_.text());
-    qDebug() << userDefinedLineEdit_.text();
+    attributes.insert(QStringLiteral("userDefined"), userDefinedLineEdit_->text());
+    qDebug() << userDefinedLineEdit_->text();
 
     return attributes;
 }
@@ -190,16 +197,33 @@ void QualifierEditor::setupLayout()
         qualifierAndAttributelayout->addWidget(qualifierBoxes_.at(i), i, 0);
     }
 
-    qualifierAndAttributelayout->addWidget(&resetLevelSelector_, 3, 1);
-    qualifierAndAttributelayout->addWidget(&clockEnableLevelSelector_, 6, 1);
-    qualifierAndAttributelayout->addWidget(&powerEnableLevelSelector_, 7, 1);
-    qualifierAndAttributelayout->addWidget(&flowTypeSelector_, 10, 1);
-    qualifierAndAttributelayout->addWidget(&userDefinedLineEdit_, 11, 1);
+    qualifierAndAttributelayout->addWidget(resetLevelSelector_, 3, 1);
+    qualifierAndAttributelayout->addWidget(clockEnableLevelSelector_, 6, 1);
+    qualifierAndAttributelayout->addWidget(powerEnableLevelSelector_, 7, 1);
+    qualifierAndAttributelayout->addWidget(flowTypeSelector_, 10, 1);
+    qualifierAndAttributelayout->addWidget(userDefinedLineEdit_, 11, 1);
+    
+    QPushButton* okButton = new QPushButton();
+    okButton->setIcon(QIcon(":/icons/common/graphics/checkMark.png"));
+    okButton->setToolTip("Accept");
+
+    QPushButton* cancelButton = new QPushButton();
+    cancelButton->setIcon(QIcon(":/icons/common/graphics/grey_cross.png"));
+    cancelButton->setToolTip("Cancel");
+
+    connect(okButton, SIGNAL(clicked()), this, SIGNAL(finishEditing()), Qt::UniqueConnection);
+    connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelEditing()), Qt::UniqueConnection);
+
+    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    buttonLayout->addStretch(10);
+    buttonLayout->addWidget(okButton);
+    buttonLayout->addWidget(cancelButton);
 
     qualifiersAndAttributes->setLayout(qualifierAndAttributelayout);
     qualifiersAndAttributes->setContentsMargins(0, 0, 0, 0);
     setMinimumHeight(sizeHint().height());
     editorLayout->addWidget(scrollingWidget);
+    editorLayout->addLayout(buttonLayout, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -209,11 +233,11 @@ void QualifierEditor::setQualifierAttribute(Qualifier::Attribute attributeType, 
 {
     if (attributeType == Qualifier::UserDefined)
     {
-        userDefinedLineEdit_.setText(attributeValue);
+        userDefinedLineEdit_->setText(attributeValue);
     }
     else if (attributeType == Qualifier::UserFlowType && !attributeValue.isEmpty())
     {
-        flowTypeSelector_.setCurrentText(attributeValue);
+        flowTypeSelector_->setCurrentText(attributeValue);
     }
     else
     {
@@ -233,19 +257,19 @@ QComboBox* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
 {
     if (attribute == Qualifier::Attribute::ResetLevel)
     {
-        return &resetLevelSelector_;
+        return resetLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::ClockEnableLevel)
     {
-        return &clockEnableLevelSelector_;
+        return clockEnableLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::PowerEnableLevel)
     {
-        return &powerEnableLevelSelector_;
+        return powerEnableLevelSelector_;
     }
     else if (attribute == Qualifier::Attribute::FlowType)
     {
-        return &flowTypeSelector_;
+        return flowTypeSelector_;
     }
     else
     {
@@ -317,11 +341,11 @@ void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, b
 {
     if (qualifier == Qualifier::User)
     {
-        userDefinedLineEdit_.setVisible(visible);
+        userDefinedLineEdit_->setVisible(visible);
 
         if (!visible)
         {
-            userDefinedLineEdit_.setText("");
+            userDefinedLineEdit_->setText("");
         }
     }
     else
