@@ -3,4 +3,21 @@ tests/**/*.vcxproj
 tests/**/*.vcxproj.filters
 tests/**/*.vcxproj.user
 
+.vs
+**/.vs
 
+GeneratedFiles/
+tests/**/generatedFiles/
+tests/**/debug/
+tests/**/release/
+
+x64/
+Plugins/**/Debug/
+Plugins/**/*.vcxproj.user
+executable/*.lib
+executable/*.dll
+executable/*.exp
+executable/*.ilk
+executable/*.pdb
+executable/*.exe
+executable/*.
