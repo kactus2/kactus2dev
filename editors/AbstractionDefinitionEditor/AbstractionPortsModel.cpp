@@ -410,26 +410,41 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        QualifierData qualifierData = value.value<QualifierData>();
-        auto const& setQualifiers = qualifierData.activeQualifiers_;
-        auto const& setAttributes = qualifierData.attributes_;
 
-        std::vector<std::string> qualifierList;
-        std::vector<std::string> attributeList;
-
-        for (auto const& qualifier : setQualifiers)
+        if (portInterface_->getRevision() == Document::Revision::Std22)
         {
-            qualifierList.push_back(qualifier.toStdString());
-        }
 
-        for (auto const& attributeName : setAttributes.keys())
-        {
-            attributeList.push_back(attributeName.toStdString());
-            attributeList.push_back(setAttributes[attributeName].toStdString());
+            QualifierData qualifierData = value.value<QualifierData>();
+            auto const& setQualifiers = qualifierData.activeQualifiers_;
+            auto const& setAttributes = qualifierData.attributes_;
+
+            std::vector<std::string> qualifierList;
+            std::vector<std::string> attributeList;
+
+            for (auto const& qualifier : setQualifiers)
+            {
+                qualifierList.push_back(qualifier.toStdString());
+            }
+
+            for (auto const& attributeName : setAttributes.keys())
+            {
+                attributeList.push_back(attributeName.toStdString());
+                attributeList.push_back(setAttributes[attributeName].toStdString());
+            }
+
+            portInterface_->setQualifierStringList(index.row(), qualifierList);
+            portInterface_->setQualifierAttributes(index.row(), attributeList);
         }
-        
-        portInterface_->setQualifierStringList(index.row(), qualifierList);
-        portInterface_->setQualifierAttributes(index.row(), attributeList);
+        else
+        {
+            std::vector<std::string> qualifiersList;
+            for (auto const& item : value.toStringList())
+            {
+                qualifiersList.push_back(item.toStdString());
+            }
+
+            portInterface_->setQualifierStringList(index.row(), qualifiersList);
+        }
     }
     else if (index.column() == LogicalPortColumns::MATCH)
     {
