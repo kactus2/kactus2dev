@@ -581,10 +581,12 @@ void AbstractionPortsModel::setExtendedPorts()
     beginResetModel();
     for (auto const& port : extendInterface_->getItemNames())
     {
+        auto initiatorMode = extendInterface_->getRevision() == Document::Revision::Std22 ? General::INITIATOR : General::MASTER;
+        auto targetMode = extendInterface_->getRevision() == Document::Revision::Std22 ? General::TARGET : General::SLAVE;
         if (extendInterface_->portIsWire(port))
         {
-            extendWireMode(port, General::MASTER);
-            extendWireMode(port, General::SLAVE);
+            extendWireMode(port, initiatorMode);
+            extendWireMode(port, targetMode);
 
             for (auto const& systemGroup : extendInterface_->getSystemGroupsForPort(port))
             {
@@ -593,8 +595,8 @@ void AbstractionPortsModel::setExtendedPorts()
         }
         else if (extendInterface_->portIsTransactional(port))
         {
-            extendTransactionalMode(port, General::MASTER);
-            extendTransactionalMode(port, General::SLAVE);
+            extendTransactionalMode(port, initiatorMode);
+            extendTransactionalMode(port, targetMode);
 
             for (auto const& systemGroup : extendInterface_->getSystemGroupsForPort(port))
             {
