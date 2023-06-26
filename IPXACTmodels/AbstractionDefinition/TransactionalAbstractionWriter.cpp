@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolWriter.h>
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -69,20 +70,8 @@ void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
     QSharedPointer<TransactionalAbstraction> transactional) const
 {
     auto qualifier = transactional->getQualifier();
-    if (qualifier->hasType(Qualifier::Data) || qualifier->hasType(Qualifier::Address))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-        if (qualifier->hasType(Qualifier::Data))
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
-        }
-        if (qualifier->hasType(Qualifier::Address))
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
-        }
-     
-        writer.writeEndElement();
-    }
+    
+    CommonItemsWriter::writeQualifier(writer, qualifier);
 }
 
 //-----------------------------------------------------------------------------
