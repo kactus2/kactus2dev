@@ -47,12 +47,16 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ResetTypesEditor();
+	virtual ~ResetTypesEditor() = default;
+
+    //! No copying
+    ResetTypesEditor(const ResetTypesEditor& other) = delete;
+    ResetTypesEditor& operator=(const ResetTypesEditor& other) = delete;
 
 	/*!
      *  Reload the information from the model to the editor.
      */
-	virtual void refresh();
+	void refresh() final;
 
 protected:
 
@@ -62,10 +66,6 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private:
-
-	//! No copying
-	ResetTypesEditor(const ResetTypesEditor& other);
-	ResetTypesEditor& operator=(const ResetTypesEditor& other);
 
 	//! The view to display the reset types.
 	EditableTableView view_;

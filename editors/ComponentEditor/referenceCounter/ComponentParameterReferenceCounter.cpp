@@ -15,12 +15,14 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Region.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
@@ -76,6 +78,7 @@ void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVect
             referenceCount += countReferencesInBusInterfaces(parameterID);
             referenceCount += countReferencesInRemapStates(parameterID);
             referenceCount += countReferencesInIndirectInterfaces(parameterID);
+            referenceCount += countReferencesInCpus(parameterID);
 
             parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
         }
@@ -89,7 +92,7 @@ int ComponentParameterReferenceCounter::countReferencesInFileSets(QString const&
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *component_->getFileSets())
     {
         referenceCount += countReferencesInSingleFileSet(parameterID, fileSet);
     }
@@ -119,7 +122,7 @@ int ComponentParameterReferenceCounter::countReferencesInFileBuilders(QString co
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<FileBuilder> fileBuilder, *builders)
+    for (QSharedPointer<FileBuilder> fileBuilder : *builders)
     {
         referenceCount += countReferencesInSingleFileBuilder(parameterID, fileBuilder);
     }
@@ -144,7 +147,7 @@ int ComponentParameterReferenceCounter::countReferencesInFiles(QString const& pa
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<File> singleFile, *files)
+    for (QSharedPointer<File> singleFile : *files)
     {
         referenceCount += countReferencesInSingleFile(parameterID, singleFile);
     }
@@ -184,7 +187,7 @@ int ComponentParameterReferenceCounter::countReferencesInMemoryMaps(QString cons
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> memoryMap : *component_->getMemoryMaps())
     {
         referenceCount += countReferencesInSingleMemoryMap(parameterID, memoryMap);
     }
@@ -202,7 +205,7 @@ int ComponentParameterReferenceCounter::countReferencesInSingleMemoryMap(QString
     
     referenceCount += countReferencesInBaseMemoryMap(parameterID, memoryMap);
 
-    foreach (QSharedPointer<MemoryRemap> remap, *memoryMap->getMemoryRemaps())
+    for (QSharedPointer<MemoryRemap> remap : *memoryMap->getMemoryRemaps())
     {
         referenceCount += countReferencesInBaseMemoryMap(parameterID, remap);
     }
@@ -219,7 +222,7 @@ int ComponentParameterReferenceCounter::countReferencesInBaseMemoryMap(QString c
     int referenceCount = 0;
     referenceCount += countReferencesInMemoryMapValues(parameterID, memoryMap);
 
-    foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
+    for (QSharedPointer<MemoryBlockBase> memoryBlock : *memoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
         if (addressBlock)
@@ -283,7 +286,7 @@ int ComponentParameterReferenceCounter::countReferencesInRegisters(QString const
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<RegisterBase> registerItem, *registers)
+    for (QSharedPointer<RegisterBase> registerItem : *registers)
     {
         QSharedPointer<Register> targetRegister = registerItem.dynamicCast<Register>();
         if (targetRegister)
@@ -368,7 +371,7 @@ int ComponentParameterReferenceCounter::countReferencesInFields(QString const& p
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<Field> registerField, *fields)
+    for (QSharedPointer<Field> registerField : *fields)
     {
         referenceCount += countReferencesInSingleField(parameterID, registerField);
     }
@@ -447,7 +450,7 @@ int ComponentParameterReferenceCounter::countReferencesInAddressSpaces(QString c
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<AddressSpace> space, *component_->getAddressSpaces())
+    for (QSharedPointer<AddressSpace> space : *component_->getAddressSpaces())
     {
         referenceCount += countReferencesInSingleAddressSpace(parameterID, space);
     }
@@ -496,7 +499,7 @@ int ComponentParameterReferenceCounter::countReferencesInSegments(QString const&
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<Segment> segment, *segments)
+    for (QSharedPointer<Segment> segment : *segments)
     {
         referenceCount += countReferencesInSingleSegment(parameterID, segment);
     }
@@ -542,7 +545,7 @@ int ComponentParameterReferenceCounter::countReferencesInComponentInstantiations
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<ComponentInstantiation> singleInstantiation, *instantiations)
+    for (QSharedPointer<ComponentInstantiation> singleInstantiation : *instantiations)
     {
         referenceCounter += countReferencesInSingleComponentInstantiation(parameterID, singleInstantiation);
     }
@@ -573,7 +576,7 @@ int ComponentParameterReferenceCounter::countReferencesInModuleParameters(QStrin
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<ModuleParameter> parameter, *moduleParameters)
+    for (QSharedPointer<ModuleParameter> parameter : *moduleParameters)
     {
         referenceCounter += countReferencesInSingleParameter(parameterID, parameter);
     }
@@ -590,7 +593,7 @@ int ComponentParameterReferenceCounter::countReferencesInDesignConfigurationInst
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation, *instantiations)
+    for (QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation : *instantiations)
     {
         referenceCounter +=
             countReferencesInSingleDesignConfigurationInstantiation(parameterID, configurationInstantiation);
@@ -627,7 +630,7 @@ int ComponentParameterReferenceCounter::countReferencesInDesignInstantiations(QS
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<DesignInstantiation> instantiation, *component_->getDesignInstantiations())
+    for (QSharedPointer<DesignInstantiation> instantiation : *component_->getDesignInstantiations())
     {
         referenceCounter += countReferencesInSingleDesigninstantiation(parameterID, instantiation);
     }
@@ -660,7 +663,7 @@ int ComponentParameterReferenceCounter::countReferencesInPorts(QString const& pa
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<Port> port, *component_->getPorts())
+    for (QSharedPointer<Port> port : *component_->getPorts())
     {
         referenceCounter += countReferencesInSinglePort(parameterID, port);
     }
@@ -692,7 +695,7 @@ int ComponentParameterReferenceCounter::countReferencesInBusInterfaces(QString c
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *component_->getBusInterfaces())
     {
         referenceCounter += countReferencesInSingleBusInterface(parameterID, busInterface);
     }
@@ -733,7 +736,7 @@ int ComponentParameterReferenceCounter::countReferencesInMirroredSlaveInterface(
 
     referenceCounter += countReferencesInExpression(parameterID, mirroredSlave->getRange());
     
-    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
+    for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
         *mirroredSlave->getRemapAddresses())
     {
         referenceCounter += countReferencesInRemapAddress(parameterID, remapAddress);
@@ -767,7 +770,7 @@ int ComponentParameterReferenceCounter::countReferencesInRemapStates(QString con
 {
     int referenceCount = 0;
 
-    foreach (QSharedPointer<RemapState> remap, *component_->getRemapStates())
+    for (QSharedPointer<RemapState> remap : *component_->getRemapStates())
     {
         referenceCount += countReferencesInSingleRemapState(parameterID, remap);
     }
@@ -783,7 +786,7 @@ int ComponentParameterReferenceCounter::countReferencesInSingleRemapState(QStrin
 {
     int referenceCounter = 0;
 
-    foreach (QSharedPointer<RemapPort> port, *remapState->getRemapPorts())
+    for (QSharedPointer<RemapPort> port : *remapState->getRemapPorts())
     {
         referenceCounter += countReferencesInSingleRemapPort(parameterID, port);
     }
@@ -822,4 +825,67 @@ int ComponentParameterReferenceCounter::countRefrencesInSingleIndirectInterface(
     QSharedPointer<IndirectInterface> indirectInterface) const
 {
     return countReferencesInParameters(parameterID, indirectInterface->getParameters());
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInCpus()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInCpus(QString const& parameterID) const
+{
+    int referenceCounter = 0;
+
+    for (auto singleCpu : *component_->getCpus())
+    {
+        referenceCounter += countReferencesInSingleCpu(parameterID, singleCpu);
+    }
+
+    return referenceCounter;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleCpu()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleCpu(QString const& parameterID,
+    QSharedPointer<Cpu> cpu) const
+{
+    int referenceCounter = 0;
+
+    referenceCounter += countReferencesInExpression(parameterID, cpu->getRange());
+    referenceCounter += countReferencesInExpression(parameterID, cpu->getWidth());
+    referenceCounter += countReferencesInExpression(parameterID, cpu->getAddressUnitBits());
+
+    referenceCounter += countReferencesInRegions(parameterID, cpu->getRegions());
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInRegions()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInRegions(QString const& parameterID,
+    QSharedPointer<QList<QSharedPointer<Region> > > regions) const
+{
+    int referenceCounter = 0;
+
+    for (auto region : *regions)
+    {
+        referenceCounter += countReferencesInSingleRegion(parameterID, region);
+    }
+
+    return referenceCounter;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleRegion()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleRegion(QString const& parameterID,
+    QSharedPointer<Region> region) const
+{
+    int referenceCounter = 0;
+
+    referenceCounter += countReferencesInExpression(parameterID, region->getAddressOffset());
+    referenceCounter += countReferencesInExpression(parameterID, region->getRange());
+
+    return referenceCounter;
 }

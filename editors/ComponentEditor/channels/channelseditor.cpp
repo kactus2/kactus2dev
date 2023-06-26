@@ -11,6 +11,7 @@
 
 #include "channelseditor.h"
 #include "channelsdelegate.h"
+#include "ChannelColumns.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 
@@ -50,6 +51,12 @@ ItemEditor(component, handler, parent),
 
 	view_.setItemDelegate(new ChannelsDelegate(component, this));	
 
+
+    if (component->getRevision() == Document::Revision::Std14)
+    {
+        view_.hideColumn(ChannelColumns::SHORT_DESCRIPTION);
+    }
+
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(channelAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(channelRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
@@ -58,13 +65,6 @@ ItemEditor(component, handler, parent),
 		&model_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(QModelIndex const&)),
 		&model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelsEditor::~ChannelsEditor()
-//-----------------------------------------------------------------------------
-ChannelsEditor::~ChannelsEditor()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -81,5 +81,12 @@ void ChannelsEditor::refresh()
 void ChannelsEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/channels.html");
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/channels2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/channels.html");
+    }
 }

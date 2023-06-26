@@ -14,10 +14,15 @@ namespace CpuColumns
     //! Contains the columns for cpu properties.
     enum Column
     {
-        NAME_COLUMN = 0,
-        DISPLAY_NAME_COLUMN,
-        ADDRSPACE_COLUMN,
-        DESCRIPTION_COLUMN,
+        NAME = 0,
+        DISPLAY_NAME,
+        SHORT_DESCRIPTION,
+        ADDRSPACE,
+        MEMORY_MAP,
+        RANGE,
+        WIDTH,
+        AUB,
+        DESCRIPTION,
         COLUMN_COUNT
     };
 

@@ -60,9 +60,6 @@ public slots:
 
     void onOpenMemoryDesign();
 
-    //! Create new component
-	void onCreateComponent();
-
 	//! Create new design
 	void onCreateDesign();
 
@@ -91,12 +88,6 @@ public slots:
 	//! Create new bus definition and abstraction definition.
 	void onCreateBus();
 
-    //! Create new COM definition.
-    void onCreateComDef();
-
-    //! Create new API definition.
-    void onCreateApiDef();
-
     //! Open the xml of the selected IP-Xact element.
 	void onOpenXml();
 
@@ -116,20 +107,11 @@ signals:
 
     void openMemoryDesign(QModelIndex const& index);
 
-	//! Create new component
-	void createNewComponent(QModelIndex const& index);
-
 	//! create new bus
 	void createNewBus(QModelIndex const& index);
 
 	//! Create new abstraction definition for given bus definition.
 	void createNewAbsDef(QModelIndex const& index);
-
-    //! create new COM definition
-    void createNewComDef(QModelIndex const& index);
-
-    //! create new API definition
-    void createNewApiDef(QModelIndex const& index);
 
 	//! Create new design
 	void createNewDesign(QModelIndex const& index);
@@ -225,9 +207,6 @@ private:
 
     //! Open the catalog editor.
     QAction* openCatalogAction_;
-    
-	//! Create a new empty object, only copy the vlnv structure.
-	QAction* createNewComponentAction_;
 
 	//! Create new design for a component
 	QAction* createNewDesignAction_;

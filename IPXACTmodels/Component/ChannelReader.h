@@ -17,51 +17,37 @@
 #include <IPXACTmodels/common/CommonItemsReader.h>
 
 #include <QDomNode>
+
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT Channel element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ChannelReader : public CommonItemsReader
+namespace  ChannelReader 
 {
-public:
-
-    //! The constructor.
-    ChannelReader();
-
-    /*!
-     *  The destructor.
-     */
-    ~ChannelReader();
-
     /*!
      *  Creates a new channel from a given channel node.
      *
      *      @param [in] channelNode    XML description of the channel.
+     *      @param [in] docRevision    The applied IP-XACT standard revision.
      */
-    QSharedPointer<Channel> createChannelFrom(QDomNode const& channelNode) const;
+    IPXACTMODELS_EXPORT QSharedPointer<Channel> createChannelFrom(QDomNode const& channelNode,
+        Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
 
-    //! No copying allowed.
-    ChannelReader(ChannelReader const& rhs);
-    ChannelReader& operator=(ChannelReader const& rhs);
+        /*!
+         *  Parses the local interface references for the channel. 
+         *
+         *      @param [in] channelNode     XML description of the channel.
+         *      @param [in] newChannel      The channel to add the references to.
+         *      @param [in] docRevision     The applied IP-XACT standard revision.
+         */
+        void parseInterfaceReferences(QDomNode const& channelNode, QSharedPointer<Channel> newChannel,
+            Document::Revision docRevision);
 
-    /*!
-     *  Reads the presence.
-     *
-     *      @param [in] channelNode    XML description of the view.
-     *      @param [in] newChannel     The new channel item.
-     */
-    void parseIsPresent(QDomNode const& channelNode, QSharedPointer<Channel> newChannel) const;
-
-    /*!
-     *  Reads the name group.
-     *
-     *      @param [in] channelNode    XML description of the view.
-     *      @param [in] newChannel		The new channel item.
-     */
-    void parseNameGroup(QDomNode const& channelNode, QSharedPointer<Channel> newChannel) const;
+    }
 };
 
 #endif // ChannelReader_H

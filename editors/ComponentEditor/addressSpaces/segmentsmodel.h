@@ -19,7 +19,6 @@
 #include <QSharedPointer>
 
 class ExpressionFormatter;
-class AddressSpace;
 class Segment;
 class ReferenceCalculator;
 
@@ -35,18 +34,18 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] addrSpace               The address space being edited.
+	 *      @param [in] segments                The segments being edited.
 	 *      @param [in] parameterFinder         The finder for available parameter names.
 	 *      @param [in] expressionFormatter     Formatter for expressions.
 	 *      @param [in] parent                  The owner of this model.
 	 */
-	SegmentsModel(QSharedPointer<AddressSpace> addrSpace,
+	SegmentsModel(QSharedPointer<QList<QSharedPointer<Segment> > > segments,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~SegmentsModel();
+	virtual ~SegmentsModel() = default;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -238,9 +237,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! Pointer to the address space containing the segments.
-	QSharedPointer<AddressSpace> addrSpace_;
 
 	//! Pointer to the data structure that contains the real segments.
     QSharedPointer<QList<QSharedPointer<Segment> > > segments_;

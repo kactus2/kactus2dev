@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "ResetTypesEditor.h"
+#include "ResetTypeColumns.h"
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -49,20 +50,17 @@ model_(component, validator, this)
     view_.setItemsDraggable(false);
     view_.setItemDelegate(new ResetTypesDelegate(this));
 
+    if (component->getRevision() == Document::Revision::Std14)
+    {
+        view_.hideColumn(ResetTypeColumns::SHORT_DESCRIPTION_COLUMN);
+    }
+
     connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
     connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
         &model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ResetTypesEditor::~ResetTypesEditor()
-//-----------------------------------------------------------------------------
-ResetTypesEditor::~ResetTypesEditor()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -79,5 +77,13 @@ void ResetTypesEditor::refresh()
 void ResetTypesEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/resetTypes.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/resetTypes2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/resetTypes.html");
+    }
 }

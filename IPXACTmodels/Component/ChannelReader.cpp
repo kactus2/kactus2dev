@@ -12,70 +12,57 @@
 #include "ChannelReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: ChannelReader::ChannelReader()
-//-----------------------------------------------------------------------------
-ChannelReader::ChannelReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelReader::~ChannelReader()
-//-----------------------------------------------------------------------------
-ChannelReader::~ChannelReader()
-{
-
-}
+#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ChannelReader::createCPUFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Channel> ChannelReader::createChannelFrom(QDomNode const& channelNode) const
+QSharedPointer<Channel> ChannelReader::createChannelFrom(QDomNode const& channelNode,
+    Document::Revision docRevision)
 {
-	// Create the new channel.
 	QSharedPointer<Channel> newChannel (new Channel());
 
-	// Parse presence and name group with pre-existing parsers.
-	// Channel has no vendor extensions supported by Kactus2.
-	parseIsPresent(channelNode, newChannel);
-	parseNameGroup(channelNode, newChannel);
+	NameGroupReader::parseNameGroup(channelNode, newChannel);
 
-	// The intermediate list for parsed child nodes.
-	QStringList busInterfaces;
-
-    QDomNodeList interfaceReferenceNodes = channelNode.toElement().elementsByTagName(QStringLiteral("ipxact:busInterfaceRef"));
-    for (int i = 0; i < interfaceReferenceNodes.count(); i++)
+    if (docRevision == Document::Revision::Std14)
     {
-        QDomNode nameNode = interfaceReferenceNodes.at(i).toElement().firstChildElement(QStringLiteral("ipxact:localName"));
-            
-        busInterfaces.append(nameNode.firstChild().nodeValue());
+        newChannel->setIsPresent(CommonItemsReader::parseIsPresent(
+            channelNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
     }
 
-	// Finally, set the parsed data as the channel data.
-	newChannel->setInterfaces( busInterfaces );
+	Details::parseInterfaceReferences(channelNode, newChannel, docRevision);
+
+    if (docRevision == Document::Revision::Std22)
+    {
+        CommonItemsReader::parseVendorExtensions(channelNode, newChannel);
+    }
 
     return newChannel;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChannelReader::parseIsPresent()
+// Function: ChannelReader::Details::parseInterfaceReferences()
 //-----------------------------------------------------------------------------
-void ChannelReader::parseIsPresent(QDomNode const& channelNode, QSharedPointer<Channel> newChannel) const
+void ChannelReader::Details::parseInterfaceReferences(QDomNode const& channelNode, 
+    QSharedPointer<Channel> newChannel, Document::Revision docRevision)
 {
-	QString newIsPresent = channelNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-	if (!newIsPresent.isEmpty())
-	{
-		newChannel->setIsPresent(newIsPresent);
-	}
-}
+    QDomNodeList interfaceReferenceNodes = 
+        channelNode.toElement().elementsByTagName(QStringLiteral("ipxact:busInterfaceRef"));
 
-//-----------------------------------------------------------------------------
-// Function: ChannelReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void ChannelReader::parseNameGroup(QDomNode const& channelNode, QSharedPointer<Channel> newChannel) const
-{
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(channelNode, newChannel);
+    const int REFERENCE_COUNT = interfaceReferenceNodes.count();
+    for (int i = 0; i < REFERENCE_COUNT; i++)
+    {
+        QDomNode referenceNode = interfaceReferenceNodes.at(i);
+        QDomNode nameNode = referenceNode.toElement().firstChildElement(QStringLiteral("ipxact:localName"));
+        auto localName = nameNode.firstChild().nodeValue();
+
+        QSharedPointer<Channel::BusInterfaceRef> interfaceRef(new Channel::BusInterfaceRef(localName));
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            CommonItemsReader::parseVendorExtensions(referenceNode, interfaceRef);
+        }
+
+        newChannel->getInterfaces()->append(interfaceRef);
+    }
 }

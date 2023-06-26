@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: Channel::Channel()
 //-----------------------------------------------------------------------------
-Channel::Channel(): NameGroup(), busInterfaces_()
+Channel::Channel(): NameGroup(), Extendable()
 {
 }
 
@@ -25,8 +25,9 @@ Channel::Channel(): NameGroup(), busInterfaces_()
 //-----------------------------------------------------------------------------
 Channel::Channel(Channel const& other):
 NameGroup(other),
-busInterfaces_(other.busInterfaces_)
+Extendable(other)
 {
+	copyBusInterfaceRefs(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -36,8 +37,9 @@ Channel& Channel::operator=(Channel const& other)
 {
 	if (this != &other)
     {
-		NameGroup::operator=(other);
-		busInterfaces_ = other.busInterfaces_;
+        NameGroup::operator=(other);
+        Extendable::operator=(other);
+        copyBusInterfaceRefs(other);
 	}
 
 	return *this;
@@ -67,9 +69,24 @@ void Channel::setIsPresent(QString const& newIsPresent)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Channel::getInterfaceNames()
+//-----------------------------------------------------------------------------
+QStringList Channel::getInterfaceNames() const
+{
+	QStringList names;
+
+	for (auto const& interfaceRef : *busInterfaces_)
+	{
+		names.append(interfaceRef->localName_);
+	}
+
+	return names;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Channel::getInterfaces()
 //-----------------------------------------------------------------------------
-QStringList Channel::getInterfaces() const
+QSharedPointer<QList<QSharedPointer<Channel::BusInterfaceRef> > > Channel::getInterfaces() const
 {
 	return busInterfaces_;
 }
@@ -79,6 +96,32 @@ QStringList Channel::getInterfaces() const
 //-----------------------------------------------------------------------------
 void Channel::setInterfaces(QStringList const& interfaceNames)
 {
-    busInterfaces_ = interfaceNames;
+    foreach (auto const& ref, *busInterfaces_)
+    {
+		if (interfaceNames.contains(ref->localName_) == false)
+		{
+			busInterfaces_->removeOne(ref);
+		}
+    }
+
+	for (auto const& name : interfaceNames)
+	{
+		if (std::none_of(busInterfaces_->cbegin(), busInterfaces_->cend(),
+			[&name](auto const& interfaceRef) { return interfaceRef->localName_ == name; }))
+		{
+			busInterfaces_->append(QSharedPointer<BusInterfaceRef>(new BusInterfaceRef(name)));
+		}
+	}
 }
 
+//-----------------------------------------------------------------------------
+// Function: Channel::copyBusInterfaceRefs()
+//-----------------------------------------------------------------------------
+void Channel::copyBusInterfaceRefs(Channel const& other)
+{
+	busInterfaces_->clear();
+	for (auto const& ref : *other.busInterfaces_)
+	{
+		busInterfaces_->append(QSharedPointer<BusInterfaceRef>(new BusInterfaceRef(*ref)));
+	}
+}

@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/common/ExpressionSet.h>
+
 #include <QList>
 
 class Cpu;
@@ -34,16 +36,20 @@ public:
 	 *      @param [in] model               The model that owns the items.
 	 *      @param [in] libHandler          The instance that manages the library.
 	 *      @param [in] component           The component being edited.
-     *      @param [in] expressionParser    Parser for expressions in cpus.
+     *      @param [in] expressions			Parser for expressions in cpus.
      *      @param [in] parent              The parent item.
      */
     ComponentEditorCpusItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        QSharedPointer<Component> component, 
-        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
+		ExpressionSet expressions,
         ComponentEditorItem* parent);
 
 	//! The destructor
-	virtual ~ComponentEditorCpusItem();
+	virtual ~ComponentEditorCpusItem() = default;
+
+    //! No copying
+    ComponentEditorCpusItem(const ComponentEditorCpusItem& other) = delete;
+    ComponentEditorCpusItem& operator=(const ComponentEditorCpusItem& other) = delete;
 
 	/*! Get the font to be used for text of this item.
 	*
@@ -51,42 +57,49 @@ public:
 	*
 	*      @return QFont instance that defines the font to be used.
 	*/
-	virtual QFont getFont() const;
+	QFont getFont() const final;
 
 	/*! Get the tool tip for the item.
 	 * 
 	 *      @return The text for the tool tip to print to user.
 	*/
-	virtual QString getTooltip() const;
+	QString getTooltip() const final;
 
 	/*! Get the text to be displayed to user in the tree for this item.
 	 *
 	 *      @return The text to display.
 	*/
-	virtual QString text() const;
+	QString text() const final;
 
 	/*! Get The editor of this item.
 	 *
 	 *      @return The editor to use for this item.
 	*/
-	virtual ItemEditor* editor();
+	ItemEditor* editor() final;
 
 	/*! Check the validity of this item and sub items.
 	 *
 	 *      @return True if item is in valid state.
 	*/
-	virtual bool isValid() const;
+	bool isValid() const final;
+
+	/*!
+     *  Add a new child to the item.
+	 *
+	 *      @param [in] index   The index to add the child into.
+	 */
+	void createChild(int index) final;
+
 
 private:
-	//! No copying
-	ComponentEditorCpusItem(const ComponentEditorCpusItem& other);
-	ComponentEditorCpusItem& operator=(const ComponentEditorCpusItem& other);
 
 	//! The cpus being edited
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
 
     //! Validator for cpu elements.
     QSharedPointer<CPUValidator> validator_;
+
+	ExpressionSet expressions_;
 };
 
 #endif // COMPONENTEDITORCPUSITEM_H

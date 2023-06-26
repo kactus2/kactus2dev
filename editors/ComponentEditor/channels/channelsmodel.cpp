@@ -34,13 +34,6 @@ QAbstractTableModel(parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ChannelsModel::~ChannelsModel()
-//-----------------------------------------------------------------------------
-ChannelsModel::~ChannelsModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ChannelsModel::rowCount()
 //-----------------------------------------------------------------------------
 int ChannelsModel::rowCount(QModelIndex const& parent) const
@@ -89,19 +82,23 @@ QVariant ChannelsModel::headerData(int section, Qt::Orientation orientation, int
         return QVariant();
     }
 
-    if (section == ChannelColumns::NAME_COLUMN)
+    if (section == ChannelColumns::NAME)
     {
         return tr("Name");
     }
-    else if (section == ChannelColumns::DISPLAY_NAME_COLUMN)
+    else if (section == ChannelColumns::DISPLAY_NAME)
     {
         return tr("Display name");
     }
-    else if (section == ChannelColumns::INTERFACE_COLUMN) 
+    else if (section == ChannelColumns::INTERFACES) 
     {
         return tr("Interface references");
     }
-    else if (section == ChannelColumns::DESCRIPTION_COLUMN)
+    else if (section == ChannelColumns::SHORT_DESCRIPTION)
+    {
+        return tr("Short description");
+    }
+    else if (section == ChannelColumns::DESCRIPTION)
     {
         return tr("Description");
     }
@@ -123,20 +120,24 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == ChannelColumns::NAME_COLUMN)
+        if (index.column() == ChannelColumns::NAME)
         {
             return channels_->at(index.row())->name();
         }
-        else if (index.column() == ChannelColumns::DISPLAY_NAME_COLUMN)
+        else if (index.column() == ChannelColumns::DISPLAY_NAME)
         {
             return channels_->at(index.row())->displayName();
         }
-        else if (index.column() == ChannelColumns::INTERFACE_COLUMN)
+        else if (index.column() == ChannelColumns::INTERFACES)
         {
-            QStringList interfaceNames = channels_->at(index.row())->getInterfaces();
+            QStringList interfaceNames = channels_->at(index.row())->getInterfaceNames();
             return interfaceNames.join(' ');
         }
-        else if (index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+        else if (index.column() == ChannelColumns::SHORT_DESCRIPTION)
+        {
+            return channels_->at(index.row())->shortDescription();
+        }
+        else if (index.column() == ChannelColumns::DESCRIPTION)
         {
             return channels_->at(index.row())->description();
         }
@@ -148,15 +149,15 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
     }
 
 	// user display role for interface column returns a QStringList
-	else if (role == ChannelColumns::USER_DISPLAY_ROLE && index.column() == ChannelColumns::INTERFACE_COLUMN)
+	else if (role == ChannelColumns::USER_DISPLAY_ROLE && index.column() == ChannelColumns::INTERFACES)
     {
-		return channels_->at(index.row())->getInterfaces();
+		return channels_->at(index.row())->getInterfaceNames();
 	}
 
 	else if (role == Qt::ForegroundRole)
     {
 
-        if (index.column() == ChannelColumns::INTERFACE_COLUMN && 
+        if (index.column() == ChannelColumns::INTERFACES && 
             !validator_->hasValidBusInterfaceReferences(channels_->at(index.row())))
         {
             return KactusColors::ERROR;
@@ -165,22 +166,11 @@ QVariant ChannelsModel::data(QModelIndex const& index, int role) const
         {
             return KactusColors::REGULAR_TEXT;
         }
-		// interface names are needed to check that references to bus interfaces are valid
-		//QStringList interfaceNames = component_->getBusInterfaceNames();
-
-		/*if (channels_->at(index.row())->isValid(interfaceNames))
-        {*/
-		//	return KactusColors::REGULAR_TEXT;
-		/*}
-		else
-        {
-			return KactusColors::ERROR;
-		}*/
 	}
 
 	else if (role == Qt::BackgroundRole)
     {
-        if (index.column() == ChannelColumns::NAME_COLUMN || index.column() == ChannelColumns::INTERFACE_COLUMN)
+        if (index.column() == ChannelColumns::NAME || index.column() == ChannelColumns::INTERFACES)
         {
             return KactusColors::MANDATORY_FIELD;
         }
@@ -207,21 +197,25 @@ bool ChannelsModel::setData(QModelIndex const& index, QVariant const& value, int
 
 	if (role == Qt::EditRole)
     {
-        if (index.column() ==  ChannelColumns::NAME_COLUMN)
+        if (index.column() ==  ChannelColumns::NAME)
         {
             channels_->at(index.row())->setName(value.toString());
         }
-        else if (index.column() == ChannelColumns::DISPLAY_NAME_COLUMN)
+        else if (index.column() == ChannelColumns::DISPLAY_NAME)
         {
             channels_->at(index.row())->setDisplayName(value.toString());		
         }
-        else if (index.column() == ChannelColumns::INTERFACE_COLUMN)
+        else if (index.column() == ChannelColumns::INTERFACES)
         {
             QString str = value.toString();
             QStringList interfaceNames = str.split(' ', Qt::SkipEmptyParts);
             channels_->at(index.row())->setInterfaces(interfaceNames);
         }
-        else if (index.column() == ChannelColumns::DESCRIPTION_COLUMN)
+        else if (index.column() == ChannelColumns::SHORT_DESCRIPTION)
+        {
+            channels_->at(index.row())->setShortDescription(value.toString());
+        }
+        else if (index.column() == ChannelColumns::DESCRIPTION)
         {
             channels_->at(index.row())->setDescription(value.toString());
         }
@@ -236,7 +230,7 @@ bool ChannelsModel::setData(QModelIndex const& index, QVariant const& value, int
 		return true;
 	}
 	// user edit role for interface column operates on QStringList
-	else if (role == ChannelColumns::USER_EDIT_ROLE && ChannelColumns::INTERFACE_COLUMN == index.column())
+	else if (role == ChannelColumns::USER_EDIT_ROLE && ChannelColumns::INTERFACES == index.column())
     {
 		channels_->at(index.row())->setInterfaces(value.toStringList());
 		emit dataChanged(index, index);

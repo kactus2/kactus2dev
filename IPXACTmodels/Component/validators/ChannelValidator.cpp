@@ -67,14 +67,14 @@ bool ChannelValidator::validate(QSharedPointer<Channel> channel) const
 //-----------------------------------------------------------------------------
 bool ChannelValidator::hasValidBusInterfaceReferences(QSharedPointer<Channel> channel) const
 {
-    if (channel->getInterfaces().count() < 2)
+    if (channel->getInterfaces()->count() < 2)
     {
         return false;
     }
 
-    for (QString const& currentRef : channel->getInterfaces())
+    for (auto const& currentRef : *channel->getInterfaces())
     {
-        if (!isReferenceToMirroredInterface(currentRef))
+        if (!isReferenceToMirroredInterface(currentRef->localName_))
         {
             return false;
         }
@@ -103,22 +103,22 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
             channel->getIsPresent(), channel->name()));
 	}
 	
-	if (channel->getInterfaces().count() < 2)
+	if (channel->getInterfaces()->count() < 2)
 	{
 		errors.append(QObject::tr("At least two interfaces must be defined for channel %1.").arg(channel->name()));
 	}
 
-	for (QString const& currentRef : channel->getInterfaces())
+	for (auto const& currentRef : *channel->getInterfaces())
 	{
-		if (!isValidBusIntefaceReference(currentRef))
+		if (!isValidBusIntefaceReference(currentRef->localName_))
 		{
 			errors.append(QObject::tr("Bus interface '%1' referenced within channel %2 not found.").arg(
-                currentRef, channel->name()));
+                currentRef->localName_, channel->name()));
 		}
-        else if (!isReferenceToMirroredInterface(currentRef))
+        else if (!isReferenceToMirroredInterface(currentRef->localName_))
         {
             errors.append(QObject::tr("Bus interface '%1' referenced within channel %2 is not a mirrored interface."
-                ).arg(currentRef, channel->name()));
+                ).arg(currentRef->localName_, channel->name()));
         }
 	}
 }

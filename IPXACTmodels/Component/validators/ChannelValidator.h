@@ -54,7 +54,7 @@ public:
      *
      *      @return True, if the Channel is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<Channel> channel) const;
+    bool validate(QSharedPointer<Channel> channel) const;
 
     bool hasValidBusInterfaceReferences(QSharedPointer<Channel> channel) const;
 
@@ -65,7 +65,7 @@ public:
      *      @param [in] Channel   The Channel whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Channel> channel,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<Channel> channel,
 		QString const& context) const;
 
 private:

@@ -130,7 +130,15 @@ void FileSetEditor::onDependenciesChange()
 void FileSetEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/fileset.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/fileset2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/fileset.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

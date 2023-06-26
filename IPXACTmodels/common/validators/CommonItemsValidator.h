@@ -37,6 +37,8 @@ namespace CommonItemsValidator
       */
     bool hasValidIsPresent(QString const& isPresent, QSharedPointer<ExpressionParser> parser);
 
+    bool isValidExpression(QString const& expression, QSharedPointer<ExpressionParser> parser);
+
 };
 
 

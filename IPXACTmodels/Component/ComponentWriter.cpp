@@ -148,13 +148,11 @@ void ComponentWriter::writeChannels(QXmlStreamWriter& writer, QSharedPointer<Com
 {
     if (!component->getChannels()->isEmpty())
     {
-        ChannelWriter channelWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:channels"));
 
-        foreach (QSharedPointer<Channel> channel, *component->getChannels())
+        for (QSharedPointer<Channel> channel: *component->getChannels())
         {
-            channelWriter.writeChannel(writer, channel);
+            ChannelWriter::writeChannel(writer, channel, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:channels
@@ -373,13 +371,11 @@ void ComponentWriter::writeCPUs(QXmlStreamWriter& writer, QSharedPointer<Compone
 {
     if (!component->getCpus()->isEmpty())
     {
-        CPUWriter cpuWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:cpus"));
 
-        foreach (QSharedPointer<Cpu> cpu, *component->getCpus())
+        for (QSharedPointer<Cpu> cpu : *component->getCpus())
         {
-            cpuWriter.writeCPU(writer, cpu);
+            CPUWriter::writeCPU(writer, cpu, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:cpus
@@ -415,11 +411,11 @@ void ComponentWriter::writeResetTypes(QXmlStreamWriter& writer, QSharedPointer<C
     {
         writer.writeStartElement(QStringLiteral("ipxact:resetTypes"));
 
-        foreach(QSharedPointer<ResetType> resetType, *component->getResetTypes())
+        for (QSharedPointer<ResetType> resetType : *component->getResetTypes())
         {
             writer.writeStartElement(QStringLiteral("ipxact:resetType"));
 
-            NameGroupWriter::writeNameGroup(writer, resetType);
+            NameGroupWriter::writeNameGroup(writer, resetType, component->getRevision());
             writeVendorExtensions(writer, resetType);
 
             writer.writeEndElement(); // ipxact:resetType

@@ -34,13 +34,6 @@ validator_(validator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ResetTypesModel::~ResetTypesModel()
-//-----------------------------------------------------------------------------
-ResetTypesModel::~ResetTypesModel()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: ResetTypesModel::rowCount()
 //-----------------------------------------------------------------------------
 int ResetTypesModel::rowCount(QModelIndex const& parent) const
@@ -50,7 +43,7 @@ int ResetTypesModel::rowCount(QModelIndex const& parent) const
 		return 0;
 	}
 
-    return resetTypes_->size();
+    return resetTypes_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +88,11 @@ QVariant ResetTypesModel::headerData(int section, Qt::Orientation orientation, i
     }
     else if (section == ResetTypeColumns::DISPLAY_NAME_COLUMN)
     {
-        return tr("Display name");
+        return tr("Display\nname");
+    }
+    else if (section == ResetTypeColumns::SHORT_DESCRIPTION_COLUMN)
+    {
+        return tr("Short\ndescription");
     }
     else if (section == ResetTypeColumns::DESCRIPTION_COLUMN)
     {
@@ -128,6 +125,10 @@ QVariant ResetTypesModel::data(QModelIndex const& index, int role) const
         else if (index.column() == ResetTypeColumns::DISPLAY_NAME_COLUMN)
         {
             return resetType->displayName();
+        }
+        else if (index.column() == ResetTypeColumns::SHORT_DESCRIPTION_COLUMN)
+        {
+            return resetType->shortDescription();
         }
         else if (index.column() == ResetTypeColumns::DESCRIPTION_COLUMN)
         {
@@ -188,6 +189,10 @@ bool ResetTypesModel::setData(QModelIndex const& index, QVariant const& value, i
         else if (index.column() == ResetTypeColumns::DISPLAY_NAME_COLUMN)
         {
             resetType->setDisplayName(value.toString());
+        }
+        else if (index.column() == ResetTypeColumns::SHORT_DESCRIPTION_COLUMN)
+        {
+            resetType->setShortDescription(value.toString());
         }
         else if (index.column() == ResetTypeColumns::DESCRIPTION_COLUMN)
         {

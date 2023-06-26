@@ -13,6 +13,7 @@
 #define NAMEGROUPWRITER_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/NameGroup.h>
 
 #include <QObject>
@@ -29,8 +30,10 @@ namespace NameGroupWriter
      *
      *      @param [in] writer      The used xml writer.
      *      @param [in] nameGroup   The selected name group.
+     *      @param [in] revision    The IP-XACT standard to comply to.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup);
+    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup,
+        Document::Revision revision = Document::Revision::Std14);
 }
 
 #endif // NAMEGROUPWRITER_H

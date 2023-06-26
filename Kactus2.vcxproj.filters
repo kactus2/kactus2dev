@@ -3196,7 +3196,25 @@
     <ClCompile Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
-    <ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleCpuItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\SingleCpuEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\CpuDetailsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+	<ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5629,6 +5647,12 @@
     <ClInclude Include="common\graphicsItems\ConnectionItem.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\cpus\RegionColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\common\ExpressionSet.h">
+      <Filter>Header Files\editors\common</Filter>
+    </ClInclude>
     <ClInclude Include="editors\AbstractionDefinitionEditor\QualifierData.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </ClInclude>
@@ -5719,6 +5743,24 @@
     </QtMoc>
     <QtMoc Include="editors\AbstractionDefinitionEditor\QualifierEditor.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleCpuItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\SingleCpuEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

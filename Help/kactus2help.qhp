@@ -89,7 +89,9 @@
           <section title="Remap states" ref="componenteditor/remapStates.html">
             <section title="Single remap state" ref="componenteditor/singleRemapState.html" />
           </section>
-          <section title="CPUs" ref="componenteditor/cpus.html" />
+          <section title="CPUs" ref="componenteditor/cpus.html">
+            <section title="CPU" ref="componenteditor/cpu.html" />
+          </section>
           <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
           <section title="Reset types" ref="componenteditor/resetTypes.html"/>
           <section title="COM interfaces" ref="componenteditor/cominterfaces.html">

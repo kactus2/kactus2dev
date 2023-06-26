@@ -35,7 +35,8 @@ namespace FileBuilderReader
      *
      *      @return The created default file builder.
      */
-    IPXACTMODELS_EXPORT QSharedPointer<FileBuilder> createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision);
+    IPXACTMODELS_EXPORT QSharedPointer<FileBuilder> createFileBuilderFrom(QDomNode const& fileBuilderNode,
+        Document::Revision docRevision);
 
     namespace Details
     {

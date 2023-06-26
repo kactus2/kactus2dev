@@ -16,7 +16,8 @@
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::createDefaultFileBuilderFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDomNode const& fileBuilderNode, Document::Revision docRevision)
+QSharedPointer<FileBuilder> FileBuilderReader::createFileBuilderFrom(QDomNode const& fileBuilderNode, 
+    Document::Revision docRevision)
 {
     QSharedPointer<FileBuilder> newFilebuilder (new FileBuilder());
 
@@ -35,8 +36,8 @@ QSharedPointer<FileBuilder> FileBuilderReader::createDefaultFileBuilderFrom(QDom
 //-----------------------------------------------------------------------------
 // Function: FileBuilderReader::parseFileType()
 //-----------------------------------------------------------------------------
-void FileBuilderReader::Details::parseFileType(QDomNode const& filebuilderNode, QSharedPointer<FileBuilder> newFileBuilder,
-    Document::Revision docRevision)
+void FileBuilderReader::Details::parseFileType(QDomNode const& filebuilderNode, 
+    QSharedPointer<FileBuilder> newFileBuilder, Document::Revision docRevision)
 {
     QDomElement fileTypeElement = filebuilderNode.firstChildElement(QStringLiteral("ipxact:fileType"));
 

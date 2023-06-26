@@ -68,9 +68,6 @@ void HierarchyWidget::setupConnections(HierarchyModel* dataModel)
     connect(&view_, SIGNAL(openMemoryDesign(const QModelIndex&)), 
         dataModel, SLOT(onOpenMemoryDesign(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createNewComponent(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewComponent(const QModelIndex&)), Qt::UniqueConnection);
-
     connect(&view_, SIGNAL(createNewDesign(const QModelIndex&)),
         dataModel, SLOT(onCreateNewDesign(const QModelIndex&)), Qt::UniqueConnection);
 
@@ -80,23 +77,8 @@ void HierarchyWidget::setupConnections(HierarchyModel* dataModel)
     connect(&view_, SIGNAL(createNewSystemDesign(const QModelIndex&)),
         dataModel, SLOT(onCreateNewSystemDesign(const QModelIndex&)), Qt::UniqueConnection);
 
-    connect(&view_, SIGNAL(createNewBus(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewBus(const QModelIndex&)), Qt::UniqueConnection);
-
     connect(&view_, SIGNAL(createNewAbsDef(const QModelIndex&)),
         dataModel, SLOT(onCreateNewAbsDef(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(createNewComDef(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewComDef(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(createNewComDef(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewComDef(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(createNewApiDef(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewApiDef(const QModelIndex&)), Qt::UniqueConnection);
-
-    connect(&view_, SIGNAL(createNewApiDef(const QModelIndex&)),
-        dataModel, SLOT(onCreateNewApiDef(const QModelIndex&)), Qt::UniqueConnection);
 
     connect(&view_, SIGNAL(deleteItem(QModelIndex const&)),
         dataModel, SLOT(onDeleteItem(QModelIndex const&)), Qt::UniqueConnection);

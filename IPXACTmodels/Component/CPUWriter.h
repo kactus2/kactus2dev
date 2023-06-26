@@ -9,72 +9,54 @@
 // Writer class for IP-XACT CPU element.
 //-----------------------------------------------------------------------------
 
-#ifndef CPUWriter_H
-#define CPUWriter_H
+#ifndef CPUWRITER_H
+#define CPUWRITER_H
 
 #include "Cpu.h"
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/Document.h>
+
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT CPU element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CPUWriter : public CommonItemsWriter
+namespace CPUWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    CPUWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~CPUWriter();
-
     /*!
      *  Write a CPU to an XML file.
      *
      *      @param [in] writer  The used xml writer.
      *      @param [in] cpu		The cpu to be written.
      */
-    void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+    IPXACTMODELS_EXPORT void writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu, Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
+        /*!
+         *  Writes the address space references.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] cpu		The cpu to be written.
+         */
+        void writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
 
-    //! No copying allowed.
-    CPUWriter(CPUWriter const& rhs);
-    CPUWriter& operator=(CPUWriter const& rhs);
+        void writeBlockSize(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
 
-    /*!
-     *  Writes the name group to an XML file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] cpu		The cpu to be written.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+        void writeRegions(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
 
-    /*!
-     *  Writes the presence to an XML file.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] cpu		The cpu to be written.
-     */
-    void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+        void writeExecutableImages(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
 
-    /*!
-     *  Writes the address space references.
-     *
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] cpu		The cpu to be written.
-     */
-    void writeAddressSpaceRefs(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu) const;
+        void writeLanguageTools(QXmlStreamWriter& writer, QSharedPointer<LanguageTools> languageTools);
 
+        void writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
+
+        void writeMemoryMapRef(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu);
+    }
 };
 
-#endif // CPUWriter_H
+#endif // CPUWRITER_H

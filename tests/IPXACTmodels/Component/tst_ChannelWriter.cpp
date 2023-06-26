@@ -11,6 +11,10 @@
 
 #include <IPXACTmodels/Component/ChannelWriter.h>
 
+#include <IPXACTmodels/common/Document.h>
+
+#include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
+
 #include <QtTest>
 
 class tst_ChannelWriter : public QObject
@@ -26,8 +30,11 @@ private slots:
 
 	void testWriteChannelNameGroup();
 	void testWriteIsPresent();
+
 	void testWriteBusRef();
-	void testWriteBusRef2();
+	void testBusRefWriteVendorExtensions2022();
+
+	void testWriteVendorExtensions2022();
 
 private:
 
@@ -67,41 +74,17 @@ void tst_ChannelWriter::testWriteChannelNameGroup()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-	QString expectedOutput(
-		"<ipxact:channel>"
-		    "<ipxact:name>testChannel</ipxact:name>"
-		"</ipxact:channel>"
-		);
+    testChannel_->setDisplayName("testDisplay");
+    testChannel_->setDescription("testDescription");
 
-	ChannelWriter ChannelWriter;
-	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
-	QCOMPARE(output, expectedOutput);
-
-	expectedOutput.clear();
-	output.clear();
-
-	testChannel_->setDisplayName("testDisplay");
-	expectedOutput = 
-		"<ipxact:channel>"
-		    "<ipxact:name>testChannel</ipxact:name>"
-		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
-		"</ipxact:channel>";
-
-	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
-	QCOMPARE(output, expectedOutput);
-
-	output.clear();
-	expectedOutput.clear();
-
-	testChannel_->setDescription("testDescription");
-	expectedOutput = 
+	QString expectedOutput = 
 		"<ipxact:channel>"
 		    "<ipxact:name>testChannel</ipxact:name>"
 		    "<ipxact:displayName>testDisplay</ipxact:displayName>"
 		    "<ipxact:description>testDescription</ipxact:description>"
 		"</ipxact:channel>";
 
-	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
+	ChannelWriter::writeChannel(xmlStreamWriter, testChannel_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -122,8 +105,7 @@ void tst_ChannelWriter::testWriteIsPresent()
 		"</ipxact:channel>"
 		);
 
-	ChannelWriter ChannelWriter;
-	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
+	ChannelWriter::writeChannel(xmlStreamWriter, testChannel_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -138,59 +120,85 @@ void tst_ChannelWriter::testWriteBusRef()
 
 	testChannel_->setIsPresent("expression");
 
-	QStringList refs = testChannel_->getInterfaces();
-	refs.append("Joku");
-	testChannel_->setInterfaces(refs);
+    QSharedPointer<Channel::BusInterfaceRef> firstRef(new Channel::BusInterfaceRef("firstIf"));
 
-	QString expectedOutput(
-		"<ipxact:channel>"
-		"<ipxact:name>testChannel</ipxact:name>"
-		    "<ipxact:isPresent>expression</ipxact:isPresent>"
-		    "<ipxact:busInterfaceRef>"
-		        "<ipxact:localName>Joku</ipxact:localName>"
-		    "</ipxact:busInterfaceRef>"
-		"</ipxact:channel>"
-		);
+    QSharedPointer<Channel::BusInterfaceRef> secondRef(new Channel::BusInterfaceRef("secondIf"));
 
-	ChannelWriter ChannelWriter;
-	ChannelWriter.writeChannel(xmlStreamWriter, testChannel_);
-
-	QCOMPARE(output, expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ChannelReader::testWriteBusRef2()
-//-----------------------------------------------------------------------------
-void tst_ChannelWriter::testWriteBusRef2()
-{
-	QString output;
-	QXmlStreamWriter xmlStreamWriter(&output);
-
-	testChannel_->setIsPresent("expression");
-
-	QStringList refs = testChannel_->getInterfaces();
-	refs.append("Joku");
-	refs.append("jotain");
-	testChannel_->setInterfaces(refs);
+    testChannel_->getInterfaces()->append(firstRef);
+    testChannel_->getInterfaces()->append(secondRef);
 
 	QString expectedOutput(
 		"<ipxact:channel>"
 		    "<ipxact:name>testChannel</ipxact:name>"
 		    "<ipxact:isPresent>expression</ipxact:isPresent>"
 		    "<ipxact:busInterfaceRef>"
-		        "<ipxact:localName>Joku</ipxact:localName>"
+		        "<ipxact:localName>firstIf</ipxact:localName>"
 		    "</ipxact:busInterfaceRef>"
 		    "<ipxact:busInterfaceRef>"
-		        "<ipxact:localName>jotain</ipxact:localName>"
+		        "<ipxact:localName>secondIf</ipxact:localName>"
 		    "</ipxact:busInterfaceRef>"
 		"</ipxact:channel>"
 		);
 
-	ChannelWriter channelWriter;
-	channelWriter.writeChannel(xmlStreamWriter, testChannel_);
+	ChannelWriter::writeChannel(xmlStreamWriter, testChannel_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_ChannelWriter::testBusRefWriteVendorExtensions2022()
+//-----------------------------------------------------------------------------
+void tst_ChannelWriter::testBusRefWriteVendorExtensions2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Channel::BusInterfaceRef> busRef(new Channel::BusInterfaceRef("busIf"));
+
+	busRef->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+        new Kactus2Value("testExtension", "testValue")));
+
+    testChannel_->getInterfaces()->append(busRef);
+
+    QString expectedOutput =
+        "<ipxact:channel>"
+			"<ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>busIf</ipxact:localName>"
+				"<ipxact:vendorExtensions>"
+					"<testExtension>testValue</testExtension>"
+				"</ipxact:vendorExtensions>"
+		    "</ipxact:busInterfaceRef>"
+        "</ipxact:channel>";
+
+    ChannelWriter::writeChannel(xmlStreamWriter, testChannel_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ChannelWriter::testWriteVendorExtensions2022()
+//-----------------------------------------------------------------------------
+void tst_ChannelWriter::testWriteVendorExtensions2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+
+	testChannel_->getVendorExtensions()->append(QSharedPointer<VendorExtension>(
+		new Kactus2Value("testExtension", "testValue")));
+
+    QString expectedOutput =
+        "<ipxact:channel>"
+			"<ipxact:name>testChannel</ipxact:name>"
+			"<ipxact:vendorExtensions>"
+				"<testExtension>testValue</testExtension>"
+			"</ipxact:vendorExtensions>"
+        "</ipxact:channel>";
+
+	ChannelWriter::writeChannel(xmlStreamWriter, testChannel_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
 
 QTEST_APPLESS_MAIN(tst_ChannelWriter)
 

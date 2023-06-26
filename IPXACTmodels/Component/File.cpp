@@ -461,7 +461,7 @@ void File::setFileTypes( QSettings& settings )
     QFileInfo info(name_);
     QStringList types = FileTypes::getFileTypes(settings, info.suffix());
 
-    fileTypes_.clear();
+    fileTypes_->clear();
     for (auto const& fileType : types)
     {
         fileTypes_->append(FileType(fileType));

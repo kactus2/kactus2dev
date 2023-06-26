@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h>
 
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 #include <QStyledItemDelegate>
 #include <QSharedPointer>
 
@@ -28,18 +30,23 @@ class CpusDelegate : public EnumerationEditorConstructorDelegate
 
 public:
 
-	//! The minimum height for list editor for address space references.
-	static const int LIST_EDITOR_MIN_HEIGHT = 100;
-
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
-	 *      @param [in] parent      The owner of the delegate.
+     *      @param [in] component               The component being edited.
+     *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] parameterFinder         The parameter finder to use for for expression editor.
+	 *      @param [in] parent                  The owner of the delegate.
 	*/
-	CpusDelegate(QSharedPointer<Component> component, QObject *parent);
+	CpusDelegate(QSharedPointer<Component> component, QCompleter* parameterNameCompleter, 
+		QSharedPointer<ParameterFinder> parameterFinder, QObject *parent);
 	
 	//! The destructor.
-	virtual ~CpusDelegate();
+	virtual ~CpusDelegate() = default;
+
+    //! No copying
+    CpusDelegate(const CpusDelegate& other) = delete;
+    CpusDelegate& operator=(const CpusDelegate& other) = delete;
+
 
 	/*! Create a new editor for the given item
 	 *
@@ -49,15 +56,15 @@ public:
 	 *
 	 *      @return The editor to be used to edit the item.
 	*/
-	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
-        QModelIndex const& index) const;
+	QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
+        QModelIndex const& index) const final;
 
 	/*! Set the data for the editor.
 	 *
 	 *      @param [in] editor The editor where the data is to be set.
 	 *      @param [in] index Model index identifying the item that's data is to be set.
 	*/
-	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
+	void setEditorData(QWidget* editor, QModelIndex const& index) const final;
 
 	/*! Save the data from the editor to the model.
 	 *
@@ -65,7 +72,28 @@ public:
 	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
 	*/
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
+	void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const final;
+
+signals:
+
+    /*!
+     *  Increase the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString const& id);
+
+protected:
+
+    //! Filters events for editors.
+    bool eventFilter(QObject* editor, QEvent* event) final;
 
 private:
 	
@@ -76,7 +104,7 @@ private:
      *
      *      @return True, if the column is used for editing enumerations, false otherwise.
      */
-    virtual bool isEnumerationEditorColumn(QModelIndex const& index) const override final;
+    bool isEnumerationEditorColumn(QModelIndex const& index) const final;
 
     /*!
      *  The list of currently selected enumerations in the selected item.
@@ -85,14 +113,14 @@ private:
      *
      *      @return List of currently selected enumerations.
      */
-    virtual QStringList getCurrentSelection(QModelIndex const& index) const override final;
+    QStringList getCurrentSelection(QModelIndex const& index) const final;
 
     /*!
      *  Get the list of the available enumerations.
      *
      *      @return List of the available enumerations.
      */
-    virtual QStringList getAvailableItems() const override final;
+    QStringList getAvailableItems() const final;
 
     /*!
      *  Set the selected enumerations to the selected item.
@@ -101,14 +129,31 @@ private:
      *      @param [in] model           Model that contains the data structure where data is to be saved to.
      *      @param [in] selectedItems   List of the selected enumerations.
      */
-    virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
+    void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, 
+        QStringList const& selectedItems) const final;
 
-	//! No copying
-	CpusDelegate(const CpusDelegate& other);
-	CpusDelegate& operator=(const CpusDelegate& other);
+	/*!
+	 *  Checks if given column accepts expressions as value.
+	 *
+	 *      @param [in] column The column number to check.
+	 *
+	 *      @return True, if column cells accept expressions, otherwise false.
+	 */
+	bool columnAcceptsExpression(int column) const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+    // 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
+
+    //!  The completer to use for parameter names in expression editor.
+	QCompleter* parameterNameCompleter_;
+
+    //! The parameter finder to use for for expression editor.
+	QSharedPointer<ParameterFinder> parameterFinder_;
+
 };
 
 #endif // CPUSDELEGATE_H

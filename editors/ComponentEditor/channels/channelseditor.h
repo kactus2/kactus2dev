@@ -42,10 +42,14 @@ public:
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	ChannelsEditor(QSharedPointer<Component> component,	LibraryInterface* handler, 
-        QSharedPointer<ChannelValidator> validator, QWidget* parent = 0);
+        QSharedPointer<ChannelValidator> validator, QWidget* parent = nullptr);
 	
 	//! The destructor
-	virtual ~ChannelsEditor();
+	virtual ~ChannelsEditor() = default;
+
+    //! No copying
+    ChannelsEditor(const ChannelsEditor& other) = delete;
+    ChannelsEditor& operator=(const ChannelsEditor& other) = delete;
 
 	/*! Reload the information from the model to the editor.
 	*/
@@ -57,10 +61,6 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private:
-
-	//! No copying
-	ChannelsEditor(const ChannelsEditor& other);
-	ChannelsEditor& operator=(const ChannelsEditor& other);
 
 	//! The view that displays the channels.
 	EditableTableView view_;

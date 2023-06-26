@@ -28,13 +28,6 @@ exclusiveItems_()
 }
 
 //-----------------------------------------------------------------------------
-// Function: EnumCollectionEditor::~EnumCollectionEditor()
-//-----------------------------------------------------------------------------
-EnumCollectionEditor::~EnumCollectionEditor()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: EnumCollectionEditor::addItem()
 //-----------------------------------------------------------------------------
 void EnumCollectionEditor::addItem(QString const& text, bool isExclusivePort, bool selected)
@@ -50,6 +43,26 @@ void EnumCollectionEditor::addItem(QString const& text, bool isExclusivePort, bo
     {
         connect(checkBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumCollectionEditor::clearItems()
+//-----------------------------------------------------------------------------
+void EnumCollectionEditor::clearItems()
+{
+    for (auto item : items_)
+    {
+        layout_->removeWidget(item);
+        item->deleteLater();
+    }
+    items_.clear();
+
+    for (auto item : exclusiveItems_)
+    {
+        layout_->removeWidget(item);
+        item->deleteLater();
+    }
+    exclusiveItems_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +153,7 @@ QStringList EnumCollectionEditor::getSelectedItems() const
 {
     QStringList selectedItems;
 
-    foreach (QCheckBox* checkBox, items_)
+    for (QCheckBox* checkBox : items_)
     {
         if (checkBox->isChecked())
         {

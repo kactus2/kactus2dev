@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 
@@ -71,11 +71,9 @@ void tst_ChannelValidator::baseCase()
 	channel->setName("testChannel");
 	channel->setIsPresent("1");
 
-	QStringList interfaces;
-	interfaces.append("first");
-	interfaces.append("second");
-    interfaces.append("system");
-	channel->setInterfaces(interfaces);
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("first")));
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("second")));
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("system")));
 
 	QVector<QString> errorList;
     ChannelValidator validator(expressionParser_, availableInterfaces);
@@ -96,9 +94,7 @@ void tst_ChannelValidator::testOnlyOneInterfaceReferenceIsInvalid()
 	channel->setName("testChannel");
     channel->setIsPresent("1");
 
-	QStringList interfaces;
-	interfaces.append("nonExisting");
-	channel->setInterfaces(interfaces);
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("nonExisting")));
 
 	QVector<QString> errorList;
     ChannelValidator validator(expressionParser_, noInterfaces);
@@ -120,11 +116,9 @@ void tst_ChannelValidator::testReferenceToUnknownInterfaceIsInvalid()
 	QSharedPointer<Channel> channel(new Channel);
 	channel->setName("testChannel");
 	channel->setIsPresent("1");
-
-	QStringList interfaces;
-	interfaces.append("nonExisting");
-	interfaces.append("");
-	channel->setInterfaces(interfaces);
+ 
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("nonExisting")));
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("")));
 
 	QVector<QString> errorList;
     ChannelValidator validator(expressionParser_, availableInterfaces);
@@ -164,11 +158,9 @@ void tst_ChannelValidator::testReferenceToNonMirroredInterfaceIsInvalid()
     QSharedPointer<Channel> channel(new Channel);
     channel->setName("testChannel");
 
-    QStringList interfaces;
-    interfaces.append("slaveInterface");
-    interfaces.append("masterInterface");
-    interfaces.append("systemInterface");
-    channel->setInterfaces(interfaces);
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("slaveInterface")));
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("masterInterface")));
+    channel->getInterfaces()->append(QSharedPointer<Channel::BusInterfaceRef>(new Channel::BusInterfaceRef("systemInterface")));
 
     QVector<QString> errorList;
     ChannelValidator validator(expressionParser_, availableInterfaces);

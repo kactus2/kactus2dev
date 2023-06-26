@@ -14,10 +14,11 @@ namespace ChannelColumns
     //! The column numbers.
     enum Column
     {
-        NAME_COLUMN = 0,
-        DISPLAY_NAME_COLUMN,
-        INTERFACE_COLUMN,
-        DESCRIPTION_COLUMN,
+        NAME = 0,
+        DISPLAY_NAME,
+        INTERFACES,
+        SHORT_DESCRIPTION,
+        DESCRIPTION,
         COLUMN_COUNT
     };
 

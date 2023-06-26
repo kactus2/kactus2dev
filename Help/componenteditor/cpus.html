@@ -19,11 +19,10 @@
         <b>Display name</b> is an optional and used for a more user-friendly identifier.
     </p>
     <p>
-	  <b>Address space</b> references specify the
-      logical address space of the cpu. When a master <i>bus interface</i>
-      of a component references the same address spaces, there's a
-      link link between the programmable core and the interface. This
-      information helps in generating a board support
+	  <b>Address space references</b> specify the logical address space of the cpu. 
+      When a master <i>bus interface</i> of a component references the same address 
+      spaces, there's a link link between the programmable core and the interface.
+      This information helps in generating a board support
       package (BSP) and picking appropriate programmable components
       into system design. CPU definition should not be repeated on a
       higher level component (one that instantiates a CPU).
@@ -46,11 +45,13 @@
     </ul>
     <hr>
     <p>
-      EXAMPLE. Example SoC has two CPUs. Both refer to an address
-      space. The first address space is bound to a master interface
-      whereas the second is local. Consequently, cpuA has access to
-      the upper master interface and cpuB does not.  <br><img
-      src="../images/cpus.png" alt="example">
+      EXAMPLE.
+      Example SoC has two CPUs and both refer to an address space. 
+      The first CPU is bound to a master bus interface through address space 
+      AS0 whereas the second has only a local memory map in AS1. 
+      Consequently, cpuA has access to the global address space of 
+      the master bus interface and cpuB does not.<br>
+      <img src="../images/cpus.png" alt="example">
     </p>
   </body>
 </html>

@@ -73,6 +73,7 @@ private slots:
     void readCPUs();
     void readOtherClockDrivers();
     void readResetTypes();
+    void readResetTypes2022();
 
     void readParameters();
     void readAssertions();
@@ -918,6 +919,48 @@ void tst_ComponentReader::readResetTypes()
     QSharedPointer<ResetType> testReset = testComponent->getResetTypes()->first();
     QCOMPARE(testReset->name(), QString("SOFT"));
     QCOMPARE(testReset->displayName(), QString("Soft Reset"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readResetTypes2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readResetTypes2022()
+{
+    ComponentReader componentReader;
+
+    QString documentContent = 
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:resetTypes>"
+                "<ipxact:resetType>"
+                    "<ipxact:name>SOFT</ipxact:name>"
+                    "<ipxact:displayName>Soft Reset</ipxact:displayName>"
+                    "<ipxact:shortDescription>brief</ipxact:shortDescription>"
+                    "<ipxact:description>Not hard reset</ipxact:description>"
+                "</ipxact:resetType>"
+            "</ipxact:resetTypes>"
+        "</ipxact:component>";
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+    QCOMPARE(testComponent->getResetTypes()->size(), 1);
+
+    QSharedPointer<ResetType> testReset = testComponent->getResetTypes()->first();
+    QCOMPARE(testReset->name(), QString("SOFT"));
+    QCOMPARE(testReset->displayName(), QString("Soft Reset"));
+    QCOMPARE(testReset->shortDescription(), QString("brief"));
+    QCOMPARE(testReset->description(), QString("Not hard reset"));
 }
 
 //-----------------------------------------------------------------------------

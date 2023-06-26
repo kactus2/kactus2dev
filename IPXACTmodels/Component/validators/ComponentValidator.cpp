@@ -142,7 +142,7 @@ assertionValidator_()
     fileSetValidator_ = QSharedPointer<FileSetValidator>(new FileSetValidator(fileValidator, parser));
 
     cpuValidator_ = QSharedPointer<CPUValidator>(
-        new CPUValidator(parameterValidator_, parser, QSharedPointer<QList<QSharedPointer<AddressSpace> > > ()));
+        new CPUValidator(parameterValidator_, parser, nullptr, nullptr, Document::Revision::Unknown));
 
     otherClockDriverValidator_ = QSharedPointer<OtherClockDriverValidator>(new OtherClockDriverValidator(parser));
 
@@ -238,14 +238,14 @@ bool ComponentValidator::hasValidChannels(QSharedPointer<Component> component)
             else
             {
                 channelNames.append(channel->name());
-                for (QString const& busInterface : channel->getInterfaces())
+                for (auto const& busInterface : *channel->getInterfaces())
                 {
-                    if (interfaceNames.contains(busInterface))
+                    if (interfaceNames.contains(busInterface->localName_))
                     {
                         return false;
                     }
                                     
-                    interfaceNames.append(busInterface);
+                    interfaceNames.append(busInterface->localName_);
                 }
             }
         }
@@ -796,16 +796,16 @@ void ComponentValidator::findErrorsInChannels(QVector<QString>& errors, QSharedP
             channelNames.append(channel->name());
             channelValidator_->findErrorsIn(errors, channel, context);
 
-            for (QString const& busInterface : channel->getInterfaces())
+            for (auto const& busInterface : *channel->getInterfaces())
             {
-                if (interfaceNames.contains(busInterface) && !duplicateInterfaceNames.contains(busInterface))
+                if (interfaceNames.contains(busInterface->localName_) && !duplicateInterfaceNames.contains(busInterface->localName_))
                 {
                     errors.append(QObject::tr("Bus interface '%1' is not unique in channels within %2.")
-                        .arg(busInterface).arg(context));
-                    duplicateInterfaceNames.append(busInterface);
+                        .arg(busInterface->localName_).arg(context));
+                    duplicateInterfaceNames.append(busInterface->localName_);
                 }
 
-                interfaceNames.append(busInterface);
+                interfaceNames.append(busInterface->localName_);
             }
         }
     }
@@ -1243,7 +1243,8 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());
         portValidator_->componentChange(newComponent->getViews());
-        cpuValidator_->componentChange(newComponent->getAddressSpaces());
+        cpuValidator_->componentChange(newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
+            newComponent->getRevision());
 
         component_ = newComponent;
     }

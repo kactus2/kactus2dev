@@ -58,7 +58,6 @@ HierarchyView::HierarchyView(QWidget *parent, LibraryInterface* handler, Hierarc
     openSWDesignAction_(new QAction(tr("Open SW Design"), this)),
     openComponentAction_(new QAction(tr("Open Component"), this)),
     openCatalogAction_(new QAction(tr("Open Catalog"), this)),
-    createNewComponentAction_(new QAction(tr("New HW Component"), this)),
     createNewDesignAction_(new QAction(tr("New HW Design..."), this)),
     createNewSWDesignAction_(new QAction(tr("New SW Design..."), this)),
     createNewSystemDesignAction_(new QAction(tr("New System Design..."), this)),
@@ -126,10 +125,6 @@ void HierarchyView::setupActions()
     openCatalogAction_->setStatusTip(tr("Open catalog editor"));
     openCatalogAction_->setToolTip(tr("Open catalog editor"));
     connect(openCatalogAction_, SIGNAL(triggered()), this, SLOT(onOpenItem()), Qt::UniqueConnection);
-
-	createNewComponentAction_->setStatusTip(tr("Create new HW component"));
-	createNewComponentAction_->setToolTip(tr("Create new HW component"));
-	connect(createNewComponentAction_, SIGNAL(triggered()), this, SLOT(onCreateComponent()), Qt::UniqueConnection);
 
 	createNewDesignAction_->setStatusTip(tr("Create new HW design"));
 	createNewDesignAction_->setToolTip(tr("Create new HW design"));
@@ -216,14 +211,6 @@ void HierarchyView::onOpenMemoryDesign()
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchyView::onCreateComponent()
-//-----------------------------------------------------------------------------
-void HierarchyView::onCreateComponent()
-{
-	emit createNewComponent(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchyView::onCreateDesign()
 //-----------------------------------------------------------------------------
 void HierarchyView::onCreateDesign()
@@ -261,22 +248,6 @@ void HierarchyView::onAddSignals()
 void HierarchyView::onCreateBus()
 {
 	emit createNewBus(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onCreateComDef()
-//-----------------------------------------------------------------------------
-void HierarchyView::onCreateComDef()
-{
-    emit createNewComDef(filter_->mapToSource(currentIndex()));
-}
-
-//-----------------------------------------------------------------------------
-// Function: HierarchyView::onCreateApiDef()
-//-----------------------------------------------------------------------------
-void HierarchyView::onCreateApiDef()
-{
-    emit createNewApiDef(filter_->mapToSource(currentIndex()));
 }
 
 //-----------------------------------------------------------------------------

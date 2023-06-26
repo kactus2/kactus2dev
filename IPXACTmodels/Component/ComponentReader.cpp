@@ -165,13 +165,11 @@ void ComponentReader::parseChannels(QDomNode const& componentNode, QSharedPointe
 
     if (!channelsElement.isNull())
     {
-        ChannelReader channelReader;
-
         QDomNodeList channelNodeList = channelsElement.elementsByTagName(QStringLiteral("ipxact:channel"));
         for (int channelIndex = 0; channelIndex < channelNodeList.count(); ++channelIndex)
         {
             QDomNode channelNode = channelNodeList.at(channelIndex);
-            QSharedPointer<Channel> newChannel = channelReader.createChannelFrom(channelNode);
+            auto newChannel = ChannelReader::createChannelFrom(channelNode, newComponent->getRevision());
 
             newComponent->getChannels()->append(newChannel);
         }
@@ -458,13 +456,11 @@ void ComponentReader::parseCPUs(QDomNode const& componentNode, QSharedPointer<Co
 
     if (!cpusElement.isNull())
     {
-        CPUReader cpuReader;
-
         QDomNodeList cpuNodeList = cpusElement.elementsByTagName(QStringLiteral("ipxact:cpu"));
         for (int cpuIndex = 0; cpuIndex < cpuNodeList.count(); ++cpuIndex)
         {
             QDomNode cpuNode = cpuNodeList.at(cpuIndex);
-            QSharedPointer<Cpu> newCPU = cpuReader.createCPUFrom(cpuNode);
+            QSharedPointer<Cpu> newCPU = CPUReader::createCPUFrom(cpuNode, newComponent->getRevision());
 
             newComponent->getCpus()->append(newCPU);
         }
@@ -505,7 +501,6 @@ void ComponentReader::parseResetTypes(QDomNode const& componentNode, QSharedPoin
     if (!resetTypesElement.isNull())
     {
         QDomNodeList resetTypeList = resetTypesElement.childNodes();
-        NameGroupReader nameReader;
 
         for (int i = 0; i < resetTypeList.size(); ++i)
         {
@@ -513,7 +508,7 @@ void ComponentReader::parseResetTypes(QDomNode const& componentNode, QSharedPoin
 
             QSharedPointer<ResetType> newResetType(new ResetType());
 
-            nameReader.parseNameGroup(resetTypeNode, newResetType);
+            NameGroupReader::parseNameGroup(resetTypeNode, newResetType);
 
             parseVendorExtensions(resetTypeNode, newResetType);
 

@@ -16,13 +16,17 @@
 //-----------------------------------------------------------------------------
 // Function: NameGroupWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup)
+void NameGroupWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<NameGroup> nameGroup,
+    Document::Revision revision)
 {
     writer.writeTextElement(QStringLiteral("ipxact:name"), nameGroup->name());
 
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:displayName"), nameGroup->displayName());
 
-    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
+    if (revision == Document::Revision::Std22)
+    {
+        CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), nameGroup->shortDescription());
+    }
 
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:description"), nameGroup->description());
 }

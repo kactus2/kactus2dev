@@ -214,7 +214,7 @@ void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiatio
         for (int i = 0; i < defaultFileBuilderNodeList.count(); ++i)
         {
             QSharedPointer<FileBuilder> defaultFileBuilder =
-                FileBuilderReader::createDefaultFileBuilderFrom(defaultFileBuilderNodeList.at(i), docRevision);
+                FileBuilderReader::createFileBuilderFrom(defaultFileBuilderNodeList.at(i), docRevision);
             instantiation->getDefaultFileBuilders()->append(defaultFileBuilder);
         }
     }

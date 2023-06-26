@@ -12,6 +12,7 @@
 #include "segmenteditor.h"
 
 #include "SegmentDelegate.h"
+#include "SegmentColumns.h"
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/common/ParameterCompleter.h>
@@ -32,7 +33,7 @@ SegmentEditor::SegmentEditor(QSharedPointer<AddressSpace> addrSpace, QSharedPoin
                              QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent ):
 QGroupBox(tr("Segments"), parent),
 view_(this),
-model_(addrSpace, parameterFinder, expressionFormatter, this),
+model_(addrSpace->getSegments(), parameterFinder, expressionFormatter, this),
 component_(component)
 {
     model_.setExpressionParser(expressionParser);
@@ -76,8 +77,9 @@ component_(component)
 	view_.setItemDelegate(new SegmentDelegate(parameterCompleter, parameterFinder, this));
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
-    proxy->setColumnToAcceptExpressions(1);
-    proxy->setColumnToAcceptExpressions(2);
+    proxy->setColumnToAcceptExpressions(SegmentColumns::OFFSET);
+    proxy->setColumnToAcceptExpressions(SegmentColumns::RANGE);
+    proxy->setColumnToAcceptExpressions(SegmentColumns::IS_PRESENT);
 
 	proxy->setSourceModel(&model_);
 	view_.setModel(proxy);

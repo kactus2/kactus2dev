@@ -16,6 +16,7 @@ namespace ResetTypeColumns
     {
         NAME_COLUMN = 0,
         DISPLAY_NAME_COLUMN,
+        SHORT_DESCRIPTION_COLUMN,
         DESCRIPTION_COLUMN,
         COLUMN_COUNT
     };

@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/FileBuilder.h>
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
@@ -30,6 +31,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/Region.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
@@ -51,14 +53,6 @@ ComponentParameterReferenceTree::ComponentParameterReferenceTree(QSharedPointer<
 ParameterReferenceTree(expressionFormatter, parent),
 component_(component),
 referenceCounter_(referenceCounter)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentParameterReferenceTree::~ComponentParameterReferenceTree()
-//-----------------------------------------------------------------------------
-ComponentParameterReferenceTree::~ComponentParameterReferenceTree()
 {
 
 }
@@ -124,6 +118,11 @@ void ComponentParameterReferenceTree::setupTree()
             createReferencesForIndirectInterfaces();
         }
 
+        if (referenceCounter_->countReferencesInCpus(getTargetID()) > 0)
+        {
+            createReferencesForCpus();
+        }
+
         if (topLevelItemCount() == 0)
         {
             createTopItem("No references found.");
@@ -152,7 +151,7 @@ void ComponentParameterReferenceTree::createReferencesForFileSets()
 
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<FileSet> fileSet, *component_->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *component_->getFileSets())
     {
         if (referenceCounter_->countReferencesInSingleFileSet(targetID, fileSet) > 0)
         {
@@ -180,7 +179,7 @@ void ComponentParameterReferenceTree::createReferencesForFileBuilders(
     QTreeWidgetItem* buildCommandsItem = createMiddleItem("Default file build commands", parentItem);
     colourItemGrey(buildCommandsItem);
 
-    foreach (QSharedPointer<FileBuilder> builder, *fileBuilders)
+    for (QSharedPointer<FileBuilder> builder : *fileBuilders)
     {
         if (referenceCounter_->countReferencesInSingleFileBuilder(getTargetID(), builder) > 0)
         {
@@ -213,7 +212,7 @@ void ComponentParameterReferenceTree::createReferencesForFiles(QSharedPointer<QL
     QTreeWidgetItem* filesItem = createMiddleItem("Files", parentItem);
     colourItemGrey(filesItem);
 
-    foreach (QSharedPointer<File> currentFile, *fileList)
+    for (QSharedPointer<File> currentFile : *fileList)
     {
         if (referenceCounter_->countReferencesInSingleFile(getTargetID(), currentFile) > 0)
         {
@@ -246,7 +245,7 @@ void ComponentParameterReferenceTree::createReferencesForSingleFile(QSharedPoint
 void ComponentParameterReferenceTree::createReferencesForModuleParameters(
     QSharedPointer<QList<QSharedPointer<ModuleParameter> > > parameters, QTreeWidgetItem* parentItem)
 {
-    foreach (QSharedPointer<ModuleParameter> moduleParameter, *parameters)
+    for (QSharedPointer<ModuleParameter> moduleParameter : *parameters)
     {
         if (referenceCounter_->countReferencesInSingleParameter(getTargetID(), moduleParameter) > 0)
         {
@@ -290,7 +289,7 @@ void ComponentParameterReferenceTree::createReferencesForComponentInstantiations
 
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<ComponentInstantiation> instantiation, *component_->getComponentInstantiations())
+    for (QSharedPointer<ComponentInstantiation> instantiation : *component_->getComponentInstantiations())
     {
         if (referenceCounter_->countReferencesInSingleComponentInstantiation(targetID, instantiation) > 0)
         {
@@ -333,7 +332,7 @@ void ComponentParameterReferenceTree::createReferencesForDesignConfigurationInst
 
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<DesignConfigurationInstantiation> instantiation,
+    for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
         *component_->getDesignConfigurationInstantiations())
     {
         if (referenceCounter_->countReferencesInSingleDesignConfigurationInstantiation(
@@ -366,7 +365,7 @@ void ComponentParameterReferenceTree::createReferencesForDesignInstantiations(QT
     QTreeWidgetItem* designInstantiationsItem = createMiddleItem("Design instantiations", topInstantiationsItem);
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<DesignInstantiation> instantiation, *component_->getDesignInstantiations())
+    for (QSharedPointer<DesignInstantiation> instantiation : *component_->getDesignInstantiations())
     {
         if (referenceCounter_->countReferencesInSingleDesigninstantiation(targetID, instantiation) > 0)
         {
@@ -389,7 +388,7 @@ void ComponentParameterReferenceTree::createReferencesForPorts()
 {
     QTreeWidgetItem* topPortsItem = createTopItem("Ports");
 
-    foreach (QSharedPointer<Port> port, *component_->getPorts())
+    for (QSharedPointer<Port> port : *component_->getPorts())
     {
         if (referenceCounter_->countReferencesInSinglePort(getTargetID(), port) > 0)
         {
@@ -407,7 +406,7 @@ void ComponentParameterReferenceTree::createReferencesForAddressSpaces()
     QTreeWidgetItem* topAddressSpaceItem = createTopItem("Address Spaces");
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<AddressSpace> addressSpace, *component_->getAddressSpaces())
+    for (QSharedPointer<AddressSpace> addressSpace : *component_->getAddressSpaces())
     {
         if (referenceCounter_->countReferencesInSingleAddressSpace(targetID, addressSpace) > 0)
         {
@@ -460,7 +459,7 @@ void ComponentParameterReferenceTree::createItemsForAddressSpace(QSharedPointer<
 void ComponentParameterReferenceTree::createReferencesForSegments(QSharedPointer<AddressSpace> addressSpace,
     QTreeWidgetItem* parent)
 {
-    foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
+    for (QSharedPointer<Segment> segment : *addressSpace->getSegments())
     {
         if (referenceCounter_->countReferencesInSingleSegment(getTargetID(), segment) > 0)
         {
@@ -496,7 +495,7 @@ void ComponentParameterReferenceTree::createReferencesForMemoryMaps()
     QTreeWidgetItem* topMemoryMapItem = createTopItem("Memory maps");
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<MemoryMap> memoryMap, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMap> memoryMap : *component_->getMemoryMaps())
     {
         if (referenceCounter_->countReferencesInSingleMemoryMap(targetID, memoryMap) > 0)
         {
@@ -511,7 +510,7 @@ void ComponentParameterReferenceTree::createReferencesForMemoryMaps()
                 createReferencesForSingleMemoryMap(memoryMap, defaultMemoryRemapItem);
             }
 
-            foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+            for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap->getMemoryRemaps())
             {
                 if (referenceCounter_->countReferencesInBaseMemoryMap(targetID, memoryRemap) > 0)
                 {
@@ -539,7 +538,7 @@ void ComponentParameterReferenceTree::createReferencesForSingleMemoryMap(QShared
 
     colourItemGrey(middleAddressBlocksItem);
 
-    foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
+    for (QSharedPointer<MemoryBlockBase> memoryBlock : *memoryMap->getMemoryBlocks())
     {
         QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
 
@@ -626,7 +625,7 @@ void ComponentParameterReferenceTree::createReferencesForSingleRegister(QSharedP
         QTreeWidgetItem* fieldsItem = createMiddleItem("Fields", registerItem);
         colourItemGrey(fieldsItem);
 
-        foreach (QSharedPointer<Field> registerField, *targetRegister->getFields())
+        for (QSharedPointer<Field> registerField : *targetRegister->getFields())
         {
             if (referenceCounter_->countReferencesInSingleField(targetID, registerField) > 0)
             {
@@ -659,7 +658,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
     QTreeWidgetItem* topBusInterfaceItem = createTopItem("Bus Interfaces");
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *component_->getBusInterfaces())
     {
         if (referenceCounter_->countReferencesInSingleBusInterface(targetID, busInterface) > 0)
         {
@@ -675,7 +674,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
                         createMiddleItem("Mirrored Slave Interface", busInterfaceItem);
                     colourItemGrey(mirroredInterfaceItem);
 
-                    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress,
+                    for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
                         *mirrorSlave->getRemapAddresses())
                     {
                         if (referenceCounter_->countReferencesInRemapAddress(targetID, remapAddress) > 0)
@@ -734,7 +733,7 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
     QTreeWidgetItem* topRemapStatesItem = createTopItem("Remap States");
     QString targetID = getTargetID();
 
-    foreach (QSharedPointer<RemapState> remapState, *component_->getRemapStates())
+    for (QSharedPointer<RemapState> remapState : *component_->getRemapStates())
     {
         if (referenceCounter_->countReferencesInSingleRemapState(targetID, remapState) > 0)
         {
@@ -743,7 +742,7 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
             QTreeWidgetItem* remapPortsItem = createMiddleItem("Remap Ports", remapStateItem);
             colourItemGrey(remapPortsItem);
 
-            foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+            for (QSharedPointer<RemapPort> remapPort : *remapState->getRemapPorts())
             {
                 if (referenceCounter_->countReferencesInSingleRemapPort(targetID, remapPort) > 0)
                 {
@@ -778,6 +777,69 @@ void ComponentParameterReferenceTree::createReferencesForIndirectInterfaces()
             colourItemGrey(parametersItem);
             createParameterReferences(indirectInterface->getParameters(), parametersItem);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForCpus()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForCpus()
+{
+    QTreeWidgetItem* topCpusItem = createTopItem("CPUs");
+    QString targetID = getTargetID();
+
+    for (auto cpu : *component_->getCpus())
+    {
+        if (referenceCounter_->countReferencesInSingleCpu(targetID, cpu) > 0)
+        {
+            QTreeWidgetItem* cpuItem = createMiddleItem(cpu->name(), topCpusItem);
+
+            if (cpu->getWidth().contains(targetID))
+            {
+                createItem("Width", cpu->getWidth(), cpuItem);
+            }
+            if (cpu->getRange().contains(targetID))
+            {
+                createItem("Range", cpu->getRange(), cpuItem);
+            }
+            if (cpu->getAddressUnitBits().contains(targetID))
+            {
+                createItem("Address unit bits", cpu->getAddressUnitBits(), cpuItem);
+            }
+
+            if (referenceCounter_->countReferencesInRegions(targetID, cpu->getRegions()) > 0)
+            {
+                QTreeWidgetItem* regionsItem = createMiddleItem(QStringLiteral("Regions"), cpuItem);
+                colourItemGrey(regionsItem);
+
+                for (auto const& region : *cpu->getRegions())
+                {
+                    if (referenceCounter_->countReferencesInSingleRegion(targetID, region) > 0)
+                    {
+                        createItemsForRegion(region, regionsItem);
+                    }
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createItemsForRegion()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createItemsForRegion(QSharedPointer<Region> region, QTreeWidgetItem* parent)
+{
+    QString targetID = getTargetID();
+
+    QTreeWidgetItem* regionItem = createMiddleItem(region->name(), parent);
+
+    if (region->getAddressOffset().contains(targetID))
+    {
+        createItem("Offset", region->getAddressOffset(), regionItem);
+    }
+    if (region->getRange().contains(targetID))
+    {
+        createItem("Range", region->getRange(), regionItem);
     }
 }
 

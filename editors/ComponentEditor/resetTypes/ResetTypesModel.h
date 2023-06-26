@@ -41,7 +41,11 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~ResetTypesModel();
+    virtual ~ResetTypesModel() = default;
+
+    //! No copying
+    ResetTypesModel(const ResetTypesModel& other) = delete;
+    ResetTypesModel& operator=(const ResetTypesModel& other) = delete;
 
 	/*!
      *  Get the number of rows an item contains.
@@ -50,7 +54,7 @@ public:
 	 *
 	 *      @return Number of rows the item has.
      */
-	virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+	int rowCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the number of columns the item has to be displayed.
@@ -59,7 +63,7 @@ public:
 	 *
 	 *      @return The number of columns to be displayed.
      */
-	virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+	int columnCount(const QModelIndex& parent = QModelIndex()) const final;
 
 	/*!
      *  Get the item flags that defines the possible operations for the item.
@@ -68,7 +72,7 @@ public:
 	 *
 	 *      @return Qt::ItemFlags specify the possible operations for the item.
      */
-	Qt::ItemFlags flags(const QModelIndex& index) const;
+	Qt::ItemFlags flags(const QModelIndex& index) const final;
 
 	/*!
      *  Get the header data for specified header.
@@ -79,7 +83,7 @@ public:
 	 *
 	 *      @return QVariant Contains the requested data.
      */
-	virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+	QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Get the data for specified item.
@@ -89,7 +93,7 @@ public:
 	 *
 	 *      @return QVariant Contains the data for the item.
      */
-	virtual QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const;
+	QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const final;
 
 	/*!
      *  Save the data to the model for specified item
@@ -100,7 +104,7 @@ public:
 	 *
 	 *      @return True if saving was successful.
      */
-	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole);
+	bool setData(QModelIndex const& index, QVariant const& value, int role = Qt::EditRole) final;
 
 public slots:
 
@@ -126,9 +130,6 @@ signals:
 	void contentChanged();
 
 private:
-	//! No copying
-	ResetTypesModel(const ResetTypesModel& other);
-	ResetTypesModel& operator=(const ResetTypesModel& other);
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
