@@ -331,11 +331,11 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
     // mirrored master interfaces are connected via channels
     // find the interfaces connected to the specified mirrored master interface
     QStringList connectedInterfaceNames;
-    foreach (QSharedPointer<Channel> channel, *component->getChannels())
+    for (QSharedPointer<Channel> channel : *component->getChannels())
     {
-        if (channel->getInterfaces().contains(interface->getBusReference()))
+        if (channel->getInterfaceNames().contains(interface->getBusReference()))
         {
-            connectedInterfaceNames.append(channel->getInterfaces());
+            connectedInterfaceNames.append(channel->getInterfaceNames());
         }
     }
 
@@ -344,7 +344,7 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
 
     QVector<QSharedPointer<const BusInterface> > connectedInterfaces;
 
-    foreach (QString const& interfaceName, connectedInterfaceNames)
+    for (QString const& interfaceName : connectedInterfaceNames)
     {
         QSharedPointer<BusInterface> connectedInterface = component->getBusInterface(interfaceName);
         if (connectedInterface)
@@ -353,7 +353,7 @@ void GlobalMemoryMapHeaderWriter::parseMirroredMasterInterface(qint64 offset, QS
         }
     }
 
-    foreach (QSharedPointer<const BusInterface> busif, connectedInterfaces)
+    for (QSharedPointer<const BusInterface> busif: connectedInterfaces)
     {
         QSharedPointer<ActiveInterface> connectedInterface(new ActiveInterface(interface->getComponentReference(),
             busif->name()));

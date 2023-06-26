@@ -37,7 +37,11 @@ public:
         QSharedPointer<ChannelValidator> validator, QObject *parent);
 	
 	//! The destructor.
-	virtual ~ChannelsModel();
+	virtual ~ChannelsModel() = default;
+
+    //! No copying
+    ChannelsModel(const ChannelsModel& other) = delete;
+    ChannelsModel& operator=(const ChannelsModel& other) = delete;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -129,10 +133,6 @@ signals:
 	void channelRemoved(int index);
 
 private:
-	
-	//! No copying
-	ChannelsModel(const ChannelsModel& other);
-	ChannelsModel& operator=(const ChannelsModel& other);
 
 	//! The channels being edited.
 	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;

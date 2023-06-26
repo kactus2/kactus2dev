@@ -148,13 +148,11 @@ void ComponentWriter::writeChannels(QXmlStreamWriter& writer, QSharedPointer<Com
 {
     if (!component->getChannels()->isEmpty())
     {
-        ChannelWriter channelWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:channels"));
 
-        foreach (QSharedPointer<Channel> channel, *component->getChannels())
+        for (QSharedPointer<Channel> channel: *component->getChannels())
         {
-            channelWriter.writeChannel(writer, channel);
+            ChannelWriter::writeChannel(writer, channel, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:channels

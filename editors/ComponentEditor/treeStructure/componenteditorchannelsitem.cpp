@@ -90,7 +90,7 @@ bool ComponentEditorChannelsItem::isValid() const
     {
         QVector<QString> channelNames;
         QVector<QString> interfaceNames;
-        foreach (QSharedPointer<Channel> channel, *channels_)
+        for (QSharedPointer<Channel> channel : *channels_)
         {
             if (channelNames.contains(channel->name()) || !validator_->validate(channel))
             {
@@ -99,7 +99,7 @@ bool ComponentEditorChannelsItem::isValid() const
             else
             {
                 channelNames.append(channel->name());
-                foreach (QString const& busInterface, channel->getInterfaces())
+                for (QString const& busInterface : channel->getInterfaceNames())
                 {
                     if (interfaceNames.contains(busInterface))
                     {

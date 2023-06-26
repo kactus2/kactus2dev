@@ -165,13 +165,11 @@ void ComponentReader::parseChannels(QDomNode const& componentNode, QSharedPointe
 
     if (!channelsElement.isNull())
     {
-        ChannelReader channelReader;
-
         QDomNodeList channelNodeList = channelsElement.elementsByTagName(QStringLiteral("ipxact:channel"));
         for (int channelIndex = 0; channelIndex < channelNodeList.count(); ++channelIndex)
         {
             QDomNode channelNode = channelNodeList.at(channelIndex);
-            QSharedPointer<Channel> newChannel = channelReader.createChannelFrom(channelNode);
+            auto newChannel = ChannelReader::createChannelFrom(channelNode, newComponent->getRevision());
 
             newComponent->getChannels()->append(newChannel);
         }

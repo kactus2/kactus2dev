@@ -13,6 +13,7 @@
 #define CHANNEL_H
 
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <QString>
 #include <QStringList>
@@ -20,9 +21,23 @@
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:channel element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Channel : public NameGroup
+class IPXACTMODELS_EXPORT Channel : public NameGroup, public Extendable
 {
 public:
+
+	//! Struct for BusInterfaceRefs.
+	struct BusInterfaceRef: public Extendable
+	{
+		QString localName_;
+
+		explicit BusInterfaceRef(QString const& localName) : localName_(localName) {};
+
+		BusInterfaceRef(BusInterfaceRef const& other):
+			localName_(other.localName_)
+		{
+			copyVendorExtensions(other);
+		}
+	};
 
 	/*! The default constructor
 	 *
@@ -56,8 +71,10 @@ public:
 	/*! Get the references to bus interfaces that belong to this channel.
 	 *
 	 *      @return The interface name references.
-	*/
-	QStringList getInterfaces() const;
+	 */
+	QStringList getInterfaceNames() const;
+
+	QSharedPointer<QList<QSharedPointer<BusInterfaceRef> > > getInterfaces() const;
 
 	/*! Set the interfaces that belong to this channel.
 	 *
@@ -66,11 +83,15 @@ public:
 	void setInterfaces(QStringList const& interfaceNames);
 
 private:
+
+    void copyBusInterfaceRefs(Channel const& other);
+
 	//! Presence of the channel.
 	QString isPresent_;
 
 	//! List of references to mirrored bus interfaces.
-	QStringList busInterfaces_;
+	QSharedPointer<QList<QSharedPointer<BusInterfaceRef> > > busInterfaces_ =
+		QSharedPointer<QList<QSharedPointer<BusInterfaceRef> > >(new QList<QSharedPointer<BusInterfaceRef> >);
 
 };
 

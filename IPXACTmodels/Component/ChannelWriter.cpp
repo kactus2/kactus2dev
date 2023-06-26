@@ -13,58 +13,42 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
-//-----------------------------------------------------------------------------
-// Function: ChannelWriter::ChannelWriter()
-//-----------------------------------------------------------------------------
-ChannelWriter::ChannelWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelWriter::~ChannelWriter()
-//-----------------------------------------------------------------------------
-ChannelWriter::~ChannelWriter()
-{
-
-}
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ChannelWriter::createChannelFrom()
 //-----------------------------------------------------------------------------
-void ChannelWriter::writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
+void ChannelWriter::writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel,
+	Document::Revision docRevision)
 {
 	// Start the element, write name group and presence.
-	writer.writeStartElement(QStringLiteral("ipxact:channel"));
-	writeNameGroup(writer, channel);
-	writeIsPresent(writer, channel);
+    writer.writeStartElement(QStringLiteral("ipxact:channel"));
 
-	foreach (QString const& busInterfaceReference, channel->getInterfaces())
+    NameGroupWriter::writeNameGroup(writer, channel);
+
+	if (docRevision == Document::Revision::Std14)
+	{
+        CommonItemsWriter::writeIsPresent(writer, channel->getIsPresent());
+	}
+
+	for (auto const& busInterfaceReference : *channel->getInterfaces())
 	{
 		writer.writeStartElement(QStringLiteral("ipxact:busInterfaceRef"));
-		writer.writeTextElement(QStringLiteral("ipxact:localName"), busInterfaceReference);
+		writer.writeTextElement(QStringLiteral("ipxact:localName"), busInterfaceReference->localName_);
+
+		if (docRevision == Document::Revision::Std22)
+		{
+			CommonItemsWriter::writeVendorExtensions(writer, busInterfaceReference);
+		}
+
 		writer.writeEndElement();
+	}
+
+	if (docRevision == Document::Revision::Std22)
+	{
+        CommonItemsWriter::writeVendorExtensions(writer, channel);
 	}
 
 	writer.writeEndElement();
 	return;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelWriter::writeNameGroup()
-//-----------------------------------------------------------------------------
-void ChannelWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
-{
-	NameGroupWriter::writeNameGroup(writer, channel);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChannelWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void ChannelWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const
-{
-	if (!channel->getIsPresent().isEmpty())
-	{
-		writer.writeTextElement(QStringLiteral("ipxact:isPresent"), channel->getIsPresent());
-	}
 }

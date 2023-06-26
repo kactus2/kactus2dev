@@ -995,7 +995,7 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
     QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
     QSharedPointer<ConnectivityGraph> graph) const
 {
-    QStringList channelInterfaces = channel->getInterfaces();
+    QStringList channelInterfaces = channel->getInterfaceNames();
 
     while (!channelInterfaces.isEmpty())
     {

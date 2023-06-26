@@ -113,6 +113,13 @@ private:
     void findErrorsInRange(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
 
+    /*!
+     *  Find errors within address space offset.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] region          The selected address region.
+     *      @param [in] context         Context to help locate the error.
+     */
     void findErrorsInOffset(QVector<QString>& errors, QSharedPointer<Region> region,
         QString const& context) const;
 

@@ -14,56 +14,27 @@
 
 #include "Channel.h"
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
-#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Channel element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ChannelWriter : public CommonItemsWriter
+namespace ChannelWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    ChannelWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~ChannelWriter();
 
     /*!
      *  Write a channel to an XML file.
      *
      *      @param [in] writer      The used xml writer.
      *      @param [in] channel		The channel to be written.
+     *      @param [in] docRevision The applied IP-XACT standard revision.
      */
-    void writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
+    IPXACTMODELS_EXPORT void writeChannel(QXmlStreamWriter& writer, QSharedPointer<Channel> channel,
+        Document::Revision docRevision);
 
-private:
-
-    //! No copying allowed.
-    ChannelWriter(ChannelWriter const& rhs);
-    ChannelWriter& operator=(ChannelWriter const& rhs);
-
-    /*!
-     *  Writes the name group to an XML file.
-     *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] channel		The channel to be written.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
-
-    /*!
-     *  Writes the presence to an XML file.
-     *
-     *      @param [in] writer      The used xml writer.
-     *      @param [in] channel		The channel to be written.
-     */
-    void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<Channel> channel) const;
 };
 
 #endif // ChannelWriter_H

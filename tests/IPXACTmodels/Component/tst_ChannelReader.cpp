@@ -22,10 +22,17 @@ public:
 
 private slots:
 
-    void testReadSimpleChannel();
+    void testReadNamedChannel();
+    void testReadNamedChannel2022();
+
     void testReadIsPresent();
-	void testReadBusIfRef();
-	void testReadBusIfRef2();
+    void testReadIsPresentNotAvailableIn2022();
+
+	void testReadBusInterfaceReferences();
+    void testReadBusInterfaceVendorExtensions2022();
+
+    void testReadVendorExtensions2022();
+
 };
 
 //-----------------------------------------------------------------------------
@@ -37,9 +44,9 @@ tst_ChannelReader::tst_ChannelReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ChannelReader::testReadSimpleChannel()
+// Function: tst_ChannelReader::testReadNamedChannel()
 //-----------------------------------------------------------------------------
-void tst_ChannelReader::testReadSimpleChannel()
+void tst_ChannelReader::testReadNamedChannel()
 {
     QString documentContent(
         "<ipxact:channel>"
@@ -54,11 +61,37 @@ void tst_ChannelReader::testReadSimpleChannel()
 
     QDomNode channelNode = document.firstChildElement("ipxact:channel");
 
-    ChannelReader ChannelReader;
-    QSharedPointer<Channel> testChannel = ChannelReader.createChannelFrom(channelNode);
+    QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std14);
 
     QCOMPARE(testChannel->name(), QString("channel"));
     QCOMPARE(testChannel->displayName(), QString("viewDisplay"));
+    QCOMPARE(testChannel->description(), QString("viewDescription"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ChannelReader::testReadNamedChannel()
+//-----------------------------------------------------------------------------
+void tst_ChannelReader::testReadNamedChannel2022()
+{
+    QString documentContent(
+        "<ipxact:channel>"
+            "<ipxact:name>testChannel</ipxact:name>"
+            "<ipxact:displayName>viewDisplay</ipxact:displayName>"
+            "<ipxact:shortDescription>shortDisplay</ipxact:shortDescription>"
+            "<ipxact:description>viewDescription</ipxact:description>"
+        "</ipxact:channel>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode channelNode = document.firstChildElement("ipxact:channel");
+
+    QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std22);
+
+    QCOMPARE(testChannel->name(), QString("testChannel"));
+    QCOMPARE(testChannel->displayName(), QString("viewDisplay"));
+    QCOMPARE(testChannel->shortDescription(), QString("shortDisplay"));
     QCOMPARE(testChannel->description(), QString("viewDescription"));
 }
 
@@ -71,8 +104,7 @@ void tst_ChannelReader::testReadIsPresent()
         "<ipxact:channel>"
             "<ipxact:name>testChannel</ipxact:name>"
             "<ipxact:isPresent>4-3</ipxact:isPresent>"
-        "</ipxact:channel>"
-        );
+        "</ipxact:channel>");
 
 
     QDomDocument document;
@@ -80,46 +112,36 @@ void tst_ChannelReader::testReadIsPresent()
 
     QDomNode channelNode = document.firstChildElement("ipxact:channel");
 
-    ChannelReader ChannelReader;
-    QSharedPointer<Channel> testChannel = ChannelReader.createChannelFrom(channelNode);
+    QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std14);
 
-    QCOMPARE(testChannel->name(), QString("testChannel"));
     QCOMPARE(testChannel->getIsPresent(), QString("4-3"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_CPUReader::testReadBusIfRef()
+// Function: tst_ChannelReader::testReadIsPresentNotAvailableIn2022()
 //-----------------------------------------------------------------------------
-void tst_ChannelReader::testReadBusIfRef()
+void tst_ChannelReader::testReadIsPresentNotAvailableIn2022()
 {
-	QString documentContent(
-		"<ipxact:channel>"
-		    "<ipxact:name>testChannel</ipxact:name>"
-		    "<ipxact:isPresent>4-3</ipxact:isPresent>"
-		    "<ipxact:busInterfaceRef>"
-		        "<ipxact:localName>interface1</ipxact:localName>"
-		    "</ipxact:busInterfaceRef>"
-		"</ipxact:channel>"
-		);
+    QString documentContent(
+        "<ipxact:channel>"
+            "<ipxact:name>testChannel</ipxact:name>"
+            "<ipxact:isPresent>4-3</ipxact:isPresent>"
+        "</ipxact:channel>");
 
-	QDomDocument document;
-	document.setContent(documentContent);
+    QDomDocument document;
+    document.setContent(documentContent);
 
-	QDomNode channelNode = document.firstChildElement("ipxact:channel");
+    QDomNode channelNode = document.firstChildElement("ipxact:channel");
 
-	ChannelReader ChannelReader;
-	QSharedPointer<Channel> testChannel = ChannelReader.createChannelFrom(channelNode);
+    QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std22);
 
-	QCOMPARE(testChannel->name(), QString("testChannel"));
-	QCOMPARE(testChannel->getIsPresent(), QString("4-3"));
-	QCOMPARE(testChannel->getInterfaces().size(), 1);
-	QCOMPARE(testChannel->getInterfaces().first(), QString("interface1"));
+    QCOMPARE(testChannel->getIsPresent(), QString());
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_CPUReader::testReadBusIfRef2()
+// Function: tst_CPUReader::testReadBusInterfaceReferences()
 //-----------------------------------------------------------------------------
-void tst_ChannelReader::testReadBusIfRef2()
+void tst_ChannelReader::testReadBusInterfaceReferences()
 {
 	QString documentContent(
 		"<ipxact:channel>"
@@ -139,14 +161,69 @@ void tst_ChannelReader::testReadBusIfRef2()
 
 	QDomNode channelNode = document.firstChildElement("ipxact:channel");
 
-	ChannelReader ChannelReader;
-	QSharedPointer<Channel> testChannel = ChannelReader.createChannelFrom(channelNode);
+	QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std14);
 
-	QCOMPARE(testChannel->name(), QString("testChannel"));
 	QCOMPARE(testChannel->getIsPresent(), QString("expression"));
-	QCOMPARE(testChannel->getInterfaces().size(), 2);
-	QCOMPARE(testChannel->getInterfaces().first(), QString("firstInterface"));
-	QCOMPARE(testChannel->getInterfaces().last(), QString("secondInterface"));
+	QCOMPARE(testChannel->getInterfaces()->size(), 2);
+	QCOMPARE(testChannel->getInterfaces()->first()->localName_, QString("firstInterface"));
+	QCOMPARE(testChannel->getInterfaces()->last()->localName_, QString("secondInterface"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ChannelReader::testReadBusInterfaceVendorExtensions()
+//-----------------------------------------------------------------------------
+void tst_ChannelReader::testReadBusInterfaceVendorExtensions2022()
+{
+    QString documentContent(
+		"<ipxact:channel>"
+		"   <ipxact:name>testChannel</ipxact:name>"
+		    "<ipxact:isPresent>expression</ipxact:isPresent>"
+		    "<ipxact:busInterfaceRef>"
+		        "<ipxact:localName>firstInterface</ipxact:localName>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+		    "</ipxact:busInterfaceRef>"
+
+		"</ipxact:channel>"
+		);
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode channelNode = document.firstChildElement("ipxact:channel");
+
+	QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std22);
+
+	QCOMPARE(testChannel->getIsPresent(), QString());
+	QCOMPARE(testChannel->getInterfaces()->size(), 1);
+    QCOMPARE(testChannel->getInterfaces()->first()->getVendorExtensions()->size(), 1);
+    QCOMPARE(testChannel->getInterfaces()->first()->getVendorExtensions()->first()->type(), QString("testExtension"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_CPUReader::testReadVendorExtensions()
+//-----------------------------------------------------------------------------
+void tst_ChannelReader::testReadVendorExtensions2022()
+{
+    QString documentContent(
+        "<ipxact:channel>"
+            "<ipxact:name>testChannel</ipxact:name>"
+            "<ipxact:vendorExtensions>"
+                "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:channel>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode channelNode = document.firstChildElement("ipxact:channel");
+
+    QSharedPointer<Channel> testChannel = ChannelReader::createChannelFrom(channelNode, Document::Revision::Std22);
+
+    QCOMPARE(testChannel->getVendorExtensions()->size(), 1);
+    QCOMPARE(testChannel->getVendorExtensions()->first()->type(), QString("testExtension"));
 }
 
 QTEST_APPLESS_MAIN(tst_ChannelReader)
