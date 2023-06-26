@@ -5629,6 +5629,9 @@
     <ClInclude Include="common\graphicsItems\ConnectionItem.h">
       <Filter>Header Files\common\graphicsItems</Filter>
     </ClInclude>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\QualifierData.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">

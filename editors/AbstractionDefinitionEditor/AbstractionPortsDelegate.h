@@ -89,6 +89,13 @@ public:
      */
     void setRevision(Document::Revision revision);
 
+    /*!
+     *  Updates the qualifier editor geometry.
+     *
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
+     */
     virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 protected slots:
@@ -98,6 +105,9 @@ protected slots:
 	 */
 	void commitAndCloseEditor();
 
+    /*!
+     *  Cancel editing, close editor.
+     */
     void onEditingCanceled();
 
 protected:
@@ -167,10 +177,6 @@ private:
      *      @param [in] selectedItems   List of the selected enumerations.
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
-
-    void setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor, QStringList const& attributeItems) const;
-
-    void saveQualifierData(QualifierEditor* editor, QAbstractItemModel* model, QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -147,9 +147,11 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
         Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setEditorData",
             "Type conversion failed for QualifierEditor");
-        QStringList attributeItems = index.data(Qt::UserRole).toStringList();
 
-        setupQualifierEditorQualifiers(index, qualifierEditor, attributeItems);
+        auto allQualifiers = getAvailableItems();
+        auto setQualifier = index.data(Qt::UserRole).value<QualifierData>();
+
+        qualifierEditor->setupEditor(allQualifiers, setQualifier.activeQualifiers_, setQualifier.attributes_);
     }
 
     else
@@ -201,7 +203,13 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
     else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
     {
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
-        saveQualifierData(qualifierEditor, model, index);
+        Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setModelData", "Type conversion failed for qualifier editor");
+
+        auto qualifierData = qualifierEditor->getQualifierData();
+        QVariant qualifierAsVariant;
+        qualifierAsVariant.setValue(qualifierData);
+
+        model->setData(index, qualifierAsVariant, Qt::EditRole);
     }
     else
     {
@@ -373,45 +381,4 @@ QStringList AbstractionPortsDelegate::getAvailableItems() const
 void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
 {
     model->setData(index, selectedItems);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::setupQualifierEditorQualifiers()
-//-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setupQualifierEditorQualifiers(QModelIndex const& index, QualifierEditor* qualifierEditor, QStringList const& attributeItems) const
-{
-    QMap<QString, QString> attributes;
-
-    for (int i = 0, j = 1; j < attributeItems.size(); i += 2, j += 2)
-    {
-        auto const& name = attributeItems.at(i);
-        auto& value = attributeItems.at(j);
-
-        attributes.insert(name, value);
-    }
-
-    auto allQualifiers = getAvailableItems();
-    auto activeQualifiersString = index.data(Qt::DisplayRole).toString();
-    auto activeQualifiersList = activeQualifiersString.split(", ");
-
-    qualifierEditor->setupEditor(allQualifiers, activeQualifiersList, attributes);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::saveQualifierData()
-//-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::saveQualifierData(QualifierEditor* editor, QAbstractItemModel* model, QModelIndex const& index) const
-{
-    model->setData(index, editor->getSelectedItems(), Qt::EditRole);
-
-    auto attributesAsMap = editor->getAttributes();
-    QStringList attributesList;
-
-    for (auto const& name : attributesAsMap.keys())
-    {
-        attributesList.append(name);
-        attributesList.append(attributesAsMap[name]);
-    }
-
-    model->setData(index, attributesList, Qt::UserRole);
 }

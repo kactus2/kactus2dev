@@ -1246,6 +1246,7 @@ CreateHelp
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionWirePortsSortFilter.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\LogicalPortColumns.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\QualifierEditor.h" />
+    <ClInclude Include="editors\AbstractionDefinitionEditor\QualifierData.h" />
     <ClInclude Include="editors\ApiDefinitionEditor\ApiFunctionColumns.h" />
     <QtMoc Include="editors\BusDefinitionEditor\busdefgroup.h">
     </QtMoc>

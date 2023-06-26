@@ -11,6 +11,7 @@
 
 #include "AbstractionPortsModel.h"
 #include "LogicalPortColumns.h"
+#include "QualifierData.h"
 
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
@@ -354,13 +355,32 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
     {
         if (index.column() == LogicalPortColumns::QUALIFIER)
         {
-            QStringList attributeItems;
-            for (auto const& attributeItem : portInterface_->getQualifierAttributes(index.row()))
+            QStringList qualifierList;
+            for (auto qualifier : portInterface_->getQualifierStringList(index.row()))
             {
-                attributeItems.append(QString::fromStdString(attributeItem));
+                qualifierList.append(QString::fromStdString(qualifier));
             }
 
-            return attributeItems;
+            std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
+            QMap<QString, QString> attributes;
+
+            for (int i = 0, j = 1; j < attributesList.size(); i += 2, j += 2)
+            {
+                auto const& name = QString::fromStdString(attributesList.at(i));
+                auto const& value = QString::fromStdString(attributesList.at(j));
+
+                attributes.insert(name, value);
+            }
+
+            QualifierData qualifierData;
+            QVariant qualifierAsVariant;
+
+            qualifierData.activeQualifiers_ = qualifierList;
+            qualifierData.attributes_ = attributes;
+
+            qualifierAsVariant.setValue(qualifierData);
+            
+            return qualifierAsVariant;
         }
     }
  
@@ -376,7 +396,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     QString newData = value.toString();
     QString oldData = data(index, Qt::DisplayRole).toString();
 
-    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() || !(flags(index) & Qt::ItemIsEditable))
+    if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount() || !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
     {
         return false;
     }
@@ -390,23 +410,26 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        // Data is either a list of qualifiers or qualifier attributes.
-        QStringList listOfItems = value.toStringList();
+        QualifierData qualifierData = value.value<QualifierData>();
+        auto const& setQualifiers = qualifierData.activeQualifiers_;
+        auto const& setAttributes = qualifierData.attributes_;
 
-        std::vector<std::string> itemsList;
-        for (auto item : value.toStringList())
+        std::vector<std::string> qualifierList;
+        std::vector<std::string> attributeList;
+
+        for (auto const& qualifier : setQualifiers)
         {
-            itemsList.push_back(item.toStdString());
+            qualifierList.push_back(qualifier.toStdString());
         }
 
-        if (role == Qt::EditRole)
+        for (auto const& attributeName : setAttributes.keys())
         {
-            portInterface_->setQualifierStringList(index.row(), itemsList);
+            attributeList.push_back(attributeName.toStdString());
+            attributeList.push_back(setAttributes[attributeName].toStdString());
         }
-        else if (role == Qt::UserRole)
-        {
-            portInterface_->setQualifierAttributes(index.row(), itemsList);
-        }
+        
+        portInterface_->setQualifierStringList(index.row(), qualifierList);
+        portInterface_->setQualifierAttributes(index.row(), attributeList);
     }
     else if (index.column() == LogicalPortColumns::MATCH)
     {
