@@ -35,10 +35,10 @@ QualifierEditor::QualifierEditor(QWidget* parent):
     setAttribute(Qt::WA_NoMousePropagation);
     setAutoFillBackground(true);
 
-    resetLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
-    clockEnableLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
-    powerEnableLevelSelector_->addItems({ QStringLiteral("low"), QStringLiteral("high") });
-    
+    resetLevelSelector_->addItems({ QStringLiteral(""), QStringLiteral("low"), QStringLiteral("high")});
+    clockEnableLevelSelector_->addItems({ QStringLiteral(""), QStringLiteral("low"), QStringLiteral("high") });
+    powerEnableLevelSelector_->addItems({ QStringLiteral(""), QStringLiteral("low"), QStringLiteral("high") });
+
     flowTypeSelector_->setEditable(true);
     flowTypeSelector_->setInsertPolicy(QComboBox::InsertAtTop);
     flowTypeSelector_->addItems({
@@ -47,8 +47,16 @@ QualifierEditor::QualifierEditor(QWidget* parent):
         QStringLiteral("busy")
     });
 
-    populateCheckBoxes();
+    resetLevelSelector_->setToolTip(QStringLiteral("Reset level"));
+    clockEnableLevelSelector_->setToolTip(QStringLiteral("Clock enable level"));
+    powerEnableLevelSelector_->setToolTip(QStringLiteral("Power enable level"));
+    flowTypeSelector_->setToolTip(QStringLiteral("Flow type"));
+    userDefinedLineEdit_->setToolTip(QStringLiteral("User defined"));
 
+    flowTypeSelector_->lineEdit()->setPlaceholderText(QStringLiteral("Flow type"));
+    userDefinedLineEdit_->setPlaceholderText(QStringLiteral("User defined attribute"));
+
+    populateCheckBoxes();
     setupLayout();
 }
 
