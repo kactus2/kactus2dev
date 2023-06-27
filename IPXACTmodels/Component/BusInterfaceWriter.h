@@ -23,153 +23,124 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT businterface element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT BusInterfaceWriter : public CommonItemsWriter
+namespace BusInterfaceWriter 
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    BusInterfaceWriter();
-
-    /*!
-     *  The destructor.
-     */
-    virtual ~BusInterfaceWriter() = default;
-	
     /*!
      *  Write a businterface to an XML file.
      *
      *      @param [in] writer				The used xml writer.
      *      @param [in] businterface		The businterface to be written.
      */
-    void writebusinterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
+	IPXACTMODELS_EXPORT void writeBusInterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
 
-private:
+	namespace Details
+	{
 
-    //! No copying allowed.
-    BusInterfaceWriter(BusInterfaceWriter const& rhs);
-    BusInterfaceWriter& operator=(BusInterfaceWriter const& rhs);
+		/*!
+		 *  Writes the connection requirement.
+		 *
+		 *      @param [in] writer          The used XML writer.
+		 *      @param [in] busInterface    The bus interface to be written.
+		 */
+		void writeConnectionRequired(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface);
 
-    /*!
-     *  Writes the name group to an XML file.
-     *
-     *      @param [in] writer				The used xml writer.
-     *      @param [in] businterface		The businterface to be written.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
+		/*!
+		 *  Writes the bits in lau.
+		 *
+		 *      @param [in] writer          The used XML writer.
+		 *      @param [in] busInterface    The bus interface to be written.
+		 */
+		void writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface);
 
-    /*!
-     *  Writes the presence to an XML file.
-     *
-     *      @param [in] writer				The used xml writer.
-     *      @param [in] businterface		The businterface to be written.
-     */
-	void writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
+		/*!
+		 *  Writes the endianness.
+		 *
+		 *      @param [in] writer          The used XML writer.
+		 *      @param [in] busInterface    The bus interface to be written.
+		 */
+		void writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface);
 
-    /*!
-     *  Writes the connection requirement.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] busInterface    The bus interface to be written.
-     */
-    void writeConnectionRequired(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
+		/*!
+		 *  Write the bit steering of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface to be written.
+		 */
+		void writeBitSteering(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
 
-    /*!
-     *  Writes the bits in lau.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] busInterface    The bus interface to be written.
-     */
-    void writeBitsInLau(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
+		/*!
+		 *  Write the abstraction types of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface to be written.
+		 */
+		void writeAbstractionTypes(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
 
-    /*!
-     *  Writes the endianness.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] busInterface    The bus interface to be written.
-     */
-    void writeEndianness(QXmlStreamWriter& writer, QSharedPointer<BusInterface> busInterface) const;
-	
-	/*!
-	 *  Write the bit steering of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface to be written.		
-	 */
-	void writeBitSteering(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
-	
-	/*!
-	 *  Write the abstraction types of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface to be written.		
-	 */
-	void writeAbstractionTypes(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
-    	
-	/*!
-	 *  Write the port maps of an abstraction type.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] abstractionType		The abstraction type whose port maps to write.
-	 */
-    void writePortMaps(QXmlStreamWriter& writer, QSharedPointer<AbstractionType> abstractionType) const;
+		/*!
+		 *  Write the port maps of an abstraction type.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] abstractionType		The abstraction type whose port maps to write.
+		 */
+		void writePortMaps(QXmlStreamWriter& writer, QSharedPointer<AbstractionType> abstractionType);
 
-	/*!
-	 *  Write the logical port of port map.
-	 *
-	 *      @param [in] writer				The used xml writer.
-     *      @param [in] logicalPort		    The logical port to be written.			 
-	 */
-	void writeLogicalPort(QXmlStreamWriter& writer, QSharedPointer<PortMap::LogicalPort> physicalPort) const;
-	
-	/*!
-	 *  Write the physical port of port map.
-	 *	 
-	 *      @param [in] writer				The used xml writer.
-     *      @param [in] physicalPort		The physical port to be written.		
-	 */
-	void writePhysicalPort(QXmlStreamWriter& writer, QSharedPointer<PortMap::PhysicalPort> physicalPort) const;
-	
-	/*!
-	 *  Write the interface mode of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface to be written.		
-	 */
-	void writeInterfaceMode(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
-	
-	/*!
-	 *  Write the master interface of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface master to be written.			 
-	 */
-	void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<MasterInterface> masterInterface) const;
-	
-	/*!
-	 *  Write the slave interface of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface slave to be written.		
-	 */
-	void writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave) const;
-	
-	/*!
-	 *  Write the mirrored slave interface of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface to be written.			 
-	 */
-	void writeMirroredSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<MirroredSlaveInterface> mirroredSlave) const;
-	
-	/*!
-	 *  Write the monitor interface of businterface.
-	 *
-     *      @param [in] writer				The used xml writer.
-	 *      @param [in] businterface		The businterface to be written.	
-	 */
-	void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface) const;
+		/*!
+		 *  Write the logical port of port map.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] logicalPort		    The logical port to be written.
+		 */
+		void writeLogicalPort(QXmlStreamWriter& writer, QSharedPointer<PortMap::LogicalPort> physicalPort);
+
+		/*!
+		 *  Write the physical port of port map.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] physicalPort		The physical port to be written.
+		 */
+		void writePhysicalPort(QXmlStreamWriter& writer, QSharedPointer<PortMap::PhysicalPort> physicalPort);
+
+		/*!
+		 *  Write the interface mode of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface to be written.
+		 */
+		void writeInterfaceMode(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
+
+		/*!
+		 *  Write the master interface of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface master to be written.
+		 */
+		void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<MasterInterface> masterInterface);
+
+		/*!
+		 *  Write the slave interface of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface slave to be written.
+		 */
+		void writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave);
+
+		/*!
+		 *  Write the mirrored slave interface of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface to be written.
+		 */
+		void writeMirroredSlaveInterface(QXmlStreamWriter& writer,
+			QSharedPointer<MirroredSlaveInterface> mirroredSlave);
+
+		/*!
+		 *  Write the monitor interface of businterface.
+		 *
+		 *      @param [in] writer				The used xml writer.
+		 *      @param [in] businterface		The businterface to be written.
+		 */
+		void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
+	}
 };
 
 #endif // businterfaceWriter_H

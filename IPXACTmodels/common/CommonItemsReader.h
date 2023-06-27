@@ -23,6 +23,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <QPointF>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -105,6 +106,15 @@ public:
         QDomNode const& configurableElementNode);
 
     /*!
+     *  Parse attributes of an element.
+     *
+     *      @param [in] attributedNode The XML node containing the attributes.
+     *
+     *      @return The parsed attributes.
+     */
+    static QMap<QString, QString> parseAttributes(QDomNode const& attributedNode);
+
+    /*!
      *  Parses the isPresent element.
      *
      *      @param [in] isPresentElement    The is present element.
@@ -113,6 +123,7 @@ public:
      */
     static QString parseIsPresent(QDomElement const& isPresentElement);
 
+    static QPointF parsePoint(QDomNode const& node);
     /*!
      *  Parses choices.
      *

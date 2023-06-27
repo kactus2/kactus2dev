@@ -122,13 +122,11 @@ void ComponentReader::parseBusInterfaces(QDomNode const& componentNode, QSharedP
 
     if (!busInterfaceElement.isNull())
     {
-        BusinterfaceReader busReader;
-
         QDomNodeList busInterfaceNodeList = busInterfaceElement.elementsByTagName(QStringLiteral("ipxact:busInterface"));
         for (int interfaceIndex = 0; interfaceIndex < busInterfaceNodeList.count(); ++interfaceIndex)
         {
             QDomNode busNode = busInterfaceNodeList.at(interfaceIndex);
-            QSharedPointer<BusInterface> newBus = busReader.createbusinterfaceFrom(busNode);
+            QSharedPointer<BusInterface> newBus = BusinterfaceReader::createBusinterfaceFrom(busNode);
 
             newComponent->getBusInterfaces()->append(newBus);
         }

@@ -837,7 +837,7 @@ void DesignReader::Details::parseNotes(QDomElement const& extensionNode, QShared
 
             if (childNode.nodeName().compare(QLatin1String("kactus2:position")) == 0)
             {                
-                QPointF point = XmlUtils::parsePoint(childNode);
+                QPointF point = CommonItemsReader::parsePoint(childNode);
                 QSharedPointer<Kactus2Position> positionExtension(new Kactus2Position(point));
                 note->addToGroup(positionExtension);
             }
@@ -848,7 +848,7 @@ void DesignReader::Details::parseNotes(QDomElement const& extensionNode, QShared
                 int associationCount = childNode.childNodes().count();
                 for (int associationIndex = 0; associationIndex < associationCount; ++associationIndex)
                 {
-                    QPointF position = XmlUtils::parsePoint(childNode.childNodes().at(associationIndex));
+                    QPointF position = CommonItemsReader::parsePoint(childNode.childNodes().at(associationIndex));
                     QSharedPointer<Kactus2Position> positionExtension(new Kactus2Position(position));
                     associations->addToGroup(positionExtension);
                 }

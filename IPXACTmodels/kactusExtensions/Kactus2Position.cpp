@@ -11,6 +11,7 @@
 
 #include "Kactus2Position.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: Kactus2Position::Kactus2Position()
@@ -60,8 +61,7 @@ void Kactus2Position::write(QXmlStreamWriter& writer) const
 //-----------------------------------------------------------------------------
 void Kactus2Position::parsePosition(QDomNode const& positionNode)
 {
-    position_.setX(positionNode.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt());
-    position_.setY(positionNode.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt());
+    position_ = CommonItemsReader::parsePoint(positionNode);
 }
 
 //-----------------------------------------------------------------------------

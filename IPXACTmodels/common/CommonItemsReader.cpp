@@ -149,6 +149,24 @@ QSharedPointer<ConfigurableElementValue> CommonItemsReader::parseConfigurableEle
 }
 
 //-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseAttributes()
+//-----------------------------------------------------------------------------
+QMap<QString, QString> CommonItemsReader::parseAttributes(QDomNode const& attributedNode)
+{
+    QMap<QString, QString> attributes;
+
+    QDomNamedNodeMap attributeMap = attributedNode.attributes();
+    for (int j = 0; j < attributeMap.size(); ++j)
+    {
+        QString name = attributeMap.item(j).nodeName();
+        QString value = attributeMap.item(j).nodeValue();
+        attributes.insert(name, value);
+    }
+
+    return attributes;
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parseIsPresent()
 //-----------------------------------------------------------------------------
 QString CommonItemsReader::parseIsPresent(QDomElement const& isPresentElement)
@@ -159,6 +177,17 @@ QString CommonItemsReader::parseIsPresent(QDomElement const& isPresentElement)
     }
 
     return QString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parsePoint()
+//-----------------------------------------------------------------------------
+QPointF CommonItemsReader::parsePoint(QDomNode const& node)
+{
+    int x = node.attributes().namedItem(QStringLiteral("x")).nodeValue().toInt();
+    int y = node.attributes().namedItem(QStringLiteral("y")).nodeValue().toInt();
+
+    return QPointF(x, y);
 }
 
 //-----------------------------------------------------------------------------

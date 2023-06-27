@@ -26,74 +26,87 @@
 #include <QDomNamedNodeMap>
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::businterfaceReader()
+// Function: BusinterfaceReader::createbusinterfaceFrom()
 //-----------------------------------------------------------------------------
-BusinterfaceReader::BusinterfaceReader() : CommonItemsReader()
+QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode const& businterfaceNode)
 {
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterfaceReader::~businterfaceReader()
-//-----------------------------------------------------------------------------
-BusinterfaceReader::~BusinterfaceReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: businterfaceReader::createbusinterfaceFrom()
-//-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> BusinterfaceReader::createbusinterfaceFrom(QDomNode const& businterfaceNode) const
-{
-	// Create the new bus interface.
 	QSharedPointer<BusInterface> newbusinterface (new BusInterface());
 
-	// Get the attributes for the bus interface.
-	QMap<QString, QString> attributes;
+	newbusinterface->setAttributes(CommonItemsReader::parseAttributes(businterfaceNode));
 
-	QDomNamedNodeMap attributeMap = businterfaceNode.attributes();
-	for (int j = 0; j < attributeMap.size(); ++j)
-	{
-		QString name = attributeMap.item(j).nodeName();
-		QString value = attributeMap.item(j).nodeValue();
-		attributes.insert(name, value);
-	}
-	newbusinterface->setAttributes(attributes);
-	
-	parseNameGroup(businterfaceNode, newbusinterface);
-    parseIsPresent(businterfaceNode, newbusinterface);	
+    NameGroupReader::parseNameGroup(businterfaceNode, newbusinterface);
 
-	// All abstraction types will be added here.
-    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes
-        (new QList<QSharedPointer<AbstractionType> > ());
+    auto presenceElement = businterfaceNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
+    newbusinterface->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
 
-	// Go through all the child nodes and call appropriate constructors.
-	QDomNodeList children = businterfaceNode.childNodes();
 
     QDomElement businterfaceElement = businterfaceNode.toElement();
     
+    Details::parseBusType(businterfaceElement, newbusinterface);
+
+    Details::parseAbstractionTypes(businterfaceElement, newbusinterface);
+
+    Details::parseInterfaceMode(businterfaceElement, newbusinterface);
+
+    Details::parseConnectionRequired(businterfaceElement, newbusinterface);
+
+    Details::parseBitsInLau(businterfaceElement, newbusinterface);
+
+    Details::parseBitSteering(businterfaceElement, newbusinterface);
+
+    Details::parseEndianess(businterfaceElement, newbusinterface);
+
+    newbusinterface->getParameters()->append(*CommonItemsReader::parseAndCreateParameters(businterfaceNode));
+
+    Details::parseBusInterfaceExtensions(businterfaceNode, newbusinterface);
+
+    return newbusinterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseBusType()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseBusType(QDomElement& businterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
+{
     QDomElement busTypeElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:busType"));
-    newbusinterface->setBusType(parseVLNVAttributes(busTypeElement, VLNV::BUSDEFINITION));
+    newbusinterface->setBusType(CommonItemsReader::parseVLNVAttributes(busTypeElement, VLNV::BUSDEFINITION));
+}
 
-    parseAbstractionTypes(businterfaceElement.firstChildElement(QStringLiteral("ipxact:abstractionTypes")), newbusinterface);
-
-    parseInterfaceMode(businterfaceElement, newbusinterface);
-
-    QDomElement connnectionRequirementNode = businterfaceElement.firstChildElement(QStringLiteral("ipxact:connectionRequired"));
-    if (!connnectionRequirementNode.isNull())
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseConnectionRequired()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseConnectionRequired(QDomElement& businterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
+{
+    QDomElement requirementNode = businterfaceElement.firstChildElement(QStringLiteral("ipxact:connectionRequired"));
+    if (!requirementNode.isNull())
     {
-        QString connectionRequired = connnectionRequirementNode.childNodes().at(0).nodeValue();
+        QString connectionRequired = requirementNode.childNodes().at(0).nodeValue();
         newbusinterface->setConnectionRequired(connectionRequired == QLatin1String("true"));
     }
+}
 
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseBitsInLau()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseBitsInLau(QDomElement& businterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
+{
     QDomElement lauElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:bitsInLau"));
     if (!lauElement.isNull())
     {
         QString bitsInLau = lauElement.firstChild().nodeValue();
         newbusinterface->setBitsInLau(bitsInLau);
     }
+}
 
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseBitSteering()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseBitSteering(QDomElement& businterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
+{
     QDomElement bitSteeringElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:bitSteering"));
     if (!bitSteeringElement.isNull())
     {
@@ -107,9 +120,16 @@ QSharedPointer<BusInterface> BusinterfaceReader::createbusinterfaceFrom(QDomNode
             newbusinterface->setBitSteering(BusInterface::BITSTEERING_OFF);
         }
 
-        newbusinterface->setBitSteeringAttributes(XmlUtils::parseAttributes(bitSteeringElement));
+        newbusinterface->setBitSteeringAttributes(CommonItemsReader::parseAttributes(bitSteeringElement));
     }
+}
 
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseEndianess()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseEndianess(QDomElement& businterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
+{
     QDomElement endiannessElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:endianness"));
     if (!endiannessElement.isNull())
     {
@@ -123,47 +143,20 @@ QSharedPointer<BusInterface> BusinterfaceReader::createbusinterfaceFrom(QDomNode
             newbusinterface->setEndianness(BusInterface::BIG);
         }
     }
-
-    newbusinterface->getParameters()->append(*CommonItemsReader::parseAndCreateParameters(businterfaceNode));
-
-    readBusInterfaceExtensions(businterfaceNode, newbusinterface);
-
-    return newbusinterface;
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::parseIsPresent()
+// Function: BusinterfaceReader::readAbstractionTypes()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::parseIsPresent(QDomNode const& businterfaceNode, QSharedPointer<BusInterface> newbusinterface) const
+void BusinterfaceReader::Details::parseAbstractionTypes(QDomElement const& businterfaceElement,
+    QSharedPointer<BusInterface> busInterface)
 {
-	QString newIsPresent = businterfaceNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-	if (!newIsPresent.isEmpty())
-	{
-		newbusinterface->setIsPresent(newIsPresent);
-	}
-}
+    auto abstractionTypesElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:abstractionTypes"));
 
-//-----------------------------------------------------------------------------
-// Function: businterfaceReader::parseNameGroup()
-//-----------------------------------------------------------------------------
-void BusinterfaceReader::parseNameGroup(QDomNode const& businterfaceNode,
-	QSharedPointer<BusInterface> newbusinterface) const
-{
-	NameGroupReader nameReader;
-	nameReader.parseNameGroup(businterfaceNode, newbusinterface);
-}
+    auto abstractionNodes = abstractionTypesElement.elementsByTagName(QStringLiteral("ipxact:abstractionType"));
 
-//-----------------------------------------------------------------------------
-// Function: businterfaceReader::readAbstractionTypes()
-//-----------------------------------------------------------------------------
-void BusinterfaceReader::parseAbstractionTypes(QDomElement const& abstractionTypesElement,
-    QSharedPointer<BusInterface> busInterface) const
-{
-    QDomNodeList abstractionNodes = abstractionTypesElement.elementsByTagName(QStringLiteral("ipxact:abstractionType"));
-
-    int abstractionTypeCount = abstractionNodes.count();
-
-	for (int i = 0; i < abstractionTypeCount; i++)
+    const int ABSTRACTIONTYPE_COUNT = abstractionNodes.count();
+	for (int i = 0; i < ABSTRACTIONTYPE_COUNT; ++i)
     {
         QSharedPointer<AbstractionType> newAbstractionType(new AbstractionType());
 
@@ -172,14 +165,11 @@ void BusinterfaceReader::parseAbstractionTypes(QDomElement const& abstractionTyp
         parseViewReferences(abstractionNode, newAbstractionType);
 
         QDomElement abstractionRefElement = abstractionNode.firstChildElement(QStringLiteral("ipxact:abstractionRef"));
-        newAbstractionType->setAbstractionRef(parseConfigurableVLNVReference(abstractionRefElement,
+        newAbstractionType->setAbstractionRef(CommonItemsReader::parseConfigurableVLNVReference(abstractionRefElement,
             VLNV::ABSTRACTIONDEFINITION));
 
         QDomElement portMapsElement = abstractionNode.firstChildElement(QStringLiteral("ipxact:portMaps"));
-        if (!portMapsElement.isNull())
-        {
-            readPortMaps(portMapsElement, newAbstractionType);
-        }
+        parsePortMaps(portMapsElement, newAbstractionType);
 
         busInterface->getAbstractionTypes()->append(newAbstractionType);
 	}
@@ -188,8 +178,8 @@ void BusinterfaceReader::parseAbstractionTypes(QDomElement const& abstractionTyp
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceReader::parseAbstractionTypes()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::parseViewReferences(QDomNode const& abstractionNode,
-    QSharedPointer<AbstractionType> newAbstractionType) const
+void BusinterfaceReader::Details::parseViewReferences(QDomNode const& abstractionNode,
+    QSharedPointer<AbstractionType> newAbstractionType)
 {
     QDomElement abstractionElement = abstractionNode.toElement();
     if (!abstractionElement.isNull())
@@ -198,7 +188,9 @@ void BusinterfaceReader::parseViewReferences(QDomNode const& abstractionNode,
 
         QDomNodeList abstractionViewNodes =
             abstractionNode.toElement().elementsByTagName(QStringLiteral("ipxact:viewRef"));
-        for (int i = 0; i < abstractionViewNodes.count(); ++i)
+
+        const int VIEW_COUNT = abstractionViewNodes.count();
+        for (int i = 0; i < VIEW_COUNT; ++i)
         {
             QString viewReference = abstractionViewNodes.at(i).firstChild().nodeValue();
             viewList->append(viewReference);
@@ -209,10 +201,10 @@ void BusinterfaceReader::parseViewReferences(QDomNode const& abstractionNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readPortMaps()
+// Function: BusinterfaceReader::parsePortMaps()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
-    QSharedPointer<AbstractionType> abstractionType) const
+void BusinterfaceReader::Details::parsePortMaps(QDomElement const& portMapsElement,
+    QSharedPointer<AbstractionType> abstractionType)
 {
     QDomNodeList portMapNodes = portMapsElement.elementsByTagName(QStringLiteral("ipxact:portMap"));
 
@@ -225,53 +217,36 @@ void BusinterfaceReader::readPortMaps(QDomElement const& portMapsElement,
 
         if (portMapElement.hasAttribute(QStringLiteral("invert")))
         {
-            if (portMapElement.attribute(QStringLiteral("invert")) == QLatin1String("true"))
-            {
-                portMap->setInvert(true);
-            }
-            else
-            {
-                portMap->setInvert(false);
-            }
+            portMap->setInvert(portMapElement.attribute(QStringLiteral("invert")) == QLatin1String("true"));
         }
 
         QDomElement isPresentElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isPresent"));
-        if (!isPresentElement.isNull())
-        {
-            portMap->setIsPresent(isPresentElement.firstChild().nodeValue());
-        }
 
-        readLogicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:logicalPort")), portMap);
-        readPhysicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:physicalPort")), portMap);
+        portMap->setIsPresent(isPresentElement.firstChild().nodeValue());
+
+
+        parseLogicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:logicalPort")), portMap);
+        parsePhysicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:physicalPort")), portMap);
 
         QDomElement logicalTieOffElement = portMapElement.firstChildElement(QStringLiteral("ipxact:logicalTieOff"));
-        if (!logicalTieOffElement.isNull())
-        {
-            portMap->setLogicalTieOff(logicalTieOffElement.firstChild().nodeValue());
-        }
+
+        portMap->setLogicalTieOff(logicalTieOffElement.firstChild().nodeValue());
+
 
         QDomElement isInformativeElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isInformative"));
-        if (!isInformativeElement.isNull())
-        {
-            if (isInformativeElement.firstChild().nodeValue() == QLatin1String("true"))
-            {
-                portMap->setIsInformative(true);
-            }
-            else
-            {
-                portMap->setIsInformative(false);
-            }
-        }
+
+        portMap->setIsInformative(isInformativeElement.firstChild().nodeValue() == QLatin1String("true"));
+
 
         abstractionType->getPortMaps()->append(portMap);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readLogicalPort()
+// Function: BusinterfaceReader::parseLogicalPort()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readLogicalPort(QDomElement const& logicalPortElement, 
-    QSharedPointer<PortMap> portMap) const
+void BusinterfaceReader::Details::parseLogicalPort(QDomElement const& logicalPortElement,
+    QSharedPointer<PortMap> portMap)
 {
     QDomElement nameElement = logicalPortElement.firstChildElement(QStringLiteral("ipxact:name"));
     QString portName = XmlUtils::removeWhiteSpace(nameElement.firstChild().nodeValue());
@@ -291,10 +266,10 @@ void BusinterfaceReader::readLogicalPort(QDomElement const& logicalPortElement,
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readPhysicalPort()
+// Function: BusinterfaceReader::parsePhysicalPort()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readPhysicalPort(QDomElement const& physicalPortElement,
-    QSharedPointer<PortMap> portMap) const
+void BusinterfaceReader::Details::parsePhysicalPort(QDomElement const& physicalPortElement,
+    QSharedPointer<PortMap> portMap)
 {
     if (physicalPortElement.isNull())
     {
@@ -336,16 +311,16 @@ void BusinterfaceReader::readPhysicalPort(QDomElement const& physicalPortElement
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readInterfaceMode()
+// Function: BusinterfaceReader::parseInterfaceMode()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::parseInterfaceMode(QDomElement const& busInterfaceElement,
-    QSharedPointer<BusInterface> newbusinterface) const
+void BusinterfaceReader::Details::parseInterfaceMode(QDomElement const& busInterfaceElement,
+    QSharedPointer<BusInterface> newbusinterface)
 {
     QDomElement masterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:master"));
 	if (!masterNode.isNull())
 	{
 		QSharedPointer<MasterInterface> newmode(new MasterInterface());
-        readMasterInterface(masterNode, newmode);
+        parseMasterInterface(masterNode, newmode);
         
         newbusinterface->setInterfaceMode(General::MASTER);
 		newbusinterface->setMaster(newmode);
@@ -356,7 +331,7 @@ void BusinterfaceReader::parseInterfaceMode(QDomElement const& busInterfaceEleme
     if (!slaveNode.isNull())
 	{
 		QSharedPointer<SlaveInterface> newmode(new SlaveInterface());
-		readSlaveInterface(slaveNode, newmode);
+		parseSlaveInterface(slaveNode, newmode);
 
         newbusinterface->setInterfaceMode(General::SLAVE);
 		newbusinterface->setSlave(newmode);
@@ -413,18 +388,17 @@ void BusinterfaceReader::parseInterfaceMode(QDomElement const& busInterfaceEleme
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readMasterInterface()
+// Function: BusinterfaceReader::parseMasterInterface()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceElement, 
-    QSharedPointer<MasterInterface> masterInterface) const
+void BusinterfaceReader::Details::parseMasterInterface(QDomElement const& masterInterfaceElement,
+    QSharedPointer<MasterInterface> masterInterface)
 {
     QDomElement addressSpaceRefElement = masterInterfaceElement.firstChildElement(QStringLiteral("ipxact:addressSpaceRef"));
  
     QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("addressSpaceRef"));
-    if (addressSpaceRef.isEmpty())
-    {
+
         addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("ipxact:addressSpaceRef"));
-    }
+    
 
     masterInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
 
@@ -435,25 +409,23 @@ void BusinterfaceReader::readMasterInterface(QDomElement const& masterInterfaceE
     }
 
     QDomElement baseAddressElement = addressSpaceRefElement.firstChildElement(QStringLiteral("ipxact:baseAddress"));
-    if (!baseAddressElement.isNull())
-    {
+
         QString baseAddress = baseAddressElement.firstChild().nodeValue();
         masterInterface->setBaseAddress(XmlUtils::removeWhiteSpace(baseAddress));
-    }
+    
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readSlaveInterface()
+// Function: BusinterfaceReader::parseSlaveInterface()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readSlaveInterface(QDomElement const& slaveIntefaceElement, 
-    QSharedPointer<SlaveInterface> slaveInterface) const
+void BusinterfaceReader::Details::parseSlaveInterface(QDomElement const& slaveIntefaceElement,
+    QSharedPointer<SlaveInterface> slaveInterface)
 {
     QDomElement memoryMapRefElement = slaveIntefaceElement.firstChildElement(QStringLiteral("ipxact:memoryMapRef"));
-    if (!memoryMapRefElement.isNull())
-    {
+
         QString memoryMapRef = memoryMapRefElement.attribute(QStringLiteral("memoryMapRef"));
         slaveInterface->setMemoryMapRef(XmlUtils::removeWhiteSpace(memoryMapRef));
-    }
+    
 
     QDomNodeList bridgeNodes = slaveIntefaceElement.elementsByTagName(QStringLiteral("ipxact:transparentBridge"));
     int bridgeCount = bridgeNodes.count();
@@ -499,10 +471,10 @@ void BusinterfaceReader::readSlaveInterface(QDomElement const& slaveIntefaceElem
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readMirroredSlaveInterface()
+// Function: BusinterfaceReader::parseMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::parseMirroredSlaveInterface(QDomElement const& mirroredInterfaceElement, 
-    QSharedPointer<MirroredSlaveInterface> mirroredSlaveInterface) const
+void BusinterfaceReader::Details::parseMirroredSlaveInterface(QDomElement const& mirroredInterfaceElement,
+    QSharedPointer<MirroredSlaveInterface> mirroredSlaveInterface)
 {
     QDomElement baseAddressElement = mirroredInterfaceElement.firstChildElement(QStringLiteral("ipxact:baseAddresses"));
 
@@ -521,7 +493,7 @@ void BusinterfaceReader::parseMirroredSlaveInterface(QDomElement const& mirrored
         QSharedPointer<MirroredSlaveInterface::RemapAddress> remap(
             new MirroredSlaveInterface::RemapAddress(remapAddress));
 
-        remap->remapAttributes_ = XmlUtils::parseAttributes(remapAddressNode);
+        remap->remapAttributes_ = CommonItemsReader::parseAttributes(remapAddressNode);
         remap->state_ = remap->remapAttributes_.take(QStringLiteral("state"));
 
         mirroredSlaveInterface->getRemapAddresses()->append(remap);	
@@ -532,10 +504,10 @@ void BusinterfaceReader::parseMirroredSlaveInterface(QDomElement const& mirrored
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::createMonitorInterface()
+// Function: BusinterfaceReader::parseMonitorInterface()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::parseMonitorInterface(QDomElement const& monitorElement,
-	QSharedPointer<BusInterface::MonitorInterface> monitorInterface) const
+void BusinterfaceReader::Details::parseMonitorInterface(QDomElement const& monitorElement,
+	QSharedPointer<BusInterface::MonitorInterface> monitorInterface)
 {
 	QString interfaceMode = monitorElement.attribute(QStringLiteral("interfaceMode"));
 	interfaceMode = XmlUtils::removeWhiteSpace(interfaceMode);
@@ -545,19 +517,17 @@ void BusinterfaceReader::parseMonitorInterface(QDomElement const& monitorElement
 }
 
 //-----------------------------------------------------------------------------
-// Function: businterfaceReader::readBusInterfaceExtensions()
+// Function: BusinterfaceReader::parseBusInterfaceExtensions()
 //-----------------------------------------------------------------------------
-void BusinterfaceReader::readBusInterfaceExtensions(QDomNode const& interfaceNode,
-    QSharedPointer<BusInterface> newInterface) const
+void BusinterfaceReader::Details::parseBusInterfaceExtensions(QDomNode const& interfaceNode,
+    QSharedPointer<BusInterface> newInterface)
 {
     QDomNode extensionsNode = interfaceNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
     QDomElement positionElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:position"));
     if (!positionElement.isNull())
     {
-        int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
-        int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
-        newInterface->setDefaultPos(QPointF(positionX, positionY));
+        newInterface->setDefaultPos(CommonItemsReader::parsePoint(positionElement));
     }
 
-    parseVendorExtensions(interfaceNode, newInterface);
+    CommonItemsReader::parseVendorExtensions(interfaceNode, newInterface);
 }

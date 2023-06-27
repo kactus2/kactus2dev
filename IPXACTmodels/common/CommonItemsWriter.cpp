@@ -133,6 +133,17 @@ void CommonItemsWriter::writeVendorExtensions(QXmlStreamWriter& writer, QSharedP
 }
 
 //-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeAttributes()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeAttributes(QXmlStreamWriter& writer, QMap<QString, QString> const& attributes)
+{
+    for (auto i = attributes.cbegin(); i != attributes.cend(); ++i)
+    {
+        writer.writeAttribute(i.key(), i.value());
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeIsPresent()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeIsPresent(QXmlStreamWriter& writer, QString const& isPresent)

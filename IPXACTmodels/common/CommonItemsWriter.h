@@ -106,6 +106,15 @@ public:
      */
     static void writeVendorExtensions(QXmlStreamWriter& writer,  QSharedPointer<Extendable> element);
 
+    /*! Reads the attributes from the QMap and uses writer to write them. The
+     *  element to write the attributes to must be opened by the writer before
+     *  calling this function.
+     *
+     *  @param [in] writer      A QXmlStreamWriter instance that has been set up to write a document.
+     *  @param [in] attributes  The attributes to be written.
+     */
+    static void writeAttributes(QXmlStreamWriter& writer, QMap<QString, QString> const& attributes);
+
     /*!
      *  Write the isPresent element.
      *

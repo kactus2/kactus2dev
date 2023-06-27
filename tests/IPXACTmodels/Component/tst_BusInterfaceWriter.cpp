@@ -26,32 +26,33 @@ class tst_businterfaceWriter : public QObject
 	public:
 		tst_businterfaceWriter();
 
-		private slots:
-			void init();
-			void cleanup();
+private slots:
 
-			void testWritebusinterfaceNameGroup();
-			void testWriteIsPresent();
-			void testWriteAttributes();
-			void testWriteConnectionRequired();
-			void testWriteBusType();
-			void testWriteBitsInLau();
-			void testWriteBitSteering();
-			void testWriteEndianness();
-			void testWriteParameters();
-			void testWriteVendorExtensions();
-			void testWriteAbstractionReference();
-			void testWritePortMaps();
-			void testWriteMaster();
-			void testWriteSlave();
-			void testWriteSystem();
-			void testWriteMirroredSystem();
-			void testWriteMonitor();
-			void testWriteMirroredSlave();
-			void testWriteMirroredMaster();
+    void init();
+    void cleanup();
 
-	private:
-		QSharedPointer<BusInterface> testbusinterface_;
+    void testwriteBusInterfaceNameGroup();
+    void testWriteIsPresent();
+    void testWriteAttributes();
+    void testWriteConnectionRequired();
+    void testWriteBusType();
+    void testWriteBitsInLau();
+    void testWriteBitSteering();
+    void testWriteEndianness();
+    void testWriteParameters();
+    void testWriteVendorExtensions();
+    void testWriteAbstractionReference();
+    void testWritePortMaps();
+    void testWriteMaster();
+    void testWriteSlave();
+    void testWriteSystem();
+    void testWriteMirroredSystem();
+    void testWriteMonitor();
+    void testWriteMirroredSlave();
+    void testWriteMirroredMaster();
+
+private:
+    QSharedPointer<BusInterface> testbusinterface_;
 };
 
 //-----------------------------------------------------------------------------
@@ -80,15 +81,12 @@ void tst_businterfaceWriter::cleanup()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_businterfaceWriter::testWritebusinterfaceNameGroup()
+// Function: tst_businterfaceWriter::testwriteBusInterfaceNameGroup()
 //-----------------------------------------------------------------------------
-void tst_businterfaceWriter::testWritebusinterfaceNameGroup()
+void tst_businterfaceWriter::testwriteBusInterfaceNameGroup()
 {
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
-
-	BusInterfaceWriter businterfaceWriter;
-
 	testbusinterface_->setDisplayName("testDisplay");
 	testbusinterface_->setDescription("testDescription");
 
@@ -100,7 +98,7 @@ void tst_businterfaceWriter::testWritebusinterfaceNameGroup()
 		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		"</ipxact:busInterface>");
 
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -121,8 +119,7 @@ void tst_businterfaceWriter::testWriteIsPresent()
 		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		"</ipxact:busInterface>");
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -146,8 +143,7 @@ void tst_businterfaceWriter::testWriteAttributes()
         "</ipxact:busInterface>"
         );
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -169,8 +165,7 @@ void tst_businterfaceWriter::testWriteBusType()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -193,8 +188,7 @@ void tst_businterfaceWriter::testWriteConnectionRequired()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -217,8 +211,7 @@ void tst_businterfaceWriter::testWriteBitsInLau()
 		"</ipxact:busInterface>"
 		);	
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -245,8 +238,7 @@ void tst_businterfaceWriter::testWriteBitSteering()
 		);
 
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -269,8 +261,7 @@ void tst_businterfaceWriter::testWriteEndianness()
 		"</ipxact:busInterface>"
 		);	
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -321,8 +312,7 @@ void tst_businterfaceWriter::testWriteParameters()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -356,8 +346,7 @@ void tst_businterfaceWriter::testWriteVendorExtensions()
 		"</ipxact:busInterface>"
 		);
 
-    BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -392,8 +381,7 @@ void tst_businterfaceWriter::testWriteAbstractionReference()
 		);
 
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -482,8 +470,7 @@ void tst_businterfaceWriter::testWritePortMaps()
     		"</ipxact:abstractionTypes>"
 		"</ipxact:busInterface>"
 		);
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -512,8 +499,7 @@ void tst_businterfaceWriter::testWriteMaster()
 		"</ipxact:busInterface>"
 	);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -566,8 +552,7 @@ void tst_businterfaceWriter::testWriteSlave()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -593,8 +578,7 @@ void tst_businterfaceWriter::testWriteSystem()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -620,8 +604,7 @@ void tst_businterfaceWriter::testWriteMirroredSystem()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -651,8 +634,7 @@ void tst_businterfaceWriter::testWriteMonitor()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -698,8 +680,7 @@ void tst_businterfaceWriter::testWriteMirroredSlave()
 		);
 
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -722,8 +703,7 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
         "</ipxact:busInterface>"
         );
 
-	BusInterfaceWriter businterfaceWriter;
-	businterfaceWriter.writebusinterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
 
 	QCOMPARE(output, expectedOutput);
 }
