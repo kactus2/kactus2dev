@@ -63,7 +63,8 @@ QualifierEditor::QualifierEditor(QWidget* parent):
 //-----------------------------------------------------------------------------
 // Function: QualifierEditor::setupEditor()
 //-----------------------------------------------------------------------------
-void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> attributes)
+void QualifierEditor::setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers,
+    QMap<QString, QString> const& attributes)
 {
     for (auto const& qualifier : allQualifiers)
     {
@@ -167,7 +168,7 @@ void QualifierEditor::onItemClicked(bool isChecked)
 //-----------------------------------------------------------------------------
 void QualifierEditor::populateCheckBoxes()
 {
-    for (auto const& attribute : Qualifier::QUALIFIER_TYPE_STRING.values())
+    for (auto const& attribute : Qualifier::QUALIFIER_TYPE_STRING)
     {
         QCheckBox* qualifierBox = new QCheckBox(attribute, this);
         qualifierBoxes_.append(qualifierBox);
@@ -238,7 +239,7 @@ void QualifierEditor::setQualifierAttribute(Qualifier::Attribute attributeType, 
     }
     else if (attributeType == Qualifier::UserFlowType && !attributeValue.isEmpty())
     {
-        flowTypeSelector_->setCurrentText(attributeValue);
+        flowTypeSelector_->setCurrentText(attributeValue); // Display user attribute when flow type is user.
     }
     else
     {
@@ -294,10 +295,8 @@ void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, b
 
         return;
     }
-    
-    auto qualifierTypeAttributes = getQualifierTypeAttributes(qualifier);
 
-    for (auto attribute : qualifierTypeAttributes)
+    for (auto attribute : getQualifierTypeAttributes(qualifier))
     {
         QComboBox* editor = getAttributeEditor(attribute);
             

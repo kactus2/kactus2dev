@@ -52,7 +52,7 @@ public:
 	 *      @param [in] activeQualifiers	List of selected qualifiers.
 	 *      @param [in] attributes			Map of the qualifier's attributes.
 	 */
-	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> attributes);
+	void setupEditor(QStringList const& allQualifiers, QStringList const& activeQualifiers, QMap<QString, QString> const& attributes);
 	
 	/*!
 	 *	Get the qualifier data from the editor.

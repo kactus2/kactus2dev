@@ -633,29 +633,26 @@ bool PortAbstractionInterface::setQualifierStringList(int const& portIndex, std:
         return false;
     }
 
-    bool isWire = selectedSignal->wire_ != nullptr;
+    QSharedPointer<Qualifier> activeQualifier;
 
-    if (isWire)
+    if (selectedSignal->wire_)
     {
-        selectedSignal->abstraction_->getWire()->getQualifier()->clear();
+        activeQualifier = selectedSignal->abstraction_->getWire()->getQualifier();
+    }
+    else if (selectedSignal->transactional_)
+    {
+        activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
     else
     {
-        selectedSignal->abstraction_->getTransactional()->getQualifier()->clear();
+        return false;
     }
+
+    activeQualifier->clear();
 
     for (auto const& qualifier : newQualifierList)
     {
-        if (isWire)
-        {
-            selectedSignal->abstraction_->getWire()->addQualifier(
-                Qualifier::stringToType(QString::fromStdString(qualifier)));
-        }
-        else
-        {
-            selectedSignal->abstraction_->getTransactional()->addQualifier(
-                Qualifier::stringToType(QString::fromStdString(qualifier)));
-        }
+        activeQualifier->setType(Qualifier::stringToType(QString::fromStdString(qualifier)));
     }
 
     return true;
@@ -711,6 +708,10 @@ bool PortAbstractionInterface::setQualifierAttribute(int const& portIndex, std::
         selectedSignal->abstraction_->getTransactional()->getQualifier()->setAttribute(
             getQualifierAttributeType(attributeName), QString::fromStdString(attributeValue));
     }
+    else
+    {
+        return false;
+    }
 
     return true;
 }
@@ -747,10 +748,10 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    for (int i = 0, j = 1; j < attributes.size(); i += 2, j += 2)
+    for (int i = 0; i + 1 < attributes.size(); i += 2)
     {
         auto const& attributeName = attributes.at(i);
-        auto const& value = attributes.at(j);
+        auto const& value = attributes.at(i + 1);
 
         activeQualifier->setAttribute(getQualifierAttributeType(attributeName), QString::fromStdString(value));
     }

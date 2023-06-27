@@ -141,6 +141,13 @@ public:
      */
     static Type stringToType(QString const& typeString);
 
+    /*!
+     *	Converts a qualifier attribute name string to attribute.
+     *  
+     *      @param [in] attributeName	The attribute as string.
+     *		
+     * 		@return The converted attribute.
+     */
     static Attribute stringToAttributeName(QString const& attributeName);
 
 private:
