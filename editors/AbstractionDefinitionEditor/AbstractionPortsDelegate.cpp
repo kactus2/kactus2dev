@@ -38,6 +38,8 @@ libraryAccess_(libraryAcces),
 busDefinition_(0)
 {
     setHideCheckAll(true);
+
+    setModeOptions();
 }
 
 //-----------------------------------------------------------------------------
@@ -252,21 +254,6 @@ void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> bus
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::setRevision()
-//-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setRevision(Document::Revision revision)
-{
-    if (revision == Document::Revision::Std22)
-    {
-        modeOptions_ = { "initiator", "target", "system" };
-    }
-    else
-    {
-        modeOptions_ = { "master", "slave", "system" };
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::updateEditorGeometry()
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
@@ -381,4 +368,19 @@ QStringList AbstractionPortsDelegate::getAvailableItems() const
 void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
 {
     model->setData(index, selectedItems);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::setModeOptions()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::setModeOptions()
+{
+    if (stdRevision_ == Document::Revision::Std22)
+    {
+        modeOptions_ = { "initiator", "target", "system" };
+    }
+    else
+    {
+        modeOptions_ = { "master", "slave", "system" };
+    }
 }

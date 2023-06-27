@@ -83,13 +83,6 @@ public:
     void setBusDef(QSharedPointer<const BusDefinition> busDefinition);
 
     /*!
-     *	Modifies the editor depending on document standard revision.
-     *
-     *      @param [in] revision	The revision of the document standard.
-     */
-    void setRevision(Document::Revision revision);
-
-    /*!
      *  Updates the qualifier editor geometry.
      *
      *      @param [in] editor  The editor being updated.
@@ -177,6 +170,11 @@ private:
      *      @param [in] selectedItems   List of the selected enumerations.
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
+
+    /*!
+     *	Set the interface mode options depending on std revision.
+     */
+    void setModeOptions();
 
     //-----------------------------------------------------------------------------
     // Data.
