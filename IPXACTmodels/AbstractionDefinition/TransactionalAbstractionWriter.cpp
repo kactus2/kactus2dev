@@ -21,32 +21,16 @@
 #include <IPXACTmodels/common/VendorExtension.h>
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::TransactionalAbstractionWriter()
-//-----------------------------------------------------------------------------
-TransactionalAbstractionWriter::TransactionalAbstractionWriter(QObject *parent): QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
-//-----------------------------------------------------------------------------
-TransactionalAbstractionWriter::~TransactionalAbstractionWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionWriter::writeTransactional()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision) const
+    QSharedPointer<TransactionalAbstraction> transactional, Document::Revision revision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:transactional"));
 
-    writeQualifier(writer, transactional);
+    Details::writeQualifier(writer, transactional);
 
-    writeSystem(writer, transactional);
+    Details::writeSystem(writer, transactional);
 
     QString initiatorElementName = revision == Document::Revision::Std22
         ? QStringLiteral("ipxact:onInitiator")
@@ -56,18 +40,18 @@ void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer
         ? QStringLiteral("ipxact:onTarget")
         : QStringLiteral("ipxact:onSlave");
 
-    writeMaster(writer, transactional, initiatorElementName);
+    Details::writeMaster(writer, transactional, initiatorElementName);
 
-    writeSlave(writer, transactional, targetElementName);
+    Details::writeSlave(writer, transactional, targetElementName);
 
     writer.writeEndElement();
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeQualifier()
+// Function: TransactionalAbstractionWriter::Details::writeQualifier()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionWriter::Details::writeQualifier(QXmlStreamWriter& writer, 
+    QSharedPointer<TransactionalAbstraction> transactional)
 {
     auto qualifier = transactional->getQualifier();
     
@@ -75,12 +59,12 @@ void TransactionalAbstractionWriter::writeQualifier(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeSystem()
+// Function: TransactionalAbstractionWriter::Details::writeSystem()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeSystem(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalAbstraction> transactional) const
+void TransactionalAbstractionWriter::Details::writeSystem(QXmlStreamWriter& writer,
+    QSharedPointer<TransactionalAbstraction> transactional)
 {
-    foreach (QSharedPointer<TransactionalPort> systemPort, *transactional->getSystemPorts())
+    for (auto systemPort : *transactional->getSystemPorts())
     {
         writer.writeStartElement(QStringLiteral("ipxact:onSystem"));
         writer.writeTextElement(QStringLiteral("ipxact:group"), systemPort->getSystemGroup());
@@ -90,10 +74,10 @@ void TransactionalAbstractionWriter::writeSystem(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeTransactionalPort()
+// Function: TransactionalAbstractionWriter::Details::writeTransactionalPort()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeTransactionalPort(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalPort> port) const
+void TransactionalAbstractionWriter::Details::writeTransactionalPort(QXmlStreamWriter& writer, 
+    QSharedPointer<TransactionalPort> port)
 {
     writePresence(writer, port);
 
@@ -108,10 +92,10 @@ void TransactionalAbstractionWriter::writeTransactionalPort(QXmlStreamWriter& wr
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writePresence()
+// Function: TransactionalAbstractionWriter::Details::writePresence()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writePresence(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalPort> port) const
+void TransactionalAbstractionWriter::Details::writePresence(QXmlStreamWriter& writer,
+    QSharedPointer<TransactionalPort> port)
 {
     if (port->getPresence() == PresenceTypes::REQUIRED)
     {
@@ -128,22 +112,19 @@ void TransactionalAbstractionWriter::writePresence(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeInitiative()
+// Function: TransactionalAbstractionWriter::Details::writeInitiative()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeInitiative(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalPort> port) const
+void TransactionalAbstractionWriter::Details::writeInitiative(QXmlStreamWriter& writer,
+    QSharedPointer<TransactionalPort> port)
 {
-    if (!port->getInitiative().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:initiative"), port->getInitiative());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:initiative"), port->getInitiative());
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeKind()
+// Function: TransactionalAbstractionWriter::Details::writeKind()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeKind(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalPort> port) const
+void TransactionalAbstractionWriter::Details::writeKind(QXmlStreamWriter& writer, 
+    QSharedPointer<TransactionalPort> port)
 {
     if (!port->getKind().isEmpty())
     {
@@ -166,10 +147,10 @@ void TransactionalAbstractionWriter::writeKind(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeBusWidth()
+// Function: TransactionalAbstractionWriter::Details::writeBusWidth()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeBusWidth(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalPort> port) const
+void TransactionalAbstractionWriter::Details::writeBusWidth(QXmlStreamWriter& writer, 
+    QSharedPointer<TransactionalPort> port)
 {
     if (!port->getBusWidth().isEmpty())
     {
@@ -178,15 +159,15 @@ void TransactionalAbstractionWriter::writeBusWidth(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeVendorExtensions()
+// Function: TransactionalAbstractionWriter::Details::writeVendorExtensions()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeVendorExtensions(QXmlStreamWriter& writer, 
-    QSharedPointer<Protocol> portProtocol) const
+void TransactionalAbstractionWriter::Details::writeVendorExtensions(QXmlStreamWriter& writer, 
+    QSharedPointer<Protocol> portProtocol)
 {
     if (!portProtocol->getVendorExtensions()->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:vendorExtensions"));
-        foreach (QSharedPointer<VendorExtension> extension, *portProtocol->getVendorExtensions())
+        for (auto extension : *portProtocol->getVendorExtensions())
         {
             extension->write(writer);
         }
@@ -195,10 +176,10 @@ void TransactionalAbstractionWriter::writeVendorExtensions(QXmlStreamWriter& wri
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeMaster()
+// Function: TransactionalAbstractionWriter::Details::writeMaster()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeMaster(QXmlStreamWriter& writer,
-    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName) const
+void TransactionalAbstractionWriter::Details::writeMaster(QXmlStreamWriter& writer,
+    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName)
 {
    if (transactional->hasMasterPort())
    {
@@ -209,10 +190,10 @@ void TransactionalAbstractionWriter::writeMaster(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::writeSlave()
+// Function: TransactionalAbstractionWriter::Details::writeSlave()
 //-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::writeSlave(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName) const
+void TransactionalAbstractionWriter::Details::writeSlave(QXmlStreamWriter& writer, 
+    QSharedPointer<TransactionalAbstraction> transactional, QString const& elementName)
 {
     if (transactional->hasSlavePort())
     {

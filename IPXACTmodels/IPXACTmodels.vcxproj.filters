@@ -1564,6 +1564,9 @@
     <ClInclude Include="Component\validators\RegionValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
+      <Filter>Header Files\AbstractionDefinition</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1590,9 +1593,6 @@
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionWriter.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </CustomBuild>
-    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
-      <Filter>Header Files\AbstractionDefinition</Filter>
-    </QtMoc>
     <CustomBuild Include="Component\AddressBlockReader.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>

@@ -106,27 +106,13 @@ void AbstractionDefinitionWriter::Details::writePort(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:port"));
 
-    if (!logicalPort->isPresent().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isPresent"), logicalPort->isPresent());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), logicalPort->isPresent());
 
     writer.writeTextElement(QStringLiteral("ipxact:logicalName"), logicalPort->name());
 
-    if (!logicalPort->displayName().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:displayName"), logicalPort->displayName());
-    }
-
-    if (!logicalPort->shortDescription().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:shortDescription"), logicalPort->shortDescription());
-    }
-
-    if (!logicalPort->description().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:description"), logicalPort->description());
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:displayName"), logicalPort->displayName());
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:shortDescription"), logicalPort->shortDescription());
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:description"), logicalPort->description());
 
     if (logicalPort->getMatch())
     {
@@ -152,8 +138,7 @@ void AbstractionDefinitionWriter::Details::writeWire(QXmlStreamWriter& writer,
 {
     if (logicalPort->hasWire())
     {
-        WireAbstractionWriter wireWriter;
-        wireWriter.writeWire(writer, logicalPort->getWire(), revision);
+        WireAbstractionWriter::writeWire(writer, logicalPort->getWire(), revision);
     }
 }
 
@@ -165,8 +150,7 @@ void AbstractionDefinitionWriter::Details::writeTransactional(QXmlStreamWriter& 
 {
     if (logicalPort->hasTransactional())
     {
-        TransactionalAbstractionWriter transactionalWriter;
-        transactionalWriter.writeTransactional(writer, logicalPort->getTransactional(), revision);
+        TransactionalAbstractionWriter::writeTransactional(writer, logicalPort->getTransactional(), revision);
     }
 }
 

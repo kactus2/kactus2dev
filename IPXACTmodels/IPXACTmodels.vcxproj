@@ -456,8 +456,7 @@
     <ClInclude Include="AbstractionDefinition\PortAbstraction.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstractionReader.h" />
-    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
-    </QtMoc>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalPort.h" />
     <ClInclude Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.h" />
     <ClInclude Include="AbstractionDefinition\WireAbstraction.h" />

@@ -178,14 +178,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
 
     if (auto choices = abstractionDefinition->getChoices(); !choices->isEmpty())
     {
-        if (abstractionDefinition->getRevision() != Document::Revision::Std22)
-        {
-            errors.append(QObject::tr("Choices defined in IP-XACT 2014 document %1.").arg(context));
-        }
-        else
-        {
-            findErrorsInChoices(errors, context, choices);
-        }
+        findErrorsInChoices(errors, context, choices);
     }
 }
 
