@@ -37,14 +37,6 @@ parentWindow_(parentWindow)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionTypesDelegate::~AbstractionTypesDelegate()
-//-----------------------------------------------------------------------------
-AbstractionTypesDelegate::~AbstractionTypesDelegate()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionTypesDelegate::createEditor()
 //-----------------------------------------------------------------------------
 QWidget* AbstractionTypesDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option, 
@@ -116,6 +108,7 @@ QWidget* AbstractionTypesDelegate::createVLNVEditor(QWidget* parent) const
     VLNVEditor* abstractionEditor(new VLNVEditor(
         VLNV::ABSTRACTIONDEFINITION, library_, parentWindow_, parent));
 
+    abstractionEditor->setFixedHeight(abstractionEditor->sizeHint().height());
     abstractionEditor->setAutoFillBackground(true);
     abstractionEditor->setFocusPolicy(Qt::StrongFocus);
     abstractionEditor->setAttribute(Qt::WA_NoMousePropagation);
@@ -169,15 +162,3 @@ void AbstractionTypesDelegate::setEnumerationDataToModel(QModelIndex const& inde
     model->setData(index, selectedItems, Qt::EditRole);
 }
 
-//-----------------------------------------------------------------------------
-// Function: AbstractionTypesDelegate::updateEditorGeometry()
-//-----------------------------------------------------------------------------
-void AbstractionTypesDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
-{
-    EnumerationEditorConstructorDelegate::updateEditorGeometry(editor, option, index);
-
-    if (index.column() == AbstractionTypesConstants::ABSTRACTIONDEFINITION)
-    {
-        repositionAndResizeEditor(editor, option, index);
-    }
-}

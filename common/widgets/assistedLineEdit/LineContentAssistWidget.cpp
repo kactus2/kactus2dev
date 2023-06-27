@@ -55,13 +55,6 @@ lineAssistWidth_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ~LineContentAssistWidget()
-//-----------------------------------------------------------------------------
-LineContentAssistWidget::~LineContentAssistWidget()
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: handleKey()
 //-----------------------------------------------------------------------------
 bool LineContentAssistWidget::tryHandleKey(QKeyEvent* e)

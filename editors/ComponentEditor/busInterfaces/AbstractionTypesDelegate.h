@@ -41,7 +41,11 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~AbstractionTypesDelegate();
+    virtual ~AbstractionTypesDelegate() = default;
+
+    // No copying. No assignment.
+    AbstractionTypesDelegate(AbstractionTypesDelegate const& rhs) = delete;
+    AbstractionTypesDelegate& operator=(AbstractionTypesDelegate const& rhs) = delete;
 
 	/*!
      *  Create a new editor for the given item
@@ -52,8 +56,8 @@ public:
 	 *
 	 *      @return The editor to be used to edit the item.
      */
-	virtual QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index)
-        const;
+	QWidget* createEditor(QWidget* parent, QStyleOptionViewItem const& option, QModelIndex const& index) const 
+        final;
 
 	/*!
      *  Set the data for the editor.
@@ -61,7 +65,7 @@ public:
 	 *      @param [in] editor  The editor where the data is to be set.
 	 *      @param [in] index   Model index identifying the item that's data is to be set.
 	 */
-	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
+	void setEditorData(QWidget* editor, QModelIndex const& index) const final;
 
 	/*!
      *  Save the data from the editor to the model.
@@ -70,7 +74,7 @@ public:
 	 *      @param [in] model   Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index   Model index identifying the item that's data is to be saved.
 	 */
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
+	void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const final;
 
     /*!
      *  Set a new component.
@@ -79,20 +83,7 @@ public:
      */
     void setComponent(QSharedPointer<Component> newComponent);
 
-    /*!
-     *  Updates the editor geometry.
-     *
-     *      @param [in] editor  The editor being updated.
-     *      @param [in] option  The options used to update the editor.
-     *      @param [in] index   The model index being edited.
-     */
-    virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override final;
-
 private:
-
-    // No copying. No assignment.
-    AbstractionTypesDelegate(AbstractionTypesDelegate const& rhs);
-    AbstractionTypesDelegate& operator=(AbstractionTypesDelegate const& rhs);
 
     /*!
      *  Create the VLNV editor for abstraction definition references.
@@ -110,7 +101,7 @@ private:
      *
      *      @return True, if the column is used for editing enumerations, false otherwise.
      */
-    virtual bool isEnumerationEditorColumn(QModelIndex const& index) const override final;
+    bool isEnumerationEditorColumn(QModelIndex const& index) const final;
 
     /*!
      *  The list of currently selected enumerations in the selected item.
@@ -119,14 +110,14 @@ private:
      *
      *      @return List of currently selected enumerations.
      */
-    virtual QStringList getCurrentSelection(QModelIndex const& index) const override final;
+    QStringList getCurrentSelection(QModelIndex const& index) const final;
 
     /*!
      *  Get the list of the available enumerations.
      *
      *      @return List of the available enumerations.
      */
-    virtual QStringList getAvailableItems() const override final;
+    QStringList getAvailableItems() const final;
 
     /*!
      *  Set the selected enumerations to the selected item.
@@ -135,7 +126,8 @@ private:
      *      @param [in] model           Model that contains the data structure where data is to be saved to.
      *      @param [in] selectedItems   List of the selected enumerations.
      */
-    virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
+    void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, 
+        QStringList const& selectedItems) const final;
 
     //-----------------------------------------------------------------------------
     // Data.

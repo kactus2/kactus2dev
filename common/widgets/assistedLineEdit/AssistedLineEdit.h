@@ -41,7 +41,11 @@ public:
     /*!
      *  The destructor.
      */
-    ~AssistedLineEdit();
+    virtual ~AssistedLineEdit() = default;
+
+    // Disable copying.
+    AssistedLineEdit(AssistedLineEdit const& rhs) = delete;
+    AssistedLineEdit& operator=(AssistedLineEdit const& rhs) = delete;
 
     /*!
      *  Sets the content matcher.
@@ -49,14 +53,6 @@ public:
      *      @param [in] matcher The matcher to set.
      */
     void setContentMatcher(ILineContentMatcher* matcher);
-
-    /*!
-     *  Filters events.
-     *
-     *      @param [in] obj  The event owner.
-     *      @param [in] e    The event.
-     */
-    bool eventFilter(QObject* obj, QEvent* e);
 
 protected:
 
@@ -78,19 +74,13 @@ protected:
     void focusOutEvent(QFocusEvent* e);
 
 private:
-    // Disable copying.
-    AssistedLineEdit(AssistedLineEdit const& rhs);
-    AssistedLineEdit& operator=(AssistedLineEdit const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The main window.
-    QWidget* mainWnd_;
-
     //! The content matcher.
-    ILineContentMatcher* matcher_;
+    ILineContentMatcher* matcher_ = nullptr;
 
     //! Content assist list widget.
     LineContentAssistWidget* contentAssist_;

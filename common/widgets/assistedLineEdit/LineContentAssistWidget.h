@@ -36,7 +36,11 @@ public:
     /*!
      *  The destructor.
      */
-    ~LineContentAssistWidget();
+    virtual ~LineContentAssistWidget() = default;
+
+    // Disable copying.
+    LineContentAssistWidget(LineContentAssistWidget const& rhs) = delete;
+    LineContentAssistWidget& operator=(LineContentAssistWidget const& rhs) = delete;
 
     /*!
      *  Sets the content matcher.
@@ -107,9 +111,6 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent* event);
 
 private:
-    // Disable copying.
-    LineContentAssistWidget(LineContentAssistWidget const& rhs);
-    LineContentAssistWidget& operator=(LineContentAssistWidget const& rhs);
 
     /*!
      *  Handles the wrapping of item selection.
