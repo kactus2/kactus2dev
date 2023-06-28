@@ -324,7 +324,8 @@ bool VLNV::operator==(VLNV const& other) const
 	return vendor_ == other.vendor_ &&
 		library_ == other.library_ &&
 		name_ == other.name_ &&
-		version_ == other.version_;
+		version_ == other.version_ &&
+        type_ == other.type_;
 }
 
 //-----------------------------------------------------------------------------
@@ -332,10 +333,7 @@ bool VLNV::operator==(VLNV const& other) const
 //-----------------------------------------------------------------------------
 bool VLNV::operator!=(VLNV const& other) const
 {
-	return (vendor_.compare(other.vendor_, Qt::CaseInsensitive) != 0) ||
-        (library_.compare(other.library_, Qt::CaseInsensitive) != 0) ||
-        (name_.compare(other.name_, Qt::CaseInsensitive) != 0) ||
-        (version_.compare(other.version_, Qt::CaseInsensitive) != 0);
+	return !operator==(other);
 }
 
 //-----------------------------------------------------------------------------

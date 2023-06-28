@@ -117,19 +117,21 @@ private:
      *  Reads XML node containing ipxactFile elements and creates a list of the parsed elements.
      *
      *      @param [in] filesNode  The XML description to read.
+     *      @param [in] documentType The type of IP-XACT document.
      *
      *      @return List of the parsed ipxactFiles.
      */
-    QList<QSharedPointer<IpxactFile> > parseIpxactFileList(QDomElement & filesNode) const;
+    QList<QSharedPointer<IpxactFile> > parseIpxactFileList(QDomElement & filesNode, VLNV::IPXactType documentType) const;
 
     /*!
      *  Parses an XML node to ipxactFile element.
      *
-     *      @param [in] fileNode   The XML description to parse..
+     *      @param [in] fileNode     The XML description to parse..
+     *      @param [in] documentType The type of IP-XACT document.
      *
      *      @return The parsed ipxactFile.
      */
-    QSharedPointer<IpxactFile> createIpxactFileFrom(QDomNode const& fileNode) const;
+    QSharedPointer<IpxactFile> createIpxactFileFrom(QDomNode const& fileNode, VLNV::IPXactType documentType) const;
 
 };
 

@@ -77,7 +77,7 @@ void CatalogReader::parseCatalogs(QDomNode const& catalogNode, QSharedPointer<Ca
 {   
     QDomElement catalogsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:catalogs"));
     
-    catalog->getCatalogs()->append(parseIpxactFileList(catalogsNode));
+    catalog->getCatalogs()->append(parseIpxactFileList(catalogsNode, VLNV::CATALOG));
 }
 
 //-----------------------------------------------------------------------------
@@ -87,7 +87,7 @@ void CatalogReader::parseBusDefinitions(QDomNode const& catalogNode, QSharedPoin
 {   
     QDomElement busDefinitionsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:busDefinitions"));
 
-    catalog->getBusDefinitions()->append(parseIpxactFileList(busDefinitionsNode));
+    catalog->getBusDefinitions()->append(parseIpxactFileList(busDefinitionsNode, VLNV::BUSDEFINITION));
 }
 
 //-----------------------------------------------------------------------------
@@ -97,7 +97,7 @@ void CatalogReader::parseAbstractionDefinitions(QDomNode const& catalogNode, QSh
 {   
     QDomElement abstractionsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:abstractionDefinitions"));
 
-    catalog->getAbstractionDefinitions()->append(parseIpxactFileList(abstractionsNode));
+    catalog->getAbstractionDefinitions()->append(parseIpxactFileList(abstractionsNode, VLNV::ABSTRACTIONDEFINITION));
 }
 
 //-----------------------------------------------------------------------------
@@ -107,7 +107,7 @@ void CatalogReader::parseComponents(QDomNode const& catalogNode, QSharedPointer<
 {   
     QDomElement componentsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:components"));
 
-    catalog->getComponents()->append(parseIpxactFileList(componentsNode));
+    catalog->getComponents()->append(parseIpxactFileList(componentsNode, VLNV::COMPONENT));
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void CatalogReader::parseAbstractors(QDomNode const& catalogNode, QSharedPointer
 {   
     QDomElement abstractorsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:abstractors"));
 
-    catalog->getAbstractors()->append(parseIpxactFileList(abstractorsNode));
+    catalog->getAbstractors()->append(parseIpxactFileList(abstractorsNode, VLNV::ABSTRACTOR));
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +127,7 @@ void CatalogReader::parseDesigns(QDomNode const& catalogNode, QSharedPointer<Cat
 {   
     QDomElement designsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:designs"));
 
-    catalog->getDesigns()->append(parseIpxactFileList(designsNode));
+    catalog->getDesigns()->append(parseIpxactFileList(designsNode, VLNV::DESIGN));
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +137,7 @@ void CatalogReader::parseDesignCongfigurations(QDomNode const& catalogNode, QSha
 {   
     QDomElement configurationsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:designConfigurations"));
 
-    catalog->getDesignConfigurations()->append(parseIpxactFileList(configurationsNode));
+    catalog->getDesignConfigurations()->append(parseIpxactFileList(configurationsNode, VLNV::DESIGNCONFIGURATION));
 }
 
 //-----------------------------------------------------------------------------
@@ -147,13 +147,14 @@ void CatalogReader::parseGeneratorChains(QDomNode const& catalogNode, QSharedPoi
 {   
     QDomElement chainsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:generatorChains"));
 
-    catalog->getGeneratorChains()->append(parseIpxactFileList(chainsNode));
+    catalog->getGeneratorChains()->append(parseIpxactFileList(chainsNode, VLNV::GENERATORCHAIN));
 }
 
 //-----------------------------------------------------------------------------
 // Function: CatalogReader::parseIpxactFileList()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElement & filesNode) const
+QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElement & filesNode, 
+    VLNV::IPXactType documentType) const
 {
     QList<QSharedPointer<IpxactFile> > files;
 
@@ -162,7 +163,7 @@ QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElemen
         QDomNodeList fileNodeList = filesNode.elementsByTagName(QStringLiteral("ipxact:ipxactFile"));
         for (int fileIndex = 0; fileIndex < fileNodeList.count(); fileIndex++)
         {
-            files.append(createIpxactFileFrom(fileNodeList.at(fileIndex)));
+            files.append(createIpxactFileFrom(fileNodeList.at(fileIndex), documentType));
         }
     }
 
@@ -172,12 +173,13 @@ QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElemen
 //-----------------------------------------------------------------------------
 // Function: CatalogReader::createIpxactFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<IpxactFile> CatalogReader::createIpxactFileFrom(QDomNode const& fileNode) const
+QSharedPointer<IpxactFile> CatalogReader::createIpxactFileFrom(QDomNode const& fileNode, 
+    VLNV::IPXactType documentType) const
 {
     QSharedPointer<IpxactFile> ipxactFile(new IpxactFile());
 
     QDomNode vlnvNode = fileNode.firstChildElement(QStringLiteral("ipxact:vlnv"));
-    ipxactFile->setVlnv(CommonItemsReader::parseVLNVAttributes(vlnvNode, VLNV::CATALOG));
+    ipxactFile->setVlnv(CommonItemsReader::parseVLNVAttributes(vlnvNode, documentType));
 
     ipxactFile->setName(fileNode.firstChildElement(QStringLiteral("ipxact:name")).firstChild().nodeValue());
 
