@@ -33,13 +33,13 @@ ModuleParameterWriter::~ModuleParameterWriter()
 // Function: ModuleParameterWriter::writeModuleParameter()
 //-----------------------------------------------------------------------------
 void ModuleParameterWriter::writeModuleParameter(QXmlStreamWriter& writer,
-    QSharedPointer<ModuleParameter> moduleParameter) const
+    QSharedPointer<ModuleParameter> moduleParameter, Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:moduleParameter"));
 
     writeAttributes(writer, moduleParameter);
 
-    writeNameGroup(writer, moduleParameter);
+    writeNameGroup(writer, moduleParameter, docRevision);
 
     writeVectors(writer, moduleParameter);
 

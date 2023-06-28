@@ -100,7 +100,7 @@ void CommonItemsWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<QL
 // Function: CommonItemsWriter::writeChoices()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, Document::Revision docRevision)
 {
     if (!parameters->isEmpty())
     {
@@ -109,7 +109,7 @@ void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
         ParameterWriter parameterWriter;
         for (auto const& parameter : *parameters)
         {
-            parameterWriter.writeParameter(writer, parameter);
+            parameterWriter.writeParameter(writer, parameter, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:parameters

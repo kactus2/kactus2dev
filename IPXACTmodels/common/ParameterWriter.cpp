@@ -38,12 +38,13 @@ ParameterWriter::~ParameterWriter()
 //-----------------------------------------------------------------------------
 // Function: ParameterWriter::write()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter,
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:parameter"));
     writeAttributes(writer, parameter);
     
-    writeNameGroup(writer, parameter);
+    writeNameGroup(writer, parameter, docRevision);
 
     writeVectors(writer, parameter);
 
@@ -70,9 +71,10 @@ void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<P
 //-----------------------------------------------------------------------------
 // Function: ParameterWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter, 
+    Document::Revision docRevision) const
 {
-    NameGroupWriter::writeNameGroup(writer, parameter);
+    NameGroupWriter::writeNameGroup(writer, parameter, docRevision);
 }
 
 //-----------------------------------------------------------------------------

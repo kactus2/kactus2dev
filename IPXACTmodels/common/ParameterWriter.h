@@ -17,6 +17,7 @@
 #include <QXmlStreamWriter>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/Document.h>
 
 class Parameter;
 class VendorExtension;
@@ -43,8 +44,10 @@ public:
      *
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter to write.
+     *      @param [in] docRevision The document std revision.
      */
-    void writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
+    void writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter, 
+        Document::Revision docRevision) const;
 
 protected:
 
@@ -55,15 +58,17 @@ protected:
      *      @param [in] parameter   The parameter whose attributes to write.
      */
     void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
-    
+
     /*!
      *  Writes the name group of a given parameter into xml.
      *
      *      @param [in] writer      The xml writer to use.
      *      @param [in] parameter   The parameter whose name group to write.
+     *      @param [in] docRevision The document std revision.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const;
-    
+    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter, 
+        Document::Revision docRevision) const;
+
     /*!
      *  Writes the vectors of a given parameter into xml.
      *
