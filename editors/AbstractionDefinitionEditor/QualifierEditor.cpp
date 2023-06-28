@@ -168,9 +168,27 @@ void QualifierEditor::onItemClicked(bool isChecked)
 //-----------------------------------------------------------------------------
 void QualifierEditor::populateCheckBoxes()
 {
-    for (auto const& attribute : Qualifier::QUALIFIER_TYPE_STRING)
+    static const std::array<Qualifier::Type, Qualifier::Any> qualifierOrder = 
     {
-        QCheckBox* qualifierBox = new QCheckBox(attribute, this);
+        Qualifier::Address,
+        Qualifier::Data,
+        Qualifier::Interrupt,
+        Qualifier::Opcode,
+        Qualifier::Clock,
+        Qualifier::ClockEnable,
+        Qualifier::Reset,
+        Qualifier::PowerEnable,
+        Qualifier::Protection,
+        Qualifier::FlowControl,
+        Qualifier::Request,
+        Qualifier::Response,
+        Qualifier::Valid,
+        Qualifier::User
+    };
+
+    for (auto const& qualifier : qualifierOrder)
+    {
+        QCheckBox* qualifierBox = new QCheckBox(Qualifier::QUALIFIER_TYPE_STRING[qualifier], this);
         qualifierBoxes_.append(qualifierBox);
 
         connect(qualifierBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
@@ -199,11 +217,11 @@ void QualifierEditor::setupLayout()
         qualifierAndAttributelayout->addWidget(qualifierBoxes_.at(i), i, 0);
     }
 
-    qualifierAndAttributelayout->addWidget(resetLevelSelector_, 3, 1);
-    qualifierAndAttributelayout->addWidget(clockEnableLevelSelector_, 6, 1);
+    qualifierAndAttributelayout->addWidget(resetLevelSelector_, 6, 1);
+    qualifierAndAttributelayout->addWidget(clockEnableLevelSelector_, 5, 1);
     qualifierAndAttributelayout->addWidget(powerEnableLevelSelector_, 7, 1);
-    qualifierAndAttributelayout->addWidget(flowTypeSelector_, 10, 1);
-    qualifierAndAttributelayout->addWidget(userDefinedLineEdit_, 11, 1);
+    qualifierAndAttributelayout->addWidget(flowTypeSelector_, 9, 1);
+    qualifierAndAttributelayout->addWidget(userDefinedLineEdit_, 13, 1);
     
     QPushButton* okButton = new QPushButton();
     okButton->setIcon(QIcon(":/icons/common/graphics/checkMark.png"));
