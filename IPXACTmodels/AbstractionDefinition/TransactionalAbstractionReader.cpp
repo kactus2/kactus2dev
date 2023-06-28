@@ -124,8 +124,8 @@ void TransactionalAbstractionReader::Details::parseInitiator(QDomNode const& tra
 
     if (!initiatorNode.isNull())
     {
-        QSharedPointer<TransactionalPort> master = parseTransactionalPort(initiatorNode);
-        transactional->setMasterPort(master);
+        QSharedPointer<TransactionalPort> initiator = parseTransactionalPort(initiatorNode);
+        transactional->setInitiatorPort(initiator);
     }
 }
 
@@ -137,13 +137,13 @@ void TransactionalAbstractionReader::Details::parseTarget(QDomNode const& transa
 {
     QString elementName = revision == Document::Revision::Std22
         ? QStringLiteral("ipxact:onTarget")
-        : QStringLiteral("ipxact:onSalve");
+        : QStringLiteral("ipxact:onSlave");
 
     QDomNode targetNode = transactionalNode.firstChildElement(elementName);
 
     if (!targetNode.isNull())
     {
-        QSharedPointer<TransactionalPort> slave = parseTransactionalPort(targetNode);
-        transactional->setSlavePort(slave);
+        QSharedPointer<TransactionalPort> target = parseTransactionalPort(targetNode);
+        transactional->setTargetPort(target);
     }
 }
