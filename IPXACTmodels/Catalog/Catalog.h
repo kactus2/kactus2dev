@@ -44,13 +44,13 @@ public:
 	virtual ~Catalog();
 
 	/*!
-	 *  Creates a perfect copy of the Bus Definition.
+	 *  Creates a perfect copy of the catalog.
 	 *
-	 *      @return Copy of the bus definition.
+	 *      @return Copy of the catalog.
 	 */
 	virtual QSharedPointer<Document> clone() const;
 
-	/*! Set the VLNV for the bus definition.
+	/*! Set the VLNV for the catalog.
 	*
 	*      @param [in] vlnv     The vlnv to set
 	*/
@@ -111,6 +111,13 @@ public:
      *      @return The generator chains referenced by this catalog.
      */
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > getGeneratorChains() const;
+
+    /*!
+     *  Get the type definitions in the catalog.
+     *
+     *      @return The type definitions referenced by this catalog.
+     */
+    QSharedPointer<QList<QSharedPointer<IpxactFile> > > getTypeDefinitions() const;
     
 	/*! Get the VLNVs that this catalog depends on.
 	 *
@@ -165,6 +172,9 @@ private:
 
     //! The generator chains referenced by this catalog.
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > generatorChains_;
+    
+    //! The type definitions referenced by this catalog.
+    QSharedPointer<QList<QSharedPointer<IpxactFile> > > typeDefinitions_;
 };
 
 #endif // CATALOG_H

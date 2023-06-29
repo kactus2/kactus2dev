@@ -114,6 +114,14 @@ private:
     void parseGeneratorChains(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const;
 
     /*!
+     *	Reads the type definition file descriptions to the catalog.
+     *  
+     *      @param [in] catalogNode     The XML description of the catalog.
+     *      @param [in/out] catalog	        The catalog to insert the file description into.
+     */
+    void parseTypeDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const;
+
+    /*!
      *  Reads XML node containing ipxactFile elements and creates a list of the parsed elements.
      *
      *      @param [in] filesNode  The XML description to read.

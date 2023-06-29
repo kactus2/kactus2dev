@@ -36,19 +36,27 @@ CatalogReader::~CatalogReader()
 //-----------------------------------------------------------------------------
 QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& document) const
 {
-    QSharedPointer<Catalog> catalog(new Catalog(VLNV(), Document::Revision::Unknown));
+    QDomNode catalogNode = document.firstChildElement();
+    
+    Document::Revision docRevision = DocumentReader::getXMLDocumentRevision(catalogNode);
+
+    VLNV vlnv = CommonItemsReader::createVLNVFrom(catalogNode, VLNV::CATALOG);
+
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, docRevision));
 
     parseTopComments(document, catalog);
 
     parseXMLProcessingInstructions(document, catalog);
 
-    QDomNode catalogNode = document.firstChildElement();
     parseNamespaceDeclarations(catalogNode, catalog);
 
-    parseVLNVElements(catalogNode, catalog, VLNV::CATALOG);
+    parseDocumentNameGroup(catalogNode, catalog);
 
-    parseDescription(catalogNode, catalog);
-  
+    if (catalog->getRevision() != Document::Revision::Std22)
+    {
+        parseDescription(catalogNode, catalog);
+    }
+
     parseCatalogs(catalogNode, catalog);
 
     parseBusDefinitions(catalogNode, catalog);
@@ -64,6 +72,8 @@ QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& documen
     parseDesignCongfigurations(catalogNode, catalog);
 
     parseGeneratorChains(catalogNode, catalog);
+
+    parseTypeDefinitions(catalogNode, catalog);
 
     parseKactusAndVendorExtensions(catalogNode, catalog);
 
@@ -148,6 +158,21 @@ void CatalogReader::parseGeneratorChains(QDomNode const& catalogNode, QSharedPoi
     QDomElement chainsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:generatorChains"));
 
     catalog->getGeneratorChains()->append(parseIpxactFileList(chainsNode, VLNV::GENERATORCHAIN));
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogReader::parseTypeDefinitions()
+//-----------------------------------------------------------------------------
+void CatalogReader::parseTypeDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+{
+    if (catalog->getRevision() != Document::Revision::Std22)
+    {
+        return;
+    }
+    
+    QDomElement typeDefsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:typeDefinitions"));
+    
+    catalog->getTypeDefinitions()->append(parseIpxactFileList(typeDefsNode, VLNV::TYPEDEFINITION));
 }
 
 //-----------------------------------------------------------------------------
