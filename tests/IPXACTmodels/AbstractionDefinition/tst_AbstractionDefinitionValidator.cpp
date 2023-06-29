@@ -1068,7 +1068,7 @@ void tst_AbstractionDefinitionValidator::choicesOnlyInStd22()
     QVector<QString> errorList;
     validator.findErrorsIn(errorList, abstraction);
     validator.findErrorsIn(errorList, abstraction2);
-    QCOMPARE(errorList.size(), 3);
+    QCOMPARE(errorList.size(), 4);
     QVERIFY(!validator.validate(abstraction));
     QVERIFY(!validator.validate(abstraction2));
 
