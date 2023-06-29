@@ -6,7 +6,7 @@
 // Date: 30.01.2017
 //
 // Description:
-// Writer class for IP-XACT Catalog element.
+// Writer for IP-XACT Catalog element.
 //-----------------------------------------------------------------------------
 
 #include "CatalogWriter.h"
@@ -15,130 +15,130 @@
 #include <IPXACTmodels/Catalog/IpxactFile.h>
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::CatalogWriter()
-//-----------------------------------------------------------------------------
-CatalogWriter::CatalogWriter(): DocumentWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: CatalogWriter::~CatalogWriter()
-//-----------------------------------------------------------------------------
-CatalogWriter::~CatalogWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: CatalogWriter::writeCatalog()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writer.writeStartDocument();
     
-    writeTopComments(writer, catalog);
+    DocumentWriter::writeTopComments(writer, catalog);
 
-    writeXmlProcessingInstructions(writer, catalog);
+    DocumentWriter::writeXmlProcessingInstructions(writer, catalog);
 
     writer.writeStartElement(QStringLiteral("ipxact:catalog"));
-    writeNamespaceDeclarations(writer, catalog);
+    DocumentWriter::writeNamespaceDeclarations(writer, catalog);
 
-    writeVLNVElements(writer, catalog->getVlnv());
+    DocumentWriter::writeDocumentNameGroup(writer, catalog);
 
-    writeDescription(writer, catalog->getDescription());
+    if (catalog->getRevision() != Document::Revision::Std22)
+    {
+        DocumentWriter::writeDescription(writer, catalog->getDescription());
+    }
 
-    writeCatalogs(writer, catalog);
+    Details::writeCatalogs(writer, catalog);
 
-    writeBusDefinitions(writer, catalog);
+    Details::writeBusDefinitions(writer, catalog);
 
-    writeAbstractionDefinitions(writer, catalog);
+    Details::writeAbstractionDefinitions(writer, catalog);
 
-    writeComponents(writer, catalog);
+    Details::writeComponents(writer, catalog);
 
-    writeAbstractors(writer, catalog);
+    Details::writeAbstractors(writer, catalog);
 
-    writeDesigns(writer, catalog);
+    Details::writeDesigns(writer, catalog);
 
-    writeDesignConfigurations(writer, catalog);
+    Details::writeDesignConfigurations(writer, catalog);
 
-    writeGeneratorChains(writer, catalog);
+    Details::writeGeneratorChains(writer, catalog);
 
-    writeVendorExtensions(writer, catalog);
+    Details::writeTypeDefinitions(writer, catalog);
+
+    CommonItemsWriter::writeVendorExtensions(writer, catalog);
 
     writer.writeEndElement(); // "ipxact:catalog"
     writer.writeEndDocument();
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeCatalogs()
+// Function: CatalogWriter::Details::writeCatalogs()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeCatalogs(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeCatalogs(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getCatalogs(), QStringLiteral("ipxact:catalogs"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeBusDefinitions()
+// Function: CatalogWriter::Details::writeBusDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeBusDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeBusDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getBusDefinitions(), QStringLiteral("ipxact:busDefinitions"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeAbstractionDefinitions()
+// Function: CatalogWriter::Details::writeAbstractionDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeAbstractionDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeAbstractionDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getAbstractionDefinitions(), QStringLiteral("ipxact:abstractionDefinitions"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeComponents()
+// Function: CatalogWriter::Details::writeComponents()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeComponents(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeComponents(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getComponents(), QStringLiteral("ipxact:components"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeAbstractors()
+// Function: CatalogWriter::Details::writeAbstractors()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeAbstractors(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeAbstractors(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getAbstractors(), QStringLiteral("ipxact:abstractors"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeDesigns()
+// Function: CatalogWriter::Details::writeDesigns()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeDesigns(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeDesigns(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getDesigns(), QStringLiteral("ipxact:designs"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeDesignConfigurations()
+// Function: CatalogWriter::Details::writeDesignConfigurations()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeDesignConfigurations(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeDesignConfigurations(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getDesignConfigurations(), QStringLiteral("ipxact:designConfigurations"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeGeneratorChains()
+// Function: CatalogWriter::Details::writeGeneratorChains()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeGeneratorChains(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const
+void CatalogWriter::Details::writeGeneratorChains(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
 {
     writeIpxactFileGroup(writer, catalog->getGeneratorChains(), QStringLiteral("ipxact:generatorChains"));
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeIpxactFiles()
+// Function: CatalogWriter::Details::writeTypeDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeIpxactFileGroup(QXmlStreamWriter& writer, 
-    QSharedPointer<QList<QSharedPointer<IpxactFile> > > files, QString const& elementName) const
+void CatalogWriter::Details::writeTypeDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog)
+{
+    if (catalog->getRevision() == Document::Revision::Std22)
+    {
+        writeIpxactFileGroup(writer, catalog->getTypeDefinitions(), QStringLiteral("ipxact:typeDefinitions"));    
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogWriter::Details::writeIpxactFiles()
+//-----------------------------------------------------------------------------
+void CatalogWriter::Details::writeIpxactFileGroup(QXmlStreamWriter& writer, 
+    QSharedPointer<QList<QSharedPointer<IpxactFile> > > files, QString const& elementName)
 {
     if (files->isEmpty())
     {
@@ -147,7 +147,7 @@ void CatalogWriter::writeIpxactFileGroup(QXmlStreamWriter& writer,
 
     writer.writeStartElement(elementName);
 
-    foreach (QSharedPointer<IpxactFile> file, *files)
+    for (auto const& file : *files)
     {
         writeIpxactFile(writer, file);
     }
@@ -156,14 +156,14 @@ void CatalogWriter::writeIpxactFileGroup(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogWriter::writeIpxactFile()
+// Function: CatalogWriter::Details::writeIpxactFile()
 //-----------------------------------------------------------------------------
-void CatalogWriter::writeIpxactFile(QXmlStreamWriter& writer, QSharedPointer<IpxactFile> ipxactFile) const
+void CatalogWriter::Details::writeIpxactFile(QXmlStreamWriter& writer, QSharedPointer<IpxactFile> ipxactFile)
 {
     writer.writeStartElement(QStringLiteral("ipxact:ipxactFile"));
 
     writer.writeEmptyElement(QStringLiteral("ipxact:vlnv"));
-    writeVLNVAttributes(writer, ipxactFile->getVlnv());
+    CommonItemsWriter::writeVLNVAttributes(writer, ipxactFile->getVlnv());
 
     writer.writeStartElement(QStringLiteral("ipxact:name"));
     writer.writeCharacters(ipxactFile->getName());
@@ -176,7 +176,7 @@ void CatalogWriter::writeIpxactFile(QXmlStreamWriter& writer, QSharedPointer<Ipx
         writer.writeEndElement(); // ipxact:description
     }
 
-    writeVendorExtensions(writer, ipxactFile);
+    CommonItemsWriter::writeVendorExtensions(writer, ipxactFile);
 
     writer.writeEndElement(); // ipxact:ipxactFile
 }

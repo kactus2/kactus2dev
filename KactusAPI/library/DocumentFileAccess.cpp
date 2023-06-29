@@ -139,9 +139,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     }
     else if (documentType == VLNV::CATALOG)
     {
-        CatalogWriter writer;
         QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
-        writer.writeCatalog(xmlWriter, catalog);
+        CatalogWriter::writeCatalog(xmlWriter, catalog);
     }
     else if (documentType == VLNV::COMPONENT)
     {
