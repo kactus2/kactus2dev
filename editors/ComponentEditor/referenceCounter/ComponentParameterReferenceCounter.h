@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
 
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 
 class Component;
 class Cpu;
@@ -34,7 +34,7 @@ class Segment;
 class ComponentInstantiation;
 class DesignInstantiation;
 class DesignConfigurationInstantiation;
-class MasterInterface;
+class InitiatorInterface;
 class ModuleParameter;
 class Port;
 class AddressSpace;
@@ -497,7 +497,7 @@ public:
      *              interface.
      */
     int countReferencesInMirroredSlaveInterface(QString const& parameterID,
-        QSharedPointer<MirroredSlaveInterface> mirroredSlave) const;
+        QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
     /*!
      *  Count the references made to the selected parameter in the selected master bus interface.
@@ -507,7 +507,7 @@ public:
      *
      *      @return The amount of references made to the selected parameter in the selected master bus interface.
      */
-    int countReferencesInMasterInterface(QString const& parameterID, QSharedPointer<MasterInterface> master) const;
+    int countReferencesInMasterInterface(QString const& parameterID, QSharedPointer<InitiatorInterface> master) const;
 
     /*!
      *  Count the references made to the selected parameter in the selected mirrored slave remap address.
@@ -519,7 +519,7 @@ public:
      *              address.
      */
     int countReferencesInRemapAddress(QString const& parameterID,
-        QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const;
+        QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const;
 
     /*!
      *  Count the references made to the selected parameter in the contained remap states.

@@ -243,10 +243,10 @@
     <ClCompile Include="Component\IndirectInterface.cpp" />
     <ClCompile Include="Component\IndirectInterfaceReader.cpp" />
     <ClCompile Include="Component\IndirectInterfaceWriter.cpp" />
+    <ClCompile Include="Component\InitiatorInterface.cpp" />
     <ClCompile Include="Component\InstantiationsReader.cpp" />
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
     <ClCompile Include="Component\LanguageTools.cpp" />
-    <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseWriter.cpp" />
@@ -257,7 +257,7 @@
     <ClCompile Include="Component\MemoryMapReader.cpp" />
     <ClCompile Include="Component\MemoryMapWriter.cpp" />
     <ClCompile Include="Component\MemoryRemap.cpp" />
-    <ClCompile Include="Component\MirroredSlaveInterface.cpp" />
+    <ClCompile Include="Component\MirroredTargetInterface.cpp" />
     <ClCompile Include="Component\Model.cpp" />
     <ClCompile Include="Component\AbstractionType.cpp" />
     <ClCompile Include="Component\OtherClockDriver.cpp" />
@@ -279,10 +279,10 @@
     <ClCompile Include="Component\RemapStateReader.cpp" />
     <ClCompile Include="Component\RemapStateWriter.cpp" />
     <ClCompile Include="Component\Segment.cpp" />
-    <ClCompile Include="Component\SlaveInterface.cpp" />
     <ClCompile Include="Component\SubSpaceMap.cpp" />
     <ClCompile Include="Component\SubspaceMapReader.cpp" />
     <ClCompile Include="Component\SubSpaceMapWriter.cpp" />
+    <ClCompile Include="Component\TargetInterface.cpp" />
     <ClCompile Include="Component\Transactional.cpp" />
     <ClCompile Include="Component\TransparentBridge.cpp" />
     <ClCompile Include="Component\validators\AbstractionTypeValidator.cpp" />
@@ -396,13 +396,16 @@
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
     <ClInclude Include="Component\FieldReset.h" />
+    <ClInclude Include="Component\InitiatorInterface.h" />
     <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
+    <ClInclude Include="Component\MirroredTargetInterface.h" />
     <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\TargetInterface.h" />
     <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegionValidator.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
@@ -1064,7 +1067,6 @@
     <ClInclude Include="Component\IndirectInterface.h" />
     <ClInclude Include="Component\IndirectInterfaceReader.h" />
     <ClInclude Include="Component\IndirectInterfaceWriter.h" />
-    <ClInclude Include="Component\MasterInterface.h" />
     <ClInclude Include="Component\MemoryBlockBase.h" />
     <ClInclude Include="Component\MemoryMap.h" />
     <ClInclude Include="Component\MemoryMapBase.h" />
@@ -1133,7 +1135,6 @@
       </Command>
     </CustomBuild>
     <ClInclude Include="Component\MemoryRemap.h" />
-    <ClInclude Include="Component\MirroredSlaveInterface.h" />
     <ClInclude Include="Component\Model.h" />
     <ClInclude Include="Component\AbstractionType.h" />
     <ClInclude Include="Component\OtherClockDriver.h" />
@@ -1218,7 +1219,6 @@
     <QtMoc Include="Component\RemapStateWriter.h">
     </QtMoc>
     <ClInclude Include="Component\Segment.h" />
-    <ClInclude Include="Component\SlaveInterface.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\TransparentBridge.h" />
     <ClInclude Include="Component\validators\AbstractionTypeValidator.h" />

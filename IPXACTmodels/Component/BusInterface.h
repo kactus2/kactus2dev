@@ -23,6 +23,10 @@
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Parameter.h>
 
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+
 #include <QString>
 #include <QList>
 #include <QSharedPointer>
@@ -30,10 +34,7 @@
 #include <QStringList>
 #include <QPointF>
 
-class MasterInterface;
-class SlaveInterface;
 class MonitorInterface;
-class MirroredSlaveInterface;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:busInterface element.
@@ -51,19 +52,11 @@ public:
         ENDIANNESS_UNSPECIFIED
     };
 
-    //! The bit steering of a bus interface.
-    enum BitSteering
-    {
-        BITSTEERING_ON,
-        BITSTEERING_OFF,
-        BITSTEERING_UNSPECIFIED
-    };
-
 	//! Implementation of the ipxact:monitor element.
 	struct MonitorInterface
 	{
 		//! Defines the interface mode for which this monitor interface can be connected to.
-		General::InterfaceMode interfaceMode_;
+		General::InterfaceMode interfaceMode_ = General::MONITOR;
 
 		//! Defines the name of the system group for this monitor interface.
 		QString group_;
@@ -114,7 +107,7 @@ public:
 	 *
 	 *      @return The bit of the bus interface.
 	 */
-	BitSteering getBitSteering() const;
+	QString getBitSteering() const;
 
 	/*!
      *  Get bits in lau value.
@@ -177,7 +170,7 @@ public:
 	 *
 	 *      @param [in] bitSteering     The new bitSteering value.
 	 */
-	void setBitSteering(BitSteering bitSteering);
+	void setBitSteering(QString const& bitSteering);
 
 	/*!
      *  Set the bits in lau value.
@@ -238,14 +231,23 @@ public:
 	 *
 	 *      @return A pointer to the master-instance of the interface.
 	 */
-	QSharedPointer<MasterInterface> getMaster() const;
+	QSharedPointer<InitiatorInterface> getMaster() const;
 
 	/*!
      *  Set the master element for this interface.
      *
 	 *      @param [in] master  A pointer to the new master interface.
 	 */
-	void setMaster(QSharedPointer<MasterInterface> master);
+	void setMaster(QSharedPointer<InitiatorInterface> master);
+
+	/*!
+	 *  Get the pointer to the initiator-element.
+	 *
+	 *      @return A pointer to the initiator-instance of the interface.
+	 */
+	QSharedPointer<InitiatorInterface> getInitiator() const;
+
+	void setInitiator(QSharedPointer<InitiatorInterface> initiator);
 
 	/*!
      *  Get the pointer to the monitor interface.
@@ -266,15 +268,17 @@ public:
 	 *
 	 *      @return A pointer to the slave instance of the interface.
 	 */
-	QSharedPointer<SlaveInterface> getSlave() const;
+	QSharedPointer<TargetInterface> getSlave() const;
 
 	/*!
      *  Set the slave element for this interface.
 	 *
 	 *      @param [in] slave   A pointer to the new slave interface.
 	 */
-	void setSlave(QSharedPointer<SlaveInterface> slave);
+	void setSlave(QSharedPointer<TargetInterface> slave);
 
+	QSharedPointer<TargetInterface> getTarget() const;
+	void setTarget(QSharedPointer<TargetInterface> target);
 	/*!
      *  Get the system group name.
 	 *
@@ -294,14 +298,28 @@ public:
 	 *
 	 *      @return A pointer to the mirroredSlave element of this interface.
 	 */
-	QSharedPointer<MirroredSlaveInterface> getMirroredSlave() const;
+	QSharedPointer<MirroredTargetInterface> getMirroredSlave() const;
 
 	/*!
      *  Set the mirroredSlave element for this interface.
      *
 	 *      @param [in] mirroredSlave   A pointer to the new mirroredSlave instance.
 	 */
-	void setMirroredSlave(QSharedPointer<MirroredSlaveInterface> mirroredSlave);
+	void setMirroredSlave(QSharedPointer<MirroredTargetInterface> mirroredSlave);
+
+	/*!
+	 *  Get the pointer to the mirroredTarget element
+	 *
+	 *      @return A pointer to the mirroredTarget element of this interface.
+	 */
+	QSharedPointer<MirroredTargetInterface> getMirroredTarget() const;
+
+	/*!
+	 *  Set the mirroredTarget element for this interface.
+	 *
+	 *      @param [in] mirroredTarget   A pointer to the new mirroredTarget instance.
+	 */
+	void setMirroredTarget(QSharedPointer<MirroredTargetInterface> mirroredTarget);
 
 	/*!
      *  Does this bus interface have a bridge element defined.
@@ -454,10 +472,11 @@ private:
     ConfigurableVLNVReference busType_;
 
     //! List of abstraction types existing within this object.
-    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes_;
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractionTypes_ =
+		QSharedPointer<QList<QSharedPointer<AbstractionType> > >(new QList<QSharedPointer<AbstractionType> >);
 
 	//! Describes further information on the mode for this interface.
-	General::InterfaceMode interfaceMode_;
+	General::InterfaceMode interfaceMode_ = General::INTERFACE_MODE_COUNT;
 
 	//! Specifies if the busInterface can be unconnected.
     BooleanValue connectionRequired_;
@@ -466,31 +485,33 @@ private:
     QString bitsInLau_;
 
 	//! Is bitSteering used.
-	BitSteering bitSteering_;
+	QString bitSteering_;
 
 	//! The parameters set as attributes for the bit steering.
 	QMap<QString, QString> bitSteeringAttributes_;
 
 	//! Indicates the endianness of the bus interface.
-	Endianness endianness_;
+	Endianness endianness_ = BusInterface::ENDIANNESS_UNSPECIFIED;
 
 	//! Specifies any parameter data values for this bus interface.
-	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ =
+		QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >);
 
 	//! A pointer to the master / mirrored master instance
-	QSharedPointer<MasterInterface> master_;
+	QSharedPointer<InitiatorInterface> initiator_ = nullptr;
 
 	//! A pointer to the slave instance.
-	QSharedPointer<SlaveInterface> slave_;
+	QSharedPointer<TargetInterface> target_ = nullptr;
 
 	//! The system or mirrored system group name.
 	QString systemGroup_;
 
 	//! A pointer to the monitor instance.
-	QSharedPointer<MonitorInterface> monitor_;
+	QSharedPointer<MonitorInterface> monitor_ = nullptr;
 
-	//! A pointer to the mirroredSlave instance.
-	QSharedPointer<MirroredSlaveInterface> mirroredSlave_;
+	//! A pointer to the mirroredTarget instance.
+	QSharedPointer<MirroredTargetInterface> mirroredTarget_ = nullptr;
+
 
 };
 

@@ -57,7 +57,7 @@ void BusIfInterfaceMirroredMaster::refresh()
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusIfInterfaceMirroredMaster::getInterfaceMode() const
 {
-    return General::MIRROREDMASTER;
+    return General::MIRRORED_MASTER;
 }
 
 //-----------------------------------------------------------------------------

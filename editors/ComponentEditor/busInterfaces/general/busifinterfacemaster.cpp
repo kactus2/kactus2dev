@@ -51,7 +51,7 @@ component_(component)
     {
         setTitle(tr("Master"));
     }
-    else if (mode == General::MIRROREDMASTER)
+    else if (mode == General::MIRRORED_MASTER)
     {
         setTitle(tr("Mirrored master"));
     }

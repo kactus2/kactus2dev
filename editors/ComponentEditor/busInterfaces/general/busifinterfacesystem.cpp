@@ -33,7 +33,7 @@ BusIfInterfaceModeEditor(busInterface, busName, tr("System"), parent),
 libHandler_(libHandler),
 groupEditor_(this)
 {
-    if(busInterface->getMode(busName) == General::MIRROREDSYSTEM) 
+    if(busInterface->getMode(busName) == General::MIRRORED_SYSTEM) 
     {
         setTitle(tr("Mirrored system"));
     }

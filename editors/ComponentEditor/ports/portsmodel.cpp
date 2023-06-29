@@ -791,9 +791,9 @@ void PortsModel::onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDe
 bool PortsModel::modesMatch(General::InterfaceMode const& busMode, QString const& busSystemGroup,
     General::InterfaceMode const& signalMode, QString const& signalSystemGroup) const
 {
-    return ((busMode == General::MASTER || busMode == General::MIRROREDMASTER) && signalMode == General::MASTER) ||
-        ((busMode == General::SLAVE || busMode == General::MIRROREDSLAVE) && signalMode == General::SLAVE) ||
-        ((busMode == General::SYSTEM || busMode == General::MIRROREDSYSTEM) && signalMode == General::SYSTEM &&
+    return ((busMode == General::MASTER || busMode == General::MIRRORED_MASTER) && signalMode == General::MASTER) ||
+        ((busMode == General::SLAVE || busMode == General::MIRRORED_SLAVE) && signalMode == General::SLAVE) ||
+        ((busMode == General::SYSTEM || busMode == General::MIRRORED_SYSTEM) && signalMode == General::SYSTEM &&
             busSystemGroup == signalSystemGroup);
 }
 
@@ -803,8 +803,8 @@ bool PortsModel::modesMatch(General::InterfaceMode const& busMode, QString const
 DirectionTypes::Direction PortsModel::getDirectionFromSignal(General::InterfaceMode const& busMode,
     DirectionTypes::Direction const& signalDirection) const
 {
-    if (busMode == General::MIRROREDMASTER || busMode == General::MIRROREDSLAVE ||
-        busMode == General::MIRROREDSYSTEM)
+    if (busMode == General::MIRRORED_MASTER || busMode == General::MIRRORED_SLAVE ||
+        busMode == General::MIRRORED_SYSTEM)
     {
         return DirectionTypes::convert2Mirrored(signalDirection);
     }
@@ -820,8 +820,8 @@ DirectionTypes::Direction PortsModel::getDirectionFromSignal(General::InterfaceM
 QString PortsModel::getInitiativeFromSignal(General::InterfaceMode const& busMode, QString const& signalInitiative)
 const
 {
-    if (busMode == General::MIRROREDMASTER || busMode == General::MIRROREDSLAVE ||
-        busMode == General::MIRROREDSYSTEM)
+    if (busMode == General::MIRRORED_MASTER || busMode == General::MIRRORED_SLAVE ||
+        busMode == General::MIRRORED_SYSTEM)
     {
         return TransactionalTypes::initiativeToString(TransactionalTypes::convertToMirrored(signalInitiative));
     }

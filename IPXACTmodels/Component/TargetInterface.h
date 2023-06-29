@@ -3,14 +3,14 @@
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 20.10.2015
+// Date: 28.062023
 //
 // Description:
-// Implementation of ipxact:slave in bus interface.
+// Implementation of ipxact:target in bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef SLAVEINTERFACE_H
-#define SLAVEINTERFACE_H
+#ifndef TARGETINTERFACE_H
+#define TARGETINTERFACE_H
 
 #include "TransparentBridge.h"
 
@@ -22,9 +22,9 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Implementation of ipxact:slave in bus interface.
+//! Implementation of ipxact:target in bus interface.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SlaveInterface
+class IPXACTMODELS_EXPORT TargetInterface
 {
 public:
 
@@ -42,16 +42,16 @@ public:
 	};
 
 	//! The default constructor.
-	SlaveInterface();
+	TargetInterface();
 
 	//! Copy constructor
-	SlaveInterface(const SlaveInterface& other);
+	TargetInterface(const TargetInterface& other);
 
 	//! Assignment operator
-	SlaveInterface& operator=(const SlaveInterface& other);
+	TargetInterface& operator=(const TargetInterface& other);
 	
 	//! The destructor
-	~SlaveInterface();
+	~TargetInterface();
     
     /*!  Get the name of the referenced memory map if any.
 	 *
@@ -64,6 +64,10 @@ public:
 	 *      @param [in] memoryMapRef    The name of the memory map to reference.
 	 */
 	void setMemoryMapRef(QString const& memoryMapRef);
+
+
+    QStringList getModeRefs() const;
+    void setModeRefs(QStringList const& modeRefs);
 
 	/*! Get the bridges for this slave interface.
 	 *
@@ -94,11 +98,18 @@ private:
 	//! The referenced memory map name.
 	QString memoryMapRef_;
 
+    //! Mode references.
+    QStringList modeRefs_;
+
 	//! The bridges to master interfaces.
-	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges_;
+	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges_ =
+		QSharedPointer<QList<QSharedPointer<TransparentBridge> > >(new QList<QSharedPointer<TransparentBridge> >);
 
     //! The file set references for the slave interface.
-	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > fileSetRefGroup_;
+	QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > > fileSetRefGroup_ =
+		QSharedPointer<QList<QSharedPointer<FileSetRefGroup> > >(
+			new QList<QSharedPointer<TargetInterface::FileSetRefGroup> >);
 };
 
-#endif // SLAVEINTERFACE_H
+
+#endif // TARGETINTERFACE_H

@@ -22,9 +22,9 @@
 #include <QSharedPointer>
 
 class Component;
-class MasterInterface;
-class SlaveInterface;
-class MirroredSlaveInterface;
+class InitiatorInterface;
+class TargetInterface;
+class MirroredTargetInterface;
 class TransparentBridge;
 class BusInterfaceValidator;
 class TransparentBridgeInterface;
@@ -320,7 +320,7 @@ public:
      *
 	 *      @return The bit steering of the selected bus interface.
 	 */
-	BusInterface::BitSteering getBitSteering(std::string const& busName) const;
+	std::string getBitSteering(std::string const& busName) const;
 
     /*!
      *  Set the bit steering value for the selected bus interface.
@@ -783,7 +783,7 @@ private:
      *
      *      @return The selected master bus interface.
      */
-    QSharedPointer<MasterInterface> getMasterInterface(std::string const& busName) const;
+    QSharedPointer<InitiatorInterface> getMasterInterface(std::string const& busName) const;
 
     /*!
      *  Create or get an existing master for the selected bus interface.
@@ -792,7 +792,7 @@ private:
      *
      *      @return The selected master bus interface.
      */
-    QSharedPointer<MasterInterface> createMasterForBusInterface(std::string const& busName);
+    QSharedPointer<InitiatorInterface> createMasterForBusInterface(std::string const& busName);
 
     /*!
      *  Get the selected slave bus interface.
@@ -801,7 +801,7 @@ private:
      *
      *      @return The selected slave bus interface.
      */
-    QSharedPointer<SlaveInterface> getSlaveInterface(std::string const& busName) const;
+    QSharedPointer<TargetInterface> getSlaveInterface(std::string const& busName) const;
 
     /*!
      *  Create or get an existing slave for the selected bus interface.
@@ -810,7 +810,7 @@ private:
      *
      *      @return The selected slave bus interface.
      */
-    QSharedPointer<SlaveInterface> createSlaveForBusInterface(std::string const& busName);
+    QSharedPointer<TargetInterface> createSlaveForBusInterface(std::string const& busName);
 
     /*!
      *  Get the selected mirrored slave bus interface.
@@ -819,7 +819,7 @@ private:
      *
      *      @return The selected mirrored slave bus interface.
      */
-    QSharedPointer<MirroredSlaveInterface> getMirroredSlaveInterface(std::string const& busName) const;
+    QSharedPointer<MirroredTargetInterface> getMirroredSlaveInterface(std::string const& busName) const;
 
     /*!
      *  Create or get an existing mirrored slave for the selected bus interface.
@@ -828,7 +828,7 @@ private:
      *
      *      @return The selected mirrored slave bus interface.
      */
-    QSharedPointer<MirroredSlaveInterface> createMirrorSlaveForBusInterface(std::string const& busName);
+    QSharedPointer<MirroredTargetInterface> createMirrorSlaveForBusInterface(std::string const& busName);
 
     /*!
      *  Get the selected monitor bus interface.

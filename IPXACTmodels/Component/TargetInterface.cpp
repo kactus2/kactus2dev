@@ -1,15 +1,15 @@
 //-----------------------------------------------------------------------------
-// File: slaveinterface.cpp
+// File: TargetInterface.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 20.10.2015
+// Date: 28.06.2023
 //
 // Description:
-// Implementation of ipxact:slave in bus interface.
+// Implementation of ipxact:target in bus interface.
 //-----------------------------------------------------------------------------
 
-#include "SlaveInterface.h"
+#include "TargetInterface.h"
 
 #include <QString>
 #include <QList>
@@ -17,56 +17,54 @@
 #include <QObject>
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::SlaveInterface()
+// Function: TargetInterface::TargetInterface()
 //-----------------------------------------------------------------------------
-SlaveInterface::SlaveInterface():
-memoryMapRef_(), 
-    bridges_(new QList<QSharedPointer<TransparentBridge> >()), 
-    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >())
+TargetInterface::TargetInterface()
 {
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::SlaveInterface()
+// Function: TargetInterface::TargetInterface()
 //-----------------------------------------------------------------------------
-SlaveInterface::SlaveInterface(SlaveInterface const& other):
-memoryMapRef_(other.memoryMapRef_),
-    bridges_(new QList<QSharedPointer<TransparentBridge> >()),
-    fileSetRefGroup_(new QList<QSharedPointer<SlaveInterface::FileSetRefGroup> >()) 
+TargetInterface::TargetInterface(TargetInterface const& other) :
+    memoryMapRef_(other.memoryMapRef_),
+    modeRefs_(other.modeRefs_)
 {
-    foreach (QSharedPointer<TransparentBridge> bridge, *other.bridges_)
+    for (QSharedPointer<TransparentBridge> bridge : *other.bridges_)
     {
         QSharedPointer<TransparentBridge> copy(new TransparentBridge(*bridge));
         bridges_->append(copy);
     }
 
-    foreach (QSharedPointer<FileSetRefGroup> refGroup, *other.fileSetRefGroup_)
+    for (QSharedPointer<FileSetRefGroup> refGroup : *other.fileSetRefGroup_)
     {
-        QSharedPointer<FileSetRefGroup> copy(new FileSetRefGroup(*refGroup.data()));
+        QSharedPointer<FileSetRefGroup> copy(new FileSetRefGroup(*refGroup));
         fileSetRefGroup_->append(copy);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::operator=()
+// Function: TargetInterface::operator=()
 //-----------------------------------------------------------------------------
-SlaveInterface& SlaveInterface::operator=(SlaveInterface const& other)
+TargetInterface& TargetInterface::operator=(TargetInterface const& other)
 {
 	if (this != &other)
     {
         memoryMapRef_ = other.memoryMapRef_;
 
+        modeRefs_ = other.modeRefs_;
+
         bridges_->clear();
-        foreach (QSharedPointer<TransparentBridge> bridge, *other.bridges_) 
+        for (QSharedPointer<TransparentBridge> bridge : *other.bridges_) 
         {
             QSharedPointer<TransparentBridge> copy(new TransparentBridge(*bridge));
             bridges_->append(copy);
         }
 
         fileSetRefGroup_.clear();
-        foreach (QSharedPointer<FileSetRefGroup> refGroup, *other.fileSetRefGroup_)
+        for (QSharedPointer<FileSetRefGroup> refGroup: *other.fileSetRefGroup_)
         {
-            QSharedPointer<FileSetRefGroup> copy(new FileSetRefGroup(*refGroup.data()));
+            QSharedPointer<FileSetRefGroup> copy(new FileSetRefGroup(*refGroup));
             fileSetRefGroup_->append(copy);
         }
     }
@@ -74,53 +72,69 @@ SlaveInterface& SlaveInterface::operator=(SlaveInterface const& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::~SlaveInterface()
+// Function: TargetInterface::~TargetInterface()
 //-----------------------------------------------------------------------------
-SlaveInterface::~SlaveInterface()
+TargetInterface::~TargetInterface()
 {
 	bridges_->clear();
 	fileSetRefGroup_->clear();
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::getMemoryMapRef()
+// Function: TargetInterface::getMemoryMapRef()
 //-----------------------------------------------------------------------------
-QString SlaveInterface::getMemoryMapRef() const
+QString TargetInterface::getMemoryMapRef() const
 {
     return memoryMapRef_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::setMemoryMapRef()
+// Function: TargetInterface::setMemoryMapRef()
 //-----------------------------------------------------------------------------
-void SlaveInterface::setMemoryMapRef(QString const& memoryMapRef)
+void TargetInterface::setMemoryMapRef(QString const& memoryMapRef)
 {
     memoryMapRef_ = memoryMapRef;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::getBridges()
+// Function: TargetInterface::getModeRefs()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<TransparentBridge> > > SlaveInterface::getBridges() const
+QStringList TargetInterface::getModeRefs() const
+{
+    return modeRefs_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TargetInterface::setModeRefs()
+//-----------------------------------------------------------------------------
+void TargetInterface::setModeRefs(QStringList const& modeRefs)
+{
+    modeRefs_ = modeRefs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TargetInterface::getBridges()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<TransparentBridge> > > TargetInterface::getBridges() const
 {
 	return bridges_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::hasBridge()
+// Function: TargetInterface::hasBridge()
 //-----------------------------------------------------------------------------
-bool SlaveInterface::hasBridge() const
+bool TargetInterface::hasBridge() const
 {
     return !bridges_->isEmpty();
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::getMasterReferences()
+// Function: TargetInterface::getMasterReferences()
 //-----------------------------------------------------------------------------
-QStringList SlaveInterface::getMasterReferences() const 
+QStringList TargetInterface::getMasterReferences() const 
 {
     QStringList masterNames;
-    foreach (QSharedPointer<TransparentBridge> bridge, *bridges_)
+    for (QSharedPointer<TransparentBridge> bridge: *bridges_)
     {
         masterNames.append(bridge->getMasterRef());
     }
@@ -129,9 +143,9 @@ QStringList SlaveInterface::getMasterReferences() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: SlaveInterface::getFileSetRefGroup()
+// Function: TargetInterface::getFileSetRefGroup()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<SlaveInterface::FileSetRefGroup> > > SlaveInterface::getFileSetRefGroup() const
+QSharedPointer<QList<QSharedPointer<TargetInterface::FileSetRefGroup> > > TargetInterface::getFileSetRefGroup() const
 {
     return fileSetRefGroup_;
 }

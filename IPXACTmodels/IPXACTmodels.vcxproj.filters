@@ -611,16 +611,7 @@
     <ClCompile Include="Component\AbstractionType.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Component\MasterInterface.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\MirroredSlaveInterface.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Component\PortMap.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\SlaveInterface.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
     <ClCompile Include="kactusExtensions\ApiDefinition.cpp">
@@ -938,6 +929,15 @@
     <ClCompile Include="Component\validators\RegionValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\InitiatorInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\TargetInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\MirroredTargetInterface.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1228,16 +1228,7 @@
     <ClInclude Include="Component\AbstractionType.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\MasterInterface.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\MirroredSlaveInterface.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
     <ClInclude Include="Component\PortMap.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\SlaveInterface.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="kactusExtensions\ApiDefinition.h">
@@ -1563,6 +1554,15 @@
     </ClInclude>
     <ClInclude Include="Component\validators\RegionValidator.h">
       <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\InitiatorInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\TargetInterface.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\MirroredTargetInterface.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

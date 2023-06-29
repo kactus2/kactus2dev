@@ -66,7 +66,7 @@ QString ComponentEditorBusInterfaceItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorBusInterfaceItem::isValid() const
 {
-    if (!validator_->validate(busif_))
+    if (!validator_->validate(busif_, component_->getRevision()))
     {
         return false;
     }

@@ -30,25 +30,36 @@ namespace General
         INITIATOR,
         TARGET,
         SYSTEM,
-        MIRROREDMASTER,
-        MIRROREDSLAVE,
-        MIRROREDSYSTEM,
+        MIRRORED_MASTER,
+        MIRRORED_SLAVE,
+        MIRRORED_SYSTEM,
+        MIRRORED_INITIATOR,
+        MIRRORED_TARGET,
         MONITOR,
         INTERFACE_MODE_COUNT
     };
 
     //! The names to display that match the enum InterfaceMode
-    const QString INTERFACE_MODE_NAMES[] = {
-        QLatin1String("master"),
-        QLatin1String("slave"),
-        QLatin1String("initiator"),
-        QLatin1String("target"),
-        QLatin1String("system"),
-        QLatin1String("mirroredMaster"),
-        QLatin1String("mirroredSlave"),
-        QLatin1String("mirroredSystem"),
-        QLatin1String("monitor"),
-        QLatin1String("undefined")
+    const QMap<InterfaceMode, QString> INTERFACE_MODES
+    {
+        {MASTER,          QStringLiteral("master")},
+        {SLAVE,           QStringLiteral("slave")},
+        {SYSTEM,          QStringLiteral("system")},
+        {MIRRORED_MASTER, QStringLiteral("mirroredMaster")},
+        {MIRRORED_SLAVE,  QStringLiteral("mirroredSlave")},
+        {MIRRORED_SYSTEM, QStringLiteral("mirroredSystem")},
+        {MONITOR,         QStringLiteral("monitor")}
+    };
+
+    const QMap<InterfaceMode, QString> INTERFACE_MODES_2022
+    {
+        {INITIATOR,          QStringLiteral("initiator")},
+        {TARGET,             QStringLiteral("target")},
+        {SYSTEM,             QStringLiteral("system")},
+        {MIRRORED_INITIATOR, QStringLiteral("mirroredInitiator")},
+        {MIRRORED_TARGET,    QStringLiteral("mirroredTarget")},
+        {MIRRORED_SYSTEM,    QStringLiteral("mirroredSystem")},
+        {MONITOR,            QStringLiteral("monitor")}
     };
 
     /*! Convert QString into boolean value

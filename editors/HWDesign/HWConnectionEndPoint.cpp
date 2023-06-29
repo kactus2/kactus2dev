@@ -87,11 +87,11 @@ void HWConnectionEndpoint::updateInterface()
     {
         setBrush(QBrush(KactusColors::SLAVE_INTERFACE));
     }
-    else if (mode == General::MIRROREDMASTER)
+    else if (mode == General::MIRRORED_MASTER)
     {
         setBrush(QBrush(KactusColors::MIRROREDMASTER_INTERFACE));
     }
-    else if (mode == General::MIRROREDSLAVE)
+    else if (mode == General::MIRRORED_SLAVE)
     {
         setBrush(QBrush(KactusColors::MIRROREDSLAVE_INTERFACE));
     }
@@ -99,7 +99,7 @@ void HWConnectionEndpoint::updateInterface()
     {
         setBrush(QBrush(KactusColors::SYSTEM_INTERFACE));
     }
-    else if (mode == General::MIRROREDSYSTEM)
+    else if (mode == General::MIRRORED_SYSTEM)
     {
         setBrush(QBrush(KactusColors::MIRROREDSYSTEM_INTERFACE));
     }

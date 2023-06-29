@@ -901,11 +901,11 @@ void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV const& droppedVLNV)
 
     // Ask the user for the interface mode.
     BusInterfaceDialog dialog(getParent());
-    dialog.addMode(General::MIRROREDMASTER);
+    dialog.addMode(General::MIRRORED_MASTER);
     dialog.addMode(General::SLAVE);
-    dialog.addMode(General::MIRROREDSLAVE);
+    dialog.addMode(General::MIRRORED_SLAVE);
     dialog.addMode(General::SYSTEM);
-    dialog.addMode(General::MIRROREDSYSTEM);
+    dialog.addMode(General::MIRRORED_SYSTEM);
     dialog.addMode(General::MASTER);
 
     int result = dialog.exec();

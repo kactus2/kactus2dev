@@ -18,8 +18,8 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 
 #include <KactusAPI/include/BusInterfaceInterface.h>

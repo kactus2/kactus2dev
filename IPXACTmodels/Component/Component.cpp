@@ -1362,7 +1362,7 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const
 
     foreach (const QSharedPointer<BusInterface> busif, *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRROREDMASTER)
+        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
         {
             if (busif->getAddressSpaceRef() == addressSpace)
             {
@@ -1381,7 +1381,7 @@ QStringList Component::getMasterInterfaces() const
     QStringList names;
     foreach (QSharedPointer<const BusInterface> busif, *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRROREDMASTER)
+        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
         {
             names.append(busif->name());
         }

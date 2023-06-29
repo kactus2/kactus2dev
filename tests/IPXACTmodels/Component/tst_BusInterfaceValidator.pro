@@ -16,15 +16,7 @@ TARGET = tst_BusInterfaceValidator
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
 
-linux-g++ | linux-g++-64 | linux-g++-32 {
- LIBS += -L../../../executable \
-     -lIPXACTmodels
-
-}
-win64 | win32 {
- LIBS += -L../../../x64/executable \
-     -lIPXACTmodelsd
-}
+LIBS += -L../../../executable -lIPXACTmodels -lKactusAPI
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

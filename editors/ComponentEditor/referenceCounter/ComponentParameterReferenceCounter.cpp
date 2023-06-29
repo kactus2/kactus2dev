@@ -30,8 +30,8 @@
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
@@ -730,13 +730,13 @@ int ComponentParameterReferenceCounter::countReferencesInSingleBusInterface(QStr
 // Function: ComponentParameterReferenceCounter::countReferencesInMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferencesInMirroredSlaveInterface(QString const& parameterID,
-    QSharedPointer<MirroredSlaveInterface> mirroredSlave) const
+    QSharedPointer<MirroredTargetInterface> mirroredSlave) const
 {
     int referenceCounter = 0;
 
     referenceCounter += countReferencesInExpression(parameterID, mirroredSlave->getRange());
     
-    for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
+    for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
         *mirroredSlave->getRemapAddresses())
     {
         referenceCounter += countReferencesInRemapAddress(parameterID, remapAddress);
@@ -749,7 +749,7 @@ int ComponentParameterReferenceCounter::countReferencesInMirroredSlaveInterface(
 // Function: ComponentParameterReferenceCounter::countReferencesInRemapAddress()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferencesInRemapAddress(QString const& parameterID,
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const
+    QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const
 {
     return countReferencesInExpression(parameterID, remapAddress->remapAddress_);
 }
@@ -758,7 +758,7 @@ int ComponentParameterReferenceCounter::countReferencesInRemapAddress(QString co
 // Function: ComponentParameterReferenceCounter::countReferencesInMasterInterface()
 //-----------------------------------------------------------------------------
 int ComponentParameterReferenceCounter::countReferencesInMasterInterface(QString const& parameterID,
-    QSharedPointer<MasterInterface> master) const
+    QSharedPointer<InitiatorInterface> master) const
 {
     return countReferencesInExpression(parameterID, master->getBaseAddress());
 }

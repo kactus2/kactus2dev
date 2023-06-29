@@ -1621,15 +1621,15 @@ bool PortAbstractionInterface::modeExistsForPort(General::InterfaceMode const& m
     }
 
     General::InterfaceMode selectedMode = mode;
-    if (selectedMode == General::MIRROREDMASTER)
+    if (selectedMode == General::MIRRORED_MASTER)
     {
         selectedMode = initiatorMode;
     }
-    else if (selectedMode == General::MIRROREDSLAVE)
+    else if (selectedMode == General::MIRRORED_SLAVE)
     {
         selectedMode = targetMode;
     }
-    else if (selectedMode == General::MIRROREDSYSTEM)
+    else if (selectedMode == General::MIRRORED_SYSTEM)
     {
         selectedMode = General::SYSTEM;
     }

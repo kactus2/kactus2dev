@@ -357,7 +357,7 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardAbsDefinitionPage::createAbsPo
     absPort->setLogicalName(portName);
     absPort->setWire(QSharedPointer<WireAbstraction>(new WireAbstraction()));
 
-    if (busIf_->getInterfaceMode() == General::MASTER || busIf_->getInterfaceMode() == General::MIRROREDMASTER)
+    if (busIf_->getInterfaceMode() == General::MASTER || busIf_->getInterfaceMode() == General::MIRRORED_MASTER)
     {
         QSharedPointer<WirePort> masterPort(new WirePort());
         masterPort->setDirection(portDirection);
@@ -374,7 +374,7 @@ QSharedPointer<PortAbstraction> BusInterfaceWizardAbsDefinitionPage::createAbsPo
             slavePort->setWidth(QString::number(portWidth));
         }
     } 
-    else if (busIf_->getInterfaceMode() == General::SLAVE || busIf_->getInterfaceMode() == General::MIRROREDSLAVE)
+    else if (busIf_->getInterfaceMode() == General::SLAVE || busIf_->getInterfaceMode() == General::MIRRORED_SLAVE)
     {
         QSharedPointer<WirePort> slavePort(new WirePort());
         slavePort->setDirection(portDirection);

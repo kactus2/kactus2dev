@@ -15,7 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -116,7 +116,7 @@ void BusIfInterfaceMSlave::refresh()
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const
 {
-	return General::MIRROREDSLAVE;
+	return General::MIRRORED_SLAVE;
 }
 
 //-----------------------------------------------------------------------------

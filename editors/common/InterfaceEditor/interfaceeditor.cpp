@@ -547,10 +547,7 @@ void InterfaceEditor::setupBusEditor()
     absType_.setFlat(true);
 
     // set the possible modes to the mode editor
-    for (int i = 0; i <= General::INTERFACE_MODE_COUNT; i++)
-    {
-        modeSelector_.addItem(General::INTERFACE_MODE_NAMES[i]);
-    }
+    modeSelector_.addItems(General::INTERFACE_MODES.values());
 
     portMapsView_.setSortingEnabled(true);
     portMapsView_.setSelectionMode(QAbstractItemView::SingleSelection);

@@ -184,7 +184,8 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
     QVector<QString> busInterfaceNames;
     for (QSharedPointer<BusInterface> bus : *component->getBusInterfaces())
     {
-        if (busInterfaceNames.contains(bus->name()) || !busInterfaceValidator_->validate(bus))
+        if (busInterfaceNames.contains(bus->name()) || 
+            busInterfaceValidator_->validate(bus, component->getRevision()) == false)
         {
             return false;
         }
@@ -745,7 +746,7 @@ void ComponentValidator::findErrorsInBusInterface(QVector<QString>& errors, QSha
             }
 
             busInterfaceNames.append(bus->name());
-            busInterfaceValidator_->findErrorsIn(errors, bus, context);
+            busInterfaceValidator_->findErrorsIn(errors, bus, context, component->getRevision());
         }
     }
 }

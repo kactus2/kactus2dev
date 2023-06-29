@@ -168,9 +168,9 @@ bool ChannelValidator::isReferenceToMirroredInterface(QString const& interfaceNa
         {
             if (busInterface->name() == interfaceName)
             {
-                return busInterface->getInterfaceMode() == General::MIRROREDMASTER ||
-                    busInterface->getInterfaceMode() == General::MIRROREDSLAVE ||
-                    busInterface->getInterfaceMode() == General::MIRROREDSYSTEM;
+                return busInterface->getInterfaceMode() == General::MIRRORED_MASTER ||
+                    busInterface->getInterfaceMode() == General::MIRRORED_SLAVE ||
+                    busInterface->getInterfaceMode() == General::MIRRORED_SYSTEM;
             }
         }
     }

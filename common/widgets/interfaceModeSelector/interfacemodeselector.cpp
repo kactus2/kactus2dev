@@ -42,17 +42,14 @@ void InterfaceModeSelector::initialize()
 
 	setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-	// add all options to the combo box
-	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i)
-    {
-		// if monitor should not be displayed then don't add it
-		if (!showMonitor_ && i == General::MONITOR)
-        {
-			continue;
-		}
+	QStringList items = General::INTERFACE_MODES.values();
 
-		addItem(General::INTERFACE_MODE_NAMES[i]);
-	}
+    // if monitor should not be displayed then remove it
+    if (showMonitor_ == false)
+    {
+		items.removeOne(General::interfaceMode2Str(General::MONITOR));
+    }
+    addItems(items);
 
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
 		this, SLOT(setMode(const QString&)), Qt::UniqueConnection);

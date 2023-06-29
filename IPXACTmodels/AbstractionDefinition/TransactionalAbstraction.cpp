@@ -232,16 +232,16 @@ QSharedPointer<TransactionalPort> TransactionalAbstraction::getSlavePort() const
 //-----------------------------------------------------------------------------
 bool TransactionalAbstraction::hasMode(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
         return !systemPort.isNull();
     }
 
     return (mode == General::MASTER && hasMasterPort()) ||
-        (mode == General::MIRROREDMASTER && hasMasterPort()) ||
+        (mode == General::MIRRORED_MASTER && hasMasterPort()) ||
         (mode == General::SLAVE && hasSlavePort()) ||
-        (mode == General::MIRROREDSLAVE && hasSlavePort());
+        (mode == General::MIRRORED_SLAVE && hasSlavePort());
 }
 
 //-----------------------------------------------------------------------------
@@ -267,15 +267,15 @@ QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QSt
 {
     QString initiative = QLatin1String("");
 
-    if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && hasMasterPort())
+    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && hasMasterPort())
     {
         initiative = getMasterPort()->getInitiative();
     }
-    else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && hasSlavePort())
+    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && hasSlavePort())
     {
         initiative = getSlavePort()->getInitiative();
     }
-    else if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    else if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
         if (systemPort)
@@ -284,7 +284,7 @@ QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QSt
         }
     }
 
-    if (mode == General::MIRROREDMASTER || mode == General::MIRROREDSLAVE || mode == General::MIRROREDSYSTEM)
+    if (mode == General::MIRRORED_MASTER || mode == General::MIRRORED_SLAVE || mode == General::MIRRORED_SYSTEM)
     {
         TransactionalTypes::Initiative mirroredInitiative = TransactionalTypes::convertToMirrored(initiative);
         initiative = TransactionalTypes::initiativeToString(mirroredInitiative);
@@ -298,15 +298,15 @@ QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QSt
 //-----------------------------------------------------------------------------
 QString TransactionalAbstraction::getWidth(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && hasMasterPort())
+    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && hasMasterPort())
     {
         return getMasterPort()->getBusWidth();
     }
-    else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && hasSlavePort())
+    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && hasSlavePort())
     {
         return getSlavePort()->getBusWidth();
     }
-    else if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    else if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
 

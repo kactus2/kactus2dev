@@ -183,19 +183,19 @@ bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceM
             {
                 QSharedPointer<WireAbstraction> portWire = port->getWire();
                 QSharedPointer<TransactionalAbstraction> portTransactional = port->getTransactional();
-                if ((mode == General::MASTER || mode == General::MIRROREDMASTER) &&
+                if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) &&
                     ((portWire && portWire->hasMasterPort()) ||
                     (portTransactional && portTransactional->hasMasterPort())))
                 {
                     return true;
                 }
-                else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) &&
+                else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) &&
                     ((portWire && portWire->hasSlavePort()) ||
                     (portTransactional && portTransactional->hasSlavePort())))
                 {
                     return true;
                 }
-                else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+                else if ((mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM) &&
                     ((portWire && !portWire->getSystemPorts()->isEmpty()) ||
                     (portTransactional && portTransactional->getSystemPorts()->isEmpty())))
                 {
@@ -220,15 +220,15 @@ QStringList AbstractionDefinition::getPortNames(General::InterfaceMode mode) con
         {
             if (port->hasWire())
             {
-                if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && port->getWire()->hasMasterPort())
+                if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && port->getWire()->hasMasterPort())
                 {
                     portNames.append(port->getLogicalName());
                 }
-                else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && port->getWire()->hasSlavePort())
+                else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && port->getWire()->hasSlavePort())
                 {
                     portNames.append(port->getLogicalName());
                 }
-                else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) && 
+                else if ((mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM) && 
                     !port->getWire()->getSystemPorts()->isEmpty())
                 {
                     portNames.append(port->getLogicalName());

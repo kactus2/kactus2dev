@@ -114,7 +114,7 @@ void ComponentWriter::writeBusInterfaces(QXmlStreamWriter& writer, QSharedPointe
 
         for (QSharedPointer<BusInterface> busInterface : *component->getBusInterfaces())
         {
-            BusInterfaceWriter::writeBusInterface(writer, busInterface);
+            BusInterfaceWriter::writeBusInterface(writer, busInterface, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:busInterfaces

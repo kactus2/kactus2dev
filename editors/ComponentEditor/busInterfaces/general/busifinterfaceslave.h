@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 #include <editors/ComponentEditor/instantiations/filesetrefeditor.h>
 
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <QSharedPointer>
 

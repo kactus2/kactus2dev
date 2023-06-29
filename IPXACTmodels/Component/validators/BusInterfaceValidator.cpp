@@ -27,18 +27,18 @@
 #include <IPXACTmodels/Component/RemapState.h>
 
 #include <IPXACTmodels/Component/AbstractionType.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::BusInterfaceValidator()
@@ -113,12 +113,13 @@ QSharedPointer<AbstractionTypeValidator> BusInterfaceValidator::getAbstractionVa
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::validate()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface) const
+bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface,
+    Document::Revision docRevision) const
 {
     return hasValidName(busInterface) && hasValidIsPresent(busInterface->getIsPresent()) &&
         hasValidBusType(busInterface) && hasValidAbstractionTypes(busInterface) &&
         hasValidInterfaceMode(busInterface) && hasValidBitsInLAU(busInterface) &&
-        hasValidBitSteering(busInterface) && hasValidParameters(busInterface);
+        hasValidBitSteering(busInterface, docRevision) && hasValidParameters(busInterface);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,16 +127,7 @@ bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface) 
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidName(QSharedPointer<BusInterface> busInterface) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(busInterface->name());
-
-    if (busInterface->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(busInterface->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -143,20 +135,7 @@ bool BusInterfaceValidator::hasValidName(QSharedPointer<BusInterface> busInterfa
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidIsPresent(QString const& isPresent) const
 {
-    if (!isPresent.isEmpty())
-    {
-        QString solvedValue = expressionParser_->parseExpression(isPresent);
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(isPresent, expressionParser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,7 +175,7 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidMasterInterface(busInterface->getMaster());
     }
-    else if (interfaceMode == General::MIRROREDMASTER)
+    else if (interfaceMode == General::MIRRORED_MASTER)
     {
         return true;
     }
@@ -204,11 +183,11 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidSlaveInterface(busInterface, busInterface->getSlave());
     }
-    else if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRROREDSYSTEM)
+    else if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRRORED_SYSTEM)
     {
         return hasValidSystemInterface(busInterface, busInterface->getSystem());
     }
-    else if (interfaceMode == General::MIRROREDSLAVE)
+    else if (interfaceMode == General::MIRRORED_SLAVE)
     {
         return hasValidMirroredSlaveInterface(busInterface->getMirroredSlave());
     }
@@ -223,7 +202,7 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::hasValidMasterInterface()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<MasterInterface> master) const
+bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const
 {
     if (master->getAddressSpaceRef().isEmpty() && master->getIsPresent().isEmpty() &&
         master->getBaseAddress().isEmpty())
@@ -286,7 +265,7 @@ bool BusInterfaceValidator::interfaceReferenceHasValidPresence(QString const& in
 // Function: BusInterfaceValidator::hasValidSlaveInterface()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface,
-    QSharedPointer<SlaveInterface> slave) const
+    QSharedPointer<TargetInterface> slave) const
 {
     bool validMemoryMapRef = slaveInterfaceHasValidMemoryMapRef(busInterface, slave);
     bool validBridges = slaveInterfaceHasValidBridges(slave->getBridges());
@@ -313,7 +292,7 @@ bool BusInterfaceValidator::hasValidSlaveInterface(QSharedPointer<BusInterface> 
 // Function: BusInterfaceValidator::hasValidSlaveInterface()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
-    QSharedPointer<SlaveInterface> slave) const
+    QSharedPointer<TargetInterface> slave) const
 {
     if (!slave->getMemoryMapRef().isEmpty())
     {
@@ -370,9 +349,9 @@ bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<Tran
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<SlaveInterface> slave) const
+bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<TargetInterface> slave) const
 {
-    for (QSharedPointer<SlaveInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
+    for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
         for (QString const& fileSetReference : group->fileSetRefs_)
         {
@@ -425,7 +404,7 @@ bool BusInterfaceValidator::hasValidSystemInterface(QSharedPointer<BusInterface>
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::hasValidMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<MirroredSlaveInterface> mirroredSlave)
+bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave)
     const
 {
     if (mirroredSlave->getRemapAddresses()->isEmpty() && mirroredSlave->getRange().isEmpty())
@@ -437,7 +416,7 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
     {
         if (!mirroredSlave->getRemapAddresses()->isEmpty())
         {
-            for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
+            for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
                 *mirroredSlave->getRemapAddresses())
             {
                 if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
@@ -456,7 +435,7 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::mirroredSlaveRangeIsValid()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::mirroredSlaveRangeIsValid(QSharedPointer<MirroredSlaveInterface> mirroredSlave) const
+bool BusInterfaceValidator::mirroredSlaveRangeIsValid(QSharedPointer<MirroredTargetInterface> mirroredSlave) const
 {
     bool changeOk = true;
     quint64 range = expressionParser_->parseExpression(mirroredSlave->getRange()).toULongLong(&changeOk);
@@ -468,7 +447,7 @@ bool BusInterfaceValidator::mirroredSlaveRangeIsValid(QSharedPointer<MirroredSla
 // Function: BusInterfaceValidator::mirroredSlaveRemapAddressIsValid()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::mirroredSlaveRemapAddressIsValid(
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const
+    QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const
 {
     if (!remapAddress->remapAddress_.isEmpty())
     {
@@ -485,22 +464,22 @@ bool BusInterfaceValidator::mirroredSlaveRemapAddressIsValid(
 // Function: BusInterfaceValidator::mirroredSlaveStateIsValid()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::mirroredSlaveStateIsValid(
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const
+    QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const
 {
-    if (!remapAddress->state_.isEmpty())
+    if (remapAddress->state_.isEmpty())
     {
-        for (QSharedPointer<RemapState> remapState : *availableRemapStates_)
-        {
-            if (remapState->name() == remapAddress->state_)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return true;
     }
 
-    return true;
+    for (QSharedPointer<RemapState> remapState : *availableRemapStates_)
+    {
+        if (remapState->name() == remapAddress->state_)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -513,7 +492,7 @@ bool BusInterfaceValidator::hasValidMonitorInterface(QSharedPointer<BusInterface
 
     if (interfaceMode != General::INTERFACE_MODE_COUNT && interfaceMode != General::MONITOR)
     {
-        if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRROREDSYSTEM)
+        if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRRORED_SYSTEM)
         {
             return hasValidSystemInterface(busInterface, monitorInterface->group_);
         }
@@ -547,17 +526,46 @@ bool BusInterfaceValidator::hasValidBitsInLAU(QSharedPointer<BusInterface> busIn
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::hasValidBitSteering()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::hasValidBitSteering(QSharedPointer<BusInterface> busInterface) const
+bool BusInterfaceValidator::hasValidBitSteering(QSharedPointer<BusInterface> busInterface,
+    Document::Revision docRevision) const
 {
-    if (busInterface->getBitSteering() != BusInterface::BITSTEERING_UNSPECIFIED)
+    auto const& bitStreering = busInterface->getBitSteering();
+    if (bitStreering.isEmpty())
     {
-        General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
-        
-        if (interfaceMode == General::MIRROREDMASTER || interfaceMode == General::SYSTEM ||
-            interfaceMode == General::MIRROREDSYSTEM)
-        {
-            return false;
-        }
+        return true;
+    }
+
+    if (bitSteeringIsAllowed(busInterface) == false)
+    {
+        return false;
+    }
+
+    if (docRevision == Document::Revision::Std14)
+    {
+        return bitStreering == QLatin1String("on") || bitStreering == QLatin1String("off");
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        bool validExpression = false;
+        auto bitSteeringValue = expressionParser_->parseExpression(bitStreering, &validExpression);
+
+        return validExpression && 
+            (bitSteeringValue == QLatin1String("1") || bitSteeringValue == QLatin1String("0"));
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::bitSteeringIsAllowed()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::bitSteeringIsAllowed(QSharedPointer<BusInterface> busInterface) const
+{
+    General::InterfaceMode interfaceMode = busInterface->getInterfaceMode();
+    if (interfaceMode == General::MIRRORED_MASTER || interfaceMode == General::MIRRORED_INITIATOR ||
+        interfaceMode == General::SYSTEM || interfaceMode == General::MIRRORED_SYSTEM)
+    {
+        return false;
     }
 
     return true;
@@ -591,7 +599,7 @@ bool BusInterfaceValidator::hasValidParameters(QSharedPointer<BusInterface> busI
 // Function: BusInterfaceValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
-    QString const& context) const
+    QString const& context, Document::Revision docRevision) const
 {
     QString busInterfaceContext = QStringLiteral("bus interface ") + busInterface->name();
 
@@ -601,7 +609,7 @@ void BusInterfaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInAbstractionTypes(errors, busInterface, busInterfaceContext);
     findErrorsInInterfaceMode(errors, busInterface, busInterfaceContext, context);
     findErrorsInBitsInLAU(errors, busInterface, context);
-    findErrorsInBitSteering(errors, busInterface, context);
+    findErrorsInBitSteering(errors, busInterface, context, docRevision);
     findErrorsInParameters(errors, busInterface, busInterfaceContext);
 }
 
@@ -717,11 +725,11 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInSlaveInterface(errors, busInterface, busInterface->getSlave(), newContext);
     }
-    else if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRROREDSYSTEM)
+    else if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRRORED_SYSTEM)
     {
         findErrorsInSystemInterface(errors, busInterface->getSystem(), busInterface, newContext);
     }
-    else if (interfaceMode == General::MIRROREDSLAVE)
+    else if (interfaceMode == General::MIRRORED_SLAVE)
     {
         findErrorsInMirroredSlaveInterface(errors, busInterface->getMirroredSlave(), newContext);
     }
@@ -729,7 +737,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInMonitorInterface(errors, busInterface, busInterface->getMonitor(), newContext);
     }
-    else if (interfaceMode != General::MIRROREDMASTER)
+    else if (interfaceMode != General::MIRRORED_MASTER)
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
             .arg(busInterface->name(), containingContext));
@@ -740,7 +748,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
 // Function: BusInterfaceValidator::findErrorsInMasterInterface()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors,
-    QSharedPointer<MasterInterface> master, QString const& context) const
+    QSharedPointer<InitiatorInterface> master, QString const& context) const
 {
     if (master)
     {
@@ -794,7 +802,7 @@ void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors
 // Function: BusInterfaceValidator::findErrorsInSlaveInterface()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
-    QSharedPointer<BusInterface> busInterface, QSharedPointer<SlaveInterface> slave, QString const& context) const
+    QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave, QString const& context) const
 {
     if (!slave->getMemoryMapRef().isEmpty() && !slave->getBridges()->isEmpty())
     {
@@ -821,7 +829,7 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
         }
     }
 
-    for (QSharedPointer<SlaveInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
+    for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
         for (QString fileSetReference : group->fileSetRefs_)
         {
@@ -865,7 +873,7 @@ void BusInterfaceValidator::findErrorsInSystemInterface(QVector<QString>& errors
 // Function: BusInterfaceValidator::findErrorsInMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
-    QSharedPointer<MirroredSlaveInterface> mirroredSlave, QString const& context) const
+    QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const
 {
     if (!mirroredSlave->getRange().isEmpty() || !mirroredSlave->getRemapAddresses()->isEmpty())
     {
@@ -874,7 +882,7 @@ void BusInterfaceValidator::findErrorsInMirroredSlaveInterface(QVector<QString>&
             errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
         }
 
-        for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
+        for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
             *mirroredSlave->getRemapAddresses())
         {
             if (!mirroredSlaveRemapAddressIsValid(remapAddress))
@@ -910,7 +918,7 @@ void BusInterfaceValidator::findErrorsInMonitorInterface(QVector<QString>& error
 
     else
     {
-        if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRROREDSYSTEM)
+        if (interfaceMode == General::SYSTEM || interfaceMode == General::MIRRORED_SYSTEM)
         {
             findErrorsInSystemInterface(errors, monitor->group_, busInterface, context);
         }
@@ -940,13 +948,22 @@ void BusInterfaceValidator::findErrorsInBitsInLAU(QVector<QString>& errors,
 // Function: BusInterfaceValidator::findErrorsInBitSteering()
 //-----------------------------------------------------------------------------
 void BusInterfaceValidator::findErrorsInBitSteering(QVector<QString>& errors,
-    QSharedPointer<BusInterface> busInterface, QString const& context) const
+    QSharedPointer<BusInterface> busInterface, QString const& context,
+    Document::Revision docRevision) const
 {
-    if (!hasValidBitSteering(busInterface))
+    if (!hasValidBitSteering(busInterface, docRevision))
     {
         QString usedInterface = General::interfaceMode2Str(busInterface->getInterfaceMode());
 
-        errors.append(QObject::tr("Bit steering value is not allowed in %1 bus interface %2 within %3")
-            .arg(usedInterface).arg(busInterface->name()).arg(context));
+        if (bitSteeringIsAllowed(busInterface) == false)
+        {
+            errors.append(QObject::tr("Bit steering value is not allowed in %1 bus interface %2 within %3").arg(
+                usedInterface, busInterface->name(), context));
+        }
+        else
+        {
+            errors.append(QObject::tr("Bit steering value '%1' is not valid in bus interface %2 within %3").arg(
+                busInterface->getBitSteering(), busInterface->name(), context));
+        }
     }
 }

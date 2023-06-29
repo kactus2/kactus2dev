@@ -37,14 +37,14 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
@@ -697,7 +697,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
         memoryReference = busInterface->getMemoryMapRef();
     }
 
-    if (busInterface->getInterfaceMode() == General::MIRROREDSLAVE && 
+    if (busInterface->getInterfaceMode() == General::MIRRORED_SLAVE && 
         !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
     {
         interfaceNode->setRemapAddress(expressionParser_->parseExpression(

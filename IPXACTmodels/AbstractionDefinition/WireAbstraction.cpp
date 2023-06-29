@@ -328,7 +328,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
     {
         return getMasterPort()->getDirection();
     } 
-    else if (mode == General::MIRROREDMASTER && hasMasterPort())
+    else if (mode == General::MIRRORED_MASTER && hasMasterPort())
     {
         return DirectionTypes::convert2Mirrored(getMasterPort()->getDirection());
     }
@@ -336,7 +336,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
     {
         return getSlavePort()->getDirection();
     }                       
-    else if (mode == General::MIRROREDSLAVE && hasSlavePort())
+    else if (mode == General::MIRRORED_SLAVE && hasSlavePort())
     {
         return DirectionTypes::convert2Mirrored(getSlavePort()->getDirection());
     }   
@@ -350,7 +350,7 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
         }
 
     } 
-    else if (mode == General::MIRROREDSYSTEM)
+    else if (mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -369,15 +369,15 @@ DirectionTypes::Direction WireAbstraction::getDirection(General::InterfaceMode m
 //-----------------------------------------------------------------------------
 QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && hasMasterPort())
+    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && hasMasterPort())
     {
         return getMasterPort()->getWidth();
     } 
-    else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && hasSlavePort())
+    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && hasSlavePort())
     {
         return getSlavePort()->getWidth();
     }                        
-    else if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    else if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -395,7 +395,7 @@ QString WireAbstraction::getWidth(General::InterfaceMode mode, QString const& sy
 //-----------------------------------------------------------------------------
 bool WireAbstraction::hasMode(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         QSharedPointer<WirePort> systemPort = findSystemPort(systemGroup);
 
@@ -403,7 +403,7 @@ bool WireAbstraction::hasMode(General::InterfaceMode mode, QString const& system
     }
 
     return (mode == General::MASTER && hasMasterPort()) ||
-        (mode == General::MIRROREDMASTER && hasMasterPort()) ||
+        (mode == General::MIRRORED_MASTER && hasMasterPort()) ||
         (mode == General::SLAVE && hasSlavePort()) ||
-        (mode == General::MIRROREDSLAVE && hasSlavePort());
+        (mode == General::MIRRORED_SLAVE && hasSlavePort());
 }

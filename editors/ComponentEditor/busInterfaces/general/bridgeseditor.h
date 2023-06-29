@@ -24,7 +24,7 @@ class Component;
 class TransparentBridge;
 class TransparentBridgeInterface;
 class BusInterfaceInterface;
-class SlaveInterface;
+class TargetInterface;
 class BusInterfaceValidator;
 class IndirectInterface;
 class IndirectInterfaceValidator;

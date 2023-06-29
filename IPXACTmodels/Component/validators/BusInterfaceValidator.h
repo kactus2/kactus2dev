@@ -14,10 +14,11 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -30,7 +31,7 @@ class Choice;
 class ExpressionParser;
 class FileSet;
 class LibraryInterface;
-class MasterInterface;
+class InitiatorInterface;
 class MemoryMap;
 class Port;
 class RemapState;
@@ -114,7 +115,8 @@ public:
      *
      *      @return True, if the bus interface is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<BusInterface> busInterface) const;
+    bool validate(QSharedPointer<BusInterface> busInterface,
+        Document::Revision docRevision) const;
 
     /*!
      *  Check if the name is valid.
@@ -177,7 +179,10 @@ public:
      *
      *      @return True, if the bit steering is valid, otherwise false.
      */
-    bool hasValidBitSteering(QSharedPointer<BusInterface> busInterface) const;
+    bool hasValidBitSteering(QSharedPointer<BusInterface> busInterface,
+        Document::Revision docRevision) const;
+
+    bool bitSteeringIsAllowed(QSharedPointer<BusInterface> busInterface) const;
 
     /*!
      *  Check if the bus interface contains valid parameters.
@@ -196,7 +201,7 @@ public:
      *      @param [in] context         Context to help locate the error.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
-        QString const& context) const;
+        QString const& context, Document::Revision docRevision) const;
 
     /*!
      *  Check if the selected transparent bridges are valid.
@@ -220,7 +225,7 @@ private:
      *
      *      @return True, if the master interface is valid, otherwise false.
      */
-    bool hasValidMasterInterface(QSharedPointer<MasterInterface> master) const;
+    bool hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const;
 
     /*!
      *  Check if the slave interface is valid.
@@ -230,7 +235,7 @@ private:
      *
      *      @return True, if the slave interface is valid, otherwise false.
      */
-    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, QSharedPointer<SlaveInterface> slave)
+    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave)
         const;
 
     /*!
@@ -242,7 +247,7 @@ private:
      *      @return True, if the memory map reference is valid, otherwise false.
      */
     bool slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
-        QSharedPointer<SlaveInterface> slave) const;
+        QSharedPointer<TargetInterface> slave) const;
 
     /*!
      *  Check if a slave interface bridge have a valid master interface reference.
@@ -260,7 +265,7 @@ private:
      *
      *      @return True, if the slave interface file set reference group is valid, otherwise false.
      */
-    bool slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<SlaveInterface> slave) const;
+    bool slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<TargetInterface> slave) const;
 
     /*!
      *  Check if a file set reference is valid.
@@ -288,7 +293,7 @@ private:
      *
      *      @return True, if the mirrored slave interface is valid, otherwise false.
      */
-    bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredSlaveInterface> mirroredSlave) const;
+    bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
     /*!
      *  Check if the mirrored slave interface range is valid.
@@ -297,7 +302,7 @@ private:
      *
      *      @return True, if the range is valid, otherwise false.
      */
-    bool mirroredSlaveRangeIsValid(QSharedPointer<MirroredSlaveInterface> mirroredSlave) const;
+    bool mirroredSlaveRangeIsValid(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
     /*!
      *  Check if the mirrored slave interface remap address is valid.
@@ -306,7 +311,7 @@ private:
      *
      *      @return True, if the remap address is valid, otherwise false.
      */
-    bool mirroredSlaveRemapAddressIsValid(QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const;
+    bool mirroredSlaveRemapAddressIsValid(QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const;
 
     /*!
      *  Check if the mirrored slave interface remap address remap state is valid.
@@ -315,7 +320,7 @@ private:
      *
      *      @return True, if the mirrored slave interface remap address is valid, otherwise false.
      */
-    bool mirroredSlaveStateIsValid(QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress) const;
+    bool mirroredSlaveStateIsValid(QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress) const;
 
     /*!
      *  Check if the monitor interface is valid.
@@ -406,7 +411,7 @@ private:
      *      @param [in] master      The selected master interface.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInMasterInterface(QVector<QString>& errors, QSharedPointer<MasterInterface> master,
+    void findErrorsInMasterInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> master,
         QString const& context) const;
 
     /*!
@@ -418,7 +423,7 @@ private:
      *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInSlaveInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
-        QSharedPointer<SlaveInterface> slave, QString const& context) const;
+        QSharedPointer<TargetInterface> slave, QString const& context) const;
 
     /*!
      *  Find errors within system mode.
@@ -439,7 +444,7 @@ private:
      *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
-        QSharedPointer<MirroredSlaveInterface> mirroredSlave, QString const& context) const;
+        QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const;
 
     /*!
      *  Find errors within monitor interface.
@@ -469,7 +474,7 @@ private:
      *      @param [in] context         Context to help locate the error.
      */
     void findErrorsInBitSteering(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
-        QString const& context) const;
+        QString const& context, Document::Revision docRevision) const;
 
     //-----------------------------------------------------------------------------
     // Data.

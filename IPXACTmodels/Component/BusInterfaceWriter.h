@@ -14,6 +14,7 @@
 
 #include "BusInterface.h"
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/Component/PortMap.h>
 
@@ -28,10 +29,12 @@ namespace BusInterfaceWriter
     /*!
      *  Write a businterface to an XML file.
      *
-     *      @param [in] writer				The used xml writer.
-     *      @param [in] businterface		The businterface to be written.
+     *      @param [in] writer			The used xml writer.
+     *      @param [in] businterface	The businterface to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-	IPXACTMODELS_EXPORT void writeBusInterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
+	IPXACTMODELS_EXPORT void writeBusInterface(QXmlStreamWriter& writer,
+		QSharedPointer<BusInterface> businterface, Document::Revision docRevision);
 
 	namespace Details
 	{
@@ -114,7 +117,7 @@ namespace BusInterfaceWriter
 		 *      @param [in] writer				The used xml writer.
 		 *      @param [in] businterface		The businterface master to be written.
 		 */
-		void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<MasterInterface> masterInterface);
+		void writeMasterInterface(QXmlStreamWriter& writer, QSharedPointer<InitiatorInterface> masterInterface);
 
 		/*!
 		 *  Write the slave interface of businterface.
@@ -122,7 +125,7 @@ namespace BusInterfaceWriter
 		 *      @param [in] writer				The used xml writer.
 		 *      @param [in] businterface		The businterface slave to be written.
 		 */
-		void writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<SlaveInterface> slave);
+		void writeSlaveInterface(QXmlStreamWriter& writer, QSharedPointer<TargetInterface> slave);
 
 		/*!
 		 *  Write the mirrored slave interface of businterface.
@@ -131,7 +134,7 @@ namespace BusInterfaceWriter
 		 *      @param [in] businterface		The businterface to be written.
 		 */
 		void writeMirroredSlaveInterface(QXmlStreamWriter& writer,
-			QSharedPointer<MirroredSlaveInterface> mirroredSlave);
+			QSharedPointer<MirroredTargetInterface> mirroredSlave);
 
 		/*!
 		 *  Write the monitor interface of businterface.
@@ -140,6 +143,14 @@ namespace BusInterfaceWriter
 		 *      @param [in] businterface		The businterface to be written.
 		 */
 		void writeMonitorInterface(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
+
+		void writeInitiatorInterface(QXmlStreamWriter& writer, 
+			QSharedPointer<InitiatorInterface> initiatorInterface, Document::Revision docRevsion);
+
+		void writeTargetInterface(QXmlStreamWriter& writer, QSharedPointer<TargetInterface> target,
+			Document::Revision docRevision);
+		void writeMirroredTargetInterface(QXmlStreamWriter& writer, 
+			QSharedPointer<MirroredTargetInterface> mirroredTarget, Document::Revision docRevision);
 	}
 };
 

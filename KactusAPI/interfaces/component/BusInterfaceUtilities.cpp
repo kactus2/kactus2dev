@@ -76,7 +76,7 @@ QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)
     {
         iconPath = ":icons/common/graphics/busInterfaceMaster.png";
     }
-    else if (busMode == General::MIRROREDMASTER)
+    else if (busMode == General::MIRRORED_MASTER)
     {
         iconPath = ":icons/common/graphics/busInterfaceMirroredMaster.png";
     }
@@ -84,7 +84,7 @@ QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)
     {
         iconPath = ":icons/common/graphics/busInterfaceSlave.png";
     }
-    else if (busMode == General::MIRROREDSLAVE)
+    else if (busMode == General::MIRRORED_SLAVE)
     {
         iconPath = ":icons/common/graphics/busInterfaceMirroredSlave.png";
     }
@@ -92,7 +92,7 @@ QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)
     {
         iconPath = ":icons/common/graphics/busInterfaceSystem.png";
     }
-    else if (busMode == General::MIRROREDSYSTEM)
+    else if (busMode == General::MIRRORED_SYSTEM)
     {
         iconPath = ":icons/common/graphics/busInterfaceMirroredSystem.png";
     }

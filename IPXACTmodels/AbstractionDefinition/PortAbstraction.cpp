@@ -292,15 +292,15 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
 {
     if (hasWire())
     {
-        if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && wire_->hasMasterPort())
+        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && wire_->hasMasterPort())
         {
             return wire_->getMasterPort()->getPresence();
         }
-        else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && wire_->hasSlavePort())
+        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && wire_->hasSlavePort())
         {
             return wire_->getSlavePort()->getPresence();
         }
-        else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+        else if ((mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM) &&
             !wire_->getSystemPorts()->isEmpty())
         {
             foreach (auto systemPort, *wire_->getSystemPorts())
@@ -314,15 +314,15 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
     }
     else if (hasTransactional())
     {
-        if ((mode == General::MASTER || mode == General::MIRROREDMASTER) && transactional_->hasMasterPort())
+        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && transactional_->hasMasterPort())
         {
             return transactional_->getMasterPort()->getPresence();
         }
-        else if ((mode == General::SLAVE || mode == General::MIRROREDSLAVE) && transactional_->hasSlavePort())
+        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && transactional_->hasSlavePort())
         {
             return transactional_->getSlavePort()->getPresence();
         }
-        else if ((mode == General::SYSTEM || mode == General::MIRROREDSYSTEM) &&
+        else if ((mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM) &&
             !transactional_->getSystemPorts()->isEmpty())
         {
             foreach(auto systemPort, *transactional_->getSystemPorts())

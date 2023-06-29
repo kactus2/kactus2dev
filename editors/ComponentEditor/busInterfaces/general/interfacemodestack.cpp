@@ -40,9 +40,9 @@ monitor_(busInterface_, busName_, handler, this)
     insertWidget(General::MASTER, &master_);
 	insertWidget(General::SLAVE, &slave_);
 	insertWidget(General::SYSTEM, &system_);
-	insertWidget(General::MIRROREDMASTER, &mirroredMaster_);
-	insertWidget(General::MIRROREDSLAVE, &mirroredSlave_);
-	insertWidget(General::MIRROREDSYSTEM, &mirroredSystem_);
+	insertWidget(General::MIRRORED_MASTER, &mirroredMaster_);
+	insertWidget(General::MIRRORED_SLAVE, &mirroredSlave_);
+	insertWidget(General::MIRRORED_SYSTEM, &mirroredSystem_);
 	insertWidget(General::MONITOR, &monitor_);
     insertWidget(General::INTERFACE_MODE_COUNT, new QGroupBox(tr("Interface mode specific options"), this));
 
@@ -78,7 +78,7 @@ monitor_(busInterface_, busName_, handler, this)
 void InterfaceModeStack::setMode( General::InterfaceMode mode )
 {
     General::InterfaceMode currentMode = busInterface_->getMode(busName_);
-    if (currentMode == General::MIRROREDSLAVE)
+    if (currentMode == General::MIRRORED_SLAVE)
     {
         mirroredSlave_.removeReferencesFromExpressions();
     }
@@ -122,18 +122,18 @@ void InterfaceModeStack::refresh()
         system_.saveModeSpecific();
 
     }
-    else if (currentMode == General::MIRROREDMASTER)
+    else if (currentMode == General::MIRRORED_MASTER)
     {
         mirroredMaster_.refresh();
         mirroredMaster_.saveModeSpecific();
     }
-    else if (currentMode == General::MIRROREDSLAVE)
+    else if (currentMode == General::MIRRORED_SLAVE)
     {
         mirroredSlave_.refresh();
         mirroredSlave_.saveModeSpecific();
 
     }
-    else if (currentMode == General::MIRROREDSYSTEM)
+    else if (currentMode == General::MIRRORED_SYSTEM)
     {
         mirroredSystem_.refresh();
         mirroredSystem_.saveModeSpecific();

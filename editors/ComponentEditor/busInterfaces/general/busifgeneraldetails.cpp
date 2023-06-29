@@ -79,8 +79,8 @@ void BusIfGeneralDetails::changeBitSteeringColour()
 
     General::InterfaceMode interfaceMode = busInterface_->getMode(busName_);
     if (!bitSteeringSelector_.currentText().isEmpty() &&
-        (interfaceMode == General::MIRROREDMASTER || interfaceMode == General::SYSTEM ||
-        interfaceMode == General::MIRROREDSYSTEM))
+        (interfaceMode == General::MIRRORED_MASTER || interfaceMode == General::SYSTEM ||
+        interfaceMode == General::MIRRORED_SYSTEM))
     {
         colour = KactusColors::ERROR;
     }
@@ -113,7 +113,7 @@ void BusIfGeneralDetails::refresh()
 
     disconnect(&bitSteeringSelector_, SIGNAL(currentIndexChanged(int)),	this, SLOT(onBitSteeringChanged()));
 
-    bitSteeringSelector_.setCurrentIndex(busInterface_->getBitSteering(busName_));
+    bitSteeringSelector_.setCurrentText(QString::fromStdString(busInterface_->getBitSteering(busName_)));
 
     changeBitSteeringColour();
 

@@ -29,7 +29,7 @@ BusInterfaceDialog::BusInterfaceDialog(QWidget* parent)
     // Create the radio button group.
     for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; i++)
     {
-        QString modeName = General::INTERFACE_MODE_NAMES[i];
+        QString modeName = General::interfaceMode2Str(static_cast<General::InterfaceMode>(i));
         modeName.replace(0, 1, modeName.at(0).toUpper());
 
         modeRadioButtons_[i] = new QRadioButton(modeName, modeGroup_);

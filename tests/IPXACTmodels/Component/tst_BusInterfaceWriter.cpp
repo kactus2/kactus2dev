@@ -11,9 +11,9 @@
 
 #include <IPXACTmodels/Component/BusInterfaceWriter.h>
 
-#include <IPXACTmodels/Component/MasterInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -38,7 +38,8 @@ private slots:
     void testWriteBusType();
     void testWriteBitsInLau();
     void testWriteBitSteering();
-    void testWriteEndianness();
+	void testWriteBitSteeringExpression2022();
+	void testWriteEndianness();
     void testWriteParameters();
     void testWriteVendorExtensions();
     void testWriteAbstractionReference();
@@ -50,6 +51,10 @@ private slots:
     void testWriteMonitor();
     void testWriteMirroredSlave();
     void testWriteMirroredMaster();
+
+    void testWriteInitiator2022();
+    void testWriteTarget2022();
+	void testWriteMirroredTarget2022();
 
 private:
     QSharedPointer<BusInterface> testbusinterface_;
@@ -98,7 +103,7 @@ void tst_businterfaceWriter::testwriteBusInterfaceNameGroup()
 		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		"</ipxact:busInterface>");
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -119,7 +124,7 @@ void tst_businterfaceWriter::testWriteIsPresent()
 		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
 		"</ipxact:busInterface>");
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -143,7 +148,7 @@ void tst_businterfaceWriter::testWriteAttributes()
         "</ipxact:busInterface>"
         );
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -165,7 +170,7 @@ void tst_businterfaceWriter::testWriteBusType()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -188,7 +193,7 @@ void tst_businterfaceWriter::testWriteConnectionRequired()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -211,7 +216,7 @@ void tst_businterfaceWriter::testWriteBitsInLau()
 		"</ipxact:busInterface>"
 		);	
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -227,7 +232,7 @@ void tst_businterfaceWriter::testWriteBitSteering()
     QMap<QString, QString> bitSteeringAttributes;
     bitSteeringAttributes.insert(QString("testAttribute"), QString("testValue"));
     testbusinterface_->setBitSteeringAttributes(bitSteeringAttributes);
-    testbusinterface_->setBitSteering(BusInterface::BITSTEERING_ON);
+    testbusinterface_->setBitSteering("on");
 
 	QString expectedOutput(
 		"<ipxact:busInterface>"
@@ -238,11 +243,37 @@ void tst_businterfaceWriter::testWriteBitSteering()
 		);
 
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
 
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceWriter::testWriteBitSteeringExpression2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceWriter::testWriteBitSteeringExpression2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QMap<QString, QString> bitSteeringAttributes;
+    bitSteeringAttributes.insert(QString("testAttribute"), QString("testValue"));
+    testbusinterface_->setBitSteeringAttributes(bitSteeringAttributes);
+    testbusinterface_->setBitSteering("1");
+
+    QString expectedOutput(
+        "<ipxact:busInterface>"
+        "<ipxact:name>testbusinterface</ipxact:name>"
+        "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+        "<ipxact:bitSteering testAttribute=\"testValue\">1</ipxact:bitSteering>"
+        "</ipxact:busInterface>"
+    );
+
+
+    BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std22);
+
+    QCOMPARE(output, expectedOutput);
+}
 //-----------------------------------------------------------------------------
 // Function: tst_businterfaceWriter::testWriteEndianness()
 //-----------------------------------------------------------------------------
@@ -261,7 +292,7 @@ void tst_businterfaceWriter::testWriteEndianness()
 		"</ipxact:busInterface>"
 		);	
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -312,7 +343,7 @@ void tst_businterfaceWriter::testWriteParameters()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -346,7 +377,7 @@ void tst_businterfaceWriter::testWriteVendorExtensions()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -381,7 +412,7 @@ void tst_businterfaceWriter::testWriteAbstractionReference()
 		);
 
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -470,7 +501,7 @@ void tst_businterfaceWriter::testWritePortMaps()
     		"</ipxact:abstractionTypes>"
 		"</ipxact:busInterface>"
 		);
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -483,7 +514,7 @@ void tst_businterfaceWriter::testWriteMaster()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<MasterInterface> masterInterface(new MasterInterface());
+    QSharedPointer<InitiatorInterface> masterInterface(new InitiatorInterface());
     masterInterface->setAddressSpaceRef("apb");
 
     testbusinterface_->setInterfaceMode(General::MASTER);
@@ -499,7 +530,7 @@ void tst_businterfaceWriter::testWriteMaster()
 		"</ipxact:busInterface>"
 	);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -512,7 +543,7 @@ void tst_businterfaceWriter::testWriteSlave()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<SlaveInterface> slaveInterface(new SlaveInterface());
+    QSharedPointer<TargetInterface> slaveInterface(new TargetInterface());
     slaveInterface->setMemoryMapRef("ambaAHB");
 
     QSharedPointer<TransparentBridge> bridge(new TransparentBridge());
@@ -521,7 +552,7 @@ void tst_businterfaceWriter::testWriteSlave()
 
     slaveInterface->getBridges()->append(bridge);
 
-    QSharedPointer<SlaveInterface::FileSetRefGroup> fileSetReference(new SlaveInterface::FileSetRefGroup());
+    QSharedPointer<TargetInterface::FileSetRefGroup> fileSetReference(new TargetInterface::FileSetRefGroup());
     fileSetReference->group_ = "group1";
 
     QStringList refs;
@@ -552,7 +583,7 @@ void tst_businterfaceWriter::testWriteSlave()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -578,7 +609,7 @@ void tst_businterfaceWriter::testWriteSystem()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -591,7 +622,7 @@ void tst_businterfaceWriter::testWriteMirroredSystem()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    testbusinterface_->setInterfaceMode(General::MIRROREDSYSTEM);
+    testbusinterface_->setInterfaceMode(General::MIRRORED_SYSTEM);
     testbusinterface_->setSystem("mirroredSystemName");
 
 	QString expectedOutput(
@@ -604,7 +635,7 @@ void tst_businterfaceWriter::testWriteMirroredSystem()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -634,7 +665,7 @@ void tst_businterfaceWriter::testWriteMonitor()
 		"</ipxact:busInterface>"
 		);
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -647,22 +678,21 @@ void tst_businterfaceWriter::testWriteMirroredSlave()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<MirroredSlaveInterface> mirroredSlave(new MirroredSlaveInterface());
+    QSharedPointer<MirroredTargetInterface> mirroredSlave(new MirroredTargetInterface());
     mirroredSlave->setRange("0x00010000");
 
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> firstRemapAddress(
-        new MirroredSlaveInterface::RemapAddress("'h0000"));
+    QSharedPointer<MirroredTargetInterface::RemapAddress> firstRemapAddress(
+        new MirroredTargetInterface::RemapAddress("'h0000"));
     firstRemapAddress->state_ = "decayed";
     firstRemapAddress->remapAttributes_.insert(QString("attribute1"), QString("testValue"));
 
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> seconRemapAddress(
-        new MirroredSlaveInterface::RemapAddress("'hFFFF"));
+    QSharedPointer<MirroredTargetInterface::RemapAddress> seconRemapAddress(
+        new MirroredTargetInterface::RemapAddress("'hFFFF"));
     seconRemapAddress->state_ = "uptodate";
 
     mirroredSlave->getRemapAddresses()->append(firstRemapAddress);
     mirroredSlave->getRemapAddresses()->append(seconRemapAddress);
 
-    testbusinterface_->setInterfaceMode(General::MIRROREDSLAVE);
     testbusinterface_->setMirroredSlave( mirroredSlave );
 
 	QString expectedOutput(
@@ -680,7 +710,7 @@ void tst_businterfaceWriter::testWriteMirroredSlave()
 		);
 
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -693,7 +723,7 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
 	QString output;
 	QXmlStreamWriter xmlStreamWriter(&output);
 
-    testbusinterface_->setInterfaceMode(General::MIRROREDMASTER);
+    testbusinterface_->setInterfaceMode(General::MIRRORED_MASTER);
 
     QString expectedOutput(
         "<ipxact:busInterface>"
@@ -703,7 +733,140 @@ void tst_businterfaceWriter::testWriteMirroredMaster()
         "</ipxact:busInterface>"
         );
 
-	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
+
+	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceWriter::testWriteInitiator2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceWriter::testWriteInitiator2022()
+{
+	QString output;
+	QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<InitiatorInterface> initiatorInterface(new InitiatorInterface());
+	initiatorInterface->setAddressSpaceRef("apb");
+
+    testbusinterface_->setInitiator(initiatorInterface);
+
+	QString expectedOutput(
+		"<ipxact:busInterface>"
+		    "<ipxact:name>testbusinterface</ipxact:name>"
+		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+		    "<ipxact:initiator>"
+		        "<ipxact:addressSpaceRef addressSpaceRef=\"apb\"/>"
+		    "</ipxact:initiator>"
+		"</ipxact:busInterface>"
+	);
+
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std22);
+
+	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceWriter::testWriteTarget2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceWriter::testWriteTarget2022()
+{
+	QString output;
+	QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<TargetInterface> targetInterface(new TargetInterface());
+	targetInterface->setMemoryMapRef("ambaAHB");
+	targetInterface->setModeRefs(QStringList({ "mode1", "mode2" }));
+
+    QSharedPointer<TransparentBridge> bridge(new TransparentBridge());
+    bridge->setInitiatorRef("initiatorBus");
+	bridge->getVendorExtensions()->append(
+		QSharedPointer<VendorExtension>(new Kactus2Value("testExtension", "testValue")));
+	targetInterface->getBridges()->append(bridge);
+
+    QSharedPointer<TargetInterface::FileSetRefGroup> fileSetReference(new TargetInterface::FileSetRefGroup());
+    fileSetReference->group_ = "group1";
+
+    QStringList refs;
+    refs.append("fileset1");
+    refs.append("fileset2");
+    fileSetReference->fileSetRefs_ = refs;
+
+	targetInterface->getFileSetRefGroup()->append(fileSetReference);
+
+    testbusinterface_->setTarget(targetInterface);
+
+	QString expectedOutput(
+		"<ipxact:busInterface>"
+		    "<ipxact:name>testbusinterface</ipxact:name>"
+		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+		    "<ipxact:target>"
+		        "<ipxact:memoryMapRef memoryMapRef=\"ambaAHB\">"
+					"<ipxact:modeRef>mode1</ipxact:modeRef>"
+					"<ipxact:modeRef>mode2</ipxact:modeRef>"
+				"</ipxact:memoryMapRef>"
+		        "<ipxact:transparentBridge initiatorRef=\"initiatorBus\">"
+					"<ipxact:vendorExtensions>"
+						"<testExtension>testValue</testExtension>"
+					"</ipxact:vendorExtensions>"
+		        "</ipxact:transparentBridge>"
+		        "<ipxact:fileSetRefGroup>"
+		            "<ipxact:group>group1</ipxact:group>"
+		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+		        "</ipxact:fileSetRefGroup>"
+		    "</ipxact:target>"
+		"</ipxact:busInterface>"
+		);
+
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std22);
+
+	QCOMPARE(output, expectedOutput);
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testWriteMirroredTarget2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceWriter::testWriteMirroredTarget2022()
+{
+	QString output;
+	QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MirroredTargetInterface> mirroredTarget(new MirroredTargetInterface());
+	mirroredTarget->setRange("0x00010000");
+
+    QSharedPointer<MirroredTargetInterface::RemapAddress> firstRemapAddress(
+        new MirroredTargetInterface::RemapAddress("'h0000"));
+
+    QSharedPointer<MirroredTargetInterface::RemapAddress> seconRemapAddress(
+        new MirroredTargetInterface::RemapAddress("'hFFFF"));
+
+	mirroredTarget->getRemapAddresses()->append(firstRemapAddress);
+	mirroredTarget->getRemapAddresses()->append(seconRemapAddress);
+
+    testbusinterface_->setMirroredTarget(mirroredTarget);
+
+	QString expectedOutput(
+		"<ipxact:busInterface>"
+		    "<ipxact:name>testbusinterface</ipxact:name>"
+		    "<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+		    "<ipxact:mirroredTarget>"
+		        "<ipxact:baseAddresses>"
+					"<ipxact:remapAddresses>"
+						"<ipxact:remapAddress>'h0000</ipxact:remapAddress>"
+					"</ipxact:remapAddresses>"
+					"<ipxact:remapAddresses>"
+						"<ipxact:remapAddress>'hFFFF</ipxact:remapAddress>"
+					"</ipxact:remapAddresses>"
+		            "<ipxact:range>0x00010000</ipxact:range>"
+		        "</ipxact:baseAddresses>"
+		    "</ipxact:mirroredTarget>"
+		"</ipxact:busInterface>"
+		);
+
+
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std22);
 
 	QCOMPARE(output, expectedOutput);
 }

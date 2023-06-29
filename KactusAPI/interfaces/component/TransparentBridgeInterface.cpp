@@ -12,14 +12,14 @@
 #include <TransparentBridgeInterface.h>
 
 #include <IPXACTmodels/Component/TransparentBridge.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 
 namespace
 {
-    QString const DEFAULT_NAME = QLatin1String("");
+    QString const DEFAULT_NAME = QString();
 };
 
 //-----------------------------------------------------------------------------

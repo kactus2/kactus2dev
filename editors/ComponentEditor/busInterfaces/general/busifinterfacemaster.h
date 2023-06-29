@@ -26,7 +26,7 @@ class BusInterface;
 class Component;
 class ExpressionEditor;
 class ExpressionParser;
-class MasterInterface;
+class InitiatorInterface;
 class ParameterFinder;
 
 //-----------------------------------------------------------------------------

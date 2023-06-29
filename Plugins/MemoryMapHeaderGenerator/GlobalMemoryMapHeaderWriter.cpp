@@ -20,9 +20,9 @@
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <QDate>
 #include <QDir>
@@ -177,11 +177,11 @@ void GlobalMemoryMapHeaderWriter::parseInterface(qint64 offset, QTextStream& str
         {
             parseSlaveInterface(offset, component, stream, interface);
         }
-        else if (interfaceMode == General::MIRROREDSLAVE)
+        else if (interfaceMode == General::MIRRORED_SLAVE)
         {
             parseMirroredSlaveInterface(offset, component, stream, interface);
         }
-        else if (interfaceMode == General::MIRROREDMASTER)
+        else if (interfaceMode == General::MIRRORED_MASTER)
         {
             parseMirroredMasterInterface(offset, component, stream, interface);
         }
@@ -218,7 +218,7 @@ void GlobalMemoryMapHeaderWriter::parseMasterInterface(qint64 offset, QSharedPoi
 void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPointer<Component> component,
     QTextStream& stream, QSharedPointer<ActiveInterface> interface)
 {
-    QSharedPointer<SlaveInterface> slave = component->getBusInterface(interface->getBusReference())->getSlave();
+    QSharedPointer<TargetInterface> slave = component->getBusInterface(interface->getBusReference())->getSlave();
     Q_ASSERT(slave);
 
     QSharedPointer<MemoryMap> memMap;
@@ -304,14 +304,14 @@ void GlobalMemoryMapHeaderWriter::parseMirroredSlaveInterface(qint64 offset, QSh
     QString instanceId = getInstanceID(interface->getComponentReference());
     QSharedPointer<ListParameterFinder> finder = createParameterFinder(instanceId, component);
 
-    foreach (QSharedPointer<MirroredSlaveInterface::RemapAddress> remap, 
+    for (QSharedPointer<MirroredTargetInterface::RemapAddress> remap :
         *busInterface->getMirroredSlave()->getRemapAddresses())
     {
         QString remapValue = parsedValueFor(remap->remapAddress_, finder);
         offset += remapValue.toInt();
 
         QList<QSharedPointer<ActiveInterface> > connected = getConnectedInterfaces(interface);
-        foreach (QSharedPointer<ActiveInterface> targetInterface, connected)
+        for (QSharedPointer<ActiveInterface> targetInterface : connected)
         {
             if (!operatedInterfaces_.contains(targetInterface))
             {

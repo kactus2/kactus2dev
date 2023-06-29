@@ -63,7 +63,7 @@ bool BusIfInterfaceMonitor::isValid() const
 
 	// if interface mode is system or mirrored system but group is not defined
 	else if ((interfaceMode_.selected() == General::SYSTEM ||
-		interfaceMode_.selected() == General::MIRROREDSYSTEM) && 
+		interfaceMode_.selected() == General::MIRRORED_SYSTEM) && 
 		(systemGroup_.currentText().isEmpty()))
     {
 		return false;
@@ -96,7 +96,7 @@ void BusIfInterfaceMonitor::refresh()
 	// the system group combo box
 	switch (monitorMode) {
 		case General::SYSTEM:
-		case General::MIRROREDSYSTEM: {
+		case General::MIRRORED_SYSTEM: {
 			systemGroup_.setEnabled(true);
 
 			// find the current bus definition
@@ -194,7 +194,7 @@ void BusIfInterfaceMonitor::onInterfaceModeChange( General::InterfaceMode mode )
 
 	// if selected interface mode is system or mirrored system then enable
 	// the system group combo box
-    if (mode == General::SYSTEM || mode == General::MIRROREDSYSTEM)
+    if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
         systemGroup_.setEnabled(true);
         // find the current bus definition

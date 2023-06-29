@@ -9,7 +9,7 @@
 // Unit test for class BusInterfaceValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
@@ -23,9 +23,9 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
 #include <IPXACTmodels/Component/PortMap.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
@@ -80,6 +80,8 @@ private slots:
     void testHasValidBitsInLau();
     void testHasValidBitsInLau_data();
 
+    void testHasValidBitSteering();
+    void testHasValidBitSteering_data();
     void testHasValidBitSteeringForInterfaceMode();
     void testHasValidBitSteeringForInterfaceMode_data();
 
@@ -134,7 +136,7 @@ void tst_BusInterfaceValidator::testHasValidName()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator->findErrorsIn(foundErrors, testBus, "test");
+        validator->findErrorsIn(foundErrors, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid name specified for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -186,7 +188,7 @@ void tst_BusInterfaceValidator::testHasValidIsPresent()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator->findErrorsIn(foundErrors, testBus, "test");
+        validator->findErrorsIn(foundErrors, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid isPresent set for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -237,7 +239,7 @@ void tst_BusInterfaceValidator::testHasValidBusType()
     QCOMPARE(validator->hasValidBusType(testBus), false);
 
     QVector<QString> foundErrors;
-    validator->findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test", Document::Revision::Std14);
 
     QString expectedError = QObject::tr("Bus definition must be given for bus interface %1 within %2")
         .arg(testBus->name()).arg("test");
@@ -252,7 +254,7 @@ void tst_BusInterfaceValidator::testHasValidBusType()
     QCOMPARE(validator->hasValidBusType(testBus), false);
 
     foundErrors.clear();
-    validator->findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test", Document::Revision::Std14);
 
     expectedError = QObject::tr("Bus definition %1 set for bus interface %2 within %3 could not be found "
         "in the library").arg(testType.toString()).arg(testBus->name()).arg("test");
@@ -274,7 +276,7 @@ void tst_BusInterfaceValidator::testHasValidBusType()
     QCOMPARE(validator->hasValidBusType(testBus), false);
 
     foundErrors.clear();
-    validator->findErrorsIn(foundErrors, testBus, "test");
+    validator->findErrorsIn(foundErrors, testBus, "test", Document::Revision::Std14);
 
     expectedError = QObject::tr("Invalid bus definition set for %1 within %2").arg(testBus->name()).arg("test");
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -312,7 +314,7 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
     QCOMPARE(validator->hasValidAbstractionTypes(testBus), false);
 
     QVector<QString> errorsFound;
-    validator->findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
     QString expectedError = QObject::tr("Abstraction reference must be set for each abstraction type in "
         "bus interface %1").arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -327,7 +329,7 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
     QCOMPARE(validator->hasValidAbstractionTypes(testBus), false);
 
     errorsFound.clear();
-    validator->findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
     expectedError = QObject::tr("Abstraction reference %1 set for bus interface %2 could not be found "
         "in the library").arg(abstractionReference->toString()).arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -396,7 +398,7 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
         QString expectedError = QObject::tr("Invalid view reference %1 set for abstraction type in bus interface "
             "%2").arg(viewName).arg(testBus->name());
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -540,7 +542,7 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString context = tr("%1 bus interface %2").arg(General::interfaceMode2Str(testBus->getInterfaceMode()),
             testBus->name());
@@ -592,7 +594,7 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface()
     QFETCH(bool, createSpace);
     QFETCH(bool, isValid);
 
-    QSharedPointer<MasterInterface> testMaster (new MasterInterface());
+    QSharedPointer<InitiatorInterface> testMaster (new InitiatorInterface());
     testMaster->setAddressSpaceRef(addressSpaceRef);
     testMaster->setBaseAddress(baseAddress);
     testMaster->setIsPresent(masterPresence);
@@ -629,7 +631,7 @@ void tst_BusInterfaceValidator::testHasValidMasterInterface()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid address space reference set for master bus interface %1")
             .arg(testBus->name());
@@ -713,7 +715,7 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
     QFETCH(bool, createFileSet);
     QFETCH(bool, isValid);
 
-    QSharedPointer<SlaveInterface> testSlave (new SlaveInterface());
+    QSharedPointer<TargetInterface> testSlave (new TargetInterface());
     testSlave->setMemoryMapRef(memoryMapRef);
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps (new QList<QSharedPointer<MemoryMap> > ());
@@ -752,7 +754,7 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
 
     if (!fileSetRef.isEmpty())
     {
-        QSharedPointer<SlaveInterface::FileSetRefGroup> testGroup (new SlaveInterface::FileSetRefGroup());
+        QSharedPointer<TargetInterface::FileSetRefGroup> testGroup (new TargetInterface::FileSetRefGroup());
         testGroup->group_ = fileSetRef + " group";
         testGroup->fileSetRefs_.append(fileSetRef);
         testSlave->getFileSetRefGroup()->append(testGroup);
@@ -788,7 +790,7 @@ void tst_BusInterfaceValidator::testHasValidSlaveInterface()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid slave interface set for bus interface %1")
             .arg(testBus->name());
@@ -923,7 +925,7 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("No system group given for system bus interface %1")
             .arg(testBus->name());
@@ -967,13 +969,13 @@ void tst_BusInterfaceValidator::testHasValidMirroredSlaveInterface()
     QFETCH(bool, createState);
     QFETCH(bool, isValid);
 
-    QSharedPointer<MirroredSlaveInterface> testMirrorSlave (new MirroredSlaveInterface());
+    QSharedPointer<MirroredTargetInterface> testMirrorSlave (new MirroredTargetInterface());
     testMirrorSlave->setRange(range);
 
     if (!remapAddress.isEmpty())
     {
-        QSharedPointer<MirroredSlaveInterface::RemapAddress> slaveRemapAddress
-            (new MirroredSlaveInterface::RemapAddress(remapAddress));
+        QSharedPointer<MirroredTargetInterface::RemapAddress> slaveRemapAddress
+            (new MirroredTargetInterface::RemapAddress(remapAddress));
         slaveRemapAddress->state_ = remapStateName;
         testMirrorSlave->getRemapAddresses()->append(slaveRemapAddress);
     }
@@ -1009,7 +1011,7 @@ void tst_BusInterfaceValidator::testHasValidMirroredSlaveInterface()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid mirroredSlave interface set for bus interface %1")
             .arg(testBus->name());
@@ -1124,13 +1126,13 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid interface mode set for monitor bus interface %1")
             .arg(testBus->name());
 
         if (testMonitor->interfaceMode_ != General::SYSTEM &&
-            testMonitor->interfaceMode_ != General::MIRROREDSYSTEM && !systemGroup.isEmpty())
+            testMonitor->interfaceMode_ != General::MIRRORED_SYSTEM && !systemGroup.isEmpty())
         {
             expectedError = QObject::tr("Group cannot be set for monitor bus interface %1 with interface mode "
                 "master, slave, mirrored master or mirrored slave").arg(testBus->name());
@@ -1200,7 +1202,7 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau()
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Invalid bits in LAU set for bus interface %1 within %2")
             .arg(testBus->name()).arg("test");
@@ -1232,22 +1234,103 @@ void tst_BusInterfaceValidator::testHasValidBitsInLau_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_BusInterfaceValidator::testHasValidBitSteering()
+//-----------------------------------------------------------------------------
+void tst_BusInterfaceValidator::testHasValidBitSteering()
+{
+    QFETCH(General::InterfaceMode, interfaceMode);
+    QFETCH(QString, bitSteering);
+    QFETCH(Document::Revision, docRevision);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<BusInterface> testBus(new BusInterface());
+    testBus->setName("testBus");
+    testBus->setInterfaceMode(interfaceMode);
+    testBus->setBitSteering(bitSteering);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(),
+        QSharedPointer<QList<QSharedPointer<View> > >(),
+        QSharedPointer<QList<QSharedPointer<Port> > >(),
+        QSharedPointer<QList<QSharedPointer<AddressSpace> > >(),
+        QSharedPointer<QList<QSharedPointer<MemoryMap> > >(),
+        QSharedPointer<QList<QSharedPointer<BusInterface> > >(),
+        QSharedPointer<QList<QSharedPointer<FileSet> > >(),
+        QSharedPointer<QList<QSharedPointer<RemapState> > >(),
+        0);
+
+    QCOMPARE(validator->hasValidBitSteering(testBus, docRevision), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> errorsFound;
+        validator->findErrorsIn(errorsFound, testBus, "test", docRevision);
+
+        QString expectedError = QObject::tr("Bit steering value '%1' is not valid in bus interface %2 within %3")
+            .arg(bitSteering, testBus->name(), "test");
+
+        if (errorIsNotFoundInErrorList(expectedError, errorsFound))
+        {
+            QFAIL("Error was not found");
+        }
+    }
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusInterfaceValidator::testHasValidBitSteering()
+//-----------------------------------------------------------------------------
+void tst_BusInterfaceValidator::testHasValidBitSteering_data()
+{
+    QTest::addColumn<General::InterfaceMode>("interfaceMode");
+    QTest::addColumn<QString>("bitSteering");
+    QTest::addColumn<Document::Revision>("docRevision");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Bit steering value on is valid for master") << General::MASTER << "on" << 
+        Document::Revision::Std14 << true;
+    QTest::newRow("Bit steering value off is valid for master") << General::MASTER << "off" << 
+        Document::Revision::Std14 << true;
+    QTest::newRow("Empty bit steering value is valid for master") << General::MASTER << "" << 
+        Document::Revision::Std14 << true;
+    QTest::newRow("One in bit steering value on is not valid for master") << General::MASTER << "1" << 
+        Document::Revision::Std14 << false;
+    QTest::newRow("Zero in bit steering value on is not valid for master") << General::MASTER << "0" << 
+        Document::Revision::Std14 << false;
+
+    QTest::newRow("Bit steering value on is not valid for initiator") << General::INITIATOR << "on" << 
+        Document::Revision::Std22 << false;
+    QTest::newRow("Bit steering value off is not valid for initiator") << General::INITIATOR << "off" <<
+        Document::Revision::Std22 << false;
+    QTest::newRow("Empty bit steering value is valid for initiator") << General::INITIATOR << "" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("One in bit steering value on is valid for initiator") << General::INITIATOR << "1" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Zero in bit steering value on is valid for initiator") << General::INITIATOR << "0" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Two in bit steering value on is not valid for initiator") << General::INITIATOR << "2" <<
+        Document::Revision::Std22 << false;
+    QTest::newRow("Expression evaluating to one in bit steering value on is valid for initiator") << 
+        General::INITIATOR << "2-1" << Document::Revision::Std22 << true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
 //-----------------------------------------------------------------------------
 void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
 {
-    QFETCH(QString, interfaceMode);
-    QFETCH(bool, bitSteeringOk);
+    QFETCH(General::InterfaceMode, interfaceMode);
+    QFETCH(Document::Revision, docRevision);
+    QFETCH(QString, bitSteering);
     QFETCH(bool, isValid);
 
     QSharedPointer<BusInterface> testBus (new BusInterface());
     testBus->setName("testBus");
-    testBus->setInterfaceMode(General::str2Interfacemode(interfaceMode, General::INTERFACE_MODE_COUNT));
+    testBus->setInterfaceMode(interfaceMode);
 
-    if (bitSteeringOk)
-    {
-        testBus->setBitSteering(BusInterface::BITSTEERING_ON);
-    }
+    testBus->setBitSteering(bitSteering);
+    
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
     QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
@@ -1259,17 +1342,17 @@ void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
         QSharedPointer<QList<QSharedPointer<RemapState> > > (),
-        0);
+        nullptr);
 
-    QCOMPARE(validator->hasValidBitSteering(testBus), isValid);
+    QCOMPARE(validator->hasValidBitSteering(testBus, docRevision), isValid);
 
     if (!isValid)
     {
         QVector<QString> errorsFound;
-        validator->findErrorsIn(errorsFound, testBus, "test");
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
         QString expectedError = QObject::tr("Bit steering value is not allowed in %1 bus interface %2 within %3")
-            .arg(interfaceMode).arg(testBus->name()).arg("test");
+            .arg(General::interfaceMode2Str(interfaceMode)).arg(testBus->name()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, errorsFound))
         {
@@ -1283,29 +1366,56 @@ void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode()
 //-----------------------------------------------------------------------------
 void tst_BusInterfaceValidator::testHasValidBitSteeringForInterfaceMode_data()
 {
-    QTest::addColumn<QString>("interfaceMode");
-    QTest::addColumn<bool>("bitSteeringOk");
+    QTest::addColumn<General::InterfaceMode>("interfaceMode");
+    QTest::addColumn<QString>("bitSteering");
+    QTest::addColumn<Document::Revision>("docRevision");
     QTest::addColumn<bool>("isValid");
 
-    QTest::newRow("Master interface allows bit steering value") << "master" << true << true;
-    QTest::newRow("Master interface allows unspecified bit steering value") << "master" << false << true;
-    QTest::newRow("Slave interface allows bit steering value") << "slave" << true << true;
-    QTest::newRow("Slave interface allows unspecified bit steering value") << "slave" << false << true;
-    QTest::newRow("System interface does not allow bit steering value") << "system" << true << false;
-    QTest::newRow("System interface allows unspecified bit steering value") << "system" << false << true;
-    QTest::newRow("Mirrored master interface does not allow bit steering value") << "mirroredMaster" << true <<
-        false;
-    QTest::newRow("Mirrored master interface allows unspecified bit steering value") << "mirroredMaster" <<
-        false << true;
-    QTest::newRow("Mirrored slave interface allows bit steering value") << "mirroredSlave" << true << true;
-    QTest::newRow("Mirrored slave interface allows unspecified bit steering value") << "mirroredSlave" << false <<
-        true;
-    QTest::newRow("Mirrored system interface does not allow bit steering value") << "mirroredSystem" << true <<
-        false;
-    QTest::newRow("Mirrored system interface allows unspecified bit steering value") << "mirroredSystem" <<
-        false << true;
-    QTest::newRow("Monitor interface allows bit steering value") << "monitor" << true << true;
-    QTest::newRow("Monitor interface allows unspecified bit steering value") << "monitor" << false << true;
+    QTest::newRow("Master interface allows bit steering value") << General::MASTER << "on" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("Master interface allows unspecified bit steering value") << General::MASTER << "" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("Slave interface allows bit steering value") << General::SLAVE << "on" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("Slave interface allows unspecified bit steering value") << General::SLAVE << "" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("System interface does not allow bit steering value") << General::SYSTEM << "on" <<
+        Document::Revision::Std14 << false;
+    QTest::newRow("System interface allows unspecified bit steering value") << General::SYSTEM << "" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("Mirrored master interface does not allow bit steering value") << General::MIRRORED_MASTER << "on"
+        << Document::Revision::Std14 << false;
+    QTest::newRow("Mirrored master interface allows unspecified bit steering value") << General::MIRRORED_MASTER <<
+        "" << Document::Revision::Std14 << true;
+    QTest::newRow("Mirrored slave interface allows bit steering value") << General::MIRRORED_SLAVE << "on" <<
+        Document::Revision::Std14 << true;
+    QTest::newRow("Mirrored slave interface allows unspecified bit steering value") << General::MIRRORED_SLAVE << 
+        "" << Document::Revision::Std14 << true;
+    QTest::newRow("Mirrored system interface does not allow bit steering value") << General::MIRRORED_SYSTEM << 
+        "on" << Document::Revision::Std14 << false;
+    QTest::newRow("Mirrored system interface allows unspecified bit steering value") << General::MIRRORED_SYSTEM <<
+        "" << Document::Revision::Std14 << true;
+    QTest::newRow("Monitor interface allows bit steering value") << General::MONITOR << "on" << 
+        Document::Revision::Std14 << true;
+    QTest::newRow("Monitor interface allows unspecified bit steering value") << General::MONITOR << "" <<
+        Document::Revision::Std14 << true;
+
+    QTest::newRow("Initiator interface allows bit steering value") << General::INITIATOR << "1" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Initiator interface allows unspecified bit steering value") << General::INITIATOR << "" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Target interface allows bit steering value") << General::TARGET << "1" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Target interface allows unspecified bit steering value") << General::TARGET << "" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Mirrored initiator interface does not allow bit steering value") << General::MIRRORED_INITIATOR 
+        << "1" << Document::Revision::Std22 << false;
+    QTest::newRow("Mirrored initiator interface allows unspecified bit steering value") << General::MIRRORED_INITIATOR
+         << "" << Document::Revision::Std22 << true;
+    QTest::newRow("Mirrored target interface allows bit steering value") << General::MIRRORED_TARGET << "1" <<
+        Document::Revision::Std22 << true;
+    QTest::newRow("Mirrored target interface allows unspecified bit steering value") << General::MIRRORED_TARGET
+        << "" << Document::Revision::Std22 << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -1337,7 +1447,7 @@ void tst_BusInterfaceValidator::testHasValidParameters()
     QCOMPARE(validator->hasValidParameters(testBus), false);
 
     QVector<QString> errorsFound;
-    validator->findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
 
     QString expectedError = QObject::tr("No value specified for %1 %2 within bus interface %3").
         arg(testParameter->elementName()).arg(testParameter->name()).arg(testBus->name());
@@ -1357,7 +1467,7 @@ void tst_BusInterfaceValidator::testHasValidParameters()
     QCOMPARE(validator->hasValidParameters(testBus), false);
 
     errorsFound.clear();
-    validator->findErrorsIn(errorsFound, testBus, "test");
+    validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std14);
     expectedError = QObject::tr("Parameter name %1 is not unique within bus interface %2.")
         .arg(otherParameter->name()).arg(testBus->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
@@ -1374,8 +1484,8 @@ bool tst_BusInterfaceValidator::errorIsNotFoundInErrorList(QString const& expect
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }

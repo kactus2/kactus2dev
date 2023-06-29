@@ -28,11 +28,13 @@ namespace BusinterfaceReader
     /*!
      *  Creates a new businterface from a given bus interface XML description.
      *
-	 *      @param [in] businterfaceNode    XML description of the businterface.
+     *      @param [in] businterfaceNode    XML description of the businterface.
+     *      @param [in] docRevision         The applied IP-XACT standard revision.
      *
 	 *      @return							A new BusInterface.
      */
-    IPXACTMODELS_EXPORT QSharedPointer<BusInterface> createBusinterfaceFrom(QDomNode const& businterfaceNode);
+    IPXACTMODELS_EXPORT QSharedPointer<BusInterface> createBusinterfaceFrom(QDomNode const& businterfaceNode,
+        Document::Revision docRevision);
 
     namespace Details
     {
@@ -125,7 +127,7 @@ namespace BusinterfaceReader
          *      @param [in] newbusinterface		    This interface will have the extracted interface mode.
          */
         void parseInterfaceMode(QDomElement const& busInterfaceElement,
-            QSharedPointer<BusInterface> newbusinterface);
+            QSharedPointer<BusInterface> newbusinterface, Document::Revision docRevision);
 
         /*!
         *  Reads fields for a master interface struct from XML-input.
@@ -134,7 +136,7 @@ namespace BusinterfaceReader
         *      @param [in] masterInterface			The interface object, which fields will be assigned.
         */
         void parseMasterInterface(QDomElement const& masterInterfaceElement,
-            QSharedPointer<MasterInterface> masterInterface);
+            QSharedPointer<InitiatorInterface> masterInterface);
 
         /*!
         *  Reads fields for a slave interface struct from XML-input.
@@ -143,7 +145,7 @@ namespace BusinterfaceReader
         *      @param [in] slaveInterface				The interface object, which fields will be assigned.
         */
         void parseSlaveInterface(QDomElement const& slaveIntefaceElement,
-            QSharedPointer<SlaveInterface> slaveInterface);
+            QSharedPointer<TargetInterface> slaveInterface);
 
         /*!
         *  Reads fields for a mirrored interface struct from XML-input.
@@ -152,7 +154,7 @@ namespace BusinterfaceReader
         *      @param [in] mirroredSlaveInterface		The interface object, which fields will be assigned.
         */
         void parseMirroredSlaveInterface(QDomElement const& mirroredInterfaceElement,
-            QSharedPointer<MirroredSlaveInterface> mirroredSlaveInterface);
+            QSharedPointer<MirroredTargetInterface> mirroredSlaveInterface);
 
         /*!
         *  Reads fields for a monitor interface struct from XML-input.
@@ -163,6 +165,14 @@ namespace BusinterfaceReader
         void parseMonitorInterface(QDomElement const& monitorElement,
             QSharedPointer<BusInterface::MonitorInterface> monitorInterface);
 
+        void parseInitiatorInterface(QDomElement const& initiatorNode, QSharedPointer<InitiatorInterface> initiatorInterface);
+
+        void parseTargetInterface(QDomElement const& targetNode, QSharedPointer<TargetInterface> targetInterface, 
+            Document::Revision docRevision);
+
+        void parseMirroredTargetInterface(QDomElement const& mirroredInterfaceElement, 
+            QSharedPointer<MirroredTargetInterface> mirroredSlaveInterface);
+
         /*!
          *  Read the extensions of the bus interface.
          *
@@ -171,7 +181,9 @@ namespace BusinterfaceReader
          */
         void parseBusInterfaceExtensions(QDomNode const& interfaceNode, QSharedPointer<BusInterface> newInterface);
 
+        QStringList parseModeRefs(QDomElement const& containingElement);
     }
 };
 
 #endif // businterfaceReader_H
+

@@ -166,25 +166,30 @@ bool General::str2Bool(const QString str, bool defaultValue)
 	}
 }
 
-
+//-----------------------------------------------------------------------------
+// Function: General::str2Interfacemode()
+//-----------------------------------------------------------------------------
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue)
 {
-	// check all known interface mode names
-	for (unsigned int i = 0; i < General::INTERFACE_MODE_COUNT; ++i)
+    if (INTERFACE_MODES.values().contains(str))
     {
-		if (str.compare(General::INTERFACE_MODE_NAMES[i], Qt::CaseInsensitive) == 0)
-        {
-			return static_cast<General::InterfaceMode>(i);
-		}
-	}
+        return General::INTERFACE_MODES.key(str);
+    }
 
-	// if there was no match
-	return defaultValue;
+    return General::INTERFACE_MODES_2022.key(str, defaultValue);
 }
 
+//-----------------------------------------------------------------------------
+// Function: General::interfaceMode2Str()
+//-----------------------------------------------------------------------------
 QString General::interfaceMode2Str(const General::InterfaceMode mode)
 {
- 	return General::INTERFACE_MODE_NAMES[mode];
+    if (INTERFACE_MODES.contains(mode))
+    {
+        return General::INTERFACE_MODES.value(mode);
+    }
+
+    return General::INTERFACE_MODES_2022.value(mode, QStringLiteral("undefined"));
 }
 
 //-----------------------------------------------------------------------------
@@ -194,25 +199,25 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
 {
     if (mode == General::MASTER)
     {
-        return MIRROREDMASTER;
+        return MIRRORED_MASTER;
     }
     else if (mode == General::SLAVE)
     {
-        return MIRROREDSLAVE;
+        return MIRRORED_SLAVE;
     }
     else if (mode == General::SYSTEM)
     {
-        return MIRROREDSYSTEM;
+        return MIRRORED_SYSTEM;
     }
-    else if (mode == General::MIRROREDMASTER)
+    else if (mode == General::MIRRORED_MASTER)
     {
         return MASTER;
     }
-    else if (mode == General::MIRROREDSLAVE)
+    else if (mode == General::MIRRORED_SLAVE)
     {
         return SLAVE;
     }
-    else if (mode == General::MIRROREDSYSTEM)
+    else if (mode == General::MIRRORED_SYSTEM)
     {
         return SYSTEM;
     }
@@ -236,9 +241,9 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
     if (mode == General::MASTER)
     {
         //! Master -> slave / mirrored master
-        compatibleModes = { General::SLAVE, General::MIRROREDMASTER, General::MONITOR };
+        compatibleModes = { General::SLAVE, General::MIRRORED_MASTER, General::MONITOR };
     }
-    else if (mode == General::MIRROREDMASTER)
+    else if (mode == General::MIRRORED_MASTER)
     {
         //! Mirrored Master -> Master
         compatibleModes = { General::MASTER, General::MONITOR };
@@ -246,9 +251,9 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
     else if (mode == General::SLAVE)
     {
         //! Slave -> master / mirrored slave
-        compatibleModes = { General::MASTER, General::MIRROREDSLAVE, General::MONITOR };
+        compatibleModes = { General::MASTER, General::MIRRORED_SLAVE, General::MONITOR };
     }
-    else if (mode == General::MIRROREDSLAVE)
+    else if (mode == General::MIRRORED_SLAVE)
     {
         //! Mirrored slave -> slave
         compatibleModes = { General::SLAVE, General::MONITOR };
@@ -256,9 +261,9 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
     else if (mode == General::SYSTEM)
     {
         //! System -> Mirrored system
-        compatibleModes = { General::MIRROREDSYSTEM, General::MONITOR };
+        compatibleModes = { General::MIRRORED_SYSTEM, General::MONITOR };
     }
-    else if (mode == General::MIRROREDSYSTEM)
+    else if (mode == General::MIRRORED_SYSTEM)
     {
         //! Mirrored System -> System
         compatibleModes = { General::SYSTEM, General::MONITOR };
@@ -268,8 +273,8 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
         //! Monitor Mode -> Mode
         //!     if Mode == System || MirroredSystem
         //!         -> System groups match
-        compatibleModes = { General::MASTER, General::MIRROREDMASTER, General::SLAVE, General::MIRROREDSLAVE,
-            General::SYSTEM, General::MIRROREDSYSTEM };
+        compatibleModes = { General::MASTER, General::MIRRORED_MASTER, General::SLAVE, General::MIRRORED_SLAVE,
+            General::SYSTEM, General::MIRRORED_SYSTEM };
     }
 
     return compatibleModes;

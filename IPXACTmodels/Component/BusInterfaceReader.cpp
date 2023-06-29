@@ -11,9 +11,9 @@
 
 #include "BusInterfaceReader.h"
 
-#include "MasterInterface.h"
-#include "MirroredSlaveInterface.h"
-#include "SlaveInterface.h"
+#include "InitiatorInterface.h"
+#include "MirroredTargetInterface.h"
+#include "TargetInterface.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ParameterReader.h>
@@ -28,7 +28,8 @@
 //-----------------------------------------------------------------------------
 // Function: BusinterfaceReader::createbusinterfaceFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode const& businterfaceNode)
+QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode const& businterfaceNode,
+    Document::Revision docRevision)
 {
 	QSharedPointer<BusInterface> newbusinterface (new BusInterface());
 
@@ -36,9 +37,11 @@ QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode
 
     NameGroupReader::parseNameGroup(businterfaceNode, newbusinterface);
 
-    auto presenceElement = businterfaceNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
-    newbusinterface->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
-
+    if (docRevision == Document::Revision::Std14)
+    {
+        auto presenceElement = businterfaceNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
+        newbusinterface->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
+    }
 
     QDomElement businterfaceElement = businterfaceNode.toElement();
     
@@ -46,7 +49,7 @@ QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode
 
     Details::parseAbstractionTypes(businterfaceElement, newbusinterface);
 
-    Details::parseInterfaceMode(businterfaceElement, newbusinterface);
+    Details::parseInterfaceMode(businterfaceElement, newbusinterface, docRevision);
 
     Details::parseConnectionRequired(businterfaceElement, newbusinterface);
 
@@ -111,14 +114,8 @@ void BusinterfaceReader::Details::parseBitSteering(QDomElement& businterfaceElem
     if (!bitSteeringElement.isNull())
     {
         QString bitSteering = bitSteeringElement.childNodes().at(0).nodeValue();
-        if (bitSteering == QLatin1String("on"))
-        {
-            newbusinterface->setBitSteering(BusInterface::BITSTEERING_ON);
-        }
-        else if (bitSteering == QLatin1String("off"))
-        {
-            newbusinterface->setBitSteering(BusInterface::BITSTEERING_OFF);
-        }
+
+        newbusinterface->setBitSteering(bitSteering);
 
         newbusinterface->setBitSteeringAttributes(CommonItemsReader::parseAttributes(bitSteeringElement));
     }
@@ -314,64 +311,103 @@ void BusinterfaceReader::Details::parsePhysicalPort(QDomElement const& physicalP
 // Function: BusinterfaceReader::parseInterfaceMode()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parseInterfaceMode(QDomElement const& busInterfaceElement,
-    QSharedPointer<BusInterface> newbusinterface)
+    QSharedPointer<BusInterface> newbusinterface, Document::Revision docRevision)
 {
-    QDomElement masterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:master"));
-	if (!masterNode.isNull())
-	{
-		QSharedPointer<MasterInterface> newmode(new MasterInterface());
-        parseMasterInterface(masterNode, newmode);
-        
-        newbusinterface->setInterfaceMode(General::MASTER);
-		newbusinterface->setMaster(newmode);
-        return;
-	}
+    if (docRevision == Document::Revision::Std14)
+    {
+        QDomElement masterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:master"));
+        if (!masterNode.isNull())
+        {
+            QSharedPointer<InitiatorInterface> newmode(new InitiatorInterface());
+            parseMasterInterface(masterNode, newmode);
 
-	QDomElement slaveNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:slave"));
-    if (!slaveNode.isNull())
-	{
-		QSharedPointer<SlaveInterface> newmode(new SlaveInterface());
-		parseSlaveInterface(slaveNode, newmode);
+            newbusinterface->setMaster(newmode);
+            return;
+        }
 
-        newbusinterface->setInterfaceMode(General::SLAVE);
-		newbusinterface->setSlave(newmode);
-        return;
-	}
+        QDomElement slaveNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:slave"));
+        if (!slaveNode.isNull())
+        {
+            QSharedPointer<TargetInterface> newmode(new TargetInterface());
+            parseSlaveInterface(slaveNode, newmode);
+
+            newbusinterface->setSlave(newmode);
+            return;
+        }
+
+        QDomElement mirroredMasterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredMaster"));
+        if (!mirroredMasterNode.isNull())
+        {
+            newbusinterface->setInterfaceMode(General::MIRRORED_MASTER);
+            return;
+        }
+
+        QDomElement mirroredSlaveNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredSlave"));
+        if (!mirroredSlaveNode.isNull())
+        {
+            QSharedPointer<MirroredTargetInterface> newmode(new MirroredTargetInterface());
+            parseMirroredSlaveInterface(mirroredSlaveNode, newmode);
+
+            newbusinterface->setMirroredSlave(newmode);
+            return;
+        }
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        QDomElement initiatorNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:initiator"));
+        if (!initiatorNode.isNull())
+        {
+            QSharedPointer<InitiatorInterface> newmode(new InitiatorInterface());
+            parseInitiatorInterface(initiatorNode, newmode);
+
+            newbusinterface->setInitiator(newmode);
+            return;
+        }
+
+        QDomElement targetNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:target"));
+        if (!targetNode.isNull())
+        {
+            QSharedPointer<TargetInterface> newmode(new TargetInterface());
+            parseTargetInterface(targetNode, newmode, Document::Revision::Std22);
+
+            newbusinterface->setTarget(newmode);
+            return;
+        }
+
+        QDomElement mirroredTargetNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredTarget"));
+        if (!mirroredTargetNode.isNull())
+        {
+            QSharedPointer<MirroredTargetInterface> newmode(new MirroredTargetInterface());
+            parseMirroredTargetInterface(mirroredTargetNode, newmode);
+
+            newbusinterface->setMirroredTarget(newmode);
+            return;
+        }
+
+        QDomElement mirroredInitiatorNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredInitiator"));
+        if (!mirroredInitiatorNode.isNull())
+        {
+            newbusinterface->setInterfaceMode(General::MIRRORED_INITIATOR);
+            return;
+        }
+    }
 
     QDomElement systemNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:system"));
     if (!systemNode.isNull())
     {
         QString systemGroup = systemNode.firstChildElement(QStringLiteral("ipxact:group")).firstChild().nodeValue();
         
-        newbusinterface->setInterfaceMode(General::SYSTEM);
         newbusinterface->setSystem(systemGroup);
         return;
     }
 
-    QDomElement mirroredMasterNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredMaster"));
-    if (!mirroredMasterNode.isNull())
-    {		
-        newbusinterface->setInterfaceMode(General::MIRROREDMASTER);
-        return;
-    }
-
-    QDomElement mirroredSlaveNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredSlave"));
-	if (!mirroredSlaveNode.isNull())
-	{
-		QSharedPointer<MirroredSlaveInterface> newmode(new MirroredSlaveInterface());
-		parseMirroredSlaveInterface(mirroredSlaveNode, newmode);
-
-        newbusinterface->setInterfaceMode(General::MIRROREDSLAVE);
-		newbusinterface->setMirroredSlave(newmode);
-        return;
-	}
 
     QDomElement mirroredSystemNode = busInterfaceElement.firstChildElement(QStringLiteral("ipxact:mirroredSystem"));
 	if (!mirroredSystemNode.isNull())
 	{
         QString systemGroup = mirroredSystemNode.firstChildElement(QStringLiteral("ipxact:group")).firstChild().nodeValue();
         
-        newbusinterface->setInterfaceMode(General::MIRROREDSYSTEM);
+        newbusinterface->setInterfaceMode(General::MIRRORED_SYSTEM);
         newbusinterface->setSystem(systemGroup);
         return;
 	}
@@ -382,7 +418,6 @@ void BusinterfaceReader::Details::parseInterfaceMode(QDomElement const& busInter
         QSharedPointer<BusInterface::MonitorInterface> newmode(new BusInterface::MonitorInterface());
         parseMonitorInterface(monitorNode, newmode);
 
-        newbusinterface->setInterfaceMode(General::MONITOR);
         newbusinterface->setMonitor(newmode);        
     }
 }
@@ -391,14 +426,11 @@ void BusinterfaceReader::Details::parseInterfaceMode(QDomElement const& busInter
 // Function: BusinterfaceReader::parseMasterInterface()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parseMasterInterface(QDomElement const& masterInterfaceElement,
-    QSharedPointer<MasterInterface> masterInterface)
+    QSharedPointer<InitiatorInterface> masterInterface)
 {
     QDomElement addressSpaceRefElement = masterInterfaceElement.firstChildElement(QStringLiteral("ipxact:addressSpaceRef"));
  
     QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("addressSpaceRef"));
-
-        addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("ipxact:addressSpaceRef"));
-    
 
     masterInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
 
@@ -410,71 +442,24 @@ void BusinterfaceReader::Details::parseMasterInterface(QDomElement const& master
 
     QDomElement baseAddressElement = addressSpaceRefElement.firstChildElement(QStringLiteral("ipxact:baseAddress"));
 
-        QString baseAddress = baseAddressElement.firstChild().nodeValue();
-        masterInterface->setBaseAddress(XmlUtils::removeWhiteSpace(baseAddress));
-    
+    QString baseAddress = baseAddressElement.firstChild().nodeValue();
+    masterInterface->setBaseAddress(XmlUtils::removeWhiteSpace(baseAddress));
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusinterfaceReader::parseSlaveInterface()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parseSlaveInterface(QDomElement const& slaveIntefaceElement,
-    QSharedPointer<SlaveInterface> slaveInterface)
+    QSharedPointer<TargetInterface> slaveInterface)
 {
-    QDomElement memoryMapRefElement = slaveIntefaceElement.firstChildElement(QStringLiteral("ipxact:memoryMapRef"));
-
-        QString memoryMapRef = memoryMapRefElement.attribute(QStringLiteral("memoryMapRef"));
-        slaveInterface->setMemoryMapRef(XmlUtils::removeWhiteSpace(memoryMapRef));
-    
-
-    QDomNodeList bridgeNodes = slaveIntefaceElement.elementsByTagName(QStringLiteral("ipxact:transparentBridge"));
-    int bridgeCount = bridgeNodes.count();
-    for (int i = 0; i < bridgeCount; i++)
-    {
-        QDomElement bridgeElement = bridgeNodes.at(i).toElement();
-  
-        QSharedPointer<TransparentBridge> newBridge(new TransparentBridge());
-        newBridge->setMasterRef(XmlUtils::removeWhiteSpace(bridgeElement.attribute(QStringLiteral("masterRef"))));
-
-        QString bridgePresence = bridgeElement.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
-        if (!bridgePresence.isEmpty())
-        {
-            newBridge->setIsPresent(bridgePresence);
-        }
-
-        // Another bridge is extracted.
-        slaveInterface->getBridges()->append(newBridge);
-    }
-
-    QDomNodeList fileSetRefGroupNodes = slaveIntefaceElement.elementsByTagName(QStringLiteral("ipxact:fileSetRefGroup"));
-    int filesetRefCount = fileSetRefGroupNodes.count();
-	// Go through all child elements.
-    for (int i = 0; i < filesetRefCount; i++)
-    {
-        QDomElement fileSetRefElement = fileSetRefGroupNodes.at(i).toElement();
-
-        QSharedPointer<SlaveInterface::FileSetRefGroup> fileSetGroup(new SlaveInterface::FileSetRefGroup());
-
-        QDomNode groupNode = fileSetRefElement.firstChildElement(QStringLiteral("ipxact:group"));
-        fileSetGroup->group_ = XmlUtils::removeWhiteSpace(groupNode.firstChild().nodeValue());
-
-        QDomNodeList filesetNodes = fileSetRefElement.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
-        int filesetNodeCount = filesetNodes.count();
-        for (int j = 0; j < filesetNodeCount; j++)
-        {              
-              fileSetGroup->fileSetRefs_.append(filesetNodes.at(j).firstChild().nodeValue());
-        }
-
-        // Another file set ref group is extracted.
-        slaveInterface->getFileSetRefGroup()->append( fileSetGroup );
-	}
+    parseTargetInterface(slaveIntefaceElement, slaveInterface, Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusinterfaceReader::parseMirroredSlaveInterface()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parseMirroredSlaveInterface(QDomElement const& mirroredInterfaceElement,
-    QSharedPointer<MirroredSlaveInterface> mirroredSlaveInterface)
+    QSharedPointer<MirroredTargetInterface> mirroredSlaveInterface)
 {
     QDomElement baseAddressElement = mirroredInterfaceElement.firstChildElement(QStringLiteral("ipxact:baseAddresses"));
 
@@ -484,23 +469,163 @@ void BusinterfaceReader::Details::parseMirroredSlaveInterface(QDomElement const&
     }
 
     QDomNodeList remapAddressNodes = baseAddressElement.elementsByTagName(QStringLiteral("ipxact:remapAddress"));
-    int remapAddressCount = remapAddressNodes.count();
-    for (int i = 0; i < remapAddressCount; i++)
-    { 
+    const int REMAP_ADDRESSES_COUNT = remapAddressNodes.count();
+    for (int i = 0; i < REMAP_ADDRESSES_COUNT; ++i)
+    {
         QDomNode remapAddressNode = remapAddressNodes.at(i);
-        QString remapAddress = remapAddressNode.childNodes().at(0).nodeValue();
+        QString remapAddress = remapAddressNode.firstChild().nodeValue();
 
-        QSharedPointer<MirroredSlaveInterface::RemapAddress> remap(
-            new MirroredSlaveInterface::RemapAddress(remapAddress));
+        QSharedPointer<MirroredTargetInterface::RemapAddress> remap(
+            new MirroredTargetInterface::RemapAddress(remapAddress));
 
         remap->remapAttributes_ = CommonItemsReader::parseAttributes(remapAddressNode);
         remap->state_ = remap->remapAttributes_.take(QStringLiteral("state"));
 
-        mirroredSlaveInterface->getRemapAddresses()->append(remap);	
+        mirroredSlaveInterface->getRemapAddresses()->append(remap);
     }
-   
+
     QDomNode rangeNode = baseAddressElement.firstChildElement(QStringLiteral("ipxact:range"));
-    mirroredSlaveInterface->setRange(rangeNode.firstChild().nodeValue() );
+    mirroredSlaveInterface->setRange(rangeNode.firstChild().nodeValue());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseInitiatorInterface()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseInitiatorInterface(QDomElement const& initiatorNode, 
+    QSharedPointer<InitiatorInterface> initiatorInterface)
+{
+    QDomElement addressSpaceRefElement = initiatorNode.firstChildElement(QStringLiteral("ipxact:addressSpaceRef"));
+
+    QString addressSpaceRef = addressSpaceRefElement.attribute(QStringLiteral("addressSpaceRef"));
+
+    initiatorInterface->setAddressSpaceRef(XmlUtils::removeWhiteSpace(addressSpaceRef));
+
+    CommonItemsReader::parseVendorExtensions(addressSpaceRefElement, initiatorInterface);
+
+    QDomElement baseAddressElement = addressSpaceRefElement.firstChildElement(QStringLiteral("ipxact:baseAddress"));
+
+    QString baseAddress = baseAddressElement.firstChild().nodeValue();
+    initiatorInterface->setBaseAddress(XmlUtils::removeWhiteSpace(baseAddress));
+
+    initiatorInterface->setModeRefs(parseModeRefs(addressSpaceRefElement));
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseTargetInterface()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseTargetInterface(QDomElement const& targetNode,
+    QSharedPointer<TargetInterface> targetInterface, Document::Revision docRevision)
+{
+    QDomElement memoryMapRefElement = targetNode.firstChildElement(QStringLiteral("ipxact:memoryMapRef"));
+
+    QString memoryMapRef = memoryMapRefElement.attribute(QStringLiteral("memoryMapRef"));
+    targetInterface->setMemoryMapRef(XmlUtils::removeWhiteSpace(memoryMapRef));
+
+    targetInterface->setModeRefs(parseModeRefs(memoryMapRefElement));
+
+    QDomNodeList bridgeNodes = targetNode.elementsByTagName(QStringLiteral("ipxact:transparentBridge"));
+    int bridgeCount = bridgeNodes.count();
+    for (int i = 0; i < bridgeCount; i++)
+    {
+        QDomElement bridgeElement = bridgeNodes.at(i).toElement();
+
+        QSharedPointer<TransparentBridge> newBridge(new TransparentBridge());
+
+        auto attributeName = QStringLiteral("initiatorRef");
+        if (docRevision == Document::Revision::Std14)
+        {
+            attributeName = QStringLiteral("masterRef");
+        }
+
+        newBridge->setInitiatorRef(XmlUtils::removeWhiteSpace(bridgeElement.attribute(attributeName)));
+
+        if (docRevision == Document::Revision::Std14)
+        {
+            newBridge->setIsPresent(CommonItemsReader::parseIsPresent(bridgeElement.firstChildElement(
+                QStringLiteral("ipxact:isPresent"))));
+        }
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            CommonItemsReader::parseVendorExtensions(bridgeElement, newBridge);
+        }
+
+        // Another bridge is extracted.
+        targetInterface->getBridges()->append(newBridge);
+    }
+
+    QDomNodeList fileSetRefGroupNodes = targetNode.elementsByTagName(QStringLiteral("ipxact:fileSetRefGroup"));
+    int filesetRefCount = fileSetRefGroupNodes.count();
+    // Go through all child elements.
+    for (int i = 0; i < filesetRefCount; i++)
+    {
+        QDomElement fileSetRefElement = fileSetRefGroupNodes.at(i).toElement();
+
+        QSharedPointer<TargetInterface::FileSetRefGroup> fileSetGroup(new TargetInterface::FileSetRefGroup());
+
+        QDomNode groupNode = fileSetRefElement.firstChildElement(QStringLiteral("ipxact:group"));
+        fileSetGroup->group_ = XmlUtils::removeWhiteSpace(groupNode.firstChild().nodeValue());
+
+        QDomNodeList filesetNodes = fileSetRefElement.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
+        int filesetNodeCount = filesetNodes.count();
+        for (int j = 0; j < filesetNodeCount; j++)
+        {
+            fileSetGroup->fileSetRefs_.append(filesetNodes.at(j).firstChild().nodeValue());
+        }
+
+        // Another file set ref group is extracted.
+        targetInterface->getFileSetRefGroup()->append(fileSetGroup);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::parseMirroredTargetInterface()
+//-----------------------------------------------------------------------------
+void BusinterfaceReader::Details::parseMirroredTargetInterface(QDomElement const& mirroredInterfaceElement,
+    QSharedPointer<MirroredTargetInterface> mirroredSlaveInterface)
+{
+    QDomElement baseAddressElement = mirroredInterfaceElement.firstChildElement(QStringLiteral("ipxact:baseAddresses"));
+
+    if (baseAddressElement.isNull())
+    {
+        return;
+    }
+
+
+    QDomNodeList remapAddressesNodes = baseAddressElement.elementsByTagName(QStringLiteral("ipxact:remapAddresses"));
+    const int REMAP_ADDRESS_COUNT = remapAddressesNodes.count();
+    for (int i = 0; i < REMAP_ADDRESS_COUNT; ++i)
+    {
+        QDomElement remapAddressesElement = remapAddressesNodes.at(i).toElement();
+
+        QDomNode remapAddressNode = remapAddressesElement.firstChildElement(QStringLiteral("ipxact:remapAddress"));
+        QString remapAddress = remapAddressNode.firstChild().nodeValue();
+
+        QSharedPointer<MirroredTargetInterface::RemapAddress> remap(
+            new MirroredTargetInterface::RemapAddress(remapAddress));
+
+        remap->modeRefs_ = parseModeRefs(remapAddressesElement);
+
+        auto modeRefNodes = remapAddressesElement.elementsByTagName(QStringLiteral("ipxact:modeRef"));
+        const int MODE_COUNT = modeRefNodes.count();
+        for (int i = 0; i < MODE_COUNT; ++i)
+        {
+            auto modeNode = modeRefNodes.at(i);
+            
+            auto priority = modeNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
+            if (priority.isEmpty() == false)
+            {
+                auto modeRef = modeNode.firstChild().nodeValue();
+                remap->priorities_.insert(modeRef, priority.toUInt());
+            }
+        }
+
+
+        mirroredSlaveInterface->getRemapAddresses()->append(remap);
+    }
+
+    QDomNode rangeNode = baseAddressElement.firstChildElement(QStringLiteral("ipxact:range"));
+    mirroredSlaveInterface->setRange(rangeNode.firstChild().nodeValue());
 }
 
 //-----------------------------------------------------------------------------
@@ -530,4 +655,23 @@ void BusinterfaceReader::Details::parseBusInterfaceExtensions(QDomNode const& in
     }
 
     CommonItemsReader::parseVendorExtensions(interfaceNode, newInterface);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusinterfaceReader::Details::parseModeRefs()
+//-----------------------------------------------------------------------------
+QStringList BusinterfaceReader::Details::parseModeRefs(QDomElement const& containingElement)
+{
+    QStringList modeRefs;
+    auto modeRefNodes = containingElement.elementsByTagName(QStringLiteral("ipxact:modeRef"));
+
+    const int MODE_COUNT = modeRefNodes.count();
+    for (int i = 0; i < MODE_COUNT; ++i)
+    {
+        auto modeNode = modeRefNodes.at(i);
+
+        modeRefs.append(modeNode.firstChild().nodeValue());
+    }
+
+    return modeRefs;
 }

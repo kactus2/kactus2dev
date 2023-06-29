@@ -12,9 +12,9 @@
 #include <IPXACTmodels/Component/BusInterfaceReader.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -32,6 +32,7 @@ private slots:
     void testReadSimplebusinterface();
 	void testReadIsPresent();
 	void testReadBusType();
+
 	void testReadSlave();
 	void testReadMaster();
 	void testReadSystem();
@@ -39,10 +40,18 @@ private slots:
 	void testReadMirroredMaster();
 	void testReadMirroredSystem();
 	void testReadMonitor();
+
+	void testReadInitiator2022();
+	void testReadTarget2022();
+	void testReadMirroredTarget2022();
+	void testReadMirroredInitiator2022();
+
 	void testReadAttributes();
 	void testReadConnectionRequired();
 	void testReadBitsInLau();
 	void testReadBitSteering();
+	void testReadBitSteeringExpression2022();
+
 	void testReadEndianness();
 	void testReadParameters();
 	void testReadVendorExtensions();
@@ -77,7 +86,8 @@ void tst_businterfaceReader::testReadSimplebusinterface()
 
     QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QCOMPARE(testbusinterface->name(), QString("businterface"));
     QCOMPARE(testbusinterface->displayName(), QString("viewDisplay"));
@@ -102,7 +112,8 @@ void tst_businterfaceReader::testReadIsPresent()
 
     QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QCOMPARE(testbusinterface->name(), QString("testbusinterface"));
     QCOMPARE(testbusinterface->getIsPresent(), QString("4-3"));
@@ -124,7 +135,8 @@ void tst_businterfaceReader::testReadBusType()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 	VLNV refVLNV = VLNV(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "clock", "1.0");
 
     ConfigurableVLNVReference configurableVLNV (refVLNV);
@@ -159,14 +171,15 @@ void tst_businterfaceReader::testReadSlave()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getSlave()->getMemoryMapRef(), QString("ambaAHB"));
 	QSharedPointer<TransparentBridge> bridge = testbusinterface->getSlave()->getBridges()->first();
 	QCOMPARE(bridge->getMasterRef(), QString("masterBus"));
 	QCOMPARE(bridge->getIsPresent(), QString("1"));
 
-	QSharedPointer<SlaveInterface::FileSetRefGroup> refg = testbusinterface->getSlave()->getFileSetRefGroup()->first();
+	QSharedPointer<TargetInterface::FileSetRefGroup> refg = testbusinterface->getSlave()->getFileSetRefGroup()->first();
 	QCOMPARE(refg->group_, QString("testGroup"));
 	QCOMPARE(refg->fileSetRefs_.size(), 2);
 	QCOMPARE(refg->fileSetRefs_.first(), QString("fileset1"));
@@ -181,7 +194,10 @@ void tst_businterfaceReader::testReadMaster()
 	QString documentContent(
 		"<ipxact:busInterface>"
 		    "<ipxact:master>"
-		        "<ipxact:addressSpaceRef ipxact:addressSpaceRef=\"apb\"/>"
+		        "<ipxact:addressSpaceRef addressSpaceRef=\"apb\">"
+					"<ipxact:isPresent>1</ipxact:isPresent>"
+					"<ipxact:baseAddress>16</ipxact:baseAddress>" 
+				"</ipxact:addressSpaceRef >"
 		    "</ipxact:master>"
 		"</ipxact:busInterface>"
 		);
@@ -192,9 +208,12 @@ void tst_businterfaceReader::testReadMaster()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
-	QCOMPARE(testbusinterface->getMaster()->getAddressSpaceRef(), QString("apb"));
+    QCOMPARE(testbusinterface->getMaster()->getAddressSpaceRef(), QString("apb"));
+    QCOMPARE(testbusinterface->getMaster()->getIsPresent(), QString("1"));
+    QCOMPARE(testbusinterface->getMaster()->getBaseAddress(), QString("16"));
 }
 
 //-----------------------------------------------------------------------------
@@ -216,7 +235,8 @@ void tst_businterfaceReader::testReadSystem()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getSystem(), QString("testSystemGroup"));
 }
@@ -244,14 +264,15 @@ void tst_businterfaceReader::testReadMirroredSlave()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> firstRemapAddress =
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
+    QSharedPointer<MirroredTargetInterface::RemapAddress> firstRemapAddress =
         testbusinterface->getMirroredSlave()->getRemapAddresses()->first();
 
 	QCOMPARE(firstRemapAddress->remapAddress_, QString("'h0000"));
 	QCOMPARE(firstRemapAddress->state_, QString("decayed"));
 
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> secondRemapAddress =
+    QSharedPointer<MirroredTargetInterface::RemapAddress> secondRemapAddress =
         testbusinterface->getMirroredSlave()->getRemapAddresses()->last();
 
 	QCOMPARE(secondRemapAddress->remapAddress_, QString("'hFFFF"));
@@ -279,10 +300,11 @@ void tst_businterfaceReader::testReadMirroredMaster()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
-    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRROREDMASTER);
-    QCOMPARE(testbusinterface->getMaster(), QSharedPointer<MasterInterface>());
+    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRRORED_MASTER);
+    QCOMPARE(testbusinterface->getMaster(), nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -304,10 +326,11 @@ void tst_businterfaceReader::testReadMirroredSystem()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getSystem(), QString("testSystemGroup"));
-    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRROREDSYSTEM);
+    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRRORED_SYSTEM);
 }
 
 //-----------------------------------------------------------------------------
@@ -329,10 +352,168 @@ void tst_businterfaceReader::testReadMonitor()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getMonitor()->group_, QString("testGroup"));
 	QCOMPARE(testbusinterface->getMonitor()->interfaceMode_, General::SYSTEM);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadInitiator2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadInitiator2022()
+{
+	QString documentContent(
+		"<ipxact:busInterface>"
+		    "<ipxact:initiator>"
+		        "<ipxact:addressSpaceRef addressSpaceRef=\"apb\">"
+					"<ipxact:vendorExtensions>"
+        				"<testExtension testAttribute=\"attributeValue\"/>"
+					"</ipxact:vendorExtensions>"
+					"<ipxact:baseAddress>8</ipxact:baseAddress>"
+					"<ipxact:modeRef>firstMode</ipxact:modeRef>"
+					"<ipxact:modeRef>secondMode</ipxact:modeRef>"
+				"</ipxact:addressSpaceRef>"
+		    "</ipxact:initiator>"
+		"</ipxact:busInterface>"
+		);
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std22);
+
+    QCOMPARE(testbusinterface->getInitiator()->getAddressSpaceRef(), QString("apb"));
+    QCOMPARE(testbusinterface->getInitiator()->getVendorExtensions()->count(), 1);
+    QCOMPARE(testbusinterface->getInitiator()->getBaseAddress(), QString("8"));
+    QCOMPARE(testbusinterface->getInitiator()->getModeRefs().count(), 2);
+    QCOMPARE(testbusinterface->getInitiator()->getModeRefs().first(), QString("firstMode"));
+    QCOMPARE(testbusinterface->getInitiator()->getModeRefs().last(), QString("secondMode"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadTarget2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadTarget2022()
+{
+	QString documentContent(
+		"<ipxact:busInterface>"
+		    "<ipxact:target>"
+		        "<ipxact:memoryMapRef memoryMapRef=\"ambaAHB\">"
+					"<ipxact:modeRef>firstMode</ipxact:modeRef>"
+					"<ipxact:modeRef>secondMode</ipxact:modeRef>"
+				"</ipxact:memoryMapRef>"
+		        "<ipxact:transparentBridge initiatorRef=\"initiatorBus\">"
+					"<ipxact:vendorExtensions>"
+        				"<testExtension testAttribute=\"attributeValue\"/>"
+					"</ipxact:vendorExtensions>"
+		        "</ipxact:transparentBridge>"
+		        "<ipxact:fileSetRefGroup>"
+		            "<ipxact:group>testGroup</ipxact:group>"
+		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+		        "</ipxact:fileSetRefGroup>"
+		    "</ipxact:target>"
+		"</ipxact:busInterface>"
+		);
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std22);
+
+    QCOMPARE(testbusinterface->getTarget()->getMemoryMapRef(), QString("ambaAHB"));
+    QCOMPARE(testbusinterface->getTarget()->getModeRefs().count(), 2);
+    QCOMPARE(testbusinterface->getTarget()->getModeRefs().first(), QString("firstMode"));
+    QCOMPARE(testbusinterface->getTarget()->getModeRefs().last(), QString("secondMode"));
+
+    QSharedPointer<TransparentBridge> bridge = testbusinterface->getTarget()->getBridges()->first();
+    QCOMPARE(bridge->getInitiatorRef(), QString("initiatorBus"));
+    QCOMPARE(bridge->getVendorExtensions()->count(), 1);
+
+    QSharedPointer<TargetInterface::FileSetRefGroup> refg = testbusinterface->getTarget()->getFileSetRefGroup()->first();
+    QCOMPARE(refg->group_, QString("testGroup"));
+    QCOMPARE(refg->fileSetRefs_.size(), 2);
+    QCOMPARE(refg->fileSetRefs_.first(), QString("fileset1"));
+    QCOMPARE(refg->fileSetRefs_.last(), QString("fileset2"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadMirroredTarget2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadMirroredTarget2022()
+{
+	QString documentContent(
+		"<ipxact:busInterface>"
+		    "<ipxact:mirroredTarget>"
+		        "<ipxact:baseAddresses>"
+		            "<ipxact:remapAddresses>"
+						"<ipxact:remapAddress>'h0000</ipxact:remapAddress>"
+						"<ipxact:modeRef>firstMode</ipxact:modeRef>"
+						"<ipxact:modeRef priority=\"2\">secondMode</ipxact:modeRef>"
+					"</ipxact:remapAddresses>"
+		            "<ipxact:remapAddresses>"
+						"<ipxact:remapAddress>'hFFFF</ipxact:remapAddress>"
+						"<ipxact:modeRef>firstMode</ipxact:modeRef>"
+					"</ipxact:remapAddresses>"
+	                "<ipxact:range>'h00010000</ipxact:range>"
+	            "</ipxact:baseAddresses>"
+	        "</ipxact:mirroredTarget>"
+		"</ipxact:busInterface>"
+		);
+
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std22);
+    QSharedPointer<MirroredTargetInterface::RemapAddress> firstRemapAddress =
+        testbusinterface->getMirroredSlave()->getRemapAddresses()->first();
+
+    QCOMPARE(firstRemapAddress->remapAddress_, QString("'h0000"));
+    QCOMPARE(firstRemapAddress->modeRefs_, QStringList({ "firstMode", "secondMode" }));
+
+    QSharedPointer<MirroredTargetInterface::RemapAddress> secondRemapAddress =
+        testbusinterface->getMirroredSlave()->getRemapAddresses()->last();
+
+	QCOMPARE(secondRemapAddress->remapAddress_, QString("'hFFFF"));
+    QCOMPARE(secondRemapAddress->modeRefs_, QStringList({ "firstMode" }));
+    QCOMPARE(secondRemapAddress->priority_.value("secondMode"), 2);
+
+	QCOMPARE(testbusinterface->getMirroredSlave()->getRange(), QString("'h00010000"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadMirroredInitiator2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadMirroredInitiator2022()
+{
+    QString documentContent(
+        "<ipxact:busInterface>"
+			"<ipxact:mirroredInitiator/>"
+        "</ipxact:busInterface>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std22);
+
+    QCOMPARE(testbusinterface->getInterfaceMode(), General::MIRRORED_INITIATOR);
+    QCOMPARE(testbusinterface->getInitiator(), nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -350,7 +531,8 @@ void tst_businterfaceReader::testReadAttributes()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getAttributes().firstKey(), QString("attribute"));
 	QCOMPARE(testbusinterface->getAttributes().first(), QString("value"));
@@ -372,7 +554,8 @@ void tst_businterfaceReader::testReadConnectionRequired()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QCOMPARE(testbusinterface->getConnectionRequired(), QString("true"));
 }
@@ -393,7 +576,8 @@ void tst_businterfaceReader::testReadBitsInLau()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QCOMPARE(testbusinterface->getBitsInLau(), QString("1234"));
 }
@@ -414,11 +598,36 @@ void tst_businterfaceReader::testReadBitSteering()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+		Document::Revision::Std14);
 
-	QCOMPARE(testbusinterface->getBitSteering(), BusInterface::BITSTEERING_ON);
+	QCOMPARE(testbusinterface->getBitSteering(), QString("on"));
 	QCOMPARE(testbusinterface->getBitSteeringAttributes().firstKey(), QString("testAttribute"));
 	QCOMPARE(testbusinterface->getBitSteeringAttributes().first(), QString("value"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadBitSteeringExpression2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadBitSteeringExpression2022()
+{
+    QString documentContent(
+        "<ipxact:busInterface>"
+			"<ipxact:bitSteering testAttribute=\"value\">1</ipxact:bitSteering>"
+        "</ipxact:busInterface>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+		Document::Revision::Std22);
+
+    QCOMPARE(testbusinterface->getBitSteering(), QString("1"));
+    QCOMPARE(testbusinterface->getBitSteeringAttributes().firstKey(), QString("testAttribute"));
+    QCOMPARE(testbusinterface->getBitSteeringAttributes().first(), QString("value"));
 }
 
 //-----------------------------------------------------------------------------
@@ -437,7 +646,8 @@ void tst_businterfaceReader::testReadEndianness()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getEndianness(), BusInterface::BIG);
 }
@@ -468,7 +678,8 @@ void tst_businterfaceReader::testReadParameters()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getParameters()->size(), 2);
 	QCOMPARE(testbusinterface->getParameters()->first()->name(), QString("testParameter"));
@@ -499,7 +710,8 @@ void tst_businterfaceReader::testReadVendorExtensions()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
 	QCOMPARE(testbusinterface->getVendorExtensions()->last()->type(), QString("testExtension"));
     QCOMPARE(testbusinterface->getVendorExtensions()->first()->type(), QString("kactus2:position"));
@@ -530,7 +742,8 @@ void tst_businterfaceReader::testReadAbstractionReference()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QSharedPointer<AbstractionType> abstraction = testbusinterface->getAbstractionTypes()->first();    
 	QCOMPARE(abstraction->getViewReferences()->first(), QString("testView"));
@@ -584,7 +797,8 @@ void tst_businterfaceReader::testReadPortMaps()
 
 	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
 
-	QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode);
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std14);
 
     QSharedPointer<PortMap> portMap = testbusinterface->getAbstractionTypes()->first()->getPortMaps()->first();
 	QCOMPARE(portMap->getLogicalPort()->name_, QString("CLK"));

@@ -38,8 +38,8 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
@@ -666,7 +666,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
 
             if (busInterface->getMirroredSlave())
             {
-                QSharedPointer<MirroredSlaveInterface> mirrorSlave(busInterface->getMirroredSlave());
+                QSharedPointer<MirroredTargetInterface> mirrorSlave(busInterface->getMirroredSlave());
 
                 if (referenceCounter_->countReferencesInMirroredSlaveInterface(targetID, mirrorSlave) > 0)
                 {
@@ -674,7 +674,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
                         createMiddleItem("Mirrored Slave Interface", busInterfaceItem);
                     colourItemGrey(mirroredInterfaceItem);
 
-                    for (QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress :
+                    for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
                         *mirrorSlave->getRemapAddresses())
                     {
                         if (referenceCounter_->countReferencesInRemapAddress(targetID, remapAddress) > 0)
@@ -692,7 +692,7 @@ void ComponentParameterReferenceTree::createReferencesForBusInterfaces()
 
             if (busInterface->getMaster())
             {
-                QSharedPointer<MasterInterface> master(busInterface->getMaster());
+                QSharedPointer<InitiatorInterface> master(busInterface->getMaster());
 
                 if (referenceCounter_->countReferencesInMasterInterface(targetID, master) > 0)
                 {
