@@ -78,9 +78,8 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
         return BusDefinitionReader::createBusDefinitionFrom(doc);
     }
     else if (toCreate == VLNV::CATALOG)
-    {
-        CatalogReader reader;
-        return reader.createCatalogFrom(doc);
+    {   
+        return CatalogReader::createCatalogFrom(doc);
     }
     else if (toCreate == VLNV::COMPONENT)
     {

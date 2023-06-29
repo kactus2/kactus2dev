@@ -6,7 +6,7 @@
 // Date: 07.08.2015
 //
 // Description:
-// XML reader class for IP-XACT Parameter element.
+// XML reader for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
 
 #include "CatalogReader.h"
@@ -16,25 +16,9 @@
 
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::CatalogReader()
-//-----------------------------------------------------------------------------
-CatalogReader::CatalogReader(): DocumentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: CatalogReader::~CatalogReader()
-//-----------------------------------------------------------------------------
-CatalogReader::~CatalogReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: CatalogReader::createCatalogFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& document) const
+QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& document)
 {
     QDomNode catalogNode = document.firstChildElement();
     
@@ -44,46 +28,46 @@ QSharedPointer<Catalog> CatalogReader::createCatalogFrom(QDomNode const& documen
 
     QSharedPointer<Catalog> catalog(new Catalog(vlnv, docRevision));
 
-    parseTopComments(document, catalog);
+    DocumentReader::parseTopComments(document, catalog);
 
-    parseXMLProcessingInstructions(document, catalog);
+    DocumentReader::parseXMLProcessingInstructions(document, catalog);
 
-    parseNamespaceDeclarations(catalogNode, catalog);
+    DocumentReader::parseNamespaceDeclarations(catalogNode, catalog);
 
-    parseDocumentNameGroup(catalogNode, catalog);
+    DocumentReader::parseDocumentNameGroup(catalogNode, catalog);
 
     if (catalog->getRevision() != Document::Revision::Std22)
     {
-        parseDescription(catalogNode, catalog);
+        DocumentReader::parseDescription(catalogNode, catalog);
     }
 
-    parseCatalogs(catalogNode, catalog);
+    Details::parseCatalogs(catalogNode, catalog);
 
-    parseBusDefinitions(catalogNode, catalog);
+    Details::parseBusDefinitions(catalogNode, catalog);
 
-    parseAbstractionDefinitions(catalogNode, catalog);
+    Details::parseAbstractionDefinitions(catalogNode, catalog);
 
-    parseComponents(catalogNode, catalog);
+    Details::parseComponents(catalogNode, catalog);
 
-    parseAbstractors(catalogNode, catalog);
+    Details::parseAbstractors(catalogNode, catalog);
 
-    parseDesigns(catalogNode, catalog);
+    Details::parseDesigns(catalogNode, catalog);
     
-    parseDesignCongfigurations(catalogNode, catalog);
+    Details::parseDesignCongfigurations(catalogNode, catalog);
 
-    parseGeneratorChains(catalogNode, catalog);
+    Details::parseGeneratorChains(catalogNode, catalog);
 
-    parseTypeDefinitions(catalogNode, catalog);
+    Details::parseTypeDefinitions(catalogNode, catalog);
 
-    parseKactusAndVendorExtensions(catalogNode, catalog);
+    DocumentReader::parseKactusAndVendorExtensions(catalogNode, catalog);
 
     return catalog;
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseCatalogs()
+// Function: CatalogReader::Details::parseCatalogs()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseCatalogs(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseCatalogs(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement catalogsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:catalogs"));
     
@@ -91,9 +75,9 @@ void CatalogReader::parseCatalogs(QDomNode const& catalogNode, QSharedPointer<Ca
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseBusDefinitions()
+// Function: CatalogReader::Details::parseBusDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseBusDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseBusDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement busDefinitionsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:busDefinitions"));
 
@@ -101,9 +85,9 @@ void CatalogReader::parseBusDefinitions(QDomNode const& catalogNode, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseAbstractionDefinitions()
+// Function: CatalogReader::Details::parseAbstractionDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseAbstractionDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseAbstractionDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement abstractionsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:abstractionDefinitions"));
 
@@ -111,9 +95,9 @@ void CatalogReader::parseAbstractionDefinitions(QDomNode const& catalogNode, QSh
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseComponents()
+// Function: CatalogReader::Details::parseComponents()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseComponents(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseComponents(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement componentsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:components"));
 
@@ -121,9 +105,9 @@ void CatalogReader::parseComponents(QDomNode const& catalogNode, QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseAbstractors()
+// Function: CatalogReader::Details::parseAbstractors()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseAbstractors(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseAbstractors(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement abstractorsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:abstractors"));
 
@@ -131,9 +115,9 @@ void CatalogReader::parseAbstractors(QDomNode const& catalogNode, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseDesigns()
+// Function: CatalogReader::Details::parseDesigns()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseDesigns(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseDesigns(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement designsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:designs"));
 
@@ -141,9 +125,9 @@ void CatalogReader::parseDesigns(QDomNode const& catalogNode, QSharedPointer<Cat
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseDesignCongfigurations()
+// Function: CatalogReader::Details::parseDesignCongfigurations()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseDesignCongfigurations(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseDesignCongfigurations(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement configurationsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:designConfigurations"));
 
@@ -151,9 +135,9 @@ void CatalogReader::parseDesignCongfigurations(QDomNode const& catalogNode, QSha
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseGeneratorChains()
+// Function: CatalogReader::Details::parseGeneratorChains()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseGeneratorChains(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseGeneratorChains(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {   
     QDomElement chainsNode = catalogNode.firstChildElement(QStringLiteral("ipxact:generatorChains"));
 
@@ -161,9 +145,9 @@ void CatalogReader::parseGeneratorChains(QDomNode const& catalogNode, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseTypeDefinitions()
+// Function: CatalogReader::Details::parseTypeDefinitions()
 //-----------------------------------------------------------------------------
-void CatalogReader::parseTypeDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog) const
+void CatalogReader::Details::parseTypeDefinitions(QDomNode const& catalogNode, QSharedPointer<Catalog> catalog)
 {
     if (catalog->getRevision() != Document::Revision::Std22)
     {
@@ -176,10 +160,10 @@ void CatalogReader::parseTypeDefinitions(QDomNode const& catalogNode, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::parseIpxactFileList()
+// Function: CatalogReader::Details::parseIpxactFileList()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElement & filesNode, 
-    VLNV::IPXactType documentType) const
+QList<QSharedPointer<IpxactFile> > CatalogReader::Details::parseIpxactFileList(QDomElement & filesNode, 
+    VLNV::IPXactType documentType)
 {
     QList<QSharedPointer<IpxactFile> > files;
 
@@ -196,10 +180,10 @@ QList<QSharedPointer<IpxactFile> > CatalogReader::parseIpxactFileList(QDomElemen
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogReader::createIpxactFileFrom()
+// Function: CatalogReader::Details::createIpxactFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<IpxactFile> CatalogReader::createIpxactFileFrom(QDomNode const& fileNode, 
-    VLNV::IPXactType documentType) const
+QSharedPointer<IpxactFile> CatalogReader::Details::createIpxactFileFrom(QDomNode const& fileNode, 
+    VLNV::IPXactType documentType)
 {
     QSharedPointer<IpxactFile> ipxactFile(new IpxactFile());
 
