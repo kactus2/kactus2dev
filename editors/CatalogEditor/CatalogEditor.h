@@ -15,6 +15,8 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 
+#include <editors/common/DocumentNameGroupEditor.h>
+
 #include <QTextEdit>
 #include <QTreeView>
 
@@ -96,11 +98,6 @@ protected:
     //! Called when the editor is shown.
     virtual void showEvent(QShowEvent* event);
 
-private slots:
-
-    //! Called when catalog description changes.
-    void onDescriptionChanged(); 
-
 private:
     // Disable copying.
     CatalogEditor(CatalogEditor const& rhs);
@@ -119,11 +116,8 @@ private:
     //! The catalog being edited.
     QSharedPointer<Catalog> catalog_;
 
-    //! Display widget for catalog VLNV.
-    VLNVDisplayer* vlnvDisplay_;
-
-    //! Editor for catalog description.
-    QTextEdit* descriptionEditor_;
+    //! The document name group editor.
+    DocumentNameGroupEditor* documentNameGroupEditor_;
 
     //! Model for catalog files.
     CatalogFileModel* fileModel_;
