@@ -274,6 +274,7 @@ QList<QSharedPointer<IpxactFile> > Catalog::getAllFiles() const
     files.append(*designs_);
     files.append(*designConfigurations_);
     files.append(*generatorChains_);
+    files.append(*typeDefinitions_);
 
     return files;
 }

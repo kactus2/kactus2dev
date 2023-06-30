@@ -118,6 +118,7 @@ void CatalogEditor::setProtection(bool locked)
 {
     documentNameGroupEditor_->setDisabled(locked);
     fileModel_->setProtection(locked);
+    fileView_->setDisabled(locked);
     
     TabDocument::setProtection(locked);
 }
