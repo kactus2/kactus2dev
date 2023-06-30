@@ -142,6 +142,11 @@ void ChoicesModel::addItem(const QModelIndex& index)
 {
     int row = choices_->size();
 
+    if (row == 0)
+    {
+        emit choicesEmpty(false);
+    }
+
     if (index.isValid())
     {
         row = index.row();
@@ -176,6 +181,11 @@ void ChoicesModel::remove(const QModelIndex& index)
     endRemoveRows();
     
     emit contentChanged();
+
+    if (choices_->isEmpty())
+    {
+        emit choicesEmpty(true);
+    }
 }
 
 //-----------------------------------------------------------------------------

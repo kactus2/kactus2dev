@@ -142,6 +142,13 @@ signals:
      *  Emitted when contents of the model change.
      */
 	void contentChanged();
+    
+    /*!
+     *	Emitted when the choice list empties or is no longer empty
+     *  
+     *      @param [in] isEmpty     Indicates if list was emptied or not.
+     */
+    void choicesEmpty(bool isEmpty);
 
 private:
     
