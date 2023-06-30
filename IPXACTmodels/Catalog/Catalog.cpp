@@ -252,6 +252,11 @@ void Catalog::copyIpxactFiles(Catalog const& other)
     {
         generatorChains_->append(QSharedPointer<IpxactFile>(new IpxactFile(*chain)));
     }
+    
+    for (auto const& typeDef : *other.typeDefinitions_)
+    {
+        typeDefinitions_->append(QSharedPointer<IpxactFile>(new IpxactFile(*typeDef)));
+    }
 }
 
 //-----------------------------------------------------------------------------

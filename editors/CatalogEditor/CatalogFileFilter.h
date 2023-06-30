@@ -13,6 +13,7 @@
 #define CatalogFileFILTER_H
 
 #include <KactusAPI/include/utils.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
@@ -30,9 +31,10 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parent   The parent object.
+     *      @param [in] docRevision   The standard revision of the document.
+     *      @param [in] parent        The parent object.
      */
-    CatalogFileFilter(QObject *parent = 0);
+    CatalogFileFilter(Document::Revision docRevision, QObject *parent = 0);
 
 	//! The destructor
     virtual ~CatalogFileFilter();
@@ -58,6 +60,17 @@ signals:
 
     //! Emitted when an item should be opened in the given index.
     void openItem(QModelIndex const& index);
+protected:
+
+    /*!
+     *  Implementation of the row filtering.
+     *
+     *      @param [in] source_row      The row to check for filtering.
+     *      @param [in] source_parent   The parent index of the row.
+     *
+     *      @return True, if the row passes the filters, otherwise false.
+     */
+    bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const override;
 
 private:
 
@@ -66,6 +79,9 @@ private:
 
 	//! No assignment
 	CatalogFileFilter& operator=(const CatalogFileFilter& other);
+
+    //! The std revision of the catalog document.
+    Document::Revision docRevision_;
 
 };
 

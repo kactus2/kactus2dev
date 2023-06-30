@@ -34,6 +34,7 @@ namespace CatalogFileColumns
         DESIGNS,
         DESIGN_CONFIGURATIONS,
         GENERATOR_CHAINS,
+        TYPE_DEFINITIONS,
         UNKNOWN,
         CATEGORY_COUNT
     };   
@@ -49,6 +50,7 @@ namespace CatalogFileColumns
         VLNV::DESIGN,
         VLNV::DESIGNCONFIGURATION,
         VLNV::GENERATORCHAIN,
+        VLNV::TYPEDEFINITION,
         VLNV::INVALID
     };
 

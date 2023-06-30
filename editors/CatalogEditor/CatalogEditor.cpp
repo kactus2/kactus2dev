@@ -50,7 +50,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
     documentNameGroupEditor_->setTitle(tr("Catalog"));
    
-    CatalogFileFilter* proxy = new CatalogFileFilter(this);   
+    CatalogFileFilter* proxy = new CatalogFileFilter(catalog_->getRevision(), this);
     proxy->setSourceModel(fileModel_);
 
     fileView_->setModel(proxy);
