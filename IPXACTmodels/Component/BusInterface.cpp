@@ -295,7 +295,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
             mirroredTarget_ = QSharedPointer<MirroredTargetInterface>(new MirroredTargetInterface());
         }
     }
-    else if (interfaceMode == General::MIRRORED_MASTER)
+    else if (interfaceMode == General::MIRRORED_MASTER || interfaceMode == General::MIRRORED_INITIATOR)
     {
         monitor_.clear();
         target_.clear();
@@ -708,11 +708,7 @@ int BusInterface::getMCAPIPortID() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getMemoryMapRef() const
 {
-	if (interfaceMode_ != General::SLAVE)
-    {
-		return QString();
-	}
-	else if (!target_)
+	if (interfaceMode_ != General::SLAVE || !target_)
     {
 		return QString();
 	}
@@ -830,5 +826,4 @@ void BusInterface::copyInterfaceModes(const BusInterface& other)
     {
         mirroredTarget_ = QSharedPointer<MirroredTargetInterface>(new MirroredTargetInterface(*other.mirroredTarget_));
     }
-
 }

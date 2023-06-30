@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfaceslave.h
+// File: SlaveModeEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,10 +9,10 @@
 // Editor to the slave details of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACESLAVE_H
-#define BUSIFINTERFACESLAVE_H
+#ifndef SLAVE_MODE_EDITOR_H
+#define SLAVE_MODE_EDITOR_H
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 #include "bridgeseditor.h"
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <QSharedPointer>
+#include <QCheckBox>
 
 class BusInterface;
 class Component;
@@ -29,7 +30,7 @@ class BusInterfaceInterface;
 //-----------------------------------------------------------------------------
 //! Editor to the slave details of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceSlave : public BusIfInterfaceModeEditor 
+class SlaveModeEditor : public ModeEditorBase 
 {
 	Q_OBJECT
 
@@ -42,41 +43,41 @@ public:
      *      @param [in] busName         Name of the edited bus interface.
      *      @param [in]   parent      The owner of this editor.
      */
-    BusIfInterfaceSlave(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+    SlaveModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
 
 	/*!
      *  The destructor.
      */
-	~BusIfInterfaceSlave() final = default;
+	~SlaveModeEditor() final = default;
 
 
     //! No copying. No assignment.
-    BusIfInterfaceSlave(const BusIfInterfaceSlave& other) = delete;
-    BusIfInterfaceSlave& operator=(const BusIfInterfaceSlave& other) = delete;
+    SlaveModeEditor(const SlaveModeEditor& other) = delete;
+    SlaveModeEditor& operator=(const SlaveModeEditor& other) = delete;
 
 	/*!
      *  Check for the validity of the edited item.
      *
      *       @return True if item is valid.
      */
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
      */
-	virtual void refresh();
+	void refresh() final;
 
 	/*!
      *  Get the interface mode of the editor
 	 * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
      */
-	virtual General::InterfaceMode getInterfaceMode() const;
+	General::InterfaceMode getInterfaceMode() const final;
 
 	/*!
      *  Save the interface mode-specific details to the bus interface.
      */
-	virtual void saveModeSpecific();
+	void saveModeSpecific() final;
 
 private slots:
 
@@ -125,8 +126,11 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Holder for the memory map option.
-    QGroupBox* memoryMapBox_;
+    //! Select memory map as access target.
+    QCheckBox memoryMapSelector_;
+
+    //! Select transparent bridge(s) as access target.
+    QCheckBox bridgesSelector_;
 
 	//! The editor to select a memory map from the component.
 	ReferenceSelector memoryMapReferenceSelector_;
@@ -141,4 +145,4 @@ private:
     FileSetRefEditor fileSetRefs_;
 };
 
-#endif // BUSIFINTERFACESLAVE_H
+#endif // SLAVE_MODE_EDITOR_H

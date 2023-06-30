@@ -15,6 +15,8 @@
 #include "busifgeneraldetails.h"
 #include "interfacemodestack.h"
 
+#include <editors/common/ExpressionSet.h>
+
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 #include <common/widgets/vlnvEditor/vlnveditor.h>
 #include <common/widgets/ParameterGroupBox/parametergroupbox.h>
@@ -58,18 +60,16 @@ public:
     BusIfGeneralTab(LibraryInterface* libHandler,
         QSharedPointer<BusInterface> busif,
         QSharedPointer<Component> component,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+        ExpressionSet expressions,
         BusInterfaceInterface* busInterface,
-        std::string busName,
+        std::string const& busName,
         QWidget* parent,
         QWidget* parentWnd);
 
 	/*!
      *  The destructor.
      */
-	virtual ~BusIfGeneralTab();
+	virtual ~BusIfGeneralTab() = default;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
@@ -228,6 +228,9 @@ private:
 
 	//! Pointer to the instance that manages the library.
 	LibraryInterface* libHandler_;
+
+    //! The used IP-XACT revision.
+    Document::Revision docRevision_;
 };
 
 #endif // BUSIFGENERALTAB_H

@@ -12,6 +12,8 @@
 #include "BusInterfaceWizardGeneralOptionsPage.h"
 #include "BusInterfaceWizard.h"
 
+#include <editors/common/ExpressionSet.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
@@ -37,7 +39,7 @@ QWizardPage(parent),
 component_(component),
 busIf_(busIf),
 handler_(lh),
-generalTab_(new BusIfGeneralTab(lh, busIf, component, parameterFinder, expressionFormatter, expressionParser,
+generalTab_(new BusIfGeneralTab(lh, busIf, component, ExpressionSet({ parameterFinder, expressionParser, expressionFormatter }),
     busInterface, busIf->name().toStdString(), this, parent)),
 busInterface_(busInterface)
 {

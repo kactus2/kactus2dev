@@ -50,16 +50,9 @@ library_(library)
 
     QVBoxLayout* layout = new QVBoxLayout(this);
     layout->addWidget(abstractionView_);
-    layout->setContentsMargins(3, 0, 3, 3);
+    layout->setContentsMargins(4, 4, 4, 4);
 }
 
-//-----------------------------------------------------------------------------
-// Function: AbstractionTypesEditor::~AbstractionTypesEditor()
-//-----------------------------------------------------------------------------
-AbstractionTypesEditor::~AbstractionTypesEditor()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesEditor::connectSignals()

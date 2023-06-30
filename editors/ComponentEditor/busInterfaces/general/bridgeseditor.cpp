@@ -25,7 +25,7 @@
 // Function: BridgesEditor::BridgesEditor()
 //-----------------------------------------------------------------------------
 BridgesEditor::BridgesEditor(BusInterfaceInterface* busInterface,
-    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges, QWidget* parent) :
+    QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges, QWidget* parent) :
 QGroupBox(tr("Transparent bridge(s)"), parent),
 view_(this),
 proxy_(this),

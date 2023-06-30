@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacemaster.h
+// File: MasterModeEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,10 +9,10 @@
 // Editor to edit master or mirrored master settings of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACEMASTER_H
-#define BUSIFINTERFACEMASTER_H
+#ifndef MASTER_MODE_EDITOR_H
+#define MASTER_MODE_EDITOR_H
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
@@ -32,7 +32,7 @@ class ParameterFinder;
 //-----------------------------------------------------------------------------
 //! Editor to edit master or mirrored master settings of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceMaster : public BusIfInterfaceModeEditor
+class MasterModeEditor : public ModeEditorBase
 {
 	Q_OBJECT
 
@@ -41,7 +41,6 @@ public:
     /*!
 	 *  The constructor.
 	 *
-	 *      @param [in] mode                The mode of the bus interface (master / mirrored master).
 	 *      @param [in] busInterface        Interface for accessing bud interfaces.
      *      @param [in] busName             Name of the edited bus interface.
 	 *      @param [in] component           The component being edited.
@@ -49,7 +48,7 @@ public:
 	 *      @param [in] expressionParser    The expression parser.
 	 *      @param [in] parent              The owner of this editor.
 	 */
-    BusIfInterfaceMaster(General::InterfaceMode mode,
+    MasterModeEditor(
         BusInterfaceInterface* busInterface,
         std::string const& busName,
         QSharedPointer<Component> component,
@@ -58,27 +57,31 @@ public:
         QWidget *parent);
 
 	//! The destructor
-	virtual ~BusIfInterfaceMaster();
+	virtual ~MasterModeEditor() = default;
+
+    //! No copying. No assignment.
+    MasterModeEditor(const MasterModeEditor& other) = delete;
+    MasterModeEditor& operator=(const MasterModeEditor& other) = delete;
 
 	/*! Check for the validity of the edited item.
 	*
 	*       @return True if item is valid.
 	*/
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*! Restore the changes made in the editor back to ones in the model.
 	*
 	*/
-	virtual void refresh();
+	void refresh() final;
 
 	/*! Get the interface mode of the editor
 	 * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
 	*/
-	virtual General::InterfaceMode getInterfaceMode() const;
+	General::InterfaceMode getInterfaceMode() const final;
 
 	//! Save the interface mode-specific details to the bus interface.
-	virtual void saveModeSpecific();
+	void saveModeSpecific() final;
 
     /*!
      *  Remove the references from the expressions.
@@ -117,10 +120,6 @@ private slots:
 
 private:
 
-    //! No copying. No assignment.
-	BusIfInterfaceMaster(const BusIfInterfaceMaster& other);
-	BusIfInterfaceMaster& operator=(const BusIfInterfaceMaster& other);
-
     //-----------------------------------------------------------------------------
     //! Data.
     //-----------------------------------------------------------------------------
@@ -138,4 +137,4 @@ private:
     QSharedPointer<Component> component_;
 };
 
-#endif // BUSIFINTERFACEMASTER_H
+#endif // MASTER_MODE_EDITOR_H

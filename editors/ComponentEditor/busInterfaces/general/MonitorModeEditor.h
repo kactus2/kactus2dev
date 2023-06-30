@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busIfInterfaceMonitor.h
+// File: MonitorModeEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,16 +9,17 @@
 // Editor the edit a monitor settings of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACEMONITOR_H
-#define BUSIFINTERFACEMONITOR_H
+#ifndef MonitorModeEditor_H
+#define MonitorModeEditor_H
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
+#include <QLabel>
 #include <QSharedPointer>
 #include <QComboBox>
 
@@ -30,7 +31,7 @@ class BusInterfaceInterface;
 //-----------------------------------------------------------------------------
 //! Editor the edit a monitor settings of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceMonitor : public BusIfInterfaceModeEditor
+class MonitorModeEditor : public ModeEditorBase
 {
 	Q_OBJECT
 
@@ -45,39 +46,47 @@ public:
 	 *      @param [in] parent          The owner of this editor.
 	 *
      */
-    BusIfInterfaceMonitor(BusInterfaceInterface* busInterface,
-        std::string const& busName,
+    MonitorModeEditor(BusInterfaceInterface* busInterface,
+        std::string const& busName, 
+        Document::Revision docRevision,
         LibraryInterface* libHandler,
         QWidget *parent);
 
 	/*!
      *  The destructor.
      */
-	virtual ~BusIfInterfaceMonitor() = default;
+	virtual ~MonitorModeEditor() = default;
+
+
+    //! No copying. No assignment.
+    MonitorModeEditor(const MonitorModeEditor& other) = delete;
+
+    MonitorModeEditor& operator=(const MonitorModeEditor& other) = delete;
+
 
 	/*!
      *  Check for the validity of the edited item.
      *
      *      @return True if item is valid.
      */
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
      */
-	virtual void refresh();
+	void refresh() final;
 
 	/*!
      *  Get the interface mode of the editor.
 	 *
      *      @return General::InterfaceMode Specifies the interface mode.
      */
-	virtual General::InterfaceMode getInterfaceMode() const;
+	General::InterfaceMode getInterfaceMode() const final;
 
 	/*!
      *  Save the interface mode-specific details to the bus interface.
      */
-	virtual void saveModeSpecific();
+	void saveModeSpecific() final;
 
 private slots:
 
@@ -96,10 +105,9 @@ private slots:
 	void onSystemGroupChange(QString const& groupName);
 
 private:
-	
-    //! No copying. No assignment.
-	BusIfInterfaceMonitor(const BusIfInterfaceMonitor& other);
-	BusIfInterfaceMonitor& operator=(const BusIfInterfaceMonitor& other);
+
+    //! Set the widget layout.
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     //! Data.
@@ -111,8 +119,11 @@ private:
 	//! Combo box to select the interface type for monitor.
 	InterfaceModeSelector interfaceMode_;
 
+    //! Label for selecting system group.
+    QLabel groupLabel_;
+
 	//! Combo box to select the group for system interface types.
 	QComboBox systemGroup_;
 };
 
-#endif // BUSIFINTERFACEMONITOR_H
+#endif // MonitorModeEditor_H

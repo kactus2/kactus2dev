@@ -27,8 +27,7 @@
 //-----------------------------------------------------------------------------
 BridgesDelegate::BridgesDelegate(BusInterfaceInterface* busInterface, QObject *parent):
 QStyledItemDelegate(parent),
-busInterface_(busInterface),
-opaqueGroupModify_(false)
+busInterface_(busInterface)
 {
 }
 

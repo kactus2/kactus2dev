@@ -21,6 +21,9 @@
     </p>
     <p>
         <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p> 
+    <p>
+      <b>Short description</b> is an optional field for compact description of the <i>bus interface</i>.
     </p>
     <p>
         <b>Description</b> is an optional field for textual description of the <i>bus interface</i>.		
@@ -31,12 +34,12 @@
        <b>Interface mode</b> is mandatory and has 7 possible choices:
     </p>
     <ul>
-        <li><b>Master</b> for initiating transactions.</li>
-        <li><b>Slave</b> for responding to transactions.</li>
-        <li><b>System</b> for defining interfaces not belonging to either master or slave interface modes.
+        <li><b>Initiator</b> for initiating transactions.</li>
+        <li><b>Target</b> for responding to transactions.</li>
+        <li><b>System</b> for defining interfaces not belonging to either initiator or target interface modes.
         They are categorized by a system group instead.</li>
-        <li><b>MirroredMaster</b> is the mirrored version of a master interface.</li>
-        <li><b>MirroredSlave</b> is the mirrored version of a slave interface.</li>
+        <li><b>MirroredInitiator</b> is the mirrored version of an initiator interface.</li>
+        <li><b>MirroredTarget</b> is the mirrored version of a target interface.</li>
         <li><b>MirroredSystem</b> is the mirrored version of a system interface.</li>
         <li><b>Monitor</b> for verification.</li>
     </ul>
@@ -49,9 +52,9 @@
       interface. The default setting is byte addressable (8 bits).
     </p>
     <p>
-      <b>Bit steering</b>='on' implies that the interface is able to dynamically align data on different byte 
-      channels in case of addressable interfaces. The default setting when the bit steering is not set is off.
-      Bit steering is not allowed in mirrored-master, system or mirrored-system interface modes.
+      <b>Bit steering</b> evaluating to value '1' implies that the interface is able to dynamically align data on different byte 
+      channels in case of addressable interfaces. The default setting when the bit steering is not set is 0.
+      Bit steering is not allowed in mirrored-initiator, system or mirrored-system interface modes.
     </p>
     <p>
       <b>Endianness</b> indicates whether the interface is 'big-endian' or 'little-endian' (default).
@@ -61,7 +64,7 @@
       to some other interface and cannot be left unconnected.
     </p>
 
-    <h3>Master</h3>
+    <h3>Initiator</h3>
     <p>
         <b>Address space</b> defines the <i>address space</i> available for transactions on
         the bus interface. <i>Address space</i> is optional, but, if defined,  
@@ -72,51 +75,46 @@
         base address is 0.
     </p>
 
-    <h3>Mirrored master</h3>
+    <h3>Mirrored initiator</h3>
     <p>
-		Mirrored master has no mode-specific options.
+		Mirrored initiator has no mode-specific options.
 	</p>
 	
-    <h3>Slave</h3>
-    <p> A slave bus interface may have access to a <i>memory map</i> or a master bus interface.
-        Access to a master bus interface is called a <i>transparent bridge</i>. Access is 
-        optional, but mutually exclusive i.e. a slave bus interface may only access a memory map, 
-        a transparent bridge or neither.
-    </p>
+    <h3>Target</h3>
+    <p> A target bus interface may have access to a <i>memory map</i> or an initiator bus interface.
+      Access to a initiator bus interface is called a <i>transparent bridge</i>. Access is 
+      optional, but mutually exclusive i.e. a target bus interface may only access a memory map, 
+      a transparent bridge or neither.
+  </p>
+  <p>
+      <b>Memory map</b> is optional and defines the <i>memory map</i> accessible through
+      the bus interface. If a <i>memory map</i> has been defined, <i>transparent bridge</i>
+      cannot be defined.
+  </p>
+  <p>
+      <b>Transparent bridge(s)</b> are optional and define the initiator <i>bus interface(s)</i> that
+      all transactions to this <i>bus interface</i> are directed out of. 
+      If <i>transparent bridges</i> have been defined, <i>memory map</i> cannot be defined.
+  </p>
     <p>
-        <b>Memory map</b> is optional and defines the <i>memory map</i> accessible through
-        the bus interface. If a <i>memory map</i> has been defined, <i>transparent bridge</i>
-        cannot be defined.
-    </p>
-    <p>
-        <b>Transparent bridge(s)</b> are optional and define the master <i>bus interface(s)</i> that
-        all transactions to this <i>bus interface</i> are directed out of. 
-        If <i>transparent bridges</i> have been defined, <i>memory map</i> cannot be defined.
-    </p>
-    <!--
-    <p>
-        <b>isPresent</b> not implemented.
-    </p>
-    -->
-    <p>
-        <b>File set references</b> define the associated <i>file sets</i> for the slave bus
+        <b>File set references</b> define the associated <i>file sets</i> for the target bus
         interface. For example, the file set could contain the interface implementation or
         a software driver.
     </p>
      
-    <h3>Mirrored slave</h3>
+    <h3>Mirrored target</h3>
     <p>
-        <b>Remap address</b> defines an address offset for the slave <i>bus interface</i>
+        <b>Remap address</b> defines an address offset for the target <i>bus interface</i>
         conneted to this interface. <i>Remap address</i>is optional,
         but, if defined, <i>range</i> becomes mandatory as well.
     </p>
     <!--
     <p>
-        <b>State</b> not implemented.
+        <b>Modes</b> not implemented yet.
     </p>
     -->
     <p>
-        <b>Range</b> defines the address range available for the connected slave <i>bus interface</i>.
+        <b>Range</b> defines the address range available for the connected target <i>bus interface</i>.
     </p>
 
     <h3>System and mirrored system</h3>

@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include "BusInterfaceColumns.h"
 
 //-----------------------------------------------------------------------------
@@ -29,10 +31,14 @@ public:
 	 *
 	 *      @param [in] parent The owner of the delegate.
 	*/
-	BusInterfacesDelegate(QObject *parent);
+	BusInterfacesDelegate(Document::Revision docRevision, QObject *parent);
 	
 	//! The destructor
-	virtual ~BusInterfacesDelegate();
+	virtual ~BusInterfacesDelegate() = default;
+
+    //! No copying
+    BusInterfacesDelegate(const BusInterfacesDelegate& other) = delete;
+    BusInterfacesDelegate& operator=(const BusInterfacesDelegate& other) = delete;
 
 	/*! Create a new editor for the given item
 	 *
@@ -75,11 +81,7 @@ private slots:
 
 private:
 	
-	//! No copying
-	BusInterfacesDelegate(const BusInterfacesDelegate& other);
-	BusInterfacesDelegate& operator=(const BusInterfacesDelegate& other);
-
-
+	Document::Revision docRevision_;
 };
 
 #endif // BUSINTERFACESDELEGATE_H

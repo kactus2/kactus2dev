@@ -52,7 +52,11 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~AbstractionTypesEditor();
+    virtual ~AbstractionTypesEditor() = default;
+
+    //! No copying. No assignment.
+    AbstractionTypesEditor(const AbstractionTypesEditor& other) = delete;
+    AbstractionTypesEditor& operator=(const AbstractionTypesEditor& other) = delete;
 
     /*!
      *  Set a new component.
@@ -81,10 +85,6 @@ signals:
     void contentChanged();
 
 private:
-	//! No copying. No assignment.
-    AbstractionTypesEditor(const AbstractionTypesEditor& other);
-    AbstractionTypesEditor& operator=(const AbstractionTypesEditor& other);
-
     /*!
      *  Connect the signals.
      */

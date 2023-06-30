@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfaceslave.cpp
+// File: SlaveModeEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Editor to the slave details of a bus interface.
 //-----------------------------------------------------------------------------
 
-#include "busifinterfaceslave.h"
+#include "SlaveModeEditor.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -32,12 +32,13 @@ namespace
 };
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::BusIfInterfaceSlave()
+// Function: SlaveModeEditor::SlaveModeEditor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceSlave::BusIfInterfaceSlave(BusInterfaceInterface* busInterface, std::string const& busName,
+SlaveModeEditor::SlaveModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
     QWidget* parent):
-BusIfInterfaceModeEditor(busInterface, busName, tr("Slave"), parent),
-memoryMapBox_(new QGroupBox(tr("Memory map"), this)),
+ModeEditorBase(busInterface, busName, tr("Slave"), parent),
+memoryMapSelector_(tr("Memory map"), this),
+bridgesSelector_(tr("Transparent bridge"), this),
 memoryMapReferenceSelector_(this),
 slaveBridges_(busInterface->getBridges(busName)),
 bridges_(busInterface, slaveBridges_, this),
@@ -45,15 +46,18 @@ fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), thi
 {
     fileSetRefs_.initialize();
 
-    memoryMapBox_->setCheckable(true);
-    bridges_.setCheckable(true);
+    memoryMapReferenceSelector_.setHidden(true);
+    bridges_.setHidden(true);
 
     setupLayout();
 
-    connect(memoryMapBox_, SIGNAL(clicked(bool)),
+    connect(&memoryMapSelector_, SIGNAL(clicked(bool)),
         this, SLOT(onMemoryMapSelected(bool)), Qt::UniqueConnection);
-    connect(&bridges_, SIGNAL(clicked(bool)),
+    connect(&memoryMapSelector_, SIGNAL(toggled(bool)), &memoryMapReferenceSelector_, SLOT(setVisible(bool)));
+
+    connect(&bridgesSelector_, SIGNAL(clicked(bool)),
         this, SLOT(onTransparentBridgeSelected(bool)), Qt::UniqueConnection);
+    connect(&bridgesSelector_, SIGNAL(toggled(bool)), &bridges_, SLOT(setVisible(bool)));
 
 	connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
 		this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
@@ -65,17 +69,17 @@ fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), thi
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::isValid()
+// Function: SlaveModeEditor::isValid()
 //-----------------------------------------------------------------------------
-bool BusIfInterfaceSlave::isValid() const
+bool SlaveModeEditor::isValid() const
 {
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::refresh()
+// Function: SlaveModeEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::refresh()
+void SlaveModeEditor::refresh()
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -87,30 +91,29 @@ void BusIfInterfaceSlave::refresh()
     }
 
     QString mapReference = QString::fromStdString(busInterface->getMemoryMapReference(busName));
-
     memoryMapReferenceSelector_.refresh(mapNameList);
     memoryMapReferenceSelector_.selectItem(mapReference);
-    memoryMapBox_->setChecked(!mapReference.isEmpty());
+    memoryMapSelector_.setChecked(mapReference.isEmpty() == false);
 
     setupFileSetReferences();
 
     bridges_.refresh();
-    bridges_.setChecked(getBusInterface()->getBridgeInterface()->itemCount() != 0);
+    bridgesSelector_.setChecked(getBusInterface()->getBridgeInterface()->itemCount() != 0);
 }
 
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::getInterfaceMode()
+// Function: SlaveModeEditor::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceSlave::getInterfaceMode() const
+General::InterfaceMode SlaveModeEditor::getInterfaceMode() const
 {
 	return General::SLAVE;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::onMemoryMapChange()
+// Function: SlaveModeEditor::onMemoryMapChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::onMemoryMapChange(QString const& newMemoryMapName)
+void SlaveModeEditor::onMemoryMapChange(QString const& newMemoryMapName)
 {
     getBusInterface()->setMemoryMapReference(getBusName(), newMemoryMapName.toStdString());
 
@@ -118,9 +121,9 @@ void BusIfInterfaceSlave::onMemoryMapChange(QString const& newMemoryMapName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::onMemoryMapSelected()
+// Function: SlaveModeEditor::onMemoryMapSelected()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
+void SlaveModeEditor::onMemoryMapSelected(bool checked)
 {
     BusInterfaceInterface* busInterface = getBusInterface();
 
@@ -128,23 +131,23 @@ void BusIfInterfaceSlave::onMemoryMapSelected(bool checked)
     {
         if (busInterface->getBridgeInterface()->itemCount() > 0)
         {
-            memoryMapBox_->setChecked(false);
+            memoryMapSelector_.setChecked(false);
         }
         else
         {
-            bridges_.setChecked(false);
+            bridgesSelector_.setChecked(false);
         }
     }
     else if (!checked && !QString::fromStdString(busInterface->getMemoryMapReference(getBusName())).isEmpty())
     {
-        memoryMapBox_->setChecked(true);
+        memoryMapSelector_.setChecked(true);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::onTransparentBridgeSelected()
+// Function: SlaveModeEditor::onTransparentBridgeSelected()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
+void SlaveModeEditor::onTransparentBridgeSelected(bool checked)
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -153,11 +156,11 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
     {
         if (!QString::fromStdString(busInterface->getMemoryMapReference(busName)).isEmpty())
         {
-            bridges_.setChecked(false);
+            bridgesSelector_.setChecked(false);
         }
         else
         {
-            memoryMapBox_->setChecked(false);
+            memoryMapSelector_.setChecked(false);
         }
 
         if (!slaveBridges_)
@@ -168,40 +171,40 @@ void BusIfInterfaceSlave::onTransparentBridgeSelected(bool checked)
     }
     else if (!checked && busInterface->getBridgeInterface()->itemCount() > 0)
     {
-        bridges_.setChecked(true);
+        bridgesSelector_.setChecked(true);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfaceslave::onFileSetReferencesChanged()
+// Function: SlaveModeEditor::onFileSetReferencesChanged()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::onFileSetReferencesChanged()
+void SlaveModeEditor::onFileSetReferencesChanged()
 {
     saveFileSetReferences();
     emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::saveModeSpecific()
+// Function: SlaveModeEditor::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::saveModeSpecific()
+void SlaveModeEditor::saveModeSpecific()
 {
     saveFileSetReferences();
 
-    if (memoryMapBox_->isChecked())
+    if (memoryMapSelector_.isChecked())
     {
         getBusInterface()->setMemoryMapReference(getBusName(), memoryMapReferenceSelector_.currentText().toStdString());
     }
-    else if (bridges_.isChecked())
+    else if (bridgesSelector_.isChecked())
     {
         bridges_.refresh();
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfaceslave::setupFileSetReferences()
+// Function: SlaveModeEditor::setupFileSetReferences()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::setupFileSetReferences()
+void SlaveModeEditor::setupFileSetReferences()
 {
     QStringList newFileSetItems;
 
@@ -214,9 +217,9 @@ void BusIfInterfaceSlave::setupFileSetReferences()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfaceslave::saveFileSetReferences()
+// Function: SlaveModeEditor::saveFileSetReferences()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::saveFileSetReferences()
+void SlaveModeEditor::saveFileSetReferences()
 {
     std::vector<std::string> newItems;
     for (auto fileSetReference : fileSetRefs_.items())
@@ -228,19 +231,25 @@ void BusIfInterfaceSlave::saveFileSetReferences()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSlave::setupLayout()
+// Function: SlaveModeEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSlave::setupLayout()
+void SlaveModeEditor::setupLayout()
 {
-    QHBoxLayout* memRefLayout = new QHBoxLayout(memoryMapBox_);
-    memRefLayout->addWidget(&memoryMapReferenceSelector_, 1);
+    auto accessSelectionGroup = new QGroupBox(tr("Interface access target"), this);
+    accessSelectionGroup->setFlat(true);
+
+    auto accessSelectionLayout = new QHBoxLayout(accessSelectionGroup);
+    accessSelectionLayout->addWidget(&memoryMapSelector_, 0, Qt::AlignLeft);
+    accessSelectionLayout->addWidget(&bridgesSelector_, 1, Qt::AlignLeft);
 
     QVBoxLayout* mapBridgeLayout = new QVBoxLayout();
-    mapBridgeLayout->addWidget(memoryMapBox_);
+    mapBridgeLayout->addWidget(&memoryMapReferenceSelector_);
     mapBridgeLayout->addWidget(&bridges_);
     mapBridgeLayout->addStretch();
 
-    QHBoxLayout* topLayout = new QHBoxLayout(this);
-    topLayout->addLayout(mapBridgeLayout);
-    topLayout->addWidget(&fileSetRefs_);
+    auto topLayout = new QGridLayout(this);
+    topLayout->addWidget(accessSelectionGroup, 0, 0, 1, 1);
+    topLayout->addLayout(mapBridgeLayout, 1, 0, 1, 1);
+    topLayout->addWidget(&fileSetRefs_, 0, 1, 2, 1);
+    topLayout->setContentsMargins(0, 4, 0, 2);
 }

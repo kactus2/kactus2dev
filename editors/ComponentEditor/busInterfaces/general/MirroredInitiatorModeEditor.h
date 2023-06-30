@@ -1,25 +1,25 @@
 //-----------------------------------------------------------------------------
-// File: BusIfInterfaceMirroredMaster.h
+// File: MirroredInitiatorModeEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Mikko Teuho
-// Date: 06.03.2017
+// Author: Esko Pekkarinen
+// Date: 29.6.2023
 //
 // Description:
-// Display for mirrored master bus interface.
+// Editor to edit mirrored initiator settings of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACEMIRROREDMASTER_H
-#define BUSIFINTERFACEMIRROREDMASTER_H
+#ifndef MIRRORED_INITIATOR_MODE_EDITOR_H
+#define MIRRORED_INITIATOR_MODE_EDITOR_H
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 
 class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
-//! Editor to edit master or mirrored master settings of a bus interface.
+//! Editor to edit mirrored initiator settings of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceMirroredMaster : public BusIfInterfaceModeEditor
+class MirroredInitiatorModeEditor : public ModeEditorBase
 {
 
 public:
@@ -30,44 +30,43 @@ public:
      *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] parent          Parent widget of this editor.
      */
-    BusIfInterfaceMirroredMaster(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+    MirroredInitiatorModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
 
 	/*!
      *  The destructor.
      */
-    virtual ~BusIfInterfaceMirroredMaster();
+    virtual ~MirroredInitiatorModeEditor() = default;
+
+    //! No copying.
+    MirroredInitiatorModeEditor(const MirroredInitiatorModeEditor& other) = delete;
+
+    //! No assignment.
+    MirroredInitiatorModeEditor& operator=(const MirroredInitiatorModeEditor& other) = delete;
 
 	/*!
      *   Check for the validity of the edited item.
 	 *
 	 *       @return True if item is valid.
 	 */
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
 	 */
-	virtual void refresh();
+	void refresh() final;
 
 	/*!
      *  Get the interface mode of the editor
 	 * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
 	 */
-	virtual General::InterfaceMode getInterfaceMode() const;
+	General::InterfaceMode getInterfaceMode() const final;
 
 	/*!
      *  Save the interface mode-specific details to the bus interface.
      */
-	virtual void saveModeSpecific();
+	void saveModeSpecific() final;
 
-private:
-
-	//! No copying.
-    BusIfInterfaceMirroredMaster(const BusIfInterfaceMirroredMaster& other);
-
-	//! No assignment.
-    BusIfInterfaceMirroredMaster& operator=(const BusIfInterfaceMirroredMaster& other);
 };
 
-#endif // BUSIFINTERFACEMIRROREDMASTER_H
+#endif // MIRRORED_INITIATOR_MODE_EDITOR_H

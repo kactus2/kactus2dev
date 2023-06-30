@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QComboBox>
 #include <QSharedPointer>
 
@@ -28,18 +30,26 @@ public:
 
 	/*!
      *  The constructor.
-	 *
+     *
+     *      @param [in] docRevision     The IP-XACT version to comply to.
+	 *      @param [in] showMonitor     If this is true then also "monitor" option is shown.
 	 *      @param [in] mode            The interface mode that is selected at start.
 	 *      @param [in] parent          The owner of the editor.
-	 *      @param [in] showMonitor     If this is true then also "monitor" option is shown.
      */
-    InterfaceModeSelector(QWidget* parent, General::InterfaceMode mode = General::INTERFACE_MODE_COUNT,
-        bool showMonitor = true);
+    InterfaceModeSelector(Document::Revision docRevision, 
+		General::InterfaceMode mode = General::INTERFACE_MODE_COUNT,
+        bool showMonitor = true, QWidget * parent = nullptr);
 
 	/*!
      *  The destructor.
      */
-	virtual ~InterfaceModeSelector();
+	virtual ~InterfaceModeSelector() = default;
+
+    //! No copying
+    InterfaceModeSelector(const InterfaceModeSelector& other) = delete;
+
+    //! No assignment
+    InterfaceModeSelector& operator=(const InterfaceModeSelector& other) = delete;
 
 	/*!
      *  Get the currently selected mode.
@@ -73,14 +83,9 @@ signals:
 
 private:
 
-	//! No copying
-	InterfaceModeSelector(const InterfaceModeSelector& other);
-
-	//! No assignment
-	InterfaceModeSelector& operator=(const InterfaceModeSelector& other);
 
 	//! Set up the editor.
-	void initialize();
+	void initialize(Document::Revision docRevision);
 
 	//! If this is true then the "monitor" option is shown in drop down list.
 	bool showMonitor_;

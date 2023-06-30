@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: BusIfInterfaceMirroredMaster.cpp
+// File: MirroredMasterModeEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,18 +9,18 @@
 // Display for mirrored master bus interface.
 //-----------------------------------------------------------------------------
 
-#include "BusIfInterfaceMirroredMaster.h"
+#include "MirroredMasterModeEditor.h"
 
 #include <QLabel>
 #include <QString>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::BusIfInterfaceMirroredMaster()
+// Function: MirroredMasterModeEditor::MirroredMasterModeEditor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMirroredMaster::BusIfInterfaceMirroredMaster(BusInterfaceInterface* busInterface,
+MirroredMasterModeEditor::MirroredMasterModeEditor(BusInterfaceInterface* busInterface,
     std::string const& busName, QWidget* parent):
-BusIfInterfaceModeEditor(busInterface, busName, tr("Mirrored Master"), parent)
+ModeEditorBase(busInterface, busName, tr("Mirrored master"), parent)
 {
     QLabel* textLabel = new QLabel(tr("No mode specific options."));
 
@@ -29,41 +29,33 @@ BusIfInterfaceModeEditor(busInterface, busName, tr("Mirrored Master"), parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::~BusIfInterfaceMirroredMaster()
+// Function: MirroredMasterModeEditor::isValid()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMirroredMaster::~BusIfInterfaceMirroredMaster()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::isValid()
-//-----------------------------------------------------------------------------
-bool BusIfInterfaceMirroredMaster::isValid() const
+bool MirroredMasterModeEditor::isValid() const
 {
     return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::refresh()
+// Function: MirroredMasterModeEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMirroredMaster::refresh()
+void MirroredMasterModeEditor::refresh()
 {
-
+    // Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::getInterfaceMode()
+// Function: MirroredMasterModeEditor::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceMirroredMaster::getInterfaceMode() const
+General::InterfaceMode MirroredMasterModeEditor::getInterfaceMode() const
 {
     return General::MIRRORED_MASTER;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMirroredMaster::saveModeSpecific()
+// Function: MirroredMasterModeEditor::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMirroredMaster::saveModeSpecific()
+void MirroredMasterModeEditor::saveModeSpecific()
 {
-
+    // Intentionally empty.
 }

@@ -511,7 +511,7 @@ std::string BusInterfaceInterface::getModeString(std::string const& busName) con
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
     if (!selectedBus)
     {
-        return std::string("");
+        return std::string();
     }
 
     return General::interfaceMode2Str(selectedBus->getInterfaceMode()).toStdString();

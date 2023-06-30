@@ -664,8 +664,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
                 QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
                     new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
-                        libHandler_, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-                        expressionParser_, root, parentWidget()));
+                        libHandler_, component, referenceCounter_, expressionsSupport, root, parentWidget()));
 
                 root->addChildItem(busInterfaceItem);
 

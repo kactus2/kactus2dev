@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacesystem.cpp
+// File: SystemModeEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Editor to edit system or mirrored system details of a bus interface.
 //-----------------------------------------------------------------------------
 
-#include "busifinterfacesystem.h"
+#include "SystemModeEditor.h"
 
 #include "busifgeneraltab.h"
 
@@ -25,11 +25,11 @@
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::BusIfInterfaceSystem()
+// Function: SystemModeEditor::SystemModeEditor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceSystem::BusIfInterfaceSystem(BusInterfaceInterface* busInterface, std::string const& busName,
+SystemModeEditor::SystemModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
     LibraryInterface* libHandler, QWidget *parent):
-BusIfInterfaceModeEditor(busInterface, busName, tr("System"), parent),
+ModeEditorBase(busInterface, busName, tr("System"), parent),
 libHandler_(libHandler),
 groupEditor_(this)
 {
@@ -48,17 +48,17 @@ groupEditor_(this)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::isValid()
+// Function: SystemModeEditor::isValid()
 //-----------------------------------------------------------------------------
-bool BusIfInterfaceSystem::isValid() const
+bool SystemModeEditor::isValid() const
 {
 	return !groupEditor_.currentText().isEmpty();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::refresh()
+// Function: SystemModeEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSystem::refresh()
+void SystemModeEditor::refresh()
 {
 	// when the combo box changes it must be disconnected to avoid emitting signals
 	disconnect(&groupEditor_, SIGNAL(currentTextChanged(QString const&)), this, SLOT(onGroupChange(QString const&)));
@@ -126,26 +126,26 @@ void BusIfInterfaceSystem::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::getInterfaceMode()
+// Function: SystemModeEditor::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceSystem::getInterfaceMode() const
+General::InterfaceMode SystemModeEditor::getInterfaceMode() const
 {
     return getBusInterface()->getMode(getBusName());
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::onGroupChange()
+// Function: SystemModeEditor::onGroupChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSystem::onGroupChange(QString const&)
+void SystemModeEditor::onGroupChange(QString const&)
 {
     getBusInterface()->setSystemGroup(getBusName(), groupEditor_.currentText().toStdString());
 	emit contentChanged();
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceSystem::saveModeSpecific()
+// Function: SystemModeEditor::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceSystem::saveModeSpecific()
+void SystemModeEditor::saveModeSpecific()
 {
     getBusInterface()->setSystemGroup(getBusName(), groupEditor_.currentText().toStdString());
 }

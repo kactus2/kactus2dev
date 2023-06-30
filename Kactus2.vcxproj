@@ -465,14 +465,18 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\bridgesmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraldetails.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.cpp" />
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\InitiatorModeEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredSlaveModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MonitorModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\SlaveModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\SystemModeEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\TargetModeEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\BusInterfacePortMapTab.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\JaroWinklerAlgorithm.cpp" />
     <ClCompile Include="editors\ComponentEditor\busInterfaces\portmaps\PhysicalPortMappingTableModel.cpp" />
@@ -1501,47 +1505,23 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.h">
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.h">
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\portmaps\BusInterfacePortMapTab.h">
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.h">
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">%(AdditionalInputs)</AdditionalInputs>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapDelegate.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\SlaveModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MirroredSlaveModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\InitiatorModeEditor.h" />
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.h" />
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MonitorModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\SystemModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\TargetModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.h" />
     <ClInclude Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapHeaderView.h" />
     <QtMoc Include="editors\ComponentEditor\busInterfaces\portmaps\PortMapModel.h">
     </QtMoc>

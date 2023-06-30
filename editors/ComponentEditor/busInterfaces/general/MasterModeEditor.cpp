@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacemaster.cpp
+// File: MasterModeEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Editor to edit master or mirrored master settings of a bus interface.
 //-----------------------------------------------------------------------------
 
-#include "busifinterfacemaster.h"
+#include "MasterModeEditor.h"
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/generaldeclarations.h>
@@ -26,13 +26,12 @@
 #include <QString>
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::BusIfInterfaceMaster()
+// Function: MasterModeEditor::MasterModeEditor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMaster::BusIfInterfaceMaster(General::InterfaceMode mode,
-    BusInterfaceInterface* busInterface, std::string const& busName,
+MasterModeEditor::MasterModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
     QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QWidget *parent):
-BusIfInterfaceModeEditor(busInterface, busName, tr("Master"), parent),
+ModeEditorBase(busInterface, busName, tr("Master"), parent),
 addressSpaceReferenceSelector_(this),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 parameterFinder_(parameterFinder),
@@ -45,21 +44,6 @@ component_(component)
     ParameterCompleter* baseAddressCompleter = new ParameterCompleter(this);
     baseAddressCompleter->setModel(componentParameterModel);
     baseAddressEditor_->setAppendingCompleter(baseAddressCompleter);
-
-    // set the title depending on the mode
-    if (mode == General::MASTER)
-    {
-        setTitle(tr("Master"));
-    }
-    else if (mode == General::MIRRORED_MASTER)
-    {
-        setTitle(tr("Mirrored master"));
-    }
-    // this editor should only be used for masters and mirrored masters
-    else
-    {
-        Q_ASSERT(false);
-    }
 
 	QLabel* addrSpaceLabel = new QLabel(tr("Address space:"), this);
 
@@ -85,16 +69,9 @@ component_(component)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::~BusIfInterfaceMaster()
+// Function: MasterModeEditor::isValid()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMaster::~BusIfInterfaceMaster()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::isValid()
-//-----------------------------------------------------------------------------
-bool BusIfInterfaceMaster::isValid() const
+bool MasterModeEditor::isValid() const
 {
 	QString selectedAddrSpace = addressSpaceReferenceSelector_.currentText();
 
@@ -115,9 +92,9 @@ bool BusIfInterfaceMaster::isValid() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::refresh()
+// Function: MasterModeEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::refresh()
+void MasterModeEditor::refresh()
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -149,17 +126,17 @@ void BusIfInterfaceMaster::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::getInterfaceMode()
+// Function: MasterModeEditor::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceMaster::getInterfaceMode() const
+General::InterfaceMode MasterModeEditor::getInterfaceMode() const
 {
     return General::MASTER;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::onAddressSpaceChange()
+// Function: MasterModeEditor::onAddressSpaceChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
+void MasterModeEditor::onAddressSpaceChange(const QString& addrSpaceName)
 {
     getBusInterface()->setAddressSpaceReference(getBusName(), addrSpaceName.toStdString());
 
@@ -179,9 +156,9 @@ void BusIfInterfaceMaster::onAddressSpaceChange(const QString& addrSpaceName)
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::onBaseAddressChange()
+// Function: MasterModeEditor::onBaseAddressChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::onBaseAddressChange()
+void MasterModeEditor::onBaseAddressChange()
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -195,9 +172,9 @@ void BusIfInterfaceMaster::onBaseAddressChange()
 }	
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceMaster::saveModeSpecific()
+// Function: MasterModeEditor::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::saveModeSpecific()
+void MasterModeEditor::saveModeSpecific()
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -207,9 +184,9 @@ void BusIfInterfaceMaster::saveModeSpecific()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemaster::removeReferencesFromExpressions()
+// Function: MasterModeEditor::removeReferencesFromExpressions()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMaster::removeReferencesFromExpressions()
+void MasterModeEditor::removeReferencesFromExpressions()
 {
     QStringList baseAddressExpression;
     baseAddressExpression.append(baseAddressEditor_->getExpression());
@@ -217,7 +194,7 @@ void BusIfInterfaceMaster::removeReferencesFromExpressions()
     ReferenceCalculator referenceCalculator(parameterFinder_);
     QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(baseAddressExpression);
 
-    foreach (QString referencedId, referencedParameters.keys())
+    for (QString const& referencedId : referencedParameters.keys())
     {
         for (int i = 0; i < referencedParameters.value(referencedId); ++i)
         {

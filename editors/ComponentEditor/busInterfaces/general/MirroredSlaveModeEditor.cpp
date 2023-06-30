@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busIfInterfaceMSlave.cpp
+// File: MirroredSlaveModeEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,7 +9,7 @@
 // Editor to edit mirrored slave details of a bus interface.
 //-----------------------------------------------------------------------------
 
-#include "busifinterfacemslave.h"
+#include "MirroredSlaveModeEditor.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -29,12 +29,12 @@
 #include <QGridLayout>
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::BusIfInterfaceMSlave()
+// Function: MirroredSlaveModeEditor::MirroredSlaveModeEditor()
 //-----------------------------------------------------------------------------
-BusIfInterfaceMSlave::BusIfInterfaceMSlave(BusInterfaceInterface* busInterface, std::string const& busName,
+MirroredSlaveModeEditor::MirroredSlaveModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
     QWidget *parent):
-BusIfInterfaceModeEditor(busInterface, busName, tr("Mirrored slave"), parent),
+ModeEditorBase(busInterface, busName, tr("Mirrored slave"), parent),
 remapEditor_(new ExpressionEditor(parameterFinder, this)),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser),
@@ -81,17 +81,17 @@ parameterFinder_(parameterFinder)
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::isValid()
+// Function: MirroredSlaveModeEditor::isValid()
 //-----------------------------------------------------------------------------
-bool BusIfInterfaceMSlave::isValid() const
+bool MirroredSlaveModeEditor::isValid() const
 {
 	return true;
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::refresh()
+// Function: MirroredSlaveModeEditor::refresh()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::refresh()
+void MirroredSlaveModeEditor::refresh()
 {
     rangeEditor_->blockSignals(true);
 
@@ -112,17 +112,17 @@ void BusIfInterfaceMSlave::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::getInterfaceMode()
+// Function: MirroredSlaveModeEditor::getInterfaceMode()
 //-----------------------------------------------------------------------------
-General::InterfaceMode BusIfInterfaceMSlave::getInterfaceMode() const
+General::InterfaceMode MirroredSlaveModeEditor::getInterfaceMode() const
 {
 	return General::MIRRORED_SLAVE;
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::saveModeSpecific()
+// Function: MirroredSlaveModeEditor::saveModeSpecific()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::saveModeSpecific()
+void MirroredSlaveModeEditor::saveModeSpecific()
 {
     BusInterfaceInterface* busInterface = getBusInterface();
     std::string busName = getBusName();
@@ -132,9 +132,9 @@ void BusIfInterfaceMSlave::saveModeSpecific()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::onRemapChange()
+// Function: MirroredSlaveModeEditor::onRemapChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::onRemapChange()
+void MirroredSlaveModeEditor::onRemapChange()
 {
     remapEditor_->finishEditingCurrentWord();
 
@@ -151,9 +151,9 @@ void BusIfInterfaceMSlave::onRemapChange()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::onRangeChange()
+// Function: MirroredSlaveModeEditor::onRangeChange()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::onRangeChange()
+void MirroredSlaveModeEditor::onRangeChange()
 {
     rangeEditor_->finishEditingCurrentWord();
 
@@ -167,9 +167,9 @@ void BusIfInterfaceMSlave::onRangeChange()
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemslave::removeReferencesFromExpressions()
+// Function: MirroredSlaveModeEditor::removeReferencesFromExpressions()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceMSlave::removeReferencesFromExpressions()
+void MirroredSlaveModeEditor::removeReferencesFromExpressions()
 {
     QStringList expressionList;
     expressionList.append(rangeEditor_->getExpression());
@@ -178,7 +178,7 @@ void BusIfInterfaceMSlave::removeReferencesFromExpressions()
     ReferenceCalculator referenceCalculator(parameterFinder_);
     QMap<QString, int> referencedParameters = referenceCalculator.getReferencedParameters(expressionList);
 
-    foreach (QString referencedId, referencedParameters.keys())
+    for (QString const& referencedId : referencedParameters.keys())
     {
         for (int i = 0; i < referencedParameters.value(referencedId); ++i)
         {

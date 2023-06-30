@@ -40,6 +40,11 @@ public:
      */
 	virtual ~BridgesDelegate() = default;
 
+    //! No copying. No assignment.
+    BridgesDelegate(const BridgesDelegate& other) = delete;
+    BridgesDelegate& operator=(const BridgesDelegate& other) = delete;
+
+
 	/*!
      *  Create a new editor for the given item
 	 *
@@ -49,8 +54,8 @@ public:
 	 *
 	 *      @return The editor to be used to edit the item.
      */
-	virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, QModelIndex const& index)
-        const;
+	QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, QModelIndex const& index)
+        const final;
 
 	/*!
      *  Set the data for the editor.
@@ -58,7 +63,7 @@ public:
 	 *      @param [in] editor The editor where the data is to be set.
 	 *      @param [in] index Model index identifying the item that's data is to be set.
      */
-	virtual void setEditorData(QWidget* editor, QModelIndex const& index) const;
+	void setEditorData(QWidget* editor, QModelIndex const& index) const final;
 
 	/*!
      *  Save the data from the editor to the model.
@@ -67,22 +72,13 @@ public:
 	 *      @param [in] model Model that contains the data structure where data is to be saved to.
 	 *      @param [in] index Model index identifying the item that's data is to be saved.
      */
-	virtual void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const;
+	void setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const final;
 
 private:
 	
-    //! No copying. No assignment.
-	BridgesDelegate(const BridgesDelegate& other);
-	BridgesDelegate& operator=(const BridgesDelegate& other);
-
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;
 
-	//! Boolean for ad-hoc group modify.
-	bool opaqueGroupModify_;
-
-	//! The new state for the group modify.
-	Qt::CheckState opaque;
 };
 
 #endif // BRIDGESDELEGATE_H

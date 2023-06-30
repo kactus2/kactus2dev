@@ -32,9 +32,9 @@ namespace General
         SYSTEM,
         MIRRORED_MASTER,
         MIRRORED_SLAVE,
-        MIRRORED_SYSTEM,
         MIRRORED_INITIATOR,
         MIRRORED_TARGET,
+        MIRRORED_SYSTEM,
         MONITOR,
         INTERFACE_MODE_COUNT
     };

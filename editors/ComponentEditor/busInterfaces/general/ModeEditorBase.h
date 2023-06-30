@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacemodeeditor.h
+// File: ModeEditorBase.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,8 +9,8 @@
 // Base class for different interface mode editors of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACEMODEEDITOR_H
-#define BUSIFINTERFACEMODEEDITOR_H
+#ifndef MODE_EDITOR_BASE_H
+#define MODE_EDITOR_BASE_H
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -24,7 +24,7 @@ class BusInterfaceInterface;
 //-----------------------------------------------------------------------------
 //! Base class for different interface mode editors of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceModeEditor : public QGroupBox
+class ModeEditorBase : public QGroupBox
 {
 	Q_OBJECT
 
@@ -38,13 +38,18 @@ public:
 	 *      @param [in] title           The title for the group box
 	 *      @param [in] parent          The owner of this editor.
      */
-    BusIfInterfaceModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, QString const& title,
+    ModeEditorBase(BusInterfaceInterface* busInterface, std::string const& busName, QString const& title,
         QWidget* parent);
 
 	/*!
      *  The destructor
      */
-	virtual ~BusIfInterfaceModeEditor() = default;
+	virtual ~ModeEditorBase() = default;
+
+
+    //! No copying. No assignment.
+    ModeEditorBase(const ModeEditorBase& other) = delete;
+    ModeEditorBase& operator=(const ModeEditorBase& other) = delete;
 
 	/*!
      *  Check for the validity of the mode specific items.
@@ -95,16 +100,10 @@ protected:
      */
     BusInterfaceInterface* getBusInterface() const;
 
-
     /*!
      *  Get the name of the edited bus interfaces.
      */
     std::string getBusName() const;
-
-
-    //! No copying. No assignment.
-	BusIfInterfaceModeEditor(const BusIfInterfaceModeEditor& other);
-	BusIfInterfaceModeEditor& operator=(const BusIfInterfaceModeEditor& other);
 
     //-----------------------------------------------------------------------------
     //! Data.
@@ -117,4 +116,4 @@ protected:
     std::string busName_;
 };
 
-#endif // BUSIFINTERFACEMODEEDITOR_H
+#endif // MODE_EDITOR_BASE_H

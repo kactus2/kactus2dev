@@ -12,12 +12,16 @@
 #ifndef INTERFACEMODESTACK_H
 #define INTERFACEMODESTACK_H
 
-#include "busifinterfacemaster.h"
-#include "busifinterfacemonitor.h"
-#include "busifinterfacemslave.h"
-#include "busifinterfaceslave.h"
-#include "busifinterfacesystem.h"
-#include "BusIfInterfaceMirroredMaster.h"
+#include "MasterModeEditor.h"
+#include "MirroredMasterModeEditor.h"
+#include "SlaveModeEditor.h"
+#include "MirroredSlaveModeEditor.h"
+#include "InitiatorModeEditor.h"
+#include "MirroredInitiatorModeEditor.h"
+#include "TargetModeEditor.h"
+#include "MirroredTargetModeEditor.h"
+#include "MonitorModeEditor.h"
+#include "SystemModeEditor.h"
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -124,25 +128,37 @@ private:
     std::string busName_;
 
     //! The master interface.
-	BusIfInterfaceMaster master_;
+	MasterModeEditor master_;
 
     //! The slave interface.
-	BusIfInterfaceSlave slave_;
+	SlaveModeEditor slave_;
+
+    //! The initiator interface.
+    InitiatorModeEditor initiator_;
+
+    //! The target interface.
+    TargetModeEditor target_;
 
     //! The system interface.
-	BusIfInterfaceSystem system_;
+	SystemModeEditor system_;
 
     //! The mirrored master interface.
-    BusIfInterfaceMirroredMaster mirroredMaster_;
+    MirroredMasterModeEditor mirroredMaster_;
 
     //! The mirrored slave interface.
-	BusIfInterfaceMSlave mirroredSlave_;
+	MirroredSlaveModeEditor mirroredSlave_;
+
+    //! The mirrored initiator interface.
+    MirroredInitiatorModeEditor mirroredInitiator_;
+
+    //! The mirrored tarGet interface.
+    MirroredTargetModeEditor mirroredTarget_;
 
     //! The mirrored system interface.
-	BusIfInterfaceSystem mirroredSystem_;
+	SystemModeEditor mirroredSystem_;
 
     //! The monitor interface.
-	BusIfInterfaceMonitor monitor_;
+	MonitorModeEditor monitor_;
 };
 
 #endif // INTERFACEMODESTACK_H

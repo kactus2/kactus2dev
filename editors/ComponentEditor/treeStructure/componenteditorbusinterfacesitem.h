@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/common/ExpressionSet.h>
+
 class BusInterface;
 class BusInterfaceValidator;
 class ExpressionParser;
@@ -52,9 +54,7 @@ public:
         LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+		ExpressionSet expressions,
         ComponentEditorItem* parent,
         QWidget* parentWnd);
 
@@ -125,8 +125,8 @@ private:
     //! The parent window.
     QWidget* parentWnd_;
 
-    //! The expression parser used to define the results of expressions.
-    QSharedPointer<ExpressionParser> expressionParser_;
+	//! Expression handling tools.
+	ExpressionSet expressions_;
 
     //! Validator for bus interfaces.
     QSharedPointer<BusInterfaceValidator> validator_;

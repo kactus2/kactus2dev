@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacemodeeditor.cpp
+// File: ModeEditorBase.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,42 +9,44 @@
 // Base class for different interface mode editors of a bus interface.
 //-----------------------------------------------------------------------------
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 
 //-----------------------------------------------------------------------------
-// Function: BusIfInterfaceModeEditor::BusIfInterfaceModeEditor()
+// Function: ModeEditorBase::ModeEditorBase()
 //-----------------------------------------------------------------------------
-BusIfInterfaceModeEditor::BusIfInterfaceModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
+ModeEditorBase::ModeEditorBase(BusInterfaceInterface* busInterface, std::string const& busName,
     QString const& title, QWidget* parent):
 QGroupBox(title, parent),
 busInterface_(busInterface),
 busName_(busName)
 {
     Q_ASSERT(busInterface_);
+
+    setFlat(true);
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemodeeditor::changeName()
+// Function: ModeEditorBase::changeName()
 //-----------------------------------------------------------------------------
-void BusIfInterfaceModeEditor::changeName(std::string const& newName)
+void ModeEditorBase::changeName(std::string const& newName)
 {
     busName_ = newName;
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemodeeditor::getBusInterface()
+// Function: ModeEditorBase::getBusInterface()
 //-----------------------------------------------------------------------------
-BusInterfaceInterface* BusIfInterfaceModeEditor::getBusInterface() const
+BusInterfaceInterface* ModeEditorBase::getBusInterface() const
 {
     return busInterface_;
 }
 
 //-----------------------------------------------------------------------------
-// Function: busifinterfacemodeeditor::getBusName()
+// Function: ModeEditorBase::getBusName()
 //-----------------------------------------------------------------------------
-std::string BusIfInterfaceModeEditor::getBusName() const
+std::string ModeEditorBase::getBusName() const
 {
     return busName_;
 }

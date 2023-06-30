@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: busifinterfacesystem.h
+// File: SystemModeEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Antti Kamppi
@@ -9,10 +9,10 @@
 // Editor to edit system or mirrored system details of a bus interface.
 //-----------------------------------------------------------------------------
 
-#ifndef BUSIFINTERFACESYSTEM_H
-#define BUSIFINTERFACESYSTEM_H
+#ifndef SYSTEM_MODE_EDITOR_H
+#define SYSTEM_MODE_EDITOR_H
 
-#include "busifinterfacemodeeditor.h"
+#include "ModeEditorBase.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
 
@@ -26,7 +26,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Editor to edit system or mirrored system details of a bus interface.
 //-----------------------------------------------------------------------------
-class BusIfInterfaceSystem : public BusIfInterfaceModeEditor
+class SystemModeEditor : public ModeEditorBase
 {
 	Q_OBJECT
 
@@ -40,7 +40,7 @@ public:
 	 *      @param [in] libHandler      The library handler instance.
 	 *      @param [in] parent          The owner of this editor.
      */
-    BusIfInterfaceSystem(BusInterfaceInterface* busInterface,
+    SystemModeEditor(BusInterfaceInterface* busInterface,
         std::string const& busName,
         LibraryInterface* libHandler,
         QWidget *parent);
@@ -48,31 +48,35 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~BusIfInterfaceSystem() = default;
+	virtual ~SystemModeEditor() = default;
+
+    //! No copying. No assignment.
+    SystemModeEditor(const SystemModeEditor& other) = delete;
+    SystemModeEditor& operator=(const SystemModeEditor& other) = delete;
 
 	/*!
      *  Check for the validity of the edited item.
      *
      *      @return True if item is valid.
      */
-	virtual bool isValid() const;
+	bool isValid() const final;
 
 	/*!
      *  Restore the changes made in the editor back to ones in the model.
      */
-	virtual void refresh();
+	void refresh() final;
 
 	/*!
      *  Get the interface mode of the editor
      * 
 	 *      @return General::InterfaceMode Specifies the interface mode.
      */
-	virtual General::InterfaceMode getInterfaceMode() const;
+	General::InterfaceMode getInterfaceMode() const final;
 
 	/*!
      *  Save the interface mode-specific details to the bus interface.
      */
-	virtual void saveModeSpecific();
+	void saveModeSpecific() final;
 
 private slots:
 
@@ -84,10 +88,6 @@ private slots:
 	void onGroupChange(QString const& newGroup);
 
 private:
-
-    //! No copying. No assignment.
-	BusIfInterfaceSystem(const BusIfInterfaceSystem& other);
-	BusIfInterfaceSystem& operator=(const BusIfInterfaceSystem& other);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -103,4 +103,4 @@ private:
 	QComboBox groupEditor_;
 };
 
-#endif // BUSIFINTERFACESYSTEM_H
+#endif // SYSTEM_MODE_EDITOR_H

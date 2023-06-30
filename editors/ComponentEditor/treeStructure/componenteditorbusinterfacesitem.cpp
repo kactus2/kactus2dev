@@ -30,27 +30,26 @@
 ComponentEditorBusInterfacesItem::ComponentEditorBusInterfacesItem(BusInterfaceInterface* busInterface,
     PortMapInterface* portMapInterface, ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent, QWidget* parentWnd):
+    ExpressionSet expressions, ComponentEditorItem* parent, QWidget* parentWnd):
 ComponentEditorItem(model, libHandler, component, parent),
 busifs_(component->getBusInterfaces()),
 parentWnd_(parentWnd),
-expressionParser_(expressionParser),
+expressions_(expressions),
 validator_(),
 busInterface_(busInterface),
 portMapInterface_(portMapInterface)
 {
     createBusInterfaceValidator();
 
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
 
-	foreach (QSharedPointer<BusInterface> busif, *busifs_)
+	for (QSharedPointer<BusInterface> busif : *busifs_)
     {
 		QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
-            busif, model, libHandler, component, referenceCounter_, parameterFinder_, expressionFormatter_,
-            expressionParser_, validator_, busInterface_, portMapInterface_, this, parentWnd));
+            busif, model, libHandler, component, referenceCounter_, expressions,
+            validator_, busInterface_, portMapInterface_, this, parentWnd));
 
         connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -65,12 +64,12 @@ portMapInterface_(portMapInterface)
 void ComponentEditorBusInterfacesItem::createBusInterfaceValidator()
 {
     QSharedPointer<PortMapValidator> portMapValidator(
-        new PortMapValidator(expressionParser_, component_->getPorts(), libHandler_));
+        new PortMapValidator(expressions_.parser, component_->getPorts(), libHandler_));
 
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(expressionParser_, component_->getChoices()));
+        new ParameterValidator(expressions_.parser, component_->getChoices()));
 
-    validator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressionParser_,
+    validator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(expressions_.parser,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
         component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
@@ -128,8 +127,8 @@ QString ComponentEditorBusInterfacesItem::getTooltip() const
 void ComponentEditorBusInterfacesItem::createChild(int index)
 {
 	QSharedPointer<ComponentEditorBusInterfaceItem> busifItem(new ComponentEditorBusInterfaceItem(
-        busifs_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, validator_, busInterface_, portMapInterface_, this, parentWnd_));
+        busifs_->at(index), model_, libHandler_, component_, referenceCounter_, expressions_,
+        validator_, busInterface_, portMapInterface_, this, parentWnd_));
 	busifItem->setLocked(locked_);
 
     connect(busifItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -144,7 +143,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInterfaceItem(
     QString const& interfaceName) const
 {
-	foreach (const QSharedPointer<ComponentEditorItem> child, childItems_)
+	for (const QSharedPointer<ComponentEditorItem> child : childItems_)
     {		
 		// if the bus interface name matches the searched interface name
 		if (child->text() == interfaceName)

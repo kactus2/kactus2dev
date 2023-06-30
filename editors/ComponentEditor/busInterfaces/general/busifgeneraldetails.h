@@ -14,6 +14,11 @@
 
 #include <common/widgets/interfaceModeSelector/interfacemodeselector.h>
 
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
+
+#include <KactusAPI/include/ExpressionParser.h>
+
+
 #include <QGroupBox>
 #include <QCheckBox>
 #include <QLineEdit>
@@ -36,14 +41,24 @@ public:
 	 *
 	 *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] busName         Name of the bus interface being edited.
+     *      @param [in] docRevision     The IP-XACT version to comply to.
 	 *      @param [in] parent          The owner of this editor.
      */
-    BusIfGeneralDetails(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+    BusIfGeneralDetails(BusInterfaceInterface* busInterface, std::string const& busName, 
+		Document::Revision docRevision, QSharedPointer<ParameterFinder> finder, 
+		QSharedPointer<ExpressionParser> expressionParser,
+		QWidget* parent);
 
 	/*!
      *  The destructor
      */
-	virtual ~BusIfGeneralDetails();
+	virtual ~BusIfGeneralDetails() = default;
+
+    //! No copying
+    BusIfGeneralDetails(const BusIfGeneralDetails& other) = delete;
+
+    //! No assignment
+    BusIfGeneralDetails& operator=(const BusIfGeneralDetails& other) = delete;
 
 	/*! Check for the validity of the edited item.
 	*
@@ -88,24 +103,21 @@ private slots:
 	//! Handler for changes in bit steering.
 	void onBitSteeringChanged();
 
+	//! Handler for changes in bit steering expression.
+	void onBitSteeringExpressionChanged();
+
 	//! Handler for changes in connection required check box
 	void onConnectionRequiredChanged();
 
     /*!
      *  Change the colouring of bit steering combobox determined by the currently selected interface mode.
      */
-    void changeBitSteeringColour();
+    void updateBitSteeringControls(General::InterfaceMode mode);
 
 private:
 	
-	//! No copying
-	BusIfGeneralDetails(const BusIfGeneralDetails& other);
-
-	//! No assignment
-	BusIfGeneralDetails& operator=(const BusIfGeneralDetails& other);
-
     //! Sets the editor layout.
-    void setupLayout();
+    void setupLayout(Document::Revision docRevision);
 
 	//! Interface for accesssing bus  interfaces.
     BusInterfaceInterface* busInterface_;
@@ -120,13 +132,17 @@ private:
 	QCheckBox connectionRequired_;
 
 	//! Sets the value for bits in lau.
-	QLineEdit bitsInLauEditor_;
+	ExpressionEditor bitsInLauEditor_;
 
 	//! Set the endianness of interface
 	QComboBox endiannessSelector_;
 
 	//! Set bit steering on/off
 	QComboBox bitSteeringSelector_;
+
+	//! 
+	ExpressionEditor bitSteeringEditor_;
+
 };
 
 #endif // BUSIFGENERALDETAILS_H

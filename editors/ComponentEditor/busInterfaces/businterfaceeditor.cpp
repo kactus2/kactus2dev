@@ -24,16 +24,15 @@
 // Function: BusInterfaceEditor::BusInterfaceEditor()
 //-----------------------------------------------------------------------------
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<BusInterface> busif, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<BusInterface> busif, ExpressionSet expressions,
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator, BusInterfaceInterface* busInterface,
     PortMapInterface* portMapInterface, QWidget* parent, QWidget* parentWnd):
 ParameterItemEditor(component, libHandler, parent),
 tabs_(this), 
-generalEditor_(libHandler, busif, component, parameterFinder, expressionFormatter, expressionParser, busInterface,
+generalEditor_(libHandler, busif, component, expressions, busInterface,
     busif->name().toStdString(), &tabs_, parentWnd),
-portmapsEditor_(libHandler, component, busInterface, busif->name().toStdString(), expressionParser,
-    parameterFinder, portMapInterface, &tabs_)
+portmapsEditor_(libHandler, component, busInterface, busif->name().toStdString(), expressions.parser,
+    expressions.finder, portMapInterface, &tabs_)
 {
 	Q_ASSERT(component);
 	Q_ASSERT(libHandler);

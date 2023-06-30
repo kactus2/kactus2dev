@@ -52,7 +52,7 @@ model_(handler, parameterFinder, busInterface, this)
     view_.viewport()->setAcceptDrops(true); 
     view_.setDropIndicatorShown(true);   
     view_.setDragDropMode(QAbstractItemView::DropOnly);
-    view_.setItemDelegate(new BusInterfacesDelegate(this));    
+    view_.setItemDelegate(new BusInterfacesDelegate(component->getRevision(), this));
     
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(busifAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
@@ -89,6 +89,13 @@ void BusInterfacesEditor::refresh()
 //-----------------------------------------------------------------------------
 void BusInterfacesEditor::showEvent(QShowEvent* event)
 {
-	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/businterfaces.html");
+    QWidget::showEvent(event);
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        emit helpUrlRequested("componenteditor/businterfaces.html");
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/businterfaces2022.html");
+    }
 }

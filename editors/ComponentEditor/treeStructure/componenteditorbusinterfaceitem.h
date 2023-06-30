@@ -12,6 +12,7 @@
 #ifndef COMPONENTEDITORBUSINTERFACEITEM_H
 #define COMPONENTEDITORBUSINTERFACEITEM_H
 
+#include <editors/common/ExpressionSet.h>
 #include <editors/ComponentEditor/treeStructure/ParameterizableItem.h>
 
 #include <QSharedPointer>
@@ -54,9 +55,7 @@ public:
         LibraryInterface* libHandler,
         QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+		ExpressionSet expressions,
         QSharedPointer<BusInterfaceValidator> validator,
         BusInterfaceInterface* busInterface,
         PortMapInterface* portMapInterface,
@@ -126,8 +125,8 @@ private:
     //! Action to open the bus interface for editing.
     QAction* editAction_;
 
-    //! The expression parse used to form the results of the expressions.
-    QSharedPointer<ExpressionParser> expressionParser_;
+	//! Expression handling tools.
+	ExpressionSet expressions_;
 
     //! Validator for bus interfaces.
     QSharedPointer<BusInterfaceValidator> validator_;

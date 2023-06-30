@@ -19,15 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesDelegate::BusInterfacesDelegate()
 //-----------------------------------------------------------------------------
-BusInterfacesDelegate::BusInterfacesDelegate(QObject *parent):
-MultilineDescriptionDelegate(parent)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterfacesDelegate::~BusInterfacesDelegate()
-//-----------------------------------------------------------------------------
-BusInterfacesDelegate::~BusInterfacesDelegate()
+BusInterfacesDelegate::BusInterfacesDelegate(Document::Revision docRevision, QObject *parent):
+MultilineDescriptionDelegate(parent),
+docRevision_(docRevision)
 {
 }
 
@@ -52,7 +46,8 @@ QWidget* BusInterfacesDelegate::createEditor(QWidget* parent, const QStyleOption
     }
     else if (index.column() == BusInterfaceColumns::INTERFACE_MODE)
     {
-        InterfaceModeSelector* selector = new InterfaceModeSelector(parent); 
+        InterfaceModeSelector* selector = new InterfaceModeSelector(docRevision_, General::INTERFACE_MODE_COUNT,
+            true, parent);
         connect(selector, SIGNAL(currentIndexChanged(int)), 
             this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return selector;

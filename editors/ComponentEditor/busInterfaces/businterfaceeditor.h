@@ -12,6 +12,7 @@
 #ifndef BUSINTERFACEEDITOR_H
 #define BUSINTERFACEEDITOR_H
 
+#include <editors/common/ExpressionSet.h>
 #include <editors/ComponentEditor/ParameterItemEditor.h>
 #include <editors/ComponentEditor/busInterfaces/general/busifgeneraltab.h>
 #include <editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h>
@@ -58,9 +59,7 @@ public:
     BusInterfaceEditor(LibraryInterface* libHandler,
         QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busif,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+		ExpressionSet expressions,
         QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
         BusInterfaceInterface* busInterface,
         PortMapInterface* portMapInterface,

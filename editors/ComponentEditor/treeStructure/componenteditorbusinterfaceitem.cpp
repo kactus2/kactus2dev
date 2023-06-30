@@ -26,21 +26,20 @@
 //-----------------------------------------------------------------------------
 ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions,
     QSharedPointer<BusInterfaceValidator> validator, BusInterfaceInterface* busInterface,
     PortMapInterface* portMapInterface, ComponentEditorItem* parent, QWidget* parentWnd):
 ParameterizableItem(model, libHandler, component, parent),
 busif_(busif),
 parentWnd_(parentWnd),
 editAction_(new QAction(tr("Edit"), this)),
-expressionParser_(expressionParser),
+expressions_(expressions),
 validator_(validator),
 busInterface_(busInterface),
 portMapInterface_(portMapInterface)
 {
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
 
     connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
@@ -81,8 +80,8 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, parameterFinder_, expressionFormatter_,
-            expressionParser_, validator_, busInterface_, portMapInterface_, 0, parentWnd_);
+        editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, expressions_, 
+            validator_, busInterface_, portMapInterface_, 0, parentWnd_);
         editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),

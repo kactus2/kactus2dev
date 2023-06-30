@@ -41,9 +41,9 @@
       
       <dt>4-6. <b>Mirrored master, mirrored slave, mirrored system</b> are the <i>mirrored</i> versions of the
 	  above modes.
-	  They have the same (or similar) ports as normal interfaces, but the directions of the ports are reversed. 
+	  They have similar ports as normal interfaces, but the directions of the ports are reversed. 
 	  For example, if a <i>master</i> interface has data 
-      input, then a <i>mirrored master</i> has data as output.
+    output, then a <i>mirrored master</i> has data as input.
 	  It is not allowed to connect to mirrored interfaces together. 
 	  The main usage of mirrored interfaces is at bus interconnects, such as AMBA AHB/APB or HIBI,
 	  since they allow constructing a memory map of the whole system, whereas regular IP 
@@ -54,7 +54,7 @@
     </dl>
 
     <p> 
-      IP-XACT allows 3 kinds of connections
+      IP-XACT allows three kinds of connections
     </p>
     <ol>
       <li>Direct master to slave: Point-to-point connection. Complex cases require using bus interconnect
@@ -68,10 +68,13 @@
     </ol>
     <hr>
     <p>    
-      E.g. IP_0 writes data through its master interfce to
-      interconnect's mirrored master interface. On the receiving side,
-      interconnect's mirrored slave interface writes the data to
-      IP_1's slave interface.  
+      EXAMPLE. Component Sender writes data through its master interface MIF to
+      mirrored master interface MMIF in interconnect. On the receiving side,
+      interconnect's mirrored slave interface MSIF writes the data to
+      Receiver's slave interface SIF.  
+      <br />
+      <img src="../images/busInterfaces.png" alt="interfaces_example"><br />
+     </p>
     </p>
     
   </body>

@@ -16,33 +16,35 @@
 //-----------------------------------------------------------------------------
 // Function: InterfaceModeSelector::InterfaceModeSelector()
 //-----------------------------------------------------------------------------
-InterfaceModeSelector::InterfaceModeSelector(QWidget* parent, General::InterfaceMode mode, bool showMonitor):
+InterfaceModeSelector::InterfaceModeSelector(Document::Revision docRevision, General::InterfaceMode mode, 
+	bool showMonitor, QWidget* parent):
 QComboBox(parent),
 showMonitor_(showMonitor)
 {
-	initialize();
+	initialize(docRevision);
 
-	setCurrentIndex(mode);
-}
-
-//-----------------------------------------------------------------------------
-// Function: InterfaceModeSelector::~InterfaceModeSelector()
-//-----------------------------------------------------------------------------
-InterfaceModeSelector::~InterfaceModeSelector()
-{
+	setCurrentText(General::interfaceMode2Str(mode));
 }
 
 //-----------------------------------------------------------------------------
 // Function: InterfaceModeSelector::initialize()
 //-----------------------------------------------------------------------------
-void InterfaceModeSelector::initialize()
+void InterfaceModeSelector::initialize(Document::Revision docRevision)
 {
 	// mode names can not be edited
 	setEditable(false);
 
 	setSizeAdjustPolicy(QComboBox::AdjustToContents);
 
-	QStringList items = General::INTERFACE_MODES.values();
+	QStringList items;
+	if (docRevision == Document::Revision::Std14)
+	{
+        items = General::INTERFACE_MODES.values();
+	}
+	else if (docRevision == Document::Revision::Std22)
+    {
+        items = General::INTERFACE_MODES_2022.values();
+	}
 
     // if monitor should not be displayed then remove it
     if (showMonitor_ == false)
@@ -71,8 +73,7 @@ void InterfaceModeSelector::setMode(const General::InterfaceMode mode)
 
 	disconnect(this, SIGNAL(currentTextChanged(const QString&)), this, SLOT(setMode(const QString&)));
 	
-	// the names in the combo box are in the same order as the interface modes
-	setCurrentIndex(mode);
+	setCurrentText(General::interfaceMode2Str(mode));
 	
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
         this, SLOT(setMode(const QString&)), Qt::UniqueConnection);
@@ -92,7 +93,7 @@ void InterfaceModeSelector::setMode(QString const& modeName)
 	if (index >= 0)
     {
 		setCurrentIndex(index);
-		emit modeSelected(static_cast<General::InterfaceMode>(index));
+		emit modeSelected(General::str2Interfacemode(modeName, General::INTERFACE_MODE_COUNT));
 	}
 
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
@@ -104,6 +105,5 @@ void InterfaceModeSelector::setMode(QString const& modeName)
 //-----------------------------------------------------------------------------
 General::InterfaceMode InterfaceModeSelector::selected() const
 {
-	int index = qMax(0, currentIndex());
-	return static_cast<General::InterfaceMode>(index);
+	return General::str2Interfacemode(currentText(), General::INTERFACE_MODE_COUNT);
 }

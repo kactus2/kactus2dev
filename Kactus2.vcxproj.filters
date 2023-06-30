@@ -2137,24 +2137,6 @@
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClCompile>
@@ -2193,9 +2175,6 @@
     </ClCompile>
     <ClCompile Include="Plugins\common\SourceHighlightStyle.cpp">
       <Filter>Source Files\Plugins\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\fileSet\groupmanagerdelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\fileSet</Filter>
@@ -3213,6 +3192,39 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\SlaveModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredSlaveModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MonitorModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\SystemModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\InitiatorModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\TargetModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4289,24 +4301,6 @@
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifgeneraltab.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemaster.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemodeeditor.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemonitor.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacemslave.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfaceslave.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\busifinterfacesystem.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\interfacemodestack.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </QtMoc>
@@ -4337,9 +4331,6 @@
     <QtMoc Include="Plugins\common\LanguageHighlighter.h">
       <Filter>Header Files\Plugins\common</Filter>
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\busInterfaces\general\BusIfInterfaceMirroredMaster.h">
-      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </CustomBuild>
     <QtMoc Include="library\LibraryFilter.h">
       <Filter>Header Files\library</Filter>
     </QtMoc>
@@ -5647,6 +5638,12 @@
     <ClInclude Include="editors\common\ExpressionSet.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5752,6 +5749,33 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\cpus\RegionsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\SlaveModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MirroredSlaveModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MonitorModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\SystemModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\InitiatorModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\TargetModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

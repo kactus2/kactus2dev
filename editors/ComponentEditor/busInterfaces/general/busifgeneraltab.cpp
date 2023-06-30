@@ -28,22 +28,26 @@
 // Function: BusIfGeneralTab::BusIfGeneralTab()
 //-----------------------------------------------------------------------------
 BusIfGeneralTab::BusIfGeneralTab(LibraryInterface* libHandler, QSharedPointer<BusInterface> busif,
-    QSharedPointer<Component> component, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser,
-    BusInterfaceInterface* busInterface, std::string busName, QWidget* parent, QWidget* parentWnd):
+    QSharedPointer<Component> component, ExpressionSet expressions,
+    BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent, QWidget* parentWnd) :
 QWidget(parent),
-busInterface_(busInterface),
-nameEditor_(busif, component->getRevision(), this, tr("Name and description")),
-busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
-abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busInterface_->getAbstractionTypeInterface(),
-    parentWnd, this)),
-modeStack_(busInterface_, busName, component, parameterFinder, libHandler, expressionParser, this),
-details_(busInterface_, busName, this),
-parameters_(busif->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
-libHandler_(libHandler)
+    busInterface_(busInterface),
+    nameEditor_(busif, component->getRevision(), this, tr("Name and description")),
+    busType_(VLNV::BUSDEFINITION, libHandler, parentWnd, this),
+    abstractionEditor_(new AbstractionTypesEditor(component, libHandler, busInterface_->getAbstractionTypeInterface(),
+        parentWnd, this)),
+    modeStack_(busInterface_, busName, component, expressions.finder, libHandler, expressions.parser, this),
+    details_(busInterface_, busName, component->getRevision(), expressions.finder, expressions.parser, this),
+    parameters_(busif->getParameters(), component->getChoices(), expressions.finder, expressions.formatter, this),
+    libHandler_(libHandler),
+    docRevision_(component->getRevision())
 {
 	Q_ASSERT_X(libHandler, "BusIfGeneralTab constructor", "Null LibraryInterface-pointer given as parameter");
     Q_ASSERT(busInterface_);
+
+    busType_.setFlat(true);
+    abstractionEditor_->setFlat(true);
+    parameters_.setFlat(true);
 
     connect(&parameters_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -79,14 +83,6 @@ libHandler_(libHandler)
 	busType_.setTitle(tr("Bus definition"));
 
     setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusIfGeneralTab::~BusIfGeneralTab()
-//-----------------------------------------------------------------------------
-BusIfGeneralTab::~BusIfGeneralTab()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -163,7 +159,14 @@ void BusIfGeneralTab::onModeChanged(General::InterfaceMode mode)
 void BusIfGeneralTab::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/businterfacegeneral.html");
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        emit helpUrlRequested("componenteditor/businterfacegeneral.html");
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/businterfacegeneral2022.html");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -210,14 +213,17 @@ void BusIfGeneralTab::setupLayout()
     QGridLayout* topLayout = new QGridLayout(topWidget);
 
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
-    topLayout->addWidget(&busType_, 0, 1, 1, 1);
+    topLayout->addWidget(&busType_, 0, 1, 1, 1, Qt::AlignTop);
     topLayout->addWidget(&details_, 1, 0, 1, 1);
     topLayout->addWidget(abstractionEditor_, 1, 1, 2, 1);
     topLayout->addWidget(&modeStack_, 2, 0, 1, 1);
     topLayout->addWidget(&parameters_, 3, 0, 1, 2);
 
+    topLayout->setColumnStretch(0, 1);
+    topLayout->setColumnStretch(1, 1);
+
     topLayout->setRowStretch(0, 5);
-    topLayout->setRowStretch(1, 5);
+    topLayout->setRowStretch(1, 1);
     topLayout->setRowStretch(2, 5);
     topLayout->setRowStretch(3, 10);
 
