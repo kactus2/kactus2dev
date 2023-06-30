@@ -220,7 +220,7 @@ void CatalogEditor::setupLayout()
 
     QVBoxLayout* filesLayout = new QVBoxLayout(filesBox);
     filesLayout->addWidget(fileView_);
-    
+
     QHBoxLayout* docNameGroupAndFilesLayout = new QHBoxLayout(this);
     docNameGroupAndFilesLayout->addWidget(documentNameGroupEditor_);
     docNameGroupAndFilesLayout->addWidget(filesBox);
@@ -230,6 +230,5 @@ void CatalogEditor::setupLayout()
 
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(new SummaryLabel(tr("Catalog"), this), 0, Qt::AlignCenter);
-    topLayout->addWidget(docNameGroupAndFiles, 3);
-    topLayout->addWidget(new QWidget(this), 1);
+    topLayout->addWidget(docNameGroupAndFiles);
 }
