@@ -58,7 +58,7 @@ namespace
         QLatin1String(":icons/common/graphics/hw-design.png"),
         QLatin1String(":icons/common/graphics/configuration.png"),
         QLatin1String(":icons/common/graphics/generatorChain.png"),
-        QLatin1String(":icons/common/graphics/exclamation--frame.png"),
+        QLatin1String(":icons/common/graphics/ruler.png"),
         QLatin1String(":icons/common/graphics/exclamation--frame.png")
     };
 }

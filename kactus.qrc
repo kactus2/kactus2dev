@@ -153,6 +153,7 @@
 		<file>common/graphics/mapping.png</file>
 		<file>common/graphics/log.png</file>
 		<file>common/graphics/automation.png</file>
+		<file>common/graphics/ruler.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>
