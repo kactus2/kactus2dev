@@ -34,6 +34,7 @@ AddressSpaceGeneralEditor::AddressSpaceGeneralEditor(QSharedPointer<AddressSpace
     QStringList busInterfaceNames,
     QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser,
+    Document::Revision docRevision,
     QWidget *parent):
 QGroupBox(tr("General"), parent),
 addrSpace_(addrSpace),
@@ -77,7 +78,15 @@ masterInterfaceBindingLabel_(new QLabel(this))
 	layout->addRow(tr("Addressable unit bits (AUB):"),&addrUnitEditor_);
 	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
     layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+
+    if (docRevision != Document::Revision::Std22)
+    {
+        layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+    }
+    else
+    {
+        isPresentEditor_->setVisible(false);
+    }
     layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
 
 	refresh(busInterfaceNames);

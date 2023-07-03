@@ -123,6 +123,12 @@ void NameGroupEditor::refresh()
 {
 	nameEdit_.setText(nameGroup_->name());
 	displayNameEdit_.setText(nameGroup_->displayName());
+    
+    disconnect(&shortDescriptionEdit_, SIGNAL(textEdited(QString const&)), 
+        this, SLOT(onShortDescriptionChanged(QString const&)));
+    shortDescriptionEdit_.setText(nameGroup_->shortDescription());
+    connect(&shortDescriptionEdit_, SIGNAL(textEdited(QString const&)),
+        this, SLOT(onShortDescriptionChanged(QString const&)), Qt::UniqueConnection);
 	
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 	descriptionEdit_.setPlainText(nameGroup_->description());

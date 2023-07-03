@@ -12,6 +12,8 @@
 #ifndef ADDRESSSPACEGENERALEDITOR_H
 #define ADDRESSSPACEGENERALEDITOR_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QGroupBox>
 #include <QSharedPointer>
 #include <QLabel>
@@ -38,12 +40,14 @@ public:
 	 *      @param [in] busInterfaceNames   A list of master interface names bound to this address space.
 	 *      @param [in] parameterFinder     The finder for parameters available in expressions.
 	 *      @param [in] expressionParser    The expression parser.
+	 *      @param [in] docRevision         The standard revision in use.
 	 *      @param [in] parent              The owner of the editor.
 	 */
 	AddressSpaceGeneralEditor(QSharedPointer<AddressSpace> addrSpace,
         QStringList busInterfaceNames,
         QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionParser> expressionParser,
+        Document::Revision docRevision,
         QWidget *parent);
 
 	//! The destructor.

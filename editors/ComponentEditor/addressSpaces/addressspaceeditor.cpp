@@ -33,7 +33,7 @@ ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace, component->getRevision(), this),
 generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder, expressionParser,
-    this),
+    component->getRevision(), this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
     expressionParser, expressionFormatter, this),
 localMemMapEditor_(addrSpace, component, handler, parameterFinder, blockInterface, this)

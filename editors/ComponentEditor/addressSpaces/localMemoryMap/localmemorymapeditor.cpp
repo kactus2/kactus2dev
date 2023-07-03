@@ -102,6 +102,12 @@ handler_(handler)
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 
+    // Is present only for 2014 std.
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(MemoryMapColumns::IS_PRESENT);
+    }
+
     connect(this, SIGNAL(toggled(bool)), this, SLOT(onCheckStateChanged()), Qt::UniqueConnection);
 
 	connect(nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
