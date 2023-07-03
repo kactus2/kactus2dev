@@ -6,7 +6,7 @@
 // Date: 30.09.2015
 //
 // Description:
-// Reader class for IP-XACT AddressSpace element.
+// Reader for IP-XACT AddressSpace element.
 //-----------------------------------------------------------------------------
 
 #include "AddressSpaceReader.h"
@@ -16,62 +16,50 @@
 #include <IPXACTmodels/Component/MemoryMapBaseReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::AddressSpaceReader()
-//-----------------------------------------------------------------------------
-AddressSpaceReader::AddressSpaceReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::~AddressSpaceReader()
-//-----------------------------------------------------------------------------
-AddressSpaceReader::~AddressSpaceReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpaceReader::createCPUFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode const& addressSpaceNode) const
+QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode const& addressSpaceNode,
+    Document::Revision docRevision)
 {
 	QSharedPointer<AddressSpace> newAddressSpace (new AddressSpace());
 
-    parseNameGroup(addressSpaceNode, newAddressSpace);
+    Details::parseNameGroup(addressSpaceNode, newAddressSpace);
 
-	newAddressSpace->setIsPresent(parseIsPresent(addressSpaceNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
+    if (docRevision != Document::Revision::Std22)
+    {
+	    newAddressSpace->setIsPresent(CommonItemsReader::parseIsPresent(addressSpaceNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
+    }
 
-    readBlockSize(addressSpaceNode, newAddressSpace);
+    Details::readBlockSize(addressSpaceNode, newAddressSpace);
 
-    readSegments(addressSpaceNode, newAddressSpace);
+    Details::readSegments(addressSpaceNode, newAddressSpace);
 
-    parseAddressUnitBits(addressSpaceNode, newAddressSpace);
+    Details::parseAddressUnitBits(addressSpaceNode, newAddressSpace);
 
-    parseLocalMemoryMap(addressSpaceNode, newAddressSpace);
+    Details::parseLocalMemoryMap(addressSpaceNode, newAddressSpace);
 
-    readParameters(addressSpaceNode, newAddressSpace);
+    Details::readParameters(addressSpaceNode, newAddressSpace);
 
-    parseVendorExtensions(addressSpaceNode, newAddressSpace);
+    CommonItemsReader::parseVendorExtensions(addressSpaceNode, newAddressSpace);
 
     return newAddressSpace;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::parseNameGroup()
+// Function: AddressSpaceReader::Details::parseNameGroup()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::parseNameGroup(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::parseNameGroup(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
     NameGroupReader nameReader;
     nameReader.parseNameGroup(addressSpaceNode, newAddressSpace);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::readBlockSize()
+// Function: AddressSpaceReader::Details::readBlockSize()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::readBlockSize(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::readBlockSize(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
     QDomElement rangeElement = addressSpaceNode.firstChildElement(QStringLiteral("ipxact:range"));
     QString range = rangeElement.firstChild().nodeValue();
@@ -83,10 +71,10 @@ void AddressSpaceReader::readBlockSize(QDomNode const& addressSpaceNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::readSegments()
+// Function: AddressSpaceReader::Details::readSegments()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::readSegments(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::readSegments(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
     QDomElement segmentsElement = addressSpaceNode.firstChildElement(QStringLiteral("ipxact:segments"));
 
@@ -103,13 +91,13 @@ void AddressSpaceReader::readSegments(QDomNode const& addressSpaceNode,
 
             nameReader.parseNameGroup(segmentNode, newSegment);
 
-            newSegment->setIsPresent(parseIsPresent(segmentNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
+            newSegment->setIsPresent(CommonItemsReader::parseIsPresent(segmentNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
 
             parseAddressOffset(segmentNode, newSegment);
 
             parseRange(segmentNode, newSegment);
 
-            parseVendorExtensions(segmentNode, newSegment);
+            CommonItemsReader::parseVendorExtensions(segmentNode, newSegment);
 
             newAddressSpace->getSegments()->append(newSegment);
         }
@@ -117,9 +105,9 @@ void AddressSpaceReader::readSegments(QDomNode const& addressSpaceNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::parseAddressOffset()
+// Function: AddressSpaceReader::Details::parseAddressOffset()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::parseAddressOffset(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const
+void AddressSpaceReader::Details::parseAddressOffset(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment)
 {
     QDomElement addressOffsetElement = segmentNode.firstChildElement(QStringLiteral("ipxact:addressOffset"));
     newSegment->setOffset(addressOffsetElement.firstChild().nodeValue());
@@ -141,9 +129,9 @@ void AddressSpaceReader::parseAddressOffset(QDomNode const& segmentNode, QShared
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::parseRange()
+// Function: AddressSpaceReader::Details::parseRange()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::parseRange(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment) const
+void AddressSpaceReader::Details::parseRange(QDomNode const& segmentNode, QSharedPointer<Segment> newSegment)
 {
     QDomElement rangeElement = segmentNode.firstChildElement(QStringLiteral("ipxact:range"));
     newSegment->setRange(rangeElement.firstChild().nodeValue());
@@ -165,10 +153,10 @@ void AddressSpaceReader::parseRange(QDomNode const& segmentNode, QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::parseAddressUnitBits()
+// Function: AddressSpaceReader::Details::parseAddressUnitBits()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::parseAddressUnitBits(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::parseAddressUnitBits(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
     QDomElement addressUnitElement = addressSpaceNode.firstChildElement(QStringLiteral("ipxact:addressUnitBits"));
     if (!addressUnitElement.isNull())
@@ -179,10 +167,10 @@ void AddressSpaceReader::parseAddressUnitBits(QDomNode const& addressSpaceNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::parseLocalMemoryMap()
+// Function: AddressSpaceReader::Details::parseLocalMemoryMap()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::parseLocalMemoryMap(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::parseLocalMemoryMap(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
     QDomNode localMemoryMapNode = addressSpaceNode.firstChildElement(QStringLiteral("ipxact:localMemoryMap"));
     if (!localMemoryMapNode.isNull())
@@ -196,12 +184,13 @@ void AddressSpaceReader::parseLocalMemoryMap(QDomNode const& addressSpaceNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceReader::readParameters()
+// Function: AddressSpaceReader::Details::readParameters()
 //-----------------------------------------------------------------------------
-void AddressSpaceReader::readParameters(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace) const
+void AddressSpaceReader::Details::readParameters(QDomNode const& addressSpaceNode,
+    QSharedPointer<AddressSpace> newAddressSpace)
 {
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(addressSpaceNode);
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = 
+        CommonItemsReader::parseAndCreateParameters(addressSpaceNode);
 
     if (!newParameters->isEmpty())
     {

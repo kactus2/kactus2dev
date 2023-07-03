@@ -186,13 +186,11 @@ void ComponentWriter::writeAddressSpaces(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!component->getAddressSpaces()->isEmpty())
     {
-        AddressSpaceWriter spaceWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:addressSpaces"));
 
         foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
         {
-            spaceWriter.writeAddressSpace(writer, addressSpace);
+            AddressSpaceWriter::writeAddressSpace(writer, addressSpace, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:addressSpaces

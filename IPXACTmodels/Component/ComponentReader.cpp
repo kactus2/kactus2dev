@@ -208,13 +208,12 @@ void ComponentReader::parseAddressSpaces(QDomNode const& componentNode, QSharedP
 
     if (!addressSpacesElement.isNull())
     {
-        AddressSpaceReader spaceReader;
-
         QDomNodeList addressNodeList = addressSpacesElement.elementsByTagName(QStringLiteral("ipxact:addressSpace"));
         for (int spaceIndex = 0; spaceIndex < addressNodeList.count(); ++spaceIndex)
         {
             QDomNode addressSpaceNode = addressNodeList.at(spaceIndex);
-            QSharedPointer<AddressSpace> newAddressSpace = spaceReader.createAddressSpaceFrom(addressSpaceNode);
+            QSharedPointer<AddressSpace> newAddressSpace = AddressSpaceReader::createAddressSpaceFrom(addressSpaceNode, 
+                newComponent->getRevision());
 
             newComponent->getAddressSpaces()->append(newAddressSpace);
         }

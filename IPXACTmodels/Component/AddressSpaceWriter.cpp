@@ -6,7 +6,7 @@
 // Date: 01.10.2015
 //
 // Description:
-// Writer class for IP-XACT AddressSpace element.
+// Writer for IP-XACT AddressSpace element.
 //-----------------------------------------------------------------------------
 
 #include "AddressSpaceWriter.h"
@@ -17,66 +17,54 @@
 #include <IPXACTmodels/Component/MemoryMapBaseWriter.h>
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::AddressSpaceWriter()
-//-----------------------------------------------------------------------------
-AddressSpaceWriter::AddressSpaceWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::~AddressSpaceWriter()
-//-----------------------------------------------------------------------------
-AddressSpaceWriter::~AddressSpaceWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressSpaceWriter::writeAddressSpace()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const
+void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace,
+    Document::Revision docRevision)
 {
 	writer.writeStartElement(QStringLiteral("ipxact:addressSpace"));
 
-    NameGroupWriter::writeNameGroup(writer, addressSpace);
+    NameGroupWriter::writeNameGroup(writer, addressSpace, docRevision);
 
-	writeIsPresent(writer, addressSpace->getIsPresent());
+    if (docRevision != Document::Revision::Std22)
+    {
+	    CommonItemsWriter::writeIsPresent(writer, addressSpace->getIsPresent());
+    }
 	
-    writeBlockSize(writer, addressSpace);
+    Details::writeBlockSize(writer, addressSpace);
 
-    writeSegments(addressSpace, writer);
+    Details::writeSegments(addressSpace, writer);
 
-    writeAddressUnitBits(writer, addressSpace);
+    Details::writeAddressUnitBits(writer, addressSpace);
 
-    writeLocalMemoryMap(writer, addressSpace);
+    Details::writeLocalMemoryMap(writer, addressSpace);
 
-    writeParameters(writer, addressSpace->getParameters());
+    CommonItemsWriter::writeParameters(writer, addressSpace->getParameters(), docRevision);
 
-    writeVendorExtensions( writer, addressSpace );
+    CommonItemsWriter::writeVendorExtensions( writer, addressSpace );
 
 	writer.writeEndElement();
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeBlockSize()
+// Function: AddressSpaceWriter::Details::writeBlockSize()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeBlockSize(QXmlStreamWriter &writer, QSharedPointer<AddressSpace> addressSpace) const
+void AddressSpaceWriter::Details::writeBlockSize(QXmlStreamWriter &writer, QSharedPointer<AddressSpace> addressSpace)
 {
     writer.writeTextElement(QStringLiteral("ipxact:range"), addressSpace->getRange());
     writer.writeTextElement(QStringLiteral("ipxact:width"), addressSpace->getWidth());
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeSegments()
+// Function: AddressSpaceWriter::Details::writeSegments()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer) const
+void AddressSpaceWriter::Details::writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer)
 {
 	if (!addressSpace->getSegments()->isEmpty())
 	{
 		writer.writeStartElement(QStringLiteral("ipxact:segments"));
 
-		foreach (QSharedPointer<Segment> segment, *addressSpace->getSegments())
+		for (auto const& segment : *addressSpace->getSegments())
 		{
             writeSingleSegment(writer, segment);
 		}
@@ -86,15 +74,15 @@ void AddressSpaceWriter::writeSegments(QSharedPointer<AddressSpace> addressSpace
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeSingleSegment()
+// Function: AddressSpaceWriter::Details::writeSingleSegment()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment) const
+void AddressSpaceWriter::Details::writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment)
 {
     writer.writeStartElement(QStringLiteral("ipxact:segment"));
 
     NameGroupWriter::writeNameGroup(writer, segment);
 
-    writeIsPresent(writer, segment->getIsPresent());
+    CommonItemsWriter::writeIsPresent(writer, segment->getIsPresent());
 
     if (!segment->getAddressOffset().isEmpty())
     {
@@ -116,15 +104,15 @@ void AddressSpaceWriter::writeSingleSegment(QXmlStreamWriter& writer, QSharedPoi
         writer.writeEndElement();
     }
 
-    writeVendorExtensions( writer, segment );
+    CommonItemsWriter::writeVendorExtensions( writer, segment );
 
     writer.writeEndElement(); // ipxact:segment
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeAttributeMap()
+// Function: AddressSpaceWriter::Details::writeAttributeMap()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const
+void AddressSpaceWriter::Details::writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes)
 {
     for (QMap<QString, QString>::const_iterator i = attributes.begin(); i != attributes.end(); ++i)
     {        
@@ -134,10 +122,10 @@ void AddressSpaceWriter::writeAttributeMap(QXmlStreamWriter& writer, QMap<QStrin
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeAddressUnitBits()
+// Function: AddressSpaceWriter::Details::writeAddressUnitBits()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
-    const
+void AddressSpaceWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
+   
 {
     if (!addressSpace->getAddressUnitBits().isEmpty())
     {
@@ -146,10 +134,10 @@ void AddressSpaceWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedP
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressSpaceWriter::writeLocalMemoryMap()
+// Function: AddressSpaceWriter::Details::writeLocalMemoryMap()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
-    const
+void AddressSpaceWriter::Details::writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
+   
 {
     if (addressSpace->getLocalMemoryMap())
     {

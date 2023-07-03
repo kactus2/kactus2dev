@@ -40,6 +40,7 @@ public:
 		void testWriteAddressUnitBits();
 		void testWriteSegments();
 		void writeAddressBlocks();
+		void writeNewStd();
 
 private:
 
@@ -92,8 +93,7 @@ void tst_AddressSpaceWriter::testWriteAddressSpaceNameGroup()
 		"</ipxact:addressSpace>"
 		;
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -116,8 +116,7 @@ void tst_AddressSpaceWriter::testWriteIsPresent()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -160,8 +159,7 @@ void tst_AddressSpaceWriter::testWriteParameter()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -198,8 +196,7 @@ void tst_AddressSpaceWriter::testWriteVendorExtension()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -225,8 +222,7 @@ void tst_AddressSpaceWriter::testWriteBlockSize()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -250,8 +246,7 @@ void tst_AddressSpaceWriter::testWriteAddressUnitBits()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -305,8 +300,7 @@ void tst_AddressSpaceWriter::testWriteSegments()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter AddressSpaceWriter;
-	AddressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
 
 	QCOMPARE(output, expectedOutput);
 }
@@ -376,8 +370,31 @@ void tst_AddressSpaceWriter::writeAddressBlocks()
 		"</ipxact:addressSpace>"
 		);
 
-	AddressSpaceWriter addressSpaceWriter;
-	addressSpaceWriter.writeAddressSpace(xmlStreamWriter, testAddressSpace_);
+    AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std14);
+	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressSpaceWriter::writeNewStd()
+//-----------------------------------------------------------------------------
+void tst_AddressSpaceWriter::writeNewStd()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+	testAddressSpace_->setShortDescription(QString("shortDescription"));
+
+	QString expectedOutput(
+		"<ipxact:addressSpace>"
+			"<ipxact:name>testAddressSpace</ipxact:name>"
+			"<ipxact:shortDescription>shortDescription</ipxact:shortDescription>"
+			"<ipxact:range></ipxact:range>"
+			"<ipxact:width></ipxact:width>"
+		"</ipxact:addressSpace>"
+	);
+
+	AddressSpaceWriter::writeAddressSpace(xmlStreamWriter, testAddressSpace_, Document::Revision::Std22);
+
 	QCOMPARE(output, expectedOutput);
 }
 
