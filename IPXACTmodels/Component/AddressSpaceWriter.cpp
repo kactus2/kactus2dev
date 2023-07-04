@@ -37,7 +37,7 @@ void AddressSpaceWriter::writeAddressSpace(QXmlStreamWriter& writer, QSharedPoin
 
     Details::writeAddressUnitBits(writer, addressSpace);
 
-    Details::writeLocalMemoryMap(writer, addressSpace);
+    Details::writeLocalMemoryMap(writer, addressSpace, docRevision);
 
     CommonItemsWriter::writeParameters(writer, addressSpace->getParameters(), docRevision);
 
@@ -136,7 +136,8 @@ void AddressSpaceWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceWriter::Details::writeLocalMemoryMap()
 //-----------------------------------------------------------------------------
-void AddressSpaceWriter::Details::writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace)
+void AddressSpaceWriter::Details::writeLocalMemoryMap(QXmlStreamWriter& writer, 
+    QSharedPointer<AddressSpace> addressSpace, Document::Revision docRevision)
    
 {
     if (addressSpace->getLocalMemoryMap())
@@ -144,7 +145,7 @@ void AddressSpaceWriter::Details::writeLocalMemoryMap(QXmlStreamWriter& writer, 
         writer.writeStartElement(QStringLiteral("ipxact:localMemoryMap"));
         
         MemoryMapBaseWriter mmbw;
-        mmbw.writeMemoryMapBase( writer, addressSpace->getLocalMemoryMap() );
+        mmbw.writeMemoryMapBase(writer, addressSpace->getLocalMemoryMap(), docRevision);
         
         writer.writeEndElement(); // ipxact:localMemoryMap
     }

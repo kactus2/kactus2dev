@@ -208,9 +208,9 @@ void ComponentWriter::writeMemoryMaps(QXmlStreamWriter& writer, QSharedPointer<C
 
         writer.writeStartElement(QStringLiteral("ipxact:memoryMaps"));
 
-        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        for (auto const& memoryMap : *component->getMemoryMaps())
         {
-            mapWriter.writeMemoryMap(writer, memoryMap);
+            mapWriter.writeMemoryMap(writer, memoryMap, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:memoryMaps

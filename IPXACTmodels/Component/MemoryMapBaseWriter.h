@@ -43,8 +43,10 @@ public:
      *
      *      @param [in] writer          The used XML writer.
      *      @param [in] MemoryMapBase   The memory map to be written.
+     *      @param [in] docRevision     The standard revision in use.
      */
-    void writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
+    void writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, 
+        Document::Revision docRevision) const;
 
 protected:
 
@@ -53,8 +55,10 @@ protected:
      *
      *      @param [in] writer              Used XML writer.
      *      @param [in] MemoryMapBaseBase   The selected memory map base.
+     *      @param [in] docRevision         The standard revision in use.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
+    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, 
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the memory blocks.

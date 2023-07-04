@@ -85,8 +85,10 @@ namespace AddressSpaceWriter
 		 *
 		 *      @param [in] writer				The used writer.
 		 *      @param [in] addressSpace		The address space being written.
+		 *      @param [in] docRevision         The standard revision in use.
 		 */
-		void writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace);
+		void writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace, 
+			Document::Revision docRevision);
 	}
 };
 
