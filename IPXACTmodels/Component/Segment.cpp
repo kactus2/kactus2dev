@@ -25,6 +25,7 @@ Region(name, addressOffset, range)
 //-----------------------------------------------------------------------------
 Segment::Segment( const Segment& other ):
 	Region(other),
+	isPresent_(other.isPresent_),
     offsetAttributes_(other.offsetAttributes_),
     rangeAttributes_(other.rangeAttributes_)
 {
