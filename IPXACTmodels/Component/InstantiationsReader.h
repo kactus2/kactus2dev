@@ -61,7 +61,8 @@ public:
      *  Creates a new component instantiation.
      *
      *      @param [in] instantiationNode   XML description of the instantiation.
-     *
+     *      @param [in] docRevision         The IP-XACT standard to comply to.
+     * 
      *      @return The created component instantiation.
      */
     QSharedPointer<ComponentInstantiation> createComponentInstantiationFrom(QDomNode const& instantiationNode,
@@ -105,9 +106,10 @@ private:
      *
      *      @param [in] instantiationNode   XML description of the instantiation.
      *      @param [in] instantiation       The selected instantiation.
+     *      @param [in] docRevision         The IP-XACT standard to comply to.
      */
     void parseModuleParameters(QDomNode const& instantiationNode,
-        QSharedPointer<ComponentInstantiation> instantiation) const;
+        QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision) const;
 
     /*!
      *  Reads the default file builders from XML.

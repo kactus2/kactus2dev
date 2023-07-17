@@ -106,10 +106,9 @@ void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:parameters"));
 
-        ParameterWriter parameterWriter;
         for (auto const& parameter : *parameters)
         {
-            parameterWriter.writeParameter(writer, parameter, docRevision);
+            ParameterWriter::writeParameter(writer, parameter, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:parameters

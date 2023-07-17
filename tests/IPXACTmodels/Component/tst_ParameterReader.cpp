@@ -60,8 +60,7 @@ void tst_ParameterReader::testReadNameGroup()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
    
     QCOMPARE(testParameter->name(), QString("testParameter"));
     QCOMPARE(testParameter->displayName(), QString("firstParameter"));
@@ -83,8 +82,7 @@ void tst_ParameterReader::testReadAttributes()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getAttributeNames().size(), 11);
 
@@ -116,8 +114,7 @@ void tst_ParameterReader::testReadValue()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getValue(), QString("parameterValue"));
     
@@ -143,8 +140,7 @@ void tst_ParameterReader::testReadVector()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getVectors()->size(), 1);
     QCOMPARE(testParameter->getVectors()->first()->getLeft(), QString("leftExpression"));
@@ -169,8 +165,7 @@ void tst_ParameterReader::testReadArray()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getArrays()->size(), 1);
     QCOMPARE(testParameter->getArrayLeft(), QString("leftExpression"));
@@ -193,8 +188,7 @@ void tst_ParameterReader::testVendorExtensions()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->getVendorExtensions()->size(), 1);
 }
@@ -213,8 +207,7 @@ void tst_ParameterReader::testReadAttributesAndValue()
 
     QDomElement parameterElement = document.firstChildElement();
 
-    ParameterReader parameterReader;
-    QSharedPointer<Parameter> testParameter = parameterReader.createParameterFrom(parameterElement);
+    QSharedPointer<Parameter> testParameter = ParameterReader::createParameterFrom(parameterElement);
 
     QCOMPARE(testParameter->name(), QString("parameter1"));
 

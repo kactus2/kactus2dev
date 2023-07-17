@@ -17,37 +17,21 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReader::ParameterReader()
-//-----------------------------------------------------------------------------
-ParameterReader::ParameterReader()
-{
-    
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReader::~ParameterReader()
-//-----------------------------------------------------------------------------
-ParameterReader::~ParameterReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterReader::createParameterFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& parameterNode,
-    Document::Revision revision) const
+    Document::Revision revision)
 {
     QSharedPointer<Parameter> parameter(new Parameter());
-    parseAttributes(parameterNode, parameter);
+    Details::parseAttributes(parameterNode, parameter);
 
-    parseNameGroup(parameterNode, parameter);
+    NameGroupReader::parseNameGroup(parameterNode, parameter);
 
-    parseVectors(parameterNode, parameter, revision);
+    Details::parseVectors(parameterNode, parameter, revision);
 
-    parseArrays(parameterNode, parameter);
+    Details::parseArrays(parameterNode, parameter);
 
-    parseValue(parameterNode, parameter);
+    Details::parseValue(parameterNode, parameter);
 
     CommonItemsReader::parseVendorExtensions(parameterNode, parameter);
 
@@ -55,9 +39,9 @@ QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& p
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReader::parseAttributes()
+// Function: ParameterReader::Details::parseAttributes()
 //-----------------------------------------------------------------------------
-void ParameterReader::parseAttributes(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
+void ParameterReader::Details::parseAttributes(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter)
 {
     QDomNamedNodeMap attributes = parameterNode.attributes();
     for (int j = 0; j < attributes.size(); ++j) 
@@ -76,18 +60,10 @@ void ParameterReader::parseAttributes(QDomNode const& parameterNode, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReader::parseNameGroup()
+// Function: ParameterReader::Details::parseVectors()
 //-----------------------------------------------------------------------------
-void ParameterReader::parseNameGroup(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
-{
-     NameGroupReader::parseNameGroup(parameterNode, parameter);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterReader::parseVectors()
-//-----------------------------------------------------------------------------
-void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
-    Document::Revision revision) const
+void ParameterReader::Details::parseVectors(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
+    Document::Revision revision)
 {
     QDomNode vectorsNode = parameterNode.firstChildElement(QStringLiteral("ipxact:vectors"));
 
@@ -117,9 +93,10 @@ void ParameterReader::parseVectors(QDomNode const& parameterNode, QSharedPointer
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReader::parseArrays()
+// Function: ParameterReader::Details::parseArrays()
 //-----------------------------------------------------------------------------
-void ParameterReader::parseArrays(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
+void ParameterReader::Details::parseArrays(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter,
+    Document::Revision revision)
 {
     QDomNode arraysNode = parameterNode.firstChildElement(QStringLiteral("ipxact:arrays"));
 
@@ -135,15 +112,22 @@ void ParameterReader::parseArrays(QDomNode const& parameterNode, QSharedPointer<
             QString left = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
             QString right = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-            arrays->append(QSharedPointer<Array>(new Array(left, right)));
+            auto newArray = QSharedPointer<Array>(new Array(left, right));
+
+            if (revision == Document::Revision::Std22)
+            {
+                newArray->setId(arrayNode.attributes().namedItem(QStringLiteral("arrayId")).firstChild().nodeValue());
+            }
+
+            arrays->append(newArray);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterReader::parseValue()
+// Function: ParameterReader::Details::parseValue()
 //-----------------------------------------------------------------------------
-void ParameterReader::parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter) const
+void ParameterReader::Details::parseValue(QDomNode const& parameterNode, QSharedPointer<Parameter> parameter)
 {
     parameter->setValue(parameterNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue());
 

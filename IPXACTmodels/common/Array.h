@@ -39,12 +39,29 @@ public:
 	*/
     virtual ~Array();
 
-private:
     //! Disable copying.
-    Array(Array const& other);
+    Array(Array const& other) = delete;
 
 	// Disable assignment.
-    Array& operator=(Array const& rhs);
+    Array& operator=(Array const& rhs) = delete;
 
+    /*!
+     *	Set the array id.
+     *  
+     *      @param [in] id     The new array id.
+     */
+    void setId(QString const& id);
+
+    /*!
+     *	Get the array id.
+     *  
+     * 	    @return The array id.
+     */
+    QString getId() const;
+
+private:
+
+    //! Name for referencing the array.
+    QString arrayId_;
 };
 #endif // ARRAY_H

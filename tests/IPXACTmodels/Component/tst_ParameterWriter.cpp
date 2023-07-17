@@ -55,9 +55,8 @@ void tst_ParameterWriter::testWriteNameGroup()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
     
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -67,7 +66,7 @@ void tst_ParameterWriter::testWriteNameGroup()
     testParameter->setDisplayName("firstParameter");
 
     output.clear();
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -78,7 +77,7 @@ void tst_ParameterWriter::testWriteNameGroup()
     testParameter->setDescription("This is parameter description.");
 
     output.clear();
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -105,9 +104,8 @@ void tst_ParameterWriter::testWriteAttributes()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
 
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter choiceRef=\"choice1\" maximum=\"1\" minimum=\"0\" parameterId=\"id\" resolve=\"user\" type=\"int\">"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -128,9 +126,8 @@ void tst_ParameterWriter::testWriteValue()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
 
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -150,9 +147,8 @@ void tst_ParameterWriter::testWriteVector()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
 
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -163,7 +159,7 @@ void tst_ParameterWriter::testWriteVector()
     testParameter->setVectorRight("rightExpression");
 
     output.clear();
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -189,9 +185,8 @@ void tst_ParameterWriter::testWriteArray()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
 
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -202,7 +197,7 @@ void tst_ParameterWriter::testWriteArray()
     testParameter->setArrayRight("rightExpression");
 
     output.clear();
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"
@@ -237,9 +232,8 @@ void tst_ParameterWriter::testVendorExtensions()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    ParameterWriter parameterWriter;
 
-    parameterWriter.writeParameter(xmlStreamWriter, testParameter);
+    ParameterWriter::writeParameter(xmlStreamWriter, testParameter, Document::Revision::Std14);
     QCOMPARE(output, QString(
         "<ipxact:parameter>"
             "<ipxact:name>testParameter</ipxact:name>"

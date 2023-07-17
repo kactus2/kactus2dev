@@ -6,7 +6,7 @@
 // Date: 31.07.2015
 //
 // Description:
-// Writer class for IP-XACT Parameter element.
+// Writer for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
 
 #include "ParameterWriter.h"
@@ -20,37 +20,21 @@
 #include <QXmlStreamWriter>
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::ParameterWriter()
-//-----------------------------------------------------------------------------
-ParameterWriter::ParameterWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ParameterWriter::~ParameterWriter()
-//-----------------------------------------------------------------------------
-ParameterWriter::~ParameterWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterWriter::write()
 //-----------------------------------------------------------------------------
 void ParameterWriter::writeParameter(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:parameter"));
-    writeAttributes(writer, parameter);
+    Details::writeAttributes(writer, parameter);
     
-    writeNameGroup(writer, parameter, docRevision);
+    Details::writeNameGroup(writer, parameter, docRevision);
 
-    writeVectors(writer, parameter);
+    Details::writeVectors(writer, parameter, docRevision);
 
-    writeArrays(writer, parameter);
+    Details::writeArrays(writer, parameter, docRevision);
 
-    writeValue(writer, parameter);
+    Details::writeValue(writer, parameter);
 
     CommonItemsWriter::writeVendorExtensions(writer, parameter);
 
@@ -58,9 +42,9 @@ void ParameterWriter::writeParameter(QXmlStreamWriter& writer, QSharedPointer<Pa
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::writeAttributes()
+// Function: ParameterWriter::Details::writeAttributes()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::Details::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter)
 {
     for (auto const& attribute : parameter->getAttributeNames())
     {
@@ -69,18 +53,19 @@ void ParameterWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<P
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::writeNameGroup()
+// Function: ParameterWriter::Details::writeNameGroup()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter, 
-    Document::Revision docRevision) const
+void ParameterWriter::Details::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter, 
+    Document::Revision docRevision)
 {
     NameGroupWriter::writeNameGroup(writer, parameter, docRevision);
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::writeArrays()
+// Function: ParameterWriter::Details::writeArrays()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::Details::writeArrays(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter,
+    Document::Revision docRevision)
 {
     QSharedPointer<QList<QSharedPointer<Array> > > arrays = parameter->getArrays();
     if (!arrays->isEmpty())
@@ -89,6 +74,11 @@ void ParameterWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<Param
         for (QSharedPointer<Array> array : *arrays)
         {
             writer.writeStartElement(QStringLiteral("ipxact:array"));
+            if (docRevision == Document::Revision::Std22)
+            {
+                writer.writeAttribute(QStringLiteral("vectorId"), array->getId());
+            }
+
             writer.writeTextElement(QStringLiteral("ipxact:left"), array->getLeft());
             writer.writeTextElement(QStringLiteral("ipxact:right"), array->getRight());
             writer.writeEndElement();
@@ -98,9 +88,10 @@ void ParameterWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<Param
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::writeVectors()
+// Function: ParameterWriter::Details::writeVectors()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::Details::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter,
+    Document::Revision docRevision)
 {
     QSharedPointer<QList<QSharedPointer<Vector> > > vectors = parameter->getVectors();
     if (!vectors->isEmpty())
@@ -109,6 +100,12 @@ void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Para
         for (QSharedPointer<Vector> vector : *vectors)
         {
             writer.writeStartElement(QStringLiteral("ipxact:vector"));
+
+            if (docRevision == Document::Revision::Std22)
+            {
+                writer.writeAttribute(QStringLiteral("vectorId"), vector->getId());
+            }
+
             writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());
             writer.writeTextElement(QStringLiteral("ipxact:right"), vector->getRight());
             writer.writeEndElement();
@@ -118,9 +115,9 @@ void ParameterWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<Para
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterWriter::writeValue()
+// Function: ParameterWriter::Details::writeValue()
 //-----------------------------------------------------------------------------
-void ParameterWriter::writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter) const
+void ParameterWriter::Details::writeValue(QXmlStreamWriter& writer, QSharedPointer<Parameter> parameter)
 {
     writer.writeStartElement(QStringLiteral("ipxact:value"));
     

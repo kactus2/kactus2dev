@@ -176,10 +176,9 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:moduleParameters"));
 
-        ModuleParameterWriter moduleParameterWriter;
         foreach (QSharedPointer<ModuleParameter> singleModuleParameter, *moduleParameters)
         {
-            moduleParameterWriter.writeModuleParameter(writer, singleModuleParameter);
+            ModuleParameterWriter::writeModuleParameter(writer, singleModuleParameter);
         }
 
         writer.writeEndElement(); // ipxact:moduleParameters

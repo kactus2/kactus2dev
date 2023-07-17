@@ -6,50 +6,36 @@
 // Date: 08.09.2015
 //
 // Description:
-// Writer class for IP-XACT Module parameter element.
+// Writer for IP-XACT Module parameter element.
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterWriter.h"
 #include "CommonItemsWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: ModuleParameterWriter::ModuleParameterWriter()
-//-----------------------------------------------------------------------------
-ModuleParameterWriter::ModuleParameterWriter():
-ParameterWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterWriter::~ModuleParameterWriter()
-//-----------------------------------------------------------------------------
-ModuleParameterWriter::~ModuleParameterWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ModuleParameterWriter::writeModuleParameter()
 //-----------------------------------------------------------------------------
 void ModuleParameterWriter::writeModuleParameter(QXmlStreamWriter& writer,
-    QSharedPointer<ModuleParameter> moduleParameter, Document::Revision docRevision) const
+    QSharedPointer<ModuleParameter> moduleParameter, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:moduleParameter"));
 
-    writeAttributes(writer, moduleParameter);
+    ParameterWriter::Details::writeAttributes(writer, moduleParameter);
 
-    writeNameGroup(writer, moduleParameter, docRevision);
+    ParameterWriter::Details::writeNameGroup(writer, moduleParameter, docRevision);
 
-    writeVectors(writer, moduleParameter);
+    ParameterWriter::Details::writeVectors(writer, moduleParameter, docRevision);
 
-    writeArrays(writer, moduleParameter);
+    ParameterWriter::Details::writeArrays(writer, moduleParameter, docRevision);
 
-    writeValue(writer, moduleParameter);
+    ParameterWriter::Details::writeValue(writer, moduleParameter);
 
     CommonItemsWriter::writeVendorExtensions(writer, moduleParameter);
 
-    CommonItemsWriter::writeIsPresent(writer, moduleParameter->getIsPresent());
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, moduleParameter->getIsPresent());
+    }
 
     writer.writeEndElement(); // ipxact:moduleParameter
 }

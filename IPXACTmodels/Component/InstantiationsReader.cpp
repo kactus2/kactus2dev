@@ -125,7 +125,7 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
 
     parseNameReferences(instantiationNode, newInstantiation);
 
-    parseModuleParameters(instantiationNode, newInstantiation);
+    parseModuleParameters(instantiationNode, newInstantiation, docRevision);
 
     parseDefaultFileBuilders(instantiationNode, newInstantiation, docRevision);
 
@@ -179,19 +179,17 @@ void InstantiationsReader::parseNameReferences(QDomNode const& instantiationNode
 // Function: InstantiationsReader::parseModuleParameters()
 //-----------------------------------------------------------------------------
 void InstantiationsReader::parseModuleParameters(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+    QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision) const
 {
     QDomElement moduleParametersElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:moduleParameters"));
     if (!moduleParametersElement.isNull())
     {
         QDomNodeList moduleParameterNodes = moduleParametersElement.elementsByTagName(QStringLiteral("ipxact:moduleParameter"));
 
-        ModuleParameterReader moduleParameterReader;
-
         for (int parameterIndex = 0; parameterIndex < moduleParameterNodes.count(); ++parameterIndex)
         {
             QSharedPointer<ModuleParameter> newModuleParameter =
-                moduleParameterReader.createModuleParameterFrom(moduleParameterNodes.at(parameterIndex));
+                ModuleParameterReader::createModuleParameterFrom(moduleParameterNodes.at(parameterIndex), docRevision);
 
             instantiation->getModuleParameters()->append(newModuleParameter);
         }

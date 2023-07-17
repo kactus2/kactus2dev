@@ -103,13 +103,11 @@ void ComponentGeneratorReader::readAttributes(QDomNode const& componentGenerator
 void ComponentGeneratorReader::readParameters(QDomNode const& parametersNode, 
     QSharedPointer<ComponentGenerator> componentGenerator) const
 {
-	ParameterReader reader;
-
     int parameterCount = parametersNode.childNodes().count();
 	for (int i = 0; i < parameterCount; i++)
 	{
 		QDomNode parameterNode = parametersNode.childNodes().at(i);
-		componentGenerator->getParameters()->append(reader.createParameterFrom(parameterNode));
+		componentGenerator->getParameters()->append(ParameterReader::createParameterFrom(parameterNode));
 	}
 }
 

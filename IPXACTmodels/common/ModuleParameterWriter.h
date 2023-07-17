@@ -22,20 +22,8 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT Parameter element.
 //-----------------------------------------------------------------------------
-class ModuleParameterWriter : public ParameterWriter
+namespace ModuleParameterWriter
 {
-public:
-
-	//! The constructor.
-	ModuleParameterWriter();
-
-	//! The destructor.
-	~ModuleParameterWriter() final;
-
-    // Disable copying.
-    ModuleParameterWriter(ModuleParameterWriter const& rhs) = delete;
-    ModuleParameterWriter& operator=(ModuleParameterWriter const& rhs) = delete;
-
     /*!
      *  Writes the given module parameter into xml.
      *
@@ -44,8 +32,7 @@ public:
      *      @param [in] docRevision The document std revision.
      */
     void writeModuleParameter(QXmlStreamWriter& writer, QSharedPointer<ModuleParameter> moduleParameter, 
-        Document::Revision docRevision = Document::Revision::Std14) const;
-
+        Document::Revision docRevision = Document::Revision::Std14);
 };
 
 #endif // MODULEPARAMETERWRITER_H
