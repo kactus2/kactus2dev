@@ -104,8 +104,7 @@ QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode con
 //-----------------------------------------------------------------------------
 void RegisterReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<RegisterBase> registerData) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(nameGroupNode, registerData);
+    NameGroupReader::parseNameGroup(nameGroupNode, registerData);
 }
 
 //-----------------------------------------------------------------------------

@@ -96,8 +96,7 @@ void FieldReader::parseID(QDomElement const& fieldElement, QSharedPointer<Field>
 //-----------------------------------------------------------------------------
 void FieldReader::parseNameGroup(QDomNode const& fieldNode, QSharedPointer<Field> newField) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(fieldNode, newField);
+    NameGroupReader::parseNameGroup(fieldNode, newField);
 }
 
 //-----------------------------------------------------------------------------

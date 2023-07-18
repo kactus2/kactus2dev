@@ -38,8 +38,7 @@ QSharedPointer<ComponentGenerator> ComponentGeneratorReader::createComponentGene
 {
 	QSharedPointer<ComponentGenerator> newComponentGenerator (new ComponentGenerator());
 
-	NameGroupReader nameReader;
-	nameReader.parseNameGroup(componentGeneratorNode, newComponentGenerator);
+	NameGroupReader::parseNameGroup(componentGeneratorNode, newComponentGenerator);
 
 	readAttributes(componentGeneratorNode, newComponentGenerator);
 

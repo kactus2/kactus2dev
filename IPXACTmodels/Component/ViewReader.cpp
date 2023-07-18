@@ -53,8 +53,7 @@ QSharedPointer<View> ViewReader::createViewFrom(QDomNode const& viewNode) const
 //-----------------------------------------------------------------------------
 void ViewReader::parseNameGroup(QDomNode const& viewNode, QSharedPointer<View> newView) const
 {
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(viewNode, newView);
+    NameGroupReader::parseNameGroup(viewNode, newView);
 }
 
 //-----------------------------------------------------------------------------

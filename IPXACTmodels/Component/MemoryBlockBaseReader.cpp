@@ -30,8 +30,7 @@ MemoryBlockBaseReader::MemoryBlockBaseReader()
 void MemoryBlockBaseReader::parseNameGroup(QDomNode const& memoryBlockNode,
     QSharedPointer<MemoryBlockBase> newMemoryBlock) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(memoryBlockNode, newMemoryBlock);
+    NameGroupReader::parseNameGroup(memoryBlockNode, newMemoryBlock);
 }
 
 //-----------------------------------------------------------------------------

@@ -149,8 +149,7 @@ void BusinterfaceReader::parseIsPresent(QDomNode const& businterfaceNode, QShare
 void BusinterfaceReader::parseNameGroup(QDomNode const& businterfaceNode,
 	QSharedPointer<BusInterface> newbusinterface) const
 {
-	NameGroupReader nameReader;
-	nameReader.parseNameGroup(businterfaceNode, newbusinterface);
+	NameGroupReader::parseNameGroup(businterfaceNode, newbusinterface);
 }
 
 //-----------------------------------------------------------------------------

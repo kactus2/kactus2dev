@@ -54,8 +54,7 @@ void MemoryMapBaseReader::readMemoryMapBase(QDomNode const& MemoryMapBaseNode,
 void MemoryMapBaseReader::parseNameGroup(QDomNode const& MemoryMapBaseBaseNode,
     QSharedPointer<MemoryMapBase> newMemoryMapBaseBase) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(MemoryMapBaseBaseNode, newMemoryMapBaseBase);
+    NameGroupReader::parseNameGroup(MemoryMapBaseBaseNode, newMemoryMapBaseBase);
 }
 
 //-----------------------------------------------------------------------------

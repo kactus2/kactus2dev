@@ -312,13 +312,11 @@ void ComponentReader::parseComponentInstantiations(QDomElement const& instantiat
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:componentInstantiation"));
     if (!componentInstantiationNodeList.isEmpty())
     {
-        InstantiationsReader instantiationsReader;
-
         for (int i = 0 ; i < componentInstantiationNodeList.count(); ++i)
         {
             QDomNode componentInstantiationNode = componentInstantiationNodeList.at(i);
             QSharedPointer<ComponentInstantiation> newInstantiation =
-                instantiationsReader.createComponentInstantiationFrom(componentInstantiationNode, docRevision);
+                InstantiationsReader::createComponentInstantiationFrom(componentInstantiationNode, docRevision);
 
             newModel->getComponentInstantiations()->append(newInstantiation);
         }
@@ -335,13 +333,11 @@ void ComponentReader::parseDesignInstantiations(QDomElement const& instantiation
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:designInstantiation"));
     if (!designInstantiationNodeList.isEmpty())
     {
-        InstantiationsReader instantiationsReader;
-
         for (int i = 0 ; i < designInstantiationNodeList.count(); ++i)
         {
             QDomNode designInstantiationNode = designInstantiationNodeList.at(i);
             QSharedPointer<DesignInstantiation> newInstantiation =
-                instantiationsReader.createDesignInstantiationFrom(designInstantiationNode);
+                InstantiationsReader::createDesignInstantiationFrom(designInstantiationNode);
 
             newModel->getDesignInstantiations()->append(newInstantiation);
         }
@@ -358,13 +354,11 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:designConfigurationInstantiation"));
     if (!designConfigurationInstantiationNodeList.isEmpty())
     {
-        InstantiationsReader instantiationsReader;
-
         for (int i = 0 ; i < designConfigurationInstantiationNodeList.count(); ++i)
         {
             QDomNode designConfigurationInstantiationNode = designConfigurationInstantiationNodeList.at(i);
-            QSharedPointer<DesignConfigurationInstantiation> newInstantiation = instantiationsReader.
-                createDesignConfigurationInstantiationFrom(designConfigurationInstantiationNode);
+            QSharedPointer<DesignConfigurationInstantiation> newInstantiation =
+                InstantiationsReader::createDesignConfigurationInstantiationFrom(designConfigurationInstantiationNode);
 
             newModel->getDesignConfigurationInstantiations()->append(newInstantiation);
         }
@@ -603,7 +597,6 @@ void ComponentReader::parseSwProperties(QDomNode const& propertiesNode, QSharedP
 void ComponentReader::parseSystemViews(QDomNode const& viewsNode, QSharedPointer<Component> newComponent) const
 {
     QList<QSharedPointer<SystemView> > viewList;
-    NameGroupReader nameReader;
 
     QDomNodeList viewNodeList = viewsNode.childNodes();
     for (int viewIndex = 0; viewIndex < viewNodeList.count(); ++viewIndex)
@@ -612,7 +605,7 @@ void ComponentReader::parseSystemViews(QDomNode const& viewsNode, QSharedPointer
 
         QSharedPointer<SystemView> newSystemView (new SystemView());
 
-        nameReader.parseNameGroup(singleSystemElement, newSystemView);
+        NameGroupReader::parseNameGroup(singleSystemElement, newSystemView);
 
         QDomElement hierarchyElement = singleSystemElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
@@ -650,7 +643,6 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
     const
 {
     QList<QSharedPointer<ComInterface> > interfaceList;
-    NameGroupReader nameReader;
 
     QDomNodeList interfaceNodeList = interfaceNode.childNodes();
     for (int interfaceIndex = 0; interfaceIndex < interfaceNodeList.count(); ++interfaceIndex)
@@ -659,7 +651,7 @@ void ComponentReader::parseComInterfaces(QDomNode const& interfaceNode, QSharedP
 
         QSharedPointer<ComInterface> newComInterface (new ComInterface());
 
-        nameReader.parseNameGroup(interfaceElement, newComInterface);
+        NameGroupReader::parseNameGroup(interfaceElement, newComInterface);
 
         QDomElement comTypeElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:comType"));
         if (!comTypeElement.isNull())
@@ -729,8 +721,6 @@ void ComponentReader::parseApiInterfaces(QDomNode const& interfaceNode, QSharedP
 {
     QList<QSharedPointer<ApiInterface> > interfaceList;
 
-    NameGroupReader nameReader;
-
     QDomNodeList interfaceNodeList = interfaceNode.childNodes();
     for (int interfaceIndex = 0; interfaceIndex < interfaceNodeList.count(); ++interfaceIndex)
     {
@@ -738,7 +728,7 @@ void ComponentReader::parseApiInterfaces(QDomNode const& interfaceNode, QSharedP
 
         QSharedPointer<ApiInterface> newApiInterface (new ApiInterface());
 
-        nameReader.parseNameGroup(interfaceElement, newApiInterface);
+        NameGroupReader::parseNameGroup(interfaceElement, newApiInterface);
 
         QDomElement apiTypeElement = interfaceElement.firstChildElement(QStringLiteral("kactus2:apiType"));
         if (!apiTypeElement.isNull())

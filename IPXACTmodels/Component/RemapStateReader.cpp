@@ -52,8 +52,7 @@ QSharedPointer<RemapState> RemapStateReader::createRemapStateFrom(QDomNode const
 void RemapStateReader::parseNameGroup(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState)
     const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(remapStateNode, newRemapState);
+    NameGroupReader::parseNameGroup(remapStateNode, newRemapState);
 }
 
 //-----------------------------------------------------------------------------

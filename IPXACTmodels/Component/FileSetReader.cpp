@@ -183,15 +183,13 @@ void FileSetReader::Details::parseFunctionArguments(QDomElement const& functionE
 
     if (!argumentNodeList.isEmpty())
     {
-        NameGroupReader nameGroupReader;
-        
         for (int argumentIndex = 0; argumentIndex < argumentNodeList.count(); ++argumentIndex)
         {
             QDomNode argumentNode = argumentNodeList.at(argumentIndex);
 
             QSharedPointer<NameValuePair> newArgument (new NameValuePair());
 
-            nameGroupReader.parseNameGroup(argumentNode, newArgument);
+            NameGroupReader::parseNameGroup(argumentNode, newArgument);
 
             QString value = argumentNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
             newArgument->setValue(value);

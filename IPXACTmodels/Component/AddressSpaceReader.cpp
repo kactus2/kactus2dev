@@ -51,8 +51,7 @@ QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode
 void AddressSpaceReader::Details::parseNameGroup(QDomNode const& addressSpaceNode,
     QSharedPointer<AddressSpace> newAddressSpace)
 {
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(addressSpaceNode, newAddressSpace);
+    NameGroupReader::parseNameGroup(addressSpaceNode, newAddressSpace);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,14 +81,12 @@ void AddressSpaceReader::Details::readSegments(QDomNode const& addressSpaceNode,
 
     if (!segmentNodeList.isEmpty())
     {
-        NameGroupReader nameReader;
-        
         for (int i = 0; i < segmentNodeList.count(); ++i)
         {
             QDomNode segmentNode = segmentNodeList.at(i);
             QSharedPointer<Segment> newSegment(new Segment());
 
-            nameReader.parseNameGroup(segmentNode, newSegment);
+            NameGroupReader::parseNameGroup(segmentNode, newSegment);
 
             newSegment->setIsPresent(CommonItemsReader::parseIsPresent(segmentNode.firstChildElement(QStringLiteral("ipxact:isPresent"))));
 

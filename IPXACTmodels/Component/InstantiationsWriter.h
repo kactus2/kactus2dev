@@ -6,7 +6,7 @@
 // Date: 04.09.2015
 //
 // Description:
-// Writer class for IP-XACT instantiations element.
+// Writer for IP-XACT instantiations element.
 //-----------------------------------------------------------------------------
 
 #ifndef INSTANTIATIONSWRITER_H
@@ -23,30 +23,18 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Writer class for IP-XACT view element.
+//! Writer for IP-XACT view element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT InstantiationsWriter : public CommonItemsWriter
+namespace InstantiationsWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    InstantiationsWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~InstantiationsWriter();
-
     /*!
      *  Write a design instantiation to an XML file.
      *
      *      @param [in] writer          The used XML writer.
      *      @param [in] instantiation   The instantiation to be written.
      */
-    void writeDesignInstantiation(QXmlStreamWriter& writer, QSharedPointer<DesignInstantiation> instantiation)
-        const;
+    IPXACTMODELS_EXPORT void writeDesignInstantiation(QXmlStreamWriter& writer, 
+        QSharedPointer<DesignInstantiation> instantiation);
 
     /*!
      *  Write a design configuration instantiation to an XML file.
@@ -54,8 +42,8 @@ public:
      *      @param [in] writer          The used XML writer.
      *      @param [in] instantiation   The instantiation to be written.
      */
-    void writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
-        QSharedPointer<DesignConfigurationInstantiation> instantiation) const;
+    IPXACTMODELS_EXPORT void writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
+        QSharedPointer<DesignConfigurationInstantiation> instantiation);
 
     /*!
      *  Writes a component instantiation to an XML file.
@@ -63,69 +51,66 @@ public:
      *      @param [in] writer          The used XML writer.
      *      @param [in] instantiation   The instantiation to be written.
      */
-    void writeComponentInstantiation(QXmlStreamWriter& writer,
-        QSharedPointer<ComponentInstantiation> instantiation,
-        Document::Revision docRevision) const;
+    IPXACTMODELS_EXPORT void writeComponentInstantiation(QXmlStreamWriter& writer,
+        QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
 
-    //! No copying allowed.
-    InstantiationsWriter(InstantiationsWriter const& rhs);
-    InstantiationsWriter& operator=(InstantiationsWriter const& rhs);
+        /*!
+         *  Write a reference to an IP-XACT item.
+         *
+         *      @param [in] writer          The used XML writer.
+         *      @param [in] reference       The referenced item.
+         *      @param [in] elementName     The name of the reference containing element.
+         */
+        void writeReference(QXmlStreamWriter& writer, QSharedPointer<ConfigurableVLNVReference> reference,
+            QString const& elementName);
 
-    /*!
-     *  Write a reference to an IP-XACT item.
-     *
-     *      @param [in] writer          The used XML writer.
-     *      @param [in] reference       The referenced item.
-     *      @param [in] elementName     The name of the reference containing element.
-     */
-    void writeReference(QXmlStreamWriter& writer, QSharedPointer<ConfigurableVLNVReference> reference,
-        QString const& elementName) const;
+        /*!
+         *  Write the language.
+         *
+         *      @param [in] writer              The used XML writer.
+         *      @param [in] language            The language to be written.
+         *      @param [in] languageStrictness  Strictness of the language.
+         */
+        void writeLanguage(QXmlStreamWriter& writer, QString const& language, bool languageStrictness);
 
-    /*!
-     *  Write the language.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] language            The language to be written.
-     *      @param [in] languageStrictness  Strictness of the language.
-     */
-    void writeLanguage(QXmlStreamWriter& writer, QString const& language, bool languageStrictness) const;
+        /*!
+         *  Writes the name references of an instantiation.
+         *
+         *      @param [in] writer              The used XML writer.
+         *      @param [in] instantiation       The containing instantiation.
+         */
+        void writeNameReferences(QXmlStreamWriter& writer, QSharedPointer<ComponentInstantiation> instantiation);
 
-    /*!
-     *  Writes the name references of an instantiation.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] instantiation       The containing instantiation.
-     */
-    void writeNameReferences(QXmlStreamWriter& writer, QSharedPointer<ComponentInstantiation> instantiation) const;
+        /*!
+         *  Writes the module parameters of an instantiation.
+         *
+         *      @param [in] writer              The used XML writer.
+         *      @param [in] moduleParameters    The module parameters to be written.
+         */
+        void writeModuleParameters(QXmlStreamWriter& writer,
+            QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
 
-    /*!
-     *  Writes the module parameters of an instantiation.
-     *
-     *      @param [in] writer              The used XML writer.
-     *      @param [in] moduleParameters    The module parameters to be written.
-     */
-    void writeModuleParameters(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const;
+        /*!
+         *  Writes the default file builders.
+         *
+         *      @param [in] writer                  The used XML writer.
+         *      @param [in] defautlFileBuilders     The file builders to be written.
+         */
+        void writeDefaultFileBuilders(QXmlStreamWriter& writer,
+            QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders,
+            Document::Revision docRevision);
 
-    /*!
-     *  Writes the default file builders.
-     *
-     *      @param [in] writer                  The used XML writer.
-     *      @param [in] defautlFileBuilders     The file builders to be written.
-     */
-    void writeDefaultFileBuilders(QXmlStreamWriter& writer,
-        QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders,
-        Document::Revision docRevision) const;
-
-    /*!
-     *  Writes the file set references.
-     *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] references  A list of referenced file set names.
-     */
-    void writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references) const;
+        /*!
+         *  Writes the file set references.
+         *
+         *      @param [in] writer      The used XML writer.
+         *      @param [in] references  A list of referenced file set names.
+         */
+        void writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references);
+    }
 };
 
 #endif // INSTANTIATIONSWRITER_H
