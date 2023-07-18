@@ -229,13 +229,13 @@ void InstantiationsValidator::findErrorsInDesignConfigurationInstantiation(QVect
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::validateComponentInstantiation()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<ComponentInstantiation> instantiation)
-    const
+bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<ComponentInstantiation> instantiation,
+    Document::Revision docRevision) const
 {
     return hasValidName(instantiation->name()) &&
         componentInstantiationFileBuildersAreValid(instantiation) &&
         componentInstantiationFileSetReferencesAreValid(instantiation) &&
-        hasValidModuleParameters(instantiation) &&
+        hasValidModuleParameters(instantiation, docRevision) &&
         hasValidParameters(instantiation->getParameters());
 }
 
@@ -310,7 +310,8 @@ bool InstantiationsValidator::fileSetReferenceIsValid(QString const& fileSetRef)
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::hasValidModuleParameters()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentInstantiation> instantiation) const
+bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentInstantiation> instantiation,
+    Document::Revision docRevision) const
 {
     if (!instantiation->getModuleParameters()->isEmpty())
     {
@@ -318,7 +319,7 @@ bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentI
         for ( QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters() )
         {
             if ( moduleParameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) ||
-                !moduleParameterHasValidPresence(parameter) || !moduleParameterHasValidUsageType(parameter))
+                !moduleParameterHasValidPresence(parameter) || !moduleParameterHasValidUsageType(parameter, docRevision))
             {
                 return false;
             }
@@ -334,7 +335,8 @@ bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentI
 // Function: InstantiationsValidator::findErrorsInComponentInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString>& errors,
-    QSharedPointer<ComponentInstantiation> instantiation, QString const& context) const
+    QSharedPointer<ComponentInstantiation> instantiation, QString const& context,
+    Document::Revision docRevision) const
 {
     if (!hasValidName(instantiation->name()))
     {
@@ -376,7 +378,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 				.arg(parameter->name()).arg(parameter->getIsPresent()));
 		}
 
-		if ( !moduleParameterHasValidUsageType(parameter) )
+		if (!moduleParameterHasValidUsageType(parameter, docRevision))
 		{
 			errors.append(QObject::tr("The usage of module parameter %1 is invalid: %2")
 				.arg(parameter->name()).arg(parameter->getUsageType()));
@@ -416,13 +418,24 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::isValidUsageType()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter) const
+bool InstantiationsValidator::moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter,
+    Document::Revision docRevision) const
 {
-	if (!parameter->getUsageType().isEmpty() && parameter->getUsageType() != QLatin1String("nontyped") &&
-		parameter->getUsageType() != QLatin1String("typed" ))
-	{
-		return false;
-	}
+    if (parameter->getUsageType().isEmpty())
+    {
+        return true;
+    }
+
+    QStringList validUsageTypes = { QStringLiteral("nontyped"), QStringLiteral("typed") };
+    if (docRevision == Document::Revision::Std22)
+    {
+        validUsageTypes << QStringLiteral("runtime");
+    }
+
+    if (!validUsageTypes.contains(parameter->getUsageType()))
+    {
+        return false;
+    }
 
     return true;
 }

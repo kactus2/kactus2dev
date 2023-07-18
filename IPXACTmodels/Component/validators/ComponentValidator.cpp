@@ -931,7 +931,8 @@ void ComponentValidator::findErrorsInComponentInstantiations(QVector<QString>& e
             }
 
             instantiationNames.append(instantiation->name());
-            instantiationsValidator_->findErrorsInComponentInstantiation(errors, instantiation, context);
+            instantiationsValidator_->findErrorsInComponentInstantiation(errors, instantiation, context,
+                component->getRevision());
         }
     }
 }
