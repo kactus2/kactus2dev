@@ -55,7 +55,8 @@ designConfigurationDisplay_(new VLNVDisplayer(this, VLNV())),
 designDisplay_(new VLNVDisplayer(this, VLNV())),
 moduleParameterEditor_(
     new ModuleParameterEditor(QSharedPointer<ComponentInstantiation>(new ComponentInstantiation()),
-        component->getChoices(), parameterFinder, expressionFormatter, parameterInterface, this))
+        component->getChoices(), parameterFinder, expressionFormatter, parameterInterface,
+        component->getRevision(), this))
 {
     moduleParameterEditor_->disableEditing();
 

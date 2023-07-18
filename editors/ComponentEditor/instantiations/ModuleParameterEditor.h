@@ -12,6 +12,8 @@
 #ifndef MODULEPARAMETEREDITOR_H
 #define MODULEPARAMETEREDITOR_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QGroupBox>
 #include <QSortFilterProxyModel>
 
@@ -41,6 +43,7 @@ public:
      *      @param [in] parameterFinder         The selected parameter finder.
      *      @param [in] expressionFormatter     The selected expression formatter.
      *      @param [in] parameterInterface      Interface for accessing module parameters.
+     *      @param [in] docRevision             The IP-XACT standard revision in use.
      *      @param [in] parent                  The owner of this editor.
      */
     ModuleParameterEditor(
@@ -49,6 +52,7 @@ public:
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         ModuleParameterInterface* parameterInterface,
+        Document::Revision docRevision,
         QWidget* parent);
 
 	/*!

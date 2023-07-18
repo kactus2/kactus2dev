@@ -371,7 +371,7 @@ bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Componen
         for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateComponentInstantiation(instantiation))
+                !instantiationsValidator_->validateComponentInstantiation(instantiation, component->getRevision()))
             {
                 return false;
             }

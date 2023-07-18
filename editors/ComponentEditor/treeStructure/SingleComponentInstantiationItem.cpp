@@ -68,7 +68,7 @@ QString SingleComponentInstantiationItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleComponentInstantiationItem::isValid() const
 {
-    return validator_->validateComponentInstantiation(instantiation_);
+    return validator_->validateComponentInstantiation(instantiation_, component_->getRevision());
 }
 
 //-----------------------------------------------------------------------------
