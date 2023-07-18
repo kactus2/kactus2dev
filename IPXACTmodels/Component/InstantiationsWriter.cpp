@@ -114,7 +114,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:componentInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
     writeLanguage(writer, instantiation->getLanguage(), instantiation->isLanguageStrict());
 
