@@ -272,7 +272,7 @@ void ComponentWriter::writeInstantiations(QXmlStreamWriter& writer, QSharedPoint
         }
         for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
-            InstantiationsWriter::writeDesignInstantiation(writer, instantiation);
+            InstantiationsWriter::writeDesignInstantiation(writer, instantiation, component->getRevision());
         }
         for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())

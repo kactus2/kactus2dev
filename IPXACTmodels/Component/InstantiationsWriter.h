@@ -32,9 +32,10 @@ namespace InstantiationsWriter
      *
      *      @param [in] writer          The used XML writer.
      *      @param [in] instantiation   The instantiation to be written.
+     *      @param [in] docRevision     The IP-XACT standard revision in use.
      */
     IPXACTMODELS_EXPORT void writeDesignInstantiation(QXmlStreamWriter& writer, 
-        QSharedPointer<DesignInstantiation> instantiation);
+        QSharedPointer<DesignInstantiation> instantiation, Document::Revision docRevision);
 
     /*!
      *  Write a design configuration instantiation to an XML file.
@@ -89,9 +90,11 @@ namespace InstantiationsWriter
          *
          *      @param [in] writer              The used XML writer.
          *      @param [in] moduleParameters    The module parameters to be written.
+         *      @param [in] docRevision         The IP-XACT standard revision in use.
          */
         void writeModuleParameters(QXmlStreamWriter& writer,
-            QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters);
+            QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
+            Document::Revision docRevision);
 
         /*!
          *  Writes the default file builders.

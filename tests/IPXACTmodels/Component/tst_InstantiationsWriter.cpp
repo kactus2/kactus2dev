@@ -40,6 +40,7 @@ private slots:
     void writeComponentInstantiationLanguage();
     void writeComponentInstantiationNameReferences();
     void writeComponentInstantiationModuleParameters();
+    void writeComponentInstantiationModuleParameters2022();
     void writeComponentInstantiationDefaultFileBuilders();
     void writeComponentInstantiationFileSetReferences();
     void writeComponentInstantiationParameters();
@@ -83,8 +84,7 @@ void tst_InstantiationsWriter::writeDesignInstatiation()
         "</ipxact:designInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation);
+    InstantiationsWriter::writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -103,7 +103,7 @@ void tst_InstantiationsWriter::writeDesignInstatiation()
         "</ipxact:designInstantiation>"
         ;
 
-    instantiationWriter.writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation);
+    InstantiationsWriter::writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -123,7 +123,28 @@ void tst_InstantiationsWriter::writeDesignInstatiation()
         "</ipxact:designInstantiation>"
         ;
 
-    instantiationWriter.writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation);
+    InstantiationsWriter::writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+
+    output.clear();
+    expectedOutput.clear();
+
+    testDesignInstantiation->setShortDescription("short desc");
+    expectedOutput =
+        "<ipxact:designInstantiation>"
+            "<ipxact:name>testDesignInstantiation</ipxact:name>"
+            "<ipxact:displayName>display</ipxact:displayName>"
+            "<ipxact:shortDescription>short desc</ipxact:shortDescription>"
+            "<ipxact:description>described</ipxact:description>"
+            "<ipxact:designRef vendor=\"TUT\" library=\"TestLibrary\" name=\"designReference\" version=\"1.0\">"
+                "<ipxact:configurableElementValues>"
+                    "<ipxact:configurableElementValue referenceId=\"refID\">20</ipxact:configurableElementValue>"
+                "</ipxact:configurableElementValues>"
+            "</ipxact:designRef>"
+        "</ipxact:designInstantiation>"
+        ;
+
+    InstantiationsWriter::writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -167,8 +188,7 @@ void tst_InstantiationsWriter::writeDesignInstantiationExtensions()
         "</ipxact:designInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation);
+    InstantiationsWriter::writeDesignInstantiation(xmlStreamWriter, testDesignInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -202,8 +222,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         "</ipxact:designConfigurationInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 
@@ -224,7 +243,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         "</ipxact:designConfigurationInstantiation>"
         ;
 
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 
@@ -246,7 +265,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         "</ipxact:designConfigurationInstantiation>"
         ;
 
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 }
@@ -283,8 +302,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationLanguage()
         "</ipxact:designConfigurationInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 
@@ -305,7 +323,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationLanguage()
         "</ipxact:designConfigurationInstantiation>"
         ;
 
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 }
@@ -363,8 +381,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationParameters()
         "</ipxact:designConfigurationInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 }
@@ -410,8 +427,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationExtensions()
         "</ipxact:designConfigurationInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeDesignConfigurationInstantiation(xmlStreamWriter,
+    InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
         testDesignConfigurationInstantiation);
     QCOMPARE(output, expectedOutput);
 }
@@ -433,8 +449,7 @@ void tst_InstantiationsWriter::writeComponentInstantiation()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -448,7 +463,7 @@ void tst_InstantiationsWriter::writeComponentInstantiation()
         "</ipxact:componentInstantiation>"
         ;
 
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -463,7 +478,23 @@ void tst_InstantiationsWriter::writeComponentInstantiation()
         "</ipxact:componentInstantiation>"
         ;
 
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+
+    output.clear();
+    expectedOutput.clear();
+
+    testComponentInstantiation->setShortDescription("short desc");
+    expectedOutput =
+        "<ipxact:componentInstantiation>"
+        "<ipxact:name>testComponentInstantiation</ipxact:name>"
+        "<ipxact:displayName>display</ipxact:displayName>"
+        "<ipxact:shortDescription>short desc</ipxact:shortDescription>"
+        "<ipxact:description>described</ipxact:description>"
+        "</ipxact:componentInstantiation>"
+        ;
+
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -486,8 +517,7 @@ void tst_InstantiationsWriter::writeVirtualComponentInstantiation()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -510,8 +540,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationLanguage()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -526,7 +555,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationLanguage()
         "</ipxact:componentInstantiation>"
         ;
 
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -557,8 +586,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationNameReferences()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -600,11 +628,71 @@ void tst_InstantiationsWriter::writeComponentInstantiationModuleParameters()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: tst_InstantiationsWriter::writeComponentInstantiationModuleParameters2022()
+//-----------------------------------------------------------------------------
+void tst_InstantiationsWriter::writeComponentInstantiationModuleParameters2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<ComponentInstantiation> testComponentInstantiation
+        (new ComponentInstantiation("testInstantiation"));
+
+    QSharedPointer<ModuleParameter> testModuleParameter(new ModuleParameter());
+    testModuleParameter->setValueId("testID");
+    testModuleParameter->setChoiceRef("testingChoice");
+    testModuleParameter->setMinimumValue("3");
+    testModuleParameter->setMaximumValue("403");
+    testModuleParameter->setName("nameTest");
+    testModuleParameter->setValue("400");
+    testModuleParameter->setUsageType("int");
+    testModuleParameter->setDataType("longInt");
+
+    QSharedPointer<Vector> testVector(new Vector("0", "4"));
+    testVector->setId("testVector");
+
+    QSharedPointer<Array> testArray(new Array("0", "4"));
+    testArray->setId("testArray");
+
+    testModuleParameter->getArrays()->append(testArray);
+    testModuleParameter->getVectors()->append(testVector);
+
+    testComponentInstantiation->getModuleParameters()->append(testModuleParameter);
+
+    QString expectedOutput(
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:moduleParameters>"
+                "<ipxact:moduleParameter choiceRef=\"testingChoice\" dataType=\"longInt\" maximum=\"403\""
+                        " minimum=\"3\" parameterId=\"testID\" usageType=\"int\">"
+                    "<ipxact:name>nameTest</ipxact:name>"
+                    "<ipxact:vectors>"
+                        "<ipxact:vector vectorId=\"testVector\">"
+                            "<ipxact:left>0</ipxact:left>"
+                            "<ipxact:right>4</ipxact:right>"
+                        "</ipxact:vector>"
+                    "</ipxact:vectors>"
+                    "<ipxact:arrays>"
+                        "<ipxact:array arrayId=\"testArray\">"
+                            "<ipxact:left>0</ipxact:left>"
+                            "<ipxact:right>4</ipxact:right>"
+                        "</ipxact:array>"
+                    "</ipxact:arrays>"
+                    "<ipxact:value>400</ipxact:value>"
+                "</ipxact:moduleParameter>"
+            "</ipxact:moduleParameters>"
+        "</ipxact:componentInstantiation>"
+        );
+
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
 
 //-----------------------------------------------------------------------------
 // Function: tst_InstantiationsWriter::writeComponentInstantiationDefaultFileBuilders()
@@ -637,8 +725,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationDefaultFileBuilders()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -657,7 +744,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationDefaultFileBuilders()
         "</ipxact:componentInstantiation>"
         ;
 
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -686,8 +773,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationFileSetReferences()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -731,8 +817,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationParameters()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -764,8 +849,7 @@ void tst_InstantiationsWriter::writeComponentInstantiationExtensions()
         "</ipxact:componentInstantiation>"
         );
 
-    InstantiationsWriter instantiationWriter;
-    instantiationWriter.writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation);
+    InstantiationsWriter::writeComponentInstantiation(xmlStreamWriter, testComponentInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

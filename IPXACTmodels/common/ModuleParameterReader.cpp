@@ -25,9 +25,9 @@ QSharedPointer<ModuleParameter> ModuleParameterReader::createModuleParameterFrom
 
     NameGroupReader::parseNameGroup(moduleParameterNode, newModuleParameter);
 
-    ParameterReader::Details::parseVectors(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseVectors(moduleParameterNode, newModuleParameter, docRevision);
 
-    ParameterReader::Details::parseArrays(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseArrays(moduleParameterNode, newModuleParameter, docRevision);
 
     ParameterReader::Details::parseValue(moduleParameterNode, newModuleParameter);
 

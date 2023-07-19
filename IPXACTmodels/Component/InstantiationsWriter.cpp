@@ -19,11 +19,11 @@
 // Function: InstantiationsWriter::writeDesignInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDesignInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<DesignInstantiation> instantiation)
+    QSharedPointer<DesignInstantiation> instantiation, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:designInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
     Details::writeReference(writer, instantiation->getDesignReference(), QStringLiteral("ipxact:designRef"));
 
@@ -109,7 +109,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 
     Details::writeNameReferences(writer, instantiation);
 
-    Details::writeModuleParameters(writer, instantiation->getModuleParameters());
+    Details::writeModuleParameters(writer, instantiation->getModuleParameters(), docRevision);
 
     Details::writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders(), docRevision);
 
@@ -154,7 +154,8 @@ void InstantiationsWriter::Details::writeNameReferences(QXmlStreamWriter& writer
 // Function: InstantiationsWriter::Details::writeModuleParameters()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::Details::writeModuleParameters(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters)
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
+    Document::Revision docRevision)
 {
     if (!moduleParameters->isEmpty())
     {
@@ -162,7 +163,7 @@ void InstantiationsWriter::Details::writeModuleParameters(QXmlStreamWriter& writ
 
         for (auto const& singleModuleParameter : *moduleParameters)
         {
-            ModuleParameterWriter::writeModuleParameter(writer, singleModuleParameter);
+            ModuleParameterWriter::writeModuleParameter(writer, singleModuleParameter, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:moduleParameters

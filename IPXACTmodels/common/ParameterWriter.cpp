@@ -76,7 +76,7 @@ void ParameterWriter::Details::writeArrays(QXmlStreamWriter& writer, QSharedPoin
             writer.writeStartElement(QStringLiteral("ipxact:array"));
             if (docRevision == Document::Revision::Std22)
             {
-                writer.writeAttribute(QStringLiteral("vectorId"), array->getId());
+                writer.writeAttribute(QStringLiteral("arrayId"), array->getId());
             }
 
             writer.writeTextElement(QStringLiteral("ipxact:left"), array->getLeft());
