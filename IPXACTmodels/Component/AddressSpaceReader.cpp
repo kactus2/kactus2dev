@@ -38,7 +38,7 @@ QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode
 
     Details::parseLocalMemoryMap(addressSpaceNode, newAddressSpace);
 
-    Details::readParameters(addressSpaceNode, newAddressSpace);
+    Details::readParameters(addressSpaceNode, newAddressSpace, docRevision);
 
     CommonItemsReader::parseVendorExtensions(addressSpaceNode, newAddressSpace);
 
@@ -184,10 +184,10 @@ void AddressSpaceReader::Details::parseLocalMemoryMap(QDomNode const& addressSpa
 // Function: AddressSpaceReader::Details::readParameters()
 //-----------------------------------------------------------------------------
 void AddressSpaceReader::Details::readParameters(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace)
+    QSharedPointer<AddressSpace> newAddressSpace, Document::Revision docRevision)
 {
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = 
-        CommonItemsReader::parseAndCreateParameters(addressSpaceNode);
+        CommonItemsReader::parseAndCreateParameters(addressSpaceNode, docRevision);
 
     if (!newParameters->isEmpty())
     {

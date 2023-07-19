@@ -29,7 +29,7 @@ QSharedPointer<Parameter> ParameterReader::createParameterFrom(QDomNode const& p
 
     Details::parseVectors(parameterNode, parameter, revision);
 
-    Details::parseArrays(parameterNode, parameter);
+    Details::parseArrays(parameterNode, parameter, revision);
 
     Details::parseValue(parameterNode, parameter);
 

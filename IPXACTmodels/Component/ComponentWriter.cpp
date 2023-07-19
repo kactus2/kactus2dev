@@ -277,7 +277,8 @@ void ComponentWriter::writeInstantiations(QXmlStreamWriter& writer, QSharedPoint
         for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
-            InstantiationsWriter::writeDesignConfigurationInstantiation(writer, instantiation);
+            InstantiationsWriter::writeDesignConfigurationInstantiation(writer, instantiation,
+                component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:instantiations

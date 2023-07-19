@@ -130,6 +130,7 @@ private:
      *
      *      @param [in] instantiationsElement   XML description of the instantiations element.
      *      @param [in] newModel                The new model item.
+     *      @param [in] docRevision             The IP-XACT standard revision to comply to.
      */
     void parseComponentInstantiations(QDomElement const& instantiationsElement, QSharedPointer<Model> newModel,
         Document::Revision docRevision) const;
@@ -147,9 +148,10 @@ private:
      *
      *      @param [in] instantiationsElement   XML description of the instantiations element.
      *      @param [in] newModel                The new model item.
+     *      @param [in] docRevision             The IP-XACT standard revision to comply to.
      */
     void parseDesignConfigurationInstantiations(QDomElement const& instantiationsElement,
-        QSharedPointer<Model> newModel) const;
+        QSharedPointer<Model> newModel, Document::Revision docRevision) const;
 
     /*!
      *  Reads the ports.

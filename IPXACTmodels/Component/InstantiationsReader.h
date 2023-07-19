@@ -41,11 +41,12 @@ namespace InstantiationsReader
      *  Creates a new design configuration instantiation.
      *
      *      @param [in] instantiationNode   XML description of the instantiation.
+     *      @param [in] docRevision         The IP-XACT standard to comply to.
      *
      *      @return The created design configuration instantiation.
      */
     IPXACTMODELS_EXPORT QSharedPointer<DesignConfigurationInstantiation> createDesignConfigurationInstantiationFrom
-        (QDomNode const& instantiationNode);
+        (QDomNode const& instantiationNode, Document::Revision docRevision);
 
     /*!
      *  Creates a new component instantiation.

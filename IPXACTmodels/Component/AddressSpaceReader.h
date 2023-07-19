@@ -99,8 +99,11 @@ namespace AddressSpaceReader
          *
          *      @param [in] addressSpaceNode    XML description of the address space.
          *      @param [in] newAddressSpace     The new address space.
+         *      @param [in] docRevision         The IP-XACT standard revision to comply to.
+         *
          */
-        void readParameters(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace);
+        void readParameters(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace,
+            Document::Revision docRevision);
     }
 };
 

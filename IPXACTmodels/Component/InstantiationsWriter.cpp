@@ -53,17 +53,17 @@ void InstantiationsWriter::Details::writeReference(QXmlStreamWriter& writer,
 // Function: InstantiationsWriter::writeDesignConfigurationInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfigurationInstantiation> instantiation)
+    QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:designConfigurationInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
     Details::writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
 
     Details::writeReference(writer, instantiation->getDesignConfigurationReference(), QStringLiteral("ipxact:designConfigurationRef"));
 
-    CommonItemsWriter::writeParameters(writer, instantiation->getParameters());
+    CommonItemsWriter::writeParameters(writer, instantiation->getParameters(), docRevision);
 
     CommonItemsWriter::writeVendorExtensions(writer, instantiation);
 
@@ -115,7 +115,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 
     Details::writeFileSetReferences(writer, instantiation->getFileSetReferences());
 
-    CommonItemsWriter::writeParameters(writer, instantiation->getParameters());
+    CommonItemsWriter::writeParameters(writer, instantiation->getParameters(), docRevision);
 
     CommonItemsWriter::writeVendorExtensions(writer, instantiation);
 

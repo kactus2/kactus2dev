@@ -297,7 +297,7 @@ void ComponentReader::parseInstantiations(QDomElement const& modelElement, QShar
 
         parseDesignInstantiations(instantiationsElement, newModel);
 
-        parseDesignConfigurationInstantiations(instantiationsElement, newModel);
+        parseDesignConfigurationInstantiations(instantiationsElement, newModel, docRevision);
     }
 }
 
@@ -305,8 +305,7 @@ void ComponentReader::parseInstantiations(QDomElement const& modelElement, QShar
 // Function: ComponentReader::parseComponentInstantiations()
 //-----------------------------------------------------------------------------
 void ComponentReader::parseComponentInstantiations(QDomElement const& instantiationsElement,
-    QSharedPointer<Model> newModel,
-    Document::Revision docRevision) const
+    QSharedPointer<Model> newModel, Document::Revision docRevision) const
 {
     QDomNodeList componentInstantiationNodeList =
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:componentInstantiation"));
@@ -348,7 +347,7 @@ void ComponentReader::parseDesignInstantiations(QDomElement const& instantiation
 // Function: ComponentReader::parseDesignConfigurationInstantiations()
 //-----------------------------------------------------------------------------
 void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& instantiationsElement,
-    QSharedPointer<Model> newModel) const
+    QSharedPointer<Model> newModel, Document::Revision docRevision) const
 {
     QDomNodeList designConfigurationInstantiationNodeList =
         instantiationsElement.elementsByTagName(QStringLiteral("ipxact:designConfigurationInstantiation"));
@@ -358,7 +357,8 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
         {
             QDomNode designConfigurationInstantiationNode = designConfigurationInstantiationNodeList.at(i);
             QSharedPointer<DesignConfigurationInstantiation> newInstantiation =
-                InstantiationsReader::createDesignConfigurationInstantiationFrom(designConfigurationInstantiationNode);
+                InstantiationsReader::createDesignConfigurationInstantiationFrom(
+                    designConfigurationInstantiationNode, docRevision);
 
             newModel->getDesignConfigurationInstantiations()->append(newInstantiation);
         }

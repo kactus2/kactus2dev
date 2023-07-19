@@ -38,7 +38,7 @@ QSharedPointer<DesignInstantiation> InstantiationsReader::createDesignInstantiat
 // Function: InstantiationsReader::createDesignConfigurationInstantiationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDesignConfigurationInstantiationFrom(
-    QDomNode const& instantiationNode)
+    QDomNode const& instantiationNode, Document::Revision docRevision)
 {
     QSharedPointer<DesignConfigurationInstantiation> newInstantiation(new DesignConfigurationInstantiation());
 
@@ -53,7 +53,7 @@ QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDes
     newInstantiation->setLanguage(Details::parseLanguageFrom(instantiationNode));
     newInstantiation->setLanguageStrict(Details::parseLanguageStrictnessFrom(instantiationNode));
 
-    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode));
+    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode, docRevision));
 
     CommonItemsReader::parseVendorExtensions(instantiationNode, newInstantiation);
 
@@ -111,7 +111,7 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
 
     Details::parseFileSetReferences(instantiationNode, newInstantiation);
 
-    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode));
+    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode, docRevision));
 
     CommonItemsReader::parseVendorExtensions(instantiationNode, newInstantiation);
 
