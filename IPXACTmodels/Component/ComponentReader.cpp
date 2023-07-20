@@ -252,7 +252,7 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
     {
         QSharedPointer<Model> newmodel (new Model());
 
-        parseViews(modelElement, newmodel);
+        parseViews(modelElement, newmodel, newComponent->getRevision());
 
         parseInstantiations(modelElement, newmodel, newComponent->getRevision());
 
@@ -265,19 +265,18 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::parseViews()
 //-----------------------------------------------------------------------------
-void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
+void ComponentReader::parseViews(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomElement viewsElement = modelElement.firstChildElement(QStringLiteral("ipxact:views"));
 
     if (!viewsElement.isNull())
     {
-        ViewReader viewReader;
-
         QDomNodeList viewNodeList = viewsElement.elementsByTagName(QStringLiteral("ipxact:view"));
         for (int viewIndex = 0; viewIndex < viewNodeList.count(); ++viewIndex)
         {
             QDomNode viewNode = viewNodeList.at(viewIndex);
-            QSharedPointer<View> newView = viewReader.createViewFrom(viewNode);
+            QSharedPointer<View> newView = ViewReader::createViewFrom(viewNode, docRevision);
 
             newModel->getViews()->append(newView);
         }

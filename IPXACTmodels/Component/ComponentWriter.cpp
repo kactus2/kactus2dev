@@ -243,13 +243,11 @@ void ComponentWriter::writeViews(QXmlStreamWriter& writer, QSharedPointer<Compon
 {
     if (!component->getViews()->isEmpty())
     {
-        ViewWriter viewWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:views"));
 
-        foreach (QSharedPointer<View> view, *component->getViews())
+        for (auto const& view : *component->getViews())
         {
-            viewWriter.writeView(writer, view);
+            ViewWriter::writeView(writer, view, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:views

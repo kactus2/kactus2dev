@@ -6,60 +6,43 @@
 // Date: 04.09.2015
 //
 // Description:
-// Reader class for IP-XACT view element.
+// Reader for IP-XACT view element.
 //-----------------------------------------------------------------------------
 
 #include "ViewReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: ViewReader::ViewReader()
-//-----------------------------------------------------------------------------
-ViewReader::ViewReader(QObject* parent /* = 0 */) :
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewReader::~ViewReader()
-//-----------------------------------------------------------------------------
-ViewReader::~ViewReader()
-{
-
-}
+#include <IPXACTmodels/common/CommonItemsReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewReader::createViewFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<View> ViewReader::createViewFrom(QDomNode const& viewNode) const
+QSharedPointer<View> ViewReader::createViewFrom(QDomNode const& viewNode, Document::Revision docRevision)
 {
     QSharedPointer<View> newView (new View());
 
-    parseNameGroup(viewNode, newView);
+    NameGroupReader::parseNameGroup(viewNode, newView);
 
-    parseIsPresent(viewNode, newView);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::parseIsPresent(viewNode, newView);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        CommonItemsReader::parseVendorExtensions(viewNode, newView);
+    }
 
-    parseEnvIdentifiers(viewNode, newView);
+    Details::parseEnvIdentifiers(viewNode, newView);
 
-    parseInstantiationRefs(viewNode, newView);
+    Details::parseInstantiationRefs(viewNode, newView);
 
     return newView;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewReader::parseNameGroup()
+// Function: ViewReader::Details::parseIsPresent()
 //-----------------------------------------------------------------------------
-void ViewReader::parseNameGroup(QDomNode const& viewNode, QSharedPointer<View> newView) const
-{
-    NameGroupReader::parseNameGroup(viewNode, newView);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewReader::parseIsPresent()
-//-----------------------------------------------------------------------------
-void ViewReader::parseIsPresent(QDomNode const& viewNode, QSharedPointer<View> newView) const
+void ViewReader::Details::parseIsPresent(QDomNode const& viewNode, QSharedPointer<View> newView)
 {
     QString newIsPresent = viewNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue();
     if (!newIsPresent.isEmpty())
@@ -69,9 +52,9 @@ void ViewReader::parseIsPresent(QDomNode const& viewNode, QSharedPointer<View> n
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewReader::parseEnvIdentifiers()
+// Function: ViewReader::Details::parseEnvIdentifiers()
 //-----------------------------------------------------------------------------
-void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<View> newView) const
+void ViewReader::Details::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<View> newView)
 {
     QDomElement viewElement = viewNode.toElement();
 
@@ -110,9 +93,9 @@ void ViewReader::parseEnvIdentifiers(QDomNode const& viewNode, QSharedPointer<Vi
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewReader::parseInstantiationRefs()
+// Function: ViewReader::Details::parseInstantiationRefs()
 //-----------------------------------------------------------------------------
-void ViewReader::parseInstantiationRefs(QDomNode const& viewNode, QSharedPointer<View> newView) const
+void ViewReader::Details::parseInstantiationRefs(QDomNode const& viewNode, QSharedPointer<View> newView)
 {
     QDomElement componentRefNode = viewNode.firstChildElement(QStringLiteral("ipxact:componentInstantiationRef"));
     if (!componentRefNode.isNull())

@@ -13,6 +13,7 @@
 #define VIEW_H
 
 #include <IPXACTmodels/common/NameGroup.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -23,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Represents the ipxact:view element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT View : public NameGroup
+class IPXACTMODELS_EXPORT View : public NameGroup, public Extendable
 {
 public:
 

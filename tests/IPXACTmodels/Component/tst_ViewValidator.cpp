@@ -14,7 +14,7 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Model.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 

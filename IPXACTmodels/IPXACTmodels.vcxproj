@@ -1246,10 +1246,8 @@
     <ClInclude Include="Component\validators\RegisterValidator.h" />
     <ClInclude Include="Component\validators\ViewValidator.h" />
     <ClInclude Include="Component\View.h" />
-    <QtMoc Include="Component\ViewReader.h">
-    </QtMoc>
-    <QtMoc Include="Component\ViewWriter.h">
-    </QtMoc>
+    <ClInclude Include="Component\ViewReader.h" />
+    <ClInclude Include="Component\ViewWriter.h" />
     <ClInclude Include="Component\Wire.h" />
     <ClInclude Include="Component\WireTypeDef.h" />
     <ClInclude Include="Component\WriteValueConstraint.h" />

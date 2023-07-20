@@ -11,6 +11,7 @@
 
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ViewReader.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QtTest>
 
@@ -24,6 +25,7 @@ public:
 private slots:
 
     void testReadSimpleView();
+    void testReadView2022();
 	void testReadIsPresent();
 	void testReadEnvIdentifiers();
 	void testReadMalformedEnvIdentifiers();
@@ -60,12 +62,57 @@ void tst_ViewReader::testReadSimpleView()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
     QCOMPARE(testView->displayName(), QString("viewDisplay"));
     QCOMPARE(testView->description(), QString("viewDescription"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ViewReader::testReadSimpleView2022()
+//-----------------------------------------------------------------------------
+void tst_ViewReader::testReadView2022()
+{
+    QString documentContent(
+        "<ipxact:view>"
+            "<ipxact:name>testView</ipxact:name>"
+            "<ipxact:displayName>viewDisplay</ipxact:displayName>"
+            "<ipxact:shortDescription>short desc</ipxact:shortDescription>"
+            "<ipxact:description>viewDescription</ipxact:description>"
+            "<ipxact:isPresent>4-3</ipxact:isPresent>"
+            "<ipxact:vendorExtensions>"
+                "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:view>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode viewNode = document.firstChildElement("ipxact:view");
+
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
+
+    QCOMPARE(testView->name(), QString("testView"));
+    QCOMPARE(testView->displayName(), QString("viewDisplay"));
+    QCOMPARE(testView->shortDescription(), QString("short desc"));
+    QCOMPARE(testView->description(), QString("viewDescription"));
+    QCOMPARE(testView->getIsPresent(), QString("4-3"));
+    QCOMPARE(testView->getVendorExtensions()->size(), 0);
+
+    testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std22);
+
+    QCOMPARE(testView->name(), QString("testView"));
+    QCOMPARE(testView->displayName(), QString("viewDisplay"));
+    QCOMPARE(testView->shortDescription(), QString("short desc"));
+    QCOMPARE(testView->description(), QString("viewDescription"));
+    QCOMPARE(testView->getIsPresent(), QString(""));
+
+    auto vendorExtensions = testView->getVendorExtensions();
+
+    QCOMPARE(vendorExtensions->size(), 1);
+    QCOMPARE(vendorExtensions->first()->type(), QString("testExtension"));
 }
 
 //-----------------------------------------------------------------------------
@@ -86,8 +133,7 @@ void tst_ViewReader::testReadIsPresent()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
     QCOMPARE(testView->getIsPresent(), QString("4-3"));
@@ -112,8 +158,7 @@ void tst_ViewReader::testReadEnvIdentifiers()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
 
@@ -141,8 +186,7 @@ void tst_ViewReader::testReadMalformedEnvIdentifiers()
 
 	QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-	ViewReader viewReader;
-	QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+	QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
 	QCOMPARE(testView->name(), QString("testView"));
 
@@ -170,8 +214,7 @@ void tst_ViewReader::testReadMalformedEnvIdentifiers2()
 
 	QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-	ViewReader viewReader;
-	QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+	QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
 	QCOMPARE(testView->name(), QString("testView"));
 
@@ -198,8 +241,7 @@ void tst_ViewReader::testReadComponentInstantiationRef()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
     QCOMPARE(testView->getComponentInstantiationRef(), QString("instantiation"));
@@ -223,8 +265,7 @@ void tst_ViewReader::testReadDesignInstantiationRef()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
     QCOMPARE(testView->getDesignInstantiationRef(), QString("instantiation"));
@@ -248,8 +289,7 @@ void tst_ViewReader::testReadDesignConfigurationInstantiationRef()
 
     QDomNode viewNode = document.firstChildElement("ipxact:view");
 
-    ViewReader viewReader;
-    QSharedPointer<View> testView = viewReader.createViewFrom(viewNode);
+    QSharedPointer<View> testView = ViewReader::createViewFrom(viewNode, Document::Revision::Std14);
 
     QCOMPARE(testView->name(), QString("testView"));
     QCOMPARE(testView->getDesignConfigurationInstantiationRef(), QString("instantiation"));

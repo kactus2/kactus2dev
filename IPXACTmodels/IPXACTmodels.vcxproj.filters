@@ -1567,6 +1567,12 @@
     <ClInclude Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
       <Filter>Header Files\AbstractionDefinition</Filter>
     </ClInclude>
+    <ClInclude Include="Component\ViewReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ViewWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1702,12 +1708,6 @@
       <Filter>Header Files\Component</Filter>
     </QtMoc>
     <QtMoc Include="Component\RemapStateWriter.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
-    <QtMoc Include="Component\ViewReader.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
-    <QtMoc Include="Component\ViewWriter.h">
       <Filter>Header Files\Component</Filter>
     </QtMoc>
     <CustomBuild Include="common\CommonItemsReader.h">

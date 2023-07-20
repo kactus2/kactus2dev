@@ -113,8 +113,10 @@ private:
      *
      *      @param [in] modelElement    XML description of the model.
      *      @param [in] newModel        The new model item.
+     *      @param [in] docRevision     The IP-XACT standard revision to comply to.
      */
-    void parseViews(QDomElement const& modelElement, QSharedPointer<Model> newModel) const;
+    void parseViews(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the instantiations.
