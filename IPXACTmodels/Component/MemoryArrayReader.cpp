@@ -40,7 +40,7 @@ void MemoryArrayReader::Details::parseDimensions(QDomNode const& arrayNode, QSha
         auto dimensionNode = dimensionNodes.at(i);
         if (dimensionNode.nodeName() == QStringLiteral("ipxact:dim"))
         {
-            newDimension->dimension_ = dimensionNode.firstChild().nodeValue();
+            newDimension->value_ = dimensionNode.firstChild().nodeValue();
             newDimension->indexVar_ = dimensionNode.attributes().namedItem(QStringLiteral("indexVar")).nodeValue();
 
             newArray->getDimensions()->append(newDimension);

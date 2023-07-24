@@ -249,7 +249,6 @@
     <ClCompile Include="Component\MasterInterface.cpp" />
     <ClCompile Include="Component\MemoryArray.cpp" />
     <ClCompile Include="Component\MemoryArrayReader.cpp" />
-    <ClCompile Include="Component\MemoryArrayValidator.cpp" />
     <ClCompile Include="Component\MemoryArrayWriter.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
@@ -304,6 +303,7 @@
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\MemoryArrayValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryBlockValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
@@ -403,7 +403,6 @@
     <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryArray.h" />
     <ClInclude Include="Component\MemoryArrayReader.h" />
-    <ClInclude Include="Component\MemoryArrayValidator.h" />
     <ClInclude Include="Component\MemoryArrayWriter.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
@@ -411,6 +410,7 @@
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\MemoryArrayValidator.h" />
     <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegionValidator.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />

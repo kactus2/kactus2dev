@@ -26,7 +26,7 @@ public:
     // ipxact:dim
     struct Dimension
     {
-        QString dimension_;
+        QString value_;
         QString indexVar_;
     };
 

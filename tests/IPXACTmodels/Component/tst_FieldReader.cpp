@@ -10,8 +10,11 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/Document.h>
+
 #include <IPXACTmodels/Component/FieldReader.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/FieldReset.h>
@@ -30,6 +33,7 @@ private slots:
     void readSimpleField();
     void readFieldID();
     void readIsPresent();
+    void readMemoryArray2022();
     void readResets();
 
     void readTypeIdentifier();
@@ -75,8 +79,7 @@ void tst_FieldReader::readSimpleField()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->name(), QString("testField"));
     QCOMPARE(testField->displayName(), QString("testDisplay"));
@@ -103,8 +106,7 @@ void tst_FieldReader::readFieldID()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->name(), QString("testField"));
     QCOMPARE(testField->getBitOffset(), QString("Baldur's"));
@@ -131,10 +133,42 @@ void tst_FieldReader::readIsPresent()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getIsPresent(), QString("presence*2"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldReader::readMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_FieldReader::readMemoryArray2022()
+{
+    QString documentContent(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"i\">8</ipxact:dim>"
+                "<ipxact:bitStride>8</ipxact:bitStride>"
+            "</ipxact:array>"
+            "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
+        "</ipxact:field>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std22);
+
+    auto memArray = testField->getMemoryArray();
+    auto dimension = memArray->getDimensions()->first();
+    auto bitStride = memArray->getStride();
+
+    QCOMPARE(dimension->value_, QString("8"));
+    QCOMPARE(dimension->indexVar_, QString("i"));
+    QCOMPARE(bitStride, QString("8"));
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +195,7 @@ void tst_FieldReader::readResets()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getResets()->count(), 1);
 
@@ -190,7 +223,7 @@ void tst_FieldReader::readResets()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getResets()->count(), 2);
 
@@ -225,8 +258,7 @@ void tst_FieldReader::readTypeIdentifier()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getTypeIdentifier(), QString("testTypeIdentifier"));
 }
@@ -250,8 +282,7 @@ void tst_FieldReader::readVolatile()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getVolatile().toString(), QString("true"));
 }
@@ -275,8 +306,7 @@ void tst_FieldReader::readAccess()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getAccess(), AccessTypes::READ_WRITE);
 }
@@ -305,8 +335,7 @@ void tst_FieldReader::readEnumeratedValues()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getEnumeratedValues()->size(), 1);
 
@@ -334,8 +363,7 @@ void tst_FieldReader::readModifiedWritevalue()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getModifiedWrite(), General::ZERO_TO_CLEAR);
 
@@ -350,7 +378,7 @@ void tst_FieldReader::readModifiedWritevalue()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getModifiedWrite(), General::ONE_TO_TOGGLE);
     QCOMPARE(testField->getModifiedWriteModify(), QString("modifier"));
@@ -377,8 +405,7 @@ void tst_FieldReader::readWriteValueConstraint()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getWriteConstraint().isNull(), false);
     QCOMPARE(testField->getWriteConstraint()->getType(), WriteValueConstraint::WRITE_AS_READ);
@@ -396,7 +423,7 @@ void tst_FieldReader::readWriteValueConstraint()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getWriteConstraint().isNull(), false);
     QCOMPARE(testField->getWriteConstraint()->getType(), WriteValueConstraint::USE_ENUM);
@@ -415,7 +442,7 @@ void tst_FieldReader::readWriteValueConstraint()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getWriteConstraint().isNull(), false);
     QCOMPARE(testField->getWriteConstraint()->getType(), WriteValueConstraint::MIN_MAX);
@@ -442,8 +469,7 @@ void tst_FieldReader::readReadAction()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getReadAction(), General::READ_SET);
 
@@ -458,7 +484,7 @@ void tst_FieldReader::readReadAction()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getReadAction(), General::READ_CLEAR);
     QCOMPARE(testField->getReadActionModify(), QString("modifier"));
@@ -483,8 +509,7 @@ void tst_FieldReader::readTestable()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getTestable().toString(), QString("false"));
 
@@ -499,7 +524,7 @@ void tst_FieldReader::readTestable()
 
     document.setContent(documentContent);
     fieldNode = document.firstChildElement("ipxact:field");
-    testField = fieldReader.createFieldFrom(fieldNode);
+    testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getTestable().toString(), QString("true"));
     QCOMPARE(testField->getTestConstraint(), General::TEST_RESTORE);
@@ -524,8 +549,7 @@ void tst_FieldReader::readReserved()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getReserved(), QString("reserveWarning"));
 }
@@ -554,8 +578,7 @@ void tst_FieldReader::readParameters()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getParameters()->size(), 1);
     QCOMPARE(testField->getParameters()->first()->name(), QString("testParameter"));
@@ -583,8 +606,7 @@ void tst_FieldReader::readVendorExtensions()
 
     QDomNode fieldNode = document.firstChildElement("ipxact:field");
 
-    FieldReader fieldReader;
-    QSharedPointer<Field> testField = fieldReader.createFieldFrom(fieldNode);
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getVendorExtensions()->size(), 1);
     QCOMPARE(testField->getVendorExtensions()->first()->type(), QString("testExtension"));

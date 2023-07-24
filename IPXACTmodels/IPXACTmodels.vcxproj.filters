@@ -947,8 +947,8 @@
     <ClCompile Include="Component\MemoryArrayWriter.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Component\MemoryArrayValidator.cpp">
-      <Filter>Source Files\Component</Filter>
+    <ClCompile Include="Component\validators\MemoryArrayValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1594,8 +1594,8 @@
     <ClInclude Include="Component\MemoryArrayWriter.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
-    <ClInclude Include="Component\MemoryArrayValidator.h">
-      <Filter>Header Files\Component</Filter>
+    <ClInclude Include="Component\validators\MemoryArrayValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 #include <QtTest>
 
@@ -37,6 +38,7 @@ private slots:
     void writeSimpleField();
     void writeFieldID();
     void writeIsPresent();
+    void writeMemoryArray2022();
     void writeResets();
 
     void writeTypeIdentifier();
@@ -116,8 +118,7 @@ void tst_FieldWriter::writeSimpleField()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -135,7 +136,7 @@ void tst_FieldWriter::writeSimpleField()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -157,8 +158,7 @@ void tst_FieldWriter::writeFieldID()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -181,8 +181,37 @@ void tst_FieldWriter::writeIsPresent()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldWriter::writeMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_FieldWriter::writeMemoryArray2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MemoryArray> memArray(new MemoryArray());
+    QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension({ QString("8"), QString("i") }));
+    memArray->getDimensions()->append(dim);
+    memArray->setStride("16");
+    testField_->setMemoryArray(memArray);
+
+    QString expectedOutput(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"i\">8</ipxact:dim>"
+                "<ipxact:bitStride>16</ipxact:bitStride>"
+            "</ipxact:array>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
+        "</ipxact:field>"
+        );
+
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -224,8 +253,7 @@ void tst_FieldWriter::writeResets()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -248,8 +276,7 @@ void tst_FieldWriter::writeTypeIdentifier()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -272,8 +299,7 @@ void tst_FieldWriter::writeVolatile()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -296,8 +322,7 @@ void tst_FieldWriter::writeAccess()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -326,8 +351,7 @@ void tst_FieldWriter::writeEnumeratedValues()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -350,8 +374,7 @@ void tst_FieldWriter::writeModifiedWriteValue()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -366,7 +389,7 @@ void tst_FieldWriter::writeModifiedWriteValue()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -394,8 +417,7 @@ void tst_FieldWriter::writeWriteValueConstraint()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -412,7 +434,7 @@ void tst_FieldWriter::writeWriteValueConstraint()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -431,7 +453,7 @@ void tst_FieldWriter::writeWriteValueConstraint()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -454,8 +476,7 @@ void tst_FieldWriter::writeReadAction()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -472,7 +493,7 @@ void tst_FieldWriter::writeReadAction()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
 }
@@ -496,8 +517,7 @@ void tst_FieldWriter::writeTestable()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -514,7 +534,7 @@ void tst_FieldWriter::writeTestable()
         "</ipxact:field>"
         ;
 
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -537,8 +557,7 @@ void tst_FieldWriter::writeReserved()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -571,8 +590,7 @@ void tst_FieldWriter::writeParameters()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -604,8 +622,7 @@ void tst_FieldWriter::writeVendorExtensions()
         "</ipxact:field>"
         );
 
-    FieldWriter fieldWriter;
-    fieldWriter.writeField(xmlStreamWriter, testField_);
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

@@ -14,6 +14,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 //-----------------------------------------------------------------------------
 // Function: Field::Field()
@@ -152,6 +153,22 @@ QString Field::getIsPresent() const
 void Field::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> Field::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setMemoryArray()
+//-----------------------------------------------------------------------------
+void Field::setMemoryArray(QSharedPointer<MemoryArray> memArray)
+{
+    memoryArray_ = memArray;
 }
 
 //-----------------------------------------------------------------------------

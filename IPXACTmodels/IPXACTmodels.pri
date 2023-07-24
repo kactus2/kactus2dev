@@ -275,7 +275,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/MemoryArray.h \
     ./Component/MemoryArrayReader.h \
     ./Component/MemoryArrayWriter.h \
-    ./Component/MemoryArrayValidator.h
+    ./Component/validators/MemoryArrayValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -545,4 +545,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/MemoryArray.cpp \
     ./Component/MemoryArrayReader.cpp \
     ./Component/MemoryArrayWriter.cpp \
-    ./Component/MemoryArrayValidator.cpp
+    ./Component/validators/MemoryArrayValidator.cpp

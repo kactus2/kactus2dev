@@ -40,7 +40,7 @@ void MemoryArrayWriter::Details::writeDimensions(QXmlStreamWriter& writer, QShar
             writer.writeAttribute(QStringLiteral("indexVar"), dimension->indexVar_);
         }
 
-        writer.writeCharacters(dimension->dimension_);
+        writer.writeCharacters(dimension->value_);
         writer.writeEndElement(); // ipxact:dim
     }
 }

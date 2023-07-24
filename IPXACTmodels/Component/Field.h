@@ -30,6 +30,7 @@
 class Parameter;
 class EnumeratedValue;
 class WriteValueConstraint;
+class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:field element.
@@ -90,6 +91,20 @@ public:
 	 *      @param [in] newIsPresent    The new is present value.
 	 */
 	void setIsPresent(QString const& newIsPresent);
+
+	/*!
+	 *	Get the memory array of the field.
+	 *	    
+	 * 	    @return The field's memory array.
+	 */
+	QSharedPointer<MemoryArray> getMemoryArray() const;
+
+	/*!
+	 *	Set the field's memory array.
+	 *  
+	 *      @param [in] memArray     Description
+	 */
+	void setMemoryArray(QSharedPointer<MemoryArray> memArray);
 
 	/*!
 	 *  Get the bit offset.
@@ -365,6 +380,9 @@ private:
 
 	//! The presence of the field.
 	QString isPresent_;
+
+    //! The field's memory array.
+    QSharedPointer<MemoryArray> memoryArray_;
 
 	//! Describes the offset where this bit field starts.
 	QString bitOffset_;
