@@ -57,6 +57,14 @@ namespace FieldReader
         void parsePresence(QDomElement const& fieldElement, QSharedPointer<Field> newField);
 
         /*!
+         *	Reads the field memory array.
+         *  
+         *      @param [in] fieldElement    XML description of the field.
+         *      @param [in] newField        The new field item.
+         */
+        void parseMemoryArray(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+
+        /*!
          *  Reads the bit offset.
          *
          *      @param [in] fieldElement    XML description of the field.
@@ -64,13 +72,7 @@ namespace FieldReader
          */
         void parseBitOffset(QDomElement const& fieldElement, QSharedPointer<Field> newField);
 
-        /*!
-         *	Reads the field memory array.
-         *  
-         *      @param [in] fieldElement    XML description of the field.
-         *      @param [in] newField        The new field item.
-         */
-        void parseMemoryArray(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+        void parseFieldDefinitionRef(QDomElement const& fieldElement, QSharedPointer<Field> newField);
 
         /*!
          *  Reads the reset.

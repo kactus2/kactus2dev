@@ -120,6 +120,34 @@ public:
 	 */
 	void setBitOffset(QString const& newBitOffset);
 
+    /*!
+     *  Get the field definition reference.
+     *        
+     *      @return The field definition reference.
+     */
+    QString getFieldDefinitionRef() const;
+
+    /*!
+     *  Set the field definition reference.
+     *  
+     *      @param [in] newFieldDefRef     Description
+     */
+    void setFieldDefinitionRef(QString const& newFieldDefRef);
+
+    /*!
+     *  Get the type definitions reference.
+     *
+     *      @return The type definitions reference.
+     */
+    QString getTypeDefinitionsRef() const;
+
+    /*!
+     *  Set the type definitions reference.
+     *  
+     *      @param [in] newTypeDefRef     Description
+     */
+    void setTypeDefinitionsRef(QString const& newTypeDefRef);
+    
 	/*!
 	 *  Get a list of the reset for the field.
 	 *
@@ -386,6 +414,12 @@ private:
 
 	//! Describes the offset where this bit field starts.
 	QString bitOffset_;
+
+    //! A reference to a fieldDefinition inside typeDefinitions.
+    QString fieldDefinitionRef_;
+
+    //! A refrence to a typeDefinitions containing the fieldDefinition.
+    QString typeDefinitionsRef_;
 
     //! List of resets.
 	QSharedPointer<QList<QSharedPointer<FieldReset> > > resets_;

@@ -45,7 +45,7 @@ namespace FieldWriter
          *      @param [in] writer      Used XML writer.
          *      @param [in] fieldID     The field id.
          */
-        void writeID(QXmlStreamWriter& writer, QString const& fieldID);
+        void writeID(QXmlStreamWriter& writer, QString const& fieldID, Document::Revision docRevision);
 
         /*!
          *	Write the field memory array.
@@ -53,7 +53,9 @@ namespace FieldWriter
      *      @param [in] writer  The used xml writer.
      *      @param [in] field   The field to be written.
          */
-        void writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+        void writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field, Document::Revision docRevision);
+
+        void writeFieldDefinitionRef(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
         /*!
          *  Write the reset.
@@ -135,6 +137,10 @@ namespace FieldWriter
          *      @param [in] field   The selected field item.
          */
         void writeReserved(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+
+        void writeFieldData2014(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+
+        void writeFieldData2022(QXmlStreamWriter& writer, QSharedPointer<Field> field);
     }
 };
 

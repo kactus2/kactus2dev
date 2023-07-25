@@ -188,6 +188,38 @@ void Field::setBitOffset(QString const& newBitOffset)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Field::getFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+QString Field::getFieldDefinitionRef() const
+{
+    return fieldDefinitionRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void Field::setFieldDefinitionRef(QString const& newFieldDefRef)
+{
+    fieldDefinitionRef_ = newFieldDefRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+QString Field::getTypeDefinitionsRef() const
+{
+    return typeDefinitionsRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+void Field::setTypeDefinitionsRef(QString const& newTypeDefRef)
+{
+    typeDefinitionsRef_ = newTypeDefRef;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Field::getResets()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<FieldReset> > > Field::getResets() const
@@ -203,8 +235,6 @@ void Field::setResets(QSharedPointer<QList<QSharedPointer<FieldReset> > > newRes
     resets_->clear();
     resets_ = newResets;
 }
-
-
 
 //-----------------------------------------------------------------------------
 // Function: Field::getTypeIdentifier()

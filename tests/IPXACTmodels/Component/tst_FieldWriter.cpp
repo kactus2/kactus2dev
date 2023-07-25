@@ -39,6 +39,7 @@ private slots:
     void writeFieldID();
     void writeIsPresent();
     void writeMemoryArray2022();
+    void writeFieldDefinitionRef();
     void writeResets();
 
     void writeTypeIdentifier();
@@ -210,6 +211,30 @@ void tst_FieldWriter::writeMemoryArray2022()
             "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
         "</ipxact:field>"
         );
+
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldWriter::writeFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void tst_FieldWriter::writeFieldDefinitionRef()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testField_->setFieldDefinitionRef("TESTDEF");
+    testField_->setTypeDefinitionsRef("testTypeDefinitionsRef");
+    testField_->setBitWidth("");
+
+    QString expectedOutput(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:fieldDefinitionRef typeDefinitions=\"testTypeDefinitionsRef\">TESTDEF</ipxact:fieldDefinitionRef>"
+        "</ipxact:field>"
+    );
 
     FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);

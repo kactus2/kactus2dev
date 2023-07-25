@@ -34,6 +34,7 @@ private slots:
     void readFieldID();
     void readIsPresent();
     void readMemoryArray2022();
+    void readFieldDefinitionRef();
     void readResets();
 
     void readTypeIdentifier();
@@ -169,6 +170,31 @@ void tst_FieldReader::readMemoryArray2022()
     QCOMPARE(dimension->value_, QString("8"));
     QCOMPARE(dimension->indexVar_, QString("i"));
     QCOMPARE(bitStride, QString("8"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldReader::readFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void tst_FieldReader::readFieldDefinitionRef()
+{
+    QString documentContent(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:isPresent>presence*2</ipxact:isPresent>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:fieldDefinitionRef typeDefinitions=\"testTypeDefinition\">TESTDEF</ipxact:fieldDefinitionRef>"
+        "</ipxact:field>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std22);
+
+    QCOMPARE(testField->getFieldDefinitionRef(), QString("TESTDEF"));
+    QCOMPARE(testField->getTypeDefinitionsRef(), QString("testTypeDefinition"));
 }
 
 //-----------------------------------------------------------------------------

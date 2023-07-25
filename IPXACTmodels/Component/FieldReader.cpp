@@ -27,16 +27,17 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode, Do
 
     QSharedPointer<Field> newField (new Field());
 
-    Details::parseID(fieldElement, newField);
-
     NameGroupReader::parseNameGroup(fieldNode, newField);
+    
     if (docRevision == Document::Revision::Std14)
     {
+        Details::parseID(fieldElement, newField);
         Details::parsePresence(fieldElement, newField);
     }
     else if (docRevision == Document::Revision::Std22)
     {
         Details::parseMemoryArray(fieldElement, newField);
+        Details::parseFieldDefinitionRef(fieldElement, newField);
     }
 
     Details::parseBitOffset(fieldElement, newField);
@@ -95,6 +96,17 @@ void FieldReader::Details::parsePresence(QDomElement const& fieldElement, QShare
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldReader::Details::parseMemoryArray()
+//-----------------------------------------------------------------------------
+void FieldReader::Details::parseMemoryArray(QDomElement const& fieldElement, QSharedPointer<Field> newField)
+{
+    auto newArray = MemoryArrayReader::createMemoryArrayFrom(
+        fieldElement.firstChildElement(QStringLiteral("ipxact:array")), true);
+
+    newField->setMemoryArray(newArray);
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldReader::Details::parseBitOffset()
 //-----------------------------------------------------------------------------
 void FieldReader::Details::parseBitOffset(QDomElement const& fieldElement, QSharedPointer<Field> newField)
@@ -105,14 +117,16 @@ void FieldReader::Details::parseBitOffset(QDomElement const& fieldElement, QShar
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldReader::Details::parseMemoryArray()
+// Function: FieldReader::Details::parseFieldDefinitionRef()
 //-----------------------------------------------------------------------------
-void FieldReader::Details::parseMemoryArray(QDomElement const& fieldElement, QSharedPointer<Field> newField)
+void FieldReader::Details::parseFieldDefinitionRef(QDomElement const& fieldElement, QSharedPointer<Field> newField)
 {
-    auto newArray = MemoryArrayReader::createMemoryArrayFrom(
-        fieldElement.firstChildElement(QStringLiteral("ipxact:array")), true);
-
-    newField->setMemoryArray(newArray);
+    QDomElement fieldDefElement = fieldElement.firstChildElement(QStringLiteral("ipxact:fieldDefinitionRef"));
+    if (!fieldDefElement.isNull())
+    {
+        newField->setFieldDefinitionRef(fieldDefElement.firstChild().nodeValue());
+        newField->setTypeDefinitionsRef(fieldDefElement.attribute(QStringLiteral("typeDefinitions"), QString()));
+    }
 }
 
 //-----------------------------------------------------------------------------

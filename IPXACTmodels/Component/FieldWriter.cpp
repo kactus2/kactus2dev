@@ -25,7 +25,7 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
 {
     writer.writeStartElement(QStringLiteral("ipxact:field"));
 
-    Details::writeID(writer, field->getId());
+    Details::writeID(writer, field->getId(), docRevision);
 
     NameGroupWriter::writeNameGroup(writer, field, docRevision);
 
@@ -33,34 +33,19 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
     {
         CommonItemsWriter::writeIsPresent(writer, field->getIsPresent());
     }
-    else if (docRevision == Document::Revision::Std22)
-    {
-        Details::writeMemoryArray(writer, field);
-    }
-
+    
+    Details::writeMemoryArray(writer, field, docRevision);
+    
     writer.writeTextElement(QStringLiteral("ipxact:bitOffset"), field->getBitOffset());
 
-    Details::writeResets(writer, field);
-
-    Details::writeTypeIdentifier(writer, field);
-
-    writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), field->getBitWidth());
-
-    Details::writeVolatile(writer, field);
-
-    Details::writeAccess(writer, field);
-
-    Details::writeEnumerations(writer, field);
-
-    Details::writeModifiedWriteValue(writer, field);
-
-    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
-
-    Details::writeReadAction(writer, field);
-
-    Details::writeTestable(writer, field);
-
-    Details::writeReserved(writer, field);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::writeFieldData2014(writer, field);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        Details::writeFieldData2022(writer, field);
+    }
 
     CommonItemsWriter::writeParameters(writer, field->getParameters(), docRevision);
 
@@ -72,9 +57,10 @@ void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> fie
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::Details::writeID()
 //-----------------------------------------------------------------------------
-void FieldWriter::Details::writeID(QXmlStreamWriter& writer, QString const& fieldID)
+void FieldWriter::Details::writeID(QXmlStreamWriter& writer, QString const& fieldID,
+    Document::Revision docRevision)
 {
-    if (!fieldID.isEmpty())
+    if (!fieldID.isEmpty() && docRevision == Document::Revision::Std14)
     {
         writer.writeAttribute(QStringLiteral("fieldID"), fieldID);
     }
@@ -83,11 +69,30 @@ void FieldWriter::Details::writeID(QXmlStreamWriter& writer, QString const& fiel
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::Details::writeMemoryArray()
 //-----------------------------------------------------------------------------
-void FieldWriter::Details::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+void FieldWriter::Details::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field,
+    Document::Revision docRevision)
 {
-    if (auto memArray = field->getMemoryArray(); memArray)
+    if (auto memArray = field->getMemoryArray();
+        memArray && docRevision == Document::Revision::Std22)
     {
         MemoryArrayWriter::writeMemoryArray(writer, memArray, true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldDefinitionRef(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    if (auto const& fieldDefRef = field->getFieldDefinitionRef(); !fieldDefRef.isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fieldDefinitionRef"));
+
+        writer.writeAttribute(QStringLiteral("typeDefinitions"), field->getTypeDefinitionsRef());
+
+        writer.writeCharacters(field->getFieldDefinitionRef());
+
+        writer.writeEndElement(); // ixpact:fieldDefinitionRef
     }
 }
 
@@ -280,4 +285,77 @@ void FieldWriter::Details::writeReserved(QXmlStreamWriter& writer, QSharedPointe
     {
         writer.writeTextElement(QStringLiteral("ipxact:reserved"), field->getReserved());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldData2014()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldData2014(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    Details::writeResets(writer, field);
+
+    Details::writeTypeIdentifier(writer, field);
+
+    writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), field->getBitWidth());
+
+    Details::writeVolatile(writer, field);
+
+    Details::writeAccess(writer, field);
+
+    Details::writeEnumerations(writer, field);
+
+    Details::writeModifiedWriteValue(writer, field);
+
+    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
+
+    Details::writeReadAction(writer, field);
+
+    Details::writeTestable(writer, field);
+
+    Details::writeReserved(writer, field);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldData2022()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    Details::writeFieldDefinitionRef(writer, field);
+
+    Details::writeTypeIdentifier(writer, field);
+
+    if (auto const& bitWidth = field->getBitWidth(); !bitWidth.isEmpty())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), bitWidth);
+    }
+
+    // TODO: write field access policy
+
+    Details::writeVolatile(writer, field);
+
+    Details::writeResets(writer, field);
+
+    // TODO: writeAliasOf
+
+    Details::writeAccess(writer, field);
+
+    Details::writeModifiedWriteValue(writer, field);
+
+    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
+
+    Details::writeReadAction(writer, field);
+
+    // TODO: writeReadResponse
+
+    // TODO: writeBroadcasts
+
+    // TODO: writeAccessRestrictions
+
+    Details::writeTestable(writer, field);
+
+    Details::writeReserved(writer, field);
+
+    // TODO: writeVendorExtensions
+
+    Details::writeEnumerations(writer, field);
 }
