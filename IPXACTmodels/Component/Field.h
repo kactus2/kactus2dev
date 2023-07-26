@@ -21,6 +21,7 @@
 #include <IPXACTmodels/common/BooleanValue.h>
 
 #include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/FieldReference.h>
 
 #include <QString>
 #include <QMap>
@@ -208,6 +209,20 @@ public:
 	 *      @param [in] volatileValue   The new volatile state to set.
 	 */
 	void setVolatile(bool volatileValue);
+
+	/*!
+	 *	Get the field reference.
+	 *	    
+	 * 	    @return		The field reference.
+	 */
+	QSharedPointer<FieldReference> getFieldReference() const;
+
+	/*!
+	 *	Set the field reference.
+	 *  
+	 *      @param [in] fieldRef     The new field reference.
+	 */
+	void setFieldReference(QSharedPointer<FieldReference> fieldRef);
 
 	/*!
 	 *  Get the access type of the field.
@@ -465,6 +480,9 @@ private:
 
 	//! Contains the parameters.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+
+	//! Reference to another field (ipxact:aliasOf).
+	QSharedPointer<FieldReference> fieldReference_;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Field>);

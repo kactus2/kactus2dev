@@ -231,6 +231,7 @@
     <ClCompile Include="Component\ExecutableImage.cpp" />
     <ClCompile Include="Component\Field.cpp" />
     <ClCompile Include="Component\FieldReader.cpp" />
+    <ClCompile Include="Component\FieldReference.cpp" />
     <ClCompile Include="Component\FieldReset.cpp" />
     <ClCompile Include="Component\FieldWriter.cpp" />
     <ClCompile Include="Component\File.cpp" />
@@ -399,6 +400,7 @@
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
+    <ClInclude Include="Component\FieldReference.h" />
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryArray.h" />

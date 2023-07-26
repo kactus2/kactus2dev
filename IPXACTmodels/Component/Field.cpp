@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/FieldReference.h>
 
 //-----------------------------------------------------------------------------
 // Function: Field::Field()
@@ -282,6 +283,22 @@ BooleanValue Field::getVolatile() const
 void Field::setVolatile( bool volatileValue )
 {
     volatile_.setValue(volatileValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getFieldReference()
+//-----------------------------------------------------------------------------
+QSharedPointer<FieldReference> Field::getFieldReference() const
+{
+    return fieldReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setFieldReference()
+//-----------------------------------------------------------------------------
+void Field::setFieldReference(QSharedPointer<FieldReference> fieldRef)
+{
+    fieldReference_ = fieldRef;
 }
 
 //-----------------------------------------------------------------------------

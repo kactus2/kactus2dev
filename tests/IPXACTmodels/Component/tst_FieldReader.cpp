@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/FieldReference.h>
 
 #include <QtTest>
 
@@ -39,6 +40,7 @@ private slots:
 
     void readTypeIdentifier();
     void readVolatile();
+    void readFieldReference();
     void readAccess();
     void readEnumeratedValues();
     void readModifiedWritevalue();
@@ -311,6 +313,91 @@ void tst_FieldReader::readVolatile()
     QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std14);
 
     QCOMPARE(testField->getVolatile().toString(), QString("true"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldReader::readFieldReference()
+//-----------------------------------------------------------------------------
+void tst_FieldReader::readFieldReference()
+{
+    // Test reading ipxact:aliasOf.
+    QString documentContent(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
+            "<ipxact:aliasOf>"
+                "<ipxact:addressSpaceRef addressSpaceRef=\"testAddressSpace\"/>"
+                "<ipxact:memoryMapRef memoryMapRef=\"testMemoryMap\"/>"
+                "<ipxact:memoryRemapRef memoryRemapRef=\"testMemoryRemap\"/>"
+                "<ipxact:bankRef bankRef=\"testBankRef\"/>"
+                "<ipxact:bankRef bankRef=\"testBankRef2\"/>"
+                "<ipxact:addressBlockRef addressBlockRef=\"testAddressBlock\">"
+                    "<ipxact:indices>"
+                        "<ipxact:index>1</ipxact:index>"
+                        "<ipxact:index>2</ipxact:index>"
+                    "</ipxact:indices>"
+                "</ipxact:addressBlockRef>"
+                "<ipxact:registerFileRef registerFileRef=\"testRegisterFile\">"
+                    "<ipxact:indices>"
+                        "<ipxact:index>0</ipxact:index>"
+                        "<ipxact:index>1</ipxact:index>"
+                    "</ipxact:indices>"
+                "</ipxact:registerFileRef>"
+                "<ipxact:registerFileRef registerFileRef=\"testRegisterFile2\">"
+                    "<ipxact:indices>"
+                        "<ipxact:index>3</ipxact:index>"
+                    "</ipxact:indices>"
+                "</ipxact:registerFileRef>"
+                "<ipxact:registerRef registerRef=\"testRegister\">"
+                    "<ipxact:indices>"
+                        "<ipxact:index>0</ipxact:index>"
+                    "</ipxact:indices>"
+                "</ipxact:registerRef>"
+                "<ipxact:alternateRegisterRef alternateRegisterRef=\"testAlternateRegister\"/>"
+                "<ipxact:fieldRef fieldRef=\"testField\">"
+                    "<ipxact:indices>"
+                        "<ipxact:index>6</ipxact:index>"
+                    "</ipxact:indices>"
+                "</ipxact:fieldRef>"
+            "</ipxact:aliasOf>"
+        "</ipxact:field>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std22);
+
+    auto fieldReference = testField->getFieldReference();
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_SPACE).first(), QString("testAddressSpace"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_MAP).first(), QString("testMemoryMap"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_REMAP).first(), QString("testMemoryRemap"));
+    
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::BANK).at(0), QString("testBankRef"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::BANK).at(1), QString("testBankRef2"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_BLOCK).first(), QString("testAddressBlock"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::ADDRESS_BLOCK).first(), QString("1"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::ADDRESS_BLOCK).at(1), QString("2"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER_FILE).first(), QString("testRegisterFile"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile")).first(), QString("0"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile")).at(1), QString("1"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER_FILE).at(1), QString("testRegisterFile2"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile2")).first(), QString("3"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER).first(), QString("testRegister"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER).first(), QString("0"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ALTERNATE_REGISTER).first(), QString("testAlternateRegister"));
+
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD).first(), QString("testField"));
+    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::FIELD).first(), QString("6"));
 }
 
 //-----------------------------------------------------------------------------

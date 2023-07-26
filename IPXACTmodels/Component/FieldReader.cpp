@@ -38,6 +38,7 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode, Do
     {
         Details::parseMemoryArray(fieldElement, newField);
         Details::parseFieldDefinitionRef(fieldElement, newField);
+        Details::parseFieldReference(fieldElement, newField);
     }
 
     Details::parseBitOffset(fieldElement, newField);
@@ -227,6 +228,68 @@ void FieldReader::Details::parseVolatile(QDomElement const& fieldElement, QShare
         {
             newField->setVolatile(false);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReader::Details::parseFieldReference()
+//-----------------------------------------------------------------------------
+void FieldReader::Details::parseFieldReference(QDomElement const& fieldElement, QSharedPointer<Field> newField)
+{
+    QDomElement rootReferenceElement = fieldElement.firstChildElement(QStringLiteral("ipxact:aliasOf"));
+    if (rootReferenceElement.isNull())
+    {
+        return;
+    }
+
+    QSharedPointer<FieldReference> newFieldReference(new FieldReference());
+
+    auto const& referenceElements = rootReferenceElement.childNodes();
+
+    for (auto i = 0; i < referenceElements.size(); ++i)
+    {
+        Details::parseFieldReferenceCollection(referenceElements.at(i), newFieldReference);
+    }
+
+    newField->setFieldReference(newFieldReference);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReader::Details::parseFieldReferenceCollection()
+//-----------------------------------------------------------------------------
+void FieldReader::Details::parseFieldReferenceCollection(QDomNode const& currentNode, 
+    QSharedPointer<FieldReference> newFieldReference)
+{
+    auto nodeName = currentNode.nodeName().split(QStringLiteral(":")).back();
+
+    auto refType = FieldReference::str2Type(nodeName);
+
+    auto refValue = currentNode.attributes().namedItem(nodeName).nodeValue();
+
+    if (!refValue.isEmpty())
+    {
+        newFieldReference->setReference(refType, refValue);
+    }
+
+    // Parse possible indices
+    if (currentNode.hasChildNodes())
+    {
+        auto indicesNode = currentNode.firstChildElement(QStringLiteral("ipxact:indices"));
+        auto const& indexNodes = indicesNode.childNodes();
+
+        QList<QString> newIndices;
+
+        for (auto i = 0; i < indexNodes.size(); ++i)
+        {
+            auto currentIndexNode = indexNodes.at(i);
+
+            if (currentIndexNode.nodeName() == QStringLiteral("ipxact:index"))
+            {
+                newIndices.append(currentIndexNode.firstChild().nodeValue());
+            }
+        }
+
+        newFieldReference->setReferenceIndices(refType, refValue, newIndices);
     }
 }
 

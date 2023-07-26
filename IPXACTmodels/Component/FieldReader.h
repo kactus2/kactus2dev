@@ -12,9 +12,12 @@
 #ifndef FIELDREADER_H
 #define FIELDREADER_H
 
+#include "FieldReference.h"
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -129,6 +132,16 @@ namespace FieldReader
          *      @param [in] newField        The new field item.
          */
         void parseVolatile(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+        
+        /*!
+        *  Reads the field reference (ipxact:aliasOf).
+        *
+        *      @param [in] fieldElement    XML description of the field.
+        *      @param [in] newField        The new field item.
+        */
+        void parseFieldReference(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+
+        void parseFieldReferenceCollection(QDomNode const& currentNode, QSharedPointer<FieldReference> newFieldReference);
 
         /*!
          *  Reads the access value.
