@@ -15,7 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/Document.h>
-#include <IPXACTmodels/component/Field.h>
+#include "FieldReference.h"
 
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
