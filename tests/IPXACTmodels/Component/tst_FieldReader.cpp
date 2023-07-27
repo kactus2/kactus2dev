@@ -373,31 +373,31 @@ void tst_FieldReader::readFieldReference()
 
     auto fieldReference = testField->getFieldReference();
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_SPACE).first(), QString("testAddressSpace"));
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_MAP).first(), QString("testMemoryMap"));
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_REMAP).first(), QString("testMemoryRemap"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_SPACE)->reference_, QString("testAddressSpace"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_MAP)->reference_, QString("testMemoryMap"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::MEMORY_REMAP)->reference_, QString("testMemoryRemap"));
     
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::BANK).at(0), QString("testBankRef"));
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::BANK).at(1), QString("testBankRef2"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::BANK)->at(0)->reference_, QString("testBankRef"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::BANK)->at(1)->reference_, QString("testBankRef2"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_BLOCK).first(), QString("testAddressBlock"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::ADDRESS_BLOCK).first(), QString("1"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::ADDRESS_BLOCK).at(1), QString("2"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_BLOCK)->reference_, QString("testAddressBlock"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_BLOCK)->indices_.first(), QString("1"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ADDRESS_BLOCK)->indices_.at(1), QString("2"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER_FILE).first(), QString("testRegisterFile"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile")).first(), QString("0"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile")).at(1), QString("1"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::REGISTER_FILE)->first()->reference_, QString("testRegisterFile"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::REGISTER_FILE)->first()->indices_.first(), QString("0"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::REGISTER_FILE)->first()->indices_.at(1), QString("1"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER_FILE).at(1), QString("testRegisterFile2"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER_FILE, QString("testRegisterFile2")).first(), QString("3"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::REGISTER_FILE)->at(1)->reference_, QString("testRegisterFile2"));
+    QCOMPARE(fieldReference->getMultipleReference(FieldReference::Type::REGISTER_FILE)->at(1)->indices_.first(), QString("3"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER).first(), QString("testRegister"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::REGISTER).first(), QString("0"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER)->reference_, QString("testRegister"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::REGISTER)->indices_.first(), QString("0"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::ALTERNATE_REGISTER).first(), QString("testAlternateRegister"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::ALTERNATE_REGISTER)->reference_, QString("testAlternateRegister"));
 
-    QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD).first(), QString("testField"));
-    QCOMPARE(fieldReference->getReferenceIndices(FieldReference::Type::FIELD).first(), QString("6"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD)->reference_, QString("testField"));
+    QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD)->indices_.first(), QString("6"));
 }
 
 //-----------------------------------------------------------------------------

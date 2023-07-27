@@ -335,7 +335,7 @@ void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedP
 
     Details::writeResets(writer, field);
 
-    // TODO: writeAliasOf
+    Details::writeFieldReference(writer, field); // ipxact:aliasOf
 
     Details::writeAccess(writer, field);
 
@@ -358,4 +358,91 @@ void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedP
     // TODO: writeVendorExtensions
 
     Details::writeEnumerations(writer, field);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldReference(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    auto fieldReference = field->getFieldReference();
+
+    if (!fieldReference)
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:aliasOf"));
+
+    for (auto i = 0; i < FieldReference::Type::REFERENCE_TYPE_COUNT; ++i)
+    {
+        if (i == FieldReference::BANK || i == FieldReference::REGISTER_FILE)
+        {
+            writeMultipleFieldReference(writer, fieldReference, static_cast<FieldReference::Type>(i));
+        }
+        else
+        {
+            if (auto reference = fieldReference->getReference(static_cast<FieldReference::Type>(i));
+                reference != nullptr)
+            {
+                writeSingleFieldReference(writer, reference, static_cast<FieldReference::Type>(i));
+            }
+        }
+    }
+
+    writer.writeEndElement(); // ipxact:aliasOf
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeMultipleFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeMultipleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference> fieldReference, FieldReference::Type refType)
+{
+    auto references = fieldReference->getMultipleReference(refType);
+
+    if (!references->isEmpty())
+    {
+        for (auto const& reference : *references)
+        {
+            writeSingleFieldReference(writer, reference, refType);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeSingleFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeSingleFieldReference(QXmlStreamWriter& writer, 
+    QSharedPointer<FieldReference::IndexedReference> reference, FieldReference::Type refType)
+{
+    if (reference)
+    {
+        auto typeAsString = FieldReference::type2Str(refType);
+        auto elementName = QStringLiteral("ipxact:") + typeAsString;
+
+        writer.writeStartElement(elementName);
+        writer.writeAttribute(typeAsString, reference->reference_);
+
+        if (!reference->indices_.isEmpty())
+        {
+            Details::writeFieldReferenceIndices(writer, reference);
+        }
+
+        writer.writeEndElement(); // ipxact:xxxxxRef
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldReferenceIndices()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldReferenceIndices(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference)
+{
+    writer.writeStartElement(QStringLiteral("ipxact:indices"));
+
+    for (auto const& index : reference->indices_)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:index"), index);
+    }
+
+    writer.writeEndElement(); // ipxact:indices
 }

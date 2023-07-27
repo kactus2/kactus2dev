@@ -33,38 +33,65 @@ FieldReference::FieldReference()
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldReference::FieldReference()
+//-----------------------------------------------------------------------------
+FieldReference::FieldReference(FieldReference const& other) :
+    addressSpaceRef_(other.addressSpaceRef_),
+    memoryMapRef_(other.memoryMapRef_),
+    memoryRemapRef_(other.memoryRemapRef_),
+    bankRefs_(other.bankRefs_),
+    addressBlockRef_(other.addressBlockRef_),
+    registerFileRefs_(other.registerFileRefs_),
+    registerRef_(other.registerRef_),
+    alternateRegisterRef_(other.alternateRegisterRef_),
+    fieldRef_(other.fieldRef_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldReference::setReference()
 //-----------------------------------------------------------------------------
-void FieldReference::setReference(FieldReference::Type refType, QString const& ref)
+void FieldReference::setReference(QSharedPointer<IndexedReference> reference, FieldReference::Type refType)
 {
     switch (refType)
     {
     case FieldReference::Type::ADDRESS_SPACE:
-        addressSpaceRef_ = ref;
+        addressSpaceRef_ = reference;
         break;
     case FieldReference::Type::MEMORY_MAP:
-        memoryMapRef_ = ref;
+        memoryMapRef_ = reference;
         break;
     case FieldReference::Type::MEMORY_REMAP:
-        memoryRemapRef_ = ref;
+        memoryRemapRef_ = reference;
         break;
     case FieldReference::Type::BANK:
-        bankRefs_.append(ref);
+        if (!bankRefs_)
+        {
+            bankRefs_ = QSharedPointer<QList<QSharedPointer<IndexedReference> > >(
+                new QList<QSharedPointer<IndexedReference> >());
+        }
+        bankRefs_->append(reference);
         break;
     case FieldReference::Type::ADDRESS_BLOCK:
-        addressBlockRef_.reference_ = ref;
+        addressBlockRef_ = reference;
         break;
     case FieldReference::Type::REGISTER_FILE:
-        registerFileRefs_.append(IndexedReference({ ref, QList<QString>() }));
+        if (!registerFileRefs_)
+        {
+            registerFileRefs_ = QSharedPointer<QList<QSharedPointer<IndexedReference> > >(
+                new QList<QSharedPointer<IndexedReference> >());
+        }
+        registerFileRefs_->append(reference);
         break;
     case FieldReference::Type::REGISTER:
-        registerRef_.reference_ = ref;
+        registerRef_ = reference;
         break;
     case FieldReference::Type::ALTERNATE_REGISTER:
-        alternateRegisterRef_ = ref;
+        alternateRegisterRef_ = reference;
         break;
     case FieldReference::Type::FIELD:
-        fieldRef_.reference_ = ref;
+        fieldRef_ = reference;
         break;
     default:
         break;
@@ -74,104 +101,69 @@ void FieldReference::setReference(FieldReference::Type refType, QString const& r
 //-----------------------------------------------------------------------------
 // Function: FieldReference::getReference()
 //-----------------------------------------------------------------------------
-QStringList FieldReference::getReference(Type refType) const
+QSharedPointer<FieldReference::IndexedReference> FieldReference::getReference(Type refType) const
 {
     switch (refType)
     {
     case FieldReference::Type::ADDRESS_SPACE:
-        return QStringList(addressSpaceRef_);
+        return addressSpaceRef_;
     case FieldReference::Type::MEMORY_MAP:
-        return QStringList(memoryMapRef_);
+        return memoryMapRef_;
     case FieldReference::Type::MEMORY_REMAP:
-        return QStringList(memoryRemapRef_);
-    case FieldReference::Type::BANK:
-        return QStringList(bankRefs_);
+        return memoryRemapRef_;
     case FieldReference::Type::ADDRESS_BLOCK:
-        return QStringList(addressBlockRef_.reference_);
-    case FieldReference::Type::REGISTER_FILE:
-    {
-        QStringList registerFiles;
-        std::for_each(registerFileRefs_.cbegin(), registerFileRefs_.cend(),
-            [&registerFiles](IndexedReference const& ref)
-            {
-                registerFiles << ref.reference_;
-            });
-        return registerFiles;
-    }
+        return addressBlockRef_;
     case FieldReference::Type::REGISTER:
-        return QStringList(registerRef_.reference_);
+        return registerRef_;
     case FieldReference::Type::ALTERNATE_REGISTER:
-        return QStringList(alternateRegisterRef_);
+        return alternateRegisterRef_;
     case FieldReference::Type::FIELD:
-        return QStringList(fieldRef_.reference_);
+        return fieldRef_;
     default:
-        return QStringList();
+        return nullptr;
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldReference::setReferenceIndices()
+// Function: FieldReference::getMultipleReference()
 //-----------------------------------------------------------------------------
-void FieldReference::setReferenceIndices(FieldReference::Type refType, QString const& ref, QList<QString> const& indices)
+QSharedPointer<QList<QSharedPointer<FieldReference::IndexedReference> > > FieldReference::getMultipleReference(Type refType) const
 {
-    if (refType == FieldReference::Type::ADDRESS_BLOCK)
-    {
-        addressBlockRef_.indices_ = indices;
-    }
-    else if (refType == FieldReference::Type::REGISTER_FILE)
-    {
-        auto matchingRef = std::find_if(registerFileRefs_.begin(), registerFileRefs_.end(),
-            [ref](IndexedReference const& e)
-            {
-                return e.reference_ == ref;
-            });
+    QSharedPointer<QList<QSharedPointer<FieldReference::IndexedReference> > > referenceList(
+        new QList<QSharedPointer<FieldReference::IndexedReference> >());
 
-        if (matchingRef != registerFileRefs_.end())
-        {
-            matchingRef->indices_ = indices;
-        }
-    }
-    else if (refType == FieldReference::Type::REGISTER)
+    switch (refType)
     {
-        registerRef_.indices_ = indices;
+    case FieldReference::Type::ADDRESS_SPACE:
+        referenceList->append(addressSpaceRef_);
+        break;
+    case FieldReference::Type::MEMORY_MAP:
+        referenceList->append(memoryMapRef_);
+        break;
+    case FieldReference::Type::MEMORY_REMAP:
+        referenceList->append(memoryRemapRef_);
+        break;
+    case FieldReference::Type::BANK:
+        return bankRefs_;
+    case FieldReference::Type::ADDRESS_BLOCK:
+        referenceList->append(addressBlockRef_);
+        break;
+    case FieldReference::Type::REGISTER_FILE:
+        return registerFileRefs_;
+    case FieldReference::Type::REGISTER:
+        referenceList->append(registerRef_);
+        break;
+    case FieldReference::Type::ALTERNATE_REGISTER:
+        referenceList->append(alternateRegisterRef_);
+        break;
+    case FieldReference::Type::FIELD:
+        referenceList->append(fieldRef_);
+        break;
+    default:
+        break;
     }
-    else if (refType == FieldReference::Type::FIELD)
-    {
-        fieldRef_.indices_ = indices;
-    }
-}
 
-//-----------------------------------------------------------------------------
-// Function: FieldReference::getReferenceIndices()
-//-----------------------------------------------------------------------------
-QStringList FieldReference::getReferenceIndices(Type refType, QString const& ref) const
-{
-    if (refType == FieldReference::Type::ADDRESS_BLOCK)
-    {
-        return addressBlockRef_.indices_;
-    }
-    else if (refType == FieldReference::Type::REGISTER_FILE)
-    {
-        // There can be multiple register file references, so find the one matching to ref.
-        auto matchingRef = std::find_if(registerFileRefs_.begin(), registerFileRefs_.end(),
-            [ref](IndexedReference const& e)
-            {
-                return e.reference_ == ref;
-            });
-
-        if (matchingRef != registerFileRefs_.end())
-        {
-            return matchingRef->indices_;
-        }
-    }
-    else if (refType == FieldReference::Type::REGISTER)
-    {
-        return registerRef_.indices_;
-    }
-    else if (refType == FieldReference::Type::FIELD)
-    {
-        return fieldRef_.indices_;
-    }
+    return referenceList;
 }
 
 //-----------------------------------------------------------------------------

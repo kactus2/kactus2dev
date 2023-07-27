@@ -266,10 +266,14 @@ void FieldReader::Details::parseFieldReferenceCollection(QDomNode const& current
 
     auto refValue = currentNode.attributes().namedItem(nodeName).nodeValue();
 
-    if (!refValue.isEmpty())
+    QSharedPointer<FieldReference::IndexedReference> newFieldRefElement(new FieldReference::IndexedReference());
+
+    if (refValue.isEmpty())
     {
-        newFieldReference->setReference(refType, refValue);
+        return;
     }
+
+    newFieldRefElement->reference_ = refValue;
 
     // Parse possible indices
     if (currentNode.hasChildNodes())
@@ -277,20 +281,18 @@ void FieldReader::Details::parseFieldReferenceCollection(QDomNode const& current
         auto indicesNode = currentNode.firstChildElement(QStringLiteral("ipxact:indices"));
         auto const& indexNodes = indicesNode.childNodes();
 
-        QList<QString> newIndices;
-
         for (auto i = 0; i < indexNodes.size(); ++i)
         {
             auto currentIndexNode = indexNodes.at(i);
 
             if (currentIndexNode.nodeName() == QStringLiteral("ipxact:index"))
             {
-                newIndices.append(currentIndexNode.firstChild().nodeValue());
+                newFieldRefElement->indices_.append(currentIndexNode.firstChild().nodeValue());
             }
         }
-
-        newFieldReference->setReferenceIndices(refType, refValue, newIndices);
     }
+
+    newFieldReference->setReference(newFieldRefElement, refType);
 }
 
 //-----------------------------------------------------------------------------

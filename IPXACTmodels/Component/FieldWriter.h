@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/component/Field.h>
 
 #include <QXmlStreamWriter>
 #include <QSharedPointer>
@@ -141,6 +142,16 @@ namespace FieldWriter
         void writeFieldData2014(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
         void writeFieldData2022(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+
+        void writeFieldReference(QXmlStreamWriter& writer, QSharedPointer<Field> field);
+
+        void writeMultipleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference> fieldReference,
+            FieldReference::Type refType);
+        
+        void writeSingleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference,
+            FieldReference::Type refType);
+
+        void writeFieldReferenceIndices(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference);
     }
 };
 

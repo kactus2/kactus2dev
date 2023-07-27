@@ -37,22 +37,58 @@ public:
         REFERENCE_TYPE_COUNT
     };
 
+    //! Reference with indices.
+    struct IndexedReference
+    {
+        //! The reference.
+        QString reference_;
+
+        //! The indices of the reference. Is empty for references without indices.
+        QList<QString> indices_;
+    };
+
+    /*!
+     *	The constructor.
+     */
     FieldReference();
+
+    /*!
+     *	Copy constructor.
+     */
+    FieldReference(FieldReference const& other);
 
     virtual ~FieldReference() = default;
 
     //! The above types as strings matching the IP-XACT element names.
     static const QString TYPES_AS_STRINGS[];
 
-    //! Sets a reference by type.
-    void setReference(FieldReference::Type refType, QString const& ref);
+    /*!
+     *	Sets a reference by type. If the reference is of type bank or register file,
+     *  it will be added to the respective reference list.
+     *  
+     *      @param [in] reference     The reference to set.
+     *      @param [in] refType       The reference type.
+     */
+    void setReference(QSharedPointer<IndexedReference> reference, FieldReference::Type refType);
 
-    QStringList getReference(FieldReference::Type refType) const;
-
-    //! Sets the indices of a reference.
-    void setReferenceIndices(FieldReference::Type refType, QString const& ref, QList<QString> const& indices);
-
-    QStringList getReferenceIndices(FieldReference::Type refType, QString const& ref = QString()) const;
+    /*!
+     *	Get the reference of a specific type.
+     *  
+     *      @param [in] refType     The reference type.
+     *	    
+     * 	    @return The reference, or nullptr if invalid refType or the reference is a multiple reference.
+     */
+    QSharedPointer<IndexedReference> getReference(FieldReference::Type refType) const;
+    
+    /*!
+     *	Get a list of references of a specific type. Can be called for all types, but can have multiple references
+     *  only for types bank and register file.
+     *  
+     *      @param [in] refType     The type of reference to get.
+     *	    
+     * 	    @return A list of references of a specific type.
+     */
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > getMultipleReference(FieldReference::Type refType) const;
     
     //! Converts a reference type string to type.
     static FieldReference::Type str2Type(QString const& refTypeStr);
@@ -62,42 +98,32 @@ public:
 
 private:
 
-    //! Reference with indices.
-    struct IndexedReference
-    {
-        //! The reference.
-        QString reference_;
-
-        //! The indices of the reference.
-        QList<QString> indices_;
-    };
-
     //! The address space reference.
-    QString addressSpaceRef_;
+    QSharedPointer<IndexedReference> addressSpaceRef_;
 
     //! The memory map reference.
-    QString memoryMapRef_;
+    QSharedPointer<IndexedReference> memoryMapRef_;
 
     //! The memory remap reference.
-    QString memoryRemapRef_;
+    QSharedPointer<IndexedReference> memoryRemapRef_;
     
     //! The bank references.
-    QList<QString> bankRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > bankRefs_;
 
     //! The address block reference.
-    IndexedReference addressBlockRef_;
+    QSharedPointer<IndexedReference> addressBlockRef_;
 
     //! The register file references.
-    QList<IndexedReference> registerFileRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > registerFileRefs_;
 
     //! The register reference.
-    IndexedReference registerRef_;
+    QSharedPointer<IndexedReference> registerRef_;
 
     //! The alternate register reference.
-    QString alternateRegisterRef_;
+    QSharedPointer<IndexedReference> alternateRegisterRef_;
 
     //! The field reference.
-    IndexedReference fieldRef_;
+    QSharedPointer<IndexedReference> fieldRef_;
 };
 
 #endif // FIELDREFERENCE_H
