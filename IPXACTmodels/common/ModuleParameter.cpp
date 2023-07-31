@@ -85,6 +85,22 @@ void ModuleParameter::setUsageType(QString const& newUsageType)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModuleParameter::getDataTypeDefinition()
+//-----------------------------------------------------------------------------
+QString ModuleParameter::getDataTypeDefinition() const
+{
+    return getAttribute(QStringLiteral("dataTypeDefinition"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModuleParameter::setDataTypeDefinition()
+//-----------------------------------------------------------------------------
+void ModuleParameter::setDataTypeDefinition(QString const& dataTypeDef)
+{
+    setAttribute(QStringLiteral("dataTypeDefinition"), dataTypeDef);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModuleParameter::getIsPresent()
 //-----------------------------------------------------------------------------
 QString ModuleParameter::getIsPresent() const

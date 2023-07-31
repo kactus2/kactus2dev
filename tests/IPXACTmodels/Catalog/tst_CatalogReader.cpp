@@ -41,7 +41,8 @@ private slots:
     void testReadDesigns();
     void testReadDesignConfigurations();
     void testReadGeneratorChains();
-   
+    void testReadTypeDefinitions();
+
     void testReadAllElements();
     /*
     void testOtherCatalogsAreWritten();
@@ -562,6 +563,49 @@ void tst_CatalogReader::testReadGeneratorChains()
     QCOMPARE(secondDesignFile->getVlnv(), VLNV(VLNV::GENERATORCHAIN, "tut.fi", "TestLibrary", "CompleteChain", "1.0"));
     QCOMPARE(secondDesignFile->getDescription(), QString("Test file description"));
     QCOMPARE(secondDesignFile->getVendorExtensions()->size(), 1);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_CatalogReader::testReadTypeDefinitions()
+//-----------------------------------------------------------------------------
+void tst_CatalogReader::testReadTypeDefinitions()
+{
+    QDomDocument document;
+    document.setContent(QString(    
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:catalog xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tut.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestCatalog</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:displayName>testDisplayName</ipxact:displayName>"
+            "<ipxact:shortDescription>a short description</ipxact:shortDescription>"
+            "<ipxact:typeDefinitions>"
+                "<ipxact:ipxactFile>"
+                    "<ipxact:vlnv vendor=\"tut.fi\" library=\"TestLibrary\" name=\"CompleteTypeDefinition\" version=\"1.0\"/>"
+                    "<ipxact:name>./typedef.xml</ipxact:name>"
+                    "<ipxact:description>Test file description</ipxact:description>"
+                    "<ipxact:vendorExtensions>"
+                        "<testExtension vendorAttribute=\"extension\">testValue</testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:ipxactFile>"
+            "</ipxact:typeDefinitions>"
+        "</ipxact:catalog>\n"));
+
+    CatalogReader catalogReader;
+    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QCOMPARE(testCatalog->getTypeDefinitions()->size(), 1);
+    QCOMPARE(testCatalog->getShortDescription(), QString("a short description"));
+    QCOMPARE(testCatalog->getDisplayName(), QString("testDisplayName"));
+
+    QSharedPointer<IpxactFile> typeDefFile = testCatalog->getTypeDefinitions()->first();
+    QCOMPARE(typeDefFile->getVlnv(), VLNV(VLNV::TYPEDEFINITION, "tut.fi", "TestLibrary", "CompleteTypeDefinition", "1.0"));
+    QCOMPARE(typeDefFile->getName(), QString("./typedef.xml"));
+    QCOMPARE(typeDefFile->getVendorExtensions()->size(), 1);
 }
 
 //-----------------------------------------------------------------------------

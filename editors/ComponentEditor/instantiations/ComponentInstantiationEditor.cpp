@@ -46,7 +46,7 @@ fileSetRefs_(instantiationInterface->getFileSetInterface(), tr("File set referen
 fileBuilders_(instantiationInterface->getFileBuilderInterface(), parameterFinder, expressionParser,
               expressionFormatter, componentInstantiation->getDefaultFileBuilders(), this),
 moduleParameters_(componentInstantiation, component->getChoices(), parameterFinder, expressionFormatter,
-    instantiationInterface->getModuleParameterInterface(), this),
+    instantiationInterface->getModuleParameterInterface(), component->getRevision(), this),
 parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter,
     this),
 instantiationInterface_(instantiationInterface),

@@ -21,12 +21,9 @@ void PacketWriter::writePacket(QXmlStreamWriter& writer, QSharedPointer<Packet> 
 {
     writer.writeStartElement(QStringLiteral("ipxact:packet"));
 
-    NameGroupWriter::writeNameGroup(writer, packet);
+    NameGroupWriter::writeNameGroup(writer, packet, Document::Revision::Std22);
 
-    if (auto const& endianness = packet->getEndianness(); !endianness.isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:endianness"), endianness);
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:endianness"), packet->getEndianness());
 
     Details::writePacketFields(writer, packet);
 
@@ -64,20 +61,11 @@ void PacketWriter::Details::writeSinglePacketField(QXmlStreamWriter& writer, QSh
 {
     writer.writeStartElement(QStringLiteral("ipxact:packetField"));
 
-    NameGroupWriter::writeNameGroup(writer, packetField);
+    NameGroupWriter::writeNameGroup(writer, packetField, Document::Revision::Std22);
 
-    if (auto const& width = packetField->getWidth(); !width.isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:width"), width);
-    }
-    if (auto const& value = packetField->getValue(); !value.isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:value"), value);
-    }
-    if (auto const& endianness = packetField->getEndianness(); !endianness.isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:endianness"), endianness);
-    }
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:width"), packetField->getWidth());
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:value"), packetField->getValue());
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:endianness"), packetField->getEndianness());
 
     CommonItemsWriter::writeQualifier(writer, packetField->getQualifier());
 

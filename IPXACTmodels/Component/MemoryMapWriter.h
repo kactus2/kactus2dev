@@ -43,10 +43,11 @@ public:
     /*!
      *  Write a memory map to an XML file.
      *
-     *      @param [in] writer      The used XML writer.
-     *      @param [in] memoryMap   The memory map to be written.
+     *      @param [in] writer        The used XML writer.
+     *      @param [in] memoryMap     The memory map to be written.
+     *      @param [in] docRevision   The standard revision in use.
      */
-    void writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const;
+    void writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, Document::Revision docRevision) const;
 
 private:
 
@@ -59,8 +60,9 @@ private:
      *
      *      @param [in] writer      Used XML writer.
      *      @param [in] memoryMap   The selected memory map.
+     *      @param [in] docRevision     The standard revision in use.
      */
-    void writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const;
+    void writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, Document::Revision docRevision) const;
 
     /*!
      *  Write the address unit bits.

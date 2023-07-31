@@ -11,6 +11,7 @@
 
 #include "AbstractionPortsModel.h"
 #include "LogicalPortColumns.h"
+#include "QualifierData.h"
 
 #include <IPXACTmodels/AbstractionDefinition/TransactionalAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
@@ -239,7 +240,7 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
                 qualifierList.append(QString::fromStdString(qualifier));
             }
 
-            return qualifierList.join(" ");
+            return qualifierList.join(", ");
         }
         else if (index.column() == LogicalPortColumns::MATCH)
         {
@@ -341,13 +342,45 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
             return  KactusColors::DISABLED_TEXT;
         }
     }
-    else if (role == Qt::DecorationRole && 
-             (index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE))
+    else if (role == Qt::DecorationRole && (index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE))
     {
         std::string iconPath = portInterface_->getIconPathForSignal(index.row());
         if (!iconPath.empty())
         {
             return QIcon(QString::fromStdString(iconPath));
+        }
+    }
+
+    else if (role == Qt::UserRole)
+    {
+        if (index.column() == LogicalPortColumns::QUALIFIER)
+        {
+            QStringList qualifierList;
+            for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
+            {
+                qualifierList.append(QString::fromStdString(qualifier));
+            }
+
+            std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
+            QMap<QString, QString> attributes;
+
+            for (int i = 0; i + 1 < attributesList.size(); i += 2)
+            {
+                auto const& name = QString::fromStdString(attributesList.at(i));
+                auto const& value = QString::fromStdString(attributesList.at(i + 1));
+
+                attributes.insert(name, value);
+            }
+
+            QualifierData qualifierData;
+            QVariant qualifierAsVariant;
+
+            qualifierData.activeQualifiers_ = qualifierList;
+            qualifierData.attributes_ = attributes;
+
+            qualifierAsVariant.setValue(qualifierData);
+            
+            return qualifierAsVariant;
         }
     }
  
@@ -377,15 +410,7 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        QStringList listOfQualifiers = value.toStringList();
-
-        std::vector<std::string> qualifierList;
-        for (auto qualifier : value.toStringList())
-        {
-            qualifierList.push_back(qualifier.toStdString());
-        }
-
-        portInterface_->setQualifierStringList(index.row(), qualifierList);
+        setQualifierData(index, value);
     }
     else if (index.column() == LogicalPortColumns::MATCH)
     {
@@ -482,6 +507,46 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::setQualifierData()
+//-----------------------------------------------------------------------------
+void AbstractionPortsModel::setQualifierData(QModelIndex const& index, QVariant const& value)
+{
+    if (portInterface_->getRevision() == Document::Revision::Std22)
+    {
+        QualifierData qualifierData = value.value<QualifierData>();
+        auto const& setQualifiers = qualifierData.activeQualifiers_;
+        auto const& setAttributes = qualifierData.attributes_;
+
+        std::vector<std::string> qualifierList;
+        std::vector<std::string> attributeList;
+
+        for (auto const& qualifier : setQualifiers)
+        {
+            qualifierList.push_back(qualifier.toStdString());
+        }
+
+        for (auto const& attributeName : setAttributes.keys())
+        {
+            attributeList.push_back(attributeName.toStdString());
+            attributeList.push_back(setAttributes[attributeName].toStdString());
+        }
+
+        portInterface_->setQualifierStringList(index.row(), qualifierList);
+        portInterface_->setQualifierAttributes(index.row(), attributeList);
+    }
+    else
+    {
+        std::vector<std::string> qualifiersList;
+        for (auto const& item : value.toStringList())
+        {
+            qualifiersList.push_back(item.toStdString());
+        }
+
+        portInterface_->setQualifierStringList(index.row(), qualifiersList);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::sendDataChangeForAllChangedItems()
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::sendDataChangeForAllChangedItems(QModelIndexList changedIndexes)
@@ -522,10 +587,12 @@ void AbstractionPortsModel::setExtendedPorts()
     beginResetModel();
     for (auto const& port : extendInterface_->getItemNames())
     {
+        auto initiatorMode = extendInterface_->getRevision() == Document::Revision::Std22 ? General::INITIATOR : General::MASTER;
+        auto targetMode = extendInterface_->getRevision() == Document::Revision::Std22 ? General::TARGET : General::SLAVE;
         if (extendInterface_->portIsWire(port))
         {
-            extendWireMode(port, General::MASTER);
-            extendWireMode(port, General::SLAVE);
+            extendWireMode(port, initiatorMode);
+            extendWireMode(port, targetMode);
 
             for (auto const& systemGroup : extendInterface_->getSystemGroupsForPort(port))
             {
@@ -534,8 +601,8 @@ void AbstractionPortsModel::setExtendedPorts()
         }
         else if (extendInterface_->portIsTransactional(port))
         {
-            extendTransactionalMode(port, General::MASTER);
-            extendTransactionalMode(port, General::SLAVE);
+            extendTransactionalMode(port, initiatorMode);
+            extendTransactionalMode(port, targetMode);
 
             for (auto const& systemGroup : extendInterface_->getSystemGroupsForPort(port))
             {

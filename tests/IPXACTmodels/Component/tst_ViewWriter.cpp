@@ -12,7 +12,10 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/ViewWriter.h>
 
+#include <IPXACTmodels/common/GenericVendorExtension.h>
+
 #include <QtTest>
+#include <QDomDocument>
 
 class tst_ViewWriter : public QObject
 {
@@ -34,6 +37,7 @@ private slots:
     void testWriteComponentInstantiationRef();
     void testWriteDesignInstantiationRef();
     void testWriteDesignConfigurationInstantiationRef();
+    void testWriteVendorExtensions();
 
 private:
 
@@ -95,8 +99,7 @@ void tst_ViewWriter::testWriteViewNameGroup()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     expectedOutput.clear();
@@ -110,13 +113,14 @@ void tst_ViewWriter::testWriteViewNameGroup()
         "</ipxact:view>"
         ;
 
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
     expectedOutput.clear();
 
     testView_->setDescription("testDescription");
+    testView_->setShortDescription("shortDescription");
     expectedOutput = 
         "<ipxact:view>"
             "<ipxact:name>testView</ipxact:name>"
@@ -125,7 +129,22 @@ void tst_ViewWriter::testWriteViewNameGroup()
         "</ipxact:view>"
         ;
 
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+
+    output.clear();
+    expectedOutput.clear();
+
+    expectedOutput = 
+        "<ipxact:view>"
+            "<ipxact:name>testView</ipxact:name>"
+            "<ipxact:displayName>testDisplay</ipxact:displayName>"
+            "<ipxact:shortDescription>shortDescription</ipxact:shortDescription>"
+            "<ipxact:description>testDescription</ipxact:description>"
+        "</ipxact:view>"
+        ;
+
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -146,8 +165,7 @@ void tst_ViewWriter::testWriteIsPresent()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
 
     QCOMPARE(output, expectedOutput);
 }
@@ -180,8 +198,7 @@ void tst_ViewWriter::testWriteEnvIdentifiers()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
 
     QCOMPARE(output, expectedOutput);
 }
@@ -203,8 +220,7 @@ void tst_ViewWriter::testWriteComponentInstantiationRef()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
 
     QCOMPARE(output, expectedOutput);
 }
@@ -226,8 +242,7 @@ void tst_ViewWriter::testWriteDesignInstantiationRef()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
 
     QCOMPARE(output, expectedOutput);
 }
@@ -249,12 +264,50 @@ void tst_ViewWriter::testWriteDesignConfigurationInstantiationRef()
         "</ipxact:view>"
         );
 
-    ViewWriter viewWriter;
-    viewWriter.writeView(xmlStreamWriter, testView_);
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
 
     QCOMPARE(output, expectedOutput);
 }
 
 QTEST_APPLESS_MAIN(tst_ViewWriter)
+
+//-----------------------------------------------------------------------------
+// Function: tst_ViewWriter::testWriteVendorExtensions()
+//-----------------------------------------------------------------------------
+void tst_ViewWriter::testWriteVendorExtensions()
+{
+    QDomDocument document;
+    QDomElement extensionNode = document.createElement("ulina");
+    extensionNode.setAttribute("kolina", "eaa");
+    extensionNode.appendChild(document.createTextNode("testValue"));
+
+    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+
+    testView_->getVendorExtensions()->append(testExtension);
+    
+    QString expectedOutput14(
+        "<ipxact:view>"
+            "<ipxact:name>testView</ipxact:name>"
+        "</ipxact:view>");
+
+    QString expectedOutput22(
+        "<ipxact:view>"
+            "<ipxact:name>testView</ipxact:name>"
+            "<ipxact:vendorExtensions>"
+                "<ulina kolina=\"eaa\">testValue</ulina>"
+            "</ipxact:vendorExtensions>"
+        "</ipxact:view>");
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput14);
+
+    output.clear();
+
+    ViewWriter::writeView(xmlStreamWriter, testView_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput22);
+}
 
 #include "tst_ViewWriter.moc"

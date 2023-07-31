@@ -74,6 +74,11 @@ model_(component, parameterFinder, expressionFormatter, addressSpaceValidator, t
     layout->addWidget(&view_);
     layout->setContentsMargins(0, 0, 0, 0);
 
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_.hideColumn(AddressSpaceColumns::IS_PRESENT);
+    }
+
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	
 	connect(&model_, SIGNAL(addrSpaceAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);

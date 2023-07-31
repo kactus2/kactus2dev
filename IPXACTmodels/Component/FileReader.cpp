@@ -305,15 +305,13 @@ void FileReader::Details::parseDefines(QDomElement const& fileElement, QSharedPo
 
     if (!defineNodeList.isEmpty())
     {
-        NameGroupReader nameReader;
-        
         for (int defineIndex = 0; defineIndex < defineNodeList.count(); ++defineIndex)
         {
             QDomNode defineNode = defineNodeList.at(defineIndex);
 
             QSharedPointer<NameValuePair> newDefine (new NameValuePair());
 
-            nameReader.parseNameGroup(defineNode, newDefine);
+            NameGroupReader::parseNameGroup(defineNode, newDefine);
 
             QString value = defineNode.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
             newDefine->setValue(value);

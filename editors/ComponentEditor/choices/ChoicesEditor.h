@@ -30,53 +30,62 @@ class EnumerationModel;
 //-----------------------------------------------------------------------------
 class ChoicesEditor : public ItemEditor
 {
-	Q_OBJECT
+    Q_OBJECT
 
 public:
 
-	/*!
-	 *  The constructor.
-	 *
-	 *      @param [in] component   The component whose choices to edit.
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] component   The component whose choices to edit.
      *      @param [in] validator   The validator used for choices.
-	 *      @param [in] parent      The parent widget.
-	 *
-	 *      @return <Description>.
-	 */
-	ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
+     *      @param [in] parent      The parent widget.
+     *
+     *      @return <Description>.
+     */
+    ChoicesEditor(QSharedPointer<Component> component, QSharedPointer<ChoiceValidator> validator,
         QWidget* parent = 0);
 
-	/*!
-	 *	The destructor
-	 */
-	virtual ~ChoicesEditor() = default;
+    /*!
+     *	The destructor
+     */
+    virtual ~ChoicesEditor() = default;
 
    /*! Check for the validity of the choices.
-	* 
-	*       @return True, if all the choices are valid, otherwise false.
-	*/
+    * 
+    *       @return True, if all the choices are valid, otherwise false.
+    */
     virtual bool isValid() const;
     
-	/*!
-	 *	Reloads the information from the model to the editor.
-	 */
+    /*!
+     *	Reloads the information from the model to the editor.
+     */
     virtual void refresh();
+
+public slots:
+
+    /*!
+     *	Called when the choise list is emptied or is no longer empty.
+     *  
+     *       @param [in] isEmpty     Indicates if the list was emptied or no longer empty.
+     */
+    void onChoiceListEmpty(bool isEmpty);
 
 protected:
 
     /*!
-	 *	Called when the editor is shown.
-	 */
+     *	Called when the editor is shown.
+     */
     void showEvent( QShowEvent* event );
 
 private slots:
 
-	/*!
-	 *	Called when a choice has been selected.
+    /*!
+     *	Called when a choice has been selected.
      * 
      *      @param [in] newIndex    Index of the selected choice.
-	 */
-	void selectionChoiceChanged(QModelIndex const& newIndex);
+     */
+    void selectionChoiceChanged(QModelIndex const& newIndex);
 
 private:
 
@@ -92,16 +101,16 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The list view for choices.
-	EditableListView choiceList_;
+    EditableListView choiceList_;
 
     //! Model for the component choices.
     ChoicesModel* choiceModel_;
 
-	//! View for the choice enumerations.
-	EditableTableView* enumerationView_;
+    //! View for the choice enumerations.
+    EditableTableView* enumerationView_;
 
     //! Model for choice enumerations.
-	EnumerationModel* enumerationModel_;
+    EnumerationModel* enumerationModel_;
 };
 
 #endif // CHOICESEDITOR_H

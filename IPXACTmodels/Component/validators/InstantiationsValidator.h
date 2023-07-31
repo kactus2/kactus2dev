@@ -13,6 +13,7 @@
 #define InstantiationsVALIDATOR_H
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -133,7 +134,8 @@ public:
      *
      *      @return True, if the component instantiation is valid IP-XACT, otherwise false.
      */
-    bool validateComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation) const;
+    bool validateComponentInstantiation(QSharedPointer<ComponentInstantiation> instantiation,
+        Document::Revision docRevision = Document::Revision::Std14) const;
 
     /*!
      *  Check if the file builders are valid.
@@ -180,7 +182,8 @@ public:
 	 *      @param [in] context         Context to help locate the errors.
      */
     virtual void findErrorsInComponentInstantiation(QVector<QString>& errors,
-        QSharedPointer<ComponentInstantiation> instantiation, QString const& context) const;
+        QSharedPointer<ComponentInstantiation> instantiation, QString const& context,
+        Document::Revision docRevision) const;
 
     /*!
      *  Get the assigned parameter validator.
@@ -207,7 +210,8 @@ private:
      *
      *      @return True, if the module parameters are valid, otherwise false.
      */
-    bool hasValidModuleParameters(QSharedPointer<ComponentInstantiation> instantiation) const;
+    bool hasValidModuleParameters(QSharedPointer<ComponentInstantiation> instantiation,
+        Document::Revision docRevision) const;
 
     /*!
      *  Check if the usage type of a model parameter is valid.
@@ -216,7 +220,8 @@ private:
      *
      *      @return True, if the usage type is valid, otherwise false.
      */
-	bool moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter) const;
+	bool moduleParameterHasValidUsageType(QSharedPointer<ModuleParameter> parameter, 
+        Document::Revision docRevision) const;
 
 	/*!
 	 *  Checks if isPresent element is valid.

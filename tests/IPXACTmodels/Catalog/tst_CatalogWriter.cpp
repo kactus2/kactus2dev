@@ -41,6 +41,7 @@ private slots:
     void testDesignsAreWritten();
     void testDesignConfigurationsAreWritten();
     void testGeneratorChainsAreWritten();
+    void testTypeDefinitionsAreWritten();
     
     void testVendorExtensions();
 
@@ -67,14 +68,13 @@ tst_CatalogWriter::tst_CatalogWriter(): document_()
 void tst_CatalogWriter::testWriteMinimalCatalog()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "MinimalCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -96,15 +96,14 @@ void tst_CatalogWriter::testWriteMinimalCatalog()
 void tst_CatalogWriter::testTopCommentsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "MinimalCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setTopComments("Commented section");
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -127,15 +126,14 @@ void tst_CatalogWriter::testTopCommentsAreWritten()
 void tst_CatalogWriter::testProcessingInstructionsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "StyledCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->addXmlProcessingInstructions("xml-stylesheet", "href=\"style.css\" attribute=\"value\"");
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString("<?xml version=\"1.0\"?>"
         "<?xml-stylesheet href=\"style.css\" attribute=\"value\"?>"
@@ -157,7 +155,7 @@ void tst_CatalogWriter::testProcessingInstructionsAreWritten()
 void tst_CatalogWriter::testOtherCatalogsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -178,9 +176,8 @@ void tst_CatalogWriter::testOtherCatalogsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -217,7 +214,7 @@ void tst_CatalogWriter::testOtherCatalogsAreWritten()
 void tst_CatalogWriter::testBusDefinitionsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -238,9 +235,8 @@ void tst_CatalogWriter::testBusDefinitionsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -277,7 +273,7 @@ void tst_CatalogWriter::testBusDefinitionsAreWritten()
 void tst_CatalogWriter::testAbstractionDefinitionsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -298,9 +294,8 @@ void tst_CatalogWriter::testAbstractionDefinitionsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -337,7 +332,7 @@ void tst_CatalogWriter::testAbstractionDefinitionsAreWritten()
 void tst_CatalogWriter::testComponentsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("This catalog contains two components"));
 
@@ -358,9 +353,8 @@ void tst_CatalogWriter::testComponentsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -397,7 +391,7 @@ void tst_CatalogWriter::testComponentsAreWritten()
 void tst_CatalogWriter::testAbstractorsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -418,9 +412,8 @@ void tst_CatalogWriter::testAbstractorsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -457,7 +450,7 @@ void tst_CatalogWriter::testAbstractorsAreWritten()
 void tst_CatalogWriter::testDesignsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -478,9 +471,8 @@ void tst_CatalogWriter::testDesignsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -517,7 +509,7 @@ void tst_CatalogWriter::testDesignsAreWritten()
 void tst_CatalogWriter::testDesignConfigurationsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -538,9 +530,8 @@ void tst_CatalogWriter::testDesignConfigurationsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -577,7 +568,7 @@ void tst_CatalogWriter::testDesignConfigurationsAreWritten()
 void tst_CatalogWriter::testGeneratorChainsAreWritten()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog description"));
 
@@ -598,9 +589,8 @@ void tst_CatalogWriter::testGeneratorChainsAreWritten()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -632,21 +622,72 @@ void tst_CatalogWriter::testGeneratorChainsAreWritten()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_CatalogWriter::testTypeDefinitionsAreWritten()
+//-----------------------------------------------------------------------------
+void tst_CatalogWriter::testTypeDefinitionsAreWritten()
+{
+    VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std22));
+    catalog->setDisplayName(QStringLiteral("DisplayName"));
+    catalog->setShortDescription(QStringLiteral("ShortDescription"));
+    catalog->setDescription(QStringLiteral("Catalog description"));
+
+    VLNV completeVLNV(VLNV::TYPEDEFINITION, "tut.fi", "TestLibrary", "typeDef", "1.0");
+    QSharedPointer<IpxactFile> typeDef(new IpxactFile());
+    typeDef->setVlnv(completeVLNV);
+    typeDef->setName("./typeDef.xml");
+    typeDef->setDescription("Test file description");
+    typeDef->getVendorExtensions()->append(createTestVendorExtension());
+
+    catalog->getTypeDefinitions()->append(typeDef);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
+
+    QCOMPARE(output, QString(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:catalog xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" "
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>tut.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestCatalog</ipxact:name>"
+            "<ipxact:version>1.0</ipxact:version>"
+            "<ipxact:displayName>DisplayName</ipxact:displayName>"
+            "<ipxact:shortDescription>ShortDescription</ipxact:shortDescription>"
+            "<ipxact:description>Catalog description</ipxact:description>"
+            "<ipxact:typeDefinitions>"
+                "<ipxact:ipxactFile>"
+                    "<ipxact:vlnv vendor=\"tut.fi\" library=\"TestLibrary\" name=\"typeDef\" version=\"1.0\"/>"
+                    "<ipxact:name>./typeDef.xml</ipxact:name>"
+                    "<ipxact:description>Test file description</ipxact:description>"
+                    "<ipxact:vendorExtensions>"
+                        "<test:testExtension test:attribute=\"extension\">testValue</test:testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:ipxactFile>"
+            "</ipxact:typeDefinitions>"
+        "</ipxact:catalog>\n"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_CatalogWriter::testVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_CatalogWriter::testVendorExtensions()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setVersion("3.0.0");
     catalog->getVendorExtensions()->append(createTestVendorExtension());
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"
@@ -672,7 +713,7 @@ void tst_CatalogWriter::testVendorExtensions()
 void tst_CatalogWriter::testWriteAllElements()
 {
     VLNV vlnv(VLNV::CATALOG, "tut.fi", "TestLibrary", "CompleteCatalog", "1.0");
-    QSharedPointer<Catalog> catalog(new Catalog());
+    QSharedPointer<Catalog> catalog(new Catalog(vlnv, Document::Revision::Std14));
     catalog->setVlnv(vlnv);
     catalog->setDescription(QStringLiteral("Catalog with all elements"));
     catalog->setVersion("3.0.0");
@@ -728,9 +769,8 @@ void tst_CatalogWriter::testWriteAllElements()
 
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
-    CatalogWriter catalogWriter;
-
-    catalogWriter.writeCatalog(xmlStreamWriter, catalog);
+    
+    CatalogWriter::writeCatalog(xmlStreamWriter, catalog);
 
     QCOMPARE(output, QString(
         "<?xml version=\"1.0\"?>"

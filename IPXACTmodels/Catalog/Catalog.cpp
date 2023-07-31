@@ -30,7 +30,8 @@ Document(vlnv, revision),
     abstractors_(new QList<QSharedPointer<IpxactFile> >()),
     designs_(new QList<QSharedPointer<IpxactFile> >()),
     designConfigurations_(new QList<QSharedPointer<IpxactFile> >()),
-    generatorChains_(new QList<QSharedPointer<IpxactFile> >())
+    generatorChains_(new QList<QSharedPointer<IpxactFile> >()),
+    typeDefinitions_(new QList<QSharedPointer<IpxactFile> >())
 {
 
 }
@@ -47,7 +48,8 @@ Document(other),
     abstractors_(new QList<QSharedPointer<IpxactFile> >()),
     designs_(new QList<QSharedPointer<IpxactFile> >()),
     designConfigurations_(new QList<QSharedPointer<IpxactFile> >()),
-    generatorChains_(new QList<QSharedPointer<IpxactFile> >())
+    generatorChains_(new QList<QSharedPointer<IpxactFile> >()),
+    typeDefinitions_(new QList<QSharedPointer<IpxactFile> >())
 {
     copyIpxactFiles(other);
 }
@@ -69,6 +71,7 @@ Catalog & Catalog::operator=(Catalog const& other)
         designs_->clear();
         designConfigurations_->clear();
         generatorChains_->clear();
+        typeDefinitions_->clear();
 
         copyIpxactFiles(other);
     }
@@ -168,13 +171,21 @@ QSharedPointer<QList<QSharedPointer<IpxactFile> > > Catalog::getGeneratorChains(
 }
 
 //-----------------------------------------------------------------------------
+// Function: Catalog::getTypeDefinitions()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<IpxactFile> > > Catalog::getTypeDefinitions() const
+{
+    return typeDefinitions_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Catalog::getDependentVLNVs()
 //-----------------------------------------------------------------------------
 QList<VLNV> Catalog::getDependentVLNVs() const 
 {
     QList<VLNV> vlnvs;
 
-    foreach (QSharedPointer<IpxactFile> file, getAllFiles())
+    for (auto const& file : getAllFiles())
     {
         vlnvs.append(file->getVlnv());
     }
@@ -189,7 +200,7 @@ QStringList Catalog::getDependentFiles() const
 {
     QStringList fileNames;
 
-    foreach (QSharedPointer<IpxactFile> file, getAllFiles())
+    for (auto const& file : getAllFiles())
     {
         fileNames.append(file->getName());
     }
@@ -202,44 +213,49 @@ QStringList Catalog::getDependentFiles() const
 //-----------------------------------------------------------------------------
 void Catalog::copyIpxactFiles(Catalog const& other)
 {
-    foreach(QSharedPointer<IpxactFile> catalog, *other.catalogs_)
+    for (auto const& catalog : *other.catalogs_)
     {
         catalogs_->append(QSharedPointer<IpxactFile>(new IpxactFile(*catalog)));
     }
 
-    foreach(QSharedPointer<IpxactFile> busDefinition, *other.busDefinitions_)
+    for (auto const& busDefinition : *other.busDefinitions_)
     {
         busDefinitions_->append(QSharedPointer<IpxactFile>(new IpxactFile(*busDefinition)));
     }
 
-    foreach(QSharedPointer<IpxactFile> abstractionDefinition, *other.abstractionDefinitions_)
+    for (auto const& abstractionDefinition : *other.abstractionDefinitions_)
     {
         abstractionDefinitions_->append(QSharedPointer<IpxactFile>(new IpxactFile(*abstractionDefinition)));
     }
 
-    foreach(QSharedPointer<IpxactFile> component, *other.components_)
+    for (auto const& component : *other.components_)
     {
         components_->append(QSharedPointer<IpxactFile>(new IpxactFile(*component)));
     }
 
-    foreach(QSharedPointer<IpxactFile> abstractor, *other.abstractors_)
+    for (auto const& abstractor : *other.abstractors_)
     {
         abstractors_->append(QSharedPointer<IpxactFile>(new IpxactFile(*abstractor)));
     }
     
-    foreach(QSharedPointer<IpxactFile> design, *other.designs_)
+    for (auto const& design : *other.designs_)
     {
         designs_->append(QSharedPointer<IpxactFile>(new IpxactFile(*design)));
     }
 
-    foreach(QSharedPointer<IpxactFile> configuration, *other.designConfigurations_)
+    for (auto const& configuration : *other.designConfigurations_)
     {
         designConfigurations_->append(QSharedPointer<IpxactFile>(new IpxactFile(*configuration)));
     }
 
-    foreach(QSharedPointer<IpxactFile> chain, *other.generatorChains_)
+    for (auto const& chain : *other.generatorChains_)
     {
         generatorChains_->append(QSharedPointer<IpxactFile>(new IpxactFile(*chain)));
+    }
+    
+    for (auto const& typeDef : *other.typeDefinitions_)
+    {
+        typeDefinitions_->append(QSharedPointer<IpxactFile>(new IpxactFile(*typeDef)));
     }
 }
 
@@ -258,6 +274,7 @@ QList<QSharedPointer<IpxactFile> > Catalog::getAllFiles() const
     files.append(*designs_);
     files.append(*designConfigurations_);
     files.append(*generatorChains_);
+    files.append(*typeDefinitions_);
 
     return files;
 }

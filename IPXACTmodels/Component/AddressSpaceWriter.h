@@ -6,7 +6,7 @@
 // Date: 15.09.2015
 //
 // Description:
-// Writer class for IP-XACT AddressSpace element.
+// Writer for IP-XACT AddressSpace element.
 //-----------------------------------------------------------------------------
 
 #ifndef AddressSpaceWriter_H
@@ -22,83 +22,74 @@
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
-//! Writer class for IP-XACT AddressSpace element.
+//! Writer for IP-XACT AddressSpace element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressSpaceWriter : public CommonItemsWriter
+namespace AddressSpaceWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    AddressSpaceWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~AddressSpaceWriter();
 
     /*!
      *  Write a AddressSpace to an XML file.
      *
      *      @param [in] writer				The used xml writer.
      *      @param [in] AddressSpace		The AddressSpace to be written.
+     *      @param [in] docRevision			The standard revision to use.
      */
-    void writeAddressSpace(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const;
+	IPXACTMODELS_EXPORT void writeAddressSpace(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace,
+		Document::Revision docRevision);
+	
+	namespace Details
+	{
 
-private:
+		/*!
+		 *  Writes block size of the item.
+		 *
+		 *      @param [in] writer				The used writer.
+		 *      @param [in] addressSpace		The address space being written.
+		 */
+		void writeBlockSize(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace);
 
-    //! No copying allowed.
-    AddressSpaceWriter(AddressSpaceWriter const& rhs);
-	AddressSpaceWriter& operator=(AddressSpaceWriter const& rhs);
+		/*!
+		 *  Writes segments, if any exists
+		 *
+		 *      @param [in] addressSpace		The address space which is to be written to XML.
+		 *      @param [in] writer				The writer use to write XLM.
+		 */
+		void writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter& writer);
 
-	/*!
-	 *  Writes block size of the item.
-	 *
-	 *      @param [in] writer				The used writer.
-	 *      @param [in] addressSpace		The address space being written.
-	 */
-	void writeBlockSize(QXmlStreamWriter &writer, QSharedPointer<AddressSpace> addressSpace) const;
+		/*!
+		 *  Writes a single segment.
+		 *
+		 *      @param [in] writer		The used writer.
+		 *      @param [in] segment     The segment being written.
+		 */
+		void writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment);
 
-	/*!
-	 *  Writes segments, if any exists
-	 *
-	 *      @param [in] addressSpace		The address space which is to be written to XML.
-	 *      @param [in] writer				The writer use to write XLM.
-	 */
-	void writeSegments(QSharedPointer<AddressSpace> addressSpace, QXmlStreamWriter &writer) const;
+		/*!
+		 *  Writes block size of the item.
+		 *
+		 *      @param [in] writer				The used writer.
+		 *      @param [in] addressSpace		The written attributes.
+		 */
+		void writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes);
 
-	/*!
-	 *  Writes a single segment.
-	 *
-	 *      @param [in] writer		The used writer.
-	 *      @param [in] segment     The segment being written.
-	 */
-    void writeSingleSegment(QXmlStreamWriter& writer, QSharedPointer<Segment> segment) const;
+		/*!
+		 *  Writes address unit bits.
+		 *
+		 *      @param [in] writer				The used writer.
+		 *      @param [in] addressSpace		The address space being written.
+		 */
+		void writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace);
 
-	/*!
-	 *  Writes block size of the item.
-	 *
-	 *      @param [in] writer				The used writer.
-	 *      @param [in] addressSpace		The written attributes.
-	 */
-    void writeAttributeMap(QXmlStreamWriter& writer, QMap<QString, QString> attributes) const;
-
-	/*!
-	 *  Writes address unit bits.
-	 *
-	 *      @param [in] writer				The used writer.
-	 *      @param [in] addressSpace		The address space being written.
-	 */
-    void writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const;
-
-	/*!
-	 *  Writes the local memory map.
-	 *
-	 *      @param [in] writer				The used writer.
-	 *      @param [in] addressSpace		The address space being written.
-	 */
-    void writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace) const;
+		/*!
+		 *  Writes the local memory map.
+		 *
+		 *      @param [in] writer				The used writer.
+		 *      @param [in] addressSpace		The address space being written.
+		 *      @param [in] docRevision         The standard revision in use.
+		 */
+		void writeLocalMemoryMap(QXmlStreamWriter& writer, QSharedPointer<AddressSpace> addressSpace, 
+			Document::Revision docRevision);
+	}
 };
 
 #endif // AddressSpaceWriter_H

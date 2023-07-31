@@ -37,9 +37,10 @@ MemoryMapBaseWriter::~MemoryMapBaseWriter()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeMemoryMapBase()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const
+void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
+    Document::Revision docRevision) const
 {
-    writeNameGroup(writer, MemoryMapBase);
+    NameGroupWriter::writeNameGroup(writer, MemoryMapBase, docRevision);
 
     writeIsPresent(writer, MemoryMapBase->getIsPresent());
 
@@ -49,9 +50,10 @@ void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const
+void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
+    Document::Revision docRevision) const
 {
-    NameGroupWriter::writeNameGroup(writer, MemoryMapBase);
+    NameGroupWriter::writeNameGroup(writer, MemoryMapBase, docRevision);
 }
 
 //-----------------------------------------------------------------------------

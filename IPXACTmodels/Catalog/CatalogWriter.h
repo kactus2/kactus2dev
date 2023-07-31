@@ -6,7 +6,7 @@
 // Date: 30.01.2017
 //
 // Description:
-// Writer class for IP-XACT Catalog element.
+// Writer for IP-XACT Catalog element.
 //-----------------------------------------------------------------------------
 
 #ifndef CATALOGWRITER_H
@@ -26,17 +26,10 @@ class IpxactFile;
 class WirePort;
 
 //-----------------------------------------------------------------------------
-//! Writer class for IP-XACT Catalog element.
+//! Writer for IP-XACT Catalog element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CatalogWriter : public DocumentWriter
+namespace CatalogWriter
 {
-public:
-
-	//! The constructor.
-	CatalogWriter();
-
-	//! The destructor.
-	~CatalogWriter();
     
     /*!
      *  Writes the given catalog into XML.
@@ -44,35 +37,33 @@ public:
      *      @param [in] writer    The XML writer to use.
      *      @param [in] catalog   The catalog to write.
      */
-    void writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+    IPXACTMODELS_EXPORT void writeCatalog(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-private:
+    namespace Details
+    {
+        void writeCatalogs(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-	// Disable copying.
-	CatalogWriter(CatalogWriter const& rhs);
-	CatalogWriter& operator=(CatalogWriter const& rhs);
+        void writeBusDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeCatalogs(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
-    
-    void writeBusDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeAbstractionDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeAbstractionDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
-   
-    void writeComponents(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeComponents(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeAbstractors(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeAbstractors(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeDesigns(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeDesigns(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeDesignConfigurations(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeDesignConfigurations(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeGeneratorChains(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog) const;
+        void writeGeneratorChains(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeIpxactFileGroup(QXmlStreamWriter &writer, QSharedPointer<QList<QSharedPointer<IpxactFile> > > files,
-        QString const& elementName) const;
+        void writeTypeDefinitions(QXmlStreamWriter& writer, QSharedPointer<Catalog> catalog);
 
-    void writeIpxactFile(QXmlStreamWriter& writer, QSharedPointer<IpxactFile> ipxactFile) const;
+        void writeIpxactFileGroup(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<IpxactFile> > > files,
+            QString const& elementName);
 
+        void writeIpxactFile(QXmlStreamWriter& writer, QSharedPointer<IpxactFile> ipxactFile);
+    }
 };    
 
 #endif // CATALOGWRITER_H

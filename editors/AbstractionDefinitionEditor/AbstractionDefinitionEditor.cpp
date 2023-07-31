@@ -37,7 +37,7 @@ AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, Librar
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
 absDef_(absDef),
-absDefGroup_(libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
+absDefGroup_(absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {

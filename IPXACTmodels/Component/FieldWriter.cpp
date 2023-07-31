@@ -6,100 +6,100 @@
 // Date: 24.09.2015
 //
 // Description:
-// Writer class for IP-XACT field element.
+// Writer for IP-XACT field element.
 //-----------------------------------------------------------------------------
 
 #include "FieldWriter.h"
 #include "Field.h"
 #include "WriteValueConstraint.h"
+#include "MemoryArrayWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/EnumeratedValueWriter.h>
 #include <IPXACTmodels/Component/FieldReset.h>
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::FieldWriter()
-//-----------------------------------------------------------------------------
-FieldWriter::FieldWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldWriter::~FieldWriter()
-//-----------------------------------------------------------------------------
-FieldWriter::~FieldWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: FieldWriter::writeField()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::writeField(QXmlStreamWriter& writer, QSharedPointer<Field> field, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:field"));
 
-    writeID(writer, field->getId());
+    Details::writeID(writer, field->getId(), docRevision);
 
-    writeNameGroup(writer, field);
+    NameGroupWriter::writeNameGroup(writer, field, docRevision);
 
-    writeIsPresent(writer, field->getIsPresent());
-
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, field->getIsPresent());
+    }
+    
+    Details::writeMemoryArray(writer, field, docRevision);
+    
     writer.writeTextElement(QStringLiteral("ipxact:bitOffset"), field->getBitOffset());
 
-    writeResets(writer, field);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::writeFieldData2014(writer, field);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        Details::writeFieldData2022(writer, field);
+    }
 
-    writeTypeIdentifier(writer, field);
+    CommonItemsWriter::writeParameters(writer, field->getParameters(), docRevision);
 
-    writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), field->getBitWidth());
-
-    writeVolatile(writer, field);
-
-    writeAccess(writer, field);
-
-    writeEnumerations(writer, field);
-
-    writeModifiedWriteValue(writer, field);
-
-    writeWriteValueConstraint(writer, field->getWriteConstraint());
-
-    writeReadAction(writer, field);
-
-    writeTestable(writer, field);
-
-    writeReserved(writer, field);
-
-    writeParameters(writer, field->getParameters());
-
-    writeVendorExtensions(writer, field);
+    CommonItemsWriter::writeVendorExtensions(writer, field);
 
     writer.writeEndElement(); // ipxact:field
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeID()
+// Function: FieldWriter::Details::writeID()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeID(QXmlStreamWriter& writer, QString const& fieldID) const
+void FieldWriter::Details::writeID(QXmlStreamWriter& writer, QString const& fieldID,
+    Document::Revision docRevision)
 {
-    if (!fieldID.isEmpty())
+    if (!fieldID.isEmpty() && docRevision == Document::Revision::Std14)
     {
         writer.writeAttribute(QStringLiteral("fieldID"), fieldID);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeField()
+// Function: FieldWriter::Details::writeMemoryArray()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field,
+    Document::Revision docRevision)
 {
-    NameGroupWriter::writeNameGroup(writer, field);
+    if (auto memArray = field->getMemoryArray();
+        memArray && docRevision == Document::Revision::Std22)
+    {
+        MemoryArrayWriter::writeMemoryArray(writer, memArray, true);
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeResets()
+// Function: FieldWriter::Details::writeFieldDefinitionRef()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeFieldDefinitionRef(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    if (auto const& fieldDefRef = field->getFieldDefinitionRef(); !fieldDefRef.isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fieldDefinitionRef"));
+
+        writer.writeAttribute(QStringLiteral("typeDefinitions"), field->getTypeDefinitionsRef());
+
+        writer.writeCharacters(field->getFieldDefinitionRef());
+
+        writer.writeEndElement(); // ixpact:fieldDefinitionRef
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeResets()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if(field->getResets() && !field->getResets()->isEmpty())
     {
@@ -133,9 +133,9 @@ void FieldWriter::writeResets(QXmlStreamWriter& writer, QSharedPointer<Field> fi
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeTypeIdentifier()
+// Function: FieldWriter::Details::writeTypeIdentifier()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (!field->getTypeIdentifier().isEmpty())
     {
@@ -144,9 +144,9 @@ void FieldWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<F
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeVolatile()
+// Function: FieldWriter::Details::writeVolatile()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (!field->getVolatile().toString().isEmpty())
     {
@@ -155,9 +155,9 @@ void FieldWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Field> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeAccess()
+// Function: FieldWriter::Details::writeAccess()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (field->getAccess() != AccessTypes::ACCESS_COUNT)
     {
@@ -167,9 +167,9 @@ void FieldWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Field> fi
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeEnumerations()
+// Function: FieldWriter::Details::writeEnumerations()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeEnumerations(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeEnumerations(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (!field->getEnumeratedValues()->isEmpty())
     {
@@ -186,9 +186,9 @@ void FieldWriter::writeEnumerations(QXmlStreamWriter& writer, QSharedPointer<Fie
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeModifiedWriteValue()
+// Function: FieldWriter::Details::writeModifiedWriteValue()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeModifiedWriteValue(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeModifiedWriteValue(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (field->getModifiedWrite() != General::MODIFIED_WRITE_COUNT)
     {
@@ -207,10 +207,10 @@ void FieldWriter::writeModifiedWriteValue(QXmlStreamWriter& writer, QSharedPoint
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeWriteValueConstraint()
+// Function: FieldWriter::Details::writeWriteValueConstraint()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeWriteValueConstraint(QXmlStreamWriter& writer,
-    QSharedPointer<WriteValueConstraint> writeConstraint) const
+void FieldWriter::Details::writeWriteValueConstraint(QXmlStreamWriter& writer,
+    QSharedPointer<WriteValueConstraint> writeConstraint)
 {
     if (!writeConstraint.isNull())
     {
@@ -235,9 +235,9 @@ void FieldWriter::writeWriteValueConstraint(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeReadAction()
+// Function: FieldWriter::Details::writeReadAction()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (field->getReadAction() != General::READ_ACTION_COUNT)
     {
@@ -256,9 +256,9 @@ void FieldWriter::writeReadAction(QXmlStreamWriter& writer, QSharedPointer<Field
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeTestable()
+// Function: FieldWriter::Details::writeTestable()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeTestable(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeTestable(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (!field->getTestable().toString().isEmpty())
     {
@@ -277,12 +277,172 @@ void FieldWriter::writeTestable(QXmlStreamWriter& writer, QSharedPointer<Field> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldWriter::writeReserved()
+// Function: FieldWriter::Details::writeReserved()
 //-----------------------------------------------------------------------------
-void FieldWriter::writeReserved(QXmlStreamWriter& writer, QSharedPointer<Field> field) const
+void FieldWriter::Details::writeReserved(QXmlStreamWriter& writer, QSharedPointer<Field> field)
 {
     if (!field->getReserved().isEmpty())
     {
         writer.writeTextElement(QStringLiteral("ipxact:reserved"), field->getReserved());
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldData2014()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldData2014(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    Details::writeResets(writer, field);
+
+    Details::writeTypeIdentifier(writer, field);
+
+    writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), field->getBitWidth());
+
+    Details::writeVolatile(writer, field);
+
+    Details::writeAccess(writer, field);
+
+    Details::writeEnumerations(writer, field);
+
+    Details::writeModifiedWriteValue(writer, field);
+
+    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
+
+    Details::writeReadAction(writer, field);
+
+    Details::writeTestable(writer, field);
+
+    Details::writeReserved(writer, field);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldData2022()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    Details::writeFieldDefinitionRef(writer, field);
+
+    Details::writeTypeIdentifier(writer, field);
+
+    if (auto const& bitWidth = field->getBitWidth(); !bitWidth.isEmpty())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), bitWidth);
+    }
+
+    // TODO: write field access policy
+
+    Details::writeVolatile(writer, field);
+
+    Details::writeResets(writer, field);
+
+    Details::writeFieldReference(writer, field); // ipxact:aliasOf
+
+    Details::writeAccess(writer, field);
+
+    Details::writeModifiedWriteValue(writer, field);
+
+    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
+
+    Details::writeReadAction(writer, field);
+
+    // TODO: writeReadResponse
+
+    // TODO: writeBroadcasts
+
+    // TODO: writeAccessRestrictions
+
+    Details::writeTestable(writer, field);
+
+    Details::writeReserved(writer, field);
+
+    // TODO: writeVendorExtensions
+
+    Details::writeEnumerations(writer, field);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldReference(QXmlStreamWriter& writer, QSharedPointer<Field> field)
+{
+    auto fieldReference = field->getFieldReference();
+
+    if (!fieldReference)
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:aliasOf"));
+
+    for (auto i = 0; i < FieldReference::Type::REFERENCE_TYPE_COUNT; ++i)
+    {
+        if (i == FieldReference::BANK || i == FieldReference::REGISTER_FILE)
+        {
+            writeMultipleFieldReference(writer, fieldReference, static_cast<FieldReference::Type>(i));
+        }
+        else
+        {
+            if (auto reference = fieldReference->getReference(static_cast<FieldReference::Type>(i));
+                reference != nullptr)
+            {
+                writeSingleFieldReference(writer, reference, static_cast<FieldReference::Type>(i));
+            }
+        }
+    }
+
+    writer.writeEndElement(); // ipxact:aliasOf
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeMultipleFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeMultipleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference> fieldReference, FieldReference::Type refType)
+{
+    auto references = fieldReference->getMultipleReference(refType);
+
+    if (!references->isEmpty())
+    {
+        for (auto const& reference : *references)
+        {
+            writeSingleFieldReference(writer, reference, refType);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeSingleFieldReference()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeSingleFieldReference(QXmlStreamWriter& writer, 
+    QSharedPointer<FieldReference::IndexedReference> reference, FieldReference::Type refType)
+{
+    if (reference)
+    {
+        auto typeAsString = FieldReference::type2Str(refType);
+        auto elementName = QStringLiteral("ipxact:") + typeAsString;
+
+        writer.writeStartElement(elementName);
+        writer.writeAttribute(typeAsString, reference->reference_);
+
+        if (!reference->indices_.isEmpty())
+        {
+            Details::writeFieldReferenceIndices(writer, reference);
+        }
+
+        writer.writeEndElement(); // ipxact:xxxxxRef
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldWriter::Details::writeFieldReferenceIndices()
+//-----------------------------------------------------------------------------
+void FieldWriter::Details::writeFieldReferenceIndices(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference)
+{
+    writer.writeStartElement(QStringLiteral("ipxact:indices"));
+
+    for (auto const& index : reference->indices_)
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:index"), index);
+    }
+
+    writer.writeEndElement(); // ipxact:indices
 }

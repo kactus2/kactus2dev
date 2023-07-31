@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Address space editor</title>
+  </head>
+  <body>
+    <h2>Address space editor</h2>
+    <p>
+      Address space editor can be used to edit the details of an
+      address space within component.  <i>Address space</i> defines a
+      logical address space seen by a master <i>bus interface</i>. It can be
+      split into smaller <i>sgements</i>.
+    </p>
+    <p>
+      On the left side are the editor fields that can be used to set
+      the details of an address space. The right side contains a
+      visualization displaying the address space in its current state and
+	  automatically updates on changes.
+	  It displays how the segments are positioned within the address space. 
+	  Mismatches, e.g. sum of segment ranges being greater than address block range, can 
+      be easily spotted from the visualization.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>address space</i>.
+    </p>
+    <p>
+        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+      <b>Short description</b> is an optional field for a short, textual description of the <i>address space</i>.		
+    </p>
+    <p>
+        <b>Description</b> is an optional field for textual description of the <i>address space</i>.		
+    </p>
+    <p>
+        <b>Addressable unit bits</b> (AUB) specifies the number of bits each address increment contains, 
+        e.g. 8 bits or 32 bits. The AUB is mandatory if the address space contains a local memory map.
+    </p>
+    <p>
+      <b>Range</b> is the size of the address space expressed as addressable units, i.e. the number of
+      separate addresses.
+    </p>
+    <p>
+      <b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
+    </p>
+    <p>
+      <b>Master interface binding</b> shows the master <i>bus interfaces</i> bound to the address space. 
+	  The binding can be set in the bus interface editor.
+    </p>
+	
+    <h3>Segments</h3>
+    <p>
+      <b>Segments</b> editor can be used to describe sections of the address space, i.e. split it into smaller
+        segments.
+    </p>
+	<p>
+	    <b>Name</b> is a mandatory identifier for the <i>segment</i>.
+    </p>
+    <p>
+      <b>Offset</b> is mandatory and defines the starting address of the <i>segment</i> in address unit bits.
+	</p>
+	<p>
+		<b>Range</b> is mandatory and defines the size of the <i>segment</i> in address unit bits.
+    </p>
+	 <p>
+        <b>Description</b> is an optional field for textual description of the <i>segment</i>.		
+    </p>
+
+    <h3>Local memory map</h3>
+    <p>
+      <b>Local memory map</b> is optional but some processors require specifying a memory map that is local
+      to the component. It consists of <i>address blocks</i> similarly to the <i>memory map</i> of a slave
+      <i>bus interface</i>.
+	  Hence, the address blocks can contain either memory or registers, and registers can contain bit fields.
+    </p>
+    <p>
+      Local memory map is useful for storing the programmer's view to interrupts registers, timers,
+      and other local things. The overall address space of a component is a concatenation of local memory map
+      (e.g. timers) and the memory maps of other units (e.g. registers of accelerator A, registers of
+      accelerator B etc.)
+    </p>
+	
+  </body>
+</html>

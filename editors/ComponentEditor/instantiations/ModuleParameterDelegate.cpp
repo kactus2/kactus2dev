@@ -20,8 +20,9 @@
 //-----------------------------------------------------------------------------
 ModuleParameterDelegate::ModuleParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
     QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ParameterDelegate(choices, parameterCompleter, parameterFinder, expressionFormatter, parent)
+    QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, QObject* parent):
+ParameterDelegate(choices, parameterCompleter, parameterFinder, expressionFormatter, parent),
+docRevision_(docRevision)
 {
 
 }
@@ -43,8 +44,13 @@ QWidget* ModuleParameterDelegate::createEditor(QWidget* parent, QStyleOptionView
 	if (index.column() == ModuleParameterColumns::USAGE_TYPE) 
     {
 		QComboBox* combo = new QComboBox(parent);
-		combo->addItem(QString("typed"));
-		combo->addItem(QString("nontyped"));
+		combo->addItem(QStringLiteral("typed"));
+		combo->addItem(QStringLiteral("nontyped"));
+        if (docRevision_ == Document::Revision::Std22)
+        {
+            combo->addItem(QStringLiteral("runtime"));
+        }
+
 		return combo;
 	}
     else

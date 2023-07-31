@@ -44,7 +44,7 @@ void CPUWriter::writeCPU(QXmlStreamWriter& writer, QSharedPointer<Cpu> cpu, Docu
         Details::writeMemoryMapRef(writer, cpu);
     }
 
-    CommonItemsWriter::writeParameters(writer, cpu->getParameters());
+    CommonItemsWriter::writeParameters(writer, cpu->getParameters(), docRevision);
 
     CommonItemsWriter::writeVendorExtensions( writer, cpu );
 

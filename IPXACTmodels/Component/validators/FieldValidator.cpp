@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/FieldReset.h>
@@ -64,8 +65,8 @@ QSharedPointer<EnumeratedValueValidator> FieldValidator::getEnumeratedValueValid
 //-----------------------------------------------------------------------------
 bool FieldValidator::validate(QSharedPointer<Field> field) const
 {
-    return hasValidName(field) && hasValidIsPresent(field) && hasValidBitOffset(field) &&
-        hasValidResets(field) && hasValidWriteValueConstraint(field) &&
+    return hasValidName(field) && hasValidIsPresent(field) && hasValidMemoryArray(field) &&
+        hasValidBitOffset(field) && hasValidResets(field) && hasValidWriteValueConstraint(field) &&
         hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
         hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field);
 }
@@ -105,6 +106,20 @@ bool FieldValidator::hasValidIsPresent(QSharedPointer<Field> field) const
         }
     }
 
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidMemoryArray()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidMemoryArray(QSharedPointer<Field> field) const
+{
+    MemoryArrayValidator validator(expressionParser_);
+    if (auto memArray = field->getMemoryArray(); memArray)
+    {
+        return validator.validate(field->getMemoryArray());
+    }
+    
     return true;
 }
 
@@ -342,6 +357,7 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
 {
     findErrorsInName(errors, field, context);
     findErrorsInIsPresent(errors, field, context);
+    findErrorsInMemoryArray(errors, field, context);
     findErrorsInBitOffset(errors, field, context);
     findErrorsInResets(errors, field, context);
     findErrorsInWriteValueConstraint(errors, field, context);
@@ -375,6 +391,19 @@ void FieldValidator::findErrorsInIsPresent(QVector<QString>& errors, QSharedPoin
         errors.append(QObject::tr("Invalid isPresent value specified for %1 within %2. Value should evaluate to "
             "0 or 1.").
             arg(field->name()).arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInMemoryArray()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInMemoryArray(QVector<QString>& errors, QSharedPointer<Field> field,
+    QString const& context) const
+{
+    MemoryArrayValidator validator(expressionParser_);
+    if (auto memArray = field->getMemoryArray(); memArray)
+    {
+        validator.findErrorsIn(errors, field->getMemoryArray(), context);
     }
 }
 

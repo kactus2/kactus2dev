@@ -14,6 +14,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/FieldReference.h>
 
 //-----------------------------------------------------------------------------
 // Function: Field::Field()
@@ -155,6 +157,22 @@ void Field::setIsPresent(QString const& newIsPresent)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Field::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> Field::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setMemoryArray()
+//-----------------------------------------------------------------------------
+void Field::setMemoryArray(QSharedPointer<MemoryArray> memArray)
+{
+    memoryArray_ = memArray;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Field::getBitOffset()
 //-----------------------------------------------------------------------------
 QString Field::getBitOffset() const
@@ -168,6 +186,38 @@ QString Field::getBitOffset() const
 void Field::setBitOffset(QString const& newBitOffset)
 {
     bitOffset_ = newBitOffset;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+QString Field::getFieldDefinitionRef() const
+{
+    return fieldDefinitionRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void Field::setFieldDefinitionRef(QString const& newFieldDefRef)
+{
+    fieldDefinitionRef_ = newFieldDefRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+QString Field::getTypeDefinitionsRef() const
+{
+    return typeDefinitionsRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+void Field::setTypeDefinitionsRef(QString const& newTypeDefRef)
+{
+    typeDefinitionsRef_ = newTypeDefRef;
 }
 
 //-----------------------------------------------------------------------------
@@ -186,8 +236,6 @@ void Field::setResets(QSharedPointer<QList<QSharedPointer<FieldReset> > > newRes
     resets_->clear();
     resets_ = newResets;
 }
-
-
 
 //-----------------------------------------------------------------------------
 // Function: Field::getTypeIdentifier()
@@ -235,6 +283,22 @@ BooleanValue Field::getVolatile() const
 void Field::setVolatile( bool volatileValue )
 {
     volatile_.setValue(volatileValue);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::getFieldReference()
+//-----------------------------------------------------------------------------
+QSharedPointer<FieldReference> Field::getFieldReference() const
+{
+    return fieldReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setFieldReference()
+//-----------------------------------------------------------------------------
+void Field::setFieldReference(QSharedPointer<FieldReference> fieldRef)
+{
+    fieldReference_ = fieldRef;
 }
 
 //-----------------------------------------------------------------------------

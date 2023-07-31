@@ -37,8 +37,7 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode) const
 {
     QSharedPointer<Port> newPort (new Port());
 
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(portNode, newPort);
+    NameGroupReader::parseNameGroup(portNode, newPort);
 
     newPort->setIsPresent(portNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
 

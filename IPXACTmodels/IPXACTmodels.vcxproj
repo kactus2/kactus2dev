@@ -231,6 +231,7 @@
     <ClCompile Include="Component\ExecutableImage.cpp" />
     <ClCompile Include="Component\Field.cpp" />
     <ClCompile Include="Component\FieldReader.cpp" />
+    <ClCompile Include="Component\FieldReference.cpp" />
     <ClCompile Include="Component\FieldReset.cpp" />
     <ClCompile Include="Component\FieldWriter.cpp" />
     <ClCompile Include="Component\File.cpp" />
@@ -247,6 +248,9 @@
     <ClCompile Include="Component\InstantiationsReader.cpp" />
     <ClCompile Include="Component\InstantiationsWriter.cpp" />
     <ClCompile Include="Component\LanguageTools.cpp" />
+    <ClCompile Include="Component\MemoryArray.cpp" />
+    <ClCompile Include="Component\MemoryArrayReader.cpp" />
+    <ClCompile Include="Component\MemoryArrayWriter.cpp" />
     <ClCompile Include="Component\MemoryBlockBase.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseReader.cpp" />
     <ClCompile Include="Component\MemoryBlockBaseWriter.cpp" />
@@ -300,6 +304,7 @@
     <ClCompile Include="Component\validators\FileValidator.cpp" />
     <ClCompile Include="Component\validators\IndirectInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\InstantiationsValidator.cpp" />
+    <ClCompile Include="Component\validators\MemoryArrayValidator.cpp" />
     <ClCompile Include="Component\validators\MemoryBlockValidator.cpp" />
     <ClCompile Include="Component\validators\PortMapValidator.cpp" />
     <ClCompile Include="Component\validators\OtherClockDriverValidator.cpp" />
@@ -395,9 +400,13 @@
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
+    <ClInclude Include="Component\FieldReference.h" />
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\InitiatorInterface.h" />
     <ClInclude Include="Component\LanguageTools.h" />
+    <ClInclude Include="Component\MemoryArray.h" />
+    <ClInclude Include="Component\MemoryArrayReader.h" />
+    <ClInclude Include="Component\MemoryArrayWriter.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
     <ClInclude Include="Component\MirroredTargetInterface.h" />
@@ -405,6 +414,7 @@
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\MemoryArrayValidator.h" />
     <ClInclude Include="Component\TargetInterface.h" />
     <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegionValidator.h" />
@@ -459,8 +469,7 @@
     <ClInclude Include="AbstractionDefinition\PortAbstraction.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstraction.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalAbstractionReader.h" />
-    <QtMoc Include="AbstractionDefinition\TransactionalAbstractionWriter.h">
-    </QtMoc>
+    <ClInclude Include="AbstractionDefinition\TransactionalAbstractionWriter.h" />
     <ClInclude Include="AbstractionDefinition\TransactionalPort.h" />
     <ClInclude Include="AbstractionDefinition\validators\AbstractionDefinitionValidator.h" />
     <ClInclude Include="AbstractionDefinition\WireAbstraction.h" />
@@ -1247,10 +1256,8 @@
     <ClInclude Include="Component\validators\RegisterValidator.h" />
     <ClInclude Include="Component\validators\ViewValidator.h" />
     <ClInclude Include="Component\View.h" />
-    <QtMoc Include="Component\ViewReader.h">
-    </QtMoc>
-    <QtMoc Include="Component\ViewWriter.h">
-    </QtMoc>
+    <ClInclude Include="Component\ViewReader.h" />
+    <ClInclude Include="Component\ViewWriter.h" />
     <ClInclude Include="Component\Wire.h" />
     <ClInclude Include="Component\WireTypeDef.h" />
     <ClInclude Include="Component\WriteValueConstraint.h" />

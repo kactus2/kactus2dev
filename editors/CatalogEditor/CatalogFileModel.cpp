@@ -44,6 +44,7 @@ namespace
         QLatin1String("Designs"),
         QLatin1String("Design configurations"),
         QLatin1String("Generator chains"),
+        QLatin1String("Type definitions"),
         QLatin1String("Unknown")
     };
 
@@ -57,6 +58,7 @@ namespace
         QLatin1String(":icons/common/graphics/hw-design.png"),
         QLatin1String(":icons/common/graphics/configuration.png"),
         QLatin1String(":icons/common/graphics/generatorChain.png"),
+        QLatin1String(":icons/common/graphics/ruler.png"),
         QLatin1String(":icons/common/graphics/exclamation--frame.png")
     };
 }
@@ -107,6 +109,7 @@ void CatalogFileModel::refresh(QSharedPointer<Catalog> catalog)
     topLevelRows_.append(catalog->getDesigns());
     topLevelRows_.append(catalog->getDesignConfigurations());
     topLevelRows_.append(catalog->getGeneratorChains());
+    topLevelRows_.append(catalog->getTypeDefinitions());
     topLevelRows_.append(QSharedPointer<QList<QSharedPointer<IpxactFile> > >(
         new QList<QSharedPointer<IpxactFile> > ())); //<! Other, unknown items.
     

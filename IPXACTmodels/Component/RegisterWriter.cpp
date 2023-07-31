@@ -155,10 +155,9 @@ void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Regist
 void RegisterWriter::writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
     const
 {
-    FieldWriter fieldWriter;
-    foreach (QSharedPointer<Field> field, *registerDefinition->getFields())
+    for (auto const& field : *registerDefinition->getFields())
     {
-        fieldWriter.writeField(writer, field);
+        FieldWriter::writeField(writer, field);
     }
 }
 

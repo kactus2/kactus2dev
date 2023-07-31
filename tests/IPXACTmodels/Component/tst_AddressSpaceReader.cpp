@@ -36,6 +36,7 @@ private slots:
 	void testReadVendorExtensions();
 	void testReadSegments();
 	void readAddressBlocks();
+	void testReadNewStd();
 };
 
 //-----------------------------------------------------------------------------
@@ -65,8 +66,7 @@ void tst_AddressSpaceReader::testReadSimpleAddressSpace()
 
     QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-    AddressSpaceReader AddressSpaceReader;
-    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
+    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressSpace->name(), QString("AddressSpace"));
     QCOMPARE(testAddressSpace->displayName(), QString("viewDisplay"));
@@ -91,8 +91,7 @@ void tst_AddressSpaceReader::testReadIsPresent()
 
     QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-    AddressSpaceReader AddressSpaceReader;
-    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
+    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressSpace->name(), QString("testAddressSpace"));
     QCOMPARE(testAddressSpace->getIsPresent(), QString("4-3"));
@@ -105,20 +104,18 @@ void tst_AddressSpaceReader::testReadParameters()
 {
 	QString documentContent(
 		"<ipxact:addressSpace>"
-		"<ipxact:parameters>"
-		"<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Esko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>5</ipxact:value>"
-		"</ipxact:parameter>"
-		"<ipxact:parameter parameterId=\"ev0\" prompt=\"Parm 1\""
-		"type=\"shortint\" resolve=\"user\">"
-		"<ipxact:name>Mikko</ipxact:name>"
-		"<ipxact:description>First generator parameter.</ipxact:description>"
-		"<ipxact:value>1337</ipxact:value>"
-		"</ipxact:parameter>"
-		"</ipxact:parameters>"
+        "<ipxact:parameters>"
+        "<ipxact:parameter parameterId=\"joq\" prompt=\"Parm 1\" type=\"shortint\" resolve=\"user\">"
+        "<ipxact:name>Esko</ipxact:name>"
+        "<ipxact:description>First generator parameter.</ipxact:description>"
+        "<ipxact:value>5</ipxact:value>"
+        "</ipxact:parameter>"
+        "<ipxact:parameter parameterId=\"ev0\" prompt=\"Parm 1\" type=\"shortint\" resolve=\"user\">"
+        "<ipxact:name>Mikko</ipxact:name>"
+        "<ipxact:description>First generator parameter.</ipxact:description>"
+        "<ipxact:value>1337</ipxact:value>"
+        "</ipxact:parameter>"
+        "</ipxact:parameters>"
 		"</ipxact:addressSpace>"
 		);
 
@@ -127,8 +124,7 @@ void tst_AddressSpaceReader::testReadParameters()
 
 	QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader addressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = addressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
 	QCOMPARE(testAddressSpace->getParameters()->size(), 2);
 	QCOMPARE(testAddressSpace->getParameters()->first()->name(), QString("Esko"));
@@ -157,8 +153,7 @@ void tst_AddressSpaceReader::testReadBlockSize()
 
 	QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader AddressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressSpace->getRange(), QString("testRange"));
 	QCOMPARE(testAddressSpace->getWidth(), QString("123"));
@@ -181,8 +176,7 @@ void tst_AddressSpaceReader::testReadAddressUnitBits()
 
 	QDomNode AddressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader AddressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(AddressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(AddressSpaceNode, Document::Revision::Std14);
 
 	QCOMPARE(testAddressSpace->getAddressUnitBits(), QString("15"));
 }
@@ -205,8 +199,7 @@ void tst_AddressSpaceReader::testReadVendorExtensions()
 
 	QDomNode addressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader AddressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(addressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(addressSpaceNode, Document::Revision::Std14);
 
 	QCOMPARE(testAddressSpace->getVendorExtensions()->first()->type(), QString("ulina"));
 }
@@ -242,8 +235,7 @@ void tst_AddressSpaceReader::testReadSegments()
 
 	QDomNode addressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader AddressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(addressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(addressSpaceNode, Document::Revision::Std14);
 
 	QCOMPARE(testAddressSpace->getSegments()->size(), 2);
 
@@ -308,8 +300,7 @@ void tst_AddressSpaceReader::readAddressBlocks()
 
 	QDomNode addressSpaceNode = document.firstChildElement("ipxact:addressSpace");
 
-	AddressSpaceReader AddressSpaceReader;
-	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader.createAddressSpaceFrom(addressSpaceNode);
+	QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(addressSpaceNode, Document::Revision::Std14);
 
 	QSharedPointer<MemoryMapBase> testMemoryMapBase = testAddressSpace->getLocalMemoryMap();
 
@@ -344,6 +335,31 @@ void tst_AddressSpaceReader::readAddressBlocks()
 	QCOMPARE(containedFile->name(), QString("contained"));
 	QCOMPARE(containedFile->getAddressOffset(), QString("containedOffset"));
 	QCOMPARE(containedFile->getRange(), QString("containedRange"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressSpaceReader::testReadNewStd()
+//-----------------------------------------------------------------------------
+void tst_AddressSpaceReader::testReadNewStd()
+{
+	QString documentContent(
+		"<ipxact:addressSpace>"
+			"<ipxact:name>testAddressSpace</ipxact:name>"
+			"<ipxact:shortDescription>shortDescription</ipxact:shortDescription>"
+			"<ipxact:isPresent>true</ipxact:isPresent>"
+		"</ipxact:addressSpace>"
+	);
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode addressSpaceNode = document.firstChildElement("ipxact:addressSpace");
+
+    QSharedPointer<AddressSpace> testAddressSpace = AddressSpaceReader::createAddressSpaceFrom(addressSpaceNode, Document::Revision::Std22);
+
+	QCOMPARE(testAddressSpace->shortDescription(), QString("shortDescription"));
+	QCOMPARE(testAddressSpace->name(), QString("testAddressSpace"));
+	QCOMPARE(testAddressSpace->getIsPresent(), QString(""));
 }
 
 QTEST_APPLESS_MAIN(tst_AddressSpaceReader)

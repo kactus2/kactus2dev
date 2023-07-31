@@ -267,8 +267,7 @@ public:
      *		
      * 		@return The chosen attribute.
      */
-    std::string getQualifierAttribute(int const& portIndex, std::string const& attributeName,
-        std::string const& qualifierTypeString) const;
+    std::string getQualifierAttribute(int const& portIndex, std::string const& attributeName) const;
 
     /*!
      *	Set a qualifier attribute for a specific qualifier type.
@@ -281,7 +280,7 @@ public:
      * 		@return True, if attribute was successfully set, otherwise false.
      */
     bool setQualifierAttribute(int const& portIndex, std::string const& attributeName, 
-        std::string const& attributeValue, QString const& qualifierTypeString) const;
+        std::string const& attributeValue) const;
 
     /*!
      *	Set all qualifier attributes at once.
@@ -291,7 +290,7 @@ public:
      *		
      * 		@return True, if attributes were set, otherwise false.
      */
-    bool setQualifierAttributes(int const& portIndex, std::unordered_map<std::string, std::string> const& attributes) const;
+    bool setQualifierAttributes(int const& portIndex, std::vector<std::string> const& attributes) const;
 
     /*!
      *	Get all of the qualifier's attributes.
@@ -300,7 +299,7 @@ public:
      *		
      * 		@return A map of attributes as name-value pairs.
      */
-    std::unordered_map<std::string, std::string> getQualifierAttributes(int const& portIndex) const;
+    std::vector<std::string> getQualifierAttributes(int const& portIndex) const;
 
     /*!
      *  Get the direction of the selected signal in string form.

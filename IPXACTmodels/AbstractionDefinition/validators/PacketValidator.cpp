@@ -29,12 +29,7 @@ PacketValidator::PacketValidator(QSharedPointer<ExpressionParser> expressionPars
 //-----------------------------------------------------------------------------
 bool PacketValidator::validate(QSharedPointer<Packet> packet) const
 {
-    if (!isValidName(packet->name()))
-    {
-        return false;
-    }
-
-    if (packet->getPacketFields()->isEmpty())
+    if (!isValidName(packet->name()) || packet->getPacketFields()->isEmpty())
     {
         return false;
     }

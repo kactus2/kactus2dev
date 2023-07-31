@@ -263,11 +263,11 @@ void WireAbstractionReader::Details::parseInitiator(QDomNode const& wireNode,
         ? QStringLiteral("ipxact:onInitiator")
         : QStringLiteral("ipxact:onMaster");
 
-    QDomNode masterNode = wireNode.firstChildElement(elementName);
-    if (!masterNode.isNull())
+    QDomNode initiatorNode = wireNode.firstChildElement(elementName);
+    if (!initiatorNode.isNull())
     {
-        QSharedPointer<WirePort> master = parseWirePort(masterNode, revision);
-        wire->setInitiatorPort(master);
+        QSharedPointer<WirePort> initiator = parseWirePort(initiatorNode, revision);
+        wire->setInitiatorPort(initiator);
     }
 }
 
@@ -282,10 +282,10 @@ void WireAbstractionReader::Details::parseTarget(QDomNode const& wireNode, QShar
         ? QStringLiteral("ipxact:onTarget")
         : QStringLiteral("ipxact:onSlave");
 
-    QDomNode slaveNode = wireNode.firstChildElement(elementName);
-    if (!slaveNode.isNull())
+    QDomNode targetNode = wireNode.firstChildElement(elementName);
+    if (!targetNode.isNull())
     {
-        QSharedPointer<WirePort> slave = parseWirePort(slaveNode, revision);
-        wire->setTargetPort(slave);
+        QSharedPointer<WirePort> target = parseWirePort(targetNode, revision);
+        wire->setTargetPort(target);
     }
 }

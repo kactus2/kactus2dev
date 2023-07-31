@@ -6,60 +6,44 @@
 // Date: 04.09.2015
 //
 // Description:
-// Writer class for IP-XACT view element.
+// Writer for IP-XACT view element.
 //-----------------------------------------------------------------------------
 
 #include "ViewWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
-
-//-----------------------------------------------------------------------------
-// Function: ViewWriter::ViewWriter()
-//-----------------------------------------------------------------------------
-ViewWriter::ViewWriter(QObject* parent /* = 0 */):
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewWriter::~ViewWriter()
-//-----------------------------------------------------------------------------
-ViewWriter::~ViewWriter()
-{
-
-}
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: ViewWriter::writeView()
 //-----------------------------------------------------------------------------
-void ViewWriter::writeView(QXmlStreamWriter& writer, QSharedPointer<View> view) const
+void ViewWriter::writeView(QXmlStreamWriter& writer, QSharedPointer<View> view, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:view"));
 
-    writeNameGroup(writer, view);
+    NameGroupWriter::writeNameGroup(writer, view, docRevision);
 
-    writeIsPresent(writer, view);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::writeIsPresent(writer, view);
+    }
 
-    writeEnvIdentifiers(writer, view);
+    Details::writeEnvIdentifiers(writer, view);
 
-    writeInstantiationReferences(writer, view);
+    Details::writeInstantiationReferences(writer, view);
+
+    if (docRevision == Document::Revision::Std22)
+    {
+        CommonItemsWriter::writeVendorExtensions(writer, view);
+    }
 
     writer.writeEndElement(); // ipxact:view
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewWriter::writeNameGroup()
+// Function: ViewWriter::Details::writeIsPresent()
 //-----------------------------------------------------------------------------
-void ViewWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<View> view) const
-{
-    NameGroupWriter::writeNameGroup(writer, view);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ViewWriter::writeIsPresent()
-//-----------------------------------------------------------------------------
-void ViewWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> view) const
+void ViewWriter::Details::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> view)
 {
     if (!view->getIsPresent().isEmpty())
     {
@@ -68,20 +52,20 @@ void ViewWriter::writeIsPresent(QXmlStreamWriter& writer, QSharedPointer<View> v
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewWriter::writeEnvIdentifiers()
+// Function: ViewWriter::Details::writeEnvIdentifiers()
 //-----------------------------------------------------------------------------
-void ViewWriter::writeEnvIdentifiers(QXmlStreamWriter& writer, QSharedPointer<View> view) const
+void ViewWriter::Details::writeEnvIdentifiers(QXmlStreamWriter& writer, QSharedPointer<View> view)
 {
-	foreach (QSharedPointer<View::EnvironmentIdentifier> identifier, *view->getEnvIdentifiers())
-	{
-		writer.writeTextElement(QStringLiteral("ipxact:envIdentifier"), identifier->toString());
-	}
+    for (auto const& identifier : *view->getEnvIdentifiers())
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:envIdentifier"), identifier->toString());
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: ViewWriter::writeInstantiationReferences()
+// Function: ViewWriter::Details::writeInstantiationReferences()
 //-----------------------------------------------------------------------------
-void ViewWriter::writeInstantiationReferences(QXmlStreamWriter& writer, QSharedPointer<View> view) const
+void ViewWriter::Details::writeInstantiationReferences(QXmlStreamWriter& writer, QSharedPointer<View> view)
 {
     if (!view->getComponentInstantiationRef().isEmpty())
     {

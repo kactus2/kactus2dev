@@ -70,6 +70,9 @@ SUBDIRS += tst_AddressSpaceReader.pro \
 		   tst_AddressBlockWriter.pro \
 		   tst_AddressBlockReader.pro \
 		   tst_AddressBlockValidator.pro \
+		   tst_MemoryArrayReader.pro \
+		   tst_MemoryArrayValidator.pro \
+		   tst_MemoryArrayWriter.pro \
 		   tst_MemoryMapBaseReader.pro \
 		   tst_MemoryMapBaseWriter.pro \
 		   tst_MemoryMapBaseValidator.pro \

@@ -104,8 +104,7 @@ QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode con
 //-----------------------------------------------------------------------------
 void RegisterReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<RegisterBase> registerData) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(nameGroupNode, registerData);
+    NameGroupReader::parseNameGroup(nameGroupNode, registerData);
 }
 
 //-----------------------------------------------------------------------------
@@ -216,13 +215,11 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
 
     if (!fieldNodeList.isEmpty())
     {
-        FieldReader fieldReader;
-
         for (int fieldIndex = 0; fieldIndex < fieldNodeList.count(); ++fieldIndex)
         {
             if (fieldNodeList.at(fieldIndex).nodeName() == QLatin1String("ipxact:field"))
             {
-                QSharedPointer<Field> newField = fieldReader.createFieldFrom(fieldNodeList.at(fieldIndex));
+                QSharedPointer<Field> newField = FieldReader::createFieldFrom(fieldNodeList.at(fieldIndex));
                 registerDefinition->getFields()->append(newField);
             }
         }

@@ -102,6 +102,7 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/PortAbstraction.h \
     ./AbstractionDefinition/TransactionalAbstraction.h \
     ./AbstractionDefinition/TransactionalAbstractionReader.h \
+    ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/TransactionalPort.h \
     ./AbstractionDefinition/WireAbstraction.h \
     ./AbstractionDefinition/WireAbstractionReader.h \
@@ -109,7 +110,6 @@ HEADERS += ./generaldeclarations.h \
     ./AbstractionDefinition/WirePort.h \
     ./AbstractionDefinition/AbstractionDefinitionReader.h \
     ./AbstractionDefinition/AbstractionDefinitionWriter.h \
-    ./AbstractionDefinition/TransactionalAbstractionWriter.h \
     ./AbstractionDefinition/validators/PacketValidator.h \
     ./AbstractionDefinition/validators/AbstractionDefinitionValidator.h \
     ./Design/ActiveInterface.h \
@@ -181,6 +181,8 @@ HEADERS += ./generaldeclarations.h \
     ./Component/Transactional.h \
     ./Component/TransparentBridge.h \
     ./Component/View.h \
+    ./Component/ViewReader.h \
+    ./Component/ViewWriter.h \
     ./Component/Wire.h \
     ./Component/WireTypeDef.h \
     ./Component/WriteValueConstraint.h \
@@ -221,8 +223,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/RemapStateReader.h \
     ./Component/RemapStateWriter.h \
-    ./Component/ViewReader.h \
-    ./Component/ViewWriter.h \
     ./Component/validators/MemoryBlockValidator.h \
     ./Component/validators/RegionValidator.h \
     ./Component/validators/RegisterBaseValidator.h \
@@ -270,7 +270,12 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./Component/MemoryArray.h \
+    ./Component/MemoryArrayReader.h \
+    ./Component/MemoryArrayWriter.h \
+    ./Component/FieldReference.h \
+    ./Component/validators/MemoryArrayValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -536,4 +541,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./Component/MemoryArray.cpp \
+    ./Component/MemoryArrayReader.cpp \
+    ./Component/MemoryArrayWriter.cpp \
+    ./Component/validators/MemoryArrayValidator.cpp \
+    ./Component/FieldReference.cpp

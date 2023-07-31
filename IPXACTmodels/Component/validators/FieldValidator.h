@@ -92,6 +92,15 @@ public:
     bool hasValidIsPresent(QSharedPointer<Field> field) const;
 
     /*!
+     *	Check if the field has a valid memory array.
+     *  
+     *      @param [in] field     The selected field.
+     *	    
+     * 	    @return True, if the memory array is valid, otherwise false.
+     */
+    bool hasValidMemoryArray(QSharedPointer<Field> field) const;
+
+    /*!
      *  Check if the field has a valid bit offset.
      *
      *      @param [in] field   The selected field.
@@ -231,6 +240,15 @@ private:
      *      @param [in] context     Context to help locate the error.
      */
     void findErrorsInIsPresent(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
+     *	Find errors within the memory array of the field.
+     *  
+     *      @param [in] errors      List of found errors.
+     *      @param [in] field       The selected field.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInMemoryArray(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
 
     /*!
      *  Find errors within field bit offset.

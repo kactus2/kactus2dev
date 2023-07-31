@@ -100,11 +100,6 @@ private slots:
     void onSystemNamesChanged();
 
     /*!
-     *  Handler for changes in the description.
-     */
-    void onDescriptionChanged();
-
-    /*!
      *  Handles the changes in bus definition extend.
      */
     void onExtendChanged();

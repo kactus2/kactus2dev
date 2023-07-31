@@ -372,7 +372,7 @@ bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Componen
         for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateComponentInstantiation(instantiation))
+                !instantiationsValidator_->validateComponentInstantiation(instantiation, component->getRevision()))
             {
                 return false;
             }
@@ -932,7 +932,8 @@ void ComponentValidator::findErrorsInComponentInstantiations(QVector<QString>& e
             }
 
             instantiationNames.append(instantiation->name());
-            instantiationsValidator_->findErrorsInComponentInstantiation(errors, instantiation, context);
+            instantiationsValidator_->findErrorsInComponentInstantiation(errors, instantiation, context,
+                component->getRevision());
         }
     }
 }

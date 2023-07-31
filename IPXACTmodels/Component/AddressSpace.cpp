@@ -35,6 +35,7 @@ parameters_(new QList<QSharedPointer<Parameter> > ())
 AddressSpace::AddressSpace( const AddressSpace &other ):
 NameGroup(other),
 Extendable(other),
+isPresent_(other.isPresent_),
 range_(other.range_),
 width_(other.width_),
 segments_(new QList<QSharedPointer<Segment> > ()),

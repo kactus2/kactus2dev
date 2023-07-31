@@ -12,6 +12,8 @@
 #include "AbstractionWirePortsDelegate.h"
 #include "LogicalPortColumns.h"
 
+#include <KactusAPI/include/PortAbstractionInterface.h>
+
 #include <QComboBox>
 #include <QStringList>
 #include <QLineEdit>
@@ -19,8 +21,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionWirePortsDelegate::AbstractionWirePortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(LibraryInterface* libraryAccess, QObject *parent):
-AbstractionPortsDelegate(libraryAccess, parent)
+AbstractionWirePortsDelegate::AbstractionWirePortsDelegate(LibraryInterface* libraryAccess, 
+    Document::Revision stdRevision, QObject *parent):
+AbstractionPortsDelegate(libraryAccess, stdRevision, parent)
 {
 
 }
@@ -98,6 +101,11 @@ bool AbstractionWirePortsDelegate::editorIsComboBox(int indexColumn) const
 //-----------------------------------------------------------------------------
 QStringList AbstractionWirePortsDelegate::getExclusiveItems() const
 {
-    QStringList list = { "clock", "reset", };
+    QStringList list;
+    if (stdRevision_ != Document::Revision::Std22)
+    {
+        list << QStringLiteral("clock") << QStringLiteral("reset");
+    }
+
     return list;
 }

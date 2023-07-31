@@ -55,8 +55,7 @@ QSharedPointer<EnumeratedValue> EnumeratedValueReader::createEnumeratedValueFrom
 void EnumeratedValueReader::parseNameGroup(QDomNode const& enumerationNode,
     QSharedPointer<EnumeratedValue> newEnumeration) const
 {
-    NameGroupReader nameGroupReader;
-    nameGroupReader.parseNameGroup(enumerationNode, newEnumeration);
+    NameGroupReader::parseNameGroup(enumerationNode, newEnumeration);
 }
 
 //-----------------------------------------------------------------------------

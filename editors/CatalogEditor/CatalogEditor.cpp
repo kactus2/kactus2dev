@@ -36,23 +36,21 @@
 //-----------------------------------------------------------------------------
 CatalogEditor::CatalogEditor(LibraryInterface* library, QSharedPointer<Catalog> catalog, QWidget* parent):
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
-      library_(library),
-      catalog_(catalog),
-      vlnvDisplay_(new VLNVDisplayer(this, catalog->getVlnv())),
-      descriptionEditor_(new QTextEdit(this)),
-      fileModel_(new CatalogFileModel(library, this)),
-      fileView_(new CatalogFileView(this))
+    library_(library),
+    catalog_(catalog),
+    documentNameGroupEditor_(new DocumentNameGroupEditor(this)),
+    fileModel_(new CatalogFileModel(library, this)),
+    fileView_(new CatalogFileView(this))
 {
     // Set the document name and type.
     VLNV vlnv = catalog_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     setDocumentType(tr("Catalog"));
 
-    vlnvDisplay_->setFlat(false);
-    vlnvDisplay_->setTitle(tr("Catalog VLNV and location"));
-    vlnvDisplay_->setPath(library_->getPath(vlnv));
+    documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
+    documentNameGroupEditor_->setTitle(tr("Catalog"));
    
-    CatalogFileFilter* proxy = new CatalogFileFilter(this);   
+    CatalogFileFilter* proxy = new CatalogFileFilter(catalog_->getRevision(), this);
     proxy->setSourceModel(fileModel_);
 
     fileView_->setModel(proxy);
@@ -62,7 +60,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
 
     setupLayout();
 
-    connect(descriptionEditor_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+    connect(documentNameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(fileModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
@@ -118,8 +116,9 @@ VLNV CatalogEditor::getIdentifyingVLNV() const
 //-----------------------------------------------------------------------------
 void CatalogEditor::setProtection(bool locked)
 {
-    descriptionEditor_->setDisabled(locked);
+    documentNameGroupEditor_->setDisabled(locked);
     fileModel_->setProtection(locked);
+    fileView_->setDisabled(locked);
     
     TabDocument::setProtection(locked);
 }
@@ -133,8 +132,7 @@ void CatalogEditor::refresh()
     catalog_ = library_->getModel(vlnv).staticCast<Catalog>();
 
     // Update the editors.
-    vlnvDisplay_->setVLNV(vlnv);
-    descriptionEditor_->setPlainText(catalog_->getDescription());
+    documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
     fileModel_->refresh(catalog_);
 
     for (int row = 0; row <= CatalogFileColumns::CATEGORY_COUNT; row++)
@@ -215,37 +213,23 @@ void CatalogEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: CatalogEditor::onDescriptionChanged()
-//-----------------------------------------------------------------------------
-void CatalogEditor::onDescriptionChanged()
-{
-    catalog_->setDescription(descriptionEditor_->toPlainText());
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
 // Function: CatalogEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void CatalogEditor::setupLayout()
 {
-    QGroupBox* descriptionBox = new QGroupBox(tr("Description"), this);
-
-    QVBoxLayout* descriptionLayout = new QVBoxLayout(descriptionBox);
-    descriptionLayout->addWidget(descriptionEditor_);
-
     QGroupBox* filesBox = new QGroupBox(tr("Catalog files"), this);
 
     QVBoxLayout* filesLayout = new QVBoxLayout(filesBox);
     filesLayout->addWidget(fileView_);
 
-    QGridLayout* topLayout = new QGridLayout(this);
-    topLayout->addWidget(new SummaryLabel(tr("Catalog"), this), 0, 0, 1, 2, Qt::AlignCenter);
-    topLayout->addWidget(vlnvDisplay_, 1, 0, 1, 1);
-    topLayout->addWidget(descriptionBox, 1, 1, 1, 1);
-    topLayout->addWidget(filesBox, 2, 0, 1, 2);
+    QHBoxLayout* docNameGroupAndFilesLayout = new QHBoxLayout(this);
+    docNameGroupAndFilesLayout->addWidget(documentNameGroupEditor_);
+    docNameGroupAndFilesLayout->addWidget(filesBox);
 
-    topLayout->setColumnStretch(0, 1);
-    topLayout->setColumnStretch(1, 1);
-    topLayout->setRowStretch(1, 1);
-    topLayout->setRowStretch(2, 10);
+    QWidget* docNameGroupAndFiles = new QWidget(this);
+    docNameGroupAndFiles->setLayout(docNameGroupAndFilesLayout);
+
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+    topLayout->addWidget(new SummaryLabel(tr("Catalog"), this), 0, Qt::AlignCenter);
+    topLayout->addWidget(docNameGroupAndFiles);
 }

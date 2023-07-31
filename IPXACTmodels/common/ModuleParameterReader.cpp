@@ -6,50 +6,34 @@
 // Date: 09.09.2015
 //
 // Description:
-// XML reader class for IP-XACT module parameter element.
+// XML reader for IP-XACT module parameter element.
 //-----------------------------------------------------------------------------
 
 #include "ModuleParameterReader.h"
 #include "CommonItemsReader.h"
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterReader::ModuleParameterReader()
-//-----------------------------------------------------------------------------
-ModuleParameterReader::ModuleParameterReader() :
-ParameterReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModuleParameterReader::~ModuleParameterReader()
-//-----------------------------------------------------------------------------
-ModuleParameterReader::~ModuleParameterReader()
-{
-
-}
+#include "NameGroupReader.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterReader::createModuleParameterFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ModuleParameter> ModuleParameterReader::createModuleParameterFrom(
-    QDomNode const& moduleParameterNode) const
+    QDomNode const& moduleParameterNode, Document::Revision docRevision)
 {
     QSharedPointer<ModuleParameter> newModuleParameter (new ModuleParameter());
 
-    parseAttributes(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseAttributes(moduleParameterNode, newModuleParameter);
 
-    parseNameGroup(moduleParameterNode, newModuleParameter);
+    NameGroupReader::parseNameGroup(moduleParameterNode, newModuleParameter);
 
-    parseVectors(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseVectors(moduleParameterNode, newModuleParameter, docRevision);
 
-    parseArrays(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseArrays(moduleParameterNode, newModuleParameter, docRevision);
 
-    parseValue(moduleParameterNode, newModuleParameter);
+    ParameterReader::Details::parseValue(moduleParameterNode, newModuleParameter);
 
     CommonItemsReader::parseVendorExtensions(moduleParameterNode, newModuleParameter);
 
-    parseIsPresent(moduleParameterNode, newModuleParameter);
+    Details::parseIsPresent(moduleParameterNode, newModuleParameter, docRevision);
 
     return newModuleParameter;
 }
@@ -57,10 +41,12 @@ QSharedPointer<ModuleParameter> ModuleParameterReader::createModuleParameterFrom
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterReader::parseIsPresent()
 //-----------------------------------------------------------------------------
-void ModuleParameterReader::parseIsPresent(QDomNode const& moduleParameterNode,
-    QSharedPointer<ModuleParameter> moduleParameter) const
+void ModuleParameterReader::Details::parseIsPresent(QDomNode const& moduleParameterNode,
+    QSharedPointer<ModuleParameter> moduleParameter, Document::Revision docRevision)
 {
-    QDomElement presenceElement = moduleParameterNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
-
-    moduleParameter->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
+    if (docRevision == Document::Revision::Std14)
+    {
+        QDomElement presenceElement = moduleParameterNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
+        moduleParameter->setIsPresent(CommonItemsReader::parseIsPresent(presenceElement));
+    }
 }

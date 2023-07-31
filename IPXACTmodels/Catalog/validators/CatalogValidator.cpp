@@ -51,7 +51,8 @@ bool CatalogValidator::validate(QSharedPointer<Catalog> catalog) const
         validateFiles(catalog->getAbstractors()) &&
         validateFiles(catalog->getDesigns()) &&
         validateFiles(catalog->getDesignConfigurations()) &&
-        validateFiles(catalog->getGeneratorChains());
+        validateFiles(catalog->getGeneratorChains()) &&
+        validateFiles(catalog->getTypeDefinitions());
 }
 
 //-----------------------------------------------------------------------------
@@ -88,6 +89,9 @@ void CatalogValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cat
 
     context = QObject::tr("generator chain within catalog %1").arg(catalog->getVlnv().toString());
     findErrorsInFiles(errors, catalog->getGeneratorChains(), context);
+    
+    context = QObject::tr("type definition within catalog %1").arg(catalog->getVlnv().toString());
+    findErrorsInFiles(errors, catalog->getTypeDefinitions(), context);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,7 +99,7 @@ void CatalogValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cat
 //-----------------------------------------------------------------------------
 bool CatalogValidator::validateFiles(QSharedPointer<QList<QSharedPointer<IpxactFile> > > files) const
 {
-    foreach (QSharedPointer<IpxactFile> file, *files)
+    for (auto const& file : *files)
     {
         if (!validateFile(file))
         {
@@ -121,7 +125,7 @@ void CatalogValidator::findErrorsInFiles(QVector<QString>& errors,
     QSharedPointer<QList<QSharedPointer<IpxactFile> > > files, 
     QString const& context) const
 {
-    foreach (QSharedPointer<IpxactFile> file, *files)
+    for (auto const& file : *files)
     {
         file->getVlnv().isValid(errors, context);
 

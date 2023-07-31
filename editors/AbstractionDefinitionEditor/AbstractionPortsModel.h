@@ -129,7 +129,15 @@ public:
      *      @return             True if saving happened successfully.
 	 */
 	bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
-    
+
+    /*!
+     *	Save the qualifier data to the IPXACT model.
+     *  
+     *      @param [in] index   The model index of the item that's data is to be saved.
+     *      @param [in] value   The data that is to be saved.
+     */
+    void setQualifierData(QModelIndex const& index, QVariant const& value);
+
     /*!
      *  Set the extend port abstractions.
      */

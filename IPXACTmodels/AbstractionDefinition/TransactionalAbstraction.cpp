@@ -35,7 +35,7 @@ TransactionalAbstraction::TransactionalAbstraction() :
 // Function: TransactionalAbstraction::TransactionalAbstraction()
 //-----------------------------------------------------------------------------
 TransactionalAbstraction::TransactionalAbstraction(TransactionalAbstraction const& other):
-qualifier_(other.qualifier_),
+qualifier_(new Qualifier(*other.qualifier_)),
     onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
     onInitiator_(),
     onTarget_()

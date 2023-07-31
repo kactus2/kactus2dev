@@ -6,7 +6,7 @@
 // Date: 04.09.2015
 //
 // Description:
-// Writer class for IP-XACT instantiations element.
+// Writer for IP-XACT instantiations element.
 //-----------------------------------------------------------------------------
 
 #include "InstantiationsWriter.h"
@@ -16,50 +16,34 @@
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::InstantiationsWriter()
-//-----------------------------------------------------------------------------
-InstantiationsWriter::InstantiationsWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::~InstantiationsWriter()
-//-----------------------------------------------------------------------------
-InstantiationsWriter::~InstantiationsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: InstantiationsWriter::writeDesignInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDesignInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<DesignInstantiation> instantiation) const
+    QSharedPointer<DesignInstantiation> instantiation, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:designInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
-    writeReference(writer, instantiation->getDesignReference(), QStringLiteral("ipxact:designRef"));
+    Details::writeReference(writer, instantiation->getDesignReference(), QStringLiteral("ipxact:designRef"));
 
-    writeVendorExtensions(writer, instantiation);
+    CommonItemsWriter::writeVendorExtensions(writer, instantiation);
 
     writer.writeEndElement(); // ipxact:designInstantiation
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeReference()
+// Function: InstantiationsWriter::Details::writeReference()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeReference(QXmlStreamWriter& writer,
-    QSharedPointer<ConfigurableVLNVReference> reference, QString const& elementName) const
+void InstantiationsWriter::Details::writeReference(QXmlStreamWriter& writer,
+    QSharedPointer<ConfigurableVLNVReference> reference, QString const& elementName)
 {
     if (reference)
     {
         writer.writeStartElement(elementName);
 
-        writeVLNVAttributes(writer, *reference);
-        writeConfigurableElementValues(writer, reference->getConfigurableElementValues());
+        CommonItemsWriter::writeVLNVAttributes(writer, *reference);
+        CommonItemsWriter::writeConfigurableElementValues(writer, reference->getConfigurableElementValues());
 
         writer.writeEndElement(); // elementName
     }
@@ -69,28 +53,28 @@ void InstantiationsWriter::writeReference(QXmlStreamWriter& writer,
 // Function: InstantiationsWriter::writeDesignConfigurationInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeDesignConfigurationInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+    QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:designConfigurationInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
-    writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
+    Details::writeLanguage(writer, instantiation->getLanguage(), instantiation->isLangugageStrict());
 
-    writeReference(writer, instantiation->getDesignConfigurationReference(), QStringLiteral("ipxact:designConfigurationRef"));
+    Details::writeReference(writer, instantiation->getDesignConfigurationReference(), QStringLiteral("ipxact:designConfigurationRef"));
 
-    writeParameters(writer, instantiation->getParameters());
+    CommonItemsWriter::writeParameters(writer, instantiation->getParameters(), docRevision);
 
-    writeVendorExtensions(writer, instantiation);
+    CommonItemsWriter::writeVendorExtensions(writer, instantiation);
 
     writer.writeEndElement(); // ipxact:designConfigurationInstantiation
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeLanguage()
+// Function: InstantiationsWriter::Details::writeLanguage()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const& language,
-    bool languageStrictness) const
+void InstantiationsWriter::Details::writeLanguage(QXmlStreamWriter& writer, QString const& language,
+    bool languageStrictness)
 {
     if (!language.isEmpty())
     {
@@ -110,39 +94,39 @@ void InstantiationsWriter::writeLanguage(QXmlStreamWriter& writer, QString const
 // Function: InstantiationsWriter::writeComponentInstantiation()
 //-----------------------------------------------------------------------------
 void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
-    QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision) const
+    QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:componentInstantiation"));
 
-    NameGroupWriter::writeNameGroup(writer, instantiation);
+    NameGroupWriter::writeNameGroup(writer, instantiation, docRevision);
 
-    writeLanguage(writer, instantiation->getLanguage(), instantiation->isLanguageStrict());
+    Details::writeLanguage(writer, instantiation->getLanguage(), instantiation->isLanguageStrict());
 
     if (instantiation->isVirtual())
     {
         writer.writeTextElement(QStringLiteral("ipxact:isVirtual"), QStringLiteral("true"));
     }
 
-    writeNameReferences(writer, instantiation);
+    Details::writeNameReferences(writer, instantiation);
 
-    writeModuleParameters(writer, instantiation->getModuleParameters());
+    Details::writeModuleParameters(writer, instantiation->getModuleParameters(), docRevision);
 
-    writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders(), docRevision);
+    Details::writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders(), docRevision);
 
-    writeFileSetReferences(writer, instantiation->getFileSetReferences());
+    Details::writeFileSetReferences(writer, instantiation->getFileSetReferences());
 
-    writeParameters(writer, instantiation->getParameters());
+    CommonItemsWriter::writeParameters(writer, instantiation->getParameters(), docRevision);
 
-    writeVendorExtensions(writer, instantiation);
+    CommonItemsWriter::writeVendorExtensions(writer, instantiation);
 
     writer.writeEndElement(); // ipxact:componentInstantiation
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeNameReferences()
+// Function: InstantiationsWriter::Details::writeNameReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeNameReferences(QXmlStreamWriter& writer,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+void InstantiationsWriter::Details::writeNameReferences(QXmlStreamWriter& writer,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     if (!instantiation->getLibraryName().isEmpty())
     {
@@ -167,19 +151,19 @@ void InstantiationsWriter::writeNameReferences(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeModuleParameters()
+// Function: InstantiationsWriter::Details::writeModuleParameters()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters) const
+void InstantiationsWriter::Details::writeModuleParameters(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters,
+    Document::Revision docRevision)
 {
     if (!moduleParameters->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:moduleParameters"));
 
-        ModuleParameterWriter moduleParameterWriter;
-        foreach (QSharedPointer<ModuleParameter> singleModuleParameter, *moduleParameters)
+        for (auto const& singleModuleParameter : *moduleParameters)
         {
-            moduleParameterWriter.writeModuleParameter(writer, singleModuleParameter);
+            ModuleParameterWriter::writeModuleParameter(writer, singleModuleParameter, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:moduleParameters
@@ -187,11 +171,11 @@ void InstantiationsWriter::writeModuleParameters(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeDefaultFileBuilders()
+// Function: InstantiationsWriter::Details::writeDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
+void InstantiationsWriter::Details::writeDefaultFileBuilders(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<FileBuilder> > > defautlFileBuilders,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     for (QSharedPointer<FileBuilder> fileBuilder : *defautlFileBuilders)
     {
@@ -200,14 +184,14 @@ void InstantiationsWriter::writeDefaultFileBuilders(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsWriter::writeFileSetReferences()
+// Function: InstantiationsWriter::Details::writeFileSetReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references)
-    const
+void InstantiationsWriter::Details::writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references)
+   
 {
     if (!references->isEmpty())
     {
-        foreach (QString fileSetReference, *references)
+        for (auto const& fileSetReference : *references)
         {
             writer.writeStartElement(QStringLiteral("ipxact:fileSetRef"));
 

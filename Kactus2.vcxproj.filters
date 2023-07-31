@@ -3193,8 +3193,8 @@
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
+	<ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
+      <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
@@ -3225,8 +3225,7 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>
-  </ItemGroup>
+    </ClCompile>  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
       <Filter>Source Files\common\layouts</Filter>
@@ -4387,6 +4386,9 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -5638,13 +5640,15 @@
     <ClInclude Include="editors\common\ExpressionSet.h">
       <Filter>Header Files\editors\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\AbstractionDefinitionEditor\QualifierData.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClInclude>
-  </ItemGroup>
+    </ClInclude>  </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
@@ -5729,8 +5733,8 @@
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
-      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    <QtMoc Include="editors\AbstractionDefinitionEditor\QualifierEditor.h">
+      <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleCpuItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>

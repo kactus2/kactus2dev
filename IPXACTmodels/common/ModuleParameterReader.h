@@ -6,7 +6,7 @@
 // Date: 09.09.2015
 //
 // Description:
-// XML reader class for IP-XACT module parameter element.
+// XML reader for IP-XACT module parameter element.
 //-----------------------------------------------------------------------------
 
 #ifndef MODULEPARAMETERREADER_H
@@ -15,43 +15,40 @@
 #include "ModuleParameter.h"
 #include "ParameterReader.h"
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
-//! XML reader class for IP-XACT module parameter element.
+//! XML reader for IP-XACT module parameter element.
 //-----------------------------------------------------------------------------
-class ModuleParameterReader : public ParameterReader
+namespace ModuleParameterReader
 {
-public:
-
-	//! The constructor.
-    ModuleParameterReader();
-
-	//! The destructor.
-    ~ModuleParameterReader() final;
 
     /*!
      *  Creates a module parameter from XML description.
      *
      *      @param [in] moduleParameterNode   The XML description of the module parameter.
-     *
+     *      @param [in] docRevision           The IP-XACT standard to comply to.
+
      *      @return The created module parameter.
      */
-    QSharedPointer<ModuleParameter> createModuleParameterFrom(QDomNode const& moduleParameterNode) const;
+    IPXACTMODELS_EXPORT QSharedPointer<ModuleParameter> createModuleParameterFrom(QDomNode const& moduleParameterNode,
+        Document::Revision docRevision);
 
-private:
+    namespace Details
+    {
 
-	// Disable copying.
-    ModuleParameterReader(ModuleParameterReader const& rhs);
-    ModuleParameterReader& operator=(ModuleParameterReader const& rhs);
-
-    /*!
-     *  Reads the presence of the module parameter.
-     *
-     *      @param [in] moduleParameterNode     XML description of the module parameter.
-     *      @param [in] moduleParameter         The module parameter whose presence is being read.
-     */
-    void parseIsPresent(QDomNode const& moduleParameterNode, QSharedPointer<ModuleParameter> moduleParameter) const;
+        /*!
+         *  Reads the presence of the module parameter.
+         *
+         *      @param [in] moduleParameterNode     XML description of the module parameter.
+         *      @param [in] moduleParameter         The module parameter whose presence is being read.
+         *      @param [in] docRevision             The IP-XACT standard to comply to.
+         */
+        void parseIsPresent(QDomNode const& moduleParameterNode, QSharedPointer<ModuleParameter> moduleParameter,
+            Document::Revision docRevision);
+    }
 };
 
 #endif // MODULEPARAMETERREADER_H

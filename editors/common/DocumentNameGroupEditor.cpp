@@ -52,11 +52,7 @@ void DocumentNameGroupEditor::setDocumentNameGroup(QSharedPointer<Document> docu
         path_.hide();
     }
 
-    bool showStd22Fields = true;
-    if (document_->getRevision() != Document::Revision::Std22)
-    {
-        showStd22Fields = false;
-    }
+    bool showStd22Fields = document_->getRevision() == Document::Revision::Std22;
 
     displayNameEditor_.setVisible(showStd22Fields);
     shortDescriptionEditor_.setVisible(showStd22Fields);

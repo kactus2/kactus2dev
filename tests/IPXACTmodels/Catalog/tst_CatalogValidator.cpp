@@ -45,7 +45,7 @@ tst_CatalogValidator::tst_CatalogValidator()
 //-----------------------------------------------------------------------------
 void tst_CatalogValidator::testMandatoryFields()
 {
-    QSharedPointer<Catalog> testCatalog(new Catalog());
+    QSharedPointer<Catalog> testCatalog(new Catalog(VLNV(), Document::Revision::Std14));
 
     CatalogValidator testValidator;
     QCOMPARE(testValidator.validate(testCatalog), false);
@@ -65,8 +65,7 @@ void tst_CatalogValidator::testMandatoryFields()
 //-----------------------------------------------------------------------------
 void tst_CatalogValidator::testMandatoryFieldsInFile()
 {
-    QSharedPointer<Catalog> testCatalog(new Catalog());
-    testCatalog->setVlnv(VLNV(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0"));
+    QSharedPointer<Catalog> testCatalog(new Catalog(VLNV(VLNV::CATALOG, "tut.fi", "TestLibrary", "TestCatalog", "1.0"), Document::Revision::Std14));
 
     QSharedPointer<IpxactFile> testFile(new IpxactFile());
 

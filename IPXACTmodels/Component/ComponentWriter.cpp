@@ -184,13 +184,11 @@ void ComponentWriter::writeAddressSpaces(QXmlStreamWriter& writer, QSharedPointe
 {
     if (!component->getAddressSpaces()->isEmpty())
     {
-        AddressSpaceWriter spaceWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:addressSpaces"));
 
         foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
         {
-            spaceWriter.writeAddressSpace(writer, addressSpace);
+            AddressSpaceWriter::writeAddressSpace(writer, addressSpace, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:addressSpaces
@@ -208,9 +206,9 @@ void ComponentWriter::writeMemoryMaps(QXmlStreamWriter& writer, QSharedPointer<C
 
         writer.writeStartElement(QStringLiteral("ipxact:memoryMaps"));
 
-        foreach (QSharedPointer<MemoryMap> memoryMap, *component->getMemoryMaps())
+        for (auto const& memoryMap : *component->getMemoryMaps())
         {
-            mapWriter.writeMemoryMap(writer, memoryMap);
+            mapWriter.writeMemoryMap(writer, memoryMap, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:memoryMaps
@@ -243,13 +241,11 @@ void ComponentWriter::writeViews(QXmlStreamWriter& writer, QSharedPointer<Compon
 {
     if (!component->getViews()->isEmpty())
     {
-        ViewWriter viewWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:views"));
 
-        foreach (QSharedPointer<View> view, *component->getViews())
+        for (auto const& view : *component->getViews())
         {
-            viewWriter.writeView(writer, view);
+            ViewWriter::writeView(writer, view, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:views
@@ -264,22 +260,21 @@ void ComponentWriter::writeInstantiations(QXmlStreamWriter& writer, QSharedPoint
     if (!component->getComponentInstantiations()->isEmpty() || !component->getDesignInstantiations()->isEmpty() ||
         !component->getDesignConfigurationInstantiations()->isEmpty())
     {
-        InstantiationsWriter instantiationsWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:instantiations"));
 
         for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
         {
-            instantiationsWriter.writeComponentInstantiation(writer, instantiation, component->getRevision());
+            InstantiationsWriter::writeComponentInstantiation(writer, instantiation, component->getRevision());
         }
         for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
         {
-            instantiationsWriter.writeDesignInstantiation(writer, instantiation);
+            InstantiationsWriter::writeDesignInstantiation(writer, instantiation, component->getRevision());
         }
         for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
             *component->getDesignConfigurationInstantiations())
         {
-            instantiationsWriter.writeDesignConfigurationInstantiation(writer, instantiation);
+            InstantiationsWriter::writeDesignConfigurationInstantiation(writer, instantiation,
+                component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:instantiations

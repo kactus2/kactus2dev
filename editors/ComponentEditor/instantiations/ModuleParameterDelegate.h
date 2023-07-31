@@ -12,6 +12,8 @@
 #ifndef ModuleParameterDelegate_H
 #define ModuleParameterDelegate_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QStyledItemDelegate>
 
 #include <editors/ComponentEditor/parameters/ParameterDelegate.h>
@@ -33,12 +35,14 @@ public:
      *     @param [in] parameterCompleter   The completer to use for expression editors.
      *     @param [in] parameterFinder      The parameter finder.
      *     @param [in] expressionFormatter  The expression formatter.
+     *     @param [in] docRevision          The IP-XACT standard revision in use.
 	 *     @param [in] parent               The parent object
 	*/
 	ModuleParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
         QCompleter* parameterCompleter,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
+        Document::Revision docRevision,
         QObject *parent = 0);
 
 	//! The destructor.
@@ -163,6 +167,9 @@ private:
 
 	//! No assignment
 	ModuleParameterDelegate& operator=(const ModuleParameterDelegate& other);
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // ModuleParameterDelegate_H

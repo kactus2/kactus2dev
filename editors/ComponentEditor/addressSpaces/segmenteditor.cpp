@@ -89,6 +89,11 @@ component_(component)
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&view_);
 
+	if (component->getRevision() == Document::Revision::Std22)
+	{
+        view_.hideColumn(SegmentColumns::IS_PRESENT);
+	}
+
     connect(view_.itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_.itemDelegate(), SIGNAL(decreaseReferences(QString)),

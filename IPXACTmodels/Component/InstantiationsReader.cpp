@@ -6,7 +6,7 @@
 // Date: 07.09.2015
 //
 // Description:
-// Reader class for IP-XACT instantiations.
+// Reader for IP-XACT instantiations.
 //-----------------------------------------------------------------------------
 
 #include "InstantiationsReader.h"
@@ -17,36 +17,19 @@
 #include <IPXACTmodels/common/ModuleParameterReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::InstantiationsReader()
-//-----------------------------------------------------------------------------
-InstantiationsReader::InstantiationsReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationsReader::~InstantiationsReader()
-//-----------------------------------------------------------------------------
-InstantiationsReader::~InstantiationsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: InstantiationsReader::createDesignInstantiationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignInstantiation> InstantiationsReader::createDesignInstantiationFrom(
-    QDomNode const& instantiationNode) const
+    QDomNode const& instantiationNode)
 {
     QSharedPointer<DesignInstantiation> newInstantiation (new DesignInstantiation());
 
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(instantiationNode, newInstantiation);
+    NameGroupReader::parseNameGroup(instantiationNode, newInstantiation);
 
     QDomNode designReferenceNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:designRef"));
-    newInstantiation->setDesignReference(parseConfigurableVLNVReference(designReferenceNode, VLNV::DESIGN));
+    newInstantiation->setDesignReference(CommonItemsReader::parseConfigurableVLNVReference(designReferenceNode, VLNV::DESIGN));
 
-    parseVendorExtensions(instantiationNode, newInstantiation);
+    CommonItemsReader::parseVendorExtensions(instantiationNode, newInstantiation);
 
     return newInstantiation;
 }
@@ -55,42 +38,41 @@ QSharedPointer<DesignInstantiation> InstantiationsReader::createDesignInstantiat
 // Function: InstantiationsReader::createDesignConfigurationInstantiationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignConfigurationInstantiation> InstantiationsReader::createDesignConfigurationInstantiationFrom(
-    QDomNode const& instantiationNode) const
+    QDomNode const& instantiationNode, Document::Revision docRevision)
 {
     QSharedPointer<DesignConfigurationInstantiation> newInstantiation(new DesignConfigurationInstantiation());
 
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(instantiationNode, newInstantiation);
+    NameGroupReader::parseNameGroup(instantiationNode, newInstantiation);
 
     QDomNode configurationReferenceNode = instantiationNode.firstChildElement(
         QStringLiteral("ipxact:designConfigurationRef"));
     QSharedPointer<ConfigurableVLNVReference> configurationReference =
-        parseConfigurableVLNVReference(configurationReferenceNode, VLNV::DESIGNCONFIGURATION);
+        CommonItemsReader::parseConfigurableVLNVReference(configurationReferenceNode, VLNV::DESIGNCONFIGURATION);
     newInstantiation->setDesignConfigurationReference(configurationReference);
 
-    newInstantiation->setLanguage(parseLanguageFrom(instantiationNode));
-    newInstantiation->setLanguageStrict(parseLanguageStrictnessFrom(instantiationNode));
+    newInstantiation->setLanguage(Details::parseLanguageFrom(instantiationNode));
+    newInstantiation->setLanguageStrict(Details::parseLanguageStrictnessFrom(instantiationNode));
 
-    newInstantiation->setParameters(parseAndCreateParameters(instantiationNode));
+    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode, docRevision));
 
-    parseVendorExtensions(instantiationNode, newInstantiation);
+    CommonItemsReader::parseVendorExtensions(instantiationNode, newInstantiation);
 
     return newInstantiation;
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::getLanguageFrom()
+// Function: InstantiationsReader::Details::getLanguageFrom()
 //-----------------------------------------------------------------------------
-QString InstantiationsReader::parseLanguageFrom(QDomNode const& instantiationNode) const
+QString InstantiationsReader::Details::parseLanguageFrom(QDomNode const& instantiationNode)
 {
     QDomElement languageNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:language"));
     return languageNode.firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::getLanguageStrictnessFrom()
+// Function: InstantiationsReader::Details::getLanguageStrictnessFrom()
 //-----------------------------------------------------------------------------
-bool InstantiationsReader::parseLanguageStrictnessFrom(QDomNode const& instantiationNode) const
+bool InstantiationsReader::Details::parseLanguageStrictnessFrom(QDomNode const& instantiationNode)
 {
     QDomElement languageNode = instantiationNode.firstChildElement(QStringLiteral("ipxact:language"));
     if (!languageNode.attribute(QStringLiteral("strict")).isNull())
@@ -107,42 +89,40 @@ bool InstantiationsReader::parseLanguageStrictnessFrom(QDomNode const& instantia
 // Function: InstantiationsReader::createComponentInstantiationFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInstantiationFrom(
-    QDomNode const& instantiationNode,
-    Document::Revision docRevision) const
+    QDomNode const& instantiationNode, Document::Revision docRevision)
 {
     QSharedPointer<ComponentInstantiation> newInstantiation (new ComponentInstantiation());
 
-    NameGroupReader nameReader;
-    nameReader.parseNameGroup(instantiationNode, newInstantiation);
+    NameGroupReader::parseNameGroup(instantiationNode, newInstantiation);
 
     if (!instantiationNode.firstChildElement(QStringLiteral("ipxact:isVirtual")).isNull())
     {
         newInstantiation->setVirtual(true);
     }
 
-    newInstantiation->setLanguage(parseLanguageFrom(instantiationNode));
-    newInstantiation->setLanguageStrictness(parseLanguageStrictnessFrom(instantiationNode));
+    newInstantiation->setLanguage(Details::parseLanguageFrom(instantiationNode));
+    newInstantiation->setLanguageStrictness(Details::parseLanguageStrictnessFrom(instantiationNode));
 
-    parseNameReferences(instantiationNode, newInstantiation);
+    Details::parseNameReferences(instantiationNode, newInstantiation);
 
-    parseModuleParameters(instantiationNode, newInstantiation);
+    Details::parseModuleParameters(instantiationNode, newInstantiation, docRevision);
 
-    parseDefaultFileBuilders(instantiationNode, newInstantiation, docRevision);
+    Details::parseDefaultFileBuilders(instantiationNode, newInstantiation, docRevision);
 
-    parseFileSetReferences(instantiationNode, newInstantiation);
+    Details::parseFileSetReferences(instantiationNode, newInstantiation);
 
-    newInstantiation->setParameters(parseAndCreateParameters(instantiationNode));
+    newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode, docRevision));
 
-    parseVendorExtensions(instantiationNode, newInstantiation);
+    CommonItemsReader::parseVendorExtensions(instantiationNode, newInstantiation);
 
     return newInstantiation;
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::parseNameReferences()
+// Function: InstantiationsReader::Details::parseNameReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsReader::parseNameReferences(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+void InstantiationsReader::Details::parseNameReferences(QDomNode const& instantiationNode,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     QDomElement libraryElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:libraryName"));
     if (!libraryElement.isNull())
@@ -176,22 +156,20 @@ void InstantiationsReader::parseNameReferences(QDomNode const& instantiationNode
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::parseModuleParameters()
+// Function: InstantiationsReader::Details::parseModuleParameters()
 //-----------------------------------------------------------------------------
-void InstantiationsReader::parseModuleParameters(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+void InstantiationsReader::Details::parseModuleParameters(QDomNode const& instantiationNode,
+    QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision)
 {
     QDomElement moduleParametersElement = instantiationNode.firstChildElement(QStringLiteral("ipxact:moduleParameters"));
     if (!moduleParametersElement.isNull())
     {
         QDomNodeList moduleParameterNodes = moduleParametersElement.elementsByTagName(QStringLiteral("ipxact:moduleParameter"));
 
-        ModuleParameterReader moduleParameterReader;
-
         for (int parameterIndex = 0; parameterIndex < moduleParameterNodes.count(); ++parameterIndex)
         {
             QSharedPointer<ModuleParameter> newModuleParameter =
-                moduleParameterReader.createModuleParameterFrom(moduleParameterNodes.at(parameterIndex));
+                ModuleParameterReader::createModuleParameterFrom(moduleParameterNodes.at(parameterIndex), docRevision);
 
             instantiation->getModuleParameters()->append(newModuleParameter);
         }
@@ -199,11 +177,11 @@ void InstantiationsReader::parseModuleParameters(QDomNode const& instantiationNo
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::parseDefaultFileBuilders()
+// Function: InstantiationsReader::Details::parseDefaultFileBuilders()
 //-----------------------------------------------------------------------------
-void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiationNode,
+void InstantiationsReader::Details::parseDefaultFileBuilders(QDomNode const& instantiationNode,
     QSharedPointer<ComponentInstantiation> instantiation,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomElement instantiationElement = instantiationNode.toElement();
 
@@ -221,10 +199,10 @@ void InstantiationsReader::parseDefaultFileBuilders(QDomNode const& instantiatio
 }
 
 //-----------------------------------------------------------------------------
-// Function: InstantiationsReader::parseFileSetReferences()
+// Function: InstantiationsReader::Details::parseFileSetReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsReader::parseFileSetReferences(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation) const
+void InstantiationsReader::Details::parseFileSetReferences(QDomNode const& instantiationNode,
+    QSharedPointer<ComponentInstantiation> instantiation)
 {
     QDomElement instantiationElement = instantiationNode.toElement();
     

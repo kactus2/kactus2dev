@@ -21,6 +21,7 @@
 #include <IPXACTmodels/common/BooleanValue.h>
 
 #include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/FieldReference.h>
 
 #include <QString>
 #include <QMap>
@@ -30,6 +31,7 @@
 class Parameter;
 class EnumeratedValue;
 class WriteValueConstraint;
+class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:field element.
@@ -92,6 +94,20 @@ public:
 	void setIsPresent(QString const& newIsPresent);
 
 	/*!
+	 *	Get the memory array of the field.
+	 *	    
+	 * 	    @return The field's memory array.
+	 */
+	QSharedPointer<MemoryArray> getMemoryArray() const;
+
+	/*!
+	 *	Set the field's memory array.
+	 *  
+	 *      @param [in] memArray     Description
+	 */
+	void setMemoryArray(QSharedPointer<MemoryArray> memArray);
+
+	/*!
 	 *  Get the bit offset.
 	 *
 	 *      @return Bit offset.
@@ -105,6 +121,34 @@ public:
 	 */
 	void setBitOffset(QString const& newBitOffset);
 
+    /*!
+     *  Get the field definition reference.
+     *        
+     *      @return The field definition reference.
+     */
+    QString getFieldDefinitionRef() const;
+
+    /*!
+     *  Set the field definition reference.
+     *  
+     *      @param [in] newFieldDefRef     Description
+     */
+    void setFieldDefinitionRef(QString const& newFieldDefRef);
+
+    /*!
+     *  Get the type definitions reference.
+     *
+     *      @return The type definitions reference.
+     */
+    QString getTypeDefinitionsRef() const;
+
+    /*!
+     *  Set the type definitions reference.
+     *  
+     *      @param [in] newTypeDefRef     Description
+     */
+    void setTypeDefinitionsRef(QString const& newTypeDefRef);
+    
 	/*!
 	 *  Get a list of the reset for the field.
 	 *
@@ -165,6 +209,20 @@ public:
 	 *      @param [in] volatileValue   The new volatile state to set.
 	 */
 	void setVolatile(bool volatileValue);
+
+	/*!
+	 *	Get the field reference.
+	 *	    
+	 * 	    @return		The field reference.
+	 */
+	QSharedPointer<FieldReference> getFieldReference() const;
+
+	/*!
+	 *	Set the field reference.
+	 *  
+	 *      @param [in] fieldRef     The new field reference.
+	 */
+	void setFieldReference(QSharedPointer<FieldReference> fieldRef);
 
 	/*!
 	 *  Get the access type of the field.
@@ -366,8 +424,17 @@ private:
 	//! The presence of the field.
 	QString isPresent_;
 
+    //! The field's memory array.
+    QSharedPointer<MemoryArray> memoryArray_;
+
 	//! Describes the offset where this bit field starts.
 	QString bitOffset_;
+
+    //! A reference to a fieldDefinition inside typeDefinitions.
+    QString fieldDefinitionRef_;
+
+    //! A refrence to a typeDefinitions containing the fieldDefinition.
+    QString typeDefinitionsRef_;
 
     //! List of resets.
 	QSharedPointer<QList<QSharedPointer<FieldReset> > > resets_;
@@ -413,6 +480,9 @@ private:
 
 	//! Contains the parameters.
 	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+
+	//! Reference to another field (ipxact:aliasOf).
+	QSharedPointer<FieldReference> fieldReference_;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Field>);

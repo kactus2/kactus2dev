@@ -47,6 +47,7 @@ enumerationModel_(new EnumerationModel(this))
     enumerationView_->setItemsDraggable(false);
     enumerationView_->setSortingEnabled(true);
     enumerationView_->setModel(enumerationProxy);
+    enumerationView_->setDisabled(true); // Set disabled before a choice has been selected or created.
 
 	connect(&choiceList_, SIGNAL(removeItem(const QModelIndex&)), choiceModel_, SLOT(remove(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&choiceList_, SIGNAL(addItem(const QModelIndex&)), choiceModel_, SLOT(addItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -56,6 +57,7 @@ enumerationModel_(new EnumerationModel(this))
 		this, SLOT(selectionChoiceChanged(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(choiceModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(choiceModel_, SIGNAL(choicesEmpty(bool)), this, SLOT(onChoiceListEmpty(bool)), Qt::UniqueConnection);
 
     connect(enumerationModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(enumerationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -76,6 +78,7 @@ void ChoicesEditor::selectionChoiceChanged(QModelIndex const& newIndex)
     if (currentChoice)
     {
         enumerationModel_->setupEnumerations(currentChoice->enumerations());
+        enumerationView_->setEnabled(true);
     }
     else
     {
@@ -97,6 +100,14 @@ bool ChoicesEditor::isValid() const
 void ChoicesEditor::refresh()
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: ChoicesEditor::onChoiceListEmpty()
+//-----------------------------------------------------------------------------
+void ChoicesEditor::onChoiceListEmpty(bool isEmpty)
+{
+    enumerationView_->setDisabled(isEmpty);
 }
 
 //-----------------------------------------------------------------------------

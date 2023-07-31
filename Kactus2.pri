@@ -823,6 +823,7 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/general/InitiatorModeEditor.h
     ./editors/AbstractionDefinitionEditor/AbstractionPortsView.h \
     ./editors/AbstractionDefinitionEditor/AbstractionTransactionalPortsDelegate.h \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.h \
+    ./editors/AbstractionDefinitionEditor/QualifierEditor.h \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.h \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.h \
     ./kactusGenerators/DocumentGenerator/MarkdownWriter.h \
@@ -833,9 +834,7 @@ HEADERS += ./editors/ComponentEditor/busInterfaces/general/InitiatorModeEditor.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/busInterfaces/general/TargetModeEditor.h \
-    ./editors/ComponentEditor/busInterfaces/general/MirroredInitiatorModeEditor.h \
-    ./editors/ComponentEditor/busInterfaces/general/MirroredTargetModeEditor.h
+    ./editors/AbstractionDefinitionEditor/QualifierData.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1565,6 +1564,7 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionTransactionalPortsSortFilter.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsDelegate.cpp \
     ./editors/AbstractionDefinitionEditor/AbstractionWirePortsSortFilter.cpp \
+    ./editors/AbstractionDefinitionEditor/QualifierEditor.cpp \
     ./kactusGenerators/DocumentGenerator/DocumentationWriter.cpp \
     ./kactusGenerators/DocumentGenerator/documentgenerator.cpp \
     ./kactusGenerators/DocumentGenerator/HtmlWriter.cpp \

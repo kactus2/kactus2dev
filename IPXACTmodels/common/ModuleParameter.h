@@ -66,6 +66,20 @@ public:
     void setUsageType(QString const& newUsageType);
 
     /*!
+     *  Get the data type definition attribute.
+     *
+     *      @return The data type definition.
+     */
+    QString getDataTypeDefinition() const;
+
+    /*!
+     *  Set the data type definition attribute.
+     *
+     *      @param [in] dataTypeDef    The new data type definition.
+     */
+    void setDataTypeDefinition(QString const& dataTypeDef);
+
+    /*!
      *  Get the presence.
      *
      *      @return The presence.

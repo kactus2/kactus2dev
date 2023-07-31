@@ -171,15 +171,6 @@ void BusDefGroup::onSystemNamesChanged()
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusDefGroup::onDescriptionChanged()
-//-----------------------------------------------------------------------------
-void BusDefGroup::onDescriptionChanged()
-{
-    //busDef_->setDescription(descriptionEditor_.toPlainText());
-    emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
 // Function: busdefgroup::onExtendChanged()
 //-----------------------------------------------------------------------------
 void BusDefGroup::onExtendChanged()
@@ -271,13 +262,13 @@ void BusDefGroup::setupExtendedBus()
     if (extendedBus)
     {
         extendBusDefinition(extendedBus);
-        //descriptionEditor_.setPlaceholderText(extendedBus->getDescription());
+        documentNameGroupEditor_.setPlaceholderDescription(extendedBus->getDescription());
 
         return;
     }
 
     removeBusExtension();
-    //descriptionEditor_.setPlaceholderText(QString());
+    documentNameGroupEditor_.setPlaceholderDescription(QString());
 }
 
 //-----------------------------------------------------------------------------

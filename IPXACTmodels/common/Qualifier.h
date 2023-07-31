@@ -92,6 +92,8 @@ public:
      */
     void setType(Type type);
 
+    void removeType(Type type);
+
     /*!
      *	Gets the qualifier types that have been set.
      *  
@@ -138,6 +140,15 @@ public:
      * 		@return Qualifier type.
      */
     static Type stringToType(QString const& typeString);
+
+    /*!
+     *	Converts a qualifier attribute name string to attribute.
+     *  
+     *      @param [in] attributeName	The attribute as string.
+     *		
+     * 		@return The converted attribute.
+     */
+    static Attribute stringToAttributeName(QString const& attributeName);
 
 private:
     //! The list of types assigned to this qualifier.

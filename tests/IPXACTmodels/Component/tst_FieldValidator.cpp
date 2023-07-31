@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
@@ -21,7 +23,7 @@
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 
@@ -39,6 +41,9 @@ private slots:
 
     void testIsPresentIsValid();
     void testIsPresentIsValid_data();
+
+    void testMemoryArrayIsValid();
+    void testMemoryArrayIsValid_data();
 
     void testBitOffsetIsValid();
     void testBitOffsetIsValid_data();
@@ -172,6 +177,64 @@ void tst_FieldValidator::testIsPresentIsValid_data()
     QTest::newRow("Real number isPresent  0.12 is invalid") << "0.12" << false;
     QTest::newRow("Text as isPresent is invalid") << "test" << false;
     QTest::newRow("String as isPresent is invalid") << "\"test\"" << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testMemoryArrayIsValid()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testMemoryArrayIsValid()
+{
+    QFETCH(QString, dimValue);
+    QFETCH(QString, indexVar);
+    QFETCH(QString, bitStride);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("testField");
+    
+    QSharedPointer<MemoryArray> memArray(new MemoryArray());
+    QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension({ dimValue, indexVar }));
+    if (dimValue.isEmpty() == false)
+    {
+        memArray->getDimensions()->append(dim);
+    }
+    memArray->setStride(bitStride);
+
+    testField->setMemoryArray(memArray);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
+
+    QCOMPARE(validator.hasValidMemoryArray(testField), isValid);
+
+    if (!isValid)
+    {
+        QList<QString> foundErrors;
+        validator.findErrorsIn(foundErrors, testField, "test");
+
+        QString expectedError = QObject::tr("No dimensions defined for memory array in test");
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testMemoryArrayIsValid_data()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testMemoryArrayIsValid_data()
+{
+    QTest::addColumn<QString>("dimValue");
+    QTest::addColumn<QString>("indexVar");
+    QTest::addColumn<QString>("bitStride");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Dimension exists is valid") << "8" << "i" << "8" << true;
+    QTest::newRow("Dimension doesn't exist is invalid") << "" << "" << "" << false;
 }
 
 //-----------------------------------------------------------------------------
@@ -334,7 +397,11 @@ void tst_FieldValidator::testResetTypeRefIsValid()
 
         QSharedPointer<QList<QSharedPointer<ResetType> > > componentResets(new QList<QSharedPointer<ResetType> >());
         componentResets->append(testReset);
-        validator.componentChange(componentResets);
+
+        QSharedPointer<Component> newComponent(new Component(VLNV(), Document::Revision::Std14));
+        newComponent->setResetTypes(componentResets);
+
+        validator.componentChange(newComponent);
     }
 
     bool resetValueIsValid = validator.hasValidResetValue(testField->getResets()->first());
@@ -422,7 +489,10 @@ void tst_FieldValidator::testMultipleResetTypeRefIsValid()
         new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     
-    validator.componentChange(availableResetTypes);
+    QSharedPointer<Component> dummyComponent(new Component(VLNV(), Document::Revision::Std14));
+    dummyComponent->setResetTypes(availableResetTypes);
+
+    validator.componentChange(dummyComponent);
 
     QCOMPARE(validator.hasValidResets(testField), isValid);
     if (!isValid)
@@ -874,7 +944,7 @@ bool tst_FieldValidator::errorIsNotFoundInErrorList(QString const& expectedError
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in errorlist:";
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in errorlist:";
         foreach(QString error, errorList)
         {
             qDebug() << error;

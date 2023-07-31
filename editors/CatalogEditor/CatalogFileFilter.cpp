@@ -10,11 +10,14 @@
 //-----------------------------------------------------------------------------
 
 #include "CatalogFileFilter.h"
+#include "CatalogFileColumns.h"
 
 //-----------------------------------------------------------------------------
 // Function: CatalogFileFilter::CatalogFileFilter()
 //-----------------------------------------------------------------------------
-CatalogFileFilter::CatalogFileFilter(QObject *parent): QSortFilterProxyModel(parent)
+CatalogFileFilter::CatalogFileFilter(Document::Revision docRevision, QObject *parent): 
+    QSortFilterProxyModel(parent),
+    docRevision_(docRevision)
 {
     setSortCaseSensitivity(Qt::CaseInsensitive);
 }
@@ -48,4 +51,17 @@ void CatalogFileFilter::onRemoveItem(QModelIndex const& index)
 void CatalogFileFilter::onOpenItem(QModelIndex const& index)
 {
     emit openItem(mapToSource(index));
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogFileFilter::filterAcceptsColumn()
+//-----------------------------------------------------------------------------
+bool CatalogFileFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+{
+    if (source_row == CatalogFileColumns::TYPE_DEFINITIONS && docRevision_ != Document::Revision::Std22)
+    {
+        return false;
+    }
+
+    return true;
 }

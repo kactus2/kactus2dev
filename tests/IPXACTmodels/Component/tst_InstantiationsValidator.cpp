@@ -20,7 +20,7 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -91,12 +91,12 @@ void tst_InstantiationsValidator::designInstantiationFail()
 //-----------------------------------------------------------------------------
 void tst_InstantiationsValidator::designInstantiationSuccess()
 {
-    LibraryMock* mockLibrary (new LibraryMock(this));
-
-    QSharedPointer<ConfigurableVLNVReference> vref( new
-        ConfigurableVLNVReference( VLNV::DESIGN, "vendori", "kurjasto", "nimi", "versio") );
-
-    QSharedPointer<Design> testDesign (new Design(*vref.data()));
+    LibraryMock* mockLibrary(new LibraryMock(this));
+	
+    QSharedPointer<ConfigurableVLNVReference> vref(new
+        ConfigurableVLNVReference(VLNV::DESIGN, "vendori", "kurjasto", "nimi", "versio"));
+	
+	QSharedPointer<Design> testDesign(new Design(*vref, Document::Revision::Std14));
     mockLibrary->addComponent(testDesign);
 
 	InstantiationsValidator validator(expressionParser_, fileSets_, parameterValidator_, mockLibrary);
@@ -144,13 +144,13 @@ void tst_InstantiationsValidator::designConfigurationInstantiationFail()
 //-----------------------------------------------------------------------------
 void tst_InstantiationsValidator::designConfigurationInstantiationSuccess()
 {
-    QSharedPointer<ConfigurableVLNVReference> vref( new
-        ConfigurableVLNVReference( VLNV::DESIGNCONFIGURATION, "vendori", "kurjasto", "nimi", "versio") );
+    LibraryMock* mockLibrary(new LibraryMock(this));
 
-    QSharedPointer<DesignConfiguration> testDesignConfiguration (new DesignConfiguration(*vref.data()));
+    QSharedPointer<ConfigurableVLNVReference> vref(new
+        ConfigurableVLNVReference(VLNV::DESIGNCONFIGURATION, "vendori", "kurjasto", "nimi", "versio"));
 
-    LibraryMock* mockLibrary (new LibraryMock(this));
-    mockLibrary->addComponent(testDesignConfiguration);
+    QSharedPointer<Design> testDesign(new Design(*vref, Document::Revision::Std14));
+    mockLibrary->addComponent(testDesign);
 
 	InstantiationsValidator validator(expressionParser_, fileSets_, parameterValidator_, mockLibrary);
 
@@ -183,7 +183,7 @@ void tst_InstantiationsValidator::baseCase()
     QSharedPointer<ComponentInstantiation> instantiation( new ComponentInstantiation ("testInstantiation"));
 
     QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 0 );
 	QVERIFY( validator.validateComponentInstantiation(instantiation) );
@@ -200,7 +200,7 @@ void tst_InstantiationsValidator::inexistingFileSet()
 	instantiation->getFileSetReferences()->append("joq");
 
 	QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 1 );
 	QVERIFY( !validator.validateComponentInstantiation(instantiation) );
@@ -219,7 +219,7 @@ void tst_InstantiationsValidator::failFileBuilder()
 	instantiation->getDefaultFileBuilders()->append(fbuilder);
 
 	QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 2 );
 	QVERIFY( !validator.validateComponentInstantiation(instantiation) );
@@ -242,7 +242,7 @@ void tst_InstantiationsValidator::failParameter()
 	instantiation->getParameters()->append(parameter);
 
 	QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 1 );
 	QVERIFY( !validator.validateComponentInstantiation(instantiation) );
@@ -267,7 +267,7 @@ void tst_InstantiationsValidator::failModuleParameter()
 	instantiation->getModuleParameters()->append(parameter);
 
 	QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 3 );
 	QVERIFY( !validator.validateComponentInstantiation(instantiation) );
@@ -310,10 +310,25 @@ void tst_InstantiationsValidator::succeedEveryting()
 	instantiation->getModuleParameters()->append(parameter2);
 
 	QVector<QString> errorList;
-	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test");
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
 
 	QCOMPARE( errorList.size(), 0 );
 	QVERIFY( validator.validateComponentInstantiation(instantiation) );
+
+	// Test runtime usage type only in std22.
+	parameter2->setUsageType("runtime");
+
+	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
+    QCOMPARE(errorList.size(), 1);
+    QVERIFY(!validator.validateComponentInstantiation(instantiation));
+
+	errorList.clear();
+	parameter2->setIsPresent("");
+
+    validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std22);
+    QCOMPARE(errorList.size(), 0);
+    QVERIFY(validator.validateComponentInstantiation(instantiation, Document::Revision::Std22));
+
 }
 
 QTEST_APPLESS_MAIN(tst_InstantiationsValidator)

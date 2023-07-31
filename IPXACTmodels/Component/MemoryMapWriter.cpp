@@ -38,13 +38,14 @@ MemoryMapWriter::~MemoryMapWriter()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapWriter::writeMemoryMap()
 //-----------------------------------------------------------------------------
-void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const
+void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, 
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:memoryMap"));
 
-	writeMemoryMapBase(writer, memoryMap);
+	writeMemoryMapBase(writer, memoryMap, docRevision);
 
-    writeMemoryRemaps(writer, memoryMap);
+    writeMemoryRemaps(writer, memoryMap, docRevision);
 
     writeAddressUnitBits(writer, memoryMap);
 
@@ -58,15 +59,16 @@ void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<Me
 //-----------------------------------------------------------------------------
 // Function: MemoryMapWriter::writeMemoryRemaps()
 //-----------------------------------------------------------------------------
-void MemoryMapWriter::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const
+void MemoryMapWriter::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, 
+    Document::Revision docRevision) const
 {
-    foreach (QSharedPointer<MemoryRemap> memoryRemap, *memoryMap->getMemoryRemaps())
+    for (auto const& memoryRemap : *memoryMap->getMemoryRemaps())
     {
         writer.writeStartElement(QStringLiteral("ipxact:memoryRemap"));
 
         writer.writeAttribute(QStringLiteral("state"), memoryRemap->getRemapState());
 
-        writeNameGroup(writer, memoryRemap);
+        writeNameGroup(writer, memoryRemap, docRevision);
 
         writeIsPresent(writer, memoryRemap->getIsPresent());
 

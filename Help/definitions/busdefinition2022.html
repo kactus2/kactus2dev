@@ -1,0 +1,75 @@
+<html>
+<head>
+    <link href="../style.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+    <h2>Bus Definition</h2>
+    <p>
+        Bus definitions are used to define bus connections in HW designs. Each bus interface of a component
+        must refer to a bus definition and connected bus interfaces must refer to the same bus definition.
+    
+    <p>
+        <b>Display name</b> is a short descriptive text for the bus definition. Can be used as an
+        identifier in GUI applications, for instance.
+    </p>
+    
+    <p>
+        <b>Short description</b> is a compact description of the bus definition.
+    </p>
+
+    <p>
+        <b>Description</b> is a text that describes further details, such as the purpose of the bus
+        and link to the specification.
+    </p>
+    
+    <p>
+        <b>Allow direct connections</b> defines if a bus interface can be directly connected to
+        a non-mirrored bus interface. If unselected, a bus interface can be connected only to
+        a mirrored bus interface of the same type e.g. master to mirrored-master and system to mirrored-system.
+    </p>
+
+    <p>
+        <b>Support broadcast</b> defines if a bus interface can be <b>directly</b> connected to more
+        than one opposing interface i.e. supports one-to-many connections.
+        Notice that bridges and mirrored connections are possible even when broadcasts are not supported.
+    </p>
+
+    <p>
+        <b>Addressable bus</b> defines if the bus has addressing information <b>and</b>
+        a memory map can be traced through a bus interface.
+    </p>
+
+    <p>
+        <b>Max initiators on bus</b> defines the maximum number of initiator bus interfaces connected to
+        the bus. If unspecified, the number of initiators is unbound.
+    </p>
+
+    <p>
+        <b>Max targets on bus</b> defines the maximum number of target bus interfaces connected to
+        the bus. If unspecified, the number of targets is unbound.
+    </p>
+
+    <p>
+        <b>System group names</b> defines the group names available for signals with the system mode.
+        In bus interface the selected system group limits the logical signals to those with the
+        matching system group name.
+    </p>
+
+    <p>
+        <b>Extended bus definition</b> allows the creation of a family of interconnectable bus definitions.
+        The following values of the bus interface are set to match the extended bus interface:
+    </p>
+    <ul>
+        <li>Allow non-mirrored connections</li>
+        <li>Support broadcast</li>
+        <li>Addressable bus</li>
+        <li>
+            System group names are modified to include the names given in the extended bus interface.
+            These cannot be removed or renamed in the bus definition.
+        </li>
+        <li>In addition, a placeholder for the description is given from the extended bus definition.</li>
+    </ul>
+
+    </p>
+</body>
+</html>

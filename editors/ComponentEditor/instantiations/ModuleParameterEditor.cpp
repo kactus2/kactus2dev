@@ -37,7 +37,7 @@
 ModuleParameterEditor::ModuleParameterEditor(QSharedPointer<ComponentInstantiation> instantiation,
     QSharedPointer<QList<QSharedPointer<Choice>>> componentChoices,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    ModuleParameterInterface* parameterInterface, QWidget* parent):
+    ModuleParameterInterface* parameterInterface, Document::Revision docRevision, QWidget* parent):
 QGroupBox(tr("Module parameters"), parent),
 proxy_(new QSortFilterProxyModel(this)),
 model_(0),
@@ -66,7 +66,7 @@ instantiation_(instantiation)
     parameterCompleter->setModel(parameterModel);
 
     view_->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
-        expressionFormatter, this));
+        expressionFormatter, docRevision, this));
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

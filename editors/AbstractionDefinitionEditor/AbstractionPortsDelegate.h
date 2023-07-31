@@ -20,6 +20,8 @@
 
 class BusDefinition;
 class LibraryInterface;
+class PortAbstractionInterface;
+class QualifierEditor;
 
 //-----------------------------------------------------------------------------
 //! Master delegate for abstraction definition wire and transactional ports.
@@ -34,9 +36,10 @@ public:
      *  The constructor.
 	 *
      *      @param [in] libraryAccess   Interface to the library.
+     *      @param [in] stdRevision     The revision of the standard used by the abstraction definition.
 	 *      @param [in] parent          The owner of this instance
      */
-    AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent);
+    AbstractionPortsDelegate(LibraryInterface* libraryAcces, Document::Revision stdRevision, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -80,11 +83,13 @@ public:
     void setBusDef(QSharedPointer<const BusDefinition> busDefinition);
 
     /*!
-     *	Modifies the editor depending on document standard revision.
+     *  Updates the qualifier editor geometry.
      *
-     *      @param [in] revision	The revision of the document standard.
+     *      @param [in] editor  The editor being updated.
+     *      @param [in] option  The options used to update the editor.
+     *      @param [in] index   The model index being edited.
      */
-    void setRevision(Document::Revision revision);
+    virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
 protected slots:
 
@@ -92,6 +97,11 @@ protected slots:
      *  Commit the data from the sending editor and close the editor.
 	 */
 	void commitAndCloseEditor();
+
+    /*!
+     *  Cancel editing, close editor.
+     */
+    void onEditingCanceled();
 
 protected:
 
@@ -119,6 +129,8 @@ protected:
      *      @return True, if the editor used in the selected column is a combo box editor, false otherwise.
      */
     virtual bool editorIsComboBox(int indexColumn) const;
+
+    Document::Revision stdRevision_;
 
 private:
 	//! No copying. No assignment.
@@ -158,6 +170,11 @@ private:
      *      @param [in] selectedItems   List of the selected enumerations.
      */
     virtual void setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const override final;
+
+    /*!
+     *	Set the interface mode options depending on std revision.
+     */
+    void setModeOptions();
 
     //-----------------------------------------------------------------------------
     // Data.

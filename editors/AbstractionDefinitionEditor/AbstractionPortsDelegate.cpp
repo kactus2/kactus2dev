@@ -10,14 +10,18 @@
 //-----------------------------------------------------------------------------
 
 #include "AbstractionPortsDelegate.h"
+#include "QualifierEditor.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/utilities/BusDefinitionUtils.h>
 
 #include <editors/AbstractionDefinitionEditor/LogicalPortColumns.h>
 
+
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
 
 #include <QComboBox>
 #include <QStringList>
@@ -26,12 +30,16 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, QObject *parent):
+AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, 
+    Document::Revision stdRevision, QObject *parent):
 EnumerationEditorConstructorDelegate(parent),
+stdRevision_(stdRevision),
 libraryAccess_(libraryAcces),
 busDefinition_(0)
 {
     setHideCheckAll(true);
+
+    setModeOptions();
 }
 
 //-----------------------------------------------------------------------------
@@ -89,6 +97,13 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    {
+        QualifierEditor* qualifierEditor = new QualifierEditor(parent);
+        connect(qualifierEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        connect(qualifierEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
+        return qualifierEditor;
+    }
     else
     {
         return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
@@ -128,6 +143,17 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
         {
             box->setCurrentText(text);
         }
+    }
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    {
+        QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
+        Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setEditorData",
+            "Type conversion failed for QualifierEditor");
+
+        auto allQualifiers = getAvailableItems();
+        auto setQualifier = index.data(Qt::UserRole).value<QualifierData>();
+
+        qualifierEditor->setupEditor(allQualifiers, setQualifier.activeQualifiers_, setQualifier.attributes_);
     }
 
     else
@@ -176,7 +202,17 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
 
         model->setData(index, selector->currentText(), Qt::EditRole);
     }
+    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    {
+        QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
+        Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setModelData", "Type conversion failed for qualifier editor");
 
+        auto qualifierData = qualifierEditor->getQualifierData();
+        QVariant qualifierAsVariant;
+        qualifierAsVariant.setValue(qualifierData);
+
+        model->setData(index, qualifierAsVariant, Qt::EditRole);
+    }
     else
     {
         EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
@@ -198,6 +234,18 @@ void AbstractionPortsDelegate::commitAndCloseEditor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::onEditingCanceled()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::onEditingCanceled()
+{
+    QWidget* edit = qobject_cast<QWidget*>(sender());
+    if (edit)
+    {
+        emit closeEditor(edit);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setBusDef()
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> busDefinition)
@@ -206,17 +254,55 @@ void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> bus
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::setRevision()
+// Function: AbstractionPortsDelegate::updateEditorGeometry()
 //-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setRevision(Document::Revision revision)
+void AbstractionPortsDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    if (revision == Document::Revision::Std22)
+    if (stdRevision_ != Document::Revision::Std22 || index.column() != LogicalPortColumns::QUALIFIER)
     {
-        modeOptions_ = { "initiator", "target", "system" };
+        return EnumerationEditorConstructorDelegate::updateEditorGeometry(editor, option, index);
+    }
+
+    int enumerationCount = getAvailableItems().count();
+    int editorMinimumHeight = 25 * (enumerationCount + 2);
+
+    int editorWidth = editor->sizeHint().width();
+    if (editorWidth < 150)
+    {
+        editorWidth = 150;
+    }
+    else if (editorWidth > 380)
+    {
+        editorWidth = 380;
+    }
+
+    editor->setFixedWidth(editorWidth);
+
+    const int PARENT_HEIGHT = editor->parentWidget()->height();
+    const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();
+
+    if (AVAILABLE_HEIGHT_BELOW > editorMinimumHeight)
+    {
+        editor->move(option.rect.topLeft());
     }
     else
     {
-        modeOptions_ = { "master", "slave", "system" };
+        int editorNewY = PARENT_HEIGHT - editorMinimumHeight;
+        if (editorNewY <= 0)
+        {
+            editorNewY = 0;
+        }
+
+        editor->move(option.rect.left(), editorNewY);
+    }
+
+    if (editorMinimumHeight > PARENT_HEIGHT)
+    {
+        editor->setFixedHeight(PARENT_HEIGHT);
+    }
+    else
+    {
+        editor->setFixedHeight(editorMinimumHeight);
     }
 }
 
@@ -226,6 +312,24 @@ void AbstractionPortsDelegate::setRevision(Document::Revision revision)
 QStringList AbstractionPortsDelegate::getQualifierList() const
 {
     QStringList list = { "address", "data", };
+    if (stdRevision_ != Document::Revision::Std22)
+    {
+        return list;
+    }
+
+    list << QStringLiteral("clock")
+        << QStringLiteral("reset")
+        << QStringLiteral("valid")
+        << QStringLiteral("interrupt")
+        << QStringLiteral("clock enable")
+        << QStringLiteral("power enable")
+        << QStringLiteral("opcode")
+        << QStringLiteral("protection")
+        << QStringLiteral("flow control")
+        << QStringLiteral("user")
+        << QStringLiteral("request")
+        << QStringLiteral("response");
+
     return list;
 }
 
@@ -264,4 +368,19 @@ QStringList AbstractionPortsDelegate::getAvailableItems() const
 void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
 {
     model->setData(index, selectedItems);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::setModeOptions()
+//-----------------------------------------------------------------------------
+void AbstractionPortsDelegate::setModeOptions()
+{
+    if (stdRevision_ == Document::Revision::Std22)
+    {
+        modeOptions_ = { "initiator", "target", "system" };
+    }
+    else
+    {
+        modeOptions_ = { "master", "slave", "system" };
+    }
 }

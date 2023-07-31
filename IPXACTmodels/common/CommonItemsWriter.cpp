@@ -100,16 +100,15 @@ void CommonItemsWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<QL
 // Function: CommonItemsWriter::writeChoices()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writeParameters(QXmlStreamWriter& writer,
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters)
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, Document::Revision docRevision)
 {
     if (!parameters->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:parameters"));
 
-        ParameterWriter parameterWriter;
         for (auto const& parameter : *parameters)
         {
-            parameterWriter.writeParameter(writer, parameter);
+            ParameterWriter::writeParameter(writer, parameter, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:parameters
@@ -260,6 +259,14 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
         writer.writeCharacters(QStringLiteral("true"));
         
         writer.writeEndElement();
+    }
+    if (qualifier->hasType(Qualifier::Valid))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isValid"), QStringLiteral("true"));
+    }
+    if (qualifier->hasType(Qualifier::Interrupt))
+    {
+        writer.writeTextElement(QStringLiteral("ipxact:isInterrupt"), QStringLiteral("true"));
     }
     if (qualifier->hasType(Qualifier::ClockEnable))
     {

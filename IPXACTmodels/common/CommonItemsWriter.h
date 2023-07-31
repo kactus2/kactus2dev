@@ -12,6 +12,8 @@
 #ifndef COMMONITEMSWRITER_H
 #define COMMONITEMSWRITER_H
 
+#include "Document.h"
+
 #include <QSharedPointer>
 #include <QXmlStreamWriter>
 
@@ -95,8 +97,11 @@ public:
      *
      *      @param [in] writer      The used XML writer.
      *      @param [in] parameters  A list of the parameters to be written.
+     *      @param [in] docRevision The document std revision.
      */
-    static void writeParameters(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters);
+    static void writeParameters(QXmlStreamWriter& writer, 
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        Document::Revision docRevision = Document::Revision::Std14);
 
     /*!
      *  Writes the vendor extensions of a given element into XML.

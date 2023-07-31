@@ -78,9 +78,8 @@ QSharedPointer<Document> DocumentFileAccess::readDocument(QString const& path)
         return BusDefinitionReader::createBusDefinitionFrom(doc);
     }
     else if (toCreate == VLNV::CATALOG)
-    {
-        CatalogReader reader;
-        return reader.createCatalogFrom(doc);
+    {   
+        return CatalogReader::createCatalogFrom(doc);
     }
     else if (toCreate == VLNV::COMPONENT)
     {
@@ -140,9 +139,8 @@ bool DocumentFileAccess::writeDocument(QSharedPointer<Document> model, QString c
     }
     else if (documentType == VLNV::CATALOG)
     {
-        CatalogWriter writer;
         QSharedPointer<Catalog> catalog = model.dynamicCast<Catalog>();
-        writer.writeCatalog(xmlWriter, catalog);
+        CatalogWriter::writeCatalog(xmlWriter, catalog);
     }
     else if (documentType == VLNV::COMPONENT)
     {
