@@ -44,6 +44,7 @@ private slots:
     void testWriteVendorExtensions();
     void testWriteAbstractionReference();
     void testWritePortMaps();
+    void testWritePortMaps2022();
     void testWriteMaster();
     void testWriteSlave();
     void testWriteSystem();
@@ -502,6 +503,98 @@ void tst_businterfaceWriter::testWritePortMaps()
 		"</ipxact:busInterface>"
 		);
 	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std14);
+
+	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceWriter::testWritePortMaps2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceWriter::testWritePortMaps2022()
+{
+	QString output;
+	QXmlStreamWriter xmlStreamWriter(&output);
+
+	QSharedPointer<AbstractionType> abstractionType(new AbstractionType());
+    abstractionType->setAbstractionRef(QSharedPointer<ConfigurableVLNVReference>(
+        new ConfigurableVLNVReference(VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "testName", "1.0")));
+
+	QSharedPointer<PortMap::LogicalPort> logicalPort(new PortMap::LogicalPort());
+    logicalPort->name_ = "CLK";
+    logicalPort->range_ = QSharedPointer<Range>(new Range("testLeft", "testRight"));
+
+	QSharedPointer<PortMap::PhysicalPort> physicalPort(new PortMap::PhysicalPort() );
+	physicalPort->name_ = "clk_physical";
+	physicalPort->partSelect_ = QSharedPointer<PartSelect>(new PartSelect("testLeft", "testRight"));
+
+	QSharedPointer<QStringList> indices(new QStringList());
+	indices->append("index1");
+	indices->append("index2");
+	physicalPort->partSelect_->setIndices(indices);
+
+	QSharedPointer<PortMap> portMap(new PortMap());
+	portMap->setLogicalPort(logicalPort);
+	portMap->setPhysicalPort(physicalPort);    
+	portMap->getVendorExtensions()->append(QSharedPointer<VendorExtension>(new Kactus2Value("testExtension", "testValue")));
+    abstractionType->getPortMaps()->append(portMap);
+
+    QSharedPointer<PortMap> tiedPortMap(new PortMap());
+    tiedPortMap->setLogicalPort(logicalPort);
+    tiedPortMap->setLogicalTieOff("tieoffValue");
+    abstractionType->getPortMaps()->append(tiedPortMap);
+
+    testbusinterface_->getAbstractionTypes()->append(abstractionType);
+
+    QString expectedOutput(
+		"<ipxact:busInterface>"
+    		"<ipxact:name>testbusinterface</ipxact:name>"
+	    	"<ipxact:busType vendor=\"\" library=\"\" name=\"\" version=\"\"/>"
+    		"<ipxact:abstractionTypes>"
+    	    	"<ipxact:abstractionType>"
+                    "<ipxact:abstractionRef vendor=\"testVendor\" library=\"testLibrary\" name=\"testName\" "
+                        "version=\"1.0\"/>"
+    	    	    "<ipxact:portMaps>"
+                		"<ipxact:portMap>"
+                    		"<ipxact:logicalPort>"
+                        		"<ipxact:name>CLK</ipxact:name>"
+                        		"<ipxact:range>"
+                            		"<ipxact:left>testLeft</ipxact:left>"
+                            		"<ipxact:right>testRight</ipxact:right>"
+                        		"</ipxact:range>"
+                    		"</ipxact:logicalPort>"
+                    		"<ipxact:physicalPort>"
+                        		"<ipxact:name>clk_physical</ipxact:name>"
+                        		"<ipxact:partSelect>"
+                            		"<ipxact:range>"
+                                		"<ipxact:left>testLeft</ipxact:left>"
+                                		"<ipxact:right>testRight</ipxact:right>"
+                            		"</ipxact:range>"
+                            		"<ipxact:indices>"
+                                		"<ipxact:index>index1</ipxact:index>"
+                                		"<ipxact:index>index2</ipxact:index>"
+                            		"</ipxact:indices>"
+                        		"</ipxact:partSelect>"
+                    		"</ipxact:physicalPort>"
+							"<ipxact:vendorExtensions>"
+								"<testExtension>testValue</testExtension>"
+							"</ipxact:vendorExtensions>"
+                		"</ipxact:portMap>"
+                        "<ipxact:portMap>"
+                            "<ipxact:logicalPort>"
+                                "<ipxact:name>CLK</ipxact:name>"
+                                "<ipxact:range>"
+                                    "<ipxact:left>testLeft</ipxact:left>"
+                                    "<ipxact:right>testRight</ipxact:right>"
+                                "</ipxact:range>"
+                            "</ipxact:logicalPort>"
+                            "<ipxact:logicalTieOff>tieoffValue</ipxact:logicalTieOff>"
+                        "</ipxact:portMap>"
+            		"</ipxact:portMaps>"
+        		"</ipxact:abstractionType>"
+    		"</ipxact:abstractionTypes>"
+		"</ipxact:busInterface>"
+		);
+	BusInterfaceWriter::writeBusInterface(xmlStreamWriter, testbusinterface_, Document::Revision::Std22);
 
 	QCOMPARE(output, expectedOutput);
 }

@@ -18,13 +18,14 @@
 #include <IPXACTmodels/common/PartSelect.h>
 
 #include <IPXACTmodels/common/BooleanValue.h>
+#include <IPXACTmodels/common/Extendable.h>
 
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
 //! Implementation for ipxact:portMap.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT PortMap
+class IPXACTMODELS_EXPORT PortMap : public Extendable 
 {
 public:
 
@@ -174,10 +175,10 @@ private:
     QString isPresent_;
 
 	//! The logical port in the port map.
-	QSharedPointer<LogicalPort> logicalPort_;
+	QSharedPointer<LogicalPort> logicalPort_ = nullptr;
 
     //! The physical port in the port map.
-    QSharedPointer<PhysicalPort> physicalPort_;
+    QSharedPointer<PhysicalPort> physicalPort_ = nullptr;
          
 	//! The logical tie off.
 	QString logicalTieOff_;

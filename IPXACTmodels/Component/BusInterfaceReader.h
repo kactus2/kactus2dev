@@ -83,9 +83,10 @@ namespace BusinterfaceReader
          *
          *      @param [in] businterfaceElement The potential XML-node to yield abstraction types.
          *      @param [in] busInterface        The new businterface item.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
          */
         void parseAbstractionTypes(QDomElement const& businterfaceElement,
-            QSharedPointer<BusInterface> busInterface);
+            QSharedPointer<BusInterface> busInterface, Document::Revision docRevision);
 
         /*!
          *  Reads the view references.
@@ -101,8 +102,10 @@ namespace BusinterfaceReader
          *
          *      @param [in] inspected			The potential XML-node to yield abstraction types.
          *      @param [in] abstractionType	    The object that will receive extracted port maps as a field.
+         *      @param [in] docRevision         The applied IP-XACT standard revision.
          */
-        void parsePortMaps(QDomElement const& portMapsElement, QSharedPointer<AbstractionType> abstractionType);
+        void parsePortMaps(QDomElement const& portMapsElement, QSharedPointer<AbstractionType> abstractionType,
+            Document::Revision docRevision);
 
         /*!
          *  Extracts a logical port from parameter logicalPortElement and sets it to parameter portMap.

@@ -47,7 +47,7 @@ void BusInterfaceWriter::writeBusInterface(QXmlStreamWriter& writer, QSharedPoin
     writer.writeEmptyElement(QStringLiteral("ipxact:busType"));
     CommonItemsWriter::writeVLNVAttributes(writer, businterface->getBusType());
 
-    Details::writeAbstractionTypes(writer, businterface);
+    Details::writeAbstractionTypes(writer, businterface, docRevision);
 
     Details::writeInterfaceMode(writer, businterface);
 
@@ -127,7 +127,7 @@ void BusInterfaceWriter::Details::writeBitSteering(QXmlStreamWriter& writer,
 // Function: BusInterfaceWriter::writeAbstractionTypes()
 //-----------------------------------------------------------------------------
 void BusInterfaceWriter::Details::writeAbstractionTypes(QXmlStreamWriter& writer,
-    QSharedPointer<BusInterface> businterface)
+    QSharedPointer<BusInterface> businterface, Document::Revision docRevision)
 {
     if (!businterface->getAbstractionTypes()->isEmpty())
 	{
@@ -148,7 +148,7 @@ void BusInterfaceWriter::Details::writeAbstractionTypes(QXmlStreamWriter& writer
                 CommonItemsWriter::writeVLNVAttributes(writer, *abstractionType->getAbstractionRef());
             }
 
-            writePortMaps(writer, abstractionType);
+            writePortMaps(writer, abstractionType, docRevision);
 
 			writer.writeEndElement(); // ipxact:abstractionType
 		}
@@ -161,7 +161,7 @@ void BusInterfaceWriter::Details::writeAbstractionTypes(QXmlStreamWriter& writer
 // Function: BusInterfaceWriter::writePortMaps()
 //-----------------------------------------------------------------------------
 void BusInterfaceWriter::Details::writePortMaps(QXmlStreamWriter& writer,
-    QSharedPointer<AbstractionType> abstractionType)
+    QSharedPointer<AbstractionType> abstractionType, Document::Revision docRevision)
 {
     if (!abstractionType->getPortMaps()->isEmpty())
     {
@@ -173,7 +173,10 @@ void BusInterfaceWriter::Details::writePortMaps(QXmlStreamWriter& writer,
 
             CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("invert"), portMap->getInvert().toString());
 
-            CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), portMap->getIsPresent());
+            if (docRevision == Document::Revision::Std14)
+            {
+                CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:isPresent"), portMap->getIsPresent());
+            }
 
             // Write ports for the port map.
             if (portMap->getLogicalPort())
@@ -189,6 +192,11 @@ void BusInterfaceWriter::Details::writePortMaps(QXmlStreamWriter& writer,
                 QStringLiteral("ipxact:logicalTieOff"), portMap->getLogicalTieOff());
             CommonItemsWriter::writeNonEmptyElement(writer,
                 QStringLiteral("ipxact:isInformative"), portMap->getIsInformative().toString());
+
+            if (docRevision == Document::Revision::Std22)
+            {
+                CommonItemsWriter::writeVendorExtensions(writer, portMap);
+            }
 
             writer.writeEndElement();
         }

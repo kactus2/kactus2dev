@@ -17,12 +17,7 @@
 // Function: PortMap::PortMap()
 //-----------------------------------------------------------------------------
 PortMap::PortMap(): 
-invert_(),
-isPresent_(),
-logicalPort_(),
-physicalPort_(),
-logicalTieOff_(),
-isInformative_()
+    Extendable()
 {
 
 }
@@ -31,10 +26,9 @@ isInformative_()
 // Function: PortMap::PortMap()
 //-----------------------------------------------------------------------------
 PortMap::PortMap(PortMap const& other): 
+    Extendable(other),
 invert_(other.invert_),
 isPresent_(other.isPresent_),
-logicalPort_(),
-physicalPort_(),
 logicalTieOff_(other.logicalTieOff_),
 isInformative_(other.isInformative_)
 {
@@ -70,17 +64,18 @@ PortMap& PortMap::operator=(PortMap const& other)
 {
     if (this != &other)
     {
+        Extendable::operator=(other);
+
         invert_ = other.invert_;
         isPresent_ = other.isPresent_;
 
         logicalPort_.clear();
-        logicalPort_ = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort(*other.logicalPort_.data()));
+        logicalPort_ = QSharedPointer<PortMap::LogicalPort>(new PortMap::LogicalPort(*other.logicalPort_));
         
         physicalPort_.clear();
         if (!other.getPhysicalPort().isNull())
         {  
-            physicalPort_ = QSharedPointer<PortMap::PhysicalPort>(new PortMap::PhysicalPort(
-                *other.physicalPort_.data()));
+            physicalPort_ = QSharedPointer<PortMap::PhysicalPort>(new PortMap::PhysicalPort(*other.physicalPort_));
         }
       
         logicalTieOff_ = other.logicalTieOff_;

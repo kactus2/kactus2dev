@@ -75,17 +75,21 @@ namespace BusInterfaceWriter
 		 *  Write the abstraction types of businterface.
 		 *
 		 *      @param [in] writer				The used xml writer.
-		 *      @param [in] businterface		The businterface to be written.
+         *      @param [in] businterface		The businterface to be written.
+         *      @param [in] docRevision			The applied IP-XACT standard revision.
 		 */
-		void writeAbstractionTypes(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface);
+		void writeAbstractionTypes(QXmlStreamWriter& writer, QSharedPointer<BusInterface> businterface,
+			Document::Revision docRevision);
 
 		/*!
 		 *  Write the port maps of an abstraction type.
 		 *
 		 *      @param [in] writer				The used xml writer.
-		 *      @param [in] abstractionType		The abstraction type whose port maps to write.
+         *      @param [in] abstractionType		The abstraction type whose port maps to write.
+		 *      @param [in] docRevision			The applied IP-XACT standard revision.
 		 */
-		void writePortMaps(QXmlStreamWriter& writer, QSharedPointer<AbstractionType> abstractionType);
+		void writePortMaps(QXmlStreamWriter& writer, QSharedPointer<AbstractionType> abstractionType,
+			Document::Revision docRevision);
 
 		/*!
 		 *  Write the logical port of port map.

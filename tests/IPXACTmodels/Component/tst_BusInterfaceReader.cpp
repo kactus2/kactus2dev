@@ -56,7 +56,8 @@ private slots:
 	void testReadParameters();
 	void testReadVendorExtensions();
 	void testReadAbstractionReference();
-	void testReadPortMaps();
+    void testReadPortMaps();
+    void testReadPortMaps2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -482,13 +483,13 @@ void tst_businterfaceReader::testReadMirroredTarget2022()
 
     QCOMPARE(firstRemapAddress->remapAddress_, QString("'h0000"));
     QCOMPARE(firstRemapAddress->modeRefs_, QStringList({ "firstMode", "secondMode" }));
+    QCOMPARE(firstRemapAddress->priorities_.value("secondMode"), 2);
 
     QSharedPointer<MirroredTargetInterface::RemapAddress> secondRemapAddress =
         testbusinterface->getMirroredSlave()->getRemapAddresses()->last();
 
 	QCOMPARE(secondRemapAddress->remapAddress_, QString("'hFFFF"));
     QCOMPARE(secondRemapAddress->modeRefs_, QStringList({ "firstMode" }));
-    QCOMPARE(secondRemapAddress->priority_.value("secondMode"), 2);
 
 	QCOMPARE(testbusinterface->getMirroredSlave()->getRange(), QString("'h00010000"));
 }
@@ -764,6 +765,7 @@ void tst_businterfaceReader::testReadPortMaps()
 		        "<ipxact:abstractionType>"
 		            "<ipxact:portMaps>"
 		                "<ipxact:portMap>"
+		                    "<ipxact:isPresent>1</ipxact:isPresent>"
 		                    "<ipxact:logicalPort>"
 		                        "<ipxact:name>CLK</ipxact:name>"
 		                        "<ipxact:range>"
@@ -801,6 +803,9 @@ void tst_businterfaceReader::testReadPortMaps()
         Document::Revision::Std14);
 
     QSharedPointer<PortMap> portMap = testbusinterface->getAbstractionTypes()->first()->getPortMaps()->first();
+    
+	QCOMPARE(portMap->getIsPresent(), QString("1"));
+
 	QCOMPARE(portMap->getLogicalPort()->name_, QString("CLK"));
 	QCOMPARE(portMap->getLogicalPort()->range_->getLeft(), QString("leftRangeTest"));
 	QCOMPARE(portMap->getLogicalPort()->range_->getRight(), QString("rightRangeTest"));
@@ -814,6 +819,74 @@ void tst_businterfaceReader::testReadPortMaps()
 	QCOMPARE(indices->last(), QString("0"));
 
 	QCOMPARE(portMap->getLogicalTieOff(), QString("eoae") );
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_businterfaceReader::testReadPortMaps2022()
+//-----------------------------------------------------------------------------
+void tst_businterfaceReader::testReadPortMaps2022()
+{
+	QString documentContent(
+		"<ipxact:busInterface>"
+		    "<ipxact:abstractionTypes>"
+		        "<ipxact:abstractionType>"
+		            "<ipxact:portMaps>"
+		                "<ipxact:portMap>"
+		                    "<ipxact:logicalPort>"
+		                        "<ipxact:name>CLK</ipxact:name>"
+		                        "<ipxact:range>"
+		                            "<ipxact:left>leftRangeTest</ipxact:left>"
+		                            "<ipxact:right>rightRangeTest</ipxact:right>"
+		                        "</ipxact:range>"
+		                    "</ipxact:logicalPort>"
+		                    "<ipxact:physicalPort>"
+		                        "<ipxact:name>clk_physical</ipxact:name>"
+		                        "<ipxact:partSelect>"
+		                            "<ipxact:range>"
+		                                "<ipxact:left>leftTest</ipxact:left>"
+		                                "<ipxact:right>rightTest</ipxact:right>"
+		                            "</ipxact:range>"
+		                            "<ipxact:indices>"
+		                                "<ipxact:index>index1</ipxact:index>"
+		                                "<ipxact:index>0</ipxact:index>"
+		                            "</ipxact:indices>"
+		                        "</ipxact:partSelect>"
+		                    "</ipxact:physicalPort>"
+		                    "<ipxact:logicalTieOff>none</ipxact:logicalTieOff>"
+							"<ipxact:vendorExtensions>"
+        						"<testExtension testAttribute=\"attributeValue\"/>"
+							"</ipxact:vendorExtensions>"
+		                "</ipxact:portMap>"
+		            "</ipxact:portMaps>"
+		        "</ipxact:abstractionType>"
+		    "</ipxact:abstractionTypes>"
+		"</ipxact:busInterface>"
+		);
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode businterfaceNode = document.firstChildElement("ipxact:busInterface");
+
+    QSharedPointer<BusInterface> testbusinterface = BusinterfaceReader::createBusinterfaceFrom(businterfaceNode,
+        Document::Revision::Std22);
+
+    QSharedPointer<PortMap> portMap = testbusinterface->getAbstractionTypes()->first()->getPortMaps()->first();
+
+	QCOMPARE(portMap->getLogicalPort()->name_, QString("CLK"));
+	QCOMPARE(portMap->getLogicalPort()->range_->getLeft(), QString("leftRangeTest"));
+	QCOMPARE(portMap->getLogicalPort()->range_->getRight(), QString("rightRangeTest"));
+
+	QCOMPARE(portMap->getPhysicalPort()->name_, QString("clk_physical"));
+	QCOMPARE(portMap->getPhysicalPort()->partSelect_->getLeftRange(), QString("leftTest"));
+	QCOMPARE(portMap->getPhysicalPort()->partSelect_->getRightRange(), QString("rightTest"));
+
+	QSharedPointer<QStringList > indices = portMap->getPhysicalPort()->partSelect_->getIndices();
+	QCOMPARE(indices->first(), QString("index1"));
+	QCOMPARE(indices->last(), QString("0"));
+
+    QCOMPARE(portMap->getLogicalTieOff(), QString("none"));
+    QCOMPARE(portMap->getVendorExtensions()->count(), 1);
 }
 
 QTEST_APPLESS_MAIN(tst_businterfaceReader)

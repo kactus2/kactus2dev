@@ -47,7 +47,7 @@ QSharedPointer<BusInterface> BusinterfaceReader::createBusinterfaceFrom(QDomNode
     
     Details::parseBusType(businterfaceElement, newbusinterface);
 
-    Details::parseAbstractionTypes(businterfaceElement, newbusinterface);
+    Details::parseAbstractionTypes(businterfaceElement, newbusinterface, docRevision);
 
     Details::parseInterfaceMode(businterfaceElement, newbusinterface, docRevision);
 
@@ -146,7 +146,7 @@ void BusinterfaceReader::Details::parseEndianess(QDomElement& businterfaceElemen
 // Function: BusinterfaceReader::readAbstractionTypes()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parseAbstractionTypes(QDomElement const& businterfaceElement,
-    QSharedPointer<BusInterface> busInterface)
+    QSharedPointer<BusInterface> busInterface, Document::Revision docRevision)
 {
     auto abstractionTypesElement = businterfaceElement.firstChildElement(QStringLiteral("ipxact:abstractionTypes"));
 
@@ -166,7 +166,7 @@ void BusinterfaceReader::Details::parseAbstractionTypes(QDomElement const& busin
             VLNV::ABSTRACTIONDEFINITION));
 
         QDomElement portMapsElement = abstractionNode.firstChildElement(QStringLiteral("ipxact:portMaps"));
-        parsePortMaps(portMapsElement, newAbstractionType);
+        parsePortMaps(portMapsElement, newAbstractionType, docRevision);
 
         busInterface->getAbstractionTypes()->append(newAbstractionType);
 	}
@@ -201,7 +201,7 @@ void BusinterfaceReader::Details::parseViewReferences(QDomNode const& abstractio
 // Function: BusinterfaceReader::parsePortMaps()
 //-----------------------------------------------------------------------------
 void BusinterfaceReader::Details::parsePortMaps(QDomElement const& portMapsElement,
-    QSharedPointer<AbstractionType> abstractionType)
+    QSharedPointer<AbstractionType> abstractionType, Document::Revision docRevision)
 {
     QDomNodeList portMapNodes = portMapsElement.elementsByTagName(QStringLiteral("ipxact:portMap"));
 
@@ -217,10 +217,11 @@ void BusinterfaceReader::Details::parsePortMaps(QDomElement const& portMapsEleme
             portMap->setInvert(portMapElement.attribute(QStringLiteral("invert")) == QLatin1String("true"));
         }
 
-        QDomElement isPresentElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isPresent"));
-
-        portMap->setIsPresent(isPresentElement.firstChild().nodeValue());
-
+        if (docRevision == Document::Revision::Std14)
+        {
+            QDomElement isPresentElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isPresent"));
+            portMap->setIsPresent(isPresentElement.firstChild().nodeValue());
+        }
 
         parseLogicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:logicalPort")), portMap);
         parsePhysicalPort(portMapElement.firstChildElement(QStringLiteral("ipxact:physicalPort")), portMap);
@@ -234,6 +235,10 @@ void BusinterfaceReader::Details::parsePortMaps(QDomElement const& portMapsEleme
 
         portMap->setIsInformative(isInformativeElement.firstChild().nodeValue() == QLatin1String("true"));
 
+        if (docRevision == Document::Revision::Std22)
+        {
+            CommonItemsReader::parseVendorExtensions(portMapElement, portMap);
+        }
 
         abstractionType->getPortMaps()->append(portMap);
     }
