@@ -121,7 +121,8 @@ void BusInterfaceInterface::setupSubInterfaces(std::string const& busName)
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
     if (selectedBus)
     {
-        if (selectedBus->getInterfaceMode() == General::SLAVE)
+        auto mode = selectedBus->getInterfaceMode();
+        if (mode == General::SLAVE || mode == General::TARGET)
         {
             bridgeInterface_->setBridges(selectedBus->getSlave()->getBridges());
         }

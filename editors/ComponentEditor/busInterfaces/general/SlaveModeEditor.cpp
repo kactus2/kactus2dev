@@ -138,7 +138,7 @@ void SlaveModeEditor::onMemoryMapSelected(bool checked)
             bridgesSelector_.setChecked(false);
         }
     }
-    else if (!checked && !QString::fromStdString(busInterface->getMemoryMapReference(getBusName())).isEmpty())
+    else if (!checked && !busInterface->getMemoryMapReference(getBusName()).empty())
     {
         memoryMapSelector_.setChecked(true);
     }

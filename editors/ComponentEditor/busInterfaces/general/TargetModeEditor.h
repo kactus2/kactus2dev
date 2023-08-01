@@ -136,7 +136,7 @@ private:
 	ReferenceSelector memoryMapReferenceSelector_;
 
     //! List of available transparent bridges.
-    QSharedPointer<QList<QSharedPointer<TransparentBridge> > > slaveBridges_;
+    QSharedPointer<QList<QSharedPointer<TransparentBridge> > > targetBridges_;
 
 	//! The editor to edit the bridges of a slave interface.
 	BridgesEditor bridges_;

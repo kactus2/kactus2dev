@@ -40,8 +40,8 @@ TargetModeEditor::TargetModeEditor(BusInterfaceInterface* busInterface, std::str
     memoryMapSelector_(tr("Memory map"), this),
     bridgesSelector_(tr("Transparent bridge"), this),
     memoryMapReferenceSelector_(this),
-    slaveBridges_(busInterface->getBridges(busName)),
-    bridges_(busInterface, slaveBridges_, this),
+    targetBridges_(busInterface->getBridges(busName)),
+    bridges_(busInterface, targetBridges_, this),
     modeReferences_(tr("Modes"), this),
     fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), this)
 {
@@ -60,9 +60,13 @@ TargetModeEditor::TargetModeEditor(BusInterfaceInterface* busInterface, std::str
     connect(&memoryMapSelector_, SIGNAL(toggled(bool)), &memoryMapReferenceSelector_, SLOT(setVisible(bool)));
     connect(&memoryMapSelector_, SIGNAL(toggled(bool)), &modeReferences_, SLOT(setVisible(bool)));
 
+
     connect(&bridgesSelector_, SIGNAL(clicked(bool)),
         this, SLOT(onTransparentBridgeSelected(bool)), Qt::UniqueConnection);
     connect(&bridgesSelector_, SIGNAL(toggled(bool)), &bridges_, SLOT(setVisible(bool)));
+
+    connect(&memoryMapReferenceSelector_, SIGNAL(itemSelected(QString const&)),
+        this, SLOT(onMemoryMapChange(QString const&)), Qt::UniqueConnection);
 	
     connect(&fileSetRefs_, SIGNAL(contentChanged()),
         this, SLOT(onFileSetReferencesChanged()), Qt::UniqueConnection);
@@ -141,7 +145,7 @@ void TargetModeEditor::onMemoryMapSelected(bool checked)
             bridgesSelector_.setChecked(false);
         }
     }
-    else if (!checked && !QString::fromStdString(busInterface->getMemoryMapReference(getBusName())).isEmpty())
+    else if (!checked && !busInterface->getMemoryMapReference(getBusName()).empty())
     {
         memoryMapSelector_.setChecked(true);
     }
@@ -157,19 +161,19 @@ void TargetModeEditor::onTransparentBridgeSelected(bool checked)
 
     if (checked)
     {
-        if (!QString::fromStdString(busInterface->getMemoryMapReference(busName)).isEmpty())
+        if (busInterface->getMemoryMapReference(busName).empty() == false)
         {
             bridgesSelector_.setChecked(false);
         }
         else
         {
-            memoryMapSelector_.setChecked(false);
+            memoryMapSelector_.setChecked(false);    
         }
-
-        if (!slaveBridges_)
+        
+        if (!targetBridges_)
         {
-            slaveBridges_ = busInterface->createBridges(busName);
-            bridges_.setupBridges(slaveBridges_);
+            targetBridges_ = busInterface->createBridges(busName);
+            bridges_.setupBridges(targetBridges_);
         }
     }
     else if (!checked && busInterface->getBridgeInterface()->itemCount() > 0)
