@@ -6,7 +6,8 @@
 // Date: 26.7.2023
 //
 // Description:
-// Reference to a field in the encapsulating component.
+// Reference to a field in the encapsulating component. Describes the elements 
+// in the fieldReferenceGroup group.
 //-----------------------------------------------------------------------------
 
 #ifndef FIELDREFERENCE_H
@@ -38,13 +39,19 @@ public:
     };
 
     //! Reference with indices.
-    struct IndexedReference
+    struct IPXACTMODELS_EXPORT IndexedReference
     {
         //! The reference.
         QString reference_;
 
         //! The indices of the reference. Is empty for references without indices.
         QList<QString> indices_;
+
+        IndexedReference() = default;
+
+        IndexedReference(QString const& reference, QList<QString> const& indices);
+        
+        IndexedReference(IndexedReference const& other);
     };
 
     /*!

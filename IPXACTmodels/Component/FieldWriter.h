@@ -51,11 +51,17 @@ namespace FieldWriter
         /*!
          *	Write the field memory array.
          *  
-     *      @param [in] writer  The used xml writer.
-     *      @param [in] field   The field to be written.
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] field   The field to be written.
          */
         void writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<Field> field, Document::Revision docRevision);
 
+        /*!
+         *	Write the field definition reference.
+         *  
+         *      @param [in] writer     The used XML writer.
+         *      @param [in] field      The field to be written.
+         */
         void writeFieldDefinitionRef(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
         /*!
@@ -139,19 +145,29 @@ namespace FieldWriter
          */
         void writeReserved(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
+        /*!
+         *	Write field data using 2014 standard revision.
+         *  
+         *      @param [in] writer  Used XML writer.
+         *      @param [in] field   The selected field item.
+         */
         void writeFieldData2014(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
+        /*!
+         *	Write field data using 2022 standard revision.
+         *  
+         *      @param [in] writer  Used XML writer.
+         *      @param [in] field   The selected field item.
+         */
         void writeFieldData2022(QXmlStreamWriter& writer, QSharedPointer<Field> field);
 
+        /*!
+         *	Write the field reference, i.e. ipxact:aliasOf.
+         *  
+         *      @param [in] writer  Used XML writer.
+         *      @param [in] field   The selected field item.
+         */
         void writeFieldReference(QXmlStreamWriter& writer, QSharedPointer<Field> field);
-
-        void writeMultipleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference> fieldReference,
-            FieldReference::Type refType);
-        
-        void writeSingleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference,
-            FieldReference::Type refType);
-
-        void writeFieldReferenceIndices(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference);
     }
 };
 

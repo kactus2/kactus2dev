@@ -15,6 +15,7 @@
 #include "EnumeratedValue.h"
 #include "WriteValueConstraint.h"
 #include "MemoryArrayReader.h"
+#include "FieldReferenceReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
@@ -237,62 +238,10 @@ void FieldReader::Details::parseVolatile(QDomElement const& fieldElement, QShare
 void FieldReader::Details::parseFieldReference(QDomElement const& fieldElement, QSharedPointer<Field> newField)
 {
     QDomElement rootReferenceElement = fieldElement.firstChildElement(QStringLiteral("ipxact:aliasOf"));
-    if (rootReferenceElement.isNull())
-    {
-        return;
-    }
-
-    QSharedPointer<FieldReference> newFieldReference(new FieldReference());
-
-    auto const& referenceElements = rootReferenceElement.childNodes();
-
-    for (auto i = 0; i < referenceElements.size(); ++i)
-    {
-        Details::parseFieldReferenceCollection(referenceElements.at(i), newFieldReference);
-    }
+    
+    auto newFieldReference = FieldReferenceReader::createFieldReferenceFrom(rootReferenceElement);
 
     newField->setFieldReference(newFieldReference);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldReader::Details::parseFieldReferenceCollection()
-//-----------------------------------------------------------------------------
-void FieldReader::Details::parseFieldReferenceCollection(QDomNode const& currentNode, 
-    QSharedPointer<FieldReference> newFieldReference)
-{
-    auto nodeName = currentNode.nodeName().split(QStringLiteral(":")).back();
-
-    auto refType = FieldReference::str2Type(nodeName);
-
-    auto refValue = currentNode.attributes().namedItem(nodeName).nodeValue();
-
-    QSharedPointer<FieldReference::IndexedReference> newFieldRefElement(new FieldReference::IndexedReference());
-
-    if (refValue.isEmpty())
-    {
-        return;
-    }
-
-    newFieldRefElement->reference_ = refValue;
-
-    // Parse possible indices
-    if (currentNode.hasChildNodes())
-    {
-        auto indicesNode = currentNode.firstChildElement(QStringLiteral("ipxact:indices"));
-        auto const& indexNodes = indicesNode.childNodes();
-
-        for (auto i = 0; i < indexNodes.size(); ++i)
-        {
-            auto currentIndexNode = indexNodes.at(i);
-
-            if (currentIndexNode.nodeName() == QStringLiteral("ipxact:index"))
-            {
-                newFieldRefElement->indices_.append(currentIndexNode.firstChild().nodeValue());
-            }
-        }
-    }
-
-    newFieldReference->setReference(newFieldRefElement, refType);
 }
 
 //-----------------------------------------------------------------------------

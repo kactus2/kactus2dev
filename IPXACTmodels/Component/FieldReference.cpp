@@ -6,7 +6,8 @@
 // Date: 26.7.2023
 //
 // Description:
-// Reference to a field in the encapsulating component.
+// Reference to a field in the encapsulating component. Describes the elements 
+// in the fieldReferenceGroup group.
 //-----------------------------------------------------------------------------
 
 #include "FieldReference.h"
@@ -23,6 +24,26 @@ const QString FieldReference::TYPES_AS_STRINGS[] = {
     QLatin1String("fieldRef"),
     QLatin1String("")
 };
+
+//-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::IndexedReference()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference::IndexedReference(IndexedReference const& other) :
+    reference_(other.reference_),
+    indices_(other.indices_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::IndexedReference()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference::IndexedReference(QString const& reference, QList<QString> const& indices):
+    reference_(reference),
+    indices_(indices)
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: FieldReference::FieldReference()
@@ -189,3 +210,4 @@ QString FieldReference::type2Str(FieldReference::Type refType)
 {
     return TYPES_AS_STRINGS[refType];
 }
+

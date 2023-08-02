@@ -75,6 +75,12 @@ namespace FieldReader
          */
         void parseBitOffset(QDomElement const& fieldElement, QSharedPointer<Field> newField);
 
+        /*!
+         *	Reads the std2022 field definition reference.
+         *  
+         *      @param [in] fieldElement     XML description of the field.
+         *      @param [in] newField         The new field item.
+         */
         void parseFieldDefinitionRef(QDomElement const& fieldElement, QSharedPointer<Field> newField);
 
         /*!
@@ -140,8 +146,6 @@ namespace FieldReader
         *      @param [in] newField        The new field item.
         */
         void parseFieldReference(QDomElement const& fieldElement, QSharedPointer<Field> newField);
-
-        void parseFieldReferenceCollection(QDomNode const& currentNode, QSharedPointer<FieldReference> newFieldReference);
 
         /*!
          *  Reads the access value.

@@ -342,37 +342,37 @@ void tst_FieldWriter::writeFieldReference2022()
 
     testField_->setBitWidth("");
 
-    QSharedPointer<FieldReference::IndexedReference> addressSpace(new FieldReference::IndexedReference({ QString("testAddressSpace"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> addressSpace(new FieldReference::IndexedReference(QString("testAddressSpace"), QList<QString>()));
     fieldReference->setReference(addressSpace, FieldReference::Type::ADDRESS_SPACE);
 
-    QSharedPointer<FieldReference::IndexedReference> memoryMap(new FieldReference::IndexedReference({ QString("testMemoryMap"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> memoryMap(new FieldReference::IndexedReference(QString("testMemoryMap"), QList<QString>()));
     fieldReference->setReference(memoryMap, FieldReference::Type::MEMORY_MAP);
 
-    QSharedPointer<FieldReference::IndexedReference> memoryRemap(new FieldReference::IndexedReference({ QString("testMemoryRemap"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> memoryRemap(new FieldReference::IndexedReference(QString("testMemoryRemap"), QList<QString>()));
     fieldReference->setReference(memoryRemap, FieldReference::Type::MEMORY_REMAP);
 
-    QSharedPointer<FieldReference::IndexedReference> bank1(new FieldReference::IndexedReference({ QString("testBank"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> bank1(new FieldReference::IndexedReference(QString("testBank"), QList<QString>()));
     fieldReference->setReference(bank1, FieldReference::Type::BANK);
 
-    QSharedPointer<FieldReference::IndexedReference> bank2(new FieldReference::IndexedReference({ QString("testBank2"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> bank2(new FieldReference::IndexedReference(QString("testBank2"), QList<QString>()));
     fieldReference->setReference(bank2, FieldReference::Type::BANK);
     
-    QSharedPointer<FieldReference::IndexedReference> addressBlock(new FieldReference::IndexedReference({ QString("testAddressBlock"), QList<QString>({ "0", "1" }) }));
+    QSharedPointer<FieldReference::IndexedReference> addressBlock(new FieldReference::IndexedReference(QString("testAddressBlock"), QList<QString>({ "0", "1" })));
     fieldReference->setReference(addressBlock, FieldReference::Type::ADDRESS_BLOCK);
 
-    QSharedPointer<FieldReference::IndexedReference> regFile1(new FieldReference::IndexedReference({ QString("testRegisterFile1"), QList<QString>({ "2", "3" }) }));
+    QSharedPointer<FieldReference::IndexedReference> regFile1(new FieldReference::IndexedReference(QString("testRegisterFile1"), QList<QString>({ "2", "3" })));
     fieldReference->setReference(regFile1, FieldReference::Type::REGISTER_FILE);
 
-    QSharedPointer<FieldReference::IndexedReference> regFile2(new FieldReference::IndexedReference({ QString("testRegisterFile2"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> regFile2(new FieldReference::IndexedReference(QString("testRegisterFile2"), QList<QString>()));
     fieldReference->setReference(regFile2, FieldReference::Type::REGISTER_FILE);
 
-    QSharedPointer<FieldReference::IndexedReference> testRegister(new FieldReference::IndexedReference({ QString("testRegister"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> testRegister(new FieldReference::IndexedReference(QString("testRegister"), QList<QString>()));
     fieldReference->setReference(testRegister, FieldReference::Type::REGISTER);
 
-    QSharedPointer<FieldReference::IndexedReference> alternateRegister(new FieldReference::IndexedReference({ QString("testAlternateRegister"), QList<QString>() }));
+    QSharedPointer<FieldReference::IndexedReference> alternateRegister(new FieldReference::IndexedReference(QString("testAlternateRegister"), QList<QString>()));
     fieldReference->setReference(alternateRegister, FieldReference::Type::ALTERNATE_REGISTER);
 
-    QSharedPointer<FieldReference::IndexedReference> field(new FieldReference::IndexedReference({ QString("testField"), QList<QString>({ "8" })} ));
+    QSharedPointer<FieldReference::IndexedReference> field(new FieldReference::IndexedReference(QString("testField"), QList<QString>({ "8" })));
     fieldReference->setReference(field, FieldReference::Type::FIELD);
 
     testField_->setFieldReference(fieldReference);
