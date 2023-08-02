@@ -230,8 +230,13 @@
     <ClCompile Include="Component\EnumeratedValueWriter.cpp" />
     <ClCompile Include="Component\ExecutableImage.cpp" />
     <ClCompile Include="Component\Field.cpp" />
+    <ClCompile Include="Component\FieldAccessPolicy.cpp" />
+    <ClCompile Include="Component\FieldAccessPolicyReader.cpp" />
+    <ClCompile Include="Component\FieldAccessPolicyWriter.cpp" />
     <ClCompile Include="Component\FieldReader.cpp" />
     <ClCompile Include="Component\FieldReference.cpp" />
+    <ClCompile Include="Component\FieldReferenceReader.cpp" />
+    <ClCompile Include="Component\FieldReferenceWriter.cpp" />
     <ClCompile Include="Component\FieldReset.cpp" />
     <ClCompile Include="Component\FieldWriter.cpp" />
     <ClCompile Include="Component\File.cpp" />
@@ -264,6 +269,7 @@
     <ClCompile Include="Component\MirroredSlaveInterface.cpp" />
     <ClCompile Include="Component\Model.cpp" />
     <ClCompile Include="Component\AbstractionType.cpp" />
+    <ClCompile Include="Component\ModeReference.cpp" />
     <ClCompile Include="Component\OtherClockDriver.cpp" />
     <ClCompile Include="Component\OtherClockDriverReader.cpp" />
     <ClCompile Include="Component\OtherClockDriverWriter.cpp" />
@@ -400,7 +406,12 @@
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
+    <ClInclude Include="Component\FieldAccessPolicy.h" />
+    <ClInclude Include="Component\FieldAccessPolicyReader.h" />
+    <ClInclude Include="Component\FieldAccessPolicyWriter.h" />
     <ClInclude Include="Component\FieldReference.h" />
+    <ClInclude Include="Component\FieldReferenceReader.h" />
+    <ClInclude Include="Component\FieldReferenceWriter.h" />
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryArray.h" />
@@ -408,6 +419,7 @@
     <ClInclude Include="Component\MemoryArrayWriter.h" />
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
+    <ClInclude Include="Component\ModeReference.h" />
     <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />

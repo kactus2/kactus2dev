@@ -115,13 +115,15 @@ private:
     QSharedPointer<IndexedReference> memoryRemapRef_;
     
     //! The bank references.
-    QSharedPointer<QList<QSharedPointer<IndexedReference> > > bankRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > bankRefs_ = 
+        QSharedPointer<QList<QSharedPointer<IndexedReference> > >(new QList<QSharedPointer<IndexedReference> >());
 
     //! The address block reference.
     QSharedPointer<IndexedReference> addressBlockRef_;
 
     //! The register file references.
-    QSharedPointer<QList<QSharedPointer<IndexedReference> > > registerFileRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > registerFileRefs_ =
+        QSharedPointer<QList<QSharedPointer<IndexedReference> > >(new QList<QSharedPointer<IndexedReference> >());
 
     //! The register reference.
     QSharedPointer<IndexedReference> registerRef_;

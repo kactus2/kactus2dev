@@ -3,7 +3,12 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./generaldeclarations.h \
+HEADERS += ./Component/FieldReferenceReader.h \
+    ./Component/FieldAccessPolicy.h \
+    ./Component/FieldAccessPolicyReader.h \
+    ./Component/FieldReference.h \
+    ./Component/ModeReference.h \
+    ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
@@ -133,6 +138,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/ExecutableImage.h \
     ./Component/FieldReset.h \
     ./Component/LanguageTools.h \
+    ./Component/MemoryArray.h \
+    ./Component/MemoryArrayReader.h \
+    ./Component/MemoryArrayWriter.h \
     ./Component/MemoryBlockBaseReader.h \
     ./Component/MemoryBlockBaseWriter.h \
     ./Component/Region.h \
@@ -224,6 +232,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/RemapStateReader.h \
     ./Component/RemapStateWriter.h \
+    ./Component/validators/MemoryArrayValidator.h \
     ./Component/validators/MemoryBlockValidator.h \
     ./Component/validators/RegionValidator.h \
     ./Component/validators/RegisterBaseValidator.h \
@@ -272,12 +281,13 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/MemoryArray.h \
-    ./Component/MemoryArrayReader.h \
-    ./Component/MemoryArrayWriter.h \
-    ./Component/FieldReference.h \
-    ./Component/validators/MemoryArrayValidator.h
-SOURCES += ./generaldeclarations.cpp \
+    ./Component/FieldReferenceWriter.h \
+    ./Component/FieldAccessPolicyWriter.h
+SOURCES += ./Component/FieldReferenceReader.cpp \
+    ./Component/FieldAccessPolicy.cpp \
+    ./Component/FieldReference.cpp \
+    ./Component/ModeReference.cpp \
+    ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
     ./kactusExtensions/ApiDefinitionWriter.cpp \
@@ -451,6 +461,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/InstantiationsWriter.cpp \
     ./Component/LanguageTools.cpp \
     ./Component/MasterInterface.cpp \
+    ./Component/MemoryArray.cpp \
+    ./Component/MemoryArrayReader.cpp \
+    ./Component/MemoryArrayWriter.cpp \
     ./Component/MemoryBlockBase.cpp \
     ./Component/MemoryBlockBaseReader.cpp \
     ./Component/MemoryBlockBaseWriter.cpp \
@@ -510,6 +523,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/FileValidator.cpp \
     ./Component/validators/IndirectInterfaceValidator.cpp \
     ./Component/validators/InstantiationsValidator.cpp \
+    ./Component/validators/MemoryArrayValidator.cpp \
     ./Component/validators/MemoryBlockValidator.cpp \
     ./Component/validators/PortMapValidator.cpp \
     ./Component/validators/OtherClockDriverValidator.cpp \
@@ -543,8 +557,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/MemoryArray.cpp \
-    ./Component/MemoryArrayReader.cpp \
-    ./Component/MemoryArrayWriter.cpp \
-    ./Component/validators/MemoryArrayValidator.cpp \
-    ./Component/FieldReference.cpp
+    ./Component/FieldAccessPolicyReader.cpp \
+    ./Component/FieldReferenceWriter.cpp \
+    ./Component/FieldAccessPolicyWriter.cpp

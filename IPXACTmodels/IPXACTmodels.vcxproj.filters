@@ -950,8 +950,26 @@
     <ClCompile Include="Component\validators\MemoryArrayValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicy.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicyReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
     <ClCompile Include="Component\FieldReference.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\ModeReference.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReferenceWriter.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldReferenceReader.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\FieldAccessPolicyWriter.cpp">
+      <Filter>Source Files\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1600,8 +1618,26 @@
     <ClInclude Include="Component\validators\MemoryArrayValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicyReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicy.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
     <ClInclude Include="Component\FieldReference.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\ModeReference.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReferenceReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldReferenceWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\FieldAccessPolicyWriter.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
