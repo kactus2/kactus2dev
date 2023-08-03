@@ -22,6 +22,7 @@
 
 #include <IPXACTmodels/Component/FieldReset.h>
 #include <IPXACTmodels/Component/FieldReference.h>
+#include <IPXACTmodels/Component/FieldAccessPolicy.h>
 
 #include <QString>
 #include <QMap>
@@ -384,6 +385,20 @@ public:
 	 */
 	void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
+	/*!
+	 *	Get the field access policies of the field.
+	 *	    
+	 * 	    @return Pointer to a list containing the field access policies.
+	 */
+	QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > getFieldAccessPolicies() const;
+
+	/*!
+	 *	Set the field access policies for the field.
+	 *  
+	 *      @param [in] newFieldAccessPolicies     The new field access policies.
+	 */
+	void setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > newFieldAccessPolicies);
+
 private:
 
 	/*!
@@ -483,6 +498,10 @@ private:
 
 	//! Reference to another field (ipxact:aliasOf).
 	QSharedPointer<FieldReference> fieldReference_;
+	
+	//! The field access policies of the field, for standard revision 2022.
+	QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > fieldAccessPolicies_ = 
+		QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > >(new QList<QSharedPointer<FieldAccessPolicy> > ());
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Field>);

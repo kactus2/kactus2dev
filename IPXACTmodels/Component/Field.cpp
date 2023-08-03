@@ -495,6 +495,22 @@ void Field::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > new
 }
 
 //-----------------------------------------------------------------------------
+// Function: Field::getFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > Field::getFieldAccessPolicies() const
+{
+    return fieldAccessPolicies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::setFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void Field::setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > newFieldAccessPolicies)
+{
+    fieldAccessPolicies_ = newFieldAccessPolicies;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Field::copyEnumeratedValues()
 //-----------------------------------------------------------------------------
 void Field::copyEnumeratedValues(const Field& other)

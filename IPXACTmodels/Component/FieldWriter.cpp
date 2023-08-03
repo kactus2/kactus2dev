@@ -11,13 +11,14 @@
 
 #include "FieldWriter.h"
 #include "FieldReferenceWriter.h"
+#include "FieldAccessPolicyWriter.h"
 #include "Field.h"
 #include "WriteValueConstraint.h"
 #include "MemoryArrayWriter.h"
+#include "EnumeratedValueWriter.h"
+#include "FieldReset.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/Component/EnumeratedValueWriter.h>
-#include <IPXACTmodels/Component/FieldReset.h>
 
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::writeField()
@@ -330,33 +331,24 @@ void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedP
         writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), bitWidth);
     }
 
-    // TODO: write field access policy
-
     Details::writeVolatile(writer, field);
 
     Details::writeResets(writer, field);
 
     Details::writeFieldReference(writer, field); // ipxact:aliasOf
 
-    Details::writeAccess(writer, field);
+    if (auto const& fieldAccessPolicies = field->getFieldAccessPolicies();
+        fieldAccessPolicies->isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fieldAccessPolicies"));
+        
+        for (auto const& fieldAccessPolicy : *fieldAccessPolicies)
+        {
+            FieldAccessPolicyWriter::writeFieldAccessPolicy(writer, fieldAccessPolicy);
+        }
 
-    Details::writeModifiedWriteValue(writer, field);
-
-    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
-
-    Details::writeReadAction(writer, field);
-
-    // TODO: writeReadResponse
-
-    // TODO: writeBroadcasts
-
-    // TODO: writeAccessRestrictions
-
-    Details::writeTestable(writer, field);
-
-    Details::writeReserved(writer, field);
-
-    // TODO: writeVendorExtensions
+        writer.writeEndElement(); // ipxact:fieldAccessPolicies
+    }
 
     Details::writeEnumerations(writer, field);
 }

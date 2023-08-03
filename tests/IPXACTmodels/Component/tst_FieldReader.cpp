@@ -406,7 +406,7 @@ void tst_FieldReader::readFieldReference()
 //-----------------------------------------------------------------------------
 void tst_FieldReader::readFieldAccessPolicies()
 {
-    QString document(
+    QString documentContent(
         "<ipxact:field>"
             "<ipxact:name>testField</ipxact:name>"
             "<ipxact:bitOffset>8</ipxact:bitOffset>"
@@ -414,11 +414,19 @@ void tst_FieldReader::readFieldAccessPolicies()
             "<ipxact:fieldAccessPolicies>"
                 "<ipxact:fieldAccessPolicy>"
                     "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
-                    "<ipcact:fieldAccessPolicyDefinitionRef typeDefinitions=\"testDefinition\"/>"
+                    "<ipxact:fieldAccessPolicyDefinitionRef typeDefinitions=\"testDefinition\"/>"
                 "</ipxact:fieldAccessPolicy>"
             "</ipxact:fieldAccessPolicies>"
         "</ipxact:field>"
     );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std22);
+
+    QCOMPARE(testField->getFieldAccessPolicies()->size(), 1);
 }
 
 //-----------------------------------------------------------------------------

@@ -54,6 +54,8 @@ private slots:
     void writeTestable();
     void writeReserved();
 
+    void writeFieldAccessPolicies();
+
     void writeParameters();
 
     void writeVendorExtensions();
@@ -670,6 +672,41 @@ void tst_FieldWriter::writeReserved()
         );
 
     FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldWriter::writeFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void tst_FieldWriter::writeFieldAccessPolicies()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<FieldAccessPolicy> testFieldAccessPolicy(new FieldAccessPolicy());
+    testFieldAccessPolicy->setTestable(true);
+    testFieldAccessPolicy->setTestConstraint(General::TEST_RESTORE);
+    testFieldAccessPolicy->setAccess(AccessTypes::READ_ONLY);
+    testFieldAccessPolicy->setReadAction(General::READ_CLEAR);
+
+    testField_->getFieldAccessPolicies()->append(testFieldAccessPolicy);
+
+    QString expectedOutput(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:bitOffset>Baldur's</ipxact:bitOffset>"
+            "<ipxact:bitWidth>Gate</ipxact:bitWidth>"
+            "<ipxact:fieldAccessPolicies>"
+                "<ipxact:fieldAccessPolicy>"
+                    "<ipxact:access>read-only</ipxact:access>"
+                    "<ipxact:readAction>clear</ipxact:readAction>"
+                    "<ipxact:testable testConstraint=\"restore\">true</ipxact:testable>"
+                "</ipxact:fieldAccessPolicy>"
+            "</ipxact:fieldAccessPolicies>"
+        "</ipxact:field>"
+    );
+
+    FieldWriter::writeField(xmlStreamWriter, testField_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 

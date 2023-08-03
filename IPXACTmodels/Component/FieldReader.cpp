@@ -16,6 +16,7 @@
 #include "WriteValueConstraint.h"
 #include "MemoryArrayReader.h"
 #include "FieldReferenceReader.h"
+#include "FieldAccessPolicyReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
@@ -34,12 +35,21 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode, Do
     {
         Details::parseID(fieldElement, newField);
         Details::parsePresence(fieldElement, newField);
+
+        Details::parseAccess(fieldElement, newField);
+        Details::parseModifiedWriteValue(fieldElement, newField);
+        Details::parseWriteValueConstraint(fieldElement, newField);
+        Details::parseReadAction(fieldElement, newField);
+        Details::parseTestable(fieldElement, newField);
+        Details::parseReserved(fieldElement, newField);
+
     }
     else if (docRevision == Document::Revision::Std22)
     {
         Details::parseMemoryArray(fieldElement, newField);
         Details::parseFieldDefinitionRef(fieldElement, newField);
         Details::parseFieldReference(fieldElement, newField);
+        Details::parseFieldAccessPolicies(fieldElement, newField);
     }
 
     Details::parseBitOffset(fieldElement, newField);
@@ -52,19 +62,7 @@ QSharedPointer<Field> FieldReader::createFieldFrom(QDomNode const& fieldNode, Do
 
     Details::parseVolatile(fieldElement, newField);
 
-    Details::parseAccess(fieldElement, newField);
-
     Details::parseEnumeratedValues(fieldElement, newField);
-
-    Details::parseModifiedWriteValue(fieldElement, newField);
-
-    Details::parseWriteValueConstraint(fieldElement, newField);
-
-    Details::parseReadAction(fieldElement, newField);
-
-    Details::parseTestable(fieldElement, newField);
-
-    Details::parseReserved(fieldElement, newField);
 
     Details::parseParameters(fieldElement, newField);
 
@@ -405,6 +403,33 @@ void FieldReader::Details::parseParameters(QDomElement const& fieldElement, QSha
         for (auto parameter : *newParameters)
         {
             newField->getParameters()->append(parameter);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReader::Details::parseFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void FieldReader::Details::parseFieldAccessPolicies(QDomElement const& fieldElement, QSharedPointer<Field> newField)
+{
+    auto fieldAccessPoliciesElement = fieldElement.firstChildElement(QStringLiteral("ipxact:fieldAccessPolicies"));
+
+    if (fieldAccessPoliciesElement.isNull() || fieldAccessPoliciesElement.hasChildNodes() == false)
+    {
+        return;
+    }
+
+    auto fieldAccessPolicies = fieldAccessPoliciesElement.childNodes();
+
+    for (int i = 0; i < fieldAccessPolicies.size(); ++i)
+    {
+        auto fieldAccessPolicyNode = fieldAccessPolicies.at(i);
+
+        if (fieldAccessPolicyNode.nodeName() == QStringLiteral("ipxact:fieldAccessPolicy"))
+        {
+            auto newFieldAccessPolicy = FieldAccessPolicyReader::createFieldAccessPolicyFrom(fieldAccessPolicyNode);
+
+            newField->getFieldAccessPolicies()->append(newFieldAccessPolicy);
         }
     }
 }

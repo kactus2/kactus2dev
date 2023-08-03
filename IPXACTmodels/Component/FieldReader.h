@@ -210,6 +210,14 @@ namespace FieldReader
          *      @param [in] newField        The new field item.
          */
         void parseParameters(QDomElement const& fieldElement, QSharedPointer<Field> newField);
+
+        /*!
+         *	Parse 2022 std field access policies.
+         *  
+         *      @param [in] fieldElement    XML description of the field.
+         *      @param [in] newField        The new field item.
+         */
+        void parseFieldAccessPolicies(QDomElement const& fieldElement, QSharedPointer<Field> newField);
     }
 };
 
