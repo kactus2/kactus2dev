@@ -282,7 +282,9 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
     ./Component/FieldReferenceWriter.h \
-    ./Component/FieldAccessPolicyWriter.h
+    ./Component/FieldAccessPolicyWriter.h \
+    ./Component/validators/FieldReferenceValidator.h \
+    ./Component/validators/FieldAccessPolicyValidator.h
 SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/FieldAccessPolicy.cpp \
     ./Component/FieldReference.cpp \
@@ -559,4 +561,6 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
     ./Component/FieldAccessPolicyReader.cpp \
     ./Component/FieldReferenceWriter.cpp \
-    ./Component/FieldAccessPolicyWriter.cpp
+    ./Component/FieldAccessPolicyWriter.cpp \
+    ./Component/validators/FieldReferenceValidator.cpp \
+    ./Component/validators/FieldAccessPolicyValidator.cpp

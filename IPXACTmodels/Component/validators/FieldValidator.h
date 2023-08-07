@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/Component/Field.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -43,12 +45,17 @@ public:
      */
     FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
-        QSharedPointer<ParameterValidator> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator,
+        Document::Revision docRevision = Document::Revision::Std14);
 
 	/*!
      *  The destructor.
      */
 	~FieldValidator() = default;
+
+    // Disable copying.
+    FieldValidator(FieldValidator const& rhs) = delete;
+    FieldValidator& operator=(FieldValidator const& rhs) = delete;
 
     /*!
      *  Change the containing component.
@@ -209,6 +216,24 @@ public:
     bool hasValidAccess(QSharedPointer<Field> field) const;
 
     /*!
+     *	Check if the field has a valid field definition reference.
+     *  
+     *      @param [in] field     The field to check.
+     *	    
+     * 	    @return True, if the field definition reference is valid, otherwise false.
+     */
+    bool hasValidFieldDefinitionRef(QSharedPointer<Field> field) const;
+
+    /*!
+     *	Checks that the field has a valid combination of data for 2022 standard.
+     *  
+     *      @param [in] field     The field to check.
+     *	    
+     * 	    @return True, if the field structure is valid, otherwise false.
+     */
+    bool hasValidStructure(QSharedPointer<Field> field) const;
+
+    /*!
      *  Locate errors within a field.
      *
      *      @param [in] errors      List of found errors.
@@ -218,10 +243,6 @@ public:
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
 
 private:
-
-	// Disable copying.
-	FieldValidator(FieldValidator const& rhs);
-	FieldValidator& operator=(FieldValidator const& rhs);
 
     /*!
      *  Find errors within field name.
@@ -352,6 +373,33 @@ private:
     void findErrorsInAccess(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context) const;
 
     /*!
+     *	Find errors within field definition reference.
+     *  
+     *      @param [in] errors     List of found errors.
+     *      @param [in] field      The selected field.
+     *      @param [in] context    Context to help locate the error.
+     */
+    void findErrorsInFieldDefinitionRef(QStringList& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
+     *	Check if the field has a valid combination of bit width, volatility, resets and field reference.
+     *
+     *      @param [in] errors     List of found errors.
+     *      @param [in] field      The selected field.
+     *      @param [in] context    Context to help locate the error.
+     */
+    bool hasValidReferenceResetChoice(QSharedPointer<Field> field) const;
+
+    /*!
+     *	Find errors in the combination of data set to the field (for standard revision 2022).
+     *  
+     *      @param [in] errors     List of found errors.
+     *      @param [in] field      The selected field.
+     *      @param [in] context    Context to help locate the error.
+     */
+    void findErrorsInStructure(QStringList& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
      *  Check if the contained bit expression is valid.
      *
      *      @param [in] expression  The expression to check.
@@ -375,6 +423,9 @@ private:
 
     //! The reset types of the containing component.
     QSharedPointer<QList<QSharedPointer<ResetType> > > availableResetTypes_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // FIELDVALIDATOR_H

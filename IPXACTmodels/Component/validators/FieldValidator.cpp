@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "FieldValidator.h"
+#include "FieldAccessPolicyValidator.h"
 
 #include <KactusAPI/include/ExpressionParser.h>
 
@@ -31,11 +32,13 @@
 //-----------------------------------------------------------------------------
 FieldValidator::FieldValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator,
-    QSharedPointer<ParameterValidator> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision):
 expressionParser_(expressionParser),
 enumeratedValueValidator_(enumeratedValueValidator),
 parameterValidator_(parameterValidator),
-availableResetTypes_()
+availableResetTypes_(),
+docRevision_(docRevision)
 {
 
 }
@@ -49,6 +52,7 @@ void FieldValidator::componentChange(QSharedPointer<Component> newComponent)
     if (newComponent)
     {
         availableResetTypes_ = newComponent->getResetTypes();
+        docRevision_ = newComponent->getRevision();
     }
 }
 
@@ -65,10 +69,34 @@ QSharedPointer<EnumeratedValueValidator> FieldValidator::getEnumeratedValueValid
 //-----------------------------------------------------------------------------
 bool FieldValidator::validate(QSharedPointer<Field> field) const
 {
-    return hasValidName(field) && hasValidIsPresent(field) && hasValidMemoryArray(field) &&
-        hasValidBitOffset(field) && hasValidResets(field) && hasValidWriteValueConstraint(field) &&
-        hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
-        hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field);
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        return hasValidName(field) && hasValidIsPresent(field) && 
+            hasValidBitOffset(field) && hasValidResets(field) &&
+            hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
+            hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        FieldAccessPolicyValidator fieldAccessPolicyValidator(expressionParser_);
+
+        bool fieldAccessPoliciesAreValid = true;
+        for (auto const& fieldAccessPolicy : *field->getFieldAccessPolicies())
+        {
+            if (!fieldAccessPolicyValidator.validate(fieldAccessPolicy))
+            {
+                fieldAccessPoliciesAreValid = false;
+                break;
+            }
+        }
+
+        return hasValidName(field) && hasValidMemoryArray(field) && hasValidBitOffset(field) && hasValidResets(field) &&
+            hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
+            hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field) &&
+            fieldAccessPoliciesAreValid && hasValidStructure(field);
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -114,9 +142,9 @@ bool FieldValidator::hasValidIsPresent(QSharedPointer<Field> field) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidMemoryArray(QSharedPointer<Field> field) const
 {
-    MemoryArrayValidator validator(expressionParser_);
     if (auto memArray = field->getMemoryArray(); memArray)
     {
+        MemoryArrayValidator validator(expressionParser_);
         return validator.validate(field->getMemoryArray());
     }
     
@@ -350,6 +378,45 @@ bool FieldValidator::hasValidAccess(QSharedPointer<Field> field) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidFieldDefinitionRef(QSharedPointer<Field> field) const
+{
+    if (!field->getFieldDefinitionRef().isEmpty() && field->getTypeDefinitionsRef().isEmpty())
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidStructure()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidStructure(QSharedPointer<Field> field) const
+{
+    if (field->getFieldDefinitionRef().isEmpty())
+    {
+        return hasValidReferenceResetChoice(field);
+    }
+    else
+    {
+        if (field->getTypeIdentifier().isEmpty() == false ||
+            field->getFieldAccessPolicies()->isEmpty() == false ||
+            field->getEnumeratedValues()->isEmpty() == false ||
+            field->getBitWidth().isEmpty() == false ||
+            field->getVolatile().toString() == QStringLiteral("true") ||
+            field->getResets()->isEmpty() == false ||
+            field->getFieldReference())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field> field, QString const& context)
@@ -357,15 +424,34 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
 {
     findErrorsInName(errors, field, context);
     findErrorsInIsPresent(errors, field, context);
-    findErrorsInMemoryArray(errors, field, context);
     findErrorsInBitOffset(errors, field, context);
     findErrorsInResets(errors, field, context);
-    findErrorsInWriteValueConstraint(errors, field, context);
-    findErrorsInReserved(errors, field, context);
-    findErrorsInBitWidth(errors, field, context);
     findErrorsInEnumeratedValues(errors, field);
     findErrorsInParameters(errors, field);
-    findErrorsInAccess(errors, field, context);
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        findErrorsInWriteValueConstraint(errors, field, context);
+        findErrorsInReserved(errors, field, context);
+        findErrorsInAccess(errors, field, context);
+        findErrorsInBitWidth(errors, field, context);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        findErrorsInMemoryArray(errors, field, context);
+        findErrorsInFieldDefinitionRef(errors, field, context);
+
+        FieldAccessPolicyValidator fieldAccessPolicyValidator(expressionParser_);
+        
+        auto newContext = QStringLiteral(" field ") + field->name() + QStringLiteral(" within") + context;
+
+        for (auto const& fieldAccessPolicy : *field->getFieldAccessPolicies())
+        {
+            fieldAccessPolicyValidator.findErrorsIn(errors, fieldAccessPolicy, newContext);
+        }
+
+        findErrorsInStructure(errors, field, context);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -648,6 +734,118 @@ void FieldValidator::findErrorsInAccess(QVector<QString>& errors, QSharedPointer
         {
             errors.append(QObject::tr("In field %1 within %2, access type write only and write once do not "
                 "allow a field to include a read action value.").arg(field->name()).arg(context));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInFieldDefinitionRef()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInFieldDefinitionRef(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
+{
+    if (!hasValidFieldDefinitionRef(field))
+    {
+        errors.append(QObject::tr("Field %1 within %2 has no typeDefinitions reference "
+            "defined for field definition reference.").arg(field->name()).arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidReferenceResetChoice()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidReferenceResetChoice(QSharedPointer<Field> field) const
+{
+    // Field can include bit width, volatility and resets OR field reference (aliasOf).
+    if ((field->getBitWidth().isEmpty() == false ||
+        field->getVolatile().toString() == QStringLiteral("true") ||
+        field->getResets()->isEmpty() == false) &&
+        field->getFieldReference()) 
+    {
+        return false;
+    }
+
+    // Field must have either bit width OR a field reference defined.
+    if (field->getBitWidth().isEmpty() && !field->getFieldReference())
+    {
+        return false;
+    }
+    
+    // Check bit width validity, if present.
+    if (field->getBitWidth().isEmpty() == false && hasValidBitWidth(field) == false)
+    {
+        return false;
+    }
+    
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInStructure()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
+{
+    if (field->getFieldDefinitionRef().isEmpty())
+    {
+        if (field->getFieldReference())
+        {
+            if (field->getBitWidth().isEmpty() == false || field->getVolatile().toBool() ||
+                field->getResets()->isEmpty() == false)
+            {
+                errors.append(QObject::tr("In field %1 within %2: Bit width, volatility, and resets must not be defined"
+                    " for a field containing a reference to another field.").arg(field->name()).arg(context));
+            }
+        }
+        else
+        {
+            if (field->getBitWidth().isEmpty())
+            {
+                errors.append(QObject::tr("In field %1 within %2: Bit width must be defined when no field definition reference"
+                    " or field reference is defined.").arg(field->name()).arg(context));
+            }
+        }
+    }
+    else
+    {
+        if (field->getTypeIdentifier().isEmpty() == false)
+        {
+            errors.append(QObject::tr("In field %1 within %2: Type identifier must not be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getFieldAccessPolicies()->isEmpty() == false)
+        {
+            errors.append(QObject::tr("In field %1 within %2: No field access policies can be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getEnumeratedValues()->isEmpty() == false)
+        {
+            errors.append(QObject::tr("In field %1 within %2: No enumerated values can be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getBitWidth().isEmpty() == false)
+        {
+            errors.append(QObject::tr("In field %1 within %2: Bit width must not be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getVolatile().toBool())
+        {
+            errors.append(QObject::tr("In field %1 within %2: Volatility must not be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getResets()->isEmpty() == false)
+        {
+            errors.append(QObject::tr("In field %1 within %2: Field resets must not be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
+        }
+
+        if (field->getFieldReference())
+        {
+            errors.append(QObject::tr("In field %1 within %2: Field reference must not be defined for a field "
+                "with a field definition reference.").arg(field->name()).arg(context));
         }
     }
 }

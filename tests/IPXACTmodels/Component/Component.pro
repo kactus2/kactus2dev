@@ -81,4 +81,11 @@ SUBDIRS += tst_AddressSpaceReader.pro \
 		   tst_MemoryMapValidator.pro \  
 		   tst_ComponentWriter.pro \
 		   tst_ComponentReader.pro \
-		   tst_ComponentValidator.pro 
+		   tst_ComponentValidator.pro \
+		   tst_FieldAccessPolicyWriter.pro \
+		   tst_FieldAccessPolicyReader.pro \
+		   tst_FieldAccessPolicyValidator.pro \
+		   tst_FieldReferenceWriter.pro \
+		   tst_FieldReferenceReader.pro \
+		   tst_FieldReferenceValidator.pro
+		   

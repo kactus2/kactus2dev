@@ -146,6 +146,45 @@ QSharedPointer<FieldReference::IndexedReference> FieldReference::getReference(Ty
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldReference::clearReference()
+//-----------------------------------------------------------------------------
+void FieldReference::clearReference(Type refType)
+{
+    switch (refType)
+    {
+    case FieldReference::Type::ADDRESS_SPACE:
+        addressSpaceRef_.clear();
+        break;
+    case FieldReference::Type::MEMORY_MAP:
+        memoryMapRef_.clear();
+        break;
+    case FieldReference::Type::MEMORY_REMAP:
+        memoryRemapRef_.clear();
+        break;
+    case FieldReference::Type::BANK:
+        bankRefs_->clear();
+        break;
+    case FieldReference::Type::ADDRESS_BLOCK:
+        addressBlockRef_.clear();
+        break;
+    case FieldReference::Type::REGISTER_FILE:
+        registerFileRefs_->clear();
+        break;
+    case FieldReference::Type::REGISTER:
+        registerRef_.clear();
+        break;
+    case FieldReference::Type::ALTERNATE_REGISTER:
+        alternateRegisterRef_.clear();
+        break;
+    case FieldReference::Type::FIELD:
+        fieldRef_.clear();
+        break;
+    default:
+        break;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldReference::getMultipleReference()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<FieldReference::IndexedReference> > > FieldReference::getMultipleReference(Type refType) const

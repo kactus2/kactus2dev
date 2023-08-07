@@ -87,6 +87,8 @@ public:
      */
     QSharedPointer<IndexedReference> getReference(FieldReference::Type refType) const;
     
+    void clearReference(FieldReference::Type refType);
+
     /*!
      *	Get a list of references of a specific type. Can be called for all types, but can have multiple references
      *  only for types bank and register file.

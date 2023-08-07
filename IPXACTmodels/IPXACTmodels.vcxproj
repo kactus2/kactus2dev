@@ -305,6 +305,8 @@
     <ClCompile Include="Component\validators\ComponentValidator.cpp" />
     <ClCompile Include="Component\validators\CPUValidator.cpp" />
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp" />
+    <ClCompile Include="Component\validators\FieldAccessPolicyValidator.cpp" />
+    <ClCompile Include="Component\validators\FieldReferenceValidator.cpp" />
     <ClCompile Include="Component\validators\FieldValidator.cpp" />
     <ClCompile Include="Component\validators\FileSetValidator.cpp" />
     <ClCompile Include="Component\validators\FileValidator.cpp" />
@@ -424,6 +426,8 @@
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\FieldAccessPolicyValidator.h" />
+    <ClInclude Include="Component\validators\FieldReferenceValidator.h" />
     <ClInclude Include="Component\validators\MemoryArrayValidator.h" />
     <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\RegionValidator.h" />
