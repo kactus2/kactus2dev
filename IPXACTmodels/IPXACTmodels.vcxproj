@@ -262,8 +262,11 @@
     <ClCompile Include="Component\MemoryMapWriter.cpp" />
     <ClCompile Include="Component\MemoryRemap.cpp" />
     <ClCompile Include="Component\MirroredTargetInterface.cpp" />
+    <ClCompile Include="Component\Mode.cpp" />
     <ClCompile Include="Component\Model.cpp" />
     <ClCompile Include="Component\AbstractionType.cpp" />
+    <ClCompile Include="Component\ModeReader.cpp" />
+    <ClCompile Include="Component\ModeWriter.cpp" />
     <ClCompile Include="Component\OtherClockDriver.cpp" />
     <ClCompile Include="Component\OtherClockDriverReader.cpp" />
     <ClCompile Include="Component\OtherClockDriverWriter.cpp" />
@@ -410,6 +413,9 @@
     <ClInclude Include="Component\MemoryBlockBaseReader.h" />
     <ClInclude Include="Component\MemoryBlockBaseWriter.h" />
     <ClInclude Include="Component\MirroredTargetInterface.h" />
+    <ClInclude Include="Component\Mode.h" />
+    <ClInclude Include="Component\ModeReader.h" />
+    <ClInclude Include="Component\ModeWriter.h" />
     <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />

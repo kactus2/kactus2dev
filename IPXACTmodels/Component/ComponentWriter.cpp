@@ -17,6 +17,7 @@
 #include "IndirectInterfaceWriter.h"
 #include "ChannelWriter.h"
 #include "RemapStateWriter.h"
+#include "ModeWriter.h"
 #include "AddressSpaceWriter.h"
 #include "MemoryMapWriter.h"
 #include "ViewWriter.h"
@@ -71,6 +72,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
     writeChannels(writer, component);
 
     writeRemapStates(writer, component);
+
+    writeModes(writer, component);
 
     writeAddressSpaces(writer, component);
 
@@ -162,7 +165,7 @@ void ComponentWriter::writeChannels(QXmlStreamWriter& writer, QSharedPointer<Com
 //-----------------------------------------------------------------------------
 void ComponentWriter::writeRemapStates(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
 {
-    if (!component->getRemapStates()->isEmpty())
+    if (component->getRevision() == Document::Revision::Std14 && !component->getRemapStates()->isEmpty())
     {
         RemapStateWriter remapStateWriter;
 
@@ -174,6 +177,24 @@ void ComponentWriter::writeRemapStates(QXmlStreamWriter& writer, QSharedPointer<
         }
 
         writer.writeEndElement(); // ipxact:remapStates
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writeModes()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writeModes(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (component->getRevision() == Document::Revision::Std22 && component->getModes()->isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:modes"));
+
+        for (auto mode : *component->getModes())
+        {
+            ModeWriter::writeMode(writer, mode);
+        }
+
+        writer.writeEndElement(); // ipxact:modes
     }
 }
 

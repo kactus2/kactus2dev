@@ -79,6 +79,7 @@ SUBDIRS += tst_AddressSpaceReader.pro \
 		   tst_MemoryMapWriter.pro \
 		   tst_MemoryMapReader.pro \
 		   tst_MemoryMapValidator.pro \  
+		   tst_ModeReader.pro \  
 		   tst_ComponentWriter.pro \
 		   tst_ComponentReader.pro \
 		   tst_ComponentValidator.pro 

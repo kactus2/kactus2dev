@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/BusInterfaceReader.h>
 #include <IPXACTmodels/Component/ChannelReader.h>
 #include <IPXACTmodels/Component/RemapStateReader.h>
+#include <IPXACTmodels/Component/ModeReader.h>
 #include <IPXACTmodels/Component/AddressSpaceReader.h>
 #include <IPXACTmodels/Component/MemoryMapReader.h>
 #include <IPXACTmodels/Component/ViewReader.h>
@@ -81,7 +82,15 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
 
     parseChannels(componentNode, newComponent);
 
-    parseRemapStates(componentNode, newComponent);
+    if (revision == Document::Revision::Std14)
+    {
+        parseRemapStates(componentNode, newComponent);
+    }
+    
+    if (revision == Document::Revision::Std22)
+    {
+        parseModes(componentNode, newComponent);
+    }
 
     parseAddressSpaces(componentNode, newComponent);
 
@@ -193,6 +202,28 @@ void ComponentReader::parseRemapStates(QDomNode const& componentNode, QSharedPoi
             QSharedPointer<RemapState> newRemapState = remapStateReader.createRemapStateFrom(remapStateNode);
 
             newComponent->getRemapStates()->append(newRemapState);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parseModes()
+//-----------------------------------------------------------------------------
+void ComponentReader::parseModes(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
+{
+    QDomElement modesElement = componentNode.firstChildElement(QStringLiteral("ipxact:modes"));
+
+    if (!modesElement.isNull())
+    {
+        QDomNodeList modeNodeList = modesElement.elementsByTagName(QStringLiteral("ipxact:mode"));
+
+        const int MODE_COUNT = modeNodeList.count();
+        for (int i = 0; i < MODE_COUNT; ++i)
+        {
+            QDomNode modeNode = modeNodeList.at(i);
+            QSharedPointer<Mode> newMode = ModeReader::createModeFrom(modeNode);
+
+            newComponent->getModes()->append(newMode);
         }
     }
 }

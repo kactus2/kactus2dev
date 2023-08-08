@@ -83,6 +83,8 @@ private:
      */
     void writeRemapStates(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 
+    void writeModes(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+
     /*!
      *  Write the address spaces.
      *

@@ -38,6 +38,7 @@ class DesignInstantiation;
 class DesignConfigurationInstantiation;
 class FileSet;
 class MemoryMap;
+class Mode;
 class IndirectInterface;
 class OtherClockDriver;
 class Port;
@@ -189,6 +190,13 @@ public:
 	 *      @return A list containing component's remap states.
 	 */
     QSharedPointer<QList<QSharedPointer<RemapState> > > getRemapStates() const;
+
+    /*!
+     *  Get this component's modes.
+     *
+     *      @return The component's modes.
+     */
+    QSharedPointer<QList<QSharedPointer<Mode> > > getModes() const;
 
     /*!
      *  Set the remap states.
@@ -893,7 +901,14 @@ private:
      *      @param [in] other   The component being copied.
      */
     void copyRemapStates(const Component& other) const;
-    
+
+    /*!
+     *  Copy modes.
+     *
+     *      @param [in] other   The component being copied.
+     */
+    void copyModes(const Component& other) const;
+
     /*!
      *  Copy address spaces.
      *
@@ -962,46 +977,63 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Specifies all the bus interfaces for this component.
-	QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces_;
+	QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces_ =
+        QSharedPointer<QList<QSharedPointer<BusInterface> > >(new QList<QSharedPointer<BusInterface> >());
 
     //! Specifies all the indirect interfaces for this component.
-    QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_;
+    QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces_ = 
+        QSharedPointer<QList<QSharedPointer<IndirectInterface> > >(new QList<QSharedPointer<IndirectInterface> >());
 
     //! Specifies the interconnection between interfaces within component.
-	QSharedPointer<QList<QSharedPointer<Channel> > > channels_;
+	QSharedPointer<QList<QSharedPointer<Channel> > > channels_ =
+        QSharedPointer<QList<QSharedPointer<Channel> > >(new QList<QSharedPointer<Channel> >());
 	
 	//! Contains the remapStates.
-	QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates_;
+	QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates_ =
+        QSharedPointer<QList<QSharedPointer<RemapState> > >(new QList<QSharedPointer<RemapState> >());
+
+    //! Contains the modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > modes_ =
+        QSharedPointer<QList<QSharedPointer<Mode> > >(new QList<QSharedPointer<Mode> >());
 
 	//! Contains the addressSpaces.
-	QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
+	QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_ =
+        QSharedPointer<QList<QSharedPointer<AddressSpace> > >(new QList<QSharedPointer<AddressSpace> >());
 
 	//! Contains the memoryMaps
-	QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps_;
+	QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps_ =
+        QSharedPointer<QList<QSharedPointer<MemoryMap> > >(new QList<QSharedPointer<MemoryMap> >());
 
 	//! Contains the model.
-    QSharedPointer<Model> model_;
+    QSharedPointer<Model> model_ = QSharedPointer<Model> (new Model());
 
     //! Contains the componentGenerators.
-    QSharedPointer<QList<QSharedPointer<ComponentGenerator> > > componentGenerators_;
+    QSharedPointer<QList<QSharedPointer<ComponentGenerator> > > componentGenerators_ =
+        QSharedPointer < QList<QSharedPointer<ComponentGenerator> > >(new QList<QSharedPointer<ComponentGenerator> >());
 
 	//! Contains the choices.
-	QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+	QSharedPointer<QList<QSharedPointer<Choice> > > choices_ =
+        QSharedPointer<QList<QSharedPointer<Choice> > >(new QList<QSharedPointer<Choice> >());
 
 	//! Contains the fileSets.
-	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_;
+	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets_ =
+        QSharedPointer<QList<QSharedPointer<FileSet> > >(new QList<QSharedPointer<FileSet> >());
     
 	//! Contains the cpus.
-	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
+	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_ =
+        QSharedPointer<QList<QSharedPointer<Cpu> > >(new QList<QSharedPointer<Cpu> >());
     
 	//! Contains the otherClockDrivers.
-	QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > otherClockDrivers_;
+	QSharedPointer<QList<QSharedPointer<OtherClockDriver> > > otherClockDrivers_ =
+        QSharedPointer<QList<QSharedPointer<OtherClockDriver> > >(new QList<QSharedPointer<OtherClockDriver> >());
 
     //! Contains the reset types.
-    QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes_;
+    QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes_ =
+        QSharedPointer<QList<QSharedPointer<ResetType> > >(new QList<QSharedPointer<ResetType> >());
 
     //! Contains the pending file dependencies.
     QList<QSharedPointer<FileDependency> > pendingFileDependencies_;
+
 };
 
 

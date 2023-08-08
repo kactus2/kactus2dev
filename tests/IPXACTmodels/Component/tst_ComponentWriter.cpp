@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/RemapState.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/View.h>
@@ -70,6 +71,7 @@ private slots:
 
     void writeChannels();
     void writeRemapStates();
+    void writeModes2022();
     void writeAddressSpace();
     void writeMemoryMap();
 
@@ -151,7 +153,7 @@ void tst_ComponentWriter::cleanup()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSimpleComponent()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -170,7 +172,7 @@ void tst_ComponentWriter::writeSimpleComponent()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -189,7 +191,7 @@ void tst_ComponentWriter::writeSimpleComponent()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeXMLProcessingInstructions()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -209,7 +211,7 @@ void tst_ComponentWriter::writeXMLProcessingInstructions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -227,7 +229,7 @@ void tst_ComponentWriter::writeXMLProcessingInstructions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeXMLNameSpaces()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
     
     QString output;
@@ -247,7 +249,7 @@ void tst_ComponentWriter::writeXMLNameSpaces()
         "xmlns:bogusvendor=\"http://bogus.tld/info.txt\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestComponent</ipxact:name>\n"
         "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -265,7 +267,7 @@ void tst_ComponentWriter::writeXMLNameSpaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeBusInterfaces()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -277,7 +279,7 @@ void tst_ComponentWriter::writeBusInterfaces()
     QSharedPointer<BusInterface> busInterface (new BusInterface());
     busInterface->setName("testInterface");
     busInterface->setInterfaceMode(General::MASTER);
-    busInterface->setBusType(VLNV(VLNV::BUSDEFINITION,"TUT","TestLibrary","busDefinition","0.2"));
+    busInterface->setBusType(VLNV(VLNV::BUSDEFINITION,"tuni.fi","TestLibrary","busDefinition","0.2"));
 
     testComponent_->getBusInterfaces()->append(busInterface);
 
@@ -289,14 +291,14 @@ void tst_ComponentWriter::writeBusInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
             "\t<ipxact:busInterfaces>\n"
                 "\t\t<ipxact:busInterface>\n"
                     "\t\t\t<ipxact:name>testInterface</ipxact:name>\n"
-                    "\t\t\t<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"busDefinition\""
+                    "\t\t\t<ipxact:busType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"busDefinition\""
                         " version=\"0.2\"/>\n"
                     "\t\t\t<ipxact:master/>\n"
                 "\t\t</ipxact:busInterface>\n"
@@ -315,7 +317,7 @@ void tst_ComponentWriter::writeBusInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeIndirectInterfaces()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -339,7 +341,7 @@ void tst_ComponentWriter::writeIndirectInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestComponent</ipxact:name>\n"
         "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -364,7 +366,7 @@ void tst_ComponentWriter::writeIndirectInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeChannels()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -391,7 +393,7 @@ void tst_ComponentWriter::writeChannels()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestComponent</ipxact:name>\n"
         "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -420,7 +422,7 @@ void tst_ComponentWriter::writeChannels()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeRemapStates()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -441,7 +443,7 @@ void tst_ComponentWriter::writeRemapStates()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-        "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestComponent</ipxact:name>\n"
         "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -460,11 +462,55 @@ void tst_ComponentWriter::writeRemapStates()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writeModes2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writeModes2022()
+{
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.1");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    QSharedPointer<Mode> mode(new Mode("idle"));
+
+    testComponent_->getModes()->append(mode);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+        "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+        "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+        "\t<ipxact:name>TestComponent</ipxact:name>\n"
+        "\t<ipxact:version>0.1</ipxact:version>\n"
+        "\t<ipxact:modes>\n"
+            "\t\t<ipxact:mode>\n"
+                "\t\t\t<ipxact:name>idle</ipxact:name>\n"
+            "\t\t</ipxact:mode>\n"
+        "\t</ipxact:modes>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentWriter::writeAddressSpace()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeAddressSpace()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -488,7 +534,7 @@ void tst_ComponentWriter::writeAddressSpace()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -513,7 +559,7 @@ void tst_ComponentWriter::writeAddressSpace()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeMemoryMap()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -534,7 +580,7 @@ void tst_ComponentWriter::writeMemoryMap()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -557,7 +603,7 @@ void tst_ComponentWriter::writeMemoryMap()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeView()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -578,7 +624,7 @@ void tst_ComponentWriter::writeView()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -603,7 +649,7 @@ void tst_ComponentWriter::writeView()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeInstantiations()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -615,13 +661,13 @@ void tst_ComponentWriter::writeInstantiations()
     QSharedPointer<ComponentInstantiation> componentInstantiation (new ComponentInstantiation("component"));
 
     QSharedPointer<ConfigurableVLNVReference> designReference (
-        new ConfigurableVLNVReference(VLNV::DESIGN, "TUT", "TestLibrary", "designReference", "1.0"));
+        new ConfigurableVLNVReference(VLNV::DESIGN, "tuni.fi", "TestLibrary", "designReference", "1.0"));
 
     QSharedPointer<DesignInstantiation> designInstantiation (new DesignInstantiation("design"));
     designInstantiation->setDesignReference(designReference);
 
     QSharedPointer<ConfigurableVLNVReference> configurationReference
-        (new ConfigurableVLNVReference(VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", "configuration", "8.1"));
+        (new ConfigurableVLNVReference(VLNV::DESIGNCONFIGURATION, "tuni.fi", "TestLibrary", "configuration", "8.1"));
 
     QSharedPointer<DesignConfigurationInstantiation> testDesignConfigurationInstantiation
         (new DesignConfigurationInstantiation("designConfiguration"));
@@ -639,7 +685,7 @@ void tst_ComponentWriter::writeInstantiations()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -650,12 +696,12 @@ void tst_ComponentWriter::writeInstantiations()
                     "\t\t\t</ipxact:componentInstantiation>\n"
                     "\t\t\t<ipxact:designInstantiation>\n"
                         "\t\t\t\t<ipxact:name>design</ipxact:name>\n"
-                        "\t\t\t\t<ipxact:designRef vendor=\"TUT\" library=\"TestLibrary\""
+                        "\t\t\t\t<ipxact:designRef vendor=\"tuni.fi\" library=\"TestLibrary\""
                         " name=\"designReference\" version=\"1.0\"/>\n"
                     "\t\t\t</ipxact:designInstantiation>\n"
                     "\t\t\t<ipxact:designConfigurationInstantiation>\n"
                         "\t\t\t\t<ipxact:name>designConfiguration</ipxact:name>\n"
-                        "\t\t\t\t<ipxact:designConfigurationRef vendor=\"TUT\" library=\"TestLibrary\""
+                        "\t\t\t\t<ipxact:designConfigurationRef vendor=\"tuni.fi\" library=\"TestLibrary\""
                         " name=\"configuration\" version=\"8.1\"/>\n"
                     "\t\t\t</ipxact:designConfigurationInstantiation>\n"
                 "\t\t</ipxact:instantiations>\n"
@@ -674,7 +720,7 @@ void tst_ComponentWriter::writeInstantiations()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writePorts()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -700,7 +746,7 @@ void tst_ComponentWriter::writePorts()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -728,7 +774,7 @@ void tst_ComponentWriter::writePorts()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeComponentGenerators()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -751,7 +797,7 @@ void tst_ComponentWriter::writeComponentGenerators()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -775,7 +821,7 @@ void tst_ComponentWriter::writeComponentGenerators()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeChoices()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -801,7 +847,7 @@ void tst_ComponentWriter::writeChoices()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -825,7 +871,7 @@ void tst_ComponentWriter::writeChoices()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeFileSets()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -846,7 +892,7 @@ void tst_ComponentWriter::writeFileSets()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -869,7 +915,7 @@ void tst_ComponentWriter::writeFileSets()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeCPUs()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -894,7 +940,7 @@ void tst_ComponentWriter::writeCPUs()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -918,7 +964,7 @@ void tst_ComponentWriter::writeCPUs()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeOtherClockDrivers()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -948,7 +994,7 @@ void tst_ComponentWriter::writeOtherClockDrivers()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -974,7 +1020,7 @@ void tst_ComponentWriter::writeOtherClockDrivers()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeResetTypes()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -999,7 +1045,7 @@ void tst_ComponentWriter::writeResetTypes()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1024,7 +1070,7 @@ void tst_ComponentWriter::writeResetTypes()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeResetTypes2022()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std22));
 
     QString output;
@@ -1049,7 +1095,7 @@ void tst_ComponentWriter::writeResetTypes2022()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1075,7 +1121,7 @@ void tst_ComponentWriter::writeResetTypes2022()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeParameters()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1099,7 +1145,7 @@ void tst_ComponentWriter::writeParameters()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1123,7 +1169,7 @@ void tst_ComponentWriter::writeParameters()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeAssertions()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1148,7 +1194,7 @@ void tst_ComponentWriter::writeAssertions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1174,7 +1220,7 @@ void tst_ComponentWriter::writeAssertions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeVendorExtensions()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1203,7 +1249,7 @@ void tst_ComponentWriter::writeVendorExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1226,7 +1272,7 @@ void tst_ComponentWriter::writeVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeKactusAttributes()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1244,7 +1290,7 @@ void tst_ComponentWriter::writeKactusAttributes()
             "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
             "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
             "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-                "<ipxact:vendor>TUT</ipxact:vendor>"
+                "<ipxact:vendor>tuni.fi</ipxact:vendor>"
                 "<ipxact:library>TestLibrary</ipxact:library>"
                 "<ipxact:name>TestComponent</ipxact:name>"
                 "<ipxact:version>0.11</ipxact:version>"
@@ -1269,7 +1315,7 @@ void tst_ComponentWriter::writeKactusAttributes()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSwProperties()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1299,7 +1345,7 @@ void tst_ComponentWriter::writeSwProperties()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1324,7 +1370,7 @@ void tst_ComponentWriter::writeSwProperties()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeSystemViews()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1333,7 +1379,7 @@ void tst_ComponentWriter::writeSystemViews()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "hierarchy", "0.3");
 
     QStringList fileSetReferences;
     fileSetReferences.append("burn");
@@ -1359,7 +1405,7 @@ void tst_ComponentWriter::writeSystemViews()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1370,7 +1416,7 @@ void tst_ComponentWriter::writeSystemViews()
                         "\t\t\t\t<ipxact:name>system</ipxact:name>\n"
                         "\t\t\t\t<ipxact:displayName>crash</ipxact:displayName>\n"
                         "\t\t\t\t<ipxact:description>BSOD</ipxact:description>\n"
-                        "\t\t\t\t<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "\t\t\t\t<kactus2:hierarchyRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>\n"
                         "\t\t\t\t<kactus2:hwViewRef>malfunction</kactus2:hwViewRef>\n"
                         "\t\t\t\t<kactus2:fileSetRef>burn</kactus2:fileSetRef>\n"
@@ -1391,7 +1437,7 @@ void tst_ComponentWriter::writeSystemViews()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeComInterfaces()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1400,7 +1446,7 @@ void tst_ComponentWriter::writeComInterfaces()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "hierarchy", "0.3");
 
     QMap<QString, QString> propertyValues;
     propertyValues.insert("spathi", "eluder");
@@ -1429,7 +1475,7 @@ void tst_ComponentWriter::writeComInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1440,14 +1486,14 @@ void tst_ComponentWriter::writeComInterfaces()
                         "\t\t\t\t<ipxact:name>coms</ipxact:name>\n"
                         "\t\t\t\t<ipxact:displayName>spec</ipxact:displayName>\n"
                         "\t\t\t\t<ipxact:description>ops</ipxact:description>\n"
-                        "\t\t\t\t<kactus2:comType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "\t\t\t\t<kactus2:comType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>\n"
                         "\t\t\t\t<kactus2:transferType>Transfer</kactus2:transferType>\n"
                         "\t\t\t\t<kactus2:comDirection>in</kactus2:comDirection>\n"
                         "\t\t\t\t<kactus2:propertyValues>\n"
                             "\t\t\t\t\t<kactus2:propertyValue name=\"spathi\" value=\"eluder\"/>\n"
                         "\t\t\t\t</kactus2:propertyValues>\n"
-                        "\t\t\t\t<kactus2:comImplementationRef vendor=\"TUT\" library=\"TestLibrary\" "
+                        "\t\t\t\t<kactus2:comImplementationRef vendor=\"tuni.fi\" library=\"TestLibrary\" "
                             "name=\"hierarchy\" version=\"0.3\"/>\n"
                     "\t\t\t</kactus2:comInterface>\n"
                 "\t\t</kactus2:comInterfaces>\n"
@@ -1466,7 +1512,7 @@ void tst_ComponentWriter::writeComInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeApiInterfaces()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1475,7 +1521,7 @@ void tst_ComponentWriter::writeApiInterfaces()
     xmlStreamWriter.setAutoFormatting(true);
     xmlStreamWriter.setAutoFormattingIndent(-1);
 
-    VLNV hierarchyVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "hierarchy", "0.3");
+    VLNV hierarchyVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "hierarchy", "0.3");
 
     QSharedPointer<ApiInterface> testApiInterface (new ApiInterface());
     testApiInterface->setName("api");
@@ -1496,7 +1542,7 @@ void tst_ComponentWriter::writeApiInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1505,7 +1551,7 @@ void tst_ComponentWriter::writeApiInterfaces()
                 "\t\t<kactus2:apiInterfaces>\n"
                     "\t\t\t<kactus2:apiInterface>\n"
                         "\t\t\t\t<ipxact:name>api</ipxact:name>\n"
-                        "\t\t\t\t<kactus2:apiType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "\t\t\t\t<kactus2:apiType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>\n"
                         "\t\t\t\t<kactus2:dependencyDirection>provider</kactus2:dependencyDirection>\n"
                     "\t\t\t</kactus2:apiInterface>\n"
@@ -1525,7 +1571,7 @@ void tst_ComponentWriter::writeApiInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeFileDependencies()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1556,7 +1602,7 @@ void tst_ComponentWriter::writeFileDependencies()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1585,7 +1631,7 @@ void tst_ComponentWriter::writeFileDependencies()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeTags()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1609,7 +1655,7 @@ void tst_ComponentWriter::writeTags()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"
@@ -1640,7 +1686,7 @@ void tst_ComponentWriter::writeTags()
 //-----------------------------------------------------------------------------
 void tst_ComponentWriter::writeErasedTags()
 {
-    VLNV componentVLNV(VLNV::COMPONENT, "TUT", "TestLibrary", "TestComponent", "0.11");
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
     testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std14));
 
     QString output;
@@ -1667,7 +1713,7 @@ void tst_ComponentWriter::writeErasedTags()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014 "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "\t<ipxact:vendor>TUT</ipxact:vendor>\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
             "\t<ipxact:library>TestLibrary</ipxact:library>\n"
             "\t<ipxact:name>TestComponent</ipxact:name>\n"
             "\t<ipxact:version>0.11</ipxact:version>\n"

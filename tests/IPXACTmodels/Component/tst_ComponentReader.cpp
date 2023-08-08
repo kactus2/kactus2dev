@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/Choice.h>
@@ -60,6 +61,7 @@ private slots:
 
     void readChannels();
     void readRemapStates();
+    void readModes2022();
     void readAddressSpaces();
     void readMemoryMaps();
 
@@ -357,9 +359,9 @@ void tst_ComponentReader::readChannels()
 
     QSharedPointer<Channel> channel = testComponent->getChannels()->first();
     QCOMPARE(channel->name(), QString("testChannel"));
-    QCOMPARE(channel->getInterfaces().size(), 2);
-    QCOMPARE(channel->getInterfaces().first(), QString("interfaceOne"));
-    QCOMPARE(channel->getInterfaces().last(), QString("interfaceTwo"));
+    QCOMPARE(channel->getInterfaces()->size(), 2);
+    QCOMPARE(channel->getInterfaces()->first()->localName_, QString("interfaceOne"));
+    QCOMPARE(channel->getInterfaces()->last()->localName_, QString("interfaceTwo"));
 }
 
 //-----------------------------------------------------------------------------
@@ -400,6 +402,45 @@ void tst_ComponentReader::readRemapStates()
 
     QSharedPointer<RemapState> remapState = testComponent->getRemapStates()->first();
     QCOMPARE(remapState->name(), QString("remap"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readModes2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readModes2022()
+{
+    QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
+            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:modes>"
+                "<ipxact:mode>"
+                    "<ipxact:name>idle</ipxact:name>"
+                    "<ipxact:description>Default test state</ipxact:description>"
+                "</ipxact:mode>"
+            "</ipxact:modes>"
+        "</ipxact:component>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getModes()->size(), 1);
+
+    QSharedPointer<Mode> idleMode = testComponent->getModes()->first();
+    QCOMPARE(idleMode->name(), QString("idle"));
 }
 
 //-----------------------------------------------------------------------------

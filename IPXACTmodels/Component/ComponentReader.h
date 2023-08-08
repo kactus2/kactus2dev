@@ -84,6 +84,8 @@ private:
      */
     void parseRemapStates(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
 
+    void parseModes(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
+
     /*!
      *  Reads the address spaces.
      *

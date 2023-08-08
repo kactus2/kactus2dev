@@ -15,6 +15,7 @@
 #include "BusInterface.h"
 #include "Channel.h"
 #include "RemapState.h"
+#include "Mode.h"
 #include "AddressSpace.h"
 #include "MemoryMap.h"
 #include "View.h"
@@ -47,21 +48,7 @@
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
 Component::Component(const VLNV &vlnv, Document::Revision revision):
-Document(vlnv, revision),
-busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
-indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
-channels_(new QList<QSharedPointer<Channel> > ()),
-remapStates_(new QList<QSharedPointer<RemapState> >()),
-addressSpaces_(new QList<QSharedPointer<AddressSpace> > ()),
-memoryMaps_(new QList<QSharedPointer<MemoryMap> > ()),
-model_(new Model()),
-componentGenerators_(new QList<QSharedPointer<ComponentGenerator> > ()),
-choices_(new QList<QSharedPointer<Choice> >()),
-fileSets_(new QList<QSharedPointer<FileSet> > ()),
-cpus_(new QList<QSharedPointer<Cpu> > ()),
-otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_(),
-resetTypes_(new QList<QSharedPointer<ResetType> > ())
+Document(vlnv, revision)
 {
 
 }
@@ -70,21 +57,7 @@ resetTypes_(new QList<QSharedPointer<ResetType> > ())
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
 Component::Component(const Component &other):
-Document(other),
-busInterfaces_(new QList<QSharedPointer<BusInterface> > ()),
-indirectInterfaces_(new QList<QSharedPointer<IndirectInterface> > ()),
-channels_(new QList<QSharedPointer<Channel> > ()),
-remapStates_(new QList<QSharedPointer<RemapState> >()),
-addressSpaces_(new QList<QSharedPointer<AddressSpace> >()),
-memoryMaps_(new QList<QSharedPointer<MemoryMap> > ()),
-model_(),
-componentGenerators_(new QList<QSharedPointer<ComponentGenerator> > ()),
-choices_(new QList<QSharedPointer<Choice> >()),
-fileSets_(new QList<QSharedPointer<FileSet> > ()),
-cpus_(new QList<QSharedPointer<Cpu> > ()),
-otherClockDrivers_(new QList<QSharedPointer<OtherClockDriver> > ()),
-pendingFileDependencies_(other.pendingFileDependencies_),
-resetTypes_(new QList<QSharedPointer<ResetType> > ())
+Document(other)
 {
     copyBusInterfaces(other);
     copyIndirectInterfaces(other);
@@ -116,6 +89,7 @@ Component& Component::operator=( const Component& other)
         indirectInterfaces_->clear();
         channels_->clear();
         remapStates_->clear();
+        modes_->clear();
         addressSpaces_->clear();
         memoryMaps_->clear();
         model_.clear();
@@ -131,6 +105,7 @@ Component& Component::operator=( const Component& other)
         copyIndirectInterfaces(other);
         copyChannels(other);
         copyRemapStates(other);
+        copyModes(other);
         copyAddressSpaces(other);
         copyMemoryMaps(other);
         copyModel(other);
@@ -150,19 +125,7 @@ Component& Component::operator=( const Component& other)
 //-----------------------------------------------------------------------------
 Component::~Component()
 {
-    busInterfaces_.clear();
-    indirectInterfaces_.clear();
-    channels_.clear();
-    remapStates_.clear();
-    addressSpaces_.clear();
-    memoryMaps_.clear();
-    model_.clear();
-    componentGenerators_.clear();
-    choices_.clear();
-    fileSets_.clear();
-    cpus_.clear();
-    otherClockDrivers_.clear();
-    resetTypes_.clear();
+
 }
 
 //-----------------------------------------------------------------------------
@@ -183,7 +146,7 @@ bool Component::isBus() const
         return true;
     }
 
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
+    for  (QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
         if (busif->hasBridge())
         {
@@ -207,7 +170,7 @@ bool Component::isChannel() const
 //-----------------------------------------------------------------------------
 bool Component::isBridge() const
 {
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
+    for (QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
         if (busif->hasBridge())
         {
@@ -317,6 +280,14 @@ void Component::setChannels(QSharedPointer<QList<QSharedPointer<Channel> > > new
 QSharedPointer<QList<QSharedPointer<RemapState> > > Component::getRemapStates() const
 {
     return remapStates_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getModes()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<Mode> > > Component::getModes() const
+{
+    return modes_;
 }
 
 //-----------------------------------------------------------------------------
@@ -1618,6 +1589,18 @@ void Component::copyRemapStates(const Component& other) const
             QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remapState.data()));
             remapStates_->append(copy);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::copyModes()
+//-----------------------------------------------------------------------------
+void Component::copyModes(const Component& other) const
+{
+    for (auto const& mode : *other.modes_)
+    {
+        QSharedPointer<Mode> copy = QSharedPointer<Mode>(new Mode(*mode));
+        modes_->append(copy);
     }
 }
 
