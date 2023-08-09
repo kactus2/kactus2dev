@@ -12,18 +12,17 @@
 #ifndef FIELDACCESSPOLICY_H
 #define FIELDACCESSPOLICY_H
 
-#include <IPXACTmodels/ipxactmodels_global.h>
-#include <IPXACTmodels/generaldeclarations.h>
-
-#include <IPXACTmodels/common/AccessTypes.h>
-#include <IPXACTmodels/common/BooleanValue.h>
-#include <IPXACTmodels/common/Extendable.h>
-
+#include "AccessPolicy.h"
 #include "FieldReference.h"
 #include "ModeReference.h"
 #include "WriteValueConstraint.h"
 
-class IPXACTMODELS_EXPORT FieldAccessPolicy : public Extendable
+#include <IPXACTmodels/ipxactmodels_global.h>
+#include <IPXACTmodels/generaldeclarations.h>
+
+#include <IPXACTmodels/common/BooleanValue.h>
+
+class IPXACTMODELS_EXPORT FieldAccessPolicy : public AccessPolicy
 {
 public:
 
@@ -50,20 +49,6 @@ public:
     FieldAccessPolicy(FieldAccessPolicy const& other);
     
     virtual ~FieldAccessPolicy() = default;
-
-    /*!
-     *	Get the mode references of the field access policy.
-     *	    
-     * 	    @return A pointer to the list of mode references.
-     */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferences() const;
-    
-    /*!
-     *	Set the mode references of the field access policy.
-     *  
-     *      @param [in] modeRefs     The mode references to set.
-     */
-    void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
 
     /*!
      *  Get the modified write value setting of the field.
@@ -240,20 +225,6 @@ public:
     void setFieldAccessPolicyTypeDefinitionRef(QString const& typeDefRef);
 
     /*!
-     *	Get the field access policy access value.
-     *  
-     * 	    @return The access value.
-     */
-    AccessTypes::Access getAccess() const;
-
-    /*!
-     *	Set the access value.
-     *  
-     *      @param [in] newAccess     The new access value.
-     */
-    void setAccess(AccessTypes::Access newAccess);
-
-    /*!
      *	Get the access restrictions of the field access policy.
      *  
      * 	    @return The list of access restrictions.
@@ -269,18 +240,11 @@ public:
 
 private:
 
-    //! The operating modes for which this field access policy is active.
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences_ =
-        QSharedPointer<QList<QSharedPointer<ModeReference> > >(new QList<QSharedPointer<ModeReference> >());
-
     //! Reference to a field access policy definition.
     QString fieldAccessPolicyDefinitionRef_;
 
     //! Reference to a typeDefinitions element through an external type definition.
     QString fieldAccessPolicyTypeDefinitionRef_;
-
-    //! Contains the access type of the field.
-    AccessTypes::Access access_ = AccessTypes::ACCESS_COUNT;
 
     //! Contains the modified write setting for the field.
     General::ModifiedWrite modifiedWrite_ = General::MODIFIED_WRITE_COUNT;

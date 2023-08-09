@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SingleFieldEditor.h"
+#include "FieldAccessPoliciesEditor.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -560,7 +561,8 @@ void SingleFieldEditor::setupLayout()
     }
     else
     {
-        topOfPageLayout->addWidget(resetsEditor_, 0, 1, 2, 1);
+        topOfPageLayout->addWidget(resetsEditor_, 0, 1);
+        topOfPageLayout->addWidget(enumerationsEditor_, 1, 1);
     }
     
     QWidget* topOfPageWidget = new QWidget();
@@ -571,7 +573,17 @@ void SingleFieldEditor::setupLayout()
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(topOfPageWidget);
-    verticalSplitter->addWidget(enumerationsEditor_);
+
+    if (showStd14)
+    {
+        verticalSplitter->addWidget(enumerationsEditor_);
+    }
+    else
+    {
+        FieldAccessPoliciesEditor* accessPolicies = new FieldAccessPoliciesEditor(QString::fromStdString(fieldName_), fieldInterface_, this);
+        verticalSplitter->addWidget(accessPolicies);
+    }
+
     verticalSplitter->setStretchFactor(1, 1);
 
     QSplitterHandle* handle = verticalSplitter->handle(1);

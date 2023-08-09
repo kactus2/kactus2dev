@@ -377,6 +377,65 @@ string FieldInterface::getAccessString(string const& fieldName) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::getAccessString()
+//-----------------------------------------------------------------------------
+string FieldInterface::getAccessString(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+        if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
+        {
+            auto access = fieldAccessPolicies->at(accessPolicyIndex)->getAccess();
+            return AccessTypes::access2Str(access).toStdString();
+        }
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getModeRefs()
+//-----------------------------------------------------------------------------
+std::vector<std::string> FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+        if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
+        {
+            auto modeRefs = fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
+            vector<string> modeRefList;
+            std::transform(modeRefs->cbegin(), modeRefs->cend(), std::back_inserter(modeRefList), [](QSharedPointer<ModeReference> const& modeRef)
+                {
+                    return modeRef->getReference().toStdString();
+                });
+
+            // return only mode names for now
+            return modeRefList;
+        }
+    }
+
+    return vector<string>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getAccessPolicyCount()
+//-----------------------------------------------------------------------------
+int FieldInterface::getAccessPolicyCount(std::string const& fieldName) const
+{
+    auto field = getField(fieldName);
+    if (field)
+    {
+        return field->getFieldAccessPolicies()->size();
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessType()
 //-----------------------------------------------------------------------------
 AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName) const

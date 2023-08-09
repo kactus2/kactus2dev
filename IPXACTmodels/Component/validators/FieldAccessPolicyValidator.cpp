@@ -41,7 +41,7 @@ bool FieldAccessPolicyValidator::validate(QSharedPointer<FieldAccessPolicy> fiel
 //-----------------------------------------------------------------------------
 void FieldAccessPolicyValidator::findErrorsIn(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const
 {
-    findErrorsInModeRefs(errors, fieldAccessPolicy->getModeReferences(), QStringLiteral("in field access policy within ") + context);
+    findErrorsInModeRefs(errors, fieldAccessPolicy->getModeReferences(), context);
     finderrorsInDefinitionRef(errors, fieldAccessPolicy, context);
     findErrorsInAccess(errors, fieldAccessPolicy, context);
     findErrorsInWriteValueConstraint(errors, fieldAccessPolicy, context);
@@ -240,11 +240,13 @@ void FieldAccessPolicyValidator::findErrorsInModeRefs(QStringList& errors, QShar
     QStringList refs;
     QStringList priorities;
 
+    auto modeRefContext = QStringLiteral("field access policy within ") + context;
+
     for (auto const& modeRef : *modeRefs)
     {
         if (modeRef->getPriority().isEmpty())
         {
-            errors.append(QObject::tr("Mode reference in %1 has no priority.").arg(context));
+            errors.append(QObject::tr("Mode reference in %1 has no priority.").arg(modeRefContext));
         }
 
         if (!refs.contains(modeRef->getReference()))
@@ -253,7 +255,7 @@ void FieldAccessPolicyValidator::findErrorsInModeRefs(QStringList& errors, QShar
         }
         else
         {
-            errors.append(QObject::tr("Mode reference in %1 has a non-unique reference in the containing element.").arg(context));
+            errors.append(QObject::tr("Mode reference in %1 has a non-unique reference in the containing element.").arg(modeRefContext));
         }
 
         if (!priorities.contains(modeRef->getPriority()))
@@ -262,7 +264,7 @@ void FieldAccessPolicyValidator::findErrorsInModeRefs(QStringList& errors, QShar
         }
         else
         {
-            errors.append(QObject::tr("Mode reference in %1 has a non-unique priority in the containing element.").arg(context));
+            errors.append(QObject::tr("Mode reference in %1 has a non-unique priority in the containing element.").arg(modeRefContext));
         }
     }
 }
@@ -405,7 +407,7 @@ void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& err
 
     if (!hasValidModeRefs(allModeRefs))
     {
-        errors.append(QObject::tr("Field access policy access restrictions in %1 have"
+        errors.append(QObject::tr("Field access policy access restrictions in %1"
             " cannot have duplicate mode references and/or priorities.").arg(context));
     }
 }

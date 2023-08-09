@@ -38,7 +38,7 @@ RegisterReader::~RegisterReader()
 //-----------------------------------------------------------------------------
 // Function: RegisterReader::createRegisterfrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& registerNode) const
+QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& registerNode, Document::Revision docRevision) const
 {
     QDomElement registerElement = registerNode.toElement();
 
@@ -60,9 +60,9 @@ QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& regi
 
     parseAccess(registerNode, newRegister);
 
-    parseFields(registerElement, newRegister);
+    parseFields(registerElement, newRegister, docRevision);
 
-    parseAlternateRegisters(registerElement, newRegister);
+    parseAlternateRegisters(registerElement, newRegister, docRevision);
 
     parseParameters(registerNode, newRegister);
 
@@ -74,7 +74,7 @@ QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& regi
 //-----------------------------------------------------------------------------
 // Function: RegisterReader::createRegisterFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode const& registerFileNode) const
+QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode const& registerFileNode, Document::Revision docRevision) const
 {
     QSharedPointer<RegisterFile> newRegisterFile (new RegisterFile());
 
@@ -90,7 +90,7 @@ QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode con
 
     parseRegisterFileRange(registerFileNode, newRegisterFile);
 
-    parseRegisterFileRegisterData(registerFileNode, newRegisterFile);
+    parseRegisterFileRegisterData(registerFileNode, newRegisterFile, docRevision);
 
     parseParameters(registerFileNode, newRegisterFile);
 
@@ -209,7 +209,8 @@ void RegisterReader::parseAccess(QDomNode const& definitionNode,
 // Function: RegisterReader::parseFields()
 //-----------------------------------------------------------------------------
 void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
-    QSharedPointer<RegisterDefinition> registerDefinition) const
+    QSharedPointer<RegisterDefinition> registerDefinition,
+    Document::Revision docRevision) const
 {
     QDomNodeList fieldNodeList = registerDefinitionElement.childNodes();
 
@@ -219,7 +220,7 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
         {
             if (fieldNodeList.at(fieldIndex).nodeName() == QLatin1String("ipxact:field"))
             {
-                QSharedPointer<Field> newField = FieldReader::createFieldFrom(fieldNodeList.at(fieldIndex));
+                QSharedPointer<Field> newField = FieldReader::createFieldFrom(fieldNodeList.at(fieldIndex), docRevision);
                 registerDefinition->getFields()->append(newField);
             }
         }
@@ -230,7 +231,8 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
 // Function: RegisterReader::parseAlternateRegisters()
 //-----------------------------------------------------------------------------
 void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
-    QSharedPointer<Register> targetRegister) const
+    QSharedPointer<Register> targetRegister,
+    Document::Revision docRevision) const
 {
     QDomElement multipleAlternaterRegisterNode = registerElement.firstChildElement(QStringLiteral("ipxact:alternateRegisters"));
     if (!multipleAlternaterRegisterNode.isNull())
@@ -242,7 +244,7 @@ void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
         {
             QSharedPointer<AlternateRegister> newAlternateRegister (new AlternateRegister());
 
-            parseSingleAlternateRegister(alternateNodeList.at(alternateIndex).toElement(), newAlternateRegister);
+            parseSingleAlternateRegister(alternateNodeList.at(alternateIndex).toElement(), newAlternateRegister, docRevision);
 
             targetRegister->getAlternateRegisters()->append(newAlternateRegister);
         }
@@ -253,7 +255,8 @@ void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
 // Function: RegisterReader::parseSingleAlternateRegister()
 //-----------------------------------------------------------------------------
 void RegisterReader::parseSingleAlternateRegister(QDomElement const& alternateRegisterElement,
-    QSharedPointer<AlternateRegister> newAlternateRegister) const
+    QSharedPointer<AlternateRegister> newAlternateRegister,
+    Document::Revision docRevision) const
 {
     parseNameGroup(alternateRegisterElement, newAlternateRegister);
 
@@ -267,7 +270,7 @@ void RegisterReader::parseSingleAlternateRegister(QDomElement const& alternateRe
 
     parseAccess(alternateRegisterElement, newAlternateRegister);
 
-    parseFields(alternateRegisterElement, newAlternateRegister);
+    parseFields(alternateRegisterElement, newAlternateRegister, docRevision);
 
     parseParameters(alternateRegisterElement, newAlternateRegister);
 
@@ -340,7 +343,8 @@ void RegisterReader::parseRegisterFileDimension(QDomNode const& registerFileNode
 // Function: RegisterReader::parseRegisterFileRegisterData()
 //-----------------------------------------------------------------------------
 void RegisterReader::parseRegisterFileRegisterData(QDomNode const& registerFileNode,
-    QSharedPointer<RegisterFile> newRegisterFile) const
+    QSharedPointer<RegisterFile> newRegisterFile,
+    Document::Revision docRevision) const
 {
     QDomNodeList childNodeList = registerFileNode.childNodes();
 
@@ -348,13 +352,13 @@ void RegisterReader::parseRegisterFileRegisterData(QDomNode const& registerFileN
     {
         if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:register"))
         {
-            QSharedPointer<Register> newRegister = createRegisterfrom(childNodeList.at(i));
+            QSharedPointer<Register> newRegister = createRegisterfrom(childNodeList.at(i), docRevision);
             newRegisterFile->getRegisterData()->append(newRegister);
         }
 
         else if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:registerFile"))
         {
-            QSharedPointer<RegisterFile> containedRegisterFile = createRegisterFileFrom(childNodeList.at(i));
+            QSharedPointer<RegisterFile> containedRegisterFile = createRegisterFileFrom(childNodeList.at(i), docRevision);
             newRegisterFile->getRegisterData()->append(containedRegisterFile);
         }
     }

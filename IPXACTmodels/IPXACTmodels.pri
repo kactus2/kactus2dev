@@ -284,7 +284,10 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./Component/FieldReferenceWriter.h \
     ./Component/FieldAccessPolicyWriter.h \
     ./Component/validators/FieldReferenceValidator.h \
-    ./Component/validators/FieldAccessPolicyValidator.h
+    ./Component/validators/FieldAccessPolicyValidator.h \
+    ./Component/AccessPolicy.h \
+    ./Component/AccessPolicyReader.h \
+    ./Component/AccessPolicyWriter.h
 SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/FieldAccessPolicy.cpp \
     ./Component/FieldReference.cpp \
@@ -563,4 +566,7 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/FieldReferenceWriter.cpp \
     ./Component/FieldAccessPolicyWriter.cpp \
     ./Component/validators/FieldReferenceValidator.cpp \
-    ./Component/validators/FieldAccessPolicyValidator.cpp
+    ./Component/validators/FieldAccessPolicyValidator.cpp \
+    ./Component/AccessPolicy.cpp \
+    ./Component/AccessPolicyReader.cpp \
+    ./Component/AccessPolicyWriter.cpp

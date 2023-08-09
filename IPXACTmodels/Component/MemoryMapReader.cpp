@@ -38,13 +38,13 @@ MemoryMapReader::~MemoryMapReader()
 //-----------------------------------------------------------------------------
 // Function: MemoryMapReader::createMemoryMapFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& memoryMapNode) const
+QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& memoryMapNode, Document::Revision docRevision) const
 {
     QSharedPointer<MemoryMap> newMemoryMap(new MemoryMap());
 
-	readMemoryMapBase(memoryMapNode, newMemoryMap);
+	readMemoryMapBase(memoryMapNode, newMemoryMap, docRevision);
 
-    parseMemoryRemaps(memoryMapNode, newMemoryMap);
+    parseMemoryRemaps(memoryMapNode, newMemoryMap, docRevision);
 
     parseAddressUnitBits(memoryMapNode, newMemoryMap);
 
@@ -59,7 +59,8 @@ QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& m
 // Function: MemoryMapReader::parseMemoryBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
+    QSharedPointer<MemoryMapBase> newMemoryMapBase,
+    Document::Revision docRevision) const
 {
     QDomNodeList childNodes = memoryMapBaseNode.childNodes();
 
@@ -71,7 +72,7 @@ void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
         if (addressBlockNode.nodeName() == QStringLiteral("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
-                addressBlockReader.createAddressBlockFrom(addressBlockNode);
+                addressBlockReader.createAddressBlockFrom(addressBlockNode, docRevision);
 
             newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
         }
@@ -81,8 +82,7 @@ void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
 //-----------------------------------------------------------------------------
 // Function: MemoryMapReader::parseMemoryRemaps()
 //-----------------------------------------------------------------------------
-void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
-    const
+void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap, Document::Revision docRevision) const
 {
     QDomNodeList memoryRemapNodeList = memoryMapNode.toElement().elementsByTagName(QStringLiteral("ipxact:memoryRemap"));
 
@@ -90,7 +90,7 @@ void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPo
     {
         QDomElement remapElement = memoryRemapNodeList.at(memoryRemapIndex).toElement();
 
-        QSharedPointer<MemoryRemap> newMemoryRemap = createSingleMemoryRemap(remapElement);
+        QSharedPointer<MemoryRemap> newMemoryRemap = createSingleMemoryRemap(remapElement, docRevision);
 
         newMemoryMap->getMemoryRemaps()->append(newMemoryRemap);
     }
@@ -99,7 +99,7 @@ void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: MemoryMapReader::parseSingleMemoryRemap()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement const& memoryRemapElement) const
+QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement const& memoryRemapElement, Document::Revision docRevision) const
 {
     QSharedPointer<MemoryRemap> newMemoryRemap (new MemoryRemap());
 
@@ -110,7 +110,7 @@ QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement
 
     parsePresence(memoryRemapElement, newMemoryRemap);
 
-    parseMemoryBlocks(memoryRemapElement, newMemoryRemap);
+    parseMemoryBlocks(memoryRemapElement, newMemoryRemap, docRevision);
 
     return newMemoryRemap;
 }

@@ -47,7 +47,7 @@ public:
      *
      *      @return The created register.
      */
-    QSharedPointer<Register> createRegisterfrom(QDomNode const& registerNode) const;
+    QSharedPointer<Register> createRegisterfrom(QDomNode const& registerNode, Document::Revision docRevision) const;
 
     /*!
      *  Creates a new register file from a given register file node.
@@ -56,7 +56,7 @@ public:
      *
      *      @return The created register file.
      */
-    QSharedPointer<RegisterFile> createRegisterFileFrom(QDomNode const& registerFileNode) const;
+    QSharedPointer<RegisterFile> createRegisterFileFrom(QDomNode const& registerFileNode, Document::Revision docRevision) const;
 
 private:
 
@@ -137,7 +137,8 @@ private:
      *      @param [in] registerDefinition          Selected register definition.
      */
     void parseFields(QDomElement const& registerDefinitionElement,
-        QSharedPointer<RegisterDefinition> registerDefinition) const;
+        QSharedPointer<RegisterDefinition> registerDefinition,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads the alternate registers.
@@ -145,7 +146,7 @@ private:
      *      @param [in] registerElement     XML description of the register.
      *      @param [in] targetRegister      Selected register.
      */
-    void parseAlternateRegisters(QDomElement const& registerElement, QSharedPointer<Register> targetRegister) const;
+    void parseAlternateRegisters(QDomElement const& registerElement, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const;
 
     /*!
      *  Reads a single alternate register.
@@ -154,7 +155,8 @@ private:
      *      @param [in] newAlternateRegister        Selected alternate register.
      */
     void parseSingleAlternateRegister(QDomElement const& alternateRegisterElement,
-        QSharedPointer<AlternateRegister> newAlternateRegister) const;
+        QSharedPointer<AlternateRegister> newAlternateRegister,
+        Document::Revision docRevision) const;
 
     /*!
      *  Reads alternate register alternate groups.
@@ -198,7 +200,8 @@ private:
      *      @param [in] newRegisterFile     Selected register file.
      */
     void parseRegisterFileRegisterData(QDomNode const& registerFileNode,
-        QSharedPointer<RegisterFile> newRegisterFile) const;
+        QSharedPointer<RegisterFile> newRegisterFile,
+        Document::Revision docRevision) const;
 };
 
 #endif // REGISTERREADER_H

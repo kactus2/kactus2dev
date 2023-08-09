@@ -36,7 +36,7 @@ QSharedPointer<AddressSpace> AddressSpaceReader::createAddressSpaceFrom(QDomNode
 
     Details::parseAddressUnitBits(addressSpaceNode, newAddressSpace);
 
-    Details::parseLocalMemoryMap(addressSpaceNode, newAddressSpace);
+    Details::parseLocalMemoryMap(addressSpaceNode, newAddressSpace, docRevision);
 
     Details::readParameters(addressSpaceNode, newAddressSpace, docRevision);
 
@@ -167,7 +167,8 @@ void AddressSpaceReader::Details::parseAddressUnitBits(QDomNode const& addressSp
 // Function: AddressSpaceReader::Details::parseLocalMemoryMap()
 //-----------------------------------------------------------------------------
 void AddressSpaceReader::Details::parseLocalMemoryMap(QDomNode const& addressSpaceNode,
-    QSharedPointer<AddressSpace> newAddressSpace)
+    QSharedPointer<AddressSpace> newAddressSpace,
+    Document::Revision docRevision)
 {
     QDomNode localMemoryMapNode = addressSpaceNode.firstChildElement(QStringLiteral("ipxact:localMemoryMap"));
     if (!localMemoryMapNode.isNull())
@@ -175,7 +176,7 @@ void AddressSpaceReader::Details::parseLocalMemoryMap(QDomNode const& addressSpa
         QSharedPointer<MemoryMapBase> newLocalMemoryMap(new MemoryMapBase());
 
         MemoryMapBaseReader localReader;
-        localReader.readMemoryMapBase(localMemoryMapNode, newLocalMemoryMap);
+        localReader.readMemoryMapBase(localMemoryMapNode, newLocalMemoryMap, docRevision);
         newAddressSpace->setLocalMemoryMap(newLocalMemoryMap);
     }
 }

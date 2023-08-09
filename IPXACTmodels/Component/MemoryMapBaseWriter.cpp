@@ -44,7 +44,7 @@ void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPo
 
     writeIsPresent(writer, MemoryMapBase->getIsPresent());
 
-    writeMemoryBlocks(writer, MemoryMapBase);
+    writeMemoryBlocks(writer, MemoryMapBase, docRevision);
 }
 
 //-----------------------------------------------------------------------------
@@ -59,7 +59,7 @@ void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeMemoryBlocks()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const
+void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, Document::Revision docRevision) const
 {
     if (!MemoryMapBase->getMemoryBlocks()->isEmpty())
     {
@@ -71,7 +71,7 @@ void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPoi
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                addressBlockWriter.writeAddressBlock(writer, addressBlock);
+                addressBlockWriter.writeAddressBlock(writer, addressBlock, docRevision);
             }
 
             QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();

@@ -429,6 +429,8 @@ private:
 	 */
 	void copyWriteValueConstraint(const Field& other);
 
+	void copyFieldAccessPolicies(Field const& other);
+
 	//-----------------------------------------------------------------------------
 	// Data.
 	//-----------------------------------------------------------------------------

@@ -33,7 +33,7 @@ FieldAccessPolicy::AccessRestriction::AccessRestriction(AccessRestriction const&
 // Function: FieldAccessPolicy::FieldAccessPolicy()
 //-----------------------------------------------------------------------------
 FieldAccessPolicy::FieldAccessPolicy():
-    Extendable()
+    AccessPolicy()
 {
 
 }
@@ -42,14 +42,12 @@ FieldAccessPolicy::FieldAccessPolicy():
 // Function: FieldAccessPolicy::FieldAccessPolicy()
 //-----------------------------------------------------------------------------
 FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
-    Extendable(other),
-    modeReferences_(new QList<QSharedPointer<ModeReference> >()),
+    AccessPolicy(other),
     fieldAccessPolicyDefinitionRef_(other.fieldAccessPolicyDefinitionRef_),
     fieldAccessPolicyTypeDefinitionRef_(other.fieldAccessPolicyTypeDefinitionRef_),
-    access_(other.access_),
     modifiedWrite_(other.modifiedWrite_),
     modifiedWriteModify_(other.modifiedWriteModify_),
-    writeValueConstraint_(new WriteValueConstraint(*other.writeValueConstraint_)),
+    writeValueConstraint_(),
     readAction_(other.readAction_),
     readActionModify_(other.readActionModify_),
     readResponse_(other.readResponse_),
@@ -59,15 +57,6 @@ FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
     testConstraint_(other.testConstraint_),
     reserved_(other.reserved_)
 {
-    for (auto const& modeRef : *other.modeReferences_)
-    {
-        if (modeRef)
-        {
-            auto copy = QSharedPointer<ModeReference>(new ModeReference(*modeRef));
-            modeReferences_->append(copy);
-        }
-    }
-
     for (auto const& broadcast : *other.broadcasts_)
     {
         if (broadcast)
@@ -77,7 +66,7 @@ FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
         }
     }
 
-    for (auto const& restriction : *other.getAccessRestrictions())
+    for (auto const& restriction : *other.accessRestrictions_)
     {
         if (restriction)
         {
@@ -85,22 +74,11 @@ FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
             accessRestrictions_->append(copy);
         }
     }
-}
 
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicy::getModeReferences()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > FieldAccessPolicy::getModeReferences() const
-{
-    return modeReferences_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicy::setModeReferences()
-//-----------------------------------------------------------------------------
-void FieldAccessPolicy::setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
-{
-    modeReferences_ = modeRefs;
+    if (other.writeValueConstraint_)
+    {
+        writeValueConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -284,22 +262,6 @@ QString FieldAccessPolicy::getFieldAccessPolicyTypeDefinitionRef() const
 void FieldAccessPolicy::setFieldAccessPolicyTypeDefinitionRef(QString const& typeDefRef)
 {
     fieldAccessPolicyTypeDefinitionRef_ = typeDefRef;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicy::getAccess()
-//-----------------------------------------------------------------------------
-AccessTypes::Access FieldAccessPolicy::getAccess() const
-{
-    return access_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicy::setAccess()
-//-----------------------------------------------------------------------------
-void FieldAccessPolicy::setAccess(AccessTypes::Access newAccess)
-{
-    access_ = newAccess;
 }
 
 //-----------------------------------------------------------------------------

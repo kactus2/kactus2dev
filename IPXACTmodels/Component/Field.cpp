@@ -68,12 +68,14 @@ readActionModify_(other.readActionModify_),
 testable_(other.testable_),
 testConstraint_(other.testConstraint_),
 reserved_(other.reserved_),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+parameters_(new QList<QSharedPointer<Parameter> > ()),
+fieldAccessPolicies_(new QList<QSharedPointer<FieldAccessPolicy> >())
 {
     copyEnumeratedValues(other);
     copyParameters(other);
     copyWriteValueConstraint(other);
     copyResets(other);
+    copyFieldAccessPolicies(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -515,12 +517,12 @@ void Field::setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAcce
 //-----------------------------------------------------------------------------
 void Field::copyEnumeratedValues(const Field& other)
 {
-    foreach (QSharedPointer<EnumeratedValue> enumValue, *other.enumeratedValues_)
+    for (auto const& enumValue : *other.enumeratedValues_)
     {
         if (enumValue)
         {
             QSharedPointer<EnumeratedValue> copy =
-                QSharedPointer<EnumeratedValue>(new EnumeratedValue(*enumValue.data()));
+                QSharedPointer<EnumeratedValue>(new EnumeratedValue(*enumValue));
             enumeratedValues_->append(copy);
         }
     }
@@ -531,11 +533,11 @@ void Field::copyEnumeratedValues(const Field& other)
 //-----------------------------------------------------------------------------
 void Field::copyParameters(const Field& other)
 {
-    foreach (QSharedPointer<Parameter> param, *other.parameters_)
+    for (auto const& param : *other.parameters_)
     {
         if (param)
         {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param.data()));
+            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param));
             parameters_->append(copy);
         }
     }
@@ -549,7 +551,7 @@ void Field::copyWriteValueConstraint(const Field& other)
     if (other.writeValueConstraint_)
     {
         writeValueConstraint_ =
-            QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_.data()));
+            QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));
     }
 }
 
@@ -558,12 +560,27 @@ void Field::copyWriteValueConstraint(const Field& other)
 //-----------------------------------------------------------------------------
 void Field::copyResets(const Field& other)
 {
-  foreach (QSharedPointer<FieldReset> other_reset, *other.resets_)
-  {
-      if (other_reset)
-      {
-          QSharedPointer<FieldReset> copy = QSharedPointer<FieldReset>(new FieldReset(*other_reset.data()));
-          resets_->append(copy);
-      }
-  }
+    for (auto const& other_reset : *other.resets_)
+    {
+        if (other_reset)
+        {
+            QSharedPointer<FieldReset> copy = QSharedPointer<FieldReset>(new FieldReset(*other_reset));
+            resets_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: Field::copyFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void Field::copyFieldAccessPolicies(Field const& other)
+{
+    for (auto const& fieldAccessPolicy : *other.fieldAccessPolicies_)
+    {
+        if (fieldAccessPolicy)
+        {
+            QSharedPointer<FieldAccessPolicy> copy = QSharedPointer<FieldAccessPolicy>(new FieldAccessPolicy(*fieldAccessPolicy));
+            fieldAccessPolicies_->append(copy);
+        }
+    }
 }

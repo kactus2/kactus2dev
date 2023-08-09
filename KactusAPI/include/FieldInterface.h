@@ -680,6 +680,11 @@ public:
      */
     bool setID(std::string const& fieldName, std::string const& newID);
 
+    std::string getAccessString(std::string const& fieldName, int accessPolicyIndex) const;
+
+    std::vector<std::string> getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
+
+    int getAccessPolicyCount(std::string const& fieldName) const;
 
 private:
 

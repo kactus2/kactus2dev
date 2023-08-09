@@ -197,6 +197,9 @@
     <ClCompile Include="common\validators\ValueFormatter.cpp" />
     <ClCompile Include="common\Vector.cpp" />
     <ClCompile Include="common\VLNV.cpp" />
+    <ClCompile Include="Component\AccessPolicy.cpp" />
+    <ClCompile Include="Component\AccessPolicyReader.cpp" />
+    <ClCompile Include="Component\AccessPolicyWriter.cpp" />
     <ClCompile Include="Component\AddressBlock.cpp" />
     <ClCompile Include="Component\AddressBlockReader.cpp" />
     <ClCompile Include="Component\AddressBlockWriter.cpp" />
@@ -407,6 +410,9 @@
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
+    <ClInclude Include="Component\AccessPolicy.h" />
+    <ClInclude Include="Component\AccessPolicyReader.h" />
+    <ClInclude Include="Component\AccessPolicyWriter.h" />
     <ClInclude Include="Component\ExecutableImage.h" />
     <ClInclude Include="Component\FieldAccessPolicy.h" />
     <ClInclude Include="Component\FieldAccessPolicyReader.h" />

@@ -38,7 +38,7 @@ namespace FieldReader
      *
      *      @return The created field.
      */
-    IPXACTMODELS_EXPORT QSharedPointer<Field> createFieldFrom(QDomNode const& fieldNode, Document::Revision docRevision = Document::Revision::Std14);
+    IPXACTMODELS_EXPORT QSharedPointer<Field> createFieldFrom(QDomNode const& fieldNode, Document::Revision docRevision);
 
     namespace Details
     {

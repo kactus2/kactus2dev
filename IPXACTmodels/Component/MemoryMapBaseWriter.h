@@ -66,7 +66,7 @@ protected:
      *      @param [in] writer              Used XML writer.
      *      @param [in] MemoryMapBaseBase   The selected memory map base.
      */
-    void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase) const;
+    void writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, Document::Revision docRevision) const;
 
 private:
 
