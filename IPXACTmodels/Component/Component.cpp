@@ -63,6 +63,7 @@ Document(other)
     copyIndirectInterfaces(other);
     copyChannels(other);
     copyRemapStates(other);
+    copyModes(other);
     copyAddressSpaces(other);
     copyMemoryMaps(other);
     copyModel(other);

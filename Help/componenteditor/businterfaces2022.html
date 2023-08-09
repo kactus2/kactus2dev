@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Bus interfaces editor</title>
+  </head>
+  <body>
+    <h2>Bus interfaces editor</h2>
+    <p>
+      The bus interfaces editor displays a summary of the bus
+      interfaces of a component. A <i>bus interface</i> groups
+      <i>ports</i> together to form an interface that fulfills
+      requirements for a bus protocol. Connecting two matching
+      interfaces means connecting multiple ports (up to tens or even
+      hundreds of bits) together very easily. This editor is used to
+      add and remove bus interfaces in a component
+	  <br />
+	   <img src="../images/portmap2022.png" alt="interface_example"><br />
+    </p>
+    <p>
+      Bus interface has a mandatory <b>name</b> and optional textual <b>description</b>.
+    </p>
+    <p>
+      <b>Bus definition</b> and <b>abstraction definition</b> columns display the <i>VLNV</i>-identifiers of the
+      IP-XACT documents that define qualities of the interface. These
+      fields must be set in the bus interface-specific editor.
+    </p>
+    <p> 
+      <b>Interface mode</b> has 7 different choices (3 modes and 2
+      flavors of each, plus 1 extra):
+    </p>
+    <dl>
+      <dt>1. <b>Initiator</b> initiates transactions, e.g. a write or read. 
+	  An initiator may have an <i>address space</i> which captures the programmer's view of the system.</dt>
+      
+      <dt>2. <b>Target</b> responds to transactions, e.g. accepts the written value or provides the read value.
+	  A target may have a <i>memory map</i> which captures information about the accessible registers inside this component.</dt>
+      
+      <dt>3. <b>System</b> can be used for some interfaces that do not fit into the initiator or target category.</dt>
+      
+      <dt>4-6. <b>Mirrored initiator, mirrored target, mirrored system</b> are the <i>mirrored</i> versions of the
+	  above modes.
+	  They have similar ports as normal interfaces, but the directions of the ports are reversed. 
+	  For example, if an <i>initiator</i> interface has data 
+    output, then a <i>mirrored initiator</i> has data as input.
+	  It is not allowed to connect to mirrored interfaces together. 
+	  The main usage of mirrored interfaces is at bus interconnects, such as AMBA AHB/APB or HIBI,
+	  since they allow constructing a memory map of the whole system, whereas regular IP 
+      components mainly utilize direct interfaces.</dt>
+      
+      <dt>7. <b>Monitor</b> is an interface that can be used for verification process. 
+	  It gathers data from other interfaces, i.e. non-intrusive observation and hence all logical port are inputs</dt>
+    </dl>
+
+    <p> 
+      IP-XACT allows three kinds of connections
+    </p>
+    <ol>
+      <li>Direct initiator to target: Point-to-point connection. Complex cases require using bus interconnect
+      component containing <i>bridge(s)</i>, such as multillayer AHB bus. </li>
+      
+      <li>Direct-mirrored: initiator to mirrored initiator, mirrored target to target, system to mirrored system. 
+      Point-to-point connection. Complex cases require using bus interconnect component containing 
+      <i>channel(s)</i> </li>
+      
+      <li>Monitor: any type except monitor to monitor. Many monitors can be connected to single interface</li>
+    </ol>
+    <hr>
+    <p>    
+      EXAMPLE. Component Sender writes data through its initiator interface IIF to
+      mirrored initiator interface MIIF in interconnect. On the receiving side,
+      interconnect's mirrored target interface MTIF writes the data to
+      Receiver's target interface TIF.  
+      <br />
+      <img src="../images/busInterfaces2022.png" alt="interfaces_example"><br />
+     </p>
+    </p>
+    
+  </body>
+</html>

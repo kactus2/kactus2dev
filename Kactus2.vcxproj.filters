@@ -992,6 +992,12 @@
     <Filter Include="Header Files\editors\AbstractionDefinitionEditor">
       <UniqueIdentifier>{ab39fec5-dbe0-4925-a046-20a4922a8a01}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\modes">
+      <UniqueIdentifier>{c2d52d36-3801-4e3b-8247-31b42bbbd29b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\modes">
+      <UniqueIdentifier>{3a45f3a2-1937-47a0-bd0b-6979b8663878}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3193,7 +3199,7 @@
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
     </ClCompile>
-	<ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
+    <ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.cpp">
@@ -3225,7 +3231,26 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClCompile>  </ItemGroup>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\ModesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\ModesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\SingleModeEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ModesItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleModeItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
       <Filter>Source Files\common\layouts</Filter>
@@ -5648,7 +5673,11 @@
     </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredInitiatorModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
-    </ClInclude>  </ItemGroup>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modes\ModeColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </ClInclude>
+  </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
       <Filter>Source Files\wizards\common</Filter>
@@ -5780,6 +5809,21 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MirroredTargetModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\ModesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\ModesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\SingleModeEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\ModesItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

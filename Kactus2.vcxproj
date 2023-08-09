@@ -624,6 +624,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\ModesEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\ModesModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\SingleModeEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\clockdriversdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\otherclockdriverseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\otherclockdriversmodel.cpp" />
@@ -731,6 +734,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\DesignInstantiationsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\InstantiationsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\MemoryRemapItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\ModesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ParameterizableItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\RemapStatesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ResetTypesItem.cpp" />
@@ -739,6 +743,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignConfigurationInstantiationItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleDesignInstantiationItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\SingleModeItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleRemapStateItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\envidentifiereditor.cpp" />
@@ -1706,6 +1711,10 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\SubspaceMapDelegate.h">
     </QtMoc>
+    <ClInclude Include="editors\ComponentEditor\modes\ModeColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\ModesEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\ModesModel.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\SingleModeEditor.h" />
     <ClInclude Include="editors\ComponentEditor\otherClockDrivers\OtherClockDriverColumns.h" />
     <QtMoc Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.h">
     </QtMoc>
@@ -1886,6 +1895,8 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorTreeDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleCpuItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\ModesItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>

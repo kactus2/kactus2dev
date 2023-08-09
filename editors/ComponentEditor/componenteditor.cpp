@@ -32,6 +32,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
 #include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
+#include <editors/ComponentEditor/treeStructure/ModesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
@@ -572,6 +573,8 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 {
     ExpressionSet expressionsSupport({ parameterFinder_, expressionParser_, expressionFormatter_});
 
+    auto docRevision = component->getRevision();
+
     ComponentEditorRootItem* root = new ComponentEditorRootItem(libHandler_, component, &navigationModel_);
 
     QSharedPointer<ComponentEditorGeneralItem> generalItem(
@@ -689,9 +692,17 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
         root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
             new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
 
-        root->addChildItem(QSharedPointer<RemapStatesItem>(
-            new RemapStatesItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
-            expressionFormatter_, expressionParser_, root)));
+        if (docRevision == Document::Revision::Std14)
+        {
+            root->addChildItem(QSharedPointer<RemapStatesItem>(
+                new RemapStatesItem(&navigationModel_, libHandler_, component, referenceCounter_, parameterFinder_,
+                    expressionFormatter_, expressionParser_, root)));
+        }
+        else if (docRevision == Document::Revision::Std22)
+        {
+            root->addChildItem(QSharedPointer<ModesItem>(
+                new ModesItem(&navigationModel_, libHandler_, component, referenceCounter_, expressionsSupport, root)));
+        }
 
         root->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
             new ComponentEditorCpusItem(&navigationModel_, libHandler_, component, referenceCounter_,
