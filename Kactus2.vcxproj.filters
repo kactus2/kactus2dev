@@ -3226,6 +3226,15 @@
     <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5782,6 +5791,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesEditor.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceModel.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

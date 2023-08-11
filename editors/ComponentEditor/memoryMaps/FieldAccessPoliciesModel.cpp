@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: FieldAccessPoliciesModel.cpp
+// File: FieldAccessPoliciesModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: 
+// Author: Anton Hagqvist
 // Date: 8.8.2023
 //
 // Description:
-// 
+// Model to manage the field access policies of a field.
 //-----------------------------------------------------------------------------
 
 #include "FieldAccessPoliciesModel.h"
@@ -127,22 +127,47 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
             return QString::fromStdString(fieldInterface_->getAccessString(fieldName_.toStdString(), index.row()));
         }
         
+        // Data for displaying mode refs in access policy table.
         else if (index.column() == FieldAccessPolicyColumns::MODE)
         {
-            auto modeRefsList = fieldInterface_->getModeRefs(fieldName_.toStdString(), index.row());
+            auto const& modeRefsList = fieldInterface_->getModeRefs(fieldName_.toStdString(), index.row());
             QStringList list;
-            for (auto elem : modeRefsList)
+            for (auto const& [reference, priority] : modeRefsList)
             {
-                list.append(QString::fromStdString(elem));
+                list.append(QString::fromStdString(reference));
             }
 
             return list.join(", ");
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
+        {
+            return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName_.toStdString(), index.row()));
         }
     }
 
     else if (role == Qt::BackgroundRole)
     {
         return KactusColors::REGULAR_FIELD;
+    }
+
+    else if (role == Qt::UserRole)
+    {
+        // Data for mode ref editor.
+        if (index.column() == FieldAccessPolicyColumns::MODE)
+        {
+            auto const& modeRefsList = fieldInterface_->getModeRefs(fieldName_.toStdString(), index.row());
+
+            QList<QPair<QString, int> > modeRefs;
+            for (auto const& [reference, priority] : modeRefsList)
+            {
+                modeRefs.append(QPair<QString, int>({QString::fromStdString(reference), priority }));
+            }
+
+            QVariant modeRefsVariant;
+            modeRefsVariant.setValue(modeRefs);
+            return modeRefsVariant;
+        }
     }
 
     return QVariant();
@@ -153,6 +178,40 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 //-----------------------------------------------------------------------------
 bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
 {
+    if (!index.isValid() || index.row() < 0 || 
+        index.row() >= fieldInterface_->getAccessPolicyCount(fieldName_.toStdString()) ||
+        !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
+    {
+        return false;
+    }
+
+    if (index.column() == FieldAccessPolicyColumns::MODE)
+    {
+        auto modeRefs = value.value<QList<QPair<QString, int> > >();
+
+        std::vector<std::pair<std::string, int> > modeRefsStdType;
+        for (auto const& [reference, priority] : modeRefs)
+        {
+            modeRefsStdType.emplace_back(reference.toStdString(), priority);
+        }
+
+        fieldInterface_->setModeRefs(fieldName_.toStdString(), index.row(), modeRefsStdType);
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::ACCESS)
+    {
+        auto accessTypeStr = value.toString();
+
+        fieldInterface_->setAccess(fieldName_.toStdString(), index.row(), accessTypeStr.toStdString());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
+    {
+        auto modifiedWriteStr = value.toString();
+
+        fieldInterface_->setModifiedWrite(fieldName_.toStdString(), index.row(), modifiedWriteStr.toStdString());
+    }
+
     return true;
 }
 

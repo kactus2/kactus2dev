@@ -681,10 +681,20 @@ public:
     bool setID(std::string const& fieldName, std::string const& newID);
 
     std::string getAccessString(std::string const& fieldName, int accessPolicyIndex) const;
+    
+    bool setAccess(std::string const& fieldName, int accessPolicyIndex, std::string const& accessType) const;
 
-    std::vector<std::string> getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
+    std::vector<std::pair<std::string, int> > getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
+
+    bool setModeRefs(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<std::string, int> > const& modeRefs) const;
+
+    std::string getModifiedWriteString(std::string const& fieldName, int accessPolicyIndex) const;
+
+    bool setModifiedWrite(std::string const& fieldName, int accessPolicyIndex, std::string const& newModifiedWrite) const;
 
     int getAccessPolicyCount(std::string const& fieldName) const;
+
+
 
 private:
 

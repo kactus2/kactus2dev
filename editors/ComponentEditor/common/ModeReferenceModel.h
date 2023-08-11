@@ -1,36 +1,49 @@
 //-----------------------------------------------------------------------------
-// File: FieldAccessPoliciesModel.h
+// File: ModeReferenceModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Anton Hagqvist
-// Date: 8.8.2023
+// Date: 10.8.2023
 //
 // Description:
-// Model to manage the field access policies of a field.
+// Model to manage mode references.
 //-----------------------------------------------------------------------------
 
-#ifndef FIELDACCESSPOLICIESMODEL_H
-#define FIELDACCESSPOLICIESMODEL_H
-
-#include <KactusAPI/include/FieldInterface.h>
+#ifndef MODEREFERENCEMODEL_H
+#define MODEREFERENCEMODEL_H
 
 #include <QAbstractTableModel>
 
-class FieldAccessPoliciesModel : public QAbstractTableModel
+class ModeReferenceModel : public QAbstractTableModel
 {
     Q_OBJECT
 
 public:
-        
-    FieldAccessPoliciesModel(QString const& fieldName, FieldInterface* fieldInterface, QObject* parent);
-
-    virtual ~FieldAccessPoliciesModel() = default;
-
-    FieldAccessPoliciesModel(FieldAccessPoliciesModel& other) = delete;
-    FieldAccessPoliciesModel& operator=(FieldAccessPoliciesModel& other) = delete;
 
     /*!
-     *  Get the number of access policies the model contains.
+     *	The constructor.
+     *  
+     *      @param [in] modeRefs   The mode references to edit.
+     *      @param [in] parent     The parent object.
+     */
+    ModeReferenceModel(QList<QPair<QString, int> > const& modeRefs, QObject* parent);
+
+    /*!
+     *	Get the edited mode references.
+     *  
+     * 	    @return The edited mode references as a list.
+     */
+    QList<QPair<QString, int> > getModeRefs() const;
+
+    /*!
+     *	Set the mode references.
+     *  
+     *      @param [in] modeRefs     The mode references to set.
+     */
+    void setModeRefs(QList<QPair<QString, int> > const& modeRefs);
+
+    /*!
+     *  Get the number of modes the model contains.
      *
      *      @param [in] parent  Identifies the parent whose row count is requested.
      *
@@ -90,12 +103,12 @@ public:
 
 private:
 
-    //! The field interface to use.
-    FieldInterface* fieldInterface_;
+    //! The mode references to be edited.
+    QList<QPair<QString, int> > modeRefs_;
 
-    //! The name of the current field.
-    QString fieldName_;
 };
 
+#endif // MODEREFERENCEMODEL_H
 
-#endif // FIELDACCESSPOLICIESMODEL_H
+
+

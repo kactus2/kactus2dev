@@ -503,6 +503,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceDelegate.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp" />
@@ -1602,6 +1605,9 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\ExpressionLineEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h" />
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceModel.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\SingleCpuEditor.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h" />

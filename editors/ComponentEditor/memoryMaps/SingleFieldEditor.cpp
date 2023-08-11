@@ -501,6 +501,10 @@ void SingleFieldEditor::setupLayout()
 
     QGroupBox* fieldDefinitionGroup = new QGroupBox(tr("Field definition"));
     QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
+    fieldDefinitionLayout->setAlignment(Qt::AlignTop);
+    fieldDefinitionLayout->setFormAlignment(Qt::AlignTop);
+    fieldDefinitionLayout->setLabelAlignment(Qt::AlignTop);
+    
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
 
@@ -509,6 +513,12 @@ void SingleFieldEditor::setupLayout()
         fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
         fieldDefinitionLayout->addRow(tr("Reserved, f(x):"), reservedEditor_);
         fieldDefinitionLayout->addRow(tr("Field ID:"), fieldIdEditor_);
+    }
+    else
+    {
+        auto spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        fieldDefinitionLayout->addRow(spacer);
     }
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
@@ -552,17 +562,20 @@ void SingleFieldEditor::setupLayout()
 
     QGridLayout* topOfPageLayout = new QGridLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0, 0);
-    topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
+    topOfPageLayout->setRowStretch(0, 1);
+    topOfPageLayout->setRowStretch(1, 2);
 
     if (showStd14)
     {
         topOfPageLayout->addWidget(fieldConstraintGroup, 0, 1);
         topOfPageLayout->addWidget(resetsEditor_, 1, 1);
+        topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
     }
     else
     {
-        topOfPageLayout->addWidget(resetsEditor_, 0, 1);
         topOfPageLayout->addWidget(enumerationsEditor_, 1, 1);
+        topOfPageLayout->addWidget(fieldDefinitionGroup, 0, 1);
+        topOfPageLayout->addWidget(resetsEditor_, 1, 0);
     }
     
     QWidget* topOfPageWidget = new QWidget();

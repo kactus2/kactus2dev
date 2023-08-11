@@ -398,7 +398,7 @@ string FieldInterface::getAccessString(std::string const& fieldName, int accessP
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getModeRefs()
 //-----------------------------------------------------------------------------
-std::vector<std::string> FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+std::vector<std::pair<std::string, int> > FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
 {
     if (auto field = getField(fieldName); field)
     {
@@ -407,18 +407,51 @@ std::vector<std::string> FieldInterface::getModeRefs(std::string const& fieldNam
         if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
         {
             auto modeRefs = fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
-            vector<string> modeRefList;
+            vector<pair<string, int> > modeRefList;
             std::transform(modeRefs->cbegin(), modeRefs->cend(), std::back_inserter(modeRefList), [](QSharedPointer<ModeReference> const& modeRef)
                 {
-                    return modeRef->getReference().toStdString();
+                    return make_pair<string, int >(modeRef->getReference().toStdString(), modeRef->getPriority().toInt());
                 });
 
-            // return only mode names for now
             return modeRefList;
         }
     }
 
-    return vector<string>();
+    return vector<pair<string, int> >();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setModeRefs(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<std::string, int> > const& modeRefs) const
+{
+    auto field = getField(fieldName);
+
+    if (!field)
+    {
+        return false;
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        auto accessPolicyModeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
+
+        // Clear old mode refs before setting new ones.
+        accessPolicyModeRefs->clear();
+
+        for (auto const& [reference, priority] : modeRefs)
+        {
+            QSharedPointer<ModeReference> newModeRef(new ModeReference());
+
+            newModeRef->setReference(QString::fromStdString(reference));
+            newModeRef->setPriority(QString::number(priority));
+
+            accessPolicyModeRefs->append(newModeRef);
+        }
+
+        return true;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -426,8 +459,7 @@ std::vector<std::string> FieldInterface::getModeRefs(std::string const& fieldNam
 //-----------------------------------------------------------------------------
 int FieldInterface::getAccessPolicyCount(std::string const& fieldName) const
 {
-    auto field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
         return field->getFieldAccessPolicies()->size();
     }
@@ -466,6 +498,30 @@ bool FieldInterface::setAccess(string const& fieldName, string const& newAccess)
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::setAccess()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setAccess(std::string const& fieldName, int accessPolicyIndex, std::string const& accessType)
+    const
+{
+    auto field = getField(fieldName);
+    if (!field)
+    {
+        return false;
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        accessPolicies->at(accessPolicyIndex)->setAccess(AccessTypes::str2Access(
+            QString::fromStdString(accessType), AccessTypes::ACCESS_COUNT));
+
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getModifiedWriteString()
 //-----------------------------------------------------------------------------
 string FieldInterface::getModifiedWriteString(string const& fieldName) const
@@ -494,6 +550,23 @@ General::ModifiedWrite FieldInterface::getModifiedWriteValue(std::string const& 
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::getModifiedWriteString()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getModifiedWriteString(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return General::modifiedWrite2Str(accessPolicies->at(accessPolicyIndex)->getModifiedWrite()).toStdString();
+        }
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::setModifiedWrite()
 //-----------------------------------------------------------------------------
 bool FieldInterface::setModifiedWrite(string const& fieldName, string const& newModifiedWrite)
@@ -506,6 +579,25 @@ bool FieldInterface::setModifiedWrite(string const& fieldName, string const& new
 
     field->setModifiedWrite(General::str2ModifiedWrite(QString::fromStdString(newModifiedWrite)));
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setModifiedWrite()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setModifiedWrite(std::string const& fieldName, int accessPolicyIndex, std::string const& newModifiedWrite) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            General::ModifiedWrite modifiedWrite = General::str2ModifiedWrite(QString::fromStdString(newModifiedWrite));
+            accessPolicies->at(accessPolicyIndex)->setModifiedWrite(modifiedWrite);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

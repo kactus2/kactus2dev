@@ -837,7 +837,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesEditor.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesModel.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPolicyColumns.h \
-    ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesDelegate.h
+    ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesDelegate.h \
+    ./editors/ComponentEditor/common/ModeReferenceEditor.h \
+    ./editors/ComponentEditor/common/ModeReferenceDelegate.h \
+    ./editors/ComponentEditor/common/ModeReferenceModel.h
 SOURCES += ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1581,5 +1584,8 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesModel.cpp \
-    ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesDelegate.cpp
+    ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesDelegate.cpp \
+    ./editors/ComponentEditor/common/ModeReferenceEditor.cpp \
+    ./editors/ComponentEditor/common/ModeReferenceDelegate.cpp \
+    ./editors/ComponentEditor/common/ModeReferenceModel.cpp
 RESOURCES += kactus.qrc

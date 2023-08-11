@@ -28,6 +28,7 @@ public:
 
 private:
 
+    //! The table view to display the field access policies.
     EditableTableView* view_;
 };
 

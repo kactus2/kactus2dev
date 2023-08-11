@@ -1,26 +1,31 @@
 //-----------------------------------------------------------------------------
-// File: FieldAccessPoliciesDelegate.h
+// File: ModeReferenceDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: Anton Hagqvist
-// Date: 8.8.2023
+// Author: 
+// Date: 10.8.2023
 //
 // Description:
-// Delegate for field access policies.
+// Delegate that provides editors for editing mode references.
 //-----------------------------------------------------------------------------
 
-#ifndef FIELDACCESSPOLICIESDELEGATE_H
-#define FIELDACCESSPOLICIESDELEGATE_H
+#ifndef MODEREFERENCEDELEGATE_H
+#define MODEREFERENCEDELEGATE_H
 
 #include <QStyledItemDelegate>
 
-class FieldAccessPoliciesDelegate : public QStyledItemDelegate
+class ModeReferenceDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
 
-    FieldAccessPoliciesDelegate(QWidget* parent);
+    /*!
+     *	The constructor.
+     *  
+     *      @param [in] parent     The parent object.
+     */
+    ModeReferenceDelegate(QObject* parent);
 
     /*!
      *  Create a new editor for the given item
@@ -50,26 +55,16 @@ public:
      */
     virtual void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override;
 
-    /*!
-     *  Updates the editor geometry for a given index.
-     *
-     *      @param [in] editor  The editor being updated.
-     *      @param [in] option  The options used to update the editor.
-     *      @param [in] index   The model index being edited.
-     */
-    virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
-
-protected slots:
+private slots:
 
     /*!
      *  Commit the data from the sending editor and close the editor.
      */
     void commitAndCloseEditor();
-
-private slots:
-
-    void onEditingCanceled();
-
 };
 
-#endif // FIELDACCESSPOLICIESDELEGATE_H
+
+#endif // MODEREFERENCEDELEGATE_H
+
+
+
