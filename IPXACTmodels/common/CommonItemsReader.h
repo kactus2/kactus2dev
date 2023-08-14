@@ -14,12 +14,13 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/common/ConfigurableElementValue.h>
+#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
-#include <IPXACTmodels/common/ConfigurableVLNVReference.h>
-#include <IPXACTmodels/common/ConfigurableElementValue.h>
 
 #include <IPXACTmodels/Component/Choice.h>
 
@@ -143,6 +144,7 @@ public:
     static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
         Document::Revision revision);
 
+    static QSharedPointer<PartSelect> parsePartSelect(QDomNode const& partSelectNode);
 };
 
 #endif // DOCUMENTREADER_H

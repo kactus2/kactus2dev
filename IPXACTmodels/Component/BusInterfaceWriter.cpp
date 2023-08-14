@@ -238,31 +238,7 @@ void BusInterfaceWriter::Details::writePhysicalPort(QXmlStreamWriter& writer,
 
     QSharedPointer<PartSelect> partSelect = physicalPort->partSelect_;
 
-    // Part select exists: Write its range.
-    if (partSelect)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:partSelect"));
-
-        writer.writeStartElement(QStringLiteral("ipxact:range"));
-        writer.writeTextElement(QStringLiteral("ipxact:left"), partSelect->getLeftRange());
-        writer.writeTextElement(QStringLiteral("ipxact:right"), partSelect->getRightRange());
-        writer.writeEndElement();
-
-        // Write all indices of the part select.
-        if (partSelect->getIndices()->isEmpty() == false)
-        {
-            writer.writeStartElement(QStringLiteral("ipxact:indices"));
-
-            for (QString const& index : *partSelect->getIndices())
-            {
-                writer.writeTextElement(QStringLiteral("ipxact:index"), index);
-            }
-
-            writer.writeEndElement(); // ipxact:indices
-        }
-
-        writer.writeEndElement(); // ipxact:partSelect
-    }
+    CommonItemsWriter::writePartSelect(writer, partSelect);
 
     writer.writeEndElement(); // ipxact:physicalPort
 }

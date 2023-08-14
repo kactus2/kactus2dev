@@ -344,3 +344,32 @@ void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPoi
 
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parsePartSelect()
+//-----------------------------------------------------------------------------
+QSharedPointer<PartSelect> CommonItemsReader::parsePartSelect(QDomNode const& partSelectNode)
+{
+    QDomNode rangeNode = partSelectNode.firstChildElement(QStringLiteral("ipxact:range"));
+
+    QString leftRange = rangeNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+    QString rightRange = rangeNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
+
+    QSharedPointer<PartSelect> newPartSelect(new PartSelect(leftRange, rightRange));
+
+    QDomElement indicesNode = partSelectNode.firstChildElement(QStringLiteral("ipxact:indices"));
+
+    if (!indicesNode.isNull())
+    {
+        QDomNodeList indexNodes = indicesNode.elementsByTagName(QStringLiteral("ipxact:index"));
+        for (int index = 0; index < indexNodes.size(); ++index)
+        {
+            QDomNode singleIndexNode = indexNodes.at(index);
+            QString indexValue = singleIndexNode.firstChild().nodeValue();
+
+            newPartSelect->getIndices()->append(indexValue);
+        }
+    }
+
+    return newPartSelect;
+}

@@ -23,20 +23,24 @@
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: SingleModeEditor::SingleModeEditor()
 //-----------------------------------------------------------------------------
 SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
-    QSharedPointer<Mode> Mode,
+    QSharedPointer<Mode> mode,
     LibraryInterface* libHandler,
     ExpressionSet expressions,
     QWidget* parent) :
     ItemEditor(component, libHandler, parent),
-    Mode_(Mode),
-    nameEditor_(Mode_, component->getRevision(), this, tr("Mode name and description"))
+    mode_(mode),
+    nameEditor_(mode, component->getRevision(), this, tr("Mode name and description")),
+    conditionEditor_(this),
+    portSliceEditor_(component, mode, libHandler, expressions, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     setupLayout();
 }
@@ -54,22 +58,39 @@ void SingleModeEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleModeEditor::setupLayout()
 {
-    QScrollArea* scrollArea = new QScrollArea(this);
+    auto scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
 
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
+    auto scrollLayout = new QHBoxLayout(this);
     scrollLayout->addWidget(scrollArea);
     scrollLayout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget* topWidget = new QWidget(scrollArea);
+    auto topWidget = new QWidget(scrollArea);
     topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     scrollArea->setWidget(topWidget);
 
+    auto conditionGroup = new QGroupBox(tr("Mode condition"), this);
+    conditionGroup->setFlat(true);
+
+    auto conditionLayout = new QHBoxLayout(conditionGroup);
+    conditionLayout->addWidget(new QLabel(tr("Condition:"), this));
+    conditionLayout->addWidget(&conditionEditor_, 1);
+
+    auto portsGroup = new QGroupBox(tr("Condition ports"), this);
+    portsGroup->setFlat(true);
+
+    auto portLayout = new QHBoxLayout(portsGroup);
+    portLayout->addWidget(&portSliceEditor_);
+
+    auto fieldsGroup = new QGroupBox(tr("Condition fields"), this);
+    fieldsGroup->setFlat(true);
+
     auto topLayout = new QGridLayout(topWidget);
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
-    topLayout->setContentsMargins(0,0,0,0);
-    topLayout->setRowStretch(1, 1);
+    topLayout->addWidget(conditionGroup, 1, 0, 1, 1);
+    topLayout->addWidget(portsGroup, 2, 0, 1, 1);
+    topLayout->addWidget(fieldsGroup, 3, 0, 1, 1);
 }
 
 //-----------------------------------------------------------------------------

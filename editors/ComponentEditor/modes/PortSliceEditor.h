@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: Modeseditor.h
+// File: PortSliceEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
@@ -9,14 +9,15 @@
 // Editor to add/remove/edit the mode-elements of a component.
 //-----------------------------------------------------------------------------
 
-#ifndef MODESEDITOR_H
-#define MODESEDITOR_H
+#ifndef PORTSLICE_EDITOR_H
+#define PORTSLICE_EDITOR_H
 
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-#include "ModesModel.h"
+#include "PortSliceModel.h"
+#include "PortSliceDelegate.h"
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -28,7 +29,7 @@ class LibraryInterface;
 //-----------------------------------------------------------------------------
 //! Editor to add/remove/edit the Mode-elements of a component.
 //-----------------------------------------------------------------------------
-class ModesEditor : public ItemEditor
+class PortSliceEditor : public QWidget
 {
 	Q_OBJECT
 
@@ -38,39 +39,48 @@ public:
 	 *
 	 *      @param [in] component   The component being edited.
 	 *      @param [in] handler     The instance managing the library.
-     *      @param [in] validator   The validator for Modes.
+     *      @param [in] validator   The validator for PortSlice.
      *      @param [in] expressions	The collection of objects for expression handling.
 	 *      @param [in] parent      The parent of this editor.
 	*/
-	ModesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+	PortSliceEditor(QSharedPointer<Component> component, 
+		QSharedPointer<Mode> mode, LibraryInterface* handler,
 		ExpressionSet expressions,
 		QWidget* parent = 0);
 	
 	//! The destructor
-	virtual ~ModesEditor() = default;
+	virtual ~PortSliceEditor() = default;
 
     //! No copying
-    ModesEditor(const ModesEditor& other) = delete;
-    ModesEditor& operator=(const ModesEditor& other) = delete;
+    PortSliceEditor(const PortSliceEditor& other) = delete;
+    PortSliceEditor& operator=(const PortSliceEditor& other) = delete;
 
 	//! Reload the information from the model to the editor.	
-	void refresh() final;
+	void refresh();
 
-protected:
+signals:
 
-	//! Handler for widget's show event
-	void showEvent(QShowEvent* event) final;
+	/*!
+	 *  Emitted when the contents of the model change.
+	 */
+	void contentChanged();
 
 private:
 
-	//! The view to display the Modes
+	//! The component containing the modes.
+	QSharedPointer<Component> component_;
+
+	//! The view to display the PortSlice
 	EditableTableView view_;
+
+	//! The delegate for the view.
+	PortSliceDelegate* delegate_ = nullptr;
 
 	//! The model that does the sorting.
 	QSortFilterProxyModel proxy_;
 
-	//! The model that manages the Modes of the editor.
-	ModesModel model_;
+	//! The model that manages the PortSlice of the editor.
+	PortSliceModel model_;
 };
 
-#endif // MODESEDITOR_H
+#endif // PORTSLICE_EDITOR_H

@@ -10,7 +10,7 @@
     <p>
       The mode editor can be used to edit the details of a component mode.
     </p>
-	<p>
+	  <p>
 	    <b>Name</b> is a mandatory identifier for the <i>mode</i>.
     </p>
     <p>
@@ -26,13 +26,43 @@
     <h3>Condition</h3>
     <p>
       The condition defines when the mode is active. If the condition expression evaluates
-      to true, the component is operating in the defined mode. 
+      to true, the component is operating in the defined mode. The condition may depend
+      on run-time value of a port, register field and other modes.
     </p>
 
     <h3>Condition ports</h3>
+    <p>
+      The condition ports can be referenced in the condition to check for their value
+      in the mode. 
+    </p>
+	  <p>
+	    <b>Name</b> is a mandatory identifier for the <i>port</i> reference.
+    </p>
+    <p>
+	    <b>Physical port</b> is a mandatory and identifies the <i>port</i> in the 
+      component whose value may be checked in the condition.
+    </p>
+    <p>
+	    <b>Sub port</b> 
+    </p>
+    <p>
+      <b>Left</b> and <b>right bounds</b> are optional for selecting a range of
+      bits in the port. If no indices are defined, the whole port is selected.
+    </p>
+    <p>
+      <b>Description</b> is an optional field for textual description of the <i>port</i>.		
+    </p>
 
     <h3>Condition fields</h3>
   
+
+
+    <hr>
+    <p>
+      EXAMPLE 1. The example goes here.
+	  <br>
+<!--      <img src="../images/ports.png" alt="VHDL and screen_cap"> -->
+    </p>
 
   </body>
 </html>

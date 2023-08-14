@@ -146,13 +146,6 @@ namespace DesignWriter
         void writePortReference(QXmlStreamWriter& writer, QSharedPointer<PortReference> portRefernce,
             Document::Revision docRevision);
 
-        /*!
-         *  Write a part select.
-         *
-         *      @param [in] writer      The used XML writer.
-         *      @param [in] partSelect  The selected part select.
-         */
-        void writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect);
     }
 };
 

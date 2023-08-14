@@ -1,19 +1,23 @@
 //-----------------------------------------------------------------------------
-// File: Modesmodel.h
+// File: PortSliceModel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
-// Date: 08.08.2023
+// Date: 09.08.2023
 //
 // Description:
 // Model for Mode elements within a component.
 //-----------------------------------------------------------------------------
 
-#ifndef MODESMODEL_H
-#define MODESMODEL_H
-
+#ifndef PORTSLICEMODEL_H
+#define PORTSLICEMODEL_H
 
 #include <editors/common/ExpressionSet.h>
+
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+
+#include <IPXACTmodels/Component/PortSlice.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -28,7 +32,7 @@ class ModeValidator;
 //-----------------------------------------------------------------------------
 //! Model for Mode elements within a component.
 //-----------------------------------------------------------------------------
-class ModesModel : public QAbstractTableModel
+class PortSliceModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -36,19 +40,20 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component   The component being edited.
+     *      @param [in] component   The component being edited.
+     *      @param [in] expressions The collection of objects for expression handling.
 	 *      @param [in] parent      The owner of this model.
 	*/
-	ModesModel(QSharedPointer<Component> component, 
+	PortSliceModel(QSharedPointer<Mode> mode, 
 		ExpressionSet expressions,
         QObject* parent);
 	
 	//! The destructor
-	virtual ~ModesModel() = default;
+	virtual ~PortSliceModel() = default;
 
     //! No copying
-    ModesModel(const ModesModel& other) = delete;
-    ModesModel& operator=(const ModesModel& other) = delete;
+    PortSliceModel(const PortSliceModel& other) = delete;
+    PortSliceModel& operator=(const PortSliceModel& other) = delete;
 
 	/*! Get the number of rows an item contains.
 	 *
@@ -123,17 +128,44 @@ signals:
 	//! Emitted when the contents of the model change.
 	void contentChanged();
 
-	/*! Emitted when a new Mode is added to the model.
-	 *
-	 *      @param [in] index The index of the added Mode.
-	*/
-	void modeAdded(int index);
+protected:
+	    
+	/*!
+     *  Gets the number of all the references made to a selected id on the selected row.
+     *
+     *     @param [in] row         The row of the selected item.
+     *     @param [in] valueID     The id of the referenced parameter.
+     *
+     *     @return The amount of references made to the selected id on the selected row.
+     */
+    virtual int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
 
-	/*! Emitted when a Mode is removed from the model.
+	/*!
+	 *  Check if the column index is valid for containing expressions.
 	 *
-	 *      @param [in] index The index of the removed Mode.
-	*/
-	void modeRemoved(int index);
+	 *     @param [in] index   The index being evaluated.
+	 *
+	 *     @return True, if the column can accept expressions, false otherwise.
+	 */
+	virtual bool isValidExpressionColumn(QModelIndex const& index) const final;
+
+	/*!
+     *  Gets the expression for the index, or the plain value, if an expression is not available.
+     *
+     *     @param [in] index   The index of the item.
+     *
+     *     @return The expression for the index if available, otherwise the value for the given index.
+     */
+	virtual QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
+
+	/*!
+	 *  Validates the data for the column.
+	 *
+	 *     @param [in] index   The column of the item to validate.
+	 *
+	 *     @return True, if the data of the item is valid for the column, false otherwise.
+	 */
+	virtual bool validateIndex(QModelIndex const& index) const final;
 
 private:
 
@@ -143,11 +175,11 @@ private:
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 
-	//! Contains the Modes being edited.
-	QSharedPointer<QList<QSharedPointer<Mode> > > modes_;
+	//! Contains the PortSlice being edited.
+	QSharedPointer<QList<QSharedPointer<PortSlice> > > portSlices_;
 
 	//! Formatter to use for expressions.
 	QSharedPointer<ExpressionFormatter> expressionFormatter_;
 };
 
-#endif // ModeSMODEL_H
+#endif // PORTSLICEMODEL_H

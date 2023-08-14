@@ -13,38 +13,51 @@
 #include "Mode.h"
 #include "RemapPort.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
+#include <IPXACTmodels/common/PartSelect.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModeReader::createModeFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Mode> ModeReader::createModeFrom(QDomNode const& ModeNode)
+QSharedPointer<Mode> ModeReader::createModeFrom(QDomNode const& modeNode)
 {
     QSharedPointer<Mode> newMode (new Mode());
 
-    NameGroupReader::parseNameGroup(ModeNode, newMode);
+    NameGroupReader::parseNameGroup(modeNode, newMode);
 
-    Details::parseRemapPorts(ModeNode, newMode);
+    Details::parsePortSlices(modeNode, newMode);
 
     return newMode;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModeReader::parseRemapPorts()
+// Function: ModeReader::parsePortSlices()
 //-----------------------------------------------------------------------------
-void ModeReader::Details::parseRemapPorts(QDomNode const& ModeNode, QSharedPointer<Mode> newMode)
+void ModeReader::Details::parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode)
 {
-    QDomElement remapPortsElement = ModeNode.firstChildElement(QStringLiteral("ipxact:remapPorts"));
-    if (!remapPortsElement.isNull())
+    QDomNodeList sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:portSlice"));
+
+    const int SLICE_COUNT = sliceNodeList.count();
+    for (int i = 0; i < SLICE_COUNT; ++i)
     {
-        QDomNodeList remapPortNodeList = remapPortsElement.elementsByTagName(QStringLiteral("ipxact:remapPort"));
+        auto portSliceElement = sliceNodeList.at(i).toElement();
 
-        for (int remapPortIndex = 0; remapPortIndex < remapPortNodeList.count(); ++remapPortIndex)
+        QSharedPointer<PortSlice> newSlice(new PortSlice());
+
+        NameGroupReader::parseNameGroup(portSliceElement, newSlice);
+
+        auto portRefElement = portSliceElement.firstChildElement(QStringLiteral("ipxact:portRef"));
+        auto portRef = portRefElement.attribute(QStringLiteral("portRef"));
+        newSlice->setPortRef(portRef);
+
+        QDomNode partSelectNode = portSliceElement.firstChildElement(QStringLiteral("ipxact:partSelect"));
+        if (!partSelectNode.isNull())
         {
-            QDomElement remapPortElement = remapPortNodeList.at(remapPortIndex).toElement();
-
-            QString portRef = remapPortElement.attribute(QStringLiteral("portRef"));
-
+            QSharedPointer<PartSelect> newPartSelect = CommonItemsReader::parsePartSelect(partSelectNode);
+            newSlice->setPartSelect(newPartSelect);
         }
+
+        newMode->getPortSlices()->append(newSlice);
     }
 }

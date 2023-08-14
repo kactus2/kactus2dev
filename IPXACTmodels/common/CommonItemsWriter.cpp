@@ -19,9 +19,10 @@
 #include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/common/Assertion.h>
-#include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
 #include <IPXACTmodels/common/ParameterWriter.h>
+#include <IPXACTmodels/common/PartSelect.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::CommonItemsWriter()
@@ -354,4 +355,38 @@ void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<
     }
 
     writer.writeEndElement(); // ipxact:qualifier
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writePartSelect()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect)
+{
+    if (partSelect.isNull())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:partSelect"));
+
+    writer.writeStartElement(QStringLiteral("ipxact:range"));
+    writer.writeTextElement(QStringLiteral("ipxact:left"), partSelect->getLeftRange());
+    writer.writeTextElement(QStringLiteral("ipxact:right"), partSelect->getRightRange());
+    writer.writeEndElement();
+
+    // Write all indices of the part select.
+    if (partSelect->getIndices()->isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:indices"));
+
+        for (QString const& index : *partSelect->getIndices())
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:index"), index);
+        }
+
+        writer.writeEndElement(); // ipxact:indices
+    }
+
+    writer.writeEndElement(); // ipxact:partSelect
 }

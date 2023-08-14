@@ -360,46 +360,11 @@ void DesignWriter::Details::writePortReference(QXmlStreamWriter& writer, QShared
             writer.writeStartElement(QStringLiteral("ipxact:subPortReference"));
             writer.writeAttribute(QStringLiteral("subPortRef"), subPortReference->getPortRef());
 
-            writePartSelect(writer, subPortReference->getPartSelect());
+            CommonItemsWriter::writePartSelect(writer, subPortReference->getPartSelect());
 
             writer.writeEndElement(); //ipxact:subPortReference
         }
     }
 
-    writePartSelect(writer, portReference->getPartSelect());
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignWriter::writePartSelect()
-//-----------------------------------------------------------------------------
-void DesignWriter::Details::writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect)
-{
-    if (partSelect == nullptr)
-    {
-        return;
-    }
-
-    writer.writeStartElement(QStringLiteral("ipxact:partSelect"));
-
-    writer.writeStartElement(QStringLiteral("ipxact:range"));
-
-    writer.writeTextElement(QStringLiteral("ipxact:left"), partSelect->getLeftRange());
-    writer.writeTextElement(QStringLiteral("ipxact:right"), partSelect->getRightRange());
-
-    writer.writeEndElement(); //ipxact:range
-
-    if (!partSelect->getIndices()->isEmpty())
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:indices"));
-
-        for (auto const& index : *partSelect->getIndices())
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:index"), index);
-        }
-
-        writer.writeEndElement(); // ipxact:indices
-    }
-
-    writer.writeEndElement(); // ipxact:partSelect
+    CommonItemsWriter::writePartSelect(writer, portReference->getPartSelect());
 }

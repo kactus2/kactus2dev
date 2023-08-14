@@ -205,7 +205,7 @@ void ModesModel::onAddItem(QModelIndex const& index)
 	endInsertRows();
 
 	// inform navigation tree that file set is added
-	emit ModeAdded(row);
+	emit modeAdded(row);
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();
@@ -228,7 +228,7 @@ void ModesModel::onRemoveItem(QModelIndex const& index)
 	endRemoveRows();
 
 	// inform navigation tree that file set has been removed
-	emit ModeRemoved(index.row());
+	emit modeRemoved(index.row());
 
 	// tell also parent widget that contents have been changed
 	emit contentChanged();

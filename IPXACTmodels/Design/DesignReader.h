@@ -183,16 +183,6 @@ namespace DesignReader
             Document::Revision docRevision);
 
         /*!
-         * Reads a part select.
-         *
-         *     @param [in] portReferenceNode    The XML description of the port reference containing the part select.
-         *     @param [in] newPortReference     The port reference item.
-         *
-         *     @return 
-         */
-         void parsePartSelect(QDomNode const& portReferenceNode, QSharedPointer<PortReference> portReference);
-
-        /*!
          *  Reads ad-hoc connection extensions.
          *
          *      @param [in] adHocNode           XML description of the ad-hoc connection.

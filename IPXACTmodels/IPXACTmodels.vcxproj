@@ -273,6 +273,7 @@
     <ClCompile Include="Component\Port.cpp" />
     <ClCompile Include="Component\PortMap.cpp" />
     <ClCompile Include="Component\PortReader.cpp" />
+    <ClCompile Include="Component\PortSlice.cpp" />
     <ClCompile Include="Component\PortWriter.cpp" />
     <ClCompile Include="Component\Region.cpp" />
     <ClCompile Include="Component\Register.cpp" />
@@ -416,6 +417,7 @@
     <ClInclude Include="Component\Mode.h" />
     <ClInclude Include="Component\ModeReader.h" />
     <ClInclude Include="Component\ModeWriter.h" />
+    <ClInclude Include="Component\PortSlice.h" />
     <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />

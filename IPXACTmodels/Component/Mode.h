@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: Mode.h
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
+// Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 03.08.2023
 //
@@ -16,6 +16,8 @@
 #include <IPXACTmodels/common/Extendable.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+
+#include "PortSlice.h"
 
 #include <QString>
 #include <QMap>
@@ -44,9 +46,35 @@ public:
 	//! The assignment operator.
 	Mode& operator=(const Mode& other);
 
+	/*!
+	 * Get the condition expression.
+	 *
+	 *      @return The condition expression.
+	 */
+	QString getCondition() const;
+
+	/*!
+	 *  Sets the condition expression.
+	 *
+	 *      @param [in] conditionExpression The expression to set.
+	 */
+	void setCondition(QString const& conditionExpression);
+
+	/*!
+	 *  Get the port slices.
+	 *
+	 *      @return The port slices.
+	 */
+	QSharedPointer<QList<QSharedPointer<PortSlice> > > getPortSlices() const;
 
 private:
 
+	//! The condition to activate the mode.
+	QString condition_;
+
+	//! The port slices available in the condition.
+	QSharedPointer<QList<QSharedPointer<PortSlice> > > portSlices_ =
+		QSharedPointer<QList<QSharedPointer<PortSlice> > >(new QList<QSharedPointer<PortSlice> >());
 
 };
 

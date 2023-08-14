@@ -33,6 +33,10 @@ namespace ModeWriter
      */
     IPXACTMODELS_EXPORT void writeMode(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
 
+    namespace Details
+    {
+        void writePortSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
+    }
 };
 
 #endif // ModeWRITER_H

@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: ModesEditor.cpp
+// File: PortSliceEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
-// Date: 08.08.2023
+// Date: 09.08.2023
 //
 // Description:
 // Editor to add/remove/edit the mode-elements of a component.
 //-----------------------------------------------------------------------------
 
-#include "ModesEditor.h"
-#include "ModeColumns.h"
+#include "PortSliceEditor.h"
+#include "PortSliceColumns.h"
 
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <KactusAPI/include/LibraryInterface.h>
@@ -22,25 +22,26 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include "PortSliceDelegate.h"
+
 #include <QVBoxLayout>
 #include <QHeaderView>
 
 //-----------------------------------------------------------------------------
-// Function: ModesEditor::ModesEditor()
+// Function: PortSliceEditor::PortSliceEditor()
 //-----------------------------------------------------------------------------
-ModesEditor::ModesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
+PortSliceEditor::PortSliceEditor(QSharedPointer<Component> component, 
+	QSharedPointer<Mode> mode, LibraryInterface* handler, 
     ExpressionSet expressions,
 	QWidget* parent) :
-ItemEditor(component, handler, parent),
+QWidget(parent),
+	component_(component),
     view_(this),
     proxy_(this),
-    model_(component, expressions, this)
+    model_(mode, expressions, this)
 {
-    // display a label on top the table
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("Modes summary"), this);
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
 	layout->addWidget(&view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
@@ -48,15 +49,24 @@ ItemEditor(component, handler, parent),
 	view_.setModel(&proxy_);
 
 	const QString compPath = handler->getDirectoryPath(component->getVlnv());
-	QString defPath = QString("%1/ModesListing.csv").arg(compPath);
+	QString defPath = QString("%1/PortSliceListing.csv").arg(compPath);
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 	view_.setItemsDraggable(false);
 	view_.setSortingEnabled(true);
 
+
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
+    parameterModel->setExpressionParser(expressions.parser);
+
+    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    parameterCompleter->setModel(parameterModel);
+
+	delegate_ = new PortSliceDelegate(component->getPortNames(), parameterCompleter, expressions, this);
+
+	view_.setItemDelegate(delegate_);
+
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(modeAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
-	connect(&model_, SIGNAL(modeRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -65,19 +75,11 @@ ItemEditor(component, handler, parent),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ModesEditor::refresh()
+// Function: PortSliceEditor::refresh()
 //-----------------------------------------------------------------------------
-void ModesEditor::refresh()
+void PortSliceEditor::refresh()
 {
-	view_.update();
-}
+	delegate_->setNewPortNames(component_->getPortNames());
 
-//-----------------------------------------------------------------------------
-// Function: ModesEditor::showEvent()
-//-----------------------------------------------------------------------------
-void ModesEditor::showEvent(QShowEvent* event)
-{
-	QWidget::showEvent(event);
-	
-    emit helpUrlRequested("componenteditor/modes2022.html");
+	view_.update();
 }

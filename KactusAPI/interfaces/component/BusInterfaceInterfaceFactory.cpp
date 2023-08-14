@@ -230,3 +230,4 @@ ParametersInterface* BusInterfaceInterfaceFactory::Details::createParameterInter
 
     return parameterInterface;
 }
+

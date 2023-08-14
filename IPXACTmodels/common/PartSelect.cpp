@@ -15,8 +15,7 @@
 // Function: PartSelect::PartSelect()
 //-----------------------------------------------------------------------------
 PartSelect::PartSelect(QString const& leftRange, QString const& rightRange):
-range_(leftRange, rightRange),
-indices_(new QStringList())
+range_(leftRange, rightRange)
 {
 
 }
@@ -25,8 +24,7 @@ indices_(new QStringList())
 // Function: PartSelect::PartSelect()
 //-----------------------------------------------------------------------------
 PartSelect::PartSelect(const PartSelect& other):
-range_(other.getLeftRange(), other.getRightRange()),
-indices_(new QStringList())
+range_(other.getLeftRange(), other.getRightRange())
 {
     for (QString const& index : *other.indices_)
     {
@@ -39,7 +37,7 @@ indices_(new QStringList())
 //-----------------------------------------------------------------------------
 PartSelect::~PartSelect()
 {
-    indices_.clear();
+
 }
 
 //-----------------------------------------------------------------------------

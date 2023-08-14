@@ -844,7 +844,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/modes/ModesModel.h \
     ./editors/ComponentEditor/modes/SingleModeEditor.h \
     ./editors/ComponentEditor/treeStructure/ModesItem.h \
-    ./editors/ComponentEditor/treeStructure/SingleModeItem.h
+    ./editors/ComponentEditor/treeStructure/SingleModeItem.h \
+    ./editors/ComponentEditor/modes/PortSliceEditor.h \
+    ./editors/ComponentEditor/modes/PortSliceModel.h \
+    ./editors/ComponentEditor/modes/PortSliceColumns.h \
+    ./editors/ComponentEditor/modes/PortSliceDelegate.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1594,5 +1598,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/modes/ModesModel.cpp \
     ./editors/ComponentEditor/modes/SingleModeEditor.cpp \
     ./editors/ComponentEditor/treeStructure/ModesItem.cpp \
-    ./editors/ComponentEditor/treeStructure/SingleModeItem.cpp
+    ./editors/ComponentEditor/treeStructure/SingleModeItem.cpp \
+    ./editors/ComponentEditor/modes/PortSliceEditor.cpp \
+    ./editors/ComponentEditor/modes/PortSliceModel.cpp \
+    ./editors/ComponentEditor/modes/PortSliceDelegate.cpp
 RESOURCES += kactus.qrc

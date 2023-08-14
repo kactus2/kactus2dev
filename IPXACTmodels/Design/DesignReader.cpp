@@ -415,50 +415,20 @@ QSharedPointer<PortReference> DesignReader::Details::createPortReference(QDomNod
             auto subPortReference = subPortNode.attributes().namedItem(QStringLiteral("subPortRef")).nodeValue();
 
             QSharedPointer<PortReference> subPortItem(new PortReference(subPortReference));
-            parsePartSelect(subPortNode, subPortItem);
+            
+            subPortItem->setPartSelect(CommonItemsReader::parsePartSelect(subPortNode));
 
             newPortReference->getSubPortReferences()->append(subPortItem);
         }
     }
 
-    parsePartSelect(portReferenceNode, newPortReference);
-
-    return newPortReference;
-}
-
-//-----------------------------------------------------------------------------
-// Function: DesignReader::parsePartSelect()
-//-----------------------------------------------------------------------------
-void DesignReader::Details::parsePartSelect(QDomNode const& portReferenceNode,
-    QSharedPointer<PortReference> portReference)
-{
     QDomNode partSelectNode = portReferenceNode.firstChildElement(QStringLiteral("ipxact:partSelect"));
-
     if (!partSelectNode.isNull())
     {
-        QDomNode rangeNode = partSelectNode.firstChildElement(QStringLiteral("ipxact:range"));
-
-        QString leftRange = rangeNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
-        QString rightRange = rangeNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
-
-        QSharedPointer<PartSelect> newPartSelect(new PartSelect(leftRange, rightRange));
-
-        QDomElement indicesNode = partSelectNode.firstChildElement(QStringLiteral("ipxact:indices"));
-
-        if (!indicesNode.isNull())
-        {
-            QDomNodeList indexNodes = indicesNode.elementsByTagName(QStringLiteral("ipxact:index"));
-            for (int index = 0; index < indexNodes.size(); ++index)
-            {
-                QDomNode singleIndexNode = indexNodes.at(index);
-                QString indexValue = singleIndexNode.firstChild().nodeValue();
-
-                newPartSelect->getIndices()->append(indexValue);
-            }
-        }
-
-        portReference->setPartSelect(newPartSelect);
+        newPortReference->setPartSelect(CommonItemsReader::parsePartSelect(partSelectNode));
     }
+
+    return newPortReference;
 }
 
 //-----------------------------------------------------------------------------

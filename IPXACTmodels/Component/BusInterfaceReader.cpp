@@ -285,27 +285,7 @@ void BusinterfaceReader::Details::parsePhysicalPort(QDomElement const& physicalP
     QDomElement partSelectElement = physicalPortElement.firstChildElement(QStringLiteral("ipxact:partSelect"));
     if (!partSelectElement.isNull())
     {
-        // Part select includes range.
-        QDomNode rangeNode = partSelectElement.firstChildElement(QStringLiteral("ipxact:range"));
-        QString leftRange = rangeNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
-        QString rightRange = rangeNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
-
-        QSharedPointer<PartSelect> newPartSelect (new PartSelect(leftRange, rightRange));
-
-        // Part select includes indices.
-        QDomElement indicesNode = partSelectElement.firstChildElement(QStringLiteral("ipxact:indices"));
-        if (!indicesNode.isNull())
-        {
-            QDomNodeList indexNodes = indicesNode.elementsByTagName(QStringLiteral("ipxact:index"));
-
-            int indexCount = indexNodes.count();
-            for (int index = 0; index < indexCount; index++)
-            {
-                QString indexValue = indexNodes.at(index).firstChild().nodeValue();
-                newPartSelect->getIndices()->append(indexValue);
-            }
-        }
-
+        QSharedPointer<PartSelect> newPartSelect = CommonItemsReader::parsePartSelect(partSelectElement);
         physicalPort->partSelect_ = newPartSelect;
     }
 

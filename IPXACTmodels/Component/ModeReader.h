@@ -45,7 +45,7 @@ namespace ModeReader
          *      @param [in] ModeNode  XML description of the mode.
          *      @param [in] newMode   The selected mode item.
          */
-        void parseRemapPorts(QDomNode const& ModeNode, QSharedPointer<Mode> newMode);
+        void parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
     }
 
 

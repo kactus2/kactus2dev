@@ -14,10 +14,11 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
-
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <editors/common/ExpressionSet.h>
+
+#include "PortSliceEditor.h"
 
 class Mode;
 class ExpressionParser;
@@ -42,7 +43,7 @@ public:
 	 *      @param [in] parent                  The owner of this editor.
 	 */
     SingleModeEditor(QSharedPointer<Component> component,
-        QSharedPointer<Mode> Mode, 
+        QSharedPointer<Mode> mode,
         LibraryInterface* libHandler,
         ExpressionSet expressions,
         QWidget* parent = nullptr);
@@ -82,11 +83,14 @@ private:
     //-----------------------------------------------------------------------------
     
     //! The remap state being edited.
-    QSharedPointer<Mode> Mode_;
+    QSharedPointer<Mode> mode_;
 
 	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
 
+    QLineEdit conditionEditor_;
+
+    PortSliceEditor portSliceEditor_;
 };
 
 #endif // SINGLE_Mode_EDITOR_H

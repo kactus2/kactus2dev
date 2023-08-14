@@ -626,6 +626,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\ModesEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\ModesModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\SingleModeEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\clockdriversdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\otherClockDrivers\otherclockdriverseditor.cpp" />
@@ -1715,6 +1718,10 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\modes\ModesEditor.h" />
     <QtMoc Include="editors\ComponentEditor\modes\ModesModel.h" />
     <QtMoc Include="editors\ComponentEditor\modes\SingleModeEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceModel.h" />
+    <ClInclude Include="editors\ComponentEditor\modes\PortSliceColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\otherClockDrivers\OtherClockDriverColumns.h" />
     <QtMoc Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.h">
     </QtMoc>

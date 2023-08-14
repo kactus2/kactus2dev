@@ -26,6 +26,7 @@ class Assertion;
 class ConfigurableElementValue;
 class Qualifier;
 class NameGroup;
+class PartSelect;
 
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
@@ -164,6 +165,13 @@ public:
 
 	static void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier);
 
+    /*!
+     *  Write a part select.
+     *
+     *      @param [in] writer      The used XML writer.
+     *      @param [in] partSelect  The selected part select.
+     */
+    static void writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect);
 };
 
 

@@ -935,9 +935,6 @@
     <Filter Include="Header Files\editors\ComponentEditor\ports\interfaces">
       <UniqueIdentifier>{635c99e6-325d-44e3-8df8-8811e54cc299}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\editors\ComponentEditor\ports\interfaces">
-      <UniqueIdentifier>{c019f53b-f0e5-47cc-87f6-5fe5337f7d4c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\PythonAPI">
       <UniqueIdentifier>{c7179758-fd64-4532-9cc8-e0608bd5db93}</UniqueIdentifier>
     </Filter>
@@ -3249,6 +3246,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleModeItem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5677,6 +5683,9 @@
     <ClInclude Include="editors\ComponentEditor\modes\ModeColumns.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modes\PortSliceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5824,6 +5833,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceModel.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\PortSliceDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

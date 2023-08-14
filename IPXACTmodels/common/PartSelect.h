@@ -102,6 +102,7 @@ private:
     Range range_;
 
     //! The list of indexes.
-    QSharedPointer<QStringList> indices_;
+    QSharedPointer<QStringList> indices_ =
+        QSharedPointer<QStringList>(new QStringList());
 };
 #endif // PARTSELECT_H

@@ -193,6 +193,7 @@ namespace BusInterfaceInterfaceFactory
         ParametersInterface* createParameterInterface(QSharedPointer<ParameterValidator> validator,
             QSharedPointer<ExpressionParser> expressionParser,
             QSharedPointer<ExpressionFormatter> expressionFormatter);
+
     };
 }
 
