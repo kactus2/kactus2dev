@@ -16,6 +16,7 @@
 
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
+#include <QHeaderView>
 
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesEditor::FieldAccessPoliciesEditor()
@@ -35,4 +36,5 @@ FieldAccessPoliciesEditor::FieldAccessPoliciesEditor(QString const& fieldName, F
     proxy->setSourceModel(model);
     view_->setModel(proxy);
     view_->setItemDelegate(delegate);
+    view_->horizontalHeader()->setStretchLastSection(false);
 }

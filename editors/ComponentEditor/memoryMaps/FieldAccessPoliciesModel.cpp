@@ -60,6 +60,13 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
     {
         return Qt::NoItemFlags;
     }
+
+    // Disable editing until editor is made.
+    if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
+    {
+        return Qt::NoItemFlags;
+    }
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
@@ -100,15 +107,27 @@ QVariant FieldAccessPoliciesModel::headerData(int section, Qt::Orientation orien
         }
         else if (section == FieldAccessPolicyColumns::READ_RESPONSE)
         {
-            return QStringLiteral("Read response");
+            return QStringLiteral("Read response, f(x)");
         }
         else if (section == FieldAccessPolicyColumns::TESTABLE)
         {
             return QStringLiteral("Testable");
         }
+        else if (section == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+        {
+            return QStringLiteral("Test constraint");
+        }
         else if (section == FieldAccessPolicyColumns::RESERVED)
         {
             return QStringLiteral("Reserved");
+        }
+        else if (section == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+        {
+            return QStringLiteral("Write constraint\nminimum");
+        }
+        else if (section == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+        {
+            return QStringLiteral("Write constraint\nmaximum");
         }
     }
 
@@ -144,10 +163,41 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         {
             return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName_.toStdString(), index.row()));
         }
+
+        else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+        {
+            return QString::fromStdString(fieldInterface_->getReadActionString(fieldName_.toStdString(), index.row()));
+        }
+        
+        else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+        {
+            return QString::fromStdString(fieldInterface_->getReadResponse(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+        {
+            return QString::fromStdString(fieldInterface_->getTestableValue(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+        {
+            return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+        {
+            return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_.toStdString(), index.row()));
+        }
     }
 
     else if (role == Qt::BackgroundRole)
     {
+        // Disable type definition column until editor is made.
+        if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
+        {
+            return KactusColors::DISABLED_FIELD;
+        }
+
         return KactusColors::REGULAR_FIELD;
     }
 
@@ -200,16 +250,37 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     else if (index.column() == FieldAccessPolicyColumns::ACCESS)
     {
-        auto accessTypeStr = value.toString();
-
-        fieldInterface_->setAccess(fieldName_.toStdString(), index.row(), accessTypeStr.toStdString());
+        fieldInterface_->setAccess(fieldName_.toStdString(), index.row(), value.toString().toStdString());
     }
 
     else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
     {
-        auto modifiedWriteStr = value.toString();
+        fieldInterface_->setModifiedWrite(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+    }
 
-        fieldInterface_->setModifiedWrite(fieldName_.toStdString(), index.row(), modifiedWriteStr.toStdString());
+    else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+    {
+        fieldInterface_->setReadAction(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        fieldInterface_->setReadResponse(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+    {
+        fieldInterface_->setTestable(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+    {
+        fieldInterface_->setTestConstraint(fieldName_.toStdString(), value.toString().toStdString(), index.row());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        fieldInterface_->setReserved(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     return true;

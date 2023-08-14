@@ -235,6 +235,16 @@ public:
     AccessTypes::Access getAccessType(std::string const& fieldName) const;
 
     /*!
+     *  Get the access of the selected field and field access policy by index.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the selected field access policy.
+     *
+     *      @return Access of the selected field and field access policy.
+     */
+    AccessTypes::Access getAccessType(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
      *  Set the access of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
@@ -282,6 +292,16 @@ public:
     std::string getReadActionString(std::string const& fieldName) const;
 
     /*!
+     *  Get the read action string of the selected field access policy of a selected field.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the selected field access policy.
+     *
+     *      @return Read action string of the selected field access policy of selected field.
+     */
+    std::string getReadActionString(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
      *  Get the read action of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
@@ -289,6 +309,16 @@ public:
      *      @return Read action of the selected field.
      */
     General::ReadAction getReadAction(std::string const& fieldName) const;
+
+    /*!
+     *  Get the read action of the selected field and field access policy.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   The index of the selected field.
+     *
+     *      @return Read action of the selected field and field access policy.
+     */
+    General::ReadAction getReadAction(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
      *  Set the read action of the selected field.
@@ -301,6 +331,17 @@ public:
     bool setReadAction(std::string const& fieldName, std::string const& newReadAction);
 
     /*!
+     *  Set the read action of the selected field access policy in a selected field.
+     *
+     *      @param [in] fieldName               Name of the selected field.
+     *      @param [in] accessPolicyIndex       Index of the selected field access policy.
+     *      @param [in] newReadAction           The new read action of the selected field.
+     *
+     *      @return True, if successful, false otherwise.
+     */
+    bool setReadAction(std::string const& fieldName, int accessPolicyIndex, std::string const& newReadAction);
+
+    /*!
      *  Get the testable string of the selected field.
      *
      *      @param [in] fieldName   Name of the selected field.
@@ -308,6 +349,16 @@ public:
      *      @return Testable string of the selected field.
      */
     std::string getTestableValue(std::string const& fieldName) const;
+
+    /*!
+     *  Get the testable string of the selected field access policy of a selected field.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the selected field access policy.
+     *
+     *      @return Testable string of the selected field.
+     */
+    std::string getTestableValue(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
      *  Get the testable bool of the selected field.
@@ -327,7 +378,7 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setTestable(std::string const& fieldName, std::string const& newTestable);
-
+    bool setTestable(std::string const& fieldName, int accessPolicyIndex, std::string const& newTestable);
     /*!
      *  Get the test constraint string of the selected field.
      *
@@ -335,7 +386,7 @@ public:
      *
      *      @return Test constraint string of the selected field.
      */
-    std::string getTestConstraintString(std::string const& fieldName) const;
+    std::string getTestConstraintString(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the test constraint of the selected field.
@@ -344,7 +395,7 @@ public:
      *
      *      @return Test constraint of the selected field.
      */
-    General::TestConstraint getTestConstraint(std::string const& fieldName) const;
+    General::TestConstraint getTestConstraint(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set the test constraint of the selected field.
@@ -354,7 +405,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setTestConstraint(std::string const& fieldName, std::string const& newTestConstraint);
+    bool setTestConstraint(std::string const& fieldName, std::string const& newTestConstraint, int accessPolicyIndex = -1);
 
     /*!
      *  Get the calculated is present value of the selected field.
@@ -526,7 +577,7 @@ public:
      *
      *      @return True, if the selected field has write value constraint, false otherwise.
      */
-    bool hasWriteConstraint(std::string const& fieldName) const;
+    bool hasWriteConstraint(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the write value constraint type of the selected field.
@@ -535,7 +586,7 @@ public:
      *
      *      @return The write value constraint type of the selected field.
      */
-    std::string getWriteConstraint(std::string const& fieldName) const;
+    std::string getWriteConstraint(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set a new write value constraint type for the selected field.
@@ -545,7 +596,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText);
+    bool setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText, int accessPolicyIndex = -1);
 
     /*!
      *  Get the calculated write value constraint minimum value of the selected field.
@@ -555,7 +606,7 @@ public:
      *
      *      @return Calculated write value constraint minimum value of the selected field.
      */
-    std::string getWriteConstraintMinimumValue(std::string const& fieldName, int const& baseNumber = 0) const;
+    std::string getWriteConstraintMinimumValue(std::string const& fieldName, int accessPolicyIndex = -1, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted write value constraint minimum expression of the selected field.
@@ -564,7 +615,7 @@ public:
      *
      *      @return Formatted write value constraint minimum expression of the selected field.
      */
-    std::string getWriteConstraintMinimumFormattedExpression(std::string const& fieldName) const;
+    std::string getWriteConstraintMinimumFormattedExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the write value constraint minimum expression of the selected field.
@@ -573,7 +624,7 @@ public:
      *
      *      @return Write value constraint minimum expression of the selected parameter.
      */
-    std::string getWriteConstraintMinimumExpression(std::string const& fieldName) const;
+    std::string getWriteConstraintMinimumExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set a new write value constraint minimum value for the selected field.
@@ -583,7 +634,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setWriteConstraintMinimum(std::string const& fieldName, std::string const& newWriteConstraintMinimum);
+    bool setWriteConstraintMinimum(std::string const& fieldName, std::string const& newWriteConstraintMinimum, int accessPolicyIndex = -1);
 
     /*!
      *  Get the calculated write value constraint maximum value of the selected field.
@@ -593,7 +644,7 @@ public:
      *
      *      @return Calculated write value constraint maximum value of the selected field.
      */
-    std::string getWriteConstraintMaximumValue(std::string const& fieldName, int const& baseNumber = 0) const;
+    std::string getWriteConstraintMaximumValue(std::string const& fieldName, int accessPolicyIndex = -1, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted write value constraint maximum expression of the selected field.
@@ -602,7 +653,7 @@ public:
      *
      *      @return Formatted write value constraint maximum expression of the selected field.
      */
-    std::string getWriteConstraintMaximumFormattedExpression(std::string const& fieldName) const;
+    std::string getWriteConstraintMaximumFormattedExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the write value constraint maximum expression of the selected field.
@@ -611,7 +662,7 @@ public:
      *
      *      @return Write value constraint maximum expression of the selected parameter.
      */
-    std::string getWriteConstraintMaximumExpression(std::string const& fieldName) const;
+    std::string getWriteConstraintMaximumExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set a new write value constraint maximum value for the selected field.
@@ -621,17 +672,19 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setWriteConstraintMaximum(std::string const& fieldName, std::string const& newWriteConstraintMaximum);
+    bool setWriteConstraintMaximum(std::string const& fieldName, std::string const& newWriteConstraintMaximum, int accessPolicyIndex = -1);
 
     /*!
-     *  Get the calculated reserved value of the selected field.
+     *  Get the calculated reserved value of the selected field. A field access policy index can be specified
+     *  for getting the reserved value from a field access policy of a 2022 standard compliant field.
      *
-     *      @param [in] fieldName   Name of the selected field.
-     *      @param [in] baseNumber  Base for displaying the value.
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   The selected access policy index.
+     *      @param [in] baseNumber          Base for displaying the value.
      *
      *      @return Calculated reserved value of the selected field.
      */
-    std::string getReservedValue(std::string const& fieldName, int const& baseNumber = 0) const;
+    std::string getReservedValue(std::string const& fieldName, int accessPolicyIndex = -1, int const& baseNumber = 0) const;
 
     /*!
      *  Get the formatted reserved expression of the selected field.
@@ -640,7 +693,7 @@ public:
      *
      *      @return Formatted reserved expression of the selected field.
      */
-    std::string getReservedFormattedExpression(std::string const& fieldName) const;
+    std::string getReservedFormattedExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the reserved expression of the selected field.
@@ -649,7 +702,7 @@ public:
      *
      *      @return Reserved expression of the selected parameter.
      */
-    std::string getReservedExpression(std::string const& fieldName) const;
+    std::string getReservedExpression(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set a new reserved value for the selected field.
@@ -659,7 +712,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setReserved(std::string const& fieldName, std::string const& newReserved);
+    bool setReserved(std::string const& fieldName, std::string const& newReserved, int accessPolicyIndex = -1);
 
     /*!
      *  Get the ID of the selected field.
@@ -694,7 +747,9 @@ public:
 
     int getAccessPolicyCount(std::string const& fieldName) const;
 
+    std::string getReadResponse(std::string const& fieldName, int accessPolicyIndex) const;
 
+    bool setReadResponse(std::string const& fieldName, int accessPolicyIndex, std::string const& newReadResponse) const;
 
 private:
 
@@ -723,7 +778,7 @@ private:
      *
      *      @return Write value constraint of the selected field.
      */
-    QSharedPointer<WriteValueConstraint> getWriteValueConstraint(std::string const& fieldName) const;
+    QSharedPointer<WriteValueConstraint> getWriteValueConstraint(std::string const& fieldName, int accessPolicyIndex = -1) const;
 
     //-----------------------------------------------------------------------------
     // Data.

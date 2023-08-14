@@ -16,6 +16,9 @@
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/modWriteComboBox/modwritecombobox.h>
+#include <common/widgets/readActionComboBox/readactioncombobox.h>
+#include <common/widgets/booleanComboBox/booleancombobox.h>
+#include <common/widgets/testConstraintComboBox/testconstraintcombobox.h>
 
 #include <QLineEdit>
 
@@ -44,7 +47,7 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
         return modeRefEditor;
     }
 
-    if (index.column() == FieldAccessPolicyColumns::ACCESS)
+    else if (index.column() == FieldAccessPolicyColumns::ACCESS)
     {
         AccessComboBox* accessEditor = new AccessComboBox(parent);
 
@@ -52,12 +55,36 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
         return accessEditor;
     }
 
-    if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
+    else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
     {
         ModWriteComboBox* modifiedWriteEditor = new ModWriteComboBox(parent);
 
         connect(modifiedWriteEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return modifiedWriteEditor;
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+    {
+        ReadActionComboBox* readActionEditor = new ReadActionComboBox(parent);
+
+        connect(readActionEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return readActionEditor;
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+    {
+        BooleanComboBox* testableEditor = new BooleanComboBox(parent);
+
+        connect(testableEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return testableEditor;
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+    {
+        TestConstraintComboBox* testConstraintEditor = new TestConstraintComboBox(parent);
+
+        connect(testConstraintEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return testConstraintEditor;
     }
 
     else
@@ -87,7 +114,8 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
         
         if (castEditor)
         {
-            castEditor->setCurrentValue(AccessTypes::str2Access(index.data(Qt::DisplayRole).toString(), AccessTypes::ACCESS_COUNT));
+            castEditor->setCurrentValue(AccessTypes::str2Access(
+                index.data(Qt::DisplayRole).toString(), AccessTypes::ACCESS_COUNT));
         }
     }
 
@@ -100,6 +128,57 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
             modfiedWriteEditor->setCurrentValue(General::str2ModifiedWrite(index.data(Qt::DisplayRole).toString()));
         }
     }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+    {
+        auto readActionEditor = qobject_cast<ReadActionComboBox*>(editor);
+
+        if (readActionEditor)
+        {
+            readActionEditor->setCurrentValue(General::str2ReadAction(index.data(Qt::DisplayRole).toString()));
+        }
+    }
+    
+    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        auto readResponseEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (readResponseEditor)
+        {
+            readResponseEditor->setText(index.data(Qt::DisplayRole).toString());
+        }
+    }
+    
+    else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+    {
+        auto testableEditor = qobject_cast<BooleanComboBox*>(editor);
+
+        if (testableEditor)
+        {
+            testableEditor->setCurrentValue(index.data(Qt::DisplayRole).toString());
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+    {
+        auto testConstraintEditor = qobject_cast<TestConstraintComboBox*>(editor);
+
+        if (testConstraintEditor)
+        {
+            testConstraintEditor->setCurrentValue(General::str2TestConstraint(index.data(Qt::DisplayRole).toString()));
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        auto reservedEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (reservedEditor)
+        {
+            reservedEditor->setText(index.data(Qt::DisplayRole).toString());
+        }
+    }
+
     else
     {
         QStyledItemDelegate::setEditorData(editor, index);
@@ -111,7 +190,6 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
 //-----------------------------------------------------------------------------
 void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
-
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
         auto modeEditor = qobject_cast<ModeReferenceEditor*>(editor);
@@ -146,6 +224,55 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
         }
     }
 
+    else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+    {
+        auto readActionEditor = qobject_cast<ReadActionComboBox*>(editor);
+
+        if (readActionEditor)
+        {
+            model->setData(index, readActionEditor->currentText(), Qt::EditRole);
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        auto readResponseEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (readResponseEditor)
+        {
+            model->setData(index, readResponseEditor->text(), Qt::EditRole);
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+    {
+        auto testableEditor = qobject_cast<BooleanComboBox*>(editor);
+
+        if (testableEditor)
+        {
+            model->setData(index, testableEditor->currentText(), Qt::EditRole);
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+    {
+        auto testConstraintEditor = qobject_cast<TestConstraintComboBox*>(editor);
+
+        if (testConstraintEditor)
+        {
+            model->setData(index, testConstraintEditor->currentText(), Qt::EditRole);
+        }
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        auto reservedEditor = qobject_cast<QLineEdit*>(editor);
+
+        if (reservedEditor)
+        {
+            model->setData(index, reservedEditor->text(), Qt::EditRole);
+        }
+    }
     else
     {
         QStyledItemDelegate::setModelData(editor, model, index);
