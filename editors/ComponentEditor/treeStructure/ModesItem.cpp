@@ -17,8 +17,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Mode.h>
-//#include <IPXACTmodels/Component/validators/ModeValidator.h>
-// 
+#include <IPXACTmodels/Component/validators/ModeValidator.h>
+ 
 //-----------------------------------------------------------------------------
 // Function: ModesItem::ModesItem()
 //-----------------------------------------------------------------------------
@@ -29,7 +29,8 @@ ModesItem::ModesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandl
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 modes_(component->getModes()),
-expressions_(expressions)
+expressions_(expressions),
+validator_(new ModeValidator(component, expressions.parser))
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);
@@ -38,7 +39,7 @@ expressions_(expressions)
     for (QSharedPointer<Mode> mode : *modes_)
     {
         QSharedPointer<SingleModeItem> singleRemapItem(new SingleModeItem(mode, model,
-            libHandler, component, referenceCounter, expressions, nullptr, this));
+            libHandler, component, referenceCounter, expressions, validator_, this));
 
         childItems_.append(singleRemapItem);
     }
@@ -89,7 +90,7 @@ ItemEditor* ModesItem::editor()
 //-----------------------------------------------------------------------------
 QString ModesItem::getTooltip() const
 {
-    return tr("Contains the modes of the component");
+    return tr("Contains the operation modes of the component");
 }
 
 //-----------------------------------------------------------------------------
@@ -97,10 +98,10 @@ QString ModesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ModesItem::createChild(int index)
 {
-    QSharedPointer<SingleModeItem> remapItem(new SingleModeItem(modes_->at(index), model_,
-        libHandler_, component_, referenceCounter_, expressions_, nullptr, this));
+    QSharedPointer<SingleModeItem> modeItem(new SingleModeItem(modes_->at(index), model_,
+        libHandler_, component_, referenceCounter_, expressions_, validator_, this));
 
-    remapItem->setLocked(locked_);
+    modeItem->setLocked(locked_);
 
-    childItems_.insert(index, remapItem);
+    childItems_.insert(index, modeItem);
 }

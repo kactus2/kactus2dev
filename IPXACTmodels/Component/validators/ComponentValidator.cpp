@@ -39,6 +39,7 @@
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
+#include <IPXACTmodels/Component/validators/ModeValidator.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
@@ -70,6 +71,7 @@ busInterfaceValidator_(),
 indirectInterfaceValidator_(),
 channelValidator_(),
 remapStateValidator_(),
+modeValidator_(),
 addressSpaceValidator_(),
 memoryMapValidator_(),
 viewValidator_(),
@@ -105,6 +107,8 @@ assertionValidator_()
 
     remapStateValidator_ = QSharedPointer<RemapStateValidator>(
         new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
+  
+    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(nullptr, parser));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));
@@ -158,7 +162,8 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
 
     return hasValidVLNV(component) && hasValidBusInterfaces(component) && 
         hasValidIndirectInterfaces(component) && hasValidChannels(component) &&
-        hasValidRemapStates(component) && hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
+        hasValidRemapStates(component) && hasValidModes(component) &&
+        hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
         hasValidViews(component) && hasValidComponentInstantiations(component) &&
         hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
         hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
@@ -276,6 +281,27 @@ bool ComponentValidator::hasValidRemapStates(QSharedPointer<Component> component
                 stateNames.append(remapState->name());
             }
         }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidModes()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidModes(QSharedPointer<Component> component)
+{
+    changeComponent(component);
+
+    QVector<QString> modeNames;
+    for (QSharedPointer<Mode> mode : *component->getModes())
+    {
+        if (modeNames.contains(mode->name()) || !modeValidator_->validate(mode))
+        {
+            return false;
+        }
+
+        modeNames.append(mode->name());
     }
 
     return true;
@@ -701,6 +727,7 @@ void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<C
     findErrorsInIndirectInterfaces(errors, component, context);
     findErrorsInChannels(errors, component, context);
     findErrorsInRemapStates(errors, component, context);
+    findErrorsInModes(errors, component, context);
     findErrorsInAddressSpaces(errors, component, context);
     findErrorsInMemoryMaps(errors, component, context);
     findErrorsInViews(errors, component, context);
@@ -834,6 +861,28 @@ void ComponentValidator::findErrorsInRemapStates(QVector<QString>& errors, QShar
             stateNames.append(remapState->name());
             remapStateValidator_->findErrorsIn(errors, remapState, context);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInModes()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInModes(QVector<QString>& errors, QSharedPointer<Component> component,
+    QString const& context) const
+{
+    QStringList modeNames;
+    QStringList duplicateNames;
+    for (auto const& mode : *component->getModes())
+    {
+        if (modeNames.contains(mode->name()) && !duplicateNames.contains(mode->name()))
+        {
+            errors.append(QObject::tr("Mode name %1 within %2 is not unique.")
+                .arg(mode->name()).arg(context));
+            duplicateNames.append(mode->name());
+        }
+
+        modeNames.append(mode->name());
+        modeValidator_->findErrorsIn(errors, mode, context);
     }
 }
 
@@ -1241,6 +1290,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         parameterValidator_->componentChange(newComponent->getChoices());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());
+        modeValidator_->componentChange(newComponent);
         memoryMapValidator_->componentChange(newComponent);
         viewValidator_->componentChange(newComponent->getModel());
         instantiationsValidator_->componentChange(newComponent->getFileSets());

@@ -25,6 +25,7 @@ class BusInterfaceValidator;
 class IndirectInterfaceValidator;
 class ChannelValidator;
 class RemapStateValidator;
+class ModeValidator;
 class AddressSpaceValidator;
 class MemoryMapValidator;
 class ViewValidator;
@@ -112,6 +113,15 @@ public:
      *      @return True, if the remap states are valid, otherwise false.
      */
     bool hasValidRemapStates(QSharedPointer<Component> component);
+
+    /*!
+     *  Check if the contained modes are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the modes are valid, otherwise false.
+     */
+    bool hasValidModes(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained address spaces are valid.
@@ -321,6 +331,16 @@ private:
         QString const& context) const;
 
     /*!
+     *  Find errors in modes.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] component   The selected component.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInModes(QVector<QString>& errors, QSharedPointer<Component> component,
+        QString const& context) const;
+
+    /*!
      *  Find errors in address spaces.
      *
      *      @param [in] errors      List of found errors.
@@ -495,6 +515,9 @@ private:
 
     //! The used remap state validator.
     QSharedPointer<RemapStateValidator> remapStateValidator_;
+
+    //! The used mode validator.
+    QSharedPointer<ModeValidator> modeValidator_;
 
     //! The used address space validator.
     QSharedPointer<AddressSpaceValidator> addressSpaceValidator_;

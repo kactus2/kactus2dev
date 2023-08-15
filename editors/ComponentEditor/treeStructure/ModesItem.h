@@ -9,8 +9,8 @@
 // The Modes-item in the component editor navigation tree.
 //-----------------------------------------------------------------------------
 
-#ifndef ModesITEM_H
-#define ModesITEM_H
+#ifndef MODESITEM_H
+#define MODESITEM_H
 
 #include "componenteditoritem.h"
 
@@ -100,6 +100,7 @@ private:
 
     ExpressionSet expressions_;
 
+    QSharedPointer<ModeValidator> validator_;
 };
 
-#endif // ModesITEM_H
+#endif // MODESITEM_H

@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/ChannelValidator.h>
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
+#include <IPXACTmodels/Component/validators/ModeValidator.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>

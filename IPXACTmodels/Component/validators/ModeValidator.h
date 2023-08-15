@@ -85,10 +85,12 @@ public:
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> mode,
 		QString const& context) const;
 
+    void componentChange(QSharedPointer<Component> newComponent);
+
 private:
     
     //! The component containing the modes.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

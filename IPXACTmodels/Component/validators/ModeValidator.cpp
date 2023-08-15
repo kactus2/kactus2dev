@@ -72,9 +72,16 @@ bool ModeValidator::hasValidName(QString const& name) const
 //-----------------------------------------------------------------------------
 bool ModeValidator::hasValidPortSlices(QSharedPointer<Mode> mode) const
 {
+	QStringList sliceNames;
+
 	for (auto const& portSlice : *mode->getPortSlices())
 	{
 		if (hasValidName(portSlice->name()) == false)
+		{
+			return false;
+		}
+
+		if (sliceNames.contains(portSlice->name()))
 		{
 			return false;
 		}
@@ -83,6 +90,8 @@ bool ModeValidator::hasValidPortSlices(QSharedPointer<Mode> mode) const
 		{
 			return false;
 		}
+
+		sliceNames.append(portSlice->name());
 	}
 
 	return true;
@@ -99,6 +108,9 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
         errors.append(QObject::tr("Invalid name '%1' set for mode within %2.").arg(mode->name(), context));
     }
 
+	QStringList sliceNames;
+	QStringList reportedNames;
+
     for (auto const& portSlice : *mode->getPortSlices())
     {
         if (hasValidName(portSlice->name()) == false)
@@ -106,6 +118,15 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
             errors.append(QObject::tr("Invalid name '%1' set for port condition within mode %2.").arg(
 				portSlice->name(), mode->name()));
         }
+
+		if (sliceNames.contains(portSlice->name()) && reportedNames.contains(portSlice->name()) == false)
+        {
+            errors.append(QObject::tr("Port condition name '%1' is not unique within mode '%2'.").arg(
+                portSlice->name(), mode->name()));
+
+			reportedNames.append(portSlice->name());
+		}
+        sliceNames.append(portSlice->name());
 
 		if (portSlice->getPortRef().isEmpty())
 		{
@@ -119,4 +140,12 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
 					portSlice->getPortRef(), portSlice->name(), mode->name()));
 		}
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::componentChange()
+//-----------------------------------------------------------------------------
+void ModeValidator::componentChange(QSharedPointer<Component> newComponent)
+{
+	component_ = newComponent;
 }
