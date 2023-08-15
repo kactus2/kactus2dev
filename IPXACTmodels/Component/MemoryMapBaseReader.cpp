@@ -39,13 +39,14 @@ MemoryMapBaseReader::~MemoryMapBaseReader()
 // Function: MemoryMapBaseReader::createMemoryMapBaseFrom()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseReader::readMemoryMapBase(QDomNode const& MemoryMapBaseNode,
-	QSharedPointer<MemoryMapBase> newMemoryMapBase) const
+	QSharedPointer<MemoryMapBase> newMemoryMapBase,
+	Document::Revision docRevision) const
 {
     parseNameGroup(MemoryMapBaseNode, newMemoryMapBase);
 
     parsePresence(MemoryMapBaseNode, newMemoryMapBase);
 
-    parseMemoryBlocks(MemoryMapBaseNode, newMemoryMapBase);
+    parseMemoryBlocks(MemoryMapBaseNode, newMemoryMapBase, docRevision);
 }
 
 //-----------------------------------------------------------------------------
@@ -75,7 +76,8 @@ void MemoryMapBaseReader::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
 // Function: MemoryMapBaseReader::parseMemoryBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBase) const
+    QSharedPointer<MemoryMapBase> newMemoryMapBase,
+    Document::Revision docRevision) const
 {
     QDomNodeList childNodes = memoryMapBaseNode.childNodes();
 
@@ -88,7 +90,7 @@ void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
         if (blockBaseNode.nodeName() == QLatin1String("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
-                addressBlockReader.createAddressBlockFrom(blockBaseNode);
+                addressBlockReader.createAddressBlockFrom(blockBaseNode, docRevision);
 
             newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
         }

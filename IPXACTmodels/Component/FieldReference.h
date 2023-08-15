@@ -6,7 +6,8 @@
 // Date: 26.7.2023
 //
 // Description:
-// Reference to a field in the encapsulating component.
+// Reference to a field in the encapsulating component. Describes the elements 
+// in the fieldReferenceGroup group.
 //-----------------------------------------------------------------------------
 
 #ifndef FIELDREFERENCE_H
@@ -38,13 +39,19 @@ public:
     };
 
     //! Reference with indices.
-    struct IndexedReference
+    struct IPXACTMODELS_EXPORT IndexedReference
     {
         //! The reference.
         QString reference_;
 
         //! The indices of the reference. Is empty for references without indices.
         QList<QString> indices_;
+
+        IndexedReference() = default;
+
+        IndexedReference(QString const& reference, QList<QString> const& indices);
+        
+        IndexedReference(IndexedReference const& other);
     };
 
     /*!
@@ -80,6 +87,8 @@ public:
      */
     QSharedPointer<IndexedReference> getReference(FieldReference::Type refType) const;
     
+    void clearReference(FieldReference::Type refType);
+
     /*!
      *	Get a list of references of a specific type. Can be called for all types, but can have multiple references
      *  only for types bank and register file.
@@ -108,13 +117,15 @@ private:
     QSharedPointer<IndexedReference> memoryRemapRef_;
     
     //! The bank references.
-    QSharedPointer<QList<QSharedPointer<IndexedReference> > > bankRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > bankRefs_ = 
+        QSharedPointer<QList<QSharedPointer<IndexedReference> > >(new QList<QSharedPointer<IndexedReference> >());
 
     //! The address block reference.
     QSharedPointer<IndexedReference> addressBlockRef_;
 
     //! The register file references.
-    QSharedPointer<QList<QSharedPointer<IndexedReference> > > registerFileRefs_;
+    QSharedPointer<QList<QSharedPointer<IndexedReference> > > registerFileRefs_ =
+        QSharedPointer<QList<QSharedPointer<IndexedReference> > >(new QList<QSharedPointer<IndexedReference> >());
 
     //! The register reference.
     QSharedPointer<IndexedReference> registerRef_;

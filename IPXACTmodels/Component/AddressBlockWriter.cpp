@@ -27,8 +27,7 @@ MemoryBlockBaseWriter()
 //-----------------------------------------------------------------------------
 // Function: AddressBlockWriter::writeAddressBlock()
 //-----------------------------------------------------------------------------
-void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-    const
+void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock, Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:addressBlock"));
 
@@ -52,7 +51,7 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
 
     writeParameters(writer, addressBlock->getParameters());
 
-    writeRegisterData(writer, addressBlock);
+    writeRegisterData(writer, addressBlock, docRevision);
 
     writeVendorExtensions(writer, addressBlock);
 
@@ -109,8 +108,7 @@ void AddressBlockWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Ad
 //-----------------------------------------------------------------------------
 // Function: AddressBlockWriter::writeRegisterData()
 //-----------------------------------------------------------------------------
-void AddressBlockWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock)
-    const
+void AddressBlockWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock, Document::Revision docRevision) const
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
@@ -118,7 +116,7 @@ void AddressBlockWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPoin
 
         foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
         {
-            registerWriter.writeRegisterData(writer, registerBase);
+            registerWriter.writeRegisterData(writer, registerBase, docRevision);
         }
     }
 }

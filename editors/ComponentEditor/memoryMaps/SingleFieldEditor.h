@@ -34,6 +34,7 @@ class Field;
 class Component;
 class FieldValidator;
 class FieldInterface;
+class FieldAccessPoliciesEditor;
 
 #include <QComboBox>
 
@@ -304,6 +305,9 @@ private:
 
     //! Register containing the edited field.
     QSharedPointer<Register> containingRegister_;
+
+    //! The editor for field access policies.
+    FieldAccessPoliciesEditor* accessPoliciesEditor_;
 };
 
 #endif // SINGLEFIELDEDITOR_H

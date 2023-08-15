@@ -47,7 +47,7 @@ public:
      *      @param [in] writer          The used XML writer.
      *      @param [in] registerData    The register data to be written.
      */
-    void writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData) const;
+    void writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData, Document::Revision docRevision) const;
 
 private:
 
@@ -61,7 +61,7 @@ private:
      *      @param [in] writer          The used XML writer.
      *      @param [in] targetRegister  The selected register.
      */
-    void writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister) const;
+    void writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const;
 
     /*!
      *  Write the name group.
@@ -117,7 +117,7 @@ private:
      *      @param [in] writer              Used XML writer.
      *      @param [in] registerDefinition  The selected register definition.
      */
-    void writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition) const;
+    void writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition, Document::Revision docRevision) const;
 
     /*!
      *  Write the register alternate registers.
@@ -125,7 +125,7 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] targetRegister  The selected register.
      */
-    void writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister) const;
+    void writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const;
 
     /*!
      *  Write a single alternate register.
@@ -134,7 +134,8 @@ private:
      *      @param [in] alternateRegister   The selected alternate register.
      */
     void writeSingleAlternateRegister(QXmlStreamWriter& writer,
-        QSharedPointer<AlternateRegister> alternateRegister) const;
+        QSharedPointer<AlternateRegister> alternateRegister,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the alternate register alternate groups.
@@ -150,7 +151,7 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] registerFile    The register file to be written.
      */
-    void writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile) const;
+    void writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile, Document::Revision docRevision) const;
 
     /*!
      *  Write register data contained within a register file.
@@ -158,7 +159,7 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] registerFile    The register file to be written.
      */
-    void writeRegisterFileRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile) const;
+    void writeRegisterFileRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile, Document::Revision docRevision) const;
 };
 
 #endif // REGISTERWRITER_H

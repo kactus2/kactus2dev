@@ -46,7 +46,7 @@ public:
      *
      *      @return The created memory map.
      */
-    QSharedPointer<MemoryMap> createMemoryMapFrom(QDomNode const& memoryMapNode) const;
+    QSharedPointer<MemoryMap> createMemoryMapFrom(QDomNode const& memoryMapNode, Document::Revision docRevision) const;
 
 private:
 
@@ -60,8 +60,7 @@ private:
      *      @param [in] memoryMapBaseNode   XML description of the memory map base.
      *      @param [in] newMemoryMapBase    The new memory map base item.
      */
-    void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase)
-        const;
+    void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision) const;
 
     /*!
      *  Reads the memory remaps.
@@ -69,7 +68,7 @@ private:
      *      @param [in] memoryMapNode   XML description of the memory map.
      *      @param [in] newMemoryMap    The new memory map item.
      */
-    void parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap) const;
+    void parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap, Document::Revision docRevision) const;
 
     /*!
      *  Creates a new memory remap from a given memory remap element.
@@ -78,7 +77,7 @@ private:
      *
      *      @return Pointer to the created memory remap.
      */
-    QSharedPointer<MemoryRemap> createSingleMemoryRemap(QDomElement const& memoryRemapElement) const;
+    QSharedPointer<MemoryRemap> createSingleMemoryRemap(QDomElement const& memoryRemapElement, Document::Revision docRevision) const;
 
     /*!
      *  Reads the address unit bits.

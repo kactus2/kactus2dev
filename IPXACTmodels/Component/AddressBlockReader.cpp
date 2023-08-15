@@ -30,7 +30,7 @@ MemoryBlockBaseReader()
 //-----------------------------------------------------------------------------
 // Function: AddressBlockReader::createAddressBlockFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode const& addressBlockNode) const
+QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode const& addressBlockNode, Document::Revision docRevision) const
 {
     QSharedPointer<AddressBlock> newAddressBlock(new AddressBlock());
 
@@ -54,7 +54,7 @@ QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode
 
     parseParameters(addressBlockNode, newAddressBlock);
 
-    parseRegisterData(addressBlockNode, newAddressBlock);
+    parseRegisterData(addressBlockNode, newAddressBlock, docRevision);
 
     parseVendorExtensions(addressBlockNode, newAddressBlock);
 
@@ -150,7 +150,8 @@ void AddressBlockReader::parseAccess(QDomNode const& addressBlockNode,
 // Function: AddressBlockReader::parseRegisterData()
 //-----------------------------------------------------------------------------
 void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
+    QSharedPointer<AddressBlock> newAddressBlock,
+    Document::Revision docRevision) const
 {
     QDomNodeList childNodeList = addressBlockNode.childNodes();
     RegisterReader registerReader;
@@ -160,12 +161,12 @@ void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
         QDomNode currentNode = childNodeList.at(i);
         if (currentNode.nodeName() == QStringLiteral("ipxact:register"))
         {
-            QSharedPointer<Register> newRegister = registerReader.createRegisterfrom(currentNode);
+            QSharedPointer<Register> newRegister = registerReader.createRegisterfrom(currentNode, docRevision);
             newAddressBlock->getRegisterData()->append(newRegister);
         }
         else if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:registerFile"))
         {
-            QSharedPointer<RegisterFile> newFile = registerReader.createRegisterFileFrom(currentNode);
+            QSharedPointer<RegisterFile> newFile = registerReader.createRegisterFileFrom(currentNode, docRevision);
             newAddressBlock->getRegisterData()->append(newFile);
         }
     }

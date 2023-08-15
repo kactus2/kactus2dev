@@ -45,7 +45,7 @@ public:
      *
      *      @return The created address block.
      */
-    QSharedPointer<AddressBlock> createAddressBlockFrom(QDomNode const& addressBlockNode) const;
+    QSharedPointer<AddressBlock> createAddressBlockFrom(QDomNode const& addressBlockNode, Document::Revision docRevision) const;
 
 private:
 
@@ -107,7 +107,7 @@ private:
      *      @param [in] addressBlockNode    XML description of the address block.
      *      @param [in] newAddressBlock     The new address block.
      */
-    void parseRegisterData(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock) const;
+    void parseRegisterData(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock, Document::Revision docRevision) const;
 };
 
 #endif // ADDRESSBLOCKREADER_H

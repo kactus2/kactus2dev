@@ -265,7 +265,7 @@ void ComponentReader::parseMemoryMaps(QDomNode const& componentNode, QSharedPoin
         for (int memoryIndex = 0; memoryIndex < memoryMapNodeList.count(); ++memoryIndex)
         {
             QDomNode memoryMapNode = memoryMapNodeList.at(memoryIndex);
-            QSharedPointer<MemoryMap> newMemoryMap = memoryReader.createMemoryMapFrom(memoryMapNode);
+            QSharedPointer<MemoryMap> newMemoryMap = memoryReader.createMemoryMapFrom(memoryMapNode, newComponent->getRevision());
 
             newComponent->getMemoryMaps()->append(newMemoryMap);
         }

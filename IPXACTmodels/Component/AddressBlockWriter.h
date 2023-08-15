@@ -45,7 +45,7 @@ public:
      *      @param [in] writer          The used XML writer.
      *      @param [in] addressBlock    The address block to be written.
      */
-    void writeAddressBlock(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock) const;
+    void writeAddressBlock(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock, Document::Revision docRevision) const;
 
 private:
 
@@ -91,7 +91,7 @@ private:
      *      @param [in] writer          Used XML writer.
      *      @param [in] addressBlock    Selected address block.
      */
-    void writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock) const;
+    void writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<AddressBlock> addressBlock, Document::Revision docRevision) const;
 };
 
 #endif // ADDRESSBLOCKWRITER_H

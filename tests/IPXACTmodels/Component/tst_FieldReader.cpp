@@ -41,6 +41,7 @@ private slots:
     void readTypeIdentifier();
     void readVolatile();
     void readFieldReference();
+    void readFieldAccessPolicies();
     void readAccess();
     void readEnumeratedValues();
     void readModifiedWritevalue();
@@ -398,6 +399,34 @@ void tst_FieldReader::readFieldReference()
 
     QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD)->reference_, QString("testField"));
     QCOMPARE(fieldReference->getReference(FieldReference::Type::FIELD)->indices_.first(), QString("6"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldReader::readFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void tst_FieldReader::readFieldAccessPolicies()
+{
+    QString documentContent(
+        "<ipxact:field>"
+            "<ipxact:name>testField</ipxact:name>"
+            "<ipxact:bitOffset>8</ipxact:bitOffset>"
+            "<ipxact:bitWidth>16</ipxact:bitWidth>"
+            "<ipxact:fieldAccessPolicies>"
+                "<ipxact:fieldAccessPolicy>"
+                    "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                    "<ipxact:fieldAccessPolicyDefinitionRef typeDefinitions=\"testDefinition\"/>"
+                "</ipxact:fieldAccessPolicy>"
+            "</ipxact:fieldAccessPolicies>"
+        "</ipxact:field>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode fieldNode = document.firstChildElement("ipxact:field");
+    QSharedPointer<Field> testField = FieldReader::createFieldFrom(fieldNode, Document::Revision::Std22);
+
+    QCOMPARE(testField->getFieldAccessPolicies()->size(), 1);
 }
 
 //-----------------------------------------------------------------------------

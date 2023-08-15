@@ -6,7 +6,8 @@
 // Date: 26.7.2023
 //
 // Description:
-// Reference to a field in the encapsulating component.
+// Reference to a field in the encapsulating component. Describes the elements 
+// in the fieldReferenceGroup group.
 //-----------------------------------------------------------------------------
 
 #include "FieldReference.h"
@@ -23,6 +24,26 @@ const QString FieldReference::TYPES_AS_STRINGS[] = {
     QLatin1String("fieldRef"),
     QLatin1String("")
 };
+
+//-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::IndexedReference()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference::IndexedReference(IndexedReference const& other) :
+    reference_(other.reference_),
+    indices_(other.indices_)
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::IndexedReference()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference::IndexedReference(QString const& reference, QList<QString> const& indices):
+    reference_(reference),
+    indices_(indices)
+{
+
+}
 
 //-----------------------------------------------------------------------------
 // Function: FieldReference::FieldReference()
@@ -125,6 +146,45 @@ QSharedPointer<FieldReference::IndexedReference> FieldReference::getReference(Ty
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldReference::clearReference()
+//-----------------------------------------------------------------------------
+void FieldReference::clearReference(Type refType)
+{
+    switch (refType)
+    {
+    case FieldReference::Type::ADDRESS_SPACE:
+        addressSpaceRef_.clear();
+        break;
+    case FieldReference::Type::MEMORY_MAP:
+        memoryMapRef_.clear();
+        break;
+    case FieldReference::Type::MEMORY_REMAP:
+        memoryRemapRef_.clear();
+        break;
+    case FieldReference::Type::BANK:
+        bankRefs_->clear();
+        break;
+    case FieldReference::Type::ADDRESS_BLOCK:
+        addressBlockRef_.clear();
+        break;
+    case FieldReference::Type::REGISTER_FILE:
+        registerFileRefs_->clear();
+        break;
+    case FieldReference::Type::REGISTER:
+        registerRef_.clear();
+        break;
+    case FieldReference::Type::ALTERNATE_REGISTER:
+        alternateRegisterRef_.clear();
+        break;
+    case FieldReference::Type::FIELD:
+        fieldRef_.clear();
+        break;
+    default:
+        break;
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldReference::getMultipleReference()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<FieldReference::IndexedReference> > > FieldReference::getMultipleReference(Type refType) const
@@ -189,3 +249,4 @@ QString FieldReference::type2Str(FieldReference::Type refType)
 {
     return TYPES_AS_STRINGS[refType];
 }
+

@@ -72,7 +72,7 @@ void MemoryMapWriter::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer
 
         writeIsPresent(writer, memoryRemap->getIsPresent());
 
-        writeMemoryBlocks(writer, memoryRemap);
+        writeMemoryBlocks(writer, memoryRemap, docRevision);
 
         writer.writeEndElement(); // ipxact:memoryRemap
     }

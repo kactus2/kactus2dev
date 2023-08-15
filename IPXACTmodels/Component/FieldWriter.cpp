@@ -10,13 +10,15 @@
 //-----------------------------------------------------------------------------
 
 #include "FieldWriter.h"
+#include "FieldReferenceWriter.h"
+#include "FieldAccessPolicyWriter.h"
 #include "Field.h"
 #include "WriteValueConstraint.h"
 #include "MemoryArrayWriter.h"
+#include "EnumeratedValueWriter.h"
+#include "FieldReset.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/Component/EnumeratedValueWriter.h>
-#include <IPXACTmodels/Component/FieldReset.h>
 
 //-----------------------------------------------------------------------------
 // Function: FieldWriter::writeField()
@@ -329,33 +331,24 @@ void FieldWriter::Details::writeFieldData2022(QXmlStreamWriter& writer, QSharedP
         writer.writeTextElement(QStringLiteral("ipxact:bitWidth"), bitWidth);
     }
 
-    // TODO: write field access policy
-
     Details::writeVolatile(writer, field);
 
     Details::writeResets(writer, field);
 
     Details::writeFieldReference(writer, field); // ipxact:aliasOf
 
-    Details::writeAccess(writer, field);
+    if (auto const& fieldAccessPolicies = field->getFieldAccessPolicies();
+        fieldAccessPolicies->isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fieldAccessPolicies"));
+        
+        for (auto const& fieldAccessPolicy : *fieldAccessPolicies)
+        {
+            FieldAccessPolicyWriter::writeFieldAccessPolicy(writer, fieldAccessPolicy);
+        }
 
-    Details::writeModifiedWriteValue(writer, field);
-
-    Details::writeWriteValueConstraint(writer, field->getWriteConstraint());
-
-    Details::writeReadAction(writer, field);
-
-    // TODO: writeReadResponse
-
-    // TODO: writeBroadcasts
-
-    // TODO: writeAccessRestrictions
-
-    Details::writeTestable(writer, field);
-
-    Details::writeReserved(writer, field);
-
-    // TODO: writeVendorExtensions
+        writer.writeEndElement(); // ipxact:fieldAccessPolicies
+    }
 
     Details::writeEnumerations(writer, field);
 }
@@ -374,75 +367,7 @@ void FieldWriter::Details::writeFieldReference(QXmlStreamWriter& writer, QShared
 
     writer.writeStartElement(QStringLiteral("ipxact:aliasOf"));
 
-    for (auto i = 0; i < FieldReference::Type::REFERENCE_TYPE_COUNT; ++i)
-    {
-        if (i == FieldReference::BANK || i == FieldReference::REGISTER_FILE)
-        {
-            writeMultipleFieldReference(writer, fieldReference, static_cast<FieldReference::Type>(i));
-        }
-        else
-        {
-            if (auto reference = fieldReference->getReference(static_cast<FieldReference::Type>(i));
-                reference != nullptr)
-            {
-                writeSingleFieldReference(writer, reference, static_cast<FieldReference::Type>(i));
-            }
-        }
-    }
+    FieldReferenceWriter::writeFieldReference(writer, fieldReference);
 
     writer.writeEndElement(); // ipxact:aliasOf
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldWriter::Details::writeMultipleFieldReference()
-//-----------------------------------------------------------------------------
-void FieldWriter::Details::writeMultipleFieldReference(QXmlStreamWriter& writer, QSharedPointer<FieldReference> fieldReference, FieldReference::Type refType)
-{
-    auto references = fieldReference->getMultipleReference(refType);
-
-    if (!references->isEmpty())
-    {
-        for (auto const& reference : *references)
-        {
-            writeSingleFieldReference(writer, reference, refType);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldWriter::Details::writeSingleFieldReference()
-//-----------------------------------------------------------------------------
-void FieldWriter::Details::writeSingleFieldReference(QXmlStreamWriter& writer, 
-    QSharedPointer<FieldReference::IndexedReference> reference, FieldReference::Type refType)
-{
-    if (reference)
-    {
-        auto typeAsString = FieldReference::type2Str(refType);
-        auto elementName = QStringLiteral("ipxact:") + typeAsString;
-
-        writer.writeStartElement(elementName);
-        writer.writeAttribute(typeAsString, reference->reference_);
-
-        if (!reference->indices_.isEmpty())
-        {
-            Details::writeFieldReferenceIndices(writer, reference);
-        }
-
-        writer.writeEndElement(); // ipxact:xxxxxRef
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldWriter::Details::writeFieldReferenceIndices()
-//-----------------------------------------------------------------------------
-void FieldWriter::Details::writeFieldReferenceIndices(QXmlStreamWriter& writer, QSharedPointer<FieldReference::IndexedReference> reference)
-{
-    writer.writeStartElement(QStringLiteral("ipxact:indices"));
-
-    for (auto const& index : reference->indices_)
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:index"), index);
-    }
-
-    writer.writeEndElement(); // ipxact:indices
 }

@@ -44,7 +44,7 @@ public:
      *
      *      @return The created memory map.
      */
-    void readMemoryMapBase(QDomNode const& MemoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase) const;
+    void readMemoryMapBase(QDomNode const& MemoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision) const;
 
 protected:
 
@@ -70,8 +70,7 @@ protected:
      *      @param [in] memoryMapBaseBaseNode   XML description of the memory map base.
      *      @param [in] newMemoryMapBaseBase    The new memory map base item.
      */
-    void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase)
-        const;
+    void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision) const;
 
 private:
 

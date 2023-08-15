@@ -37,25 +37,25 @@ RegisterWriter::~RegisterWriter()
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeRegisterData()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData) const
+void RegisterWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData, Document::Revision docRevision) const
 {
     QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
     QSharedPointer<RegisterFile> registerFile = registerData.dynamicCast<RegisterFile>();
 
     if (targetRegister)
     {
-        writeRegister(writer, targetRegister);
+        writeRegister(writer, targetRegister, docRevision);
     }
     else if (registerFile)
     {
-        writeRegisterFile(writer, registerFile);
+        writeRegisterFile(writer, registerFile, docRevision);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeRegister()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister) const
+void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:register"));
 
@@ -75,9 +75,9 @@ void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Regi
 
     writeAccess(writer, targetRegister);
 
-    writeFields(writer, targetRegister);
+    writeFields(writer, targetRegister, docRevision);
 
-    writeAlternateRegisters(writer, targetRegister);
+    writeAlternateRegisters(writer, targetRegister, docRevision);
 
     writeParameters(writer, targetRegister->getParameters());
 
@@ -152,20 +152,18 @@ void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Regist
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeFields()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
-    const
+void RegisterWriter::writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition, Document::Revision docRevision) const
 {
     for (auto const& field : *registerDefinition->getFields())
     {
-        FieldWriter::writeField(writer, field);
+        FieldWriter::writeField(writer, field, docRevision);
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeAlternateRegisters()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister)
-    const
+void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const
 {
     if (!targetRegister->getAlternateRegisters()->isEmpty())
     {
@@ -173,7 +171,7 @@ void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPo
 
         foreach (QSharedPointer<AlternateRegister> alternateRegister, *targetRegister->getAlternateRegisters())
         {
-            writeSingleAlternateRegister(writer, alternateRegister);
+            writeSingleAlternateRegister(writer, alternateRegister, docRevision);
         }
 
         writer.writeEndElement(); // ipxact:alternateRegisters
@@ -184,7 +182,8 @@ void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPo
 // Function: RegisterWriter::writeSingleAlternateRegister()
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
-    QSharedPointer<AlternateRegister> alternateRegister) const
+    QSharedPointer<AlternateRegister> alternateRegister,
+    Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:alternateRegister"));
 
@@ -200,7 +199,7 @@ void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
 
     writeAccess(writer, alternateRegister);
 
-    writeFields(writer, alternateRegister);
+    writeFields(writer, alternateRegister, docRevision);
 
     writeParameters(writer, alternateRegister->getParameters());
 
@@ -229,7 +228,7 @@ void RegisterWriter::writeAlternateGroups(QXmlStreamWriter& writer,
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeRegisterFile()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile) const
+void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile, Document::Revision docRevision) const
 {
     writer.writeStartElement(QStringLiteral("ipxact:registerFile"));
 
@@ -245,7 +244,7 @@ void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<
 
     writer.writeTextElement(QStringLiteral("ipxact:range"), registerFile->getRange());
 
-    writeRegisterFileRegisterData(writer, registerFile);
+    writeRegisterFileRegisterData(writer, registerFile, docRevision);
 
     writeParameters(writer, registerFile->getParameters());
 
@@ -258,10 +257,11 @@ void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<
 // Function: RegisterWriter::writeRegisterFileRegisterData()
 //-----------------------------------------------------------------------------
 void RegisterWriter::writeRegisterFileRegisterData(QXmlStreamWriter& writer,
-    QSharedPointer<RegisterFile> registerFile) const
+    QSharedPointer<RegisterFile> registerFile,
+    Document::Revision docRevision) const
 {
     foreach (QSharedPointer<RegisterBase> registerData, *registerFile->getRegisterData())
     {
-        writeRegisterData(writer, registerData);
+        writeRegisterData(writer, registerData, docRevision);
     }
 }

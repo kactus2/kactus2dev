@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SingleFieldEditor.h"
+#include "FieldAccessPoliciesEditor.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
 
@@ -130,6 +131,9 @@ containingRegister_(containingRegister)
         QString::fromStdString(fieldInterface_->getWriteConstraint(fieldName_)));
 
     setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
+
+    accessPoliciesEditor_ = new FieldAccessPoliciesEditor(fieldItem->name(), fieldInterface_, 
+        parameterFinder, expressionParser, this);
 
     setupLayout();
     connectSignals();
@@ -488,6 +492,8 @@ void SingleFieldEditor::connectSignals()
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::setupLayout()
 {
+    bool showStd14 = component()->getRevision() == Document::Revision::Std14;
+
     QScrollArea* scrollArea = new QScrollArea(this);
     scrollArea->setWidgetResizable(true);
     scrollArea->setFrameShape(QFrame::NoFrame);
@@ -498,11 +504,25 @@ void SingleFieldEditor::setupLayout()
 
     QGroupBox* fieldDefinitionGroup = new QGroupBox(tr("Field definition"));
     QFormLayout* fieldDefinitionLayout = new QFormLayout(fieldDefinitionGroup);
+    fieldDefinitionLayout->setAlignment(Qt::AlignTop);
+    fieldDefinitionLayout->setFormAlignment(Qt::AlignTop);
+    fieldDefinitionLayout->setLabelAlignment(Qt::AlignTop);
+    
     fieldDefinitionLayout->addRow(tr("Offset [bits], f(x):"), offsetEditor_);
     fieldDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-    fieldDefinitionLayout->addRow(tr("Reserved, f(x):"), reservedEditor_);
-    fieldDefinitionLayout->addRow(tr("Field ID:"), fieldIdEditor_);
+
+    if (showStd14)
+    {
+        fieldDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        fieldDefinitionLayout->addRow(tr("Reserved, f(x):"), reservedEditor_);
+        fieldDefinitionLayout->addRow(tr("Field ID:"), fieldIdEditor_);
+    }
+    else
+    {
+        auto spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        fieldDefinitionLayout->addRow(spacer);
+    }
 
     QGroupBox* fieldConstraintGroup = new QGroupBox(tr("Field constraints"));
     QFormLayout* fieldConstraintLayout = new QFormLayout(fieldConstraintGroup);
@@ -541,12 +561,26 @@ void SingleFieldEditor::setupLayout()
     fieldConstraintLayout->addRow(tr("Write constraint minimum, f(x):"), writeConstraintMinLimit_);
     fieldConstraintLayout->addRow(tr("Write constraint maximum, f(x):"), writeConstraintMaxLimit_);
 
+    fieldConstraintGroup->setVisible(showStd14);
+
     QGridLayout* topOfPageLayout = new QGridLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0, 0);
-    topOfPageLayout->addWidget(fieldConstraintGroup, 0, 1);
-    topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
-    topOfPageLayout->addWidget(resetsEditor_, 1, 1);
+    topOfPageLayout->setRowStretch(0, 1);
+    topOfPageLayout->setRowStretch(1, 2);
 
+    if (showStd14)
+    {
+        topOfPageLayout->addWidget(fieldConstraintGroup, 0, 1);
+        topOfPageLayout->addWidget(resetsEditor_, 1, 1);
+        topOfPageLayout->addWidget(fieldDefinitionGroup, 1, 0);
+    }
+    else
+    {
+        topOfPageLayout->addWidget(enumerationsEditor_, 1, 1);
+        topOfPageLayout->addWidget(fieldDefinitionGroup, 0, 1);
+        topOfPageLayout->addWidget(resetsEditor_, 1, 0);
+    }
+    
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     topOfPageWidget->setLayout(topOfPageLayout);
@@ -555,7 +589,16 @@ void SingleFieldEditor::setupLayout()
     QSplitter* verticalSplitter = new QSplitter(Qt::Vertical, scrollArea);
     verticalSplitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     verticalSplitter->addWidget(topOfPageWidget);
-    verticalSplitter->addWidget(enumerationsEditor_);
+
+    if (showStd14)
+    {
+        verticalSplitter->addWidget(enumerationsEditor_);
+    }
+    else
+    {
+        verticalSplitter->addWidget(accessPoliciesEditor_);
+    }
+
     verticalSplitter->setStretchFactor(1, 1);
 
     QSplitterHandle* handle = verticalSplitter->handle(1);

@@ -3199,6 +3199,24 @@
     <ClCompile Include="editors\AbstractionDefinitionEditor\QualifierEditor.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\ModeReferenceModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\busInterfaces\general\ModeEditorBase.cpp">
       <Filter>Source Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClCompile>
@@ -5674,6 +5692,9 @@
     <ClInclude Include="editors\AbstractionDefinitionEditor\QualifierData.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\FieldAccessPolicyColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\busInterfaces\general\MirroredMasterModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>
     </ClInclude>
@@ -5791,6 +5812,24 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\cpus\RegionsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\ModeReferenceModel.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\busInterfaces\general\MasterModeEditor.h">
       <Filter>Header Files\editors\ComponentEditor\busInterfaces\general</Filter>

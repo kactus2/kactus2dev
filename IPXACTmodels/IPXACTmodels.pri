@@ -3,7 +3,11 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./Component/FieldReference.h \
+HEADERS += ./Component/FieldReferenceReader.h \
+    ./Component/FieldAccessPolicy.h \
+    ./Component/FieldAccessPolicyReader.h \
+    ./Component/FieldReference.h \
+    ./Component/ModeReference.h \
     ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
@@ -277,12 +281,22 @@ HEADERS += ./Component/FieldReference.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./Component/FieldReferenceWriter.h \
+    ./Component/FieldAccessPolicyWriter.h \
+    ./Component/validators/FieldReferenceValidator.h \
+    ./Component/validators/FieldAccessPolicyValidator.h \
+    ./Component/AccessPolicy.h \
+    ./Component/AccessPolicyReader.h \
+    ./Component/AccessPolicyWriter.h \
     ./Component/ModeReader.h \
     ./Component/Mode.h \
     ./Component/ModeWriter.h \
     ./Component/PortSlice.h \
     ./Component/validators/ModeValidator.h
-SOURCES += ./Component/FieldReference.cpp \
+SOURCES += ./Component/FieldReferenceReader.cpp \
+    ./Component/FieldAccessPolicy.cpp \
+    ./Component/FieldReference.cpp \
+    ./Component/ModeReference.cpp \
     ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -460,6 +474,9 @@ SOURCES += ./Component/FieldReference.cpp \
     ./Component/MemoryArray.cpp \
     ./Component/MemoryArrayReader.cpp \
     ./Component/MemoryArrayWriter.cpp \
+    ./Component/MemoryArray.cpp \
+    ./Component/MemoryArrayReader.cpp \
+    ./Component/MemoryArrayWriter.cpp \
     ./Component/MemoryBlockBase.cpp \
     ./Component/MemoryBlockBaseReader.cpp \
     ./Component/MemoryBlockBaseWriter.cpp \
@@ -557,4 +574,12 @@ SOURCES += ./Component/FieldReference.cpp \
     ./Component/Mode.cpp \
     ./Component/ModeWriter.cpp \
     ./Component/PortSlice.cpp \
-    ./Component/validators/ModeValidator.cpp
+    ./Component/validators/ModeValidator.cpp \
+    ./Component/FieldAccessPolicyReader.cpp \
+    ./Component/FieldReferenceWriter.cpp \
+    ./Component/FieldAccessPolicyWriter.cpp \
+    ./Component/validators/FieldReferenceValidator.cpp \
+    ./Component/validators/FieldAccessPolicyValidator.cpp \
+    ./Component/AccessPolicy.cpp \
+    ./Component/AccessPolicyReader.cpp \
+    ./Component/AccessPolicyWriter.cpp

@@ -48,6 +48,9 @@ private slots:
     void testBitOffsetIsValid();
     void testBitOffsetIsValid_data();
 
+    void testfieldDefinitionRefIsValid();
+    void testfieldDefinitionRefIsValid_data();
+
     void testResetsAreValid();
     void testResetsAreValid_data();
 
@@ -71,6 +74,9 @@ private slots:
 
     void testAccessIsValid();
     void testAccessIsValid_data();
+
+    // Test field structure validity for new std.
+    void testStructureValidity();
 
 private:
 
@@ -206,7 +212,7 @@ void tst_FieldValidator::testMemoryArrayIsValid()
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
         new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
-    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
 
     QCOMPARE(validator.hasValidMemoryArray(testField), isValid);
 
@@ -287,6 +293,55 @@ void tst_FieldValidator::testBitOffsetIsValid_data()
     QTest::newRow("String is invalid for bit offset") << "\"test\"" << false;
 
     QTest::newRow("Long bit offset is valid") << "40000000000" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testfieldDefinitionRefIsValid()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testfieldDefinitionRefIsValid()
+{
+    QFETCH(QString, defRef);
+    QFETCH(QString, typeDefRef);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("testField");
+    testField->setTypeDefinitionsRef(typeDefRef);
+    testField->setFieldDefinitionRef(defRef);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
+    QCOMPARE(validator.hasValidFieldDefinitionRef(testField), isValid);
+
+    if (!isValid)
+    {
+        QStringList errors;
+        validator.findErrorsIn(errors, testField, "test");
+
+        QString expectedError("Field testField within test has no typeDefinitions reference "
+            "defined for field definition reference.");
+
+        if (errorIsNotFoundInErrorList(expectedError, errors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testfieldDefinitionRefIsValid_data()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testfieldDefinitionRefIsValid_data()
+{
+    QTest::addColumn<QString>("defRef");
+    QTest::addColumn<QString>("typeDefRef");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Missing type definitions ref") << "testFieldDef" << "" << false;
+    QTest::newRow("Both present") << "testFieldDef" << "testTypeDefinitions" << true;
 }
 
 //-----------------------------------------------------------------------------
@@ -935,6 +990,146 @@ void tst_FieldValidator::testAccessIsValid_data()
     QTest::newRow("Access writeOnce with a read action is invalid") << "writeOnce" << "" << "clear" << false;
     QTest::newRow("Access write-only without a read action is valid") << "write-only" << "oneToClear" << "" << true;
     QTest::newRow("Access writeOnce without a read action is valid") << "writeOnce" << "oneToClear" << "" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testStructureValidity()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testStructureValidity()
+{
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("testField");
+    testField->setBitOffset("8");
+
+    QSharedPointer<FieldAccessPolicy> testFieldAccessPolicy(new FieldAccessPolicy());
+    testFieldAccessPolicy->setAccess(AccessTypes::READ_ONLY);
+
+    QSharedPointer<FieldReference> testFieldReference(new FieldReference());
+    QSharedPointer<FieldReference::IndexedReference> fieldRef(new FieldReference::IndexedReference(QString("fieldref"), QStringList()));
+    testFieldReference->setReference(fieldRef, FieldReference::FIELD);
+
+    QSharedPointer<FieldReset> testReset(new FieldReset());
+    testReset->setResetValue("'b11");
+
+    QSharedPointer<EnumeratedValue> testEnumeratedValue(new EnumeratedValue("testEnumeratedValue", "1"));
+
+    // Test with no field definition reference, no bit width or field reference.
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
+
+    QStringList errors;
+
+    validator.findErrorsIn(errors, testField, "test");
+    QVERIFY(validator.hasValidStructure(testField) == false);
+
+    errors.clear();
+
+    // Should be valid with bit width defined
+    testField->setBitWidth("8");
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 0);
+    QVERIFY(validator.hasValidStructure(testField));
+    errors.clear();
+
+    // Invalid, when both field reference and bit width is defined
+    testField->setFieldReference(testFieldReference);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->setBitWidth("");
+
+    // Invalid, when reference and volatile is defined.
+    testField->setVolatile(true);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->clearVolatile();
+
+    // Invalid, when reference and resets are defined.
+    testField->getResets()->append(testReset);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->getResets()->clear();
+
+    // Valid, when just field reference is defined.
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 0);
+    QVERIFY(validator.hasValidStructure(testField));
+    errors.clear();
+    testField->setFieldReference(nullptr);
+
+    // Valid, when just definition ref is defined.
+    testField->setFieldDefinitionRef("fieldDefinition");
+    testField->setTypeDefinitionsRef("testTypeDefinitions");
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 0);
+    QVERIFY(validator.hasValidStructure(testField));
+    errors.clear();
+
+    // Invalid, when both definition reference and type identifier are defined
+    testField->setTypeIdentifier("testIdentifier");
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->setTypeIdentifier("");
+
+    // Invalid, when the field has a definition reference and field access policies defined.
+    testField->getFieldAccessPolicies()->append(testFieldAccessPolicy);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->getFieldAccessPolicies()->clear();
+
+    // Invalid, when the field has a definition reference and enumerated values defined.
+    testField->getEnumeratedValues()->append(testEnumeratedValue);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->getEnumeratedValues()->clear();
+
+    // Invalid, when the field has a definition reference and bit width.
+    testField->setBitWidth("8");
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->setBitWidth("");
+
+    // Invalid, when the field has a definition reference and field reference.
+    testField->setFieldReference(testFieldReference);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidStructure(testField) == false);
+    errors.clear();
+    testField->setFieldDefinitionRef("");
+    testField->setTypeDefinitionsRef("");
+
+    // Valid configuration.
+    testField->getEnumeratedValues()->append(testEnumeratedValue);
+    testField->getFieldAccessPolicies()->append(testFieldAccessPolicy);
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 0);
+    QVERIFY(validator.hasValidStructure(testField));
 }
 
 //-----------------------------------------------------------------------------

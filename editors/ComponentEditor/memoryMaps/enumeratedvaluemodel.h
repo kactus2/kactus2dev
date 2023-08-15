@@ -39,7 +39,7 @@ public:
 	
 	//! The destructor.
 	virtual ~EnumeratedValueModel();
-
+	
 	/*!
      *  Get the number of rows an item contains.
 	 *

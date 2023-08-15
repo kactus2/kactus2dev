@@ -365,26 +365,168 @@ bool FieldInterface::setVolatile(string const& fieldName, string const& newVolat
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getAccessString(string const& fieldName) const
+string FieldInterface::getAccessString(string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return AccessTypes::access2Str(field->getAccess()).toStdString();
+        if (accessPolicyIndex == -1)
+        {
+            return AccessTypes::access2Str(field->getAccess()).toStdString();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return AccessTypes::access2Str(accessPolicies->at(accessPolicyIndex)->getAccess()).toStdString();
+            }   
+        }
     }
 
     return string("");
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::getModeRefs()
+//-----------------------------------------------------------------------------
+std::vector<std::pair<std::string, int> > FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+        if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
+        {
+            auto modeRefs = fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
+            vector<pair<string, int> > modeRefList;
+            std::transform(modeRefs->cbegin(), modeRefs->cend(), std::back_inserter(modeRefList), 
+                [](QSharedPointer<ModeReference> const& modeRef)
+                {
+                    return make_pair<string, int >(modeRef->getReference().toStdString(), 
+                        modeRef->getPriority().toInt());
+                });
+
+            return modeRefList;
+        }
+    }
+
+    return vector<pair<string, int> >();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setModeRefs(std::string const& fieldName, int accessPolicyIndex,
+    std::vector<std::pair<std::string, int> > const& modeRefs) const
+{
+    auto field = getField(fieldName);
+
+    if (!field)
+    {
+        return false;
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        auto accessPolicyModeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
+
+        // Clear old mode refs before setting new ones.
+        accessPolicyModeRefs->clear();
+
+        for (auto const& [reference, priority] : modeRefs)
+        {
+            QSharedPointer<ModeReference> newModeRef(new ModeReference());
+
+            newModeRef->setReference(QString::fromStdString(reference));
+            newModeRef->setPriority(QString::number(priority));
+
+            accessPolicyModeRefs->append(newModeRef);
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getAccessPolicyCount()
+//-----------------------------------------------------------------------------
+int FieldInterface::getAccessPolicyCount(std::string const& fieldName) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        return field->getFieldAccessPolicies()->size();
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReadResponse()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReadResponse(std::string const& fieldName, int accessPolicyIndex) const
+{
+    auto field = getField(fieldName);
+
+    if (!field)
+    {
+        return std::string("");
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        return accessPolicies->at(accessPolicyIndex)->getReadResponse().toStdString();
+    }
+
+    return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setReadResponse()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setReadResponse(std::string const& fieldName, int accessPolicyIndex,
+    std::string const& newReadResponse) const
+{
+    auto field = getField(fieldName);
+
+    if (!field)
+    {
+        return false;
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        accessPolicies->at(accessPolicyIndex)->setReadResponse(QString::fromStdString(newReadResponse));
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessType()
 //-----------------------------------------------------------------------------
-AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName) const
+AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName, int accessPolicyIndex /*= -1*/)
+    const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return field->getAccess();
+        if (accessPolicyIndex == -1)
+        {
+            return field->getAccess();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getAccess();
+            }
+        }
     }
 
     return AccessTypes::ACCESS_COUNT;
@@ -393,31 +535,31 @@ AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName) 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setAccess()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setAccess(string const& fieldName, string const& newAccess)
+bool FieldInterface::setAccess(std::string const& fieldName, std::string const& accessType,
+    int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (!field)
+    
+    if (auto field = getField(fieldName); field)
     {
-        return false;
+        auto newAccess = AccessTypes::str2Access(QString::fromStdString(accessType), AccessTypes::ACCESS_COUNT);
+
+        if (accessPolicyIndex == -1)
+        {
+            field->setAccess(newAccess);
+            return true;
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                accessPolicies->at(accessPolicyIndex)->setAccess(newAccess);
+                return true;
+            }
+        }
     }
 
-    field->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT));
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldInterface::getModifiedWriteString()
-//-----------------------------------------------------------------------------
-string FieldInterface::getModifiedWriteString(string const& fieldName) const
-{
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
-    {
-        return General::modifiedWrite2Str(field->getModifiedWrite()).toStdString();
-    }
-
-    return string("");
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -435,43 +577,86 @@ General::ModifiedWrite FieldInterface::getModifiedWriteValue(std::string const& 
 }
 
 //-----------------------------------------------------------------------------
-// Function: FieldInterface::setModifiedWrite()
+// Function: FieldInterface::getModifiedWriteString()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setModifiedWrite(string const& fieldName, string const& newModifiedWrite)
+std::string FieldInterface::getModifiedWriteString(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (!field)
+    if (auto field = getField(fieldName); field)
     {
-        return false;
-    }
-
-    field->setModifiedWrite(General::str2ModifiedWrite(QString::fromStdString(newModifiedWrite)));
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldInterface::getReadActiongetReadActionString()
-//-----------------------------------------------------------------------------
-string FieldInterface::getReadActionString(string const& fieldName) const
-{
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
-    {
-        return General::readAction2Str(field->getReadAction()).toStdString();
+        if (accessPolicyIndex == -1)
+        {
+            return General::modifiedWrite2Str(field->getModifiedWrite()).toStdString();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return General::modifiedWrite2Str(accessPolicies->at(accessPolicyIndex)->getModifiedWrite()).toStdString();
+            }
+        }
     }
 
     return string("");
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::setModifiedWrite()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setModifiedWrite(std::string const& fieldName, std::string const& newModifiedWrite,
+    int accessPolicyIndex /*= -1*/)
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (accessPolicyIndex == -1)
+        {
+            field->setModifiedWrite(General::str2ModifiedWrite(QString::fromStdString(newModifiedWrite)));
+            return true;
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                General::ModifiedWrite modifiedWrite = General::str2ModifiedWrite(QString::fromStdString(newModifiedWrite));
+                accessPolicies->at(accessPolicyIndex)->setModifiedWrite(modifiedWrite);
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReadActionString()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReadActionString(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
+{
+    auto readAction = getReadAction(fieldName, accessPolicyIndex);
+    return General::readAction2Str(readAction).toStdString();
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getReadAction()
 //-----------------------------------------------------------------------------
-General::ReadAction FieldInterface::getReadAction(std::string const& fieldName) const
+General::ReadAction FieldInterface::getReadAction(std::string const& fieldName,int accessPolicyIndex /*= -1*/)
+    const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return field->getReadAction();
+        if (accessPolicyIndex == -1)
+        {
+            return field->getReadAction();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getReadAction();
+            }
+        }
     }
 
     return General::READ_ACTION_COUNT;
@@ -480,41 +665,74 @@ General::ReadAction FieldInterface::getReadAction(std::string const& fieldName) 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setReadAction()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setReadAction(string const& fieldName, string const& newReadAction)
+bool FieldInterface::setReadAction(std::string const& fieldName, std::string const& newReadAction,
+    int accessPolicyIndex /*= -1*/)
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (!field)
+    if (auto field = getField(fieldName); field)
     {
-        return false;
+        if (accessPolicyIndex == -1)
+        {
+            field->setReadAction(General::str2ReadAction(QString::fromStdString(newReadAction)));
+            return true;
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                accessPolicies->at(accessPolicyIndex)->setReadAction(General::str2ReadAction(
+                    QString::fromStdString(newReadAction)));
+                return true;
+            }
+        }
     }
 
-    field->setReadAction(General::str2ReadAction(QString::fromStdString(newReadAction)));
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getTestable()
 //-----------------------------------------------------------------------------
-string FieldInterface::getTestableValue(string const& fieldName) const
+string FieldInterface::getTestableValue(string const& fieldName, int accessPolicyIndex) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return field->getTestable().toString().toStdString();
+        if (accessPolicyIndex == -1)
+        {
+            return field->getTestable().toString().toStdString();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getTestable().toString().toStdString();
+            }
+        }
     }
-
+    
     return string("");
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getTestableBool()
 //-----------------------------------------------------------------------------
-bool FieldInterface::getTestableBool(string const& fieldName) const
+bool FieldInterface::getTestableBool(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return field->getTestable().toBool();
+        if (accessPolicyIndex == -1)
+        {
+            return field->getTestable().toBool();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getTestable().toBool();
+            }
+        }
     }
 
     return false;
@@ -523,41 +741,84 @@ bool FieldInterface::getTestableBool(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setTestable()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setTestable(string const& fieldName, string const& newTestable)
+bool FieldInterface::setTestable(std::string const& fieldName, std::string const& newTestable,
+    int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
+    auto field = getField(fieldName);
     if (!field)
     {
         return false;
     }
 
     QString newTestableQT = QString::fromStdString(newTestable);
-    if (newTestableQT == TRUE_STRING)
+
+    if (accessPolicyIndex == -1)
     {
-        field->setTestable(true);
+        if (newTestableQT == TRUE_STRING)
+        {
+            field->setTestable(true);
+        }
+        else if (newTestableQT == FALSE_STRING)
+        {
+            field->setTestable(false);
+            field->setTestConstraint(General::TESTCONSTRAINT_COUNT);
+        }
+        else
+        {
+            field->clearTestable();
+        }
+
+        return true;
     }
-    else if (newTestableQT == FALSE_STRING)
+    else if (accessPolicyIndex >= 0)
     {
-        field->setTestable(false);
-        field->setTestConstraint(General::TESTCONSTRAINT_COUNT);
-    }
-    else
-    {
-        field->clearTestable();
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            auto accessPolicy = accessPolicies->at(accessPolicyIndex);
+            
+            if (newTestableQT == TRUE_STRING)
+            {
+                accessPolicy->setTestable(true);
+            }
+            else if (newTestableQT == FALSE_STRING)
+            {
+                accessPolicy->setTestable(false);
+                accessPolicy->setTestConstraint(General::TESTCONSTRAINT_COUNT);
+            }
+            else
+            {
+                accessPolicy->clearTestable();
+            }
+
+            return true;
+        }
     }
 
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getTestConstraintString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getTestConstraintString(string const& fieldName) const
+std::string FieldInterface::getTestConstraintString(std::string const& fieldName,
+    int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return General::testConstraint2Str(field->getTestConstraint()).toStdString();
+        if (accessPolicyIndex == -1)
+        {
+            return General::testConstraint2Str(field->getTestConstraint()).toStdString();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return General::testConstraint2Str(
+                    accessPolicies->at(accessPolicyIndex)->getTestConstraint()).toStdString();
+            }
+        }
     }
 
     return string("");
@@ -566,12 +827,23 @@ string FieldInterface::getTestConstraintString(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getTestConstraint()
 //-----------------------------------------------------------------------------
-General::TestConstraint FieldInterface::getTestConstraint(std::string const& fieldName) const
+General::TestConstraint FieldInterface::getTestConstraint(std::string const& fieldName,
+    int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return field->getTestConstraint();
+        if (accessPolicyIndex == -1)
+        {
+            return field->getTestConstraint();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getTestConstraint();
+            }
+        }
     }
 
     return General::TESTCONSTRAINT_COUNT;
@@ -580,16 +852,29 @@ General::TestConstraint FieldInterface::getTestConstraint(std::string const& fie
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setTestConstraint()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setTestConstraint(string const& fieldName, string const& newTestConstraint)
+bool FieldInterface::setTestConstraint(std::string const& fieldName, std::string const& newTestConstraint,
+    int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (!field)
+    if (auto field = getField(fieldName); field)
     {
-        return false;
+        if (accessPolicyIndex == -1)
+        {
+            field->setTestConstraint(General::str2TestConstraint(QString::fromStdString(newTestConstraint)));
+            return true;
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                accessPolicies->at(accessPolicyIndex)->setTestConstraint(
+                    General::str2TestConstraint(QString::fromStdString(newTestConstraint)));
+            }
+            return true;
+        }
     }
-
-    field->setTestConstraint(General::str2TestConstraint(QString::fromStdString(newTestConstraint)));
-    return true;
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -911,7 +1196,7 @@ ResetInterface* FieldInterface::getSubInterface() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasWriteConstraint()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasWriteConstraint(std::string const& fieldName) const
+bool FieldInterface::hasWriteConstraint(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName);
     if (fieldWriteConstraint)
@@ -927,12 +1212,12 @@ bool FieldInterface::hasWriteConstraint(std::string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraint()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraint(std::string const& fieldName) const
+std::string FieldInterface::getWriteConstraint(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     std::string writeConstraintText =
         WriteValueConversions::typeToString(WriteValueConstraint::TYPE_COUNT).toStdString();
 
-    QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (fieldWriteConstraint)
     {
         writeConstraintText = WriteValueConversions::typeToString(fieldWriteConstraint->getType()).toStdString();
@@ -944,15 +1229,29 @@ std::string FieldInterface::getWriteConstraint(std::string const& fieldName) con
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteValueConstraint()
 //-----------------------------------------------------------------------------
-QSharedPointer<WriteValueConstraint> FieldInterface::getWriteValueConstraint(std::string const& fieldName) const
+QSharedPointer<WriteValueConstraint> FieldInterface::getWriteValueConstraint(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (!field)
+    {
+        return QSharedPointer<WriteValueConstraint>();
+    }
+    
+    if (accessPolicyIndex == -1)
     {
         QSharedPointer<WriteValueConstraint> fieldWriteConstraint = field->getWriteConstraint();
         if (fieldWriteConstraint)
         {
             return fieldWriteConstraint;
+        }
+    }
+
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return accessPolicies->at(accessPolicyIndex)->getWriteValueConstraint();
         }
     }
 
@@ -963,7 +1262,7 @@ QSharedPointer<WriteValueConstraint> FieldInterface::getWriteValueConstraint(std
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setWriteConstraint()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText)
+bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::string const& newConstraintText, int accessPolicyIndex /*= -1*/)
 {
     QSharedPointer<Field> selectedField = getField(fieldName);
     if (!selectedField)
@@ -971,7 +1270,12 @@ bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::strin
         return false;
     }
 
-    QSharedPointer<WriteValueConstraint> writeConstraint = selectedField->getWriteConstraint();
+    // Returns non-null write constraint if it exists either as std14 or std22. No need to check 
+    // the access policy index later.
+    auto writeConstraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
+
+    bool isStd14 = accessPolicyIndex == -1;
+
     if (writeConstraint)
     {
         WriteValueConstraint::Type constraintType =
@@ -979,7 +1283,14 @@ bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::strin
 
         if (constraintType == WriteValueConstraint::TYPE_COUNT)
         {
-            selectedField->setWriteConstraint(QSharedPointer<WriteValueConstraint>(0));
+            if (isStd14)
+            {
+                selectedField->setWriteConstraint(nullptr);
+            }
+            else
+            {
+                selectedField->getFieldAccessPolicies()->at(accessPolicyIndex)->setWriteValueConstraint(nullptr);
+            }
         }
         else
         {
@@ -995,7 +1306,15 @@ bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::strin
         if (constraintType != WriteValueConstraint::TYPE_COUNT)
         {
             newConstraint->setType(constraintType);
-            selectedField->setWriteConstraint(newConstraint);
+            
+            if (isStd14)
+            {
+                selectedField->setWriteConstraint(newConstraint);
+            }
+            else
+            {
+                selectedField->getFieldAccessPolicies()->at(accessPolicyIndex)->setWriteValueConstraint(newConstraint);
+            }
         }
     }
 
@@ -1005,10 +1324,9 @@ bool FieldInterface::setWriteConstraint(std::string const& fieldName, std::strin
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMinimumValue()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMinimumValue(std::string const& fieldName, int const& baseNumber)
-    const
+std::string FieldInterface::getWriteConstraintMinimumValue(std::string const& fieldName, int accessPolicyIndex /*= -1*/, int const& baseNumber /*= 0*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return parseExpressionToBaseNumber(constraint->getMinimum(), baseNumber).toStdString();
@@ -1020,9 +1338,9 @@ std::string FieldInterface::getWriteConstraintMinimumValue(std::string const& fi
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMinimumFormattedExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMinimumFormattedExpression(std::string const& fieldName) const
+std::string FieldInterface::getWriteConstraintMinimumFormattedExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return formattedValueFor(constraint->getMinimum()).toStdString();
@@ -1034,9 +1352,9 @@ std::string FieldInterface::getWriteConstraintMinimumFormattedExpression(std::st
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMinimumExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMinimumExpression(std::string const& fieldName) const
+std::string FieldInterface::getWriteConstraintMinimumExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return constraint->getMinimum().toStdString();
@@ -1049,9 +1367,10 @@ std::string FieldInterface::getWriteConstraintMinimumExpression(std::string cons
 // Function: FieldInterface::setWriteConstraintMinimum()
 //-----------------------------------------------------------------------------
 bool FieldInterface::setWriteConstraintMinimum(std::string const& fieldName,
-    std::string const& newWriteConstraintMinimum)
+    std::string const& newWriteConstraintMinimum,
+    int accessPolicyIndex /*= -1*/)
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (!constraint)
     {
         return false;
@@ -1064,10 +1383,9 @@ bool FieldInterface::setWriteConstraintMinimum(std::string const& fieldName,
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMaximumValue()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMaximumValue(std::string const& fieldName, int const& baseNumber)
-const
+std::string FieldInterface::getWriteConstraintMaximumValue(std::string const& fieldName, int accessPolicyIndex /*= -1*/, int const& baseNumber /*= 0*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return parseExpressionToBaseNumber(constraint->getMaximum(), baseNumber).toStdString();
@@ -1079,9 +1397,9 @@ const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMaximumFormattedExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMaximumFormattedExpression(std::string const& fieldName) const
+std::string FieldInterface::getWriteConstraintMaximumFormattedExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return formattedValueFor(constraint->getMaximum()).toStdString();
@@ -1093,9 +1411,9 @@ std::string FieldInterface::getWriteConstraintMaximumFormattedExpression(std::st
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWriteConstraintMaximumExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getWriteConstraintMaximumExpression(std::string const& fieldName) const
+std::string FieldInterface::getWriteConstraintMaximumExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (constraint)
     {
         return constraint->getMaximum().toStdString();
@@ -1108,9 +1426,10 @@ std::string FieldInterface::getWriteConstraintMaximumExpression(std::string cons
 // Function: FieldInterface::setWriteConstraintMaximum()
 //-----------------------------------------------------------------------------
 bool FieldInterface::setWriteConstraintMaximum(std::string const& fieldName,
-    std::string const& newWriteConstraintMaximum)
+    std::string const& newWriteConstraintMaximum,
+    int accessPolicyIndex /*= -1*/)
 {
-    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName);
+    QSharedPointer<WriteValueConstraint> constraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
     if (!constraint)
     {
         return false;
@@ -1123,12 +1442,29 @@ bool FieldInterface::setWriteConstraintMaximum(std::string const& fieldName,
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getReservedValue()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getReservedValue(std::string const& fieldName, int const& baseNumber) const
+std::string FieldInterface::getReservedValue(std::string const& fieldName, int accessPolicyIndex, int const& baseNumber) const
 {
     QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    
+    if (!field)
+    {
+        return string("");
+    }
+    
+    // Std14
+    if (accessPolicyIndex == -1)
     {
         return parseExpressionToBaseNumber(field->getReserved(), baseNumber).toStdString();
+    }
+    // Std22
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return parseExpressionToBaseNumber(
+                accessPolicies->at(accessPolicyIndex)->getReserved(), baseNumber).toStdString();
+        }
     }
 
     return string("");
@@ -1137,12 +1473,26 @@ std::string FieldInterface::getReservedValue(std::string const& fieldName, int c
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getReservedFormattedExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getReservedFormattedExpression(std::string const& fieldName) const
+std::string FieldInterface::getReservedFormattedExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (!field)
+    {
+        return string("");
+    }
+    
+    if (accessPolicyIndex == -1)
     {
         return formattedValueFor(field->getReserved()).toStdString();
+    }
+
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return formattedValueFor(accessPolicies->at(accessPolicyIndex)->getReserved()).toStdString();
+        }
     }
 
     return string("");
@@ -1151,12 +1501,26 @@ std::string FieldInterface::getReservedFormattedExpression(std::string const& fi
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getReservedExpression()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getReservedExpression(std::string const& fieldName) const
+std::string FieldInterface::getReservedExpression(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (!field)
+    {
+        return string("");
+    }
+
+    if (accessPolicyIndex == -1)
     {
         return field->getReserved().toStdString();
+    }
+
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return accessPolicies->at(accessPolicyIndex)->getReserved().toStdString();
+        }
     }
 
     return string("");
@@ -1165,7 +1529,7 @@ std::string FieldInterface::getReservedExpression(std::string const& fieldName) 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setReserved()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setReserved(std::string const& fieldName, std::string const& newReserved)
+bool FieldInterface::setReserved(std::string const& fieldName, std::string const& newReserved, int accessPolicyIndex /*= -1*/)
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
@@ -1173,8 +1537,23 @@ bool FieldInterface::setReserved(std::string const& fieldName, std::string const
         return false;
     }
 
-    field->setReserved(QString::fromStdString(newReserved));
-    return true;
+    if (accessPolicyIndex == -1)
+    {
+        field->setReserved(QString::fromStdString(newReserved));
+        return true;
+    }
+
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            accessPolicies->at(accessPolicyIndex)->setReserved(QString::fromStdString(newReserved));
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

@@ -92,7 +92,7 @@ namespace AddressSpaceReader
          *      @param [in] addressSpaceNode    XML description of the address space.
          *      @param [in] newAddressSpace     The new address space.
          */
-        void parseLocalMemoryMap(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace);
+        void parseLocalMemoryMap(QDomNode const& addressSpaceNode, QSharedPointer<AddressSpace> newAddressSpace, Document::Revision docRevision);
 
         /*!
          *  Parse the parameters.
