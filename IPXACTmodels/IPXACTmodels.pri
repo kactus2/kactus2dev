@@ -280,7 +280,8 @@ HEADERS += ./Component/FieldReference.h \
     ./Component/ModeReader.h \
     ./Component/Mode.h \
     ./Component/ModeWriter.h \
-    ./Component/PortSlice.h
+    ./Component/PortSlice.h \
+    ./Component/validators/ModeValidator.h
 SOURCES += ./Component/FieldReference.cpp \
     ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -555,4 +556,5 @@ SOURCES += ./Component/FieldReference.cpp \
     ./Component/ModeReader.cpp \
     ./Component/Mode.cpp \
     ./Component/ModeWriter.cpp \
-    ./Component/PortSlice.cpp
+    ./Component/PortSlice.cpp \
+    ./Component/validators/ModeValidator.cpp

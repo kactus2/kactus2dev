@@ -107,7 +107,7 @@ void tst_ModeReader::testReadPortSlices()
     QCOMPARE(portSlice->getPortRef(), QString("testRef"));
 
     auto partSelect = portSlice->getPartSelect();
-    QTEST_ASSERT(partSelect != nullptr);
+    QVERIFY(partSelect != nullptr);
 
     QCOMPARE(partSelect->getLeftRange(), QString("7"));
     QCOMPARE(partSelect->getRightRange(), QString("0"));
