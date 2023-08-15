@@ -192,8 +192,13 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
     else if (role == Qt::BackgroundRole)
     {
-        // Disable type definition column until editor is made.
-        if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
+        //// Disable type definition column until editor is made.
+        //if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
+        //{
+        //    return KactusColors::DISABLED_FIELD;
+        //}
+
+        if (index.flags() == Qt::NoItemFlags)
         {
             return KactusColors::DISABLED_FIELD;
         }
@@ -250,17 +255,17 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     else if (index.column() == FieldAccessPolicyColumns::ACCESS)
     {
-        fieldInterface_->setAccess(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+        fieldInterface_->setAccess(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
     {
-        fieldInterface_->setModifiedWrite(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+        fieldInterface_->setModifiedWrite(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
     {
-        fieldInterface_->setReadAction(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+        fieldInterface_->setReadAction(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
@@ -270,7 +275,7 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
     {
-        fieldInterface_->setTestable(fieldName_.toStdString(), index.row(), value.toString().toStdString());
+        fieldInterface_->setTestable(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
