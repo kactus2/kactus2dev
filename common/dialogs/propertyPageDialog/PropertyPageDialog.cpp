@@ -218,9 +218,6 @@ void PropertyPageDialog::finalizePages()
 //-----------------------------------------------------------------------------
 void PropertyPageDialog::setupLayout()
 {
-    QGroupBox* separator = new QGroupBox(this);
-    separator->setFlat(true);
-
     QDialogButtonBox* buttons = new QDialogButtonBox(this);
     buttons->addButton(btnOk_, QDialogButtonBox::AcceptRole);
     buttons->addButton(QDialogButtonBox::Cancel);
@@ -230,9 +227,6 @@ void PropertyPageDialog::setupLayout()
 
     QGridLayout* topLayout = new QGridLayout(this);
     topLayout->addWidget(contentsList_, 0, 0, 2, 1);
-    topLayout->addWidget(pages_, 0, 1, 1, 1);
-    topLayout->addWidget(separator, 1, 1, 1, 1);
+    topLayout->addWidget(pages_, 0, 1, 2, 1);
     topLayout->addWidget(buttons, 2, 0, 1, 2);
-
-    //topLayout->setRowStretch(0, 10);
 }

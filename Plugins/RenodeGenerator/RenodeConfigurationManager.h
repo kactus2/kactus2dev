@@ -49,16 +49,19 @@ public:
     /*!
      *  Create a configuration file.
      *
-     *      @param [in] renodeData          Container for renode generator data.
-     *      @param [in] selectedView        Name of the view to use in the generator.
-     *      @param [in] saveToFileSet       Flag for save to file set.
-     *      @param [in] selectedFileSet     Name of the target file set.
-     *      @param [in] folderPath          Path for the renode files.
-     *      @param [in] writeCPU            Flag for writing a CPU file.
-     *      @param [in] writeMemory         Flag for writing a memory file.
-     *      @param [in] writePeripherals    Flag for writing a peripherals file.
-     *      @param [in] selectedCpu         Name of the active CPU.
-     *      @param [in] topComponent        Top level component.
+     *      @param [in] renodeData              Container for renode generator data.
+     *      @param [in] selectedView            Name of the view to use in the generator.
+     *      @param [in] saveToFileSet           Flag for save to file set.
+     *      @param [in] selectedFileSet         Name of the target file set.
+     *      @param [in] folderPath              Path for the renode files.
+     *      @param [in] writeCPU                Flag for writing a CPU file.
+     *      @param [in] cpuFileName             Name for the CPU file.
+     *      @param [in] writeMemory             Flag for writing a memory file.
+     *      @param [in] memoryFileName          Name for the memory file.
+     *      @param [in] writePeripherals        Flag for writing a peripherals file.
+     *      @param [in] peripheralsFileName     Name for the peripherals file.
+     *      @param [in] selectedCpu             Name of the active CPU.
+     *      @param [in] topComponent            Top level component.
      */
     void createConfigureFile(QSharedPointer<RenodeCpuRoutesContainer> renodeData,
         QString const& selectedView,
@@ -66,8 +69,11 @@ public:
         QString const& selectedFileSet,
         QString const& folderPath,
         bool writeCPU,
+        QString const& cpuFileName,
         bool writeMemory,
+        QString const& memoryFileName,
         bool writePeripherals,
+        QString const& peripheralsFileName,
         QString const& selectedCpu,
         QSharedPointer<Component> topComponent);
 
@@ -76,15 +82,17 @@ private:
     /*!
      *  Create a JSON document for storing the generator configurations.
      *
-     *      @param [in] renodeCpu           Container for renode generator data.
-     *      @param [in] selectedView        Name of the view to use in the generator.
-     *      @param [in] saveToFileSetFlag   Flag for save to file set.
-     *      @param [in] selectedFileSet     Name of the target file set.
-     *      @param [in] folderPath          Path for the renode files.
-     *      @param [in] writeCPU            Flag for writing a CPU file.
-     *      @param [in] writeMemory         Flag for writing a memory file.
-     *      @param [in] writePeripherals    Flag for writing a peripherals file.
-     *      @param [in] selectedCpu         Name of the active CPU.
+     *      @param [in] renodeCpu               Container for renode generator data.
+     *      @param [in] selectedView            Name of the view to use in the generator.
+     *      @param [in] saveToFileSetFlag       Flag for save to file set.
+     *      @param [in] selectedFileSet         Name of the target file set.
+     *      @param [in] folderPath              Path for the renode files.
+     *      @param [in] cpuFileName             Name for the CPU file.
+     *      @param [in] writeMemory             Flag for writing a memory file.
+     *      @param [in] memoryFileName          Name for the memory file.
+     *      @param [in] writePeripherals        Flag for writing a peripherals file.
+     *      @param [in] peripheralsFileName     Name for the peripherals file.
+     *      @param [in] selectedCpu             Name of the active CPU.
      *
      *      @return The JSON configuration document.
      */
@@ -94,8 +102,11 @@ private:
         QString const& selectedFileSet,
         QString const& folderPath,
         bool writeCPU,
+        QString const& cpuFileName,
         bool writeMemory,
+        QString const& memoryFileName,
         bool writePeripherals,
+        QString const& peripheralsFileName,
         QString const& selectedCpu);
 
     /*!

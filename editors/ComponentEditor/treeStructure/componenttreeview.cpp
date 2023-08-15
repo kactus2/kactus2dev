@@ -26,7 +26,11 @@ ExpandingTreeView(parent),
 pressedPoint_(),
 locked_(true),
 handler_(handler),
-componentVLNV_(compVLNV) 
+componentVLNV_(compVLNV),
+expandAllItemsAction_(new QAction(tr("Expand all"), this)),
+collapseAllItemsAction_(new QAction(tr("Collapse all"), this)),
+itemExpandAction_(new QAction("Expand", this)),
+itemCollapseAction_(new QAction("Collapse", this))
 {
 	// can be used in debugging to identify the object
 	setObjectName(tr("ComponentTreeView"));
@@ -42,6 +46,12 @@ componentVLNV_(compVLNV)
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
 	setSelectionBehavior(QAbstractItemView::SelectItems);
+
+    connect(expandAllItemsAction_, SIGNAL(triggered()), this, SLOT(expandAll()), Qt::UniqueConnection);
+    connect(collapseAllItemsAction_, SIGNAL(triggered()), this, SLOT(collapseAll()), Qt::UniqueConnection);
+
+    connect(itemExpandAction_, SIGNAL(triggered()), this, SLOT(onExpandItem()), Qt::UniqueConnection);
+    connect(itemCollapseAction_, SIGNAL(triggered()), this, SLOT(onCollapseItem()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -168,26 +178,52 @@ void ComponentTreeView::selectItem( const QModelIndex& index )
 //-----------------------------------------------------------------------------
 void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
-	QModelIndex index = indexAt(event->pos());
+    menuIndex_ = indexAt(event->pos());
 
-	if (!index.isValid()) {
-		return;
-	}
-	
 	// save the position where click occurred
 	pressedPoint_ = event->pos();
-    ComponentEditorItem* item = getPressedItem();
 	
 	// if item can be opened then show the context menu
     QMenu menu(this);
 
-    if (item->canBeOpened())
+    if (ComponentEditorItem* item = getPressedItem(); item)
     {
-        menu.addActions(item->actions());
+        if (item->canBeOpened())
+        {
+            menu.addActions(item->actions());
+        }
+
+        if (item->hasChildren())
+        {
+            menu.addAction(itemExpandAction_);
+            menu.addAction(itemCollapseAction_);
+
+            menu.addSeparator();
+        }
     }
+
+    menu.addAction(expandAllItemsAction_);
+    menu.addAction(collapseAllItemsAction_);
+
     menu.exec(event->globalPos());
 
 	event->accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::onExpandItem()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::onExpandItem()
+{
+    expand(menuIndex_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentTreeView::onCollapseItem()
+//-----------------------------------------------------------------------------
+void ComponentTreeView::onCollapseItem()
+{
+    collapse(menuIndex_);
 }
 
 //-----------------------------------------------------------------------------

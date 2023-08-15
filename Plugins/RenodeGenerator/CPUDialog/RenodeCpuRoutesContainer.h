@@ -47,14 +47,14 @@ public:
      *
      *      @param [in] newPeripherals  List of new peripherals.
      */
-    void setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > newPeripherals);
+    void setPeripherals(QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > newPeripherals);
 
     /*!
      *  Get the peripheral data.
      *
      *      @return List of peripheral data.
      */
-    QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > getPeripherals() const;
+    QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > getPeripherals() const;
 
     /*!
      *  Set the available memory data.
@@ -128,7 +128,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of available peripheral data.
-    QVector<QSharedPointer<RenodeStructs::cpuPeripherals> > peripherals_;
+    QVector<QSharedPointer<RenodeStructs::cpuPeripheral> > peripherals_;
 
     //! List of available memory data.
     QVector<QSharedPointer<RenodeStructs::cpuMemories> > memories_;

@@ -77,6 +77,12 @@
     <Filter Include="Source Files\common">
       <UniqueIdentifier>{d45be033-5577-4e31-bb23-12b0c19dcce5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\CPUDialog\TemplateEditor">
+      <UniqueIdentifier>{62e8ee45-dc4a-4a9e-b1c2-2255eae9293d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPUDialog\TemplateEditor">
+      <UniqueIdentifier>{58280bff-7d53-4249-a150-1ceef6502905}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\PluginSystem\GeneratorPlugin\GenerationControl.cpp">
@@ -187,6 +193,33 @@
     <ClCompile Include="..\common\SingleCpuRoutesContainer.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="CPUDialog\RenodeFileEditor.cpp">
+      <Filter>Source Files\CPUDialog</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplatesDialog.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateEditor.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\common\views\EditableTableView\editabletableview.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateModel.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateDelegate.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="RenodeSettingsWidget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="RenodeSettingsModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.cpp">
+      <Filter>Source Files\CPUDialog\TemplateEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="..\PluginSystem\GeneratorPlugin\MessagePasser.h">
@@ -221,6 +254,27 @@
     </QtMoc>
     <QtMoc Include="CPUDialog\RenodeFileSelectionGroup.h">
       <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\RenodeFileEditor.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplatesDialog.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateEditor.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="..\..\common\views\EditableTableView\editabletableview.h">
+      <Filter>Header Files\common</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateModel.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="CPUDialog\TemplateEditor\PeripheralTemplateDelegate.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="RenodeSettingsWidget.h">
+      <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
@@ -286,9 +340,6 @@
     <ClInclude Include="CPUDialog\RenodeUtilities.h">
       <Filter>Header Files\CPUDialog</Filter>
     </ClInclude>
-    <ClInclude Include="CPUDialog\RenodeStructs.h">
-      <Filter>Header Files\CPUDialog</Filter>
-    </ClInclude>
     <ClInclude Include="..\common\ConfigurationManager.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
@@ -307,6 +358,21 @@
     <ClInclude Include="..\common\SingleCpuRoutesContainer.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeColumns.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeStructs.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\RenodeConstants.h">
+      <Filter>Header Files\CPUDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="RenodeSettingsModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CPUDialog\TemplateEditor\PeripheralTemplateConfigurer.h">
+      <Filter>Header Files\CPUDialog\TemplateEditor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="RenodeGenerator.qrc">
@@ -314,7 +380,7 @@
     </QtRcc>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="peripherals.txt">
+    <Text Include="..\..\executable\assets\peripherals.txt">
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>

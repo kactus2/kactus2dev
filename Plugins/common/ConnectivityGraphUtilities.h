@@ -98,14 +98,14 @@ namespace ConnectivityGraphUtilities
     QVector<QSharedPointer<SingleCpuRoutesContainer> > getMatchingCpuContainers(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList);
 
     /*!
-     *  Get the CPU route container for the selected CPU.
+     *  Get the CPU route container for the selected CPU identifier.
      *
-     *      @param [in] comparisonCpu   The selected CPU.
+     *      @param [in] cpuText         The selected CPU identifier.
      *      @param [in] existingRoutes  List of available CPU route containers.
      *
-     *      @return The CPU route container containing the selected CPU.
+     *      @return The CPU route container containing the selected CPU identifier.
      */
-    QSharedPointer<SingleCpuRoutesContainer> getCpuDetailRoute(QSharedPointer<Cpu> comparisonCpu, QVector<QSharedPointer<SingleCpuRoutesContainer> > existingRoutes);
+	QSharedPointer<SingleCpuRoutesContainer> getCpuDetailRoute(QString const& cpuText, QVector<QSharedPointer<SingleCpuRoutesContainer> > existingRoutes);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

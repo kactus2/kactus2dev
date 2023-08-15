@@ -1,34 +1,46 @@
 //-----------------------------------------------------------------------------
-// File: SVDCPUDelegate.cpp
+// File: RenodePeripheralsDelegate.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
-// Date: 20.05.2021
+// Date: 03.03.2023
 //
 // Description:
-// The delegate that provides editors to edit SVD CPU details.
+// The delegate that provides editors to edit Renode peripheral details.
 //-----------------------------------------------------------------------------
 
 #include "RenodePeripheralsDelegate.h"
 
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>
+#include <Plugins/RenodeGenerator/CPUDialog/RenodeConstants.h>
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeUtilities.h>
+
+#include <common/KactusColors.h>
 
 #include <QApplication>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QComboBox>
 #include <QDir>
+#include <QCoreApplication>
+#include <QFileDialog>
 
 //-----------------------------------------------------------------------------
 // Function: RenodePeripheralsDelegate::RenodePeripheralsDelegate()
 //-----------------------------------------------------------------------------
-RenodePeripheralsDelegate::RenodePeripheralsDelegate(QObject* parent /* = 0 */):
-QStyledItemDelegate(parent),
-booleanModify_(false),
-booleanState_(Qt::Unchecked),
-currentFolder_("")
+RenodePeripheralsDelegate::RenodePeripheralsDelegate(QWidget* parentWidget):
+QStyledItemDelegate(parentWidget),
+parentWidget_(parentWidget)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::setupTemplates()
+//-----------------------------------------------------------------------------
+void RenodePeripheralsDelegate::setupTemplates(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > newTemplates)
+{
+    pythonTemplates_ = newTemplates;
 }
 
 //-----------------------------------------------------------------------------
@@ -36,7 +48,7 @@ currentFolder_("")
 //-----------------------------------------------------------------------------
 void RenodePeripheralsDelegate::onFolderChanged(QString const& newFolder)
 {
-    currentFolder_ = newFolder;
+    generatorTargetFolder_ = newFolder;
 }
 
 //-----------------------------------------------------------------------------
@@ -45,9 +57,9 @@ void RenodePeripheralsDelegate::onFolderChanged(QString const& newFolder)
 QWidget* RenodePeripheralsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const
 {
-    if (index.column() == PeripheralColumns::CLASS)
+    if (index.column() == PeripheralColumns::CLASS || index.column() == PeripheralColumns::TEMPLATE)
     {
-        QComboBox* editor(new QComboBox(parent));
+        auto editor(new QComboBox(parent));
         return editor;
     }
     else
@@ -61,41 +73,41 @@ QWidget* RenodePeripheralsDelegate::createEditor(QWidget* parent, QStyleOptionVi
 //-----------------------------------------------------------------------------
 void RenodePeripheralsDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == PeripheralColumns::CLASS)
+    if (index.column() == PeripheralColumns::CLASS || index.column() == PeripheralColumns::TEMPLATE)
     {
-        QComboBox* classEditor = dynamic_cast<QComboBox*>(editor);
-        classEditor->setEditable(true);
-        if (classEditor)
+		auto comboEditor = dynamic_cast<QComboBox*>(editor);
+        if (comboEditor)
         {
-            QString filePath = QDir::currentPath() + "/Plugins/RenodeGenerator/peripherals.txt";
-            QFile peripheralClassFile(filePath);
-            if (peripheralClassFile.open(QIODevice::ReadOnly))
+            if (index.column() == PeripheralColumns::CLASS)
             {
-                QTextStream fileStream(&peripheralClassFile);
-                while (!fileStream.atEnd())
-                {
-                    classEditor->addItem(fileStream.readLine());
-                }
+				comboEditor->setEditable(true);
+                QString filePath = QCoreApplication::applicationDirPath() + "/assets/peripherals.txt";
+				if (QFile peripheralClassFile(filePath); peripheralClassFile.open(QIODevice::ReadOnly))
+				{
+					QTextStream fileStream(&peripheralClassFile);
+					while (!fileStream.atEnd())
+					{
+                        comboEditor->addItem(fileStream.readLine());
+					}
 
-                peripheralClassFile.close();
+					peripheralClassFile.close();
+				}
             }
+			else if (index.column() == PeripheralColumns::TEMPLATE)
+			{
+				QStringList templateNames = { "" };
+				templateNames.append(RenodeUtilities::getTemplateNames(pythonTemplates_));
+				comboEditor->addItems(templateNames);
+			}
 
-            QString currentClass = index.data(Qt::DisplayRole).toString();
-            classEditor->setCurrentIndex(classEditor->findText(currentClass));
+            QString currentItem = index.data(Qt::DisplayRole).toString();
+			comboEditor->setCurrentIndex(comboEditor->findText(currentItem));
         }
     }
     else
     {
         QStyledItemDelegate::setEditorData(editor, index);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodePeripheralsDelegate::setModelData()
-//-----------------------------------------------------------------------------
-void RenodePeripheralsDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, QModelIndex const& index) const
-{
-    QStyledItemDelegate::setModelData(editor, model, index);
 }
 
 //-----------------------------------------------------------------------------
@@ -111,12 +123,14 @@ bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* m
     if (event->type() == QEvent::MouseButtonRelease)
     {
         booleanModify_ = false;
+        if (index.column() == PeripheralColumns::FILEPATH)
+        {
+            return handleEditorEventForPath(event, model, option, index);
+        }
     }
 
     // Make sure that the item is checkable.
-    Qt::ItemFlags flags = model->flags(index);
-
-    if (!(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
+	if (Qt::ItemFlags flags = model->flags(index); !(flags & Qt::ItemIsUserCheckable) || !(flags & Qt::ItemIsEnabled))
     {
         return false;
     }
@@ -129,7 +143,7 @@ bool RenodePeripheralsDelegate::editorEvent(QEvent *event, QAbstractItemModel* m
         return false;
     }
 
-    Qt::CheckState newState = static_cast<Qt::CheckState>(value.toInt());
+	auto newState = static_cast<Qt::CheckState>(value.toInt());
 
     // Handle the mouse button events.
     if (event->type() == QEvent::MouseButtonPress)
@@ -198,7 +212,15 @@ void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem co
 
     if (index.column() == PeripheralColumns::INITABLE)
     {
-        painter->fillRect(option.rect, Qt::white);
+        QColor rectangleColor = KactusColors::REGULAR_FIELD;
+
+        QModelIndex classIndex = index.sibling(index.row(), PeripheralColumns::CLASS);
+		if (auto peripheralClass = classIndex.data(Qt::DisplayRole).toString(); peripheralClass != RenodeConstants::PYTHONPERIPHERAL)
+        {
+            rectangleColor = KactusColors::DISABLED_FIELD;
+        }
+
+        painter->fillRect(option.rect, rectangleColor);
 
         const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
 
@@ -210,4 +232,43 @@ void RenodePeripheralsDelegate::paint(QPainter* painter, QStyleOptionViewItem co
     }
 
     QStyledItemDelegate::paint(painter, viewItemOption, index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RenodePeripheralsDelegate::handleEditorEventForPath()
+//-----------------------------------------------------------------------------
+bool RenodePeripheralsDelegate::handleEditorEventForPath(QEvent* event, QAbstractItemModel* model, QStyleOptionViewItem const& option, QModelIndex const& index)
+{
+    const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
+    
+    QStyleOptionViewItem::Position iconPosition = option.decorationPosition;
+    int iconWidth = option.decorationSize.width();
+    
+    QRect rectangleIsinideCheckRect(option.rect.x() + (2 * textMargin),
+        option.rect.y(),
+        option.rect.width() - (2 * textMargin),
+        option.rect.height());
+    
+    QRect checkRect = QStyle::alignedRect(option.direction, Qt::AlignLeft, option.decorationSize, rectangleIsinideCheckRect);
+    if (checkRect.contains(static_cast<QMouseEvent*>(event)->pos()))
+    {
+        QString newPath = "";
+        newPath = QFileDialog::getExistingDirectory(parentWidget_, tr("Open Directory"), generatorTargetFolder_,
+            QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+
+        if (!newPath.isEmpty())
+        {
+            QDir appDirectory(generatorTargetFolder_);
+            newPath = appDirectory.relativeFilePath(newPath);
+        }
+
+        if (!newPath.isEmpty())
+        {
+            model->setData(index, newPath);
+        }
+
+        return true;
+    }
+
+    return QStyledItemDelegate::editorEvent(event, model, option, index);
 }

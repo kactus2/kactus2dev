@@ -19,8 +19,6 @@
 #include <Plugins/common/ConnectivityGraphUtilities.h>
 #include <Plugins/common/CPUDialog/CPUEditor.h>
 
-#include <Plugins/RenodeGenerator/CPUDialog/RenodeStructs.h>
-
 class CpuRoutesContainer;
 class LibraryInterface;
 class Component;
@@ -28,6 +26,7 @@ class RenodeCpuRoutesContainer;
 class RenodePeripheralsEditor;
 class RenodeMemoriesEditor;
 class IPluginUtility;
+class PeripheralTemplateConfigurer;
 
 #include <QComboBox>
 #include <QLineEdit>
@@ -47,9 +46,13 @@ public:
      *
      *      @param [in] utility                 Utility for plugins.
      *      @param [in] configurationObject     JSON object containing the editor configuration.
+     *      @param [in] templateConfigurer      Configurer for peripheral templates.
      *      @param [in] parent                  Pointer to the owner of this widget.
      */
-    RenodeCpuEditor(IPluginUtility* utility, QJsonObject const& configurationObject, QWidget *parent = 0);
+    RenodeCpuEditor(IPluginUtility* utility,
+        QJsonObject const& configurationObject,
+        PeripheralTemplateConfigurer* templateConfigurer,
+        QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -73,13 +76,6 @@ public:
     virtual QVector<QSharedPointer<CpuRoutesContainer> > getSelectedCPUs() const override final;
 
     /*!
-     *  Setup the folder path.
-     *
-     *      @param [in] newFolderPath   The new folder path.
-     */
-    virtual void setupFolderPath(QString const& newFolderPath) override final;
-
-    /*!
      *  Get the name of the currently active CPU.
      *
      *      @return Name of the currently active CPU.
@@ -89,6 +85,24 @@ public:
     //! No copying. No assignment.
     RenodeCpuEditor(const RenodeCpuEditor& other) = delete;
     RenodeCpuEditor& operator=(const RenodeCpuEditor& other) = delete;
+
+public slots:
+
+	/*!
+	 *  Setup the selected folder path.
+	 *	
+	 *      @param [in] newFolderPath   The new folder path.
+	 */
+	virtual void setupFolderPath(QString const& newFolderPath) override final;
+
+signals:
+
+    /*!
+     *  Inform of a change in CPU.
+     *
+     *      @param [in] newCpuName  Name of the new CPU.
+     */
+    void cpuChanged(QString const& newCpuName);
 
 private slots:
 
@@ -145,11 +159,11 @@ private:
     /*!
      *  Get the CPU container for the selected CPU.
      *
-     *      @param [in] cpuName     Name of the selected CPU.
+     *      @param [in] cpuText     Identifier of the selected CPU.
      *
      *      @return CPU container for the selected CPU.
      */
-    QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuName) const;
+    QSharedPointer<RenodeCpuRoutesContainer> getContainerForCpu(QString const& cpuText) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -162,7 +176,7 @@ private:
     QVector<QSharedPointer<RenodeCpuRoutesContainer> > availableCpuContainers_;
 
     //! The selected CPU (work in progress, should be multiple cpus).
-    QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_;
+    QSharedPointer<RenodeCpuRoutesContainer> renodeCPU_ = nullptr;
 
     //! Editor for peripherals.
     RenodePeripheralsEditor* peripheralEditor_;
@@ -184,6 +198,9 @@ private:
 
     //! JSON object containing the editor configuration.
     QJsonObject configurationObject_;
+
+    //! Configurer for peripheral templates.
+    PeripheralTemplateConfigurer* templateConfigurer_;
 };
 
 #endif // RENODECPUEDITOR_H

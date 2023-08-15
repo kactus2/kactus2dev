@@ -151,6 +151,7 @@ Section "MainSection" SEC01
   #File "..\..\executable\Plugins\MemoryViewGenerator.dll"
   File "..\..\executable\Plugins\LinuxDeviceTreeGenerator.dll"
   File "..\..\executable\Plugins\SVDGeneratorPlugin.dll"
+  File "..\..\executable\Plugins\RenodeGeneratorPlugin.dll"
 
   SetOutPath "$INSTDIR\Help"
   SetOverwrite on
@@ -260,6 +261,7 @@ Section Uninstall
   Delete "$INSTDIR\Help\Kactus2Help.qhc"
   Delete "$INSTDIR\Plugins\SVDGeneratorPlugin.dll"
   Delete "$INSTDIR\Plugins\VHDLImport.dll"
+  Delete "$INSTDIR\Plugins\RenodeGeneratorPlugin.dll"
   Delete "$INSTDIR\Plugins\LinuxDeviceTreeGenerator.dll"
   Delete "$INSTDIR\Plugins\MemoryViewGenerator.dll"
   Delete "$INSTDIR\Plugins\VerilogImport.dll"

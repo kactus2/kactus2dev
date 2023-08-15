@@ -1,8 +1,13 @@
-/* 
- *
- *  Created on: 21.1.2011
- *      Author: Antti Kamppi
- */
+//-----------------------------------------------------------------------------
+// File: ComponentEditorTreeView.h
+//-----------------------------------------------------------------------------
+// Project: Kactus2
+// Author: Antti Kamppi
+// Date: 21.01.2011
+//
+// Description:
+// brief ComponentTreeView is a widget to display the navigation tree.
+//-----------------------------------------------------------------------------
 
 #ifndef COMPONENTTREEVIEW_H
 #define COMPONENTTREEVIEW_H
@@ -25,75 +30,110 @@ class ComponentEditorItem;
  * This tree view displays a navigation tree in IPXactComponentEditor that
  * is used to navigate between IP-Xact elements.
  */
+
+//-----------------------------------------------------------------------------
+//! ComponentTreeView is a widget to display the navigation tree.
+//  This tree view displays a navigation tree in IPXactComponentEditor that
+//  is used to navigate between IP-Xact elements.
+//-----------------------------------------------------------------------------
 class ComponentTreeView : public ExpandingTreeView
 {
     Q_OBJECT
 
 public:
-
-	//! \brief The default width of the navigation tree.
+    
+	//! The default width of the navigation tree.
     enum
     {
         DEFAULT_WIDTH = 180
     };
 
-    /*! \brief The constructor
+    /*!
+     *  The constructor.
      *
-     * \param handler Pointer to the instance that manages the library.
-     * \param compVLNV The VLNV of the component being edited.
-     * \param parent Pointer to the owner of this widget
-     * 
+     *      @param [in] handler     Pointer to the instance that manages the library.
+     *      @param [in] compVLNV    The VLNV of the component being edited.
+     *      @param [in] parent      Pointer to the owner of this widget
      */
     ComponentTreeView(LibraryInterface* handler,
 		const VLNV& compVLNV,
 		QWidget *parent);
 
-	//! \brief The destructor
+	/*!
+     *  The destructor.
+     */
      ~ComponentTreeView() final = default;
 
-	//! \brief set the locked state (enables/disables the dragging).
+	/*!
+     *  Set the locked state(enables / disables the dragging).
+     * 
+     *      @param [in] locked  The new locked status.
+     */
 	void setLocked(bool locked);
 
-	/*! \brief Select the specified item and deselect all others.
+	/*!
+     *  Select the specified item and deselect all others.
 	 *
-	 * \param index Identifies the item to select.
-	 *
-	*/
+	 *      @param [in] index   Identifies the item to select.
+     */
 	void selectItem(const QModelIndex& index);
 
 signals:
 
-	//! \brief Emitted when user wants to move item from one place to another.
+	/*!
+     *  Emitted when user wants to move item from one place to another.
+     */
 	void moveItem(const QModelIndex& source, const QModelIndex& target);
 
 protected:
 
-	/*! \brief Called when a new item becomes the current item.
+	/*!
+     *  Called when a new item becomes the current item.
 	 *
-	 * This is reimplemented function that calls the base class implementation 
-	 * and also emits activated() signal for the current model index.
+	 *  This is reimplemented function that calls the base class implementation 
+	 *  and also emits activated() signal for the current model index.
 	 * 
-	 * \param current ModelIndex of the new item
-	 * \param previous ModelIndex of the previous item
-	 *
-	*/
-	virtual void currentChanged(const QModelIndex & current, 
-		const QModelIndex & previous);
+	 *      @param [in] current     ModelIndex of the new item
+	 *      @param [in] previous    ModelIndex of the previous item
+     */
+	virtual void currentChanged(const QModelIndex & current, const QModelIndex & previous);
 
-	//! \brief Handler for mouse press events.
+	/*!
+     *  Handler for mouse press events.
+     */
 	virtual void mousePressEvent(QMouseEvent* event);
 
-	//! \brief Handler for mouse release events.
+	/*!
+     *  Handler for mouse release events.
+     */
 	virtual void mouseReleaseEvent(QMouseEvent* event);
 
-	//! \brief Handler for mouse move events
+	/*!
+     *  Handler for mouse move events.
+     */
 	virtual void mouseMoveEvent(QMouseEvent* event);
 
-	//! \brief The context menu event handler
+	/*!
+     *  The context menu event handler.
+     */
 	virtual void contextMenuEvent(QContextMenuEvent* event);
 
-	//! \brief The handler for mouse double clicks
+	/*!
+     *  The handler for mouse double clicks.
+     */
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
+
+private slots:
+
+    /*!
+     *  Handle the expand of the selected item.
+     */
+    void onExpandItem();
+
+    /*!
+     *  Handle the collapse of the selected item.
+     */
+    void onCollapseItem();
 
 private:
 
@@ -110,17 +150,36 @@ private:
      */
     ComponentEditorItem* getPressedItem();
 
-	//! \brief The mouse position where the mouse was pressed.
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+    
+    //! The mouse position where the mouse was pressed.
 	QPoint pressedPoint_;
 
-	//! \brief The current locked state (enables/disables dragging)
+    //! The currently selected context menu index.
+    QModelIndex menuIndex_;
+
+	//! The current locked state (enables/disables dragging)
 	bool locked_;
 
-	//! \brief Pointer to the instance that manages the library.
+	//! Pointer to the instance that manages the library.
 	LibraryInterface* handler_;
 
-	//! \brief The vlnv of the component being edited.
+	//! The vlnv of the component being edited.
 	VLNV componentVLNV_;
+
+    //! Action for displaying all child items.
+    QAction* expandAllItemsAction_;
+
+    //! Action for hiding all child items.
+    QAction* collapseAllItemsAction_;
+
+    //! Action for displaying all the child items of the selected item.
+    QAction* itemExpandAction_;
+
+    //! Action for hiding all the child items of the selected item.
+    QAction* itemCollapseAction_;
 };
 
 #endif // COMPONENTTREEVIEW_H
