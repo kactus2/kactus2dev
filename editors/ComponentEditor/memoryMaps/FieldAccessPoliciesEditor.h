@@ -17,6 +17,8 @@
 #include <QGroupBox>
 
 class FieldInterface;
+class ParameterFinder;
+class ExpressionParser;
 
 class FieldAccessPoliciesEditor : public QGroupBox
 {
@@ -24,7 +26,9 @@ class FieldAccessPoliciesEditor : public QGroupBox
 
 public:
 
-    FieldAccessPoliciesEditor(QString const& fieldName, FieldInterface* fieldInterface, QWidget* parent);
+    FieldAccessPoliciesEditor(QString const& fieldName, FieldInterface* fieldInterface, 
+        QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
+        QWidget* parent);
 
 private:
 

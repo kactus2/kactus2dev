@@ -12,7 +12,10 @@
 #include "FieldAccessPoliciesDelegate.h"
 #include "FieldAccessPolicyColumns.h"
 
+#include <IPXACTmodels/Component/WriteValueConstraint.h>
+
 #include <editors/ComponentEditor/common/ModeReferenceEditor.h>
+#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/modWriteComboBox/modwritecombobox.h>
@@ -25,8 +28,9 @@
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
-FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(QWidget* parent):
-    QStyledItemDelegate(parent)
+FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(ParameterCompleter* parameterNameCompleter, 
+    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
+ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
 {
 
 }
@@ -87,9 +91,19 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
         return testConstraintEditor;
     }
 
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+    {
+        QComboBox* writeConstraintEditor = new QComboBox(parent);
+
+        writeConstraintEditor->addItems(WriteValueConversions::getConstraintTypes());
+
+        connect(writeConstraintEditor, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
+        return writeConstraintEditor;
+    }
+
     else
     {
-        return QStyledItemDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -139,16 +153,6 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
         }
     }
     
-    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
-    {
-        auto readResponseEditor = qobject_cast<QLineEdit*>(editor);
-
-        if (readResponseEditor)
-        {
-            readResponseEditor->setText(index.data(Qt::DisplayRole).toString());
-        }
-    }
-    
     else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
     {
         auto testableEditor = qobject_cast<BooleanComboBox*>(editor);
@@ -179,9 +183,20 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
         }
     }
 
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+    {
+        auto writeConstraintEditor = qobject_cast<QComboBox*>(editor);
+
+        if (writeConstraintEditor)
+        {
+            writeConstraintEditor->setCurrentIndex(
+                WriteValueConversions::stringToType(index.data(Qt::DisplayRole).toString()));
+        }
+    }
+
     else
     {
-        QStyledItemDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -234,16 +249,6 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
         }
     }
 
-    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
-    {
-        auto readResponseEditor = qobject_cast<QLineEdit*>(editor);
-
-        if (readResponseEditor)
-        {
-            model->setData(index, readResponseEditor->text(), Qt::EditRole);
-        }
-    }
-
     else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
     {
         auto testableEditor = qobject_cast<BooleanComboBox*>(editor);
@@ -275,7 +280,7 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
     }
     else
     {
-        QStyledItemDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -329,7 +334,7 @@ void FieldAccessPoliciesDelegate::updateEditorGeometry(QWidget* editor, const QS
     }
     else 
     {
-        QStyledItemDelegate::updateEditorGeometry(editor, option, index);
+        ExpressionDelegate::updateEditorGeometry(editor, option, index);
     }
 }
 
@@ -345,6 +350,24 @@ void FieldAccessPoliciesDelegate::commitAndCloseEditor()
         emit commitData(editor);
         emit closeEditor(editor);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool FieldAccessPoliciesDelegate::columnAcceptsExpression(int column) const
+{
+    return column == FieldAccessPolicyColumns::READ_RESPONSE ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int FieldAccessPoliciesDelegate::descriptionColumn() const
+{
+    return FieldAccessPolicyColumns::COUNT;
 }
 
 //-----------------------------------------------------------------------------

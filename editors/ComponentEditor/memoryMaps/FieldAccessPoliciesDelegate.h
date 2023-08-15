@@ -12,15 +12,24 @@
 #ifndef FIELDACCESSPOLICIESDELEGATE_H
 #define FIELDACCESSPOLICIESDELEGATE_H
 
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+
 #include <QStyledItemDelegate>
 
-class FieldAccessPoliciesDelegate : public QStyledItemDelegate
+class ParameterCompleter;
+
+class FieldAccessPoliciesDelegate : public ExpressionDelegate
 {
     Q_OBJECT
 
 public:
 
-    FieldAccessPoliciesDelegate(QWidget* parent);
+    FieldAccessPoliciesDelegate(ParameterCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
+
+    virtual ~FieldAccessPoliciesDelegate() = default;
+
+    FieldAccessPoliciesDelegate(FieldAccessPoliciesDelegate& other) = delete;
+    FieldAccessPoliciesDelegate& operator=(FieldAccessPoliciesDelegate& other) = delete;
 
     /*!
      *  Create a new editor for the given item
@@ -65,6 +74,22 @@ protected slots:
      *  Commit the data from the sending editor and close the editor.
      */
     void commitAndCloseEditor();
+
+protected:
+
+    /*!
+     *  Checks if the given column supports expressions in the editor.
+     *
+     *      @param [in] column   The column to check.
+     *
+     *      @return True, if the cells in the column allow expressions, otherwise false.
+     */
+    bool columnAcceptsExpression(int column) const override;
+
+    /*!
+     *  Gets the column that contains the description cells. In this case there is no such column.
+     */
+    int descriptionColumn() const override;
 
 private slots:
 

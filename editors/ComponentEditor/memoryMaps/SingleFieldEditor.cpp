@@ -132,6 +132,9 @@ containingRegister_(containingRegister)
 
     setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
 
+    accessPoliciesEditor_ = new FieldAccessPoliciesEditor(fieldItem->name(), fieldInterface_, 
+        parameterFinder, expressionParser, this);
+
     setupLayout();
     connectSignals();
 
@@ -593,8 +596,7 @@ void SingleFieldEditor::setupLayout()
     }
     else
     {
-        FieldAccessPoliciesEditor* accessPolicies = new FieldAccessPoliciesEditor(QString::fromStdString(fieldName_), fieldInterface_, this);
-        verticalSplitter->addWidget(accessPolicies);
+        verticalSplitter->addWidget(accessPoliciesEditor_);
     }
 
     verticalSplitter->setStretchFactor(1, 1);

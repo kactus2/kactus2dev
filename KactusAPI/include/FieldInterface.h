@@ -341,7 +341,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setTestable(std::string const& fieldName, std::string const& newTestable, int accessPolicyIndex = -1);
+    bool setTestable(std::string const& fieldName, std::string const& newTestable, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the test constraint string of the selected field.
@@ -376,7 +376,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setTestConstraint(std::string const& fieldName, std::string const& newTestConstraint, int accessPolicyIndex = -1);
+    bool setTestConstraint(std::string const& fieldName, std::string const& newTestConstraint, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the calculated is present value of the selected field.

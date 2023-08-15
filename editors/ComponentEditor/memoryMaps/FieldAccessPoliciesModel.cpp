@@ -67,6 +67,15 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
         return Qt::NoItemFlags;
     }
 
+    // Disable write constraint min/max, when that option is not set.
+    if ((index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
+        index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM) &&
+        QString::fromStdString(fieldInterface_->getWriteConstraint(
+            fieldName_.toStdString(), index.row())) != QStringLiteral("Set minimum and maximum limits"))
+    {
+        return Qt::NoItemFlags;
+    }
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
@@ -188,16 +197,25 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         {
             return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_.toStdString(), index.row()));
         }
+        
+        else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+        {
+            return QString::fromStdString(fieldInterface_->getWriteConstraint(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+        {
+            return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumFormattedExpression(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+        {
+            return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumFormattedExpression(fieldName_.toStdString(), index.row()));
+        }
     }
 
     else if (role == Qt::BackgroundRole)
     {
-        //// Disable type definition column until editor is made.
-        //if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
-        //{
-        //    return KactusColors::DISABLED_FIELD;
-        //}
-
         if (index.flags() == Qt::NoItemFlags)
         {
             return KactusColors::DISABLED_FIELD;
@@ -222,6 +240,26 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
             QVariant modeRefsVariant;
             modeRefsVariant.setValue(modeRefs);
             return modeRefsVariant;
+        }
+    }
+
+    else if (role == Qt::EditRole)
+    {
+        // Data for expression editors
+
+        if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+        {
+            return QString::fromStdString(fieldInterface_->getReadResponse(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+        {
+            return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumExpression(fieldName_.toStdString(), index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+        {
+            return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumExpression(fieldName_.toStdString(), index.row()));
         }
     }
 
@@ -286,6 +324,21 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
     else if (index.column() == FieldAccessPolicyColumns::RESERVED)
     {
         fieldInterface_->setReserved(fieldName_.toStdString(), value.toString().toStdString(), index.row());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+    {
+        fieldInterface_->setWriteConstraint(fieldName_.toStdString(), value.toString().toStdString(), index.row());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+    {
+        fieldInterface_->setWriteConstraintMinimum(fieldName_.toStdString(), value.toString().toStdString(), index.row());
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+    {
+        fieldInterface_->setWriteConstraintMaximum(fieldName_.toStdString(), value.toString().toStdString(), index.row());
     }
 
     return true;
