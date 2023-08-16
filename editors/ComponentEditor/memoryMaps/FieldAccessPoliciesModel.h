@@ -88,13 +88,41 @@ public:
      */
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
+public slots:
+
+    /*!
+     *	Handler for adding a new field access policy.
+     *  
+     *      @param [in] index     The model index of the item that was selected.
+     */
+    void onAddRow(QModelIndex const& index);
+
+    /*!
+     *	Handler for removing a field access policy.
+     *  
+     *      @param [in] index     The model index for the item/row to be removed.
+     */
+    void onRemoveItem(QModelIndex const& index);
+
+signals:
+
+    /*!
+     *	Emitted when there has been a change in the number of rows.
+     */
+    void invalidateFilter();
+
+    /*!
+     *	Emitted whenever a field access policy has been edited.
+     */
+    void contentChanged();
+
 private:
 
     //! The field interface to use.
     FieldInterface* fieldInterface_;
 
     //! The name of the current field.
-    QString fieldName_;
+    std::string fieldName_;
 };
 
 

@@ -1586,6 +1586,38 @@ bool FieldInterface::setID(std::string const& fieldName, std::string const& newI
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::addFieldAccessPolicy()
+//-----------------------------------------------------------------------------
+bool FieldInterface::addFieldAccessPolicy(std::string const& fieldName)
+{
+    auto field = getField(fieldName);
+    if (!field)
+    {
+        return false;
+    }
+
+    QSharedPointer<FieldAccessPolicy> newAccessPolicy(new FieldAccessPolicy());
+    field->getFieldAccessPolicies()->append(newAccessPolicy);
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::removeFieldAccessPolicy()
+//-----------------------------------------------------------------------------
+bool FieldInterface::removeFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex)
+{
+    auto field = getField(fieldName);
+    if (!field || accessPolicyIndex > field->getFieldAccessPolicies()->size() - 1)
+    {
+        return false;
+    }
+
+    field->getFieldAccessPolicies()->removeAt(accessPolicyIndex);
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<NameGroup> FieldInterface::getItem(std::string const& fieldName) const

@@ -2,11 +2,11 @@
 // File: FieldAccessPoliciesEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: 
+// Author: Anton Hagqvist
 // Date: 8.8.2023
 //
 // Description:
-// 
+// Editor for field access policies.
 //-----------------------------------------------------------------------------
 
 #include "FieldAccessPoliciesEditor.h"
@@ -49,4 +49,11 @@ view_(new EditableTableView(this))
     view_->setModel(proxy);
     view_->setItemDelegate(delegate);
     view_->horizontalHeader()->setStretchLastSection(false);
+
+    connect(view_, SIGNAL(addItem(QModelIndex const&)), model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(removeItem(QModelIndex const&)), model, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+
+    connect(model, SIGNAL(invalidateFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
+    connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }

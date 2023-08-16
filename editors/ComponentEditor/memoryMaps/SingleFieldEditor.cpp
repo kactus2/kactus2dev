@@ -485,6 +485,8 @@ void SingleFieldEditor::connectSignals()
 
 
     connect(writeConstraintEditor_, SIGNAL(activated(int)),this, SLOT(onWriteConstraintSelected(int)), Qt::UniqueConnection);
+
+    connect(accessPoliciesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

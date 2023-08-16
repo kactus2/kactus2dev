@@ -728,6 +728,10 @@ public:
      */
     bool setID(std::string const& fieldName, std::string const& newID);
 
+    bool addFieldAccessPolicy(std::string const& fieldName);
+
+    bool removeFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex);
+
     std::vector<std::pair<std::string, int> > getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
     bool setModeRefs(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<std::string, int> > const& modeRefs) const;
