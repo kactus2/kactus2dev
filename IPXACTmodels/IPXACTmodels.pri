@@ -474,9 +474,6 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/MemoryArray.cpp \
     ./Component/MemoryArrayReader.cpp \
     ./Component/MemoryArrayWriter.cpp \
-    ./Component/MemoryArray.cpp \
-    ./Component/MemoryArrayReader.cpp \
-    ./Component/MemoryArrayWriter.cpp \
     ./Component/MemoryBlockBase.cpp \
     ./Component/MemoryBlockBaseReader.cpp \
     ./Component/MemoryBlockBaseWriter.cpp \
