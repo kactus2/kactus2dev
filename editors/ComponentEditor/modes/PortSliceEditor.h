@@ -44,7 +44,9 @@ public:
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	PortSliceEditor(QSharedPointer<Component> component, 
-		QSharedPointer<Mode> mode, LibraryInterface* handler,
+        QSharedPointer<Mode> mode,
+        QSharedPointer<PortSliceValidator> validator,
+		LibraryInterface* handler,
 		ExpressionSet expressions,
 		QWidget* parent = 0);
 	

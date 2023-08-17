@@ -66,7 +66,7 @@ ItemEditor* SingleModeItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new SingleModeEditor(component_, mode_, libHandler_, expressions_);
+        editor_ = new SingleModeEditor(component_, mode_, validator_, libHandler_, expressions_);
         editor_->setProtection(locked_);
 
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

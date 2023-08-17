@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 
 #include <IPXACTmodels/Component/PortSlice.h>
+#include <IPXACTmodels/Component/validators/PortSliceValidator.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -40,11 +41,13 @@ public:
 
 	/*! The constructor
 	 *
-     *      @param [in] component   The component being edited.
+	 *		@param [in] mode        The mode being edited.
+	 *		@param [in] validator   The validator for the port slices in the mode.
      *      @param [in] expressions The collection of objects for expression handling.
 	 *      @param [in] parent      The owner of this model.
 	*/
 	PortSliceModel(QSharedPointer<Mode> mode, 
+		QSharedPointer<PortSliceValidator> validator,
 		ExpressionSet expressions,
         QObject* parent);
 	
@@ -171,9 +174,9 @@ private:
 
 	//! Gets the value of the cell in index.
     QVariant valueForIndex(QModelIndex const& index) const;
-
-	//! The component being edited.
-	QSharedPointer<Component> component_;
+	
+	//! The validator for the port slices.
+	QSharedPointer<PortSliceValidator> validator_;
 
 	//! Contains the PortSlice being edited.
 	QSharedPointer<QList<QSharedPointer<PortSlice> > > portSlices_;

@@ -31,14 +31,16 @@
 // Function: PortSliceEditor::PortSliceEditor()
 //-----------------------------------------------------------------------------
 PortSliceEditor::PortSliceEditor(QSharedPointer<Component> component, 
-	QSharedPointer<Mode> mode, LibraryInterface* handler, 
+	QSharedPointer<Mode> mode, 
+	QSharedPointer<PortSliceValidator> validator,
+	LibraryInterface* handler, 
     ExpressionSet expressions,
 	QWidget* parent) :
 QWidget(parent),
 	component_(component),
     view_(this),
     proxy_(this),
-    model_(mode, expressions, this)
+    model_(mode, validator, expressions, this)
 {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);

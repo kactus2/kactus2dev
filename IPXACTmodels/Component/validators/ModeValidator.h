@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/Component.h>
 
+#include <IPXACTmodels/Component/validators/PortSliceValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -35,11 +36,14 @@ public:
 	/*!
      *  The constructor.
      * 
+     *      @param [in] sliceValidator The validator for port slices.
      *      @param [in] component      The component containing the modes.
      *      @param [in] mode           The expression parser for solving expressions in modes.
 	 *
 	 */
-    ModeValidator(QSharedPointer<Component> component, QSharedPointer<ExpressionParser> expressionParser);
+    ModeValidator(QSharedPointer<PortSliceValidator> sliceValidator, 
+        QSharedPointer<Component> component,
+        QSharedPointer<ExpressionParser> expressionParser);
 
 	//! The destructor.
 	virtual ~ModeValidator();
@@ -85,10 +89,17 @@ public:
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> mode,
 		QString const& context) const;
 
+    // Change the active component.
     void componentChange(QSharedPointer<Component> newComponent);
+
+    // Get the port slice validator.
+    QSharedPointer<PortSliceValidator> getPortSliceValidator() const;
 
 private:
     
+    //! The port slice validator to use.
+    QSharedPointer<PortSliceValidator> sliceValidator_;
+
     //! The component containing the modes.
     QSharedPointer<Component> component_ = nullptr;
 

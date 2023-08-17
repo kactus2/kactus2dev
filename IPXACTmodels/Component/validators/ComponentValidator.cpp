@@ -108,7 +108,8 @@ assertionValidator_()
     remapStateValidator_ = QSharedPointer<RemapStateValidator>(
         new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
   
-    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(nullptr, parser));
+    QSharedPointer<PortSliceValidator> sliceValidator(new PortSliceValidator(component_, parser));
+    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(sliceValidator, nullptr, parser));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));

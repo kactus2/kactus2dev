@@ -25,10 +25,12 @@
 // Function: PortSliceModel::PortSliceModel()
 //-----------------------------------------------------------------------------
 PortSliceModel::PortSliceModel(QSharedPointer <Mode> mode,
+    QSharedPointer<PortSliceValidator> validator,
     ExpressionSet expressions,
     QObject* parent): 
     ReferencingTableModel(expressions.finder, parent),
     ParameterizableTable(expressions.finder),
+    validator_(validator),
     portSlices_(mode->getPortSlices()),
     expressionFormatter_(expressions.formatter)
 {
@@ -284,21 +286,7 @@ bool PortSliceModel::isValidExpressionColumn(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortSliceModel::expressionOrValueForIndex(QModelIndex const& index) const
 {
-//     const int column = index.column();
-// 
-//     QSharedPointer<PortSlice> slice = portSlices_->at(index.row());
-//     if (column == PortSliceColumns::LEFT_BOUND)
-//     {
-//         return slice->getLeftRange();
-//     }
-//     else if (column == PortSliceColumns::RIGHT_BOUND)
-//     {
-//         return slice->getRightRange();
-//     }
-//     else
-//     {
-        return valueForIndex(index);
-   // }
+    return valueForIndex(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,6 +294,26 @@ QVariant PortSliceModel::expressionOrValueForIndex(QModelIndex const& index) con
 //-----------------------------------------------------------------------------
 bool PortSliceModel::validateIndex(QModelIndex const& index) const
 {
+    const int column = index.column();
+    auto portSlice = portSlices_->at(index.row());
+
+    if (column == PortSliceColumns::NAME)
+    {
+        return validator_->hasValidName(portSlice->name());
+    }
+    else if (column == PortSliceColumns::PORT_REF)
+    {
+        return validator_->hasValidPortReference(portSlice);
+    }
+    else if (column == PortSliceColumns::LEFT_BOUND)
+    {
+        return validator_->hasValidLeftRange(portSlice);
+    }
+    else if (column == PortSliceColumns::RIGHT_BOUND)
+    {
+        return validator_->hasValidRightRange(portSlice);
+    }
+
     return true;
 }
 
