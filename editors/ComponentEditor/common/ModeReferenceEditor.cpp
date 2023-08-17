@@ -45,6 +45,11 @@ view_(new EditableTableView(this))
 
     setFixedHeight(sizeHint().height());
     setFixedWidth(sizeHint().width());
+
+    connect(view_, SIGNAL(addItem(QModelIndex const&)), 
+        model_, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(removeItem(QModelIndex const&)), 
+        model_, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

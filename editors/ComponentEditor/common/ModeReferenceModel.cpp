@@ -146,3 +146,39 @@ bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: ModeReferenceModel::onAddRow()
+//-----------------------------------------------------------------------------
+void ModeReferenceModel::onAddRow(QModelIndex const& index)
+{
+    int lastRow = modeRefs_.size();
+
+    beginInsertRows(QModelIndex(), lastRow, lastRow);
+    modeRefs_.append(QPair<QString, int>());
+    endInsertRows();
+
+    emit invalidateFilter();
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeReferenceModel::onRemoveItem()
+//-----------------------------------------------------------------------------
+void ModeReferenceModel::onRemoveItem(QModelIndex const& index)
+{
+    int rowToRemove = index.row();
+
+    if (!index.isValid() || rowToRemove < 0 ||
+        rowToRemove >= modeRefs_.size())
+    {
+        return;
+    }
+
+    beginRemoveRows(QModelIndex(), rowToRemove, rowToRemove);
+    modeRefs_.removeAt(rowToRemove);
+    endRemoveRows();
+
+    emit invalidateFilter();
+    emit contentChanged();
+}

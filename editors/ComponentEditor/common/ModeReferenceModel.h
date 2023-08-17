@@ -101,6 +101,34 @@ public:
      */
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
+public slots:
+    
+    /*!
+     *	Handler for adding a new mode reference row.
+     *  
+     *      @param [in] index     The model index that was selected.
+     */
+    void onAddRow(QModelIndex const& index);
+
+    /*!
+     *	Handler for removing a mode reference row.
+     *  
+     *      @param [in] index     The mode reference to be removed.
+     */
+    void onRemoveItem(QModelIndex const& index);
+
+signals:
+
+    /*!
+     *	Emitted when there has been a change in the number of rows.
+     */
+    void invalidateFilter();
+
+    /*!
+     *	Emitted whenever a mode reference has been edited.
+     */
+    void contentChanged();
+
 private:
 
     //! The mode references to be edited.
