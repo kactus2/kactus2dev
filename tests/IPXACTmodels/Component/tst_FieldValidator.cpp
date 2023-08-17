@@ -75,6 +75,8 @@ private slots:
     void testAccessIsValid();
     void testAccessIsValid_data();
 
+    void testAccessPolicyModeRefs();
+
     // Test field structure validity for new std.
     void testStructureValidity();
 
@@ -990,6 +992,66 @@ void tst_FieldValidator::testAccessIsValid_data()
     QTest::newRow("Access writeOnce with a read action is invalid") << "writeOnce" << "" << "clear" << false;
     QTest::newRow("Access write-only without a read action is valid") << "write-only" << "oneToClear" << "" << true;
     QTest::newRow("Access writeOnce without a read action is valid") << "writeOnce" << "oneToClear" << "" << true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_FieldValidator::testAccessPolicyModeRefs()
+//-----------------------------------------------------------------------------
+void tst_FieldValidator::testAccessPolicyModeRefs()
+{
+    QSharedPointer<Field> testField(new Field());
+    testField->setName("testField");
+    testField->setBitOffset("8");
+    testField->setBitWidth("8");
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setPriority("0");
+    modeRef1->setReference("ref");
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setPriority("0");
+    modeRef2->setReference("ref1");
+
+    QSharedPointer<FieldAccessPolicy> testFieldAccessPolicy(new FieldAccessPolicy());
+    QSharedPointer<FieldAccessPolicy> testFieldAccessPolicy2(new FieldAccessPolicy());
+    testFieldAccessPolicy->getModeReferences()->append(modeRef1);
+    testFieldAccessPolicy2->getModeReferences()->append(modeRef2);
+
+    testField->getFieldAccessPolicies()->append(testFieldAccessPolicy);
+    testField->getFieldAccessPolicies()->append(testFieldAccessPolicy2);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<ParameterValidator> parameterValidator(
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
+
+    QStringList errors;
+    
+    // Test duplicate priority.
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(errors.first().contains("duplicate priority"));
+    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField) == false);
+
+    // Test duplicate reference.
+    errors.clear();
+
+    modeRef2->setPriority("1");
+    modeRef2->setReference("ref");
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(errors.first().contains("duplicate mode reference"));
+    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField) == false);
+
+    // Test valid.
+    errors.clear();
+
+    modeRef2->setReference("ref2");
+
+    validator.findErrorsIn(errors, testField, "test");
+    QCOMPARE(errors.size(), 0);
+    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField));
 }
 
 //-----------------------------------------------------------------------------

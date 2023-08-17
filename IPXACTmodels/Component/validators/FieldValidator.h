@@ -234,6 +234,15 @@ public:
     bool hasValidStructure(QSharedPointer<Field> field) const;
 
     /*!
+     *	Checks that the field has a valid mode references in its field access policies.
+     *
+     *      @param [in] field     The field to check.
+     *
+     * 	    @return True, if the field mode references valid, otherwise false.
+     */
+    bool hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) const;
+
+    /*!
      *  Locate errors within a field.
      *
      *      @param [in] errors      List of found errors.
@@ -398,6 +407,15 @@ private:
      *      @param [in] context    Context to help locate the error.
      */
     void findErrorsInStructure(QStringList& errors, QSharedPointer<Field> field, QString const& context) const;
+
+    /*!
+     *	Find errors in the mode references of the field's field access policies.
+     *  
+     *      @param [in] errors     List of found errors.
+     *      @param [in] field      The selected field.
+     *      @param [in] context    Context to help locate the error.
+     */
+    void findErrorsInModeRefs(QStringList& errors, QSharedPointer<Field> field, QString const& context) const;
 
     /*!
      *  Check if the contained bit expression is valid.

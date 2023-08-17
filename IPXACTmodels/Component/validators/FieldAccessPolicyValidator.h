@@ -122,6 +122,15 @@ private:
     bool hasValidAccessRestrictions(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const;
 
     /*!
+     *	Check if there are missing or duplicate mode references and priorities in access restrictions.
+     *  
+     *      @param [in] modeRefs     The mode references to check.
+     *	    
+     * 	    @return True, if the access restriction mode refs are valid, otherwise false.
+     */
+    bool hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const;
+
+    /*!
      *  Find errors within a list of mode references.
      *
      *      @param [in] errors      List of found errors.

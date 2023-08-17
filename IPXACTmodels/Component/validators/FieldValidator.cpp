@@ -90,6 +90,13 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
             }
         }
 
+        // Check mode refs of all field access policies. Priority and reference must both be unique between
+        // all field access policies.
+        if (!hasValidAccessPolicyModeRefs(field))
+        {
+            fieldAccessPoliciesAreValid = false;
+        }
+
         return hasValidName(field) && hasValidMemoryArray(field) && hasValidBitOffset(field) && hasValidResets(field) &&
             hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
             hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field) &&
@@ -449,6 +456,8 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
         {
             fieldAccessPolicyValidator.findErrorsIn(errors, fieldAccessPolicy, newContext);
         }
+
+        findErrorsInModeRefs(errors, field, context);
 
         findErrorsInStructure(errors, field, context);
     }
@@ -851,6 +860,46 @@ void FieldValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<F
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldValidator::findErrorsInModeRefs()
+//-----------------------------------------------------------------------------
+void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
+{
+    QStringList modeRefList;
+    QStringList priorityList;
+
+    bool duplicateRefErrorIssued = false;
+    bool duplicatePriorityErrorIssued = false;
+
+    for (auto const& accessPolicy : *field->getFieldAccessPolicies())
+    {
+        for (auto const& modeRef : *accessPolicy->getModeReferences())
+        {
+            if (priorityList.contains(modeRef->getPriority()) && !duplicatePriorityErrorIssued)
+            {
+                errors.append(QObject::tr(
+                    "One or more field access policy mode references of field %1 in %2 contain duplicate priority values.")
+                    .arg(field->name()).arg(context));
+            }
+            else
+            {
+                priorityList.append(modeRef->getPriority());
+            }
+
+            if (modeRefList.contains(modeRef->getReference()) && !duplicateRefErrorIssued)
+            {
+                errors.append(QObject::tr(
+                    "One or more field access policy mode references of field %1 in %2 contain duplicate mode reference values.")
+                    .arg(field->name()).arg(context));
+            }
+            else
+            {
+                modeRefList.append(modeRef->getReference());
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidResets()
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidResets(QSharedPointer<Field> field) const
@@ -904,5 +953,40 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 
     QRegularExpression bitExpression(QStringLiteral("^([0-9]+|[1-9]+[0-9]*'([bB][01_]+|[hH][0-9a-fA-F_]+))$"));
     return bitExpression.match(expression).hasMatch() || bitExpression.match(solvedValue).hasMatch();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::hasValidAccessPolicyModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) const
+{
+    QStringList modeRefList;
+    QStringList priorityList;
+
+    for (auto const& accessPolicy : *field->getFieldAccessPolicies())
+    {
+        for (auto const& modeRef : *accessPolicy->getModeReferences())
+        {
+            if (priorityList.contains(modeRef->getPriority()))
+            {
+                return false;
+            }
+            else
+            {
+                priorityList.append(modeRef->getPriority());
+            }
+
+            if (modeRefList.contains(modeRef->getReference()))
+            {
+                return false;
+            }
+            else
+            {
+                modeRefList.append(modeRef->getReference());
+            }
+        }
+    }
+
+    return true;
 }
 
