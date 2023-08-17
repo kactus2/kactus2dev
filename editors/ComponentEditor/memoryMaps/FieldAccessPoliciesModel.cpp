@@ -17,10 +17,12 @@
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesModel::FieldAccessPoliciesModel()
 //-----------------------------------------------------------------------------
-FieldAccessPoliciesModel::FieldAccessPoliciesModel(QString const& fieldName, FieldInterface* fieldInterface, QObject* parent):
-    QAbstractTableModel(parent),
-    fieldInterface_(fieldInterface),
-    fieldName_(fieldName.toStdString())
+FieldAccessPoliciesModel::FieldAccessPoliciesModel(QString const& fieldName, 
+    QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QObject* parent):
+ReferencingTableModel(parameterFinder, parent),
+ParameterizableTable(parameterFinder),
+fieldInterface_(fieldInterface),
+fieldName_(fieldName.toStdString())
 {
 
 }
@@ -116,7 +118,7 @@ QVariant FieldAccessPoliciesModel::headerData(int section, Qt::Orientation orien
         }
         else if (section == FieldAccessPolicyColumns::READ_RESPONSE)
         {
-            return QStringLiteral("Read response, f(x)");
+            return QStringLiteral("Read response") + getExpressionSymbol();
         }
         else if (section == FieldAccessPolicyColumns::TESTABLE)
         {
@@ -128,15 +130,15 @@ QVariant FieldAccessPoliciesModel::headerData(int section, Qt::Orientation orien
         }
         else if (section == FieldAccessPolicyColumns::RESERVED)
         {
-            return QStringLiteral("Reserved");
+            return QStringLiteral("Reserved") + getExpressionSymbol();
         }
         else if (section == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
         {
-            return QStringLiteral("Write constraint\nminimum");
+            return QStringLiteral("Write constraint\nminimum") + getExpressionSymbol();
         }
         else if (section == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
         {
-            return QStringLiteral("Write constraint\nmaximum");
+            return QStringLiteral("Write constraint\nmaximum") + getExpressionSymbol();
         }
     }
 
@@ -150,68 +152,12 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 {
     if (role == Qt::DisplayRole)
     {
-        if (index.column() == FieldAccessPolicyColumns::ACCESS)
+        if (isValidExpressionColumn(index))
         {
-            return QString::fromStdString(fieldInterface_->getAccessString(fieldName_, index.row()));
+            return formattedExpressionForIndex(index);
         }
         
-        // Data for displaying mode refs in access policy table.
-        else if (index.column() == FieldAccessPolicyColumns::MODE)
-        {
-            auto const& modeRefsList = fieldInterface_->getModeRefs(fieldName_, index.row());
-            QStringList list;
-            for (auto const& [reference, priority] : modeRefsList)
-            {
-                list.append(QString::fromStdString(reference));
-            }
-
-            return list.join(", ");
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
-        {
-            return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
-        {
-            return QString::fromStdString(fieldInterface_->getReadActionString(fieldName_, index.row()));
-        }
-        
-        else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
-        {
-            return QString::fromStdString(fieldInterface_->getReadResponseFormattedExpression(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
-        {
-            return QString::fromStdString(fieldInterface_->getTestableValue(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
-        {
-            return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::RESERVED)
-        {
-            return QString::fromStdString(fieldInterface_->getReservedFormattedExpression(fieldName_, index.row()));
-        }
-        
-        else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
-        {
-            return QString::fromStdString(fieldInterface_->getWriteConstraint(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
-        {
-            return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumFormattedExpression(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
-        {
-            return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumFormattedExpression(fieldName_, index.row()));
-        }
+        return valueForIndex(index);
     }
 
     else if (role == Qt::BackgroundRole)
@@ -224,6 +170,24 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         return KactusColors::REGULAR_FIELD;
     }
 
+    else if (role == Qt::ToolTipRole)
+    {
+        return valueForIndex(index);
+    }
+
+    else if (role == Qt::ForegroundRole)
+    {
+        return blackForValidOrRedForInvalidIndex(index);
+    }
+
+    else if (role == Qt::EditRole)
+    {
+        if (isValidExpressionColumn(index))
+        {
+            return expressionForIndex(index);
+        }
+    }
+
     else if (role == Qt::UserRole)
     {
         // Data for mode ref editor.
@@ -234,37 +198,12 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
             QList<QPair<QString, int> > modeRefs;
             for (auto const& [reference, priority] : modeRefsList)
             {
-                modeRefs.append(QPair<QString, int>({QString::fromStdString(reference), priority }));
+                modeRefs.append(QPair<QString, int>({ QString::fromStdString(reference), priority }));
             }
 
             QVariant modeRefsVariant;
             modeRefsVariant.setValue(modeRefs);
             return modeRefsVariant;
-        }
-    }
-
-    else if (role == Qt::EditRole)
-    {
-        // Data for expression editors
-
-        if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
-        {
-            return QString::fromStdString(fieldInterface_->getReadResponseExpression(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
-        {
-            return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumExpression(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
-        {
-            return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumExpression(fieldName_, index.row()));
-        }
-
-        else if (index.column() == FieldAccessPolicyColumns::RESERVED)
-        {
-            return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_, index.row()));
         }
     }
 
@@ -382,5 +321,200 @@ void FieldAccessPoliciesModel::onRemoveItem(QModelIndex const& index)
 
     emit invalidateFilter();
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int FieldAccessPoliciesModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
+{
+    return fieldInterface_->getAllReferencesToIdInFieldAccessPolicy(fieldName_, row, valueID.toStdString());
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool FieldAccessPoliciesModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    int column = index.column();
+    return column == FieldAccessPolicyColumns::READ_RESPONSE ||
+        column == FieldAccessPolicyColumns::RESERVED ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant FieldAccessPoliciesModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    if (isValidExpressionColumn(index))
+    {
+        return expressionForIndex(index);
+    }
+
+    return valueForIndex(index);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool FieldAccessPoliciesModel::validateIndex(QModelIndex const& index) const
+{
+    if (int column = index.column(); 
+        column == FieldAccessPolicyColumns::MODE)
+    {
+        return fieldInterface_->hasUniqueModeRefs(fieldName_, index.row());
+    }
+    
+    else if (column == FieldAccessPolicyColumns::ACCESS)
+    {
+        return fieldInterface_->hasValidAccess(fieldName_, index.row());
+    }
+    
+    else if (column == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        return fieldInterface_->hasValidReadResponse(fieldName_, index.row());
+    }
+    
+    else if (column == FieldAccessPolicyColumns::RESERVED)
+    {
+        return fieldInterface_->hasValidReserved(fieldName_, index.row());
+    }
+
+    else if (column == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM ||
+        column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+    {
+        return fieldInterface_->hasValidWriteValueConstraint(fieldName_, index.row());
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant FieldAccessPoliciesModel::valueForIndex(QModelIndex const& index) const
+{
+    if (index.column() == FieldAccessPolicyColumns::ACCESS)
+    {
+        return QString::fromStdString(fieldInterface_->getAccessString(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::MODE)
+    {
+        auto const& modeRefsList = fieldInterface_->getModeRefs(fieldName_, index.row());
+        QStringList list;
+        for (auto const& [reference, priority] : modeRefsList)
+        {
+            list.append(QString::fromStdString(reference));
+        }
+
+        return list.join(", ");
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::MODIFIED_WRITE)
+    {
+        return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_ACTION)
+    {
+        return QString::fromStdString(fieldInterface_->getReadActionString(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        return QString::fromStdString(fieldInterface_->getReadResponseValue(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
+    {
+        return QString::fromStdString(fieldInterface_->getTestableValue(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT)
+    {
+        return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        return QString::fromStdString(fieldInterface_->getReservedValue(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraint(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumValue(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumValue(fieldName_, index.row()));
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant FieldAccessPoliciesModel::expressionForIndex(QModelIndex const& index) const
+{
+    if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        return QString::fromStdString(fieldInterface_->getReadResponseExpression(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_, index.row()));
+    }
+    
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumExpression(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumExpression(fieldName_, index.row()));
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant FieldAccessPoliciesModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
+    {
+        return QString::fromStdString(fieldInterface_->getReadResponseFormattedExpression(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    {
+        return QString::fromStdString(fieldInterface_->getReservedFormattedExpression(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumFormattedExpression(fieldName_, index.row()));
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
+    {
+        return QString::fromStdString(fieldInterface_->getWriteConstraintMinimumFormattedExpression(fieldName_, index.row()));
+    }
+
+    return QVariant();
 }
 

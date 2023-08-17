@@ -9,7 +9,7 @@
 // Model for Mode elements within a component.
 //-----------------------------------------------------------------------------
 
-#include "Modesmodel.h"
+#include "ModesModel.h"
 
 #include "ModeColumns.h"
 

@@ -44,6 +44,7 @@ FieldInterface::FieldInterface(QSharedPointer<FieldValidator> validator,
 ParameterizableInterface(expressionParser, expressionFormatter),
 fields_(),
 validator_(validator),
+accessPolicyValidator_(expressionParser),
 subInterface_(subInterface)
 {
 
@@ -502,6 +503,24 @@ std::string FieldInterface::getReadResponseFormattedExpression(std::string const
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::getReadResponseValue()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReadResponseValue(std::string const& fieldName, int accessPolicyIndex, int baseNumber /*= 0*/) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return parseExpressionToBaseNumber(
+                accessPolicies->at(accessPolicyIndex)->getReadResponse(), baseNumber).toStdString();
+        }
+    }
+
+    return string("");
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::setReadResponse()
 //-----------------------------------------------------------------------------
 bool FieldInterface::setReadResponse(std::string const& fieldName, int accessPolicyIndex,
@@ -519,6 +538,59 @@ bool FieldInterface::setReadResponse(std::string const& fieldName, int accessPol
     {
         accessPolicies->at(accessPolicyIndex)->setReadResponse(QString::fromStdString(newReadResponse));
         return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getAllReferencesToIdInFieldAccessPolicy()
+//-----------------------------------------------------------------------------
+int FieldInterface::getAllReferencesToIdInFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex, 
+    std::string const& valueID) const
+{
+    auto field = getField(fieldName);
+    if (!field)
+    {
+        return 0;
+    }
+
+    if (auto accessPolicies = field->getFieldAccessPolicies();
+        accessPolicyIndex <= accessPolicies->size() - 1)
+    {
+        QString id(QString::fromStdString(valueID));
+
+        auto accessPolicy = accessPolicies->at(accessPolicyIndex);
+
+        int referencesInReadResponse = accessPolicy->getReadResponse().count(id);
+        int referencesInReserved = accessPolicy->getReserved().count(id);
+
+        int referencesInWriteConstraint = 0;
+
+        if (accessPolicy->getWriteValueConstraint()->getType() == WriteValueConstraint::MIN_MAX)
+        {
+            referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMaximum().count(id);
+            referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMinimum().count(id);
+        }
+
+        return referencesInReadResponse + referencesInReserved + referencesInWriteConstraint;
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::hasUniqueModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldInterface::hasUniqueModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return validator_->fieldAccessPolicyHasUniqueModeRefs(field, accessPolicies->at(accessPolicyIndex), accessPolicyIndex);
+        }
     }
 
     return false;
@@ -1052,12 +1124,75 @@ bool FieldInterface::hasValidIsPresent(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasValidAccess()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasValidAccess(string const& fieldName) const
+bool FieldInterface::hasValidAccess(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<Field> field = getField(fieldName);
-    if (field)
+    if (auto field = getField(fieldName); field)
     {
-        return validator_->hasValidAccess(field);
+        if (accessPolicyIndex == -1)
+        {
+            return validator_->hasValidAccess(field);
+        }
+
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = field->getFieldAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicyValidator_.hasValidAccess(accessPolicies->at(accessPolicyIndex));
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::hasValidReadResponse()
+//-----------------------------------------------------------------------------
+bool FieldInterface::hasValidReadResponse(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return accessPolicyValidator_.hasValidReadResponse(accessPolicies->at(accessPolicyIndex));
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::hasValidReserved()
+//-----------------------------------------------------------------------------
+bool FieldInterface::hasValidReserved(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return accessPolicyValidator_.hasValidReserved(accessPolicies->at(accessPolicyIndex));
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::hasValidMinimumWriteValueConstraint()
+//-----------------------------------------------------------------------------
+bool FieldInterface::hasValidWriteValueConstraint(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return accessPolicyValidator_.hasValidWriteValueConstraint(
+                field->getFieldAccessPolicies()->at(accessPolicyIndex));
+        }
     }
 
     return false;

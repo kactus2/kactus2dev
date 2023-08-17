@@ -33,7 +33,7 @@ view_(new EditableTableView(this))
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(view_);
 
-    auto model = new FieldAccessPoliciesModel(fieldName, fieldInterface, this);
+    auto model = new FieldAccessPoliciesModel(fieldName, parameterFinder, fieldInterface, this);
     auto proxy = new QSortFilterProxyModel(this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);

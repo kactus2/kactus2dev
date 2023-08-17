@@ -20,6 +20,8 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
 
+#include <IPXACTmodels/Component/validators/FieldAccessPolicyValidator.h>
+
 class Field;
 class FieldValidator;
 class ResetInterface;
@@ -479,13 +481,44 @@ public:
     bool hasValidIsPresent(std::string const& fieldName) const;
 
     /*!
-     *  Check if the selected field has a valid access.
+     *  Check if the selected field or field access policy has a valid access.
      *
-     *      @param [in] fieldName   Name of the selected field.
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the field access policy to validate.
      *
      *      @return True, if the access is valid, false otherwise.
      */
-    bool hasValidAccess(std::string const& fieldName) const;
+    bool hasValidAccess(std::string const& fieldName, int accessPolicyIndex = -1) const;
+
+    /*!
+     *  Check if the selected field access policy has a valid read response.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the field access policy to validate.
+     *
+     *      @return True, if the read response is valid, false otherwise.
+     */
+    bool hasValidReadResponse(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
+     *  Check if the selected field access policy has a valid reserved value.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the field access policy to validate.
+     *
+     *      @return True, if the reserved is valid, false otherwise.
+     */
+    bool hasValidReserved(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
+     *  Check if the selected field access policy has a valid write value constraint.
+     *
+     *      @param [in] fieldName           Name of the selected field.
+     *      @param [in] accessPolicyIndex   Index of the field access policy to validate.
+     *
+     *      @return True, if the write value constraint is valid, false otherwise.
+     */
+    bool hasValidWriteValueConstraint(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
      *  Add a new field.
@@ -728,21 +761,117 @@ public:
      */
     bool setID(std::string const& fieldName, std::string const& newID);
 
+    /*!
+     *	Add a new field access policy to a selected field.
+     *  
+     *      @param [in] fieldName     The field to add a new access policy to.
+     *	    
+     * 	    @return True, if successful, otherwise false.
+     */
     bool addFieldAccessPolicy(std::string const& fieldName);
 
+    /*!
+     *	Remove the given field access policy from a specific field.
+     *  
+     *      @param [in] fieldName             The name of the field.
+     *      @param [in] accessPolicyIndex     The index of the field access policy to be removed.
+     *	    
+     * 	    @return True, if successful, otherwise false.
+     */
     bool removeFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex);
 
+    /*!
+     *	Get the mode references of a given field access policy.
+     *  
+     *      @param [in] fieldName               The name of the field.
+     *      @param [in] accessPolicyIndex       Index of the field access policy.
+     *	    
+     * 	    @return A vector containing the mode references as a string-int pair.
+     */
     std::vector<std::pair<std::string, int> > getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
+    /*!
+     *	Set the mode references of the given field access policy.
+     *  
+     *      @param [in] fieldName             The name of the field.
+     *      @param [in] accessPolicyIndex     Index of the field access policy whose mode references are set.
+     *      @param [in] modeRefs              The mode references to set.
+     *	    
+     * 	    @return True, if successful, otherwise false.
+     */
     bool setModeRefs(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<std::string, int> > const& modeRefs) const;
 
+    /*!
+     *	Get the access policy count of the given field.
+     *  
+     *      @param [in] fieldName     Description
+     *	    
+     * 	    @return The number of field access policies in the given field.
+     */
     int getAccessPolicyCount(std::string const& fieldName) const;
 
+    /*!
+     *	Get the read response of a field access policy as an expression.
+     *  
+     *      @param [in] fieldName               The name of the field.
+     *      @param [in] accessPolicyIndex       Index of the field access policy.
+     *
+     * 	    @return The read response as an expression.
+     */
     std::string getReadResponseExpression(std::string const& fieldName, int accessPolicyIndex) const;
 
+    /*!
+     *	Get the read response of a field access policy as a formatted expression.
+     *  
+     *      @param [in] fieldName               The name of the field.
+     *      @param [in] accessPolicyIndex       Index of the field access policy.
+     *
+     * 	    @return The read response as a formatted expression.
+     */
     std::string getReadResponseFormattedExpression(std::string const& fieldName, int accessPolicyIndex) const;
 
+    /*!
+     *	Get the evaluated read response value of a field access policy.
+     *  
+     *      @param [in] fieldName             The name of the field.
+     *      @param [in] accessPolicyIndex     Index of the field access policy.
+     *      @param [in] baseNumber            Base for displaying the value.
+     *	    
+     * 	    @return The evaluated read response.
+     */
+    std::string getReadResponseValue(std::string const& fieldName, int accessPolicyIndex, int baseNumber = 0) const;
+
+    /*!
+     *	Set the read response of a selected field access policy.
+     *  
+     *      @param [in] fieldName             The name of the field.
+     *      @param [in] accessPolicyIndex     Index of the field access policy.
+     *      @param [in] newReadResponse       The read response to set.
+     *	    
+     * 	    @return True, if successful, otherwise false.
+     */
     bool setReadResponse(std::string const& fieldName, int accessPolicyIndex, std::string const& newReadResponse) const;
+
+    /*!
+     *	Get the number of references to a parameter used in the different sub-elements of the field access policy.
+     *  
+     *      @param [in] fieldName             The name of the field.
+     *      @param [in] accessPolicyIndex     Index of the field access policy.
+     *      @param [in] valueID               The parameter (ID) to check.
+     *	    
+     * 	    @return The number of references to a parameter used within the field access policy.
+     */
+    int getAllReferencesToIdInFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex, std::string const& valueID) const;
+
+    /*!
+     *	Checks if the field access policy given by index has unique mode references.
+     *  
+     *      @param [in] fieldName               The name of the field.
+     *      @param [in] accessPolicyIndex       The index of the field access policy to check.
+     *	    
+     * 	    @return True, if the field access policy's mode references are unique, otherwise false.
+     */
+    bool hasUniqueModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
 private:
 
@@ -783,8 +912,12 @@ private:
     //! Validator for fields.
     QSharedPointer<FieldValidator> validator_;
 
+    //! Validator for field access policies.
+    FieldAccessPolicyValidator accessPolicyValidator_;
+
     //! Interface for accessing resets.
     ResetInterface* subInterface_;
+    
 };
 
 #endif // REGISTERTABLEMODEL_H

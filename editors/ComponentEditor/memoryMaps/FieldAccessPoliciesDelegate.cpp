@@ -259,6 +259,16 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
         }
     }
 
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
+    {
+        auto writeConstraintEditor = qobject_cast<QComboBox*>(editor);
+
+        if (writeConstraintEditor)
+        {
+            model->setData(index, writeConstraintEditor->currentText(), Qt::EditRole);
+        }
+    }
+
     else
     {
         ExpressionDelegate::setModelData(editor, model, index);

@@ -990,3 +990,56 @@ bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) c
     return true;
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::fieldAccessPolicyHasUniqueModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldValidator::fieldAccessPolicyHasUniqueModeRefs(QSharedPointer<Field> field, QSharedPointer<FieldAccessPolicy> accessPolicy, int accessPolicyIndex) const
+{
+    if (!accessPolicy)
+    {
+        return false;
+    }
+
+    auto accessPolicyModeRefs = accessPolicy->getModeReferences();
+
+    QStringList accessPolicyModeRefStrings;
+    std::transform(accessPolicyModeRefs->cbegin(), accessPolicyModeRefs->cend(), std::back_inserter(accessPolicyModeRefStrings),
+        [](auto modeRef)
+        {
+            return modeRef->getReference();
+        });
+
+    QStringList accessPolciyModeRefPriorities;
+    std::transform(accessPolicyModeRefs->cbegin(), accessPolicyModeRefs->cend(), std::back_inserter(accessPolciyModeRefPriorities),
+        [](auto modeRef)
+        {
+            return modeRef->getPriority();
+        });
+    
+    auto accessPolicies = field->getFieldAccessPolicies();
+
+    for (int i = 0; i < accessPolicies->size(); ++i)
+    {
+        // Check for all other access policies.
+        if (i == accessPolicyIndex)
+        {
+            continue;
+        }
+
+        for (auto const& modeRef : *accessPolicies->at(i)->getModeReferences())
+        {
+            if (accessPolicyModeRefStrings.contains(modeRef->getReference()))
+            {
+                return false;
+            }
+
+            if (accessPolciyModeRefPriorities.contains(modeRef->getPriority()))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
