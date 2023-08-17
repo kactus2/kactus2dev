@@ -466,7 +466,7 @@ int FieldInterface::getAccessPolicyCount(std::string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getReadResponse()
 //-----------------------------------------------------------------------------
-std::string FieldInterface::getReadResponse(std::string const& fieldName, int accessPolicyIndex) const
+std::string FieldInterface::getReadResponseExpression(std::string const& fieldName, int accessPolicyIndex) const
 {
     auto field = getField(fieldName);
 
@@ -482,6 +482,23 @@ std::string FieldInterface::getReadResponse(std::string const& fieldName, int ac
     }
 
     return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getReadResponseFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string FieldInterface::getReadResponseFormattedExpression(std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName); field)
+    {
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            return formattedValueFor(accessPolicies->at(accessPolicyIndex)->getReadResponse()).toStdString();
+        }
+    }
+
+    return string("");
 }
 
 //-----------------------------------------------------------------------------

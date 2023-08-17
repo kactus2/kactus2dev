@@ -738,7 +738,9 @@ public:
 
     int getAccessPolicyCount(std::string const& fieldName) const;
 
-    std::string getReadResponse(std::string const& fieldName, int accessPolicyIndex) const;
+    std::string getReadResponseExpression(std::string const& fieldName, int accessPolicyIndex) const;
+
+    std::string getReadResponseFormattedExpression(std::string const& fieldName, int accessPolicyIndex) const;
 
     bool setReadResponse(std::string const& fieldName, int accessPolicyIndex, std::string const& newReadResponse) const;
 

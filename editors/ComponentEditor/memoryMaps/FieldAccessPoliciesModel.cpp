@@ -180,7 +180,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         
         else if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
         {
-            return QString::fromStdString(fieldInterface_->getReadResponse(fieldName_, index.row()));
+            return QString::fromStdString(fieldInterface_->getReadResponseFormattedExpression(fieldName_, index.row()));
         }
 
         else if (index.column() == FieldAccessPolicyColumns::TESTABLE)
@@ -195,7 +195,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
         else if (index.column() == FieldAccessPolicyColumns::RESERVED)
         {
-            return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_, index.row()));
+            return QString::fromStdString(fieldInterface_->getReservedFormattedExpression(fieldName_, index.row()));
         }
         
         else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
@@ -249,7 +249,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
         if (index.column() == FieldAccessPolicyColumns::READ_RESPONSE)
         {
-            return QString::fromStdString(fieldInterface_->getReadResponse(fieldName_, index.row()));
+            return QString::fromStdString(fieldInterface_->getReadResponseExpression(fieldName_, index.row()));
         }
 
         else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
@@ -260,6 +260,11 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM)
         {
             return QString::fromStdString(fieldInterface_->getWriteConstraintMaximumExpression(fieldName_, index.row()));
+        }
+
+        else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+        {
+            return QString::fromStdString(fieldInterface_->getReservedExpression(fieldName_, index.row()));
         }
     }
 
