@@ -67,6 +67,20 @@ signals:
 	 */
 	void contentChanged();
 
+	/*!
+	 *  Increase the amount of references to a parameter with a matching id.
+	 *
+	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 */
+	void increaseReferences(QString const& id);
+
+	/*!
+	 *  Decrease the amount of references to a parameter with a matching id.
+	 *
+	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 */
+	void decreaseReferences(QString const& id);
+
 private:
 
 	//! The component containing the modes.

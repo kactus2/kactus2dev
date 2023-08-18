@@ -1,12 +1,12 @@
 //-----------------------------------------------------------------------------
-// File: RegionsModel.h
+// File: Regionsmodel.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Antti Kamppi
-// Date: 22.02.2012
+// Author: Esko Pekkarinen
+// Date: 20.06.2023
 //
 // Description:
-// The model that can be used to display the segments to be edited.
+// The model that can be used to display the regions to be edited.
 //-----------------------------------------------------------------------------
 
 #include "RegionsModel.h"

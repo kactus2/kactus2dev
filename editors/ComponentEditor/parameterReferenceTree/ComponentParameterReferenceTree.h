@@ -263,6 +263,11 @@ private:
     void createReferencesForRemapStates();
 
     /*!
+     *  Create references for modes.
+     */
+    void createReferencesForModes();
+
+    /*!
      *  Create references for indirect interfaces.
      */
     void createReferencesForIndirectInterfaces();

@@ -43,6 +43,11 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+    connect(&portSliceEditor_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(&portSliceEditor_, SIGNAL(decreaseReferences(QString const&)),
+
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     setupLayout();
 }
 

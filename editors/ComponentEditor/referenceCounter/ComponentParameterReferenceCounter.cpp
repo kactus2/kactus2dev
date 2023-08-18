@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/BuildCommand.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Region.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -32,6 +33,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/MirroredTargetInterface.h>
 #include <IPXACTmodels/Component/InitiatorInterface.h>
+#include <IPXACTmodels/Component/PortSlice.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
@@ -77,6 +79,7 @@ void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVect
             referenceCount += countReferencesInPorts(parameterID);
             referenceCount += countReferencesInBusInterfaces(parameterID);
             referenceCount += countReferencesInRemapStates(parameterID);
+            referenceCount += countReferencesInModes(parameterID);
             referenceCount += countReferencesInIndirectInterfaces(parameterID);
             referenceCount += countReferencesInCpus(parameterID);
 
@@ -440,6 +443,49 @@ int ComponentParameterReferenceCounter::countReferencesInWriteConstraint(QString
         referenceCount += countReferencesInExpression(parameterID, writeConstraint->getMaximum());
     }
 
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInModes()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInModes(QString const& parameterID) const
+{
+    int referenceCount = 0;
+
+    for (auto const& mode : *component_->getModes())
+    {
+        referenceCount += countReferencesInSingleMode(parameterID, mode);
+    }
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleMode()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleMode(QString const& parameterID,
+    QSharedPointer<Mode> mode) const
+{
+    int referenceCount = 0;
+
+    for (auto const& slice : *mode->getPortSlices())
+    {
+        referenceCount += countReferencesInSinglePortSlice(parameterID, slice);
+    }
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSinglePortSlice()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSinglePortSlice(QString const& parameterID, 
+    QSharedPointer<PortSlice> portSlice) const
+{
+    int referenceCount = 0;
+    referenceCount += portSlice->getLeftRange().count(parameterID);
+    referenceCount += portSlice->getRightRange().count(parameterID);
     return referenceCount;
 }
 
@@ -889,3 +935,4 @@ int ComponentParameterReferenceCounter::countReferencesInSingleRegion(QString co
 
     return referenceCounter;
 }
+

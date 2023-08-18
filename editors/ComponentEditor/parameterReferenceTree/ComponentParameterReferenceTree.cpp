@@ -30,6 +30,7 @@
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Region.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -111,6 +112,11 @@ void ComponentParameterReferenceTree::setupTree()
         if (referenceCounter_->countReferencesInRemapStates(getTargetID()) > 0)
         {
             createReferencesForRemapStates();
+        }
+
+        if (referenceCounter_->countReferencesInModes(getTargetID()) > 0)
+        {
+            createReferencesForModes();
         }
 
         if (referenceCounter_->countReferencesInIndirectInterfaces(getTargetID()) > 0)
@@ -753,6 +759,46 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
                         itemName.append("[" + remapPort->getPortIndex() + "]");
                     }
                     createItem(itemName, remapPort->getValue(), remapPortsItem);
+                }
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForModes()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForModes()
+{
+    QTreeWidgetItem* topRemapStatesItem = createTopItem("Modes");
+    QString targetID = getTargetID();
+
+    for (auto const& mode : *component_->getModes())
+    {
+        if (referenceCounter_->countReferencesInSingleMode(targetID, mode) > 0)
+        {
+            QTreeWidgetItem* modeItem = createMiddleItem(mode->name(), topRemapStatesItem);
+
+            QTreeWidgetItem* portsItem = createMiddleItem("Condition Ports", modeItem);
+            colourItemGrey(portsItem);
+
+            for (auto const& portSlice : *mode->getPortSlices())
+            {
+                if (referenceCounter_->countReferencesInSinglePortSlice(targetID, portSlice) > 0)
+                {
+                    QTreeWidgetItem* sliceItem = createMiddleItem(portSlice->name(), portsItem);
+                    colourItemGrey(portsItem);
+
+
+                    if (portSlice->getLeftRange().contains(targetID))
+                    {
+                        createItem("Left bound", portSlice->getLeftRange(), sliceItem);
+                    }
+
+                    if (portSlice->getRightRange().contains(targetID))
+                    {
+                        createItem("Right bound", portSlice->getRightRange(), sliceItem);
+                    }
                 }
             }
         }

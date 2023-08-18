@@ -74,6 +74,11 @@ QWidget(parent),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(delegate_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
