@@ -27,6 +27,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/FieldAccessPolicy.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -392,6 +393,7 @@ int ComponentParameterReferenceCounter::countReferencesInSingleField(QString con
     referenceCount += countReferencesInExpression(parameterID, registerField->getIsPresent());
     referenceCount += countReferencesInFieldResets(parameterID, registerField->getResets());
     referenceCount += countReferencesInWriteConstraint(parameterID, registerField->getWriteConstraint());
+    referenceCount += countReferencesInFieldAccessPolicies(parameterID, registerField->getFieldAccessPolicies());
 
     return referenceCount;
 }
@@ -422,6 +424,30 @@ int ComponentParameterReferenceCounter::countReferencesInSingleFieldReset(QStrin
 
     referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetValue());
     referenceCount += countReferencesInExpression(parameterID, fieldReset->getResetMask());
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInFieldAccessPolicies(QString const& parameterID,
+    QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > accessPolicies) const
+{
+    int referenceCount = 0;
+
+    for (auto const& accessPolicy : *accessPolicies)
+    {
+        referenceCount += countReferencesInExpression(parameterID, accessPolicy->getReadResponse());
+        referenceCount += countReferencesInExpression(parameterID, accessPolicy->getReserved());
+
+        if (auto writeValueConstraint = accessPolicy->getWriteValueConstraint();
+            writeValueConstraint)
+        {
+            referenceCount += countReferencesInExpression(parameterID, writeValueConstraint->getMinimum());
+            referenceCount += countReferencesInExpression(parameterID, writeValueConstraint->getMaximum());
+        }
+    }
 
     return referenceCount;
 }

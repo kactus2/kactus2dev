@@ -329,6 +329,7 @@ void FieldAccessPoliciesModel::onRemoveItem(QModelIndex const& index)
     }
 
     beginRemoveRows(QModelIndex(), index.row(), index.row());
+    removeReferencesInItemOnRow(index.row());
     fieldInterface_->removeFieldAccessPolicy(fieldName_, index.row());
     endRemoveRows();
 

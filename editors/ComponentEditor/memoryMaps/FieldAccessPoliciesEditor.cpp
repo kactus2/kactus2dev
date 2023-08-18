@@ -50,10 +50,22 @@ view_(new EditableTableView(this))
     view_->setItemDelegate(delegate);
     view_->horizontalHeader()->setStretchLastSection(false);
 
-    connect(view_, SIGNAL(addItem(QModelIndex const&)), model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
-    connect(view_, SIGNAL(removeItem(QModelIndex const&)), model, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(addItem(QModelIndex const&)),
+        model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(removeItem(QModelIndex const&)),
+        model, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
 
     connect(model, SIGNAL(invalidateFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
     connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(model, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(model, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 }

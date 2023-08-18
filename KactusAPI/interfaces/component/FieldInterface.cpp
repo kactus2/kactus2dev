@@ -567,10 +567,14 @@ int FieldInterface::getAllReferencesToIdInFieldAccessPolicy(std::string const& f
 
         int referencesInWriteConstraint = 0;
 
-        if (accessPolicy->getWriteValueConstraint()->getType() == WriteValueConstraint::MIN_MAX)
+        if (auto writeConstraint = accessPolicy->getWriteValueConstraint();
+            writeConstraint)
         {
-            referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMaximum().count(id);
-            referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMinimum().count(id);
+            if (writeConstraint->getType() == WriteValueConstraint::MIN_MAX)
+            {
+                referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMaximum().count(id);
+                referencesInWriteConstraint += accessPolicy->getWriteValueConstraint()->getMinimum().count(id);
+            }
         }
 
         return referencesInReadResponse + referencesInReserved + referencesInWriteConstraint;
