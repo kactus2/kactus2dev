@@ -64,16 +64,22 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
     }
 
     // Disable editing until editor is made.
-    if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
+    else if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
     {
         return Qt::NoItemFlags;
     }
 
     // Disable write constraint min/max, when that option is not set.
-    if ((index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
+    else if ((index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
         index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM) &&
         QString::fromStdString(fieldInterface_->getWriteConstraint(
             fieldName_, index.row())) != QStringLiteral("Set minimum and maximum limits"))
+    {
+        return Qt::NoItemFlags;
+    }
+
+    else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT &&
+        fieldInterface_->getTestableBool(fieldName_, index.row()) == false)
     {
         return Qt::NoItemFlags;
     }
@@ -272,7 +278,14 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
     {
-        fieldInterface_->setWriteConstraint(fieldName_, value.toString().toStdString(), index.row());
+        auto oldValue = fieldInterface_->getWriteConstraint(fieldName_, index.row());
+        auto newValue = value.toString().toStdString();
+
+        // To prevent clearing the min/max fields after clicking out of editor, even when selection isn't changed.
+        if (oldValue != newValue)
+        {
+            fieldInterface_->setWriteConstraint(fieldName_, value.toString().toStdString(), index.row());
+        }
     }
 
     else if (index.column() == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM)
