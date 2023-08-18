@@ -364,7 +364,7 @@ bool FieldAccessPoliciesModel::validateIndex(QModelIndex const& index) const
     if (int column = index.column(); 
         column == FieldAccessPolicyColumns::MODE)
     {
-        return fieldInterface_->hasUniqueModeRefs(fieldName_, index.row());
+        return fieldInterface_->hasValidAccessPolicyModeRefs(fieldName_, index.row());
     }
     
     else if (column == FieldAccessPolicyColumns::ACCESS)

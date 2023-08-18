@@ -243,20 +243,6 @@ public:
     bool hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) const;
 
     /*!
-     *	Check for a given field access policy if its mode refs are unique among all of the field's field 
-     *  access policies.
-     *  
-     *      @param [in] field                 The field containing the field access policy to check.
-     *      @param [in] accessPolicy          The field access policy, whose mode references are checked.
-     *      @param [in] accessPolicyIndex     The index of the field access policy, used to ID the field 
-     *                                        access policy.
-     *	    
-     * 	    @return True, if the mode references of the field access policy are unique, otherwise false.
-     */
-    bool fieldAccessPolicyHasUniqueModeRefs(QSharedPointer<Field> field, 
-        QSharedPointer<FieldAccessPolicy> accessPolicy, int accessPolicyIndex) const;
-
-    /*!
      *  Locate errors within a field.
      *
      *      @param [in] errors      List of found errors.

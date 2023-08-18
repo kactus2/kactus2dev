@@ -864,14 +864,14 @@ public:
     int getAllReferencesToIdInFieldAccessPolicy(std::string const& fieldName, int accessPolicyIndex, std::string const& valueID) const;
 
     /*!
-     *	Checks if the field access policy given by index has unique mode references.
+     *	Checks if the field access policy given by index has valid mode references.
      *  
      *      @param [in] fieldName               The name of the field.
      *      @param [in] accessPolicyIndex       The index of the field access policy to check.
      *	    
-     * 	    @return True, if the field access policy's mode references are unique, otherwise false.
+     * 	    @return True, if the field access policy's mode references are valid, otherwise false.
      */
-    bool hasUniqueModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
+    bool hasValidAccessPolicyModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
 private:
 

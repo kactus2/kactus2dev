@@ -268,7 +268,7 @@ bool FieldValidator::hasValidReserved(QSharedPointer<Field> field) const
         bool canConvert = false;
         int intValue = solvedValue.toInt(&canConvert);
 
-	    if (isValidReserved == false || canConvert ==false || intValue < 0 || intValue > 1)
+        if (isValidReserved == false || canConvert ==false || intValue < 0 || intValue > 1)
         {
             return false;
         }
@@ -869,9 +869,15 @@ void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Fi
 
     bool duplicateRefErrorIssued = false;
     bool duplicatePriorityErrorIssued = false;
+    bool hasAccessPolicyWithoutModeRef = false;
 
     for (auto const& accessPolicy : *field->getFieldAccessPolicies())
     {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
         for (auto const& modeRef : *accessPolicy->getModeReferences())
         {
             if (priorityList.contains(modeRef->getPriority()) && !duplicatePriorityErrorIssued)
@@ -879,6 +885,7 @@ void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Fi
                 errors.append(QObject::tr(
                     "One or more field access policy mode references of field %1 in %2 contain duplicate priority values.")
                     .arg(field->name()).arg(context));
+                duplicatePriorityErrorIssued = true;
             }
             else
             {
@@ -890,12 +897,19 @@ void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Fi
                 errors.append(QObject::tr(
                     "One or more field access policy mode references of field %1 in %2 contain duplicate mode reference values.")
                     .arg(field->name()).arg(context));
+                duplicateRefErrorIssued = true;
             }
             else
             {
                 modeRefList.append(modeRef->getReference());
             }
         }
+    }
+
+    if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
+    {
+        errors.append(QObject::tr("In field %1 in %2, multiple field access policies are not allowed, if one "
+            "of them lacks a mode reference.").arg(field->name()).arg(context));
     }
 }
 
@@ -963,8 +977,15 @@ bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) c
     QStringList modeRefList;
     QStringList priorityList;
 
+    bool hasAccessPolicyWithoutModeRef = false;
+
     for (auto const& accessPolicy : *field->getFieldAccessPolicies())
     {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
         for (auto const& modeRef : *accessPolicy->getModeReferences())
         {
             if (priorityList.contains(modeRef->getPriority()))
@@ -987,59 +1008,10 @@ bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) c
         }
     }
 
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldValidator::fieldAccessPolicyHasUniqueModeRefs()
-//-----------------------------------------------------------------------------
-bool FieldValidator::fieldAccessPolicyHasUniqueModeRefs(QSharedPointer<Field> field, QSharedPointer<FieldAccessPolicy> accessPolicy, int accessPolicyIndex) const
-{
-    if (!accessPolicy)
+    if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
     {
         return false;
     }
 
-    auto accessPolicyModeRefs = accessPolicy->getModeReferences();
-
-    QStringList accessPolicyModeRefStrings;
-    std::transform(accessPolicyModeRefs->cbegin(), accessPolicyModeRefs->cend(), std::back_inserter(accessPolicyModeRefStrings),
-        [](auto modeRef)
-        {
-            return modeRef->getReference();
-        });
-
-    QStringList accessPolciyModeRefPriorities;
-    std::transform(accessPolicyModeRefs->cbegin(), accessPolicyModeRefs->cend(), std::back_inserter(accessPolciyModeRefPriorities),
-        [](auto modeRef)
-        {
-            return modeRef->getPriority();
-        });
-    
-    auto accessPolicies = field->getFieldAccessPolicies();
-
-    for (int i = 0; i < accessPolicies->size(); ++i)
-    {
-        // Check for all other access policies.
-        if (i == accessPolicyIndex)
-        {
-            continue;
-        }
-
-        for (auto const& modeRef : *accessPolicies->at(i)->getModeReferences())
-        {
-            if (accessPolicyModeRefStrings.contains(modeRef->getReference()))
-            {
-                return false;
-            }
-
-            if (accessPolciyModeRefPriorities.contains(modeRef->getPriority()))
-            {
-                return false;
-            }
-        }
-    }
-
     return true;
 }
-

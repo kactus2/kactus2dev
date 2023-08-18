@@ -582,14 +582,14 @@ int FieldInterface::getAllReferencesToIdInFieldAccessPolicy(std::string const& f
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasUniqueModeRefs()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasUniqueModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+bool FieldInterface::hasValidAccessPolicyModeRefs(std::string const& fieldName, int accessPolicyIndex) const
 {
     if (auto field = getField(fieldName); field)
     {
         if (auto accessPolicies = field->getFieldAccessPolicies();
             accessPolicyIndex <= accessPolicies->size() - 1)
         {
-            return validator_->fieldAccessPolicyHasUniqueModeRefs(field, accessPolicies->at(accessPolicyIndex), accessPolicyIndex);
+            return validator_->hasValidAccessPolicyModeRefs(field);
         }
     }
 
