@@ -48,6 +48,20 @@ Qualifier::Qualifier(Qualifier const& other) :
 }
 
 //-----------------------------------------------------------------------------
+// Function: Qualifier::operator=()
+//-----------------------------------------------------------------------------
+Qualifier& Qualifier::operator=(Qualifier const& other)
+{
+    if (this != &other)
+    {
+        types_ = QSharedPointer<QList<Type> >(new QList<Type>(*other.types_));
+        attributes_ = other.attributes_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Qualifier::isSet()
 //-----------------------------------------------------------------------------
 bool Qualifier::isSet() const

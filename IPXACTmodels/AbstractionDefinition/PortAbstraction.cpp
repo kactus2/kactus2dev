@@ -14,6 +14,7 @@
 #include "WireAbstraction.h"
 #include "WirePort.h"
 #include "TransactionalPort.h"
+#include "Packet.h"
 
 #include <IPXACTmodels/common/Qualifier.h>
 
@@ -56,6 +57,8 @@ NameGroup(other),
         transactional_ = QSharedPointer<TransactionalAbstraction>(
             new TransactionalAbstraction(*other.transactional_.data()));
     }
+
+    Utilities::copyList(packets_, other.packets_);
 }
 
 //-----------------------------------------------------------------------------
@@ -96,6 +99,8 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
         {
 			transactional_ = QSharedPointer<TransactionalAbstraction>();
         }
+
+        Utilities::copyList(packets_, other.packets_);
 	}
 	return *this;
 }

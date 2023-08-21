@@ -28,6 +28,9 @@ public:
 
     PacketField(QString const& name = QString());
 
+    PacketField(PacketField const& other);
+    PacketField& operator==(PacketField const& other);
+
     ~PacketField() = default;
     
     /*!

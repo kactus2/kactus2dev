@@ -64,6 +64,8 @@ public:
      */
     FieldReference(FieldReference const& other);
 
+    FieldReference& operator=(FieldReference const& other);
+
     virtual ~FieldReference() = default;
 
     //! The above types as strings matching the IP-XACT element names.

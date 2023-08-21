@@ -23,7 +23,8 @@ Range(left, right)
 // Function: Vector::Vector()
 //-----------------------------------------------------------------------------
 Vector::Vector(Vector const& other):
-Range(other.getLeft(), other.getRight())
+Range(other.getLeft(), other.getRight()),
+vectorId_(other.vectorId_)
 {
 
 }

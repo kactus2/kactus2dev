@@ -110,6 +110,8 @@ Field& Field::operator=( const Field& other )
         copyParameters(other);
         resets_->clear();
         copyResets(other);
+        fieldAccessPolicies_->clear();
+        copyFieldAccessPolicies(other);
     }
 
     return *this;
