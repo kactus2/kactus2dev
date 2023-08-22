@@ -22,7 +22,7 @@ void FieldAccessPolicyWriter::writeFieldAccessPolicy(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:fieldAccessPolicy"));
 
-    Details::writeModeRefs(writer, fieldAccessPolicy->getModeReferences());
+    CommonItemsWriter::writeModeReferences(writer, fieldAccessPolicy->getModeReferences());
 
     Details::writeFieldAccessPolicyDefinitionRef(writer, fieldAccessPolicy);
 
@@ -47,31 +47,6 @@ void FieldAccessPolicyWriter::writeFieldAccessPolicy(QXmlStreamWriter& writer,
     CommonItemsWriter::writeVendorExtensions(writer, fieldAccessPolicy);
 
     writer.writeEndElement(); // ipxact:fieldAccessPolicy
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicyWriter::Details::writeModeRefs()
-//-----------------------------------------------------------------------------
-void FieldAccessPolicyWriter::Details::writeModeRefs(QXmlStreamWriter& writer, 
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
-{
-    if (modeRefs->isEmpty())
-    {
-        return;
-    }
-
-    for (auto const& modeRef : *modeRefs)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:modeRef"));
-
-        if (auto const& priority = modeRef->getPriority(); !priority.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("priority"), priority);
-        }
-
-        writer.writeCharacters(modeRef->getReference());
-        writer.writeEndElement(); // ipxact:modeRef
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -239,7 +214,7 @@ void FieldAccessPolicyWriter::Details::writeAccessRestrictions(QXmlStreamWriter&
     {
         writer.writeStartElement(QStringLiteral("ipxact:accessRestriction"));
 
-        writeModeRefs(writer, accessRestriction->modeRefs_);
+        CommonItemsWriter::writeModeReferences(writer, accessRestriction->modeRefs_);
 
         if (!accessRestriction->readAccessMask_.isEmpty())
         {

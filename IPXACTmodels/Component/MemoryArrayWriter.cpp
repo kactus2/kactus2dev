@@ -17,6 +17,11 @@
 //-----------------------------------------------------------------------------
 void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, bool isField)
 {
+    if (!memoryArray)
+    {
+        return;
+    }
+
     writer.writeStartElement(QStringLiteral("ipxact:array"));
 
     Details::writeDimensions(writer, memoryArray);
