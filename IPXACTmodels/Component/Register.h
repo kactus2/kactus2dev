@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 
 class AlternateRegister;
+class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:register element.
@@ -85,6 +86,48 @@ public:
 	 */
     void setSize(QString const& newSize);
 
+    /*!
+     *	Get the register's memory array.
+     *  
+     * 	    @return Pointer to the memory array of the register.
+     */
+    QSharedPointer<MemoryArray> getMemoryArray() const;
+
+    /*!
+     *	Set the memory array of the register.
+     *  
+     *      @param [in] newMemArray     Pointer to the memory array to set.
+     */
+    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
+
+    /*!
+     *	Get the register definition reference.
+     *	    
+     * 	    @return The reference to a register definition.
+     */
+    QString getRegisterDefinitionReference() const;
+
+    /*!
+     *	Set the register definition reference.
+     *  
+     *      @param [in] registerDefinitionRef     The new register definition reference.
+     */
+    void setRegisterDefinitionReference(QString const& registerDefinitionRef);
+
+    /*!
+     *	Get the reference to the type definitions containing the register definition reference.
+     *	    
+     * 	    @return The reference to the type definitions containing the register definition.
+     */
+    QString getTypeDefinitionsReference() const;
+
+    /*!
+     *	Set the type definitions reference.
+     *  
+     *      @param [in] typeDefinitionsRef     The new type definitions reference to set.
+     */
+    void setTypeDefinitionsReference(QString const& typeDefinitionsRef);
+
 private:
 
     /*!
@@ -103,6 +146,15 @@ private:
 
 	//! Contains the alternateRegisters for this register.
     QSharedPointer<QList<QSharedPointer<AlternateRegister> > > alternateRegisters_;
+
+    //! The memory array of the register.
+    QSharedPointer<MemoryArray> memoryArray_;
+
+    //! The name of the referenced register definition.
+    QString registerDefinitionReference_;
+
+    //! The type definitions containing the referenced register definition.
+    QString typeDefinitionsReference_;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Register>);

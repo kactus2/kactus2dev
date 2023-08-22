@@ -23,6 +23,7 @@
 #include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/ModeReference.h>
 
 #include <QPointF>
 #include <QSharedPointer>
@@ -145,6 +146,15 @@ public:
         Document::Revision revision);
 
     static QSharedPointer<PartSelect> parsePartSelect(QDomNode const& partSelectNode);
+
+    /*!
+     *	Parses mode references.
+     *  
+     *      @param [in] itemNode       XML description of the IP-XACT element.
+     *
+     * 	    @return A list of parsed mode references.
+     */
+    static QSharedPointer<QList<QSharedPointer<ModeReference> > > parseModeReferences(QDomNode const& itemNode);
 };
 
 #endif // DOCUMENTREADER_H

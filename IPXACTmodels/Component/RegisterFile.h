@@ -20,6 +20,8 @@
 #include <QMap>
 #include <QSharedPointer>
 
+class MemoryArray;
+
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:registerFile element.
 //-----------------------------------------------------------------------------
@@ -82,6 +84,47 @@ public:
 	 *      @param [in] newRegisterData     Pointer to a list containing the register data.
 	 */
     void setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData);
+    /*!
+     *	Get the register file's memory array.
+     *  
+     * 	    @return Pointer to the memory array of the register file.
+     */
+    QSharedPointer<MemoryArray> getMemoryArray() const;
+
+    /*!
+     *	Set the memory array of the register file.
+     *  
+     *      @param [in] newMemArray     Pointer to the memory array to set.
+     */
+    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
+
+    /*!
+     *	Get the register file definition reference.
+     *
+     * 	    @return The reference to a register file definition.
+     */
+    QString getRegisterFileDefinitionReference() const;
+
+    /*!
+     *	Set the register file definition reference.
+     *
+     *      @param [in] registerFileDefinitionRef     The new register file definition reference.
+     */
+    void setRegisterFileDefinitionReference(QString const& newRegisterFileDefinitionRef);
+
+    /*!
+     *	Get the reference to the type definitions containing the register file definition reference.
+     *
+     * 	    @return The reference to the type definitions containing the register file definition.
+     */
+    QString getTypeDefinitionsReference() const;
+
+    /*!
+     *	Set the type definitions reference.
+     *
+     *      @param [in] typeDefinitionsRef     The new type definitions reference to set.
+     */
+    void setTypeDefinitionsReference(QString const& newTypeDefinitionsRef);
 
 private:
 
@@ -101,6 +144,16 @@ private:
 
 	//! Contains pointers to the register data.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
+
+    //! The memory array of the register file.
+    QSharedPointer<MemoryArray> memoryArray_;
+
+    //! The name of the referenced register file definition.
+    QString registerFileDefinitionReference_;
+
+    //! The type definitions containing the referenced register file definition.
+    QString typeDefinitionsReference_;
+
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<RegisterFile>);

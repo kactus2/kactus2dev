@@ -22,7 +22,7 @@ QSharedPointer<FieldAccessPolicy> FieldAccessPolicyReader::createFieldAccessPoli
 {
     QSharedPointer<FieldAccessPolicy> fieldAccessPolicy(new FieldAccessPolicy());
 
-    Details::parseModeRefs(fieldAccessPolicyNode, fieldAccessPolicy->getModeReferences());
+    Details::parseModeRefs(fieldAccessPolicyNode, fieldAccessPolicy);
 
     Details::parseDefinitionRef(fieldAccessPolicyNode, fieldAccessPolicy);
 
@@ -53,28 +53,9 @@ QSharedPointer<FieldAccessPolicy> FieldAccessPolicyReader::createFieldAccessPoli
 // Function: FieldAccessPolicyReader::Details::parseModeRefs()
 //-----------------------------------------------------------------------------
 void FieldAccessPolicyReader::Details::parseModeRefs(QDomNode const& rootNode, 
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefList)
+    QSharedPointer<FieldAccessPolicy> accessPolicy)
 {
-    auto modeRefNodes = rootNode.childNodes();
-
-    for (int i = 0; i < modeRefNodes.size(); ++i)
-    {
-        if (auto const& modeRefNode = modeRefNodes.at(i);
-            modeRefNode.nodeName() == QStringLiteral("ipxact:modeRef"))
-        {
-            QSharedPointer<ModeReference> newModeRef(new ModeReference());
-
-            newModeRef->setReference(modeRefNode.firstChild().nodeValue());
-            
-            if (auto const& priority = modeRefNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
-                !priority.isEmpty())
-            {
-                newModeRef->setPriority(priority);
-            }
-
-            modeRefList->append(newModeRef);
-        }
-    }
+    accessPolicy->setModeReferences(CommonItemsReader::parseModeReferences(rootNode));
 }
 
 //-----------------------------------------------------------------------------
@@ -257,7 +238,7 @@ void FieldAccessPolicyReader::Details::parseAccessRestrictions(QDomNode const& a
 
         if (accessRestrictionNode.nodeName() == QStringLiteral("ipxact:accessRestriction"))
         {
-            parseModeRefs(accessRestrictionNode, accessRestriction->modeRefs_);
+            accessRestriction->modeRefs_ = CommonItemsReader::parseModeReferences(accessRestrictionNode);
         }
 
         accessRestriction->readAccessMask_ = accessRestrictionNode.firstChildElement(

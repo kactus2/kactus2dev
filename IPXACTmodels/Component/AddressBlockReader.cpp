@@ -154,19 +154,18 @@ void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
     Document::Revision docRevision) const
 {
     QDomNodeList childNodeList = addressBlockNode.childNodes();
-    RegisterReader registerReader;
 
     for (int i = 0; i < childNodeList.count(); ++i)
     {
         QDomNode currentNode = childNodeList.at(i);
         if (currentNode.nodeName() == QStringLiteral("ipxact:register"))
         {
-            QSharedPointer<Register> newRegister = registerReader.createRegisterfrom(currentNode, docRevision);
+            QSharedPointer<Register> newRegister = RegisterReader::createRegisterfrom(currentNode, docRevision);
             newAddressBlock->getRegisterData()->append(newRegister);
         }
         else if (childNodeList.at(i).nodeName() == QStringLiteral("ipxact:registerFile"))
         {
-            QSharedPointer<RegisterFile> newFile = registerReader.createRegisterFileFrom(currentNode, docRevision);
+            QSharedPointer<RegisterFile> newFile = RegisterReader::createRegisterFileFrom(currentNode, docRevision);
             newAddressBlock->getRegisterData()->append(newFile);
         }
     }

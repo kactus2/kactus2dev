@@ -12,6 +12,8 @@
 #include "Register.h"
 #include "RegisterFile.h"
 
+#include <IPXACTmodels/Component/MemoryArray.h>
+
 #include <QString>
 #include <QMap>
 #include <QSharedPointer>
@@ -34,7 +36,10 @@ registerData_(new QList<QSharedPointer<RegisterBase> > ())
 RegisterFile::RegisterFile(const RegisterFile& other):
 RegisterBase(other),
 range_(other.range_),
-registerData_(new QList<QSharedPointer<RegisterBase> > ())
+registerData_(new QList<QSharedPointer<RegisterBase> > ()),
+memoryArray_(new MemoryArray(*other.memoryArray_)),
+registerFileDefinitionReference_(other.registerFileDefinitionReference_),
+typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
     copyRegisterData(other);
 }
@@ -50,6 +55,14 @@ RegisterFile& RegisterFile::operator=(const RegisterFile& other)
         range_ = other.range_;
         registerData_->clear();
         copyRegisterData(other);
+
+        if (other.memoryArray_)
+        {
+            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+        }
+
+        registerFileDefinitionReference_ = other.registerFileDefinitionReference_;
+        typeDefinitionsReference_ = other.typeDefinitionsReference_;
     }
 
     return *this;
@@ -102,6 +115,54 @@ QSharedPointer<QList<QSharedPointer<RegisterBase> > > RegisterFile::getRegisterD
 void RegisterFile::setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData)
 {
     registerData_ = newRegisterData;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> RegisterFile::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::setMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterFile::setMemoryArray(QSharedPointer<MemoryArray> newMemArray)
+{
+    memoryArray_ = newMemArray;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::getRegisterFileDefinitionReference()
+//-----------------------------------------------------------------------------
+QString RegisterFile::getRegisterFileDefinitionReference() const
+{
+    return registerFileDefinitionReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::setRegisterFileDefinitionReference()
+//-----------------------------------------------------------------------------
+void RegisterFile::setRegisterFileDefinitionReference(QString const& newRegisterFileDefinitionRef)
+{
+    registerFileDefinitionReference_ = newRegisterFileDefinitionRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::getTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+QString RegisterFile::getTypeDefinitionsReference() const
+{
+    return typeDefinitionsReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFile::setTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+void RegisterFile::setTypeDefinitionsReference(QString const& newTypeDefinitionsRef)
+{
+    typeDefinitionsReference_ = newTypeDefinitionsRef;
 }
 
 //-----------------------------------------------------------------------------

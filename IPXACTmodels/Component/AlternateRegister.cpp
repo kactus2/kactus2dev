@@ -11,6 +11,8 @@
 
 #include "AlternateRegister.h"
 
+#include <IPXACTmodels/Component/ModeReference.h>
+
 //-----------------------------------------------------------------------------
 // Function: AlternateRegister::AlternateRegister()
 //-----------------------------------------------------------------------------
@@ -32,6 +34,7 @@ RegisterDefinition(other),
 alternateGroups_(new QStringList())
 {
     copyAlternateGroups(other);
+    Utilities::copyList(modeReferences_, other.modeReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -45,6 +48,7 @@ AlternateRegister& AlternateRegister::operator=(const AlternateRegister& other)
 
         alternateGroups_->clear();
         copyAlternateGroups(other);
+        Utilities::copyList(modeReferences_, other.modeReferences_);
     }
 
     return *this;
@@ -84,11 +88,27 @@ void AlternateRegister::setAlternateGroups(QSharedPointer<QStringList> newAltern
 }
 
 //-----------------------------------------------------------------------------
+// Function: AlternateRegister::getModeReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > AlternateRegister::getModeReferences() const
+{
+    return modeReferences_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AlternateRegister::setModeReferences()
+//-----------------------------------------------------------------------------
+void AlternateRegister::setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeReferences)
+{
+    modeReferences_ = newModeReferences;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AlternateRegister::copyAlternateGroups()
 //-----------------------------------------------------------------------------
 void AlternateRegister::copyAlternateGroups(const AlternateRegister& other)
 {
-    foreach (QString group, *other.alternateGroups_)
+    for (auto const& group : *other.alternateGroups_)
     {
         alternateGroups_->append(group);
     }

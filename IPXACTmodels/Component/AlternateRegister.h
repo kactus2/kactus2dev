@@ -21,6 +21,8 @@
 #include <QList>
 #include <QSharedPointer>
 
+class ModeReference;
+
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:alternateRegister element.
 //-----------------------------------------------------------------------------
@@ -66,6 +68,20 @@ public:
 	 */
     void setAlternateGroups(QSharedPointer<QStringList> newAlternateGroups);
 
+    /*!
+     *	Get the mode references of the alternate register.
+     *  
+     * 	    @return Pointer to a list containing the mode references of the alternate register
+     */
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferences() const;
+
+    /*!
+     *	Set the mode references of the alternate register.
+     *  
+     *      @param [in] newModeReferences     The mode references to set.
+     */
+    void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeReferences);
+
 private:
 
     /*!
@@ -81,6 +97,10 @@ private:
     
     //! Contains the names of the alternateGroups.
     QSharedPointer<QStringList> alternateGroups_;
+
+    //! The mode references of the alternate register.
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences_ =
+        QSharedPointer<QList<QSharedPointer<ModeReference> > >(new QList<QSharedPointer<ModeReference> >());
 };
 
 #endif // ALTERNATEREGISTER_H
