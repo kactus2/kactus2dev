@@ -498,7 +498,6 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\choices\ChoicesModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\choices\EnumerationModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\AbstractParameterModel.cpp" />
-    <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ConfigurableElementFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\DesignConfigurationInstantiationParameterFinder.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.cpp" />
@@ -511,7 +510,6 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.cpp" />
-    <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ParameterizableTable.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ReferenceSelector\ReferenceSelector.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ReferencingTableModel.cpp" />
@@ -1205,8 +1203,6 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\AbstractParameterModel.h">
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\common\CompleterPopupTable.h">
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionDelegate.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionEditor.h">
@@ -1560,8 +1556,6 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\MultilineDescriptionDelegate.h">
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\common\ParameterCompleter.h">
     </QtMoc>
     <CustomBuild Include="editors\ComponentEditor\common\ParameterizableTable.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>

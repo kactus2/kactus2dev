@@ -13,12 +13,12 @@
 #include "filebuildersdelegate.h"
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/FileBuilderInterface.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

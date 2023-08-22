@@ -15,13 +15,13 @@
 #include "SegmentColumns.h"
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

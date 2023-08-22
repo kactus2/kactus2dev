@@ -16,10 +16,11 @@
 #include <QSharedPointer>
 #include <QWidget>
 
+#include <QCompleter>
+
 class ParameterFinder;
 class ExpressionFormatter;
 class ExpressionParser;
-class ParameterCompleter;
 class Component;
 class PortsModel;
 class PortsView;

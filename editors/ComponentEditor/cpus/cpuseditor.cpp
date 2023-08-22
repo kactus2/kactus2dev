@@ -17,12 +17,12 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
@@ -71,7 +71,7 @@ ItemEditor(component, handler, parent),
     ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
     parameterModel->setExpressionParser(expressions.parser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
+    auto parameterCompleter = new QCompleter(this);
     parameterCompleter->setModel(parameterModel);
 
 	auto delegate = new CpusDelegate(component, parameterCompleter, expressions.finder, this);

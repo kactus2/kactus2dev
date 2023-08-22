@@ -17,7 +17,6 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/views/EditableTreeView/EditableTreeSortFilter.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
 
@@ -27,6 +26,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 

@@ -18,7 +18,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
@@ -27,6 +26,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

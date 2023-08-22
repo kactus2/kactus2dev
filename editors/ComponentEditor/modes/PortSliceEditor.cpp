@@ -16,7 +16,6 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/common/ExpressionSet.h>
 
@@ -24,6 +23,7 @@
 
 #include "PortSliceDelegate.h"
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 

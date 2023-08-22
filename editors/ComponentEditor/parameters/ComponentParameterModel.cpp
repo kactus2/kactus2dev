@@ -90,10 +90,6 @@ QVariant ComponentParameterModel::data(QModelIndex const& index, int role) const
         {
             return parameterFinder_->nameForId(parameterIds.at(index.row()));
         }
-        else if (index.column() == ComponentParameterColumns::VALUE)
-        {
-            return formattedValueFor(parameterFinder_->valueForId(parameterIds.at(index.row())));
-        }
         else if (index.column() == ComponentParameterColumns::ID)
         {
             return parameterIds.at(index.row());
@@ -108,7 +104,7 @@ QVariant ComponentParameterModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 bool ComponentParameterModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == ComponentParameterColumns::VALUE;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -127,10 +123,6 @@ bool ComponentParameterModel::validateIndex(QModelIndex const& index) const
    if (index.column() == ComponentParameterColumns::NAME || index.column() == ComponentParameterColumns::ID)
    {
        return !data(index).toString().isEmpty();
-   }
-   else if (index.column() == ComponentParameterColumns::VALUE)
-   {
-       return isValidExpression(data(index).toString());
    }
 
    return false;

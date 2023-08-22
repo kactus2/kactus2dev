@@ -15,9 +15,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionLineEditor.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <QAbstractItemView>
+#include <QCompleter>
 #include <QKeyEvent>
 
 //-----------------------------------------------------------------------------
@@ -95,7 +95,7 @@ ExpressionEditor* ExpressionDelegate::createExpressionEditor(QWidget* parent) co
     ExpressionEditor* editor = new ExpressionEditor(parameterFinder_, parent);
     editor->setFrameShadow(QFrame::Plain);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(editor);
+    auto parameterCompleter = new QCompleter(editor);
     parameterCompleter->setModel(completionModel_);
 
     editor->setAppendingCompleter(parameterCompleter);
@@ -115,7 +115,7 @@ ExpressionLineEditor* ExpressionDelegate::createExpressionLineEditor(QWidget* pa
 {
     ExpressionLineEditor* editor = new ExpressionLineEditor(parameterFinder_, parent);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(editor);
+    auto parameterCompleter = new QCompleter(editor);
     parameterCompleter->setModel(completionModel_);
 
     editor->setAppendingCompleter(parameterCompleter);

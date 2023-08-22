@@ -12,11 +12,11 @@
 #include "SingleRegisterFileEditor.h"
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/addressblockeditor.h>
 
+#include <QCompleter>
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QSplitter>
@@ -51,16 +51,16 @@ registerFileValidator_(registerFileValidator)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
-    ParameterCompleter* offsetParameterCompleter = new ParameterCompleter(this);
+    auto offsetParameterCompleter = new QCompleter(this);
     offsetParameterCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* rangeParameterCompleter = new ParameterCompleter(this);
+    auto rangeParameterCompleter = new QCompleter(this);
     rangeParameterCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* dimensionParameterCompleter = new ParameterCompleter(this);
+    auto dimensionParameterCompleter = new QCompleter(this);
     dimensionParameterCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* isPresentCompleter = new ParameterCompleter(this);
+    auto isPresentCompleter = new QCompleter(this);
     isPresentCompleter->setModel(componentParametersModel);
 
     offsetEditor_->setAppendingCompleter(offsetParameterCompleter);

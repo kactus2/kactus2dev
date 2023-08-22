@@ -14,7 +14,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -26,6 +25,7 @@
 
 #include <common/KactusColors.h>
 
+#include <QCompleter>
 #include <QHeaderView>
 #include <QEvent>
 #include <QLabel>
@@ -107,7 +107,7 @@ void ValueOrIndexedValueEditor::onSingleValueEdited()
 //-----------------------------------------------------------------------------
 QCompleter* ValueOrIndexedValueEditor::createParameterNameCompleter(QObject* completerParent) const
 {
-    ParameterCompleter* expressionCompleter = new ParameterCompleter(completerParent);
+    auto expressionCompleter = new QCompleter(completerParent);
     expressionCompleter->setModel(parameterModel_);
 
     return expressionCompleter;

@@ -15,8 +15,8 @@
 #include "FieldAccessPoliciesModel.h"
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 #include <QHeaderView>

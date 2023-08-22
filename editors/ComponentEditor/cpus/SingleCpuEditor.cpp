@@ -18,8 +18,8 @@
 
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
+#include <QCompleter>
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QVBoxLayout>

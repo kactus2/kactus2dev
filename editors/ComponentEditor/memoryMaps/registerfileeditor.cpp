@@ -18,7 +18,6 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -27,6 +26,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 

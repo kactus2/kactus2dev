@@ -16,7 +16,6 @@
 
 #include <QStyledItemDelegate>
 
-class ParameterCompleter;
 
 class FieldAccessPoliciesDelegate : public ExpressionDelegate
 {

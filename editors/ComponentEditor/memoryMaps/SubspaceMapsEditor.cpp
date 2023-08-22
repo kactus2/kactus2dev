@@ -13,7 +13,6 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapModel.h>
@@ -23,6 +22,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

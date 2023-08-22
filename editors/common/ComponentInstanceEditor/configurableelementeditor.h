@@ -14,7 +14,6 @@
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
@@ -23,6 +22,7 @@
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsView.h>
 
 #include <QAbstractItemModel>
+#include <QCompleter>
 #include <QGroupBox>
 #include <QSharedPointer>
 #include <QCheckBox>

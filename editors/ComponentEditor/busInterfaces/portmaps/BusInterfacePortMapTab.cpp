@@ -11,7 +11,6 @@
 
 #include "BusInterfacePortMapTab.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
@@ -28,6 +27,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
+#include <QCompleter>
 #include <QSplitter>
 #include <QSharedPointer>
 #include <QVBoxLayout>

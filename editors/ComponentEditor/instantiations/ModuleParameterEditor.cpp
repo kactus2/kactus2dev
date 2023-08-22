@@ -21,13 +21,13 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
+#include <QCompleter>
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 

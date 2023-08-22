@@ -16,13 +16,13 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 
-#include <QLabel>
+#include <QCompleter>
 #include <QGridLayout>
+#include <QLabel>
 #include <QString>
 
 //-----------------------------------------------------------------------------
@@ -41,7 +41,8 @@ component_(component)
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
-    ParameterCompleter* baseAddressCompleter = new ParameterCompleter(this);
+   
+    auto baseAddressCompleter = new QCompleter(this);
     baseAddressCompleter->setModel(componentParameterModel);
     baseAddressEditor_->setAppendingCompleter(baseAddressCompleter);
 

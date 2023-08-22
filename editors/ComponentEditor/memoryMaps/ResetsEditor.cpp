@@ -13,12 +13,12 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsDelegate.h>
 #include <KactusAPI/include/ResetInterface.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

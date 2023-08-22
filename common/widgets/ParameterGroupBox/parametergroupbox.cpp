@@ -24,11 +24,11 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 

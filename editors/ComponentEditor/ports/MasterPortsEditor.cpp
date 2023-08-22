@@ -12,7 +12,6 @@
 #include "MasterPortsEditor.h"
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <editors/ComponentEditor/ports/portsmodel.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
@@ -28,6 +27,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

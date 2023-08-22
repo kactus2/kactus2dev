@@ -16,9 +16,9 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

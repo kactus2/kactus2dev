@@ -15,7 +15,8 @@
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
+#include <QCompleter>
 
 //-----------------------------------------------------------------------------
 // Delegate class for CPU regions.

@@ -15,7 +15,6 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
@@ -34,6 +33,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 namespace

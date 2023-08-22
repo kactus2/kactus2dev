@@ -22,7 +22,6 @@ class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
 class LibraryInterface;
-class ParameterCompleter;
 class Component;
 class Port;
 class PortsModel;

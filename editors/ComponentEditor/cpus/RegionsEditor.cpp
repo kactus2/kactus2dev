@@ -16,12 +16,12 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Region.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

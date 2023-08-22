@@ -16,9 +16,10 @@
 #include <QKeyEvent>
 
 #include <KactusAPI/include/ParameterFinder.h>
+#include <KactusAPI/include/SystemVerilogSyntax.h>
+
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
-#include "SystemVerilogSyntax.h"
 
 //-----------------------------------------------------------------------------
 // Function: ExpressionLineEditor::ExpressionLineEditor()

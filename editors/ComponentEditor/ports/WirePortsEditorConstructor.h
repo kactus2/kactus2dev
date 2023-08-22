@@ -25,7 +25,6 @@ class PortsView;
 class PortValidator;
 class PortsDelegate;
 class ExpressionParser;
-class ParameterCompleter;
 class PortsInterface;
 
 //-----------------------------------------------------------------------------

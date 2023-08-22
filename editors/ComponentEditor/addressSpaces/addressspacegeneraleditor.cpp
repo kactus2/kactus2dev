@@ -16,13 +16,13 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <QCompleter>
 #include <QIntValidator>
 #include <QFormLayout>
 #include <QLabel>
@@ -61,13 +61,13 @@ masterInterfaceBindingLabel_(new QLabel(this))
     ComponentParameterModel* parameterCompletionModel = new ComponentParameterModel(parameterFinder, this);
     parameterCompletionModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* rangeEditorCompleter = new ParameterCompleter(this);
+    auto rangeEditorCompleter = new QCompleter(this);
     rangeEditorCompleter->setModel(parameterCompletionModel);
 
-    ParameterCompleter* widthEditorCompleter = new ParameterCompleter(this);
+    auto widthEditorCompleter = new QCompleter(this);
     widthEditorCompleter->setModel(parameterCompletionModel);
 
-    ParameterCompleter* isPresentEditorCompleter = new ParameterCompleter(this);
+    auto isPresentEditorCompleter = new QCompleter(this);
     isPresentEditorCompleter->setModel(parameterCompletionModel);
 
     rangeEditor_->setAppendingCompleter(rangeEditorCompleter);

@@ -11,7 +11,6 @@
 
 #include "TransactionalPortsEditorConstructor.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
@@ -20,6 +19,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+
+#include <QCompleter>
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructModel()

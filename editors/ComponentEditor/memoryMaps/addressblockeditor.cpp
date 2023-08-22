@@ -16,7 +16,6 @@
 #include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/RegisterInterface.h>
@@ -25,6 +24,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 

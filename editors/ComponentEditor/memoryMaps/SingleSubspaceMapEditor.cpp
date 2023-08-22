@@ -16,7 +16,6 @@
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 #include <KactusAPI/include/SubspaceMapInterface.h>
@@ -26,6 +25,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 
+#include <QCompleter>
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QSplitter>
@@ -60,10 +60,10 @@ expressionParser_(expressionParser)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
-    ParameterCompleter* baseAddressEditorCompleter = new ParameterCompleter(this);
+    auto baseAddressEditorCompleter = new QCompleter(this);
     baseAddressEditorCompleter->setModel(componentParametersModel);
     
-    ParameterCompleter* isPresentEditorCompleter = new ParameterCompleter(this);
+    auto isPresentEditorCompleter = new QCompleter(this);
     isPresentEditorCompleter->setModel(componentParametersModel);
 
     baseAddressEditor_->setAppendingCompleter(baseAddressEditorCompleter);

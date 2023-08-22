@@ -14,7 +14,6 @@
 #include "PortSliceColumns.h"
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
@@ -23,6 +22,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <QCompleter>
 #include <QScrollArea>
 
 

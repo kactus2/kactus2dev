@@ -20,7 +20,6 @@
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ExpressionLineEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
@@ -30,6 +29,7 @@
 #include <common/KactusColors.h>
 
 #include <QComboBox>
+#include <QCompleter>
 #include <QLineEdit>
 #include <QPainter>
 #include <QScrollArea>

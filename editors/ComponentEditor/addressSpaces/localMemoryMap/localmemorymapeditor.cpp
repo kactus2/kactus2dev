@@ -16,7 +16,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
@@ -32,6 +31,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------

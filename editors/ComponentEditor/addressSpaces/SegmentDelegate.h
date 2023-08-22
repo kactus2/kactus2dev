@@ -15,7 +15,6 @@
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentDelegate::SegmentDelegate()
