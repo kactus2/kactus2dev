@@ -78,12 +78,9 @@ abstractionSelector_(new QComboBox(this))
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(finder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
     QStringList portNames = component_->getPortNames();
 
-    portMapDelegate_ = new PortMapDelegate(parameterCompleter, finder, portMapInterface, this);
+    portMapDelegate_ = new PortMapDelegate(componentParametersModel, finder, portMapInterface, this);
 
     connect(portMapDelegate_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

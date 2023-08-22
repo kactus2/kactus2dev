@@ -45,9 +45,6 @@ component_(component)
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
@@ -61,7 +58,7 @@ component_(component)
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new SubspaceMapDelegate(parameterCompleter, parameterFinder, interface_,
+    view_->setItemDelegate(new SubspaceMapDelegate(componentParameterModel, parameterFinder, interface_,
         component->getAddressSpaces(), this));
     view_->sortByColumn(SubspaceMapColumns::BASE, Qt::AscendingOrder);
 

@@ -25,10 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: PortsDelegate::PortsDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate::PortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
+PortsDelegate::PortsDelegate(QSharedPointer<Component> component, QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
     QObject* parent):
-ExpressionDelegate(parameterCompleter, parameterFinder, parent),
+ExpressionDelegate(completionModel, parameterFinder, parent),
 component_(component),
 adhocGroupModify_(false),
 adhocGroupState_(Qt::Unchecked),

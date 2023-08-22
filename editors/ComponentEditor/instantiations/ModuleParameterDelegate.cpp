@@ -19,9 +19,9 @@
 // Function: ModuleParameterDelegate::ModuleParameterDelegate()
 //-----------------------------------------------------------------------------
 ModuleParameterDelegate::ModuleParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, QObject* parent):
-ParameterDelegate(choices, parameterCompleter, parameterFinder, expressionFormatter, parent),
+ParameterDelegate(choices, completionModel, parameterFinder, expressionFormatter, parent),
 docRevision_(docRevision)
 {
 

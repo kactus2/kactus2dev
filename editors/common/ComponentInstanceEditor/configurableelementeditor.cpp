@@ -30,15 +30,12 @@ view_(this),
 delegate_(nullptr),
 filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 {
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(completionModel);
-
 	// set options for the view
 	view_.setSortingEnabled(true);
     view_.setSelectionBehavior(QAbstractItemView::SelectItems);
     view_.setSelectionMode(QAbstractItemView::SingleSelection);
 
-    delegate_ = new ConfigurableElementDelegate(parameterCompleter, parameterFinder, configurableElementFormatter, this);
+    delegate_ = new ConfigurableElementDelegate(completionModel, parameterFinder, configurableElementFormatter, this);
     view_.setItemDelegate(delegate_);
 
 	QVBoxLayout* topLayout = new QVBoxLayout(this);

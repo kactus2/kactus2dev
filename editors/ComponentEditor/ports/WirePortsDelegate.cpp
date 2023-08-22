@@ -19,10 +19,10 @@
 //-----------------------------------------------------------------------------
 // Function: WirePortsDelegate::WirePortsDelegate()
 //-----------------------------------------------------------------------------
-WirePortsDelegate::WirePortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
+WirePortsDelegate::WirePortsDelegate(QSharedPointer<Component> component, QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
     QObject* parent):
-PortsDelegate(component, parameterCompleter, parameterFinder, typeValidator, parent)
+PortsDelegate(component, completionModel, parameterFinder, typeValidator, parent)
 {
 
 }

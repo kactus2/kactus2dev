@@ -172,12 +172,12 @@ int main(int argc, char *argv[])
 #else
 
         mainWindow.show();    
-        application->processEvents();
+        QCoreApplication::processEvents();
         mainWindow.onLibrarySearch();
 
 #endif
 
-        return application->exec();
+        return QCoreApplication::exec();
     }
 
     else // Run console.

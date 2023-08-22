@@ -32,14 +32,14 @@ public:
      *  The constructor.
      *
      *      @param [in] portNameList            The list of available port names.
-     *      @param [in] parameterCompleter      The completer to use for expression editors.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
      *      @param [in] finder                  The parameter finder to use for expression editors.
      *      @param [in] expressionParser        The expression parser used for calculating expressions.
      *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
      *      @param [in] parent                  The parent of the object.
      */
     RemapConditionDelegate(QStringList const& portNameList,
-        QCompleter* parameterCompleter,
+        QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> finder,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,

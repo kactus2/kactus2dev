@@ -66,9 +66,6 @@ busInterface_(busInterface)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
     portsInterface_ =
         QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
     portsInterface_->setPorts(component);
@@ -76,10 +73,10 @@ busInterface_(busInterface)
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new WirePortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        new WirePortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
 
     connectSignals();

@@ -61,10 +61,7 @@ QWidget(parent),
     ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
     parameterModel->setExpressionParser(expressions.parser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-	delegate_ = new PortSliceDelegate(component->getPortNames(), parameterCompleter, expressions, this);
+	delegate_ = new PortSliceDelegate(component->getPortNames(), parameterModel, expressions, this);
 
 	view_.setItemDelegate(delegate_);
 

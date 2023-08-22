@@ -29,10 +29,10 @@
 //-----------------------------------------------------------------------------
 // Function: RemapConditionDelegate::RemapConditionDelegate()
 //-----------------------------------------------------------------------------
-RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QCompleter* parameterCompleter,
+RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel,
                         QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser,
                         QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ExpressionDelegate(parameterCompleter, finder, parent),
+ExpressionDelegate(completionModel, finder, parent),
 expressionFormatter_(expressionFormatter),
 expressionParser_(expressionParser),
 availablePortNames_(portNameList)

@@ -53,9 +53,6 @@ fields_(fields)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
@@ -77,7 +74,7 @@ fields_(fields)
 	view_->setSortingEnabled(true);
     view_->setAllowElementCopying(true);
 
-    view_->setItemDelegate(new RegisterDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new RegisterDelegate(componentParametersModel, parameterFinder, this));
 
     view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
 

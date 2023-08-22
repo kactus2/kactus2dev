@@ -36,14 +36,14 @@
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
     PortsEditorConstructor* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortValidator> portValidator, ParameterCompleter* parameterCompleter,
+    QSharedPointer<PortValidator> portValidator, QAbstractItemModel* completionModel,
     QString const& defaultPath, BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(editorConstructor->constructView(defaultPath, busInterface, this)),
 model_(0),
 proxy_(editorConstructor->constructFilter(portsInterface, this)),
 delegate_(editorConstructor->constructDelegate(
-    component, parameterCompleter, parameterFinder, portValidator, this)),
+    component, completionModel, parameterFinder, portValidator, this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)
 {

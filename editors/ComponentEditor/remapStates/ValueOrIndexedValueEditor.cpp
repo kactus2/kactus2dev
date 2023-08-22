@@ -173,9 +173,8 @@ void ValueOrIndexedValueEditor::setupArrayEditor(QString const& value, int const
         arrayView_->setDisabled(true);
     }
 
-    QCompleter* arrayCompleter = createParameterNameCompleter(arrayView_);
 
-    arrayView_->setItemDelegate(new ArrayDelegate(arrayCompleter, parameterFinder_, newChoice, this->parent()));
+    arrayView_->setItemDelegate(new ArrayDelegate(parameterModel_, parameterFinder_, newChoice, this->parent()));
     arrayView_->setModel(arrayModel);
     arrayView_->resizeColumnsToContents();
 

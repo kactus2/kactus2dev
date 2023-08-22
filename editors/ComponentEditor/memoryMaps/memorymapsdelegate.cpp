@@ -22,10 +22,10 @@
 //-----------------------------------------------------------------------------
 // Function: memorymapsdelegate::MemoryMapsDelegate()
 //-----------------------------------------------------------------------------
-MemoryMapsDelegate::MemoryMapsDelegate(QCompleter* parameterNameCompleter,
+MemoryMapsDelegate::MemoryMapsDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder,
     QStringList remapStateNames, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent),
+ExpressionDelegate(completionModel, parameterFinder, parent),
     remapStateNames_(remapStateNames)
 {
 

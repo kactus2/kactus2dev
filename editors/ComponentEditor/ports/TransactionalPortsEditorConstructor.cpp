@@ -66,11 +66,11 @@ PortsView* TransactionalPortsEditorConstructor::constructView(QString const& def
 // Function: TransactionalPortsEditorConstructor::constructDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate* TransactionalPortsEditorConstructor::constructDelegate(QSharedPointer<Component> component,
-    ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortValidator> portValidator, QObject* parent) const
 {
     TransactionalPortsDelegate* transactionalDelegate = new TransactionalPortsDelegate(
-        component, parameterCompleter, parameterFinder, portValidator->getTypeValidator(), parent);
+        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
 
     return transactionalDelegate;
 }

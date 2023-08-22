@@ -62,10 +62,7 @@ instantiation_(instantiation)
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    view_->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterModel, parameterFinder,
         expressionFormatter, docRevision, this));
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

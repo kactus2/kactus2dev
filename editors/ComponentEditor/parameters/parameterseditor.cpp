@@ -51,8 +51,6 @@ parameterInterface_(parameterInterface)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -82,7 +80,7 @@ parameterInterface_(parameterInterface)
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
 
-    view_->setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(component->getChoices(), componentParametersModel, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),

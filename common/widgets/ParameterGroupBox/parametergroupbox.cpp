@@ -87,10 +87,7 @@ parameterInterface_()
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    view_->setItemDelegate(new ParameterDelegate(choices, parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(choices, parameterModel, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 

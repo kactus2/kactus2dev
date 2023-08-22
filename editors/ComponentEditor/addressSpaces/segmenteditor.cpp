@@ -71,10 +71,7 @@ component_(component)
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(completionModel);
-
-	view_.setItemDelegate(new SegmentDelegate(parameterCompleter, parameterFinder, this));
+	view_.setItemDelegate(new SegmentDelegate(completionModel, parameterFinder, this));
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
     proxy->setColumnToAcceptExpressions(SegmentColumns::OFFSET);

@@ -50,9 +50,6 @@ proxy_()
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
@@ -75,7 +72,7 @@ proxy_()
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new MemoryMapDelegate(componentParameterModel, parameterFinder, this));
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 

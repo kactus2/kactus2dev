@@ -28,9 +28,9 @@
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
-FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(ParameterCompleter* parameterNameCompleter, 
+FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

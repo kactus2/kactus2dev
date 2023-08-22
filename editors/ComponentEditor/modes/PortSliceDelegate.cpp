@@ -29,9 +29,9 @@
 //-----------------------------------------------------------------------------
 // Function: PortSliceDelegate::PortSliceDelegate()
 //-----------------------------------------------------------------------------
-PortSliceDelegate::PortSliceDelegate(QStringList const& portNameList, QCompleter* parameterCompleter,
+PortSliceDelegate::PortSliceDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel,
                         ExpressionSet expressions, QObject* parent):
-ExpressionDelegate(parameterCompleter, expressions.finder, parent),
+ExpressionDelegate(completionModel, expressions.finder, parent),
 expressionFormatter_(expressions.formatter),
 expressionParser_(expressions.parser),
 availablePortNames_(portNameList)

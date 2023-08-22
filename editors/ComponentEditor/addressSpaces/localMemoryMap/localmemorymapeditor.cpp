@@ -73,8 +73,6 @@ handler_(handler)
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel);
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
     proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
@@ -96,7 +94,7 @@ handler_(handler)
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);
-    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new MemoryMapDelegate(componentParameterModel, parameterFinder, this));
 	view_->setSortingEnabled(true);
     view_->setAllowElementCopying(true);
 

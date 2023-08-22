@@ -59,8 +59,6 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
         new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter *parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
     ExpressionProxyModel *proxy =
         new ExpressionProxyModel(expressionParser, this);
@@ -82,7 +80,7 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
     view_->setSortingEnabled(true);
 
     view_->setItemDelegate(
-        new RegisterFileDelegate(parameterCompleter, parameterFinder, this));
+        new RegisterFileDelegate(componentParametersModel, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), this,
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

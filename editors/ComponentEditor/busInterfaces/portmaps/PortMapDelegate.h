@@ -33,12 +33,12 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] parameterCompleter  Completer for the expression editor.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] finder              The parameter finder.
      *      @param [in] portMapInterface    Interface for accessing port maps.
 	 *      @param [in] parent              The owner of this delegate.
 	 */
-	PortMapDelegate(QCompleter* parameterCompleter,
+	PortMapDelegate(QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> finder,
         PortMapInterface* portMapInterface,
         QObject *parent);

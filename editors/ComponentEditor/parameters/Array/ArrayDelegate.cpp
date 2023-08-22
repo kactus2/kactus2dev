@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: ArrayDelegate::ArrayDelegate()
 //-----------------------------------------------------------------------------
-ArrayDelegate::ArrayDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder,
+ArrayDelegate::ArrayDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> finder,
     QSharedPointer<Choice> selectedChoice, QObject* parent):
-ChoiceCreatorDelegate(parameterCompleter, finder, parent),
+ChoiceCreatorDelegate(completionModel, finder, parent),
 selectedChoice_(selectedChoice)
 {
 

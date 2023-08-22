@@ -48,10 +48,7 @@ interface_(resetInterface)
     ComponentParameterModel* parametersModel = new ComponentParameterModel(parameterFinder, this);
     parametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parametersModel);
-
-    resetsView_->setItemDelegate(new ResetsDelegate(parameterCompleter, parameterFinder, resetTypes, this));
+    resetsView_->setItemDelegate(new ResetsDelegate(parametersModel, parameterFinder, resetTypes, this));
 
 	connect(resetsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(resetsView_, SIGNAL(addItem(const QModelIndex&)),

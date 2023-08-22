@@ -54,8 +54,6 @@ registers_(registers)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
 
@@ -76,7 +74,7 @@ registers_(registers)
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new AddressBlockDelegate(componentParametersModel, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

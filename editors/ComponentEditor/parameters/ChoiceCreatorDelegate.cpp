@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: ChoiceCreatorDelegate::ChoiceCreatorDelegate()
 //-----------------------------------------------------------------------------
-ChoiceCreatorDelegate::ChoiceCreatorDelegate(QCompleter* parameterCompleter,
+ChoiceCreatorDelegate::ChoiceCreatorDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> finder, QObject* parent):
-ExpressionDelegate(parameterCompleter, finder, parent),
+ExpressionDelegate(completionModel, finder, parent),
     choices_(new QList<QSharedPointer<Choice> > ())
 {
 

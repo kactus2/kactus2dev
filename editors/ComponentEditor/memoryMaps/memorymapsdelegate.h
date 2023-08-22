@@ -27,12 +27,12 @@ public:
     /*!
 	 *  The constructor.
      *
-     *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
      *      @param [in] parameterFinder         The parameter finder for expression editor.
 	 *      @param [in] remapStateNames         A list of names of the component remap states.
 	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-    MemoryMapsDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    MemoryMapsDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QStringList remapStateNames, QObject *parent);
 	
 	//! The destructor.

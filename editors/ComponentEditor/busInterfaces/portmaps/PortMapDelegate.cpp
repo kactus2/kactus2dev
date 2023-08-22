@@ -24,9 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: PortMapDelegate::PortMapDelegate()
 //-----------------------------------------------------------------------------
-PortMapDelegate::PortMapDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder,
+PortMapDelegate::PortMapDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> finder,
     PortMapInterface* portMapInterface, QObject *parent):
-ExpressionDelegate(parameterCompleter, finder, parent),
+ExpressionDelegate(completionModel, finder, parent),
 invertModify_(false),
 invertCheckState_(Qt::Unchecked),
 portMapInterface_(portMapInterface),

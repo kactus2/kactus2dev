@@ -68,11 +68,11 @@ PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath,
 // Function: WirePortsEditorConstructor::constructDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate* WirePortsEditorConstructor::constructDelegate(QSharedPointer<Component> component,
-    ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortValidator> portValidator, QObject* parent) const
 {
     WirePortsDelegate* wireDelegate = new WirePortsDelegate(
-        component, parameterCompleter, parameterFinder, portValidator->getTypeValidator(), parent);
+        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
 
     return wireDelegate;
 }

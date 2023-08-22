@@ -39,10 +39,7 @@ view_(new EditableTableView(this))
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterNameCompleter = new ParameterCompleter(this);
-    parameterNameCompleter->setModel(componentParameterModel);
-
-    auto delegate = new FieldAccessPoliciesDelegate(parameterNameCompleter, parameterFinder, this);
+    auto delegate = new FieldAccessPoliciesDelegate(componentParameterModel, parameterFinder, this);
 
     view_->setSortingEnabled(true);
     proxy->setSourceModel(model);

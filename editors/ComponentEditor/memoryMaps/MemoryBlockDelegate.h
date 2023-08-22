@@ -27,11 +27,11 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterNameCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
 	 *      @param [in] parameterFinder         The parameter finder for expression editor.
 	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-	MemoryBlockDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+	MemoryBlockDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject *parent);
 	
 	/*!

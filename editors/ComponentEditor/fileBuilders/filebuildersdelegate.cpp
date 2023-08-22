@@ -26,9 +26,9 @@
 //-----------------------------------------------------------------------------
 // Function: filebuildersdelegate::FileBuildersDelegate()
 //-----------------------------------------------------------------------------
-FileBuildersDelegate::FileBuildersDelegate(QCompleter* parameterNameCompleter,
+FileBuildersDelegate::FileBuildersDelegate(QAbstractItemModel* completionModel,
                                            QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

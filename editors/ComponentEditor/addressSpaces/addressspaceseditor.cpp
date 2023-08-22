@@ -60,10 +60,8 @@ model_(component, parameterFinder, expressionFormatter, addressSpaceValidator, t
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(completionModel);
 
-    AddressSpacesDelegate* delegate = new AddressSpacesDelegate(parameterCompleter, parameterFinder, this);
+    AddressSpacesDelegate* delegate = new AddressSpacesDelegate(completionModel, parameterFinder, this);
  	view_.setItemDelegate(delegate);
     
     // display a label on top the table

@@ -69,10 +69,7 @@ component_(component)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
-    delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
+    delegate_ = new MemoryMapsDelegate(componentParametersModel, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
 
     QHeaderView* header = new QHeaderView(Qt::Horizontal, this);

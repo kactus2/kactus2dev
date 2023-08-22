@@ -24,9 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryMapDelegate::MemoryMapDelegate()
 //-----------------------------------------------------------------------------
-MemoryMapDelegate::MemoryMapDelegate(QCompleter* parameterNameCompleter,
+MemoryMapDelegate::MemoryMapDelegate(QAbstractItemModel* completionModel,
                                      QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-MemoryBlockDelegate(parameterNameCompleter, parameterFinder, parent)
+MemoryBlockDelegate(completionModel, parameterFinder, parent)
 {
 
 }

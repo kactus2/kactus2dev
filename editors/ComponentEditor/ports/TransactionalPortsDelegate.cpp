@@ -22,9 +22,9 @@
 // Function: TransactionalPortsDelegate::TransactionalPortsDelegate()
 //-----------------------------------------------------------------------------
 TransactionalPortsDelegate::TransactionalPortsDelegate(QSharedPointer<Component> component,
-    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortTypeValidator> typeValidator, QObject* parent):
-PortsDelegate(component, parameterCompleter, parameterFinder, typeValidator, parent)
+PortsDelegate(component, completionModel, parameterFinder, typeValidator, parent)
 {
 
 }
