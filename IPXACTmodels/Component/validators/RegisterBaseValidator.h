@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -26,6 +28,8 @@ class Choice;
 class Field;
 class FieldValidator;
 class ParameterValidator;
+class ModeReference;
+
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
 //-----------------------------------------------------------------------------
@@ -40,7 +44,8 @@ public:
      *      @param [in] parameterValidator  Validator used for parameters.
      */
     RegisterBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-                      QSharedPointer<ParameterValidator> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator,
+        Document::Revision docRevision);
 
     //! The destructor.
     virtual ~RegisterBaseValidator() = default;
@@ -106,6 +111,15 @@ public:
     bool hasValidParameters(QSharedPointer<RegisterBase> selectedRegisterBase) const;
 
     /*!
+     *	Check if the register has valid access policies.
+     *  
+     *      @param [in] registerBase     The register base to check
+     *	    
+     * 	    @return True, if the access policies are valid, otherwise false.
+     */
+    bool hasValidAccessPolicies(QSharedPointer<RegisterBase> registerBase) const;
+
+    /*!
      *  Locate errors within a register.
      *
      *      @param [in] errors              List of found errors.
@@ -165,6 +179,17 @@ protected:
      */
     void findErrorsInParameters(QVector<QString>&errors,
         QSharedPointer<RegisterBase> selectedRegisterBase, QString const& context) const;
+
+    /*!
+     *	Find errors in the access policies of the selected register.
+     *  
+     *      @param [in] errors                  List of found errors.
+     *      @param [in] selectedRegisterBase    The selected register.
+     *      @param [in] context                 Context to help locate the error.
+     */
+    void findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<RegisterBase> registerBase,
+        QString const& context) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -174,6 +199,9 @@ protected:
 
     //! The validator used for parameters.
     QSharedPointer<ParameterValidator> parameterValidator_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // RegisterBaseValidator_H

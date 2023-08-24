@@ -24,8 +24,9 @@
 //-----------------------------------------------------------------------------
 RegisterFileValidator::RegisterFileValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<RegisterValidator> registerValidator,
-    QSharedPointer<ParameterValidator> parameterValidator) :
-    RegisterBaseValidator(expressionParser, parameterValidator),
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
+    RegisterBaseValidator(expressionParser, parameterValidator, docRevision),
     registerValidator_(registerValidator)
 {
 

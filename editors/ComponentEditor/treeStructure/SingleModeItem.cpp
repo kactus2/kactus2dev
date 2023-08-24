@@ -11,7 +11,7 @@
 
 #include "SingleModeItem.h"
 
-#include <editors/ComponentEditor/Modes/SingleModeEditor.h>
+#include <editors/ComponentEditor/modes/SingleModeEditor.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Mode.h>

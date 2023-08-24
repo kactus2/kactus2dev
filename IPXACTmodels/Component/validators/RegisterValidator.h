@@ -44,14 +44,20 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] fieldValidator      Validator used for fields.
      *      @param [in] parameterValidator  Validator used for parameters.
+     *      @param [in] docRevision         The IP-XACT standard revision to comply to.
 	 */
     RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<FieldValidator> fieldValidator,
-        QSharedPointer<ParameterValidator> parameterValidator);
+        QSharedPointer<ParameterValidator> parameterValidator,
+        Document::Revision docRevision = Document::Revision::Std14);
 
 	//! The destructor.
     virtual ~RegisterValidator() = default;
-    
+
+    // Disable copying.
+    RegisterValidator(RegisterValidator const& rhs) = delete;
+    RegisterValidator& operator=(RegisterValidator const& rhs) = delete;
+
     /*!
      *  Change the containing component.
      *
@@ -112,6 +118,23 @@ public:
      */
     bool hasValidAlternateGroups(QSharedPointer<AlternateRegister> selectedRegister) const;
 
+    /*!
+     *	Validate the memory array of a selected register.
+     *  
+     *      @param [in] selectedRegister     The register to check.
+     *	    
+     * 	    @return True, if valid, otherwise false.
+     */
+    bool hasValidMemoryArray(QSharedPointer<Register> selectedRegister) const;
+
+    /*!
+     *	Check if a 2022 std register has a valid structure, valid combination of subelements.
+     *  
+     *      @param [in] selectedRegister     The register to check.
+     *	    
+     * 	    @return True, if the structure is valid, otherwise false.
+     */
+    bool hasValidStructure(QSharedPointer<Register> selectedRegister) const;
 
     /*!
      *  Locate errors within a register.
@@ -124,10 +147,6 @@ public:
         const;
 
 private:
-
-	// Disable copying.
-	RegisterValidator(RegisterValidator const& rhs);
-	RegisterValidator& operator=(RegisterValidator const& rhs);
 
     /*!
      *  Check if the field contains a valid access value.
@@ -187,6 +206,39 @@ private:
      */
     void findErrorsInAlternateGroups(QVector<QString>& errors, QSharedPointer<AlternateRegister> selectedRegister,
         QString const& context) const;
+    
+    /*!
+     *  Find errors within memory array.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] selectedRegister    The selected register.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInMemoryArray(QStringList& errors, QSharedPointer<Register> selectedRegister,
+        QString const& context) const;
+
+    /*!
+     *  Find errors within the mode references of an alternate register.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] selectedRegister    The selected register.
+     *      @param [in] context             Context to help locate the error.
+     *      @param [in] 
+     */
+    void findErrorsInAlternateRegisterModeRefs(QStringList& errors,
+        QSharedPointer<AlternateRegister> selectedRegister, QString const& context, 
+        QStringList& checkedModeRefs, QStringList& checkedPriorities, 
+        bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued) const;
+
+    /*!
+     *	Validate single alternate register.
+     *  
+     *      @param [in] alternateRegister     The alternate register to check.
+     *      @param [in] selectedRegister      The parent register.
+     *	    
+     * 	    @return  True, if the alternate register is valid, otherwise false.
+     */
+    bool alternateRegisterIsValid(QSharedPointer<AlternateRegister> alternateRegister, QSharedPointer<Register> selectedRegister) const;
 
     //-----------------------------------------------------------------------------
     // Data.

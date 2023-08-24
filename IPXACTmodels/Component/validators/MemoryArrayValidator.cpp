@@ -58,7 +58,7 @@ void MemoryArrayValidator::findErrorsIn(QStringList& errorList, QSharedPointer<M
 
     if (!hasValidStride(memoryArray))
     {
-        errorList.append(QObject::tr("Memory array in %1 has invalid stride value.").arg(context));
+        errorList.append(QObject::tr("Memory array in %1 has an invalid stride value.").arg(context));
     }
 }
 

@@ -16,6 +16,9 @@
 
 #include <QSharedPointer>
 
+class ModeReference;
+class RegisterBase;
+
 namespace CommonItemsValidator
 {
     /*!
@@ -38,6 +41,36 @@ namespace CommonItemsValidator
     bool hasValidIsPresent(QString const& isPresent, QSharedPointer<ExpressionParser> parser);
 
     bool isValidExpression(QString const& expression, QSharedPointer<ExpressionParser> parser);
+
+    /*!
+     *	Check if given mode references are valid. Also look for duplicate values when compared with 
+     *  previously checked references.
+     *  
+     *      @param [in] modeRefs              The mode references to check.
+     *      @param [in] checkedReferences     A list of already checked mode reference values.
+     *      @param [in] checkedPriorities     A list of already checked mode priority values.
+     *	    
+     * 	    @return True, if the given mode references are valid, otherwise false.
+     */
+    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, 
+        QStringList& checkedReferences, QStringList& checkedPriorities);
+
+    /*!
+     *	Finds errors in mode references within in a parent element. Mode reference values and priorities must 
+     *  be unique not only within the mode references of the parent element, but also the parent's sibling elements.
+     *  For instance, all mode references inside access policy elements of a register must be unique.
+     *  
+     *      @param [in] errors                          The list of found errors.
+     *      @param [in] modeRefs                        The mode references to check.
+     *      @param [in] context                         Context to help locate the error.
+     *      @param [in] checkedRefs                     Already checked mode reference values.
+     *      @param [in] checkedPriorities               Already checked mode reference priorities.
+     *      @param [in] duplicateRefErrorIssued         Flag indicating if an error for duplicate references has been issued.
+     *      @param [in] duplicatePriorityErrorIssued    Flag indicating if an error for duplicate priorities has been issued.
+     */
+    void findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs,
+        QString const& context, QStringList& checkedRefs, QStringList& checkedPriorities, 
+        bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued);
 
 };
 

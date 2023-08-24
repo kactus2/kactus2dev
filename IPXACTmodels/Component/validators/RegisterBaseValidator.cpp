@@ -13,7 +13,9 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
+#include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <QRegularExpression>
 
@@ -21,9 +23,11 @@
 // Function: RegisterBaseValidator::RegisterBaseValidator()
 //-----------------------------------------------------------------------------
 RegisterBaseValidator::RegisterBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
-                                     QSharedPointer<ParameterValidator> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
 expressionParser_(expressionParser),
-parameterValidator_(parameterValidator)
+parameterValidator_(parameterValidator),
+docRevision_(docRevision)
 {
 
 }
@@ -33,11 +37,23 @@ parameterValidator_(parameterValidator)
 //-----------------------------------------------------------------------------
 bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegisterBase) const
 {
-    return hasValidName(selectedRegisterBase) &&
-           hasValidIsPresent(selectedRegisterBase) &&
-           hasValidDimension(selectedRegisterBase) &&
-           hasValidAddressOffset(selectedRegisterBase) &&
-           hasValidParameters(selectedRegisterBase);
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        return hasValidName(selectedRegisterBase) &&
+               hasValidIsPresent(selectedRegisterBase) &&
+               hasValidDimension(selectedRegisterBase) &&
+               hasValidAddressOffset(selectedRegisterBase) &&
+               hasValidParameters(selectedRegisterBase);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        return hasValidName(selectedRegisterBase) &&
+            hasValidAddressOffset(selectedRegisterBase) &&
+            hasValidAccessPolicies(selectedRegisterBase) &&
+            hasValidParameters(selectedRegisterBase);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -137,6 +153,41 @@ bool RegisterBaseValidator::hasValidParameters(QSharedPointer<RegisterBase> sele
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterBaseValidator::hasValidAccessPolicies()
+//-----------------------------------------------------------------------------
+bool RegisterBaseValidator::hasValidAccessPolicies(QSharedPointer<RegisterBase> registerBase) const
+{
+    bool hasAccessPolicyWithoutModeRef = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
+    for (auto const& accessPolicy : *registerBase->getAccessPolicies())
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
+        // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
+        // all register access policies.
+        if (!CommonItemsValidator::hasValidModeRefs(accessPolicy->getModeReferences(),
+            checkedModeReferences, checkedModePriorities))
+        {
+            return false;
+        }
+    }
+
+    // Number of access policies cannot be greater than one if an access policy has no mode references.
+    if (hasAccessPolicyWithoutModeRef && registerBase->getAccessPolicies()->size() > 1)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterBaseValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void RegisterBaseValidator::findErrorsIn(QVector<QString>& errors,
@@ -146,8 +197,13 @@ void RegisterBaseValidator::findErrorsIn(QVector<QString>& errors,
     QString registerContext = QStringLiteral("register ") + selectedRegisterBase->name();
 
     findErrorsInName(errors, selectedRegisterBase, context);
-    findErrorsInIsPresent(errors, selectedRegisterBase, context);
-    findErrorsInDimension(errors, selectedRegisterBase, context);
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        findErrorsInIsPresent(errors, selectedRegisterBase, context);
+        findErrorsInDimension(errors, selectedRegisterBase, context);
+    }
+
     findErrorsInAddressOffset(errors, selectedRegisterBase, context);
 }
 
@@ -232,5 +288,40 @@ void RegisterBaseValidator::findErrorsInParameters(QVector<QString>&errors,
 
             parameterValidator_->findErrorsIn(errors, parameter, context);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBaseValidator::findErrorsInAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<RegisterBase> registerBase, QString const& context) const
+{
+    bool hasAccessPolicyWithoutModeRef = false;
+
+    QString accessPolicyContext = QStringLiteral("access policies in ") + context;
+
+    bool duplicateModeRefErrorIssued = false;
+    bool duplicateModePriorityErrorIssued = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
+    for (auto const& accessPolicy : *registerBase->getAccessPolicies())
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
+        // Check mode references in current access policy, and look for duplicate references.
+        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext, 
+            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued);
+    }
+
+    // Number of access policies cannot be greater than one if a field access policy has no mode references.
+    if (hasAccessPolicyWithoutModeRef && registerBase->getAccessPolicies()->size() > 1)
+    {
+        errors.append(QObject::tr("In %1, multiple access policies are not allowed if one "
+            "of them lacks a mode reference.").arg(registerBase->name()).arg(context));
     }
 }

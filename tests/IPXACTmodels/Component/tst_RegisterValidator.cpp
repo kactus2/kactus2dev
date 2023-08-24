@@ -19,12 +19,13 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
-#include <editors/ComponentEditor/common/ComponentParameterFinder.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <QtTest>
 
@@ -72,6 +73,15 @@ private slots:
     void testAlternateRegisterParametersAreValid();
 
     void testParametersAreValid();
+
+    void testRegisterMemoryArrayIsValid2022();
+    void testRegisterMemoryArrayIsValid2022_data();
+
+    void testRegisterAccessPoliciesAreValid2022();
+
+
+    void testModeRefsOfAlternativeRegisetrsAreValid2022();
+    void testAlternateRegisterAccessPoliciesAreValid2022();
 
 private:
 
@@ -1152,13 +1162,367 @@ void tst_RegisterValidator::testParametersAreValid()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testRegisterMemoryArrayIsValid2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testRegisterMemoryArrayIsValid2022()
+{
+    QFETCH(QString, dimValue);
+    QFETCH(QString, indexVar);
+    QFETCH(QString, stride);
+    QFETCH(bool, validDim);
+    QFETCH(bool, validStride);
+
+    QSharedPointer<Register> testRegister(new Register("test", "8", "8"));
+    
+    QSharedPointer<MemoryArray> testMemArray(new MemoryArray());
+
+    QSharedPointer<MemoryArray::Dimension> testDim(new MemoryArray::Dimension);
+    testDim->value_ = dimValue;
+    testDim->indexVar_ = indexVar;
+    
+    if (dimValue.isEmpty() == false)
+    {
+        testMemArray->getDimensions()->append(testDim);
+    }
+
+    testMemArray->setStride(stride);
+
+    testRegister->setMemoryArray(testMemArray);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator, Document::Revision::Std22);
+
+    QCOMPARE(validator.hasValidMemoryArray(testRegister), validDim && validStride);
+
+    if (!(validDim && validStride))
+    {
+        QStringList foundErrors;
+        validator.findErrorsIn(foundErrors, testRegister, "test");
+
+        QString expectedError;
+
+        if (testMemArray->getDimensions()->isEmpty())
+        {
+            expectedError = "No dimensions defined for memory array in register test within test";
+        }
+
+        else if (!validDim)
+        {
+            expectedError = "One or more dimensions of the memory array in register test within test have an invalid value.";
+        }
+
+        else if (!validStride)
+        {
+            expectedError = "Memory array in register test within test has an invalid stride value.";
+        }
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testRegisterMemoryArrayIsValid2022_data()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testRegisterMemoryArrayIsValid2022_data()
+{
+    QTest::addColumn<QString>("dimValue");
+    QTest::addColumn<QString>("indexVar");
+    QTest::addColumn<QString>("stride");
+    QTest::addColumn<bool>("validDim");
+    QTest::addColumn<bool>("validStride");
+
+    QTest::newRow("Dimension with valid values is valid") << "8" << "i" << "8" << true << true;
+    QTest::newRow("Dimension without stride is valid") << "8" << "i" << "" << true << true;
+    QTest::newRow("Valid expression in dim is valid") << "1+1" << "index" << "" << true << true;
+    QTest::newRow("Invalid expression in dim is not valid") << "a+a" << "index" << "" << false << true;
+    QTest::newRow("Invalid value in dim is not valid") << "-1" << "index" << "" << false << true;
+    QTest::newRow("Valid expression in stride is valid") << "1" << "index" << "1+1" << true << true;
+    QTest::newRow("Invalid expression in stride is not valid") << "1" << "index" << "a+a" << true << false;
+    QTest::newRow("Invalid value in stride is not valid") << "1" << "index" << "-1" << true << false;
+    QTest::newRow("Dimension doesn't exist is invalid") << "" << "" << "" << false << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testRegisterAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testRegisterAccessPoliciesAreValid2022()
+{
+    QSharedPointer<Register> testRegister(new Register("test", "8", "8"));
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setPriority("0");
+    modeRef1->setReference("ref");
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setPriority("0");
+    modeRef2->setReference("ref1");
+
+    QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
+    QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
+    accessPolicy1->getModeReferences()->append(modeRef1);
+    accessPolicy2->getModeReferences()->append(modeRef2);
+
+    testRegister->getAccessPolicies()->append(accessPolicy1);
+    testRegister->getAccessPolicies()->append(accessPolicy2);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator, Document::Revision::Std22);
+    
+    QStringList errors;
+
+    QStringList possibleErrors(QStringList()
+        << "One or more mode references of access policies in register test within test contain duplicate priority values."
+        << "One or more mode references of access policies in register test within test contain duplicate mode reference values."
+        << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
+    );
+
+    // Test duplicate mode reference priority.
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(errors.contains(possibleErrors.first()));
+    QVERIFY(validator.hasValidAccessPolicies(testRegister) == false);
+
+    // Test duplicate reference.
+    errors.clear();
+
+    modeRef2->setPriority("1");
+    modeRef2->setReference("ref");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(errors.contains(possibleErrors.at(1)));
+    QVERIFY(validator.hasValidAccessPolicies(testRegister) == false);
+
+    // Test valid.
+    errors.clear();
+
+    modeRef2->setReference("ref2");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)
+        {
+            return errors.contains(str);
+        }));
+
+    QVERIFY(validator.hasValidAccessPolicies(testRegister));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testModeRefsOfAlternativeRegisetrsAreValid2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testModeRefsOfAlternativeRegisetrsAreValid2022()
+{
+    QSharedPointer<Field> registerField(new Field("regField"));
+    registerField->setBitOffset("8");
+    registerField->setBitWidth("4");
+    registerField->setTypeDefinitionsRef("testTypeDefinitions");
+    registerField->setFieldDefinitionRef("testField");
+
+    QSharedPointer<Field> altRegisterField(new Field("altRegField"));
+    altRegisterField->setBitOffset("8");
+    altRegisterField->setBitWidth("4");
+    altRegisterField->setTypeDefinitionsRef("testTypeDefinitions2");
+    altRegisterField->setFieldDefinitionRef("testField2");
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "10", "32"));
+    QSharedPointer<AlternateRegister> alternateRegister(new AlternateRegister("testAlternate"));
+
+    testRegister->getFields()->append(registerField);
+    alternateRegister->getFields()->append(altRegisterField);
+
+    testRegister->getAlternateRegisters()->append(alternateRegister);
+
+    QSharedPointer<AlternateRegister> alternateRegister2(new AlternateRegister(*alternateRegister));
+    alternateRegister2->setName("testAlternate2");
+
+    testRegister->getAlternateRegisters()->append(alternateRegister2);
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setPriority("0");
+    modeRef1->setReference("testMode");
+    
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setPriority("1");
+    modeRef2->setReference("testMode2");
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator, Document::Revision::Std22);
+
+    QStringList errors;
+
+    // Test no mode refs = error
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 2);
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+    QVERIFY(errors.contains(QString("Alternate register testAlternate within register testRegister must have at least one mode reference defined.")));
+
+    errors.clear();
+
+    // test two valid mode refs
+    alternateRegister->getModeReferences()->append(modeRef1);
+    alternateRegister2->getModeReferences()->append(modeRef2);
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(errors.isEmpty());
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister));
+
+    errors.clear();
+
+    // Test duplicate priority
+    modeRef1->setPriority("1");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+    
+    errors.clear();
+    modeRef1->setPriority("0");
+
+    // Test duplicate reference
+    modeRef1->setReference("testMode2");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+
+    errors.clear();
+
+    // Test invalid reference value.
+    modeRef1->setReference("value with whitespace");
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid reference value 'value with whitespace'."));
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+
+    errors.clear();
+    modeRef1->setReference("testMode");
+
+    // Test invalid priority value.
+    modeRef1->setPriority("abc");
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid priority 'abc'."));
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+
+    errors.clear();
+    modeRef1->setPriority("-1");
+    validator.findErrorsIn(errors, testRegister, "test");
+    QCOMPARE(errors.size(), 1);
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid priority '-1'."));
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterValidator::testAlternateRegisterAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterValidator::testAlternateRegisterAccessPoliciesAreValid2022()
+{
+    QSharedPointer<Register> testRegister(new Register("testRegister", "10", "32"));
+    QSharedPointer<AlternateRegister> alternateRegister(new AlternateRegister("testAlternate"));
+
+    QSharedPointer<Field> registerField(new Field("regField"));
+    registerField->setBitOffset("8");
+    registerField->setBitWidth("4");
+    registerField->setTypeDefinitionsRef("testTypeDefinitions");
+    registerField->setFieldDefinitionRef("testField");
+
+    QSharedPointer<Field> altRegisterField(new Field("altRegField"));
+    altRegisterField->setBitOffset("8");
+    altRegisterField->setBitWidth("4");
+    altRegisterField->setTypeDefinitionsRef("testTypeDefinitions2");
+    altRegisterField->setFieldDefinitionRef("testField2");
+
+    testRegister->getFields()->append(registerField);
+    alternateRegister->getFields()->append(altRegisterField);
+
+    testRegister->getAlternateRegisters()->append(alternateRegister);
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setPriority("0");
+    modeRef1->setReference("ref");
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setPriority("0");
+    modeRef2->setReference("ref1");
+    
+    QSharedPointer<ModeReference> altRegisterModeRef(new ModeReference());
+    altRegisterModeRef->setPriority("1000");
+    altRegisterModeRef->setReference("superUnique");
+
+    QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
+    QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
+    accessPolicy1->getModeReferences()->append(modeRef1);
+    accessPolicy2->getModeReferences()->append(modeRef2);
+
+    alternateRegister->getAccessPolicies()->append(accessPolicy1);
+    alternateRegister->getAccessPolicies()->append(accessPolicy2);
+    alternateRegister->getModeReferences()->append(altRegisterModeRef);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    RegisterValidator validator(parser, fieldValidator, parameterValidator, Document::Revision::Std22);
+
+    QStringList errors;
+
+    QStringList possibleErrors(QStringList()
+        << "One or more mode references of access policies in alternate register testAlternate contain duplicate priority values."
+        << "One or more mode references of access policies in alternate register testAlternate contain duplicate mode reference values."
+        << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
+    );
+
+    // Test duplicate mode reference priority.
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(errors.contains(possibleErrors.first()));
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+
+    // Test duplicate reference.
+    errors.clear();
+
+    modeRef2->setPriority("1");
+    modeRef2->setReference("ref");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(errors.contains(possibleErrors.at(1)));
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
+
+    // Test valid.
+    errors.clear();
+
+    modeRef2->setReference("ref2");
+
+    validator.findErrorsIn(errors, testRegister, "test");
+    QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)
+        {
+            return errors.contains(str);
+        }));
+
+    QVERIFY(validator.hasValidAlternateRegisters(testRegister));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_RegisterValidator::errorIsNotFoundInErrorList()
 //-----------------------------------------------------------------------------
 bool tst_RegisterValidator::errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList)
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
         foreach(QString error, errorList)
         {
             qDebug() << error;

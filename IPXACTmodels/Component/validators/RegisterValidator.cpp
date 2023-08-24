@@ -13,9 +13,12 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/RegisterDefinition.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -30,8 +33,9 @@
 // Function: RegisterValidator::RegisterValidator()
 //-----------------------------------------------------------------------------
 RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator):
-    RegisterBaseValidator(expressionParser,parameterValidator),
+    QSharedPointer<FieldValidator> fieldValidator, QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
+    RegisterBaseValidator(expressionParser, parameterValidator, docRevision),
     fieldValidator_(fieldValidator)
 {
 
@@ -43,7 +47,12 @@ RegisterValidator::RegisterValidator(QSharedPointer<ExpressionParser> expression
 void RegisterValidator::componentChange(QSharedPointer<Component> newComponent)
 {
     fieldValidator_->componentChange(newComponent);
-}
+
+    if (newComponent)
+    {
+        docRevision_ = newComponent->getRevision();
+    }
+}   
 
 //-----------------------------------------------------------------------------
 // Function: RegisterValidator::getFieldValidator()
@@ -61,7 +70,8 @@ bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) cons
     return RegisterBaseValidator::validate(selectedRegister) &&
            hasValidSize(selectedRegister) &&
            hasValidFields(selectedRegister, selectedRegister->getSize()) &&
-           hasValidAlternateRegisters(selectedRegister);
+           hasValidAlternateRegisters(selectedRegister) &&
+           hasValidStructure(selectedRegister);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,21 +166,32 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> selectedRegister) const
 {
+    bool shouldResetCheckedModeReferences = true;
     QStringList alternateRegisterNames;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
     for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
-        if (alternateRegisterNames.contains(alternateRegister->name()) ||
-            !hasValidName(alternateRegister) ||
-            !hasValidIsPresent(alternateRegister) ||
-            !hasValidAlternateGroups(alternateRegister) ||
-            !hasValidFields(alternateRegister, selectedRegister->getSize()) ||
-            !hasValidParameters(alternateRegister))
+        if (alternateRegisterNames.contains(alternateRegister->name()))
         {
             return false;
         }
         else
         {
             alternateRegisterNames.append(alternateRegister->name());
+        }
+
+        if (!alternateRegisterIsValid(alternateRegister, selectedRegister))
+        {
+            return false;
+        }
+
+        if (!CommonItemsValidator::hasValidModeRefs(alternateRegister->getModeReferences(), 
+            checkedModeReferences, checkedModePriorities))
+        {
+            return false;
         }
     }
 
@@ -182,6 +203,11 @@ bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> sele
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister> selectedRegister) const
 {
+    if (selectedRegister->getAlternateGroups()->isEmpty() && docRevision_ == Document::Revision::Std22)
+    {
+        return false;
+    }
+
     QRegularExpression whiteSpaceExpression;
     whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
 
@@ -201,6 +227,40 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
     }
 
     return alternateGroupsOk;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::hasValidMemoryArray()
+//-----------------------------------------------------------------------------
+bool RegisterValidator::hasValidMemoryArray(QSharedPointer<Register> selectedRegister) const
+{
+    if (!selectedRegister->getMemoryArray())
+    {
+        return true;
+    }
+
+    MemoryArrayValidator memArrayValidator(expressionParser_);
+    return memArrayValidator.validate(selectedRegister->getMemoryArray());
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::hasValidStructure()
+//-----------------------------------------------------------------------------
+bool RegisterValidator::hasValidStructure(QSharedPointer<Register> selectedRegister) const
+{
+    if (docRevision_ == Document::Revision::Std22)
+    {
+        // Either definition reference or register definition group can be defined.
+        if (selectedRegister->getRegisterDefinitionReference().isEmpty() == false &&
+            (!selectedRegister->getTypeIdentifier().isEmpty() || !selectedRegister->getSize().isEmpty() ||
+                !selectedRegister->getVolatile().isEmpty() || !selectedRegister->getAccessPolicies()->isEmpty() ||
+                !selectedRegister->getFields()->isEmpty()))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,6 +300,7 @@ bool RegisterValidator::fieldsHaveSimilarDefinitionGroups(QSharedPointer<Field> 
         {
             if (enumeratedValue->name() == comparedEnumeratedValue->name() &&
                 enumeratedValue->displayName() == comparedEnumeratedValue->displayName() &&
+                enumeratedValue->shortDescription() == comparedEnumeratedValue->shortDescription() &&
                 enumeratedValue->description() == comparedEnumeratedValue->description() &&
                 enumeratedValue->getValue() == comparedEnumeratedValue->getValue() &&
                 enumeratedValue->getVendorExtensions()->size() ==
@@ -289,14 +350,33 @@ void RegisterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Re
 {
     QString registerContext = QStringLiteral("register ") + selectedRegister->name();
 
-    findErrorsInName(errors, selectedRegister, context);
-    findErrorsInIsPresent(errors, selectedRegister, context);
-    findErrorsInDimension(errors, selectedRegister, context);
-    findErrorsInAddressOffset(errors, selectedRegister, context);
-    findErrorsInSize(errors, selectedRegister, context);
-    findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
-    findErrorsInAlternateRegisters(errors, selectedRegister);
-    findErrorsInParameters(errors, selectedRegister, registerContext);
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        findErrorsInName(errors, selectedRegister, context);
+        findErrorsInIsPresent(errors, selectedRegister, context);
+        findErrorsInDimension(errors, selectedRegister, context);
+        findErrorsInAddressOffset(errors, selectedRegister, context);
+        findErrorsInSize(errors, selectedRegister, context);
+        findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
+        findErrorsInAlternateRegisters(errors, selectedRegister);
+        findErrorsInParameters(errors, selectedRegister, registerContext);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        registerContext = QStringLiteral("register ") + selectedRegister->name() + QStringLiteral(" within ") + context;
+
+        findErrorsInName(errors, selectedRegister, context);
+        findErrorsInMemoryArray(errors, selectedRegister, context);
+        findErrorsInAddressOffset(errors, selectedRegister, context);
+        findErrorsInSize(errors, selectedRegister, context);
+        findErrorsInAccessPolicies(errors, selectedRegister, registerContext);
+        findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
+        findErrorsInAlternateRegisters(errors, selectedRegister);
+        if (!hasValidStructure(selectedRegister))
+        {
+            errors.append(QObject::tr("Register %1 in %2 contains both a register definition reference and register definition values.").arg(selectedRegister->name()).arg(context));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -326,7 +406,7 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
         qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
         MemoryReserve reservedArea;
 
-        foreach (QSharedPointer<Field> field, *selectedRegister->getFields())
+        for (auto const& field : *selectedRegister->getFields())
         {
             fieldValidator_->findErrorsIn(errors, field, context);
 
@@ -375,11 +455,14 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
                     "has volatile true").arg(context).arg(field->name()));
             }
 
-            if (!fieldHasValidAccess(selectedRegister, field))
+            if (docRevision_ == Document::Revision::Std14)
             {
-                errors.append(QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
-                    "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
-                    .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
+                if (!fieldHasValidAccess(selectedRegister, field))
+                {
+                    errors.append(QObject::tr("Access cannot be set to %1 in field %2, where containing register %3 "
+                        "has access %4").arg(AccessTypes::access2Str(field->getAccess())).arg(field->name())
+                        .arg(selectedRegister->name()).arg(AccessTypes::access2Str(selectedRegister->getAccess())));
+                }
             }
         }
 
@@ -399,6 +482,14 @@ void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
 {
     QString context = QStringLiteral("register ") + selectedRegister->name();
     QStringList alternateGroupNames;
+    
+    // Keep track of checked mode references.
+    bool duplicateRefErrorIssued = false;
+    bool duplicatePriorityErrorIssued = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
     for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
         if (alternateGroupNames.contains(alternateRegister->name()))
@@ -414,8 +505,19 @@ void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
         QString registerContext = QStringLiteral("alternate register ") + alternateRegister->name();
 
         findErrorsInName(errors, alternateRegister, context);
-        findErrorsInIsPresent(errors, alternateRegister, context);
-        findErrorsInAlternateGroups(errors, alternateRegister, context);
+        
+        if (docRevision_ == Document::Revision::Std14)
+        {
+            findErrorsInIsPresent(errors, alternateRegister, context);
+            findErrorsInAlternateGroups(errors, alternateRegister, context);
+        }
+        else if (docRevision_ == Document::Revision::Std22)
+        {
+            findErrorsInAlternateRegisterModeRefs(errors, alternateRegister, context, checkedModeReferences, 
+                checkedModePriorities, &duplicateRefErrorIssued, &duplicatePriorityErrorIssued);
+            findErrorsInAccessPolicies(errors, alternateRegister, registerContext);
+        }
+
         findErrorsInFields(errors, alternateRegister, selectedRegister->getSize(), registerContext);
         findErrorsInParameters(errors, alternateRegister, registerContext);
     }
@@ -432,4 +534,69 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
         errors.append(QObject::tr("Alternate groups are not unique or not empty in %1 within %2").
             arg(selectedRegister->name()).arg(context));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::findErrorsInMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterValidator::findErrorsInMemoryArray(QStringList& errors, QSharedPointer<Register> selectedRegister, QString const& context) const
+{
+    QString registerContext = QStringLiteral("register ") + selectedRegister->name() + QStringLiteral(" within ") + context;
+
+    if (auto const& memArray = selectedRegister->getMemoryArray(); memArray)
+    {
+        MemoryArrayValidator validator(expressionParser_);
+        validator.findErrorsIn(errors, memArray, registerContext);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::findErrorsInAlternateRegisterModeRefs()
+//-----------------------------------------------------------------------------
+void RegisterValidator::findErrorsInAlternateRegisterModeRefs(QStringList& errors, QSharedPointer<AlternateRegister> selectedRegister, QString const& context, QStringList& checkedModeRefs, QStringList& checkedPriorities, bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued) const
+{
+    if (selectedRegister->getModeReferences()->isEmpty())
+    {
+        errors.append(QObject::tr("Alternate register %1 within %2 must have at least one mode reference defined.")
+            .arg(selectedRegister->name()).arg(context));
+    }
+
+    QString altRegisterContext = QStringLiteral("alternate register ") + selectedRegister->name()
+        + QStringLiteral(" within ") + context;
+
+    CommonItemsValidator::findErrorsInModeRefs(errors, selectedRegister->getModeReferences(), altRegisterContext, 
+        checkedModeRefs, checkedPriorities, duplicateRefErrorIssued, duplicatePriorityErrorIssued);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::alternateRegisterIsValid()
+//-----------------------------------------------------------------------------
+bool RegisterValidator::alternateRegisterIsValid(QSharedPointer<AlternateRegister> alternateRegister, 
+    QSharedPointer<Register> selectedRegister) const
+{   
+    if (!hasValidName(alternateRegister) ||
+        !hasValidFields(alternateRegister, selectedRegister->getSize()) ||
+        !hasValidParameters(alternateRegister))
+    {
+        return false;
+    }
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        if (!hasValidIsPresent(alternateRegister) ||
+            !hasValidAlternateGroups(alternateRegister))
+        {
+            return false;
+        }
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        if (alternateRegister->getModeReferences()->isEmpty() ||
+            !RegisterBaseValidator::hasValidAccessPolicies(alternateRegister))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }

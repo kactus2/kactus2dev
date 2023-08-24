@@ -1007,7 +1007,8 @@ bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) c
             }
         }
     }
-
+    
+    // Number of field access policies cannot be greater than one if a field access policy has no mode references.
     if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
     {
         return false;
