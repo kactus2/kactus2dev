@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidName(QString const& name)
 {
-    QRegularExpression validNameRegex(QStringLiteral("^[a-zA-Z:_][a-zA-Z0-9-_:]*$"));
+    QRegularExpression validNameRegex(QStringLiteral("^[a-zA-Z:_][a-zA-Z0-9-_:.]*$"));
     return validNameRegex.match(name).hasMatch();
 }
 
