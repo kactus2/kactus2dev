@@ -22,10 +22,8 @@
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidName(QString const& name)
 {
-    // Bad strings are strings with whitespace between words, empty strings and only whitespace strings.
-    QRegularExpression whiteSpaceRegex(QStringLiteral("^(?!\\s*\\S+\\s*$).*"));
-
-    return whiteSpaceRegex.match(name).hasMatch() == false;
+    QRegularExpression validNameRegex(QStringLiteral("^[a-zA-Z:_][a-zA-Z0-9-_:]*$"));
+    return validNameRegex.match(name).hasMatch();
 }
 
 //-----------------------------------------------------------------------------

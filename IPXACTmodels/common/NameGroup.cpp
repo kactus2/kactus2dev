@@ -17,7 +17,7 @@
 // Function: NameGroup::NameGroup()
 //-----------------------------------------------------------------------------
 NameGroup::NameGroup(QString const& name, QString const& displayName, QString const& description):
-    name_(name), 
+    name_(name.trimmed()), 
     displayName_(displayName),
     description_(description)
 {
@@ -51,7 +51,7 @@ QString NameGroup::name() const
 //-----------------------------------------------------------------------------
 void NameGroup::setName(QString const& name)
 {
-    name_ = name;
+    name_ = name.trimmed();
 }
 
 //-----------------------------------------------------------------------------
