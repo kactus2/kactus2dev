@@ -14,7 +14,6 @@
 #include "PortSliceColumns.h"
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
@@ -23,15 +22,16 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <QCompleter>
 #include <QScrollArea>
 
 
 //-----------------------------------------------------------------------------
 // Function: PortSliceDelegate::PortSliceDelegate()
 //-----------------------------------------------------------------------------
-PortSliceDelegate::PortSliceDelegate(QStringList const& portNameList, QCompleter* parameterCompleter,
+PortSliceDelegate::PortSliceDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel,
                         ExpressionSet expressions, QObject* parent):
-ExpressionDelegate(parameterCompleter, expressions.finder, parent),
+ExpressionDelegate(completionModel, expressions.finder, parent),
 expressionFormatter_(expressions.formatter),
 expressionParser_(expressions.parser),
 availablePortNames_(portNameList)

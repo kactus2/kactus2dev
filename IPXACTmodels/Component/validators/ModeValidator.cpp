@@ -17,16 +17,15 @@
 
 #include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 
-
-
-#include <QRegularExpression>
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
 // Function: ModeValidator::ModeValidator()
 //-----------------------------------------------------------------------------
-ModeValidator::ModeValidator(QSharedPointer<Component> component, 
+ModeValidator::ModeValidator(QSharedPointer<PortSliceValidator> sliceValidator, 
+	QSharedPointer<Component> component, 
 	QSharedPointer<ExpressionParser> expressionParser):
+	sliceValidator_(sliceValidator),
 	component_(component),
 expressionParser_(expressionParser)
 {
@@ -75,18 +74,13 @@ bool ModeValidator::hasValidPortSlices(QSharedPointer<Mode> mode) const
 	QStringList sliceNames;
 
 	for (auto const& portSlice : *mode->getPortSlices())
-	{
-		if (hasValidName(portSlice->name()) == false)
-		{
-			return false;
-		}
+    {
+        if (sliceNames.contains(portSlice->name()))
+        {
+            return false;
+        }
 
-		if (sliceNames.contains(portSlice->name()))
-		{
-			return false;
-		}
-
-		if (component_ && component_->hasPort(portSlice->getPortRef()) == false)
+		if (sliceValidator_->validate(portSlice) == false)
 		{
 			return false;
 		}
@@ -108,37 +102,22 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
         errors.append(QObject::tr("Invalid name '%1' set for mode within %2.").arg(mode->name(), context));
     }
 
+	QString modeContext(QStringLiteral("mode '%1'").arg(mode->name()));
 	QStringList sliceNames;
 	QStringList reportedNames;
 
     for (auto const& portSlice : *mode->getPortSlices())
     {
-        if (hasValidName(portSlice->name()) == false)
-        {
-            errors.append(QObject::tr("Invalid name '%1' set for port condition within mode %2.").arg(
-				portSlice->name(), mode->name()));
-        }
-
 		if (sliceNames.contains(portSlice->name()) && reportedNames.contains(portSlice->name()) == false)
         {
-            errors.append(QObject::tr("Port condition name '%1' is not unique within mode '%2'.").arg(
-                portSlice->name(), mode->name()));
+            errors.append(QObject::tr("Port condition name '%1' is not unique within %2.").arg(
+                portSlice->name(), modeContext));
 
 			reportedNames.append(portSlice->name());
 		}
         sliceNames.append(portSlice->name());
 
-		if (portSlice->getPortRef().isEmpty())
-		{
-			errors.append(QObject::tr("No port reference set for '%1' within mode %2.").arg(
-				portSlice->name(), mode->name()));
-		}
-		else if (component_ && component_->hasPort(portSlice->getPortRef()) == false)
-		{
-			errors.append(QObject::tr(
-				"Port '%1' in port condition '%2' in mode '%3' could not be found in the component.").arg(
-					portSlice->getPortRef(), portSlice->name(), mode->name()));
-		}
+		sliceValidator_->findErrorsIn(errors, portSlice, modeContext);
     }
 }
 
@@ -148,4 +127,13 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
 void ModeValidator::componentChange(QSharedPointer<Component> newComponent)
 {
 	component_ = newComponent;
+	sliceValidator_->componentChange(newComponent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::getPortSliceValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<PortSliceValidator> ModeValidator::getPortSliceValidator() const
+{
+	return sliceValidator_;
 }

@@ -18,6 +18,8 @@
 
 #include <editors/common/ExpressionSet.h>
 
+#include <IPXACTmodels/Component/validators/ModeValidator.h>
+
 #include "PortSliceEditor.h"
 
 class Mode;
@@ -44,6 +46,7 @@ public:
 	 */
     SingleModeEditor(QSharedPointer<Component> component,
         QSharedPointer<Mode> mode,
+        QSharedPointer<ModeValidator> validator,
         LibraryInterface* libHandler,
         ExpressionSet expressions,
         QWidget* parent = nullptr);

@@ -20,7 +20,6 @@
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ExpressionLineEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 
 #include <editors/ComponentEditor/parameters/Array/ParameterArrayModel.h>
@@ -30,6 +29,7 @@
 #include <common/KactusColors.h>
 
 #include <QComboBox>
+#include <QCompleter>
 #include <QLineEdit>
 #include <QPainter>
 #include <QScrollArea>
@@ -40,9 +40,9 @@
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ChoiceCreatorDelegate(parameterCompleter, parameterFinder, parent),
+ChoiceCreatorDelegate(completionModel, parameterFinder, parent),
 expressionFormatter_(expressionFormatter)
 {
     setChoices(choices);
@@ -175,7 +175,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QString parameterType = typeIndex.data(Qt::EditRole).toString();
         model->setParameterType(parameterType);
 
-        view->setItemDelegate(new ArrayDelegate(getNameCompleter(), getParameterFinder(), selectedChoice,
+        view->setItemDelegate(new ArrayDelegate(completionModel_, getParameterFinder(), selectedChoice,
             this->parent()));
 
         view->setModel(model);

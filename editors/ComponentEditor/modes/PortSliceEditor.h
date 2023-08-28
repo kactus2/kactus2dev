@@ -44,7 +44,9 @@ public:
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	PortSliceEditor(QSharedPointer<Component> component, 
-		QSharedPointer<Mode> mode, LibraryInterface* handler,
+        QSharedPointer<Mode> mode,
+        QSharedPointer<PortSliceValidator> validator,
+		LibraryInterface* handler,
 		ExpressionSet expressions,
 		QWidget* parent = 0);
 	
@@ -64,6 +66,20 @@ signals:
 	 *  Emitted when the contents of the model change.
 	 */
 	void contentChanged();
+
+	/*!
+	 *  Increase the amount of references to a parameter with a matching id.
+	 *
+	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 */
+	void increaseReferences(QString const& id);
+
+	/*!
+	 *  Decrease the amount of references to a parameter with a matching id.
+	 *
+	 *      @param [in] id      Id of the parameter, whose references are being increased.
+	 */
+	void decreaseReferences(QString const& id);
 
 private:
 

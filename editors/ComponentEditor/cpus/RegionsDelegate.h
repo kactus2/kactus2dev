@@ -15,7 +15,8 @@
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
+
+#include <QCompleter>
 
 //-----------------------------------------------------------------------------
 // Delegate class for CPU regions.
@@ -32,7 +33,7 @@ public:
      *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
      *      @param [in] parent                      The parent object.
      */
-    RegionsDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
+    RegionsDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject* parent);
 
     //! The destructor.

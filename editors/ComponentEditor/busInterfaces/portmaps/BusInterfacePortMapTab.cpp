@@ -11,7 +11,6 @@
 
 #include "BusInterfacePortMapTab.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
@@ -28,6 +27,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
+#include <QCompleter>
 #include <QSplitter>
 #include <QSharedPointer>
 #include <QVBoxLayout>
@@ -78,12 +78,9 @@ abstractionSelector_(new QComboBox(this))
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(finder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
     QStringList portNames = component_->getPortNames();
 
-    portMapDelegate_ = new PortMapDelegate(parameterCompleter, finder, portMapInterface, this);
+    portMapDelegate_ = new PortMapDelegate(componentParametersModel, finder, portMapInterface, this);
 
     connect(portMapDelegate_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

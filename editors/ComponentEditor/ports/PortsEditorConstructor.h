@@ -16,10 +16,11 @@
 #include <QSharedPointer>
 #include <QWidget>
 
+#include <QCompleter>
+
 class ParameterFinder;
 class ExpressionFormatter;
 class ExpressionParser;
-class ParameterCompleter;
 class Component;
 class PortsModel;
 class PortsView;
@@ -100,7 +101,7 @@ public:
      *      @return The created delegate.
      */
     virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
-        ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const = 0;
 
     //! No copying.

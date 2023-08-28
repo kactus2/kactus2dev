@@ -34,12 +34,12 @@ public:
      *  The constructor.
      *
      *      @param [in] portNameList            The list of available port names.
-     *      @param [in] parameterCompleter      The completer to use for expression editors.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
      *      @param [in] expressions             The collection of objects for expression handling.
      *      @param [in] parent                  The parent of the object.
      */
     PortSliceDelegate(QStringList const& portNameList,
-        QCompleter* parameterCompleter,
+        QAbstractItemModel* completionModel,
         ExpressionSet expressions,
         QObject* parent = 0);
 

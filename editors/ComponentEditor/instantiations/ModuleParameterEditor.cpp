@@ -21,13 +21,13 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/ModuleParameterInterface.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
+#include <QCompleter>
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>
 
@@ -62,10 +62,7 @@ instantiation_(instantiation)
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    view_->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ModuleParameterDelegate(componentChoices, parameterModel, parameterFinder,
         expressionFormatter, docRevision, this));
 
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

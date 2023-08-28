@@ -15,9 +15,9 @@
 //-----------------------------------------------------------------------------
 // Function: RegionDelegate::RegionDelegate()
 //-----------------------------------------------------------------------------
-RegionsDelegate::RegionsDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
+RegionsDelegate::RegionsDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QObject* parent): 
-    ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+    ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

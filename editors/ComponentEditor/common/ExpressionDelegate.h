@@ -14,7 +14,7 @@
 
 #include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
 
-#include <QCompleter>
+#include <QAbstractItemModel>
 #include <QEvent>
 
 class ParameterFinder;
@@ -33,11 +33,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterNameCompleter      The completer to use for parameter names in expression editor.
-     *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
-     *      @param [in] parent                      The parent object.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
+     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *      @param [in] parent              The parent object.
      */
-    ExpressionDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
+    ExpressionDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject* parent);
     
     //! The destructor.
@@ -106,13 +106,6 @@ protected:
     QSharedPointer<ParameterFinder> getParameterFinder() const;
 
     /*!
-     *  Gets the name completer used in expressions.
-     *
-     *      @return The name completer.
-     */
-    QCompleter* getNameCompleter() const;
-
-    /*!
      *  Creates an editor for expressions.
      *
      *      @param [in] parent   The parent widget for the editor.
@@ -130,13 +123,16 @@ protected:
      */
     ExpressionLineEditor* createExpressionLineEditor(QWidget* parent) const;
 
+protected:
+
+    //! The model containing parameter names that can be used in expressions.
+    QAbstractItemModel* completionModel_;
+
 private:
     // Disable copying.
     ExpressionDelegate(ExpressionDelegate const& rhs);
     ExpressionDelegate& operator=(ExpressionDelegate const& rhs);
 
-    //! The completer for parameter names in expressions.
-    QCompleter* parameterNameCompleter_;
 
     //! Finder for parameters in the containing component.
     QSharedPointer<ParameterFinder> parameterFinder_;

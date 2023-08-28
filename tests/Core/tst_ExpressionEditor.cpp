@@ -18,7 +18,6 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -283,7 +282,7 @@ void tst_ExpressionEditor::testExpressionInitialization()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -365,7 +364,7 @@ void tst_ExpressionEditor::testExpressionIsUpdatedForSelectedCompletion()
     parameters.append(uuidParameter);
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -420,7 +419,7 @@ void tst_ExpressionEditor::testCompletionChangesWithCursor()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -615,7 +614,7 @@ void tst_ExpressionEditor::testAutomaticCompletionForSingleOption()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -654,7 +653,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -714,7 +713,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -758,7 +757,7 @@ void tst_ExpressionEditor::testEditingInTheMiddleOfReferenceName()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -799,7 +798,7 @@ void tst_ExpressionEditor::testEditingInTheMiddleOfReferenceName()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testRemovingExpression()
 {
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     ExpressionEditor* editor = createEditorForComponent(emptyComponent);
     editor->setExpression("8'hff*2");
@@ -850,7 +849,7 @@ void tst_ExpressionEditor::testRemovingReference()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -904,7 +903,7 @@ void tst_ExpressionEditor::testRemovingReferenceWithBackSpaceAndDelete()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -967,7 +966,7 @@ void tst_ExpressionEditor::testReplaceReferenceWithAnother()
     parameters.append(testParameter);
     parameters.append(otherParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -1001,7 +1000,7 @@ void tst_ExpressionEditor::testReplaceReferenceWithAnother()
 //-----------------------------------------------------------------------------
 void tst_ExpressionEditor::testRemoveAndReplaceSelection()
 {
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     ExpressionEditor* editor = createEditorForComponent(emptyComponent);
 
@@ -1054,7 +1053,7 @@ void tst_ExpressionEditor::testRemoveAndReplaceSelectionWithReference()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);
@@ -1124,7 +1123,7 @@ void tst_ExpressionEditor::testEditingConstantExpression()
     QFETCH(QString, input);
     QFETCH(QString, expectedExpression);
 
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     ExpressionEditor* editor = createEditorForComponent(emptyComponent);
 
@@ -1165,7 +1164,7 @@ void tst_ExpressionEditor::testComparisonOperators()
 {
     QFETCH(QString, input);
 
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     ExpressionEditor* editor = createEditorForComponent(emptyComponent);
 
@@ -1233,7 +1232,7 @@ void tst_ExpressionEditor::testReferencesInModifiedComparison()
     testParameter->setValueId("id");
     testParameter->setValue("10");
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(testParameter);
 
     ExpressionEditor* editor = createEditorForComponent(targetComponent);

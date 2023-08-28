@@ -24,11 +24,11 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ListParameterFinder.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QSortFilterProxyModel>
 
@@ -87,10 +87,7 @@ parameterInterface_()
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    view_->setItemDelegate(new ParameterDelegate(choices, parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(choices, parameterModel, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 

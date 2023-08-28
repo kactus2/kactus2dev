@@ -269,13 +269,7 @@ void DesignConfiguration::addViewConfiguration(QString const& instanceName, QStr
 //-----------------------------------------------------------------------------
 void DesignConfiguration::removeViewConfiguration(QString const& instanceName)
 {
-    for (QSharedPointer<ViewConfiguration> configuration : *viewConfigurations_)
-    {
-        if (configuration->getInstanceName() == instanceName)
-        {
-            viewConfigurations_->removeAll(configuration);
-        }
-    }
+    viewConfigurations_->removeAll(getViewConfiguration(instanceName));
 }
 
 //-----------------------------------------------------------------------------

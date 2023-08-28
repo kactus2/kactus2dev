@@ -14,7 +14,6 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/FileInterface.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -23,6 +22,7 @@
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/BuildCommand.h>
 
+#include <QCompleter>
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QHBoxLayout>
@@ -56,7 +56,7 @@ expressionParser_(expressionParser)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* replaceCompleter = new ParameterCompleter(this);
+    auto replaceCompleter = new QCompleter(this);
     replaceCompleter->setModel(componentParametersModel);
 
     replaceDefaultEditor_->setAppendingCompleter(replaceCompleter);

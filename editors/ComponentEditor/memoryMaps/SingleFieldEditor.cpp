@@ -21,7 +21,6 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -42,6 +41,7 @@
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 
 #include <QComboBox>
+#include <QCompleter>
 #include <QFormLayout>
 #include <QScrollArea>
 #include <QSplitter>
@@ -92,29 +92,28 @@ containingRegister_(containingRegister)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
-    ParameterCompleter* offsetCompleter = new ParameterCompleter(this);
+    auto offsetCompleter = new QCompleter(this);
     offsetCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* widthCompleter = new ParameterCompleter(this);
+    auto widthCompleter = new QCompleter(this);
     widthCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* isPresentCompleter = new ParameterCompleter(this);
+    auto isPresentCompleter = new QCompleter(this);
     isPresentCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* reservedCompleter = new ParameterCompleter(this);
+    auto reservedCompleter = new QCompleter(this);
     reservedCompleter->setModel(componentParametersModel);
 
-
-    ParameterCompleter* writeValueMinCompleter = new ParameterCompleter(this);
+    auto writeValueMinCompleter = new QCompleter(this);
     writeValueMinCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* writeValueMaxCompleter = new ParameterCompleter(this);
+    auto writeValueMaxCompleter = new QCompleter(this);
     writeValueMaxCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* resetValueCompleter = new ParameterCompleter(this);
+    auto resetValueCompleter = new QCompleter(this);
     resetValueCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* resetMaskCompleter = new ParameterCompleter(this);
+    auto resetMaskCompleter = new QCompleter(this);
     resetMaskCompleter->setModel(componentParametersModel);
 
     offsetEditor_->setAppendingCompleter(offsetCompleter);

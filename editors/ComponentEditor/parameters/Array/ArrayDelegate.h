@@ -29,12 +29,12 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterCompleter  The completer to use for expression editors.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] finder              The parameter finder to search for the parameters.
      *      @param [in] selectedChoice      The currently active choice.
      *      @param [in] parent              The parent object.
      */
-    ArrayDelegate(QCompleter* parameterCompleter,
+    ArrayDelegate(QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> finder,
         QSharedPointer<Choice> selectedChoice,
         QObject* parent = 0);

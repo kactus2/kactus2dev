@@ -26,9 +26,9 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterDelegate::RegisterDelegate()
 //-----------------------------------------------------------------------------
-RegisterDelegate::RegisterDelegate(QCompleter* parameterNameCompleter,
+RegisterDelegate::RegisterDelegate(QAbstractItemModel* completionModel,
                                    QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

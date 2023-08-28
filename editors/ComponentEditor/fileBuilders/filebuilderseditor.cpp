@@ -13,12 +13,12 @@
 #include "filebuildersdelegate.h"
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/FileBuilderInterface.h>
 
 #include <IPXACTmodels/common/FileBuilder.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -43,9 +43,6 @@ fileBuilderInterface_(fileBuilderInterface)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
 	// set view to be sortable
 	view_.setSortingEnabled(true);
 
@@ -53,7 +50,7 @@ fileBuilderInterface_(fileBuilderInterface)
 	view_.setItemsDraggable(false);
 
 	// set the delegate to provide editors
-    view_.setItemDelegate(new FileBuildersDelegate(parameterCompleter, parameterFinder, this));
+    view_.setItemDelegate(new FileBuildersDelegate(componentParametersModel, parameterFinder, this));
 
 	// set source model for proxy
     proxy_.setSourceModel(model_);

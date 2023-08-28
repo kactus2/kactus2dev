@@ -221,10 +221,6 @@ QVariant ConfigurableElementsModel::headerData(int section, Qt::Orientation orie
         {
             return tr("Array right");
         }
-        else if (section == ConfigurableElementsColumns::TYPE)
-        {
-            return tr("Type");
-        }
     }
 
     return QVariant();
@@ -349,10 +345,6 @@ QVariant ConfigurableElementsModel::valueForIndex(QModelIndex const& index) cons
     else if (index.column() == ConfigurableElementsColumns::ARRAY_RIGHT)
     {
         return element->getReferencedParameter()->getArrayRight();
-    }
-    else if (index.column() == ConfigurableElementsColumns::TYPE)
-    {
-        return element->getType();
     }
 
     return QVariant();
@@ -488,10 +480,6 @@ QVariant ConfigurableElementsModel::expressionOrValueForIndex(QModelIndex const&
     {
         return element->getReferencedParameter()->getValue();
     }
-    else if (index.column() == ConfigurableElementsColumns::TYPE)
-    {
-        return element->getType();
-    }
 
     return data(index, Qt::DisplayRole);
 }
@@ -598,7 +586,7 @@ bool ConfigurableElementsModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 void ConfigurableElementsModel::onRemoveItem(QString const& elementID, int elementRow)
 {
-    foreach (QSharedPointer<EditorConfigurableElement> element, configurableElements_)
+    for (QSharedPointer<EditorConfigurableElement> element: configurableElements_)
     {
         if (element->getReferencedParameter() && element->getReferencedParameter()->getValueId() == elementID)
         {

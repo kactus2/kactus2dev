@@ -481,12 +481,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/MasterExpressionEditor.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
-    ./editors/ComponentEditor/common/CompleterPopupTable.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \
     ./editors/ComponentEditor/common/ExpressionEditor.h \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.h \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
-    ./editors/ComponentEditor/common/ParameterCompleter.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ExpressionLineEditor.h \
     ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
@@ -1321,7 +1319,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/choices/ChoicesModel.cpp \
     ./editors/ComponentEditor/choices/EnumerationModel.cpp \
     ./editors/ComponentEditor/common/AbstractParameterModel.cpp \
-    ./editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ./editors/ComponentEditor/common/ConfigurableElementFinder.cpp \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.cpp \
     ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.cpp \
@@ -1331,7 +1328,6 @@ SOURCES += ./common/GenericEditProvider.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
-    ./editors/ComponentEditor/common/ParameterCompleter.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.cpp \

@@ -12,7 +12,6 @@
 #include "MasterPortsEditor.h"
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/portsdelegate.h>
 #include <editors/ComponentEditor/ports/portsmodel.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
@@ -28,6 +27,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -36,14 +36,14 @@
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
     PortsEditorConstructor* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortValidator> portValidator, ParameterCompleter* parameterCompleter,
+    QSharedPointer<PortValidator> portValidator, QAbstractItemModel* completionModel,
     QString const& defaultPath, BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(editorConstructor->constructView(defaultPath, busInterface, this)),
 model_(0),
 proxy_(editorConstructor->constructFilter(portsInterface, this)),
 delegate_(editorConstructor->constructDelegate(
-    component, parameterCompleter, parameterFinder, portValidator, this)),
+    component, completionModel, parameterFinder, portValidator, this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)
 {

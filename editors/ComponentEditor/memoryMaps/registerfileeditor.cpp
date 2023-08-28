@@ -18,7 +18,6 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
@@ -27,6 +26,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
@@ -59,8 +59,6 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
         new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter *parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
     ExpressionProxyModel *proxy =
         new ExpressionProxyModel(expressionParser, this);
@@ -82,7 +80,7 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
     view_->setSortingEnabled(true);
 
     view_->setItemDelegate(
-        new RegisterFileDelegate(parameterCompleter, parameterFinder, this));
+        new RegisterFileDelegate(componentParametersModel, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), this,
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

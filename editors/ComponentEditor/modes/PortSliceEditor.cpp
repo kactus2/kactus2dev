@@ -16,7 +16,6 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/common/ExpressionSet.h>
 
@@ -24,6 +23,7 @@
 
 #include "PortSliceDelegate.h"
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
@@ -31,14 +31,16 @@
 // Function: PortSliceEditor::PortSliceEditor()
 //-----------------------------------------------------------------------------
 PortSliceEditor::PortSliceEditor(QSharedPointer<Component> component, 
-	QSharedPointer<Mode> mode, LibraryInterface* handler, 
+	QSharedPointer<Mode> mode, 
+	QSharedPointer<PortSliceValidator> validator,
+	LibraryInterface* handler, 
     ExpressionSet expressions,
 	QWidget* parent) :
 QWidget(parent),
 	component_(component),
     view_(this),
     proxy_(this),
-    model_(mode, expressions, this)
+    model_(mode, validator, expressions, this)
 {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -59,10 +61,7 @@ QWidget(parent),
     ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
     parameterModel->setExpressionParser(expressions.parser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-	delegate_ = new PortSliceDelegate(component->getPortNames(), parameterCompleter, expressions, this);
+	delegate_ = new PortSliceDelegate(component->getPortNames(), parameterModel, expressions, this);
 
 	view_.setItemDelegate(delegate_);
 
@@ -72,6 +71,11 @@ QWidget(parent),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
+
+    connect(delegate_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(delegate_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

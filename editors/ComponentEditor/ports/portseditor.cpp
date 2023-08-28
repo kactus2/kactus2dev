@@ -15,7 +15,6 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
@@ -34,6 +33,7 @@
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 namespace
@@ -66,9 +66,6 @@ busInterface_(busInterface)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
     portsInterface_ =
         QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
     portsInterface_->setPorts(component);
@@ -76,10 +73,10 @@ busInterface_(busInterface)
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new WirePortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        new WirePortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, parameterCompleter, defaultPath,
+        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
 
     connectSignals();

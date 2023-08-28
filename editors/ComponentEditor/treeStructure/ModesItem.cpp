@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
+#include <IPXACTmodels/Component/validators/PortSliceValidator.h>
  
 //-----------------------------------------------------------------------------
 // Function: ModesItem::ModesItem()
@@ -30,7 +31,7 @@ ModesItem::ModesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandl
 ComponentEditorItem(model, libHandler, component, parent),
 modes_(component->getModes()),
 expressions_(expressions),
-validator_(new ModeValidator(component, expressions.parser))
+validator_(new ModeValidator(QSharedPointer<PortSliceValidator>(new PortSliceValidator(component, expressions.parser)), component, expressions.parser))
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);

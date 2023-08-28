@@ -14,7 +14,6 @@
 #include "RemapConditionColumns.h"
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
@@ -23,16 +22,16 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <QCompleter>
 #include <QScrollArea>
-
 
 //-----------------------------------------------------------------------------
 // Function: RemapConditionDelegate::RemapConditionDelegate()
 //-----------------------------------------------------------------------------
-RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QCompleter* parameterCompleter,
+RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel,
                         QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser,
                         QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ExpressionDelegate(parameterCompleter, finder, parent),
+ExpressionDelegate(completionModel, finder, parent),
 expressionFormatter_(expressionFormatter),
 expressionParser_(expressionParser),
 availablePortNames_(portNameList)

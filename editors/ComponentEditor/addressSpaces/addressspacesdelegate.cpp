@@ -16,9 +16,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressSpacesDelegate::AddressSpacesDelegate()
 //-----------------------------------------------------------------------------
-AddressSpacesDelegate::AddressSpacesDelegate(QCompleter* parameterNameCompleter, 
+AddressSpacesDelegate::AddressSpacesDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

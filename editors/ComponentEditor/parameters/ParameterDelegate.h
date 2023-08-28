@@ -33,13 +33,13 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] choices                 The choices available for model parameter value.
-	 *      @param [in] parameterCompleter      The completer to use for expression editors.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
 	 *      @param [in] finder                  The parameter finder to user for expression editors.
 	 *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
 	 *      @param [in] parent                  The parent of the object.
 	 */
 	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-        QCompleter* parameterCompleter,
+        QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> finder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         QObject* parent = 0);

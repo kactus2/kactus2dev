@@ -18,8 +18,8 @@
 
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
+#include <QCompleter>
 #include <QScrollArea>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
@@ -30,6 +30,7 @@
 //-----------------------------------------------------------------------------
 SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     QSharedPointer<Mode> mode,
+    QSharedPointer<ModeValidator> validator,
     LibraryInterface* libHandler,
     ExpressionSet expressions,
     QWidget* parent) :
@@ -37,11 +38,16 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     mode_(mode),
     nameEditor_(mode, component->getRevision(), this, tr("Mode name and description")),
     conditionEditor_(this),
-    portSliceEditor_(component, mode, libHandler, expressions, this)
+    portSliceEditor_(component, mode, validator->getPortSliceValidator(), libHandler, expressions, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
+    connect(&portSliceEditor_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(&portSliceEditor_, SIGNAL(decreaseReferences(QString const&)),
+
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
     setupLayout();
 }
 

@@ -25,10 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapDelegate::SubspaceMapDelegate()
 //-----------------------------------------------------------------------------
-SubspaceMapDelegate::SubspaceMapDelegate(QCompleter* parameterNameCompleter,
+SubspaceMapDelegate::SubspaceMapDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, SubspaceMapInterface* subspaceInterface,
     QSharedPointer<QList<QSharedPointer<AddressSpace>>> addressSpaces, QObject *parent):
-MemoryBlockDelegate(parameterNameCompleter, parameterFinder, parent),
+MemoryBlockDelegate(completionModel, parameterFinder, parent),
 subspaceInterface_(subspaceInterface),
 busInterface_(subspaceInterface_->getBusInterface()),
 addressSpaces_(addressSpaces)

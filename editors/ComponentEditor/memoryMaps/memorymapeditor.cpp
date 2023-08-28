@@ -18,7 +18,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
@@ -27,6 +26,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -50,9 +50,6 @@ proxy_()
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(view_);
 
@@ -75,7 +72,7 @@ proxy_()
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new MemoryMapDelegate(componentParameterModel, parameterFinder, this));
 
 	view_->sortByColumn(MemoryMapColumns::BASE_COLUMN, Qt::AscendingOrder);
 

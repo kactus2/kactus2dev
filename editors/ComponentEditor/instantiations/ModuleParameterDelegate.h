@@ -32,14 +32,14 @@ public:
 	/*! The constructor
 	 *
 	 *     @param [in] choices              The choices available for model parameter value.
-     *     @param [in] parameterCompleter   The completer to use for expression editors.
+     *     @param [in] completionModel     Model containing the completions used in expression editor.
      *     @param [in] parameterFinder      The parameter finder.
      *     @param [in] expressionFormatter  The expression formatter.
      *     @param [in] docRevision          The IP-XACT standard revision in use.
 	 *     @param [in] parent               The parent object
 	*/
 	ModuleParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QCompleter* parameterCompleter,
+        QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
         Document::Revision docRevision,

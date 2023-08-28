@@ -19,10 +19,10 @@
 //-----------------------------------------------------------------------------
 // Function: RegisterFileDelegate::RegisterFileDelegate()
 //-----------------------------------------------------------------------------
-RegisterFileDelegate::RegisterFileDelegate(QCompleter* parameterNameCompleter,
+RegisterFileDelegate::RegisterFileDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder,
     QObject *parent) :
-    ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+    ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

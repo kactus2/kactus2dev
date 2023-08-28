@@ -18,7 +18,6 @@
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
@@ -70,16 +69,16 @@ expressionParser_(expressionParser)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
-    ParameterCompleter* baseAddressEditorCompleter = new ParameterCompleter(this);
+    auto baseAddressEditorCompleter = new QCompleter(this);
     baseAddressEditorCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* rangeEditorCompleter = new ParameterCompleter(this);
+    auto rangeEditorCompleter = new QCompleter(this);
     rangeEditorCompleter->setModel(componentParametersModel);
 
-    ParameterCompleter* widthEditorCompleter = new ParameterCompleter(this);
+    auto widthEditorCompleter = new QCompleter(this);
     widthEditorCompleter->setModel(componentParametersModel);
     
-    ParameterCompleter* isPresentEditorCompleter = new ParameterCompleter(this);
+    auto isPresentEditorCompleter = new QCompleter(this);
     isPresentEditorCompleter->setModel(componentParametersModel);
 
     baseAddressEditor_->setAppendingCompleter(baseAddressEditorCompleter);

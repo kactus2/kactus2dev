@@ -11,7 +11,6 @@
 
 #include "WirePortsEditorConstructor.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/WirePortsModel.h>
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
@@ -21,6 +20,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -68,11 +68,11 @@ PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath,
 // Function: WirePortsEditorConstructor::constructDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate* WirePortsEditorConstructor::constructDelegate(QSharedPointer<Component> component,
-    ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortValidator> portValidator, QObject* parent) const
 {
     WirePortsDelegate* wireDelegate = new WirePortsDelegate(
-        component, parameterCompleter, parameterFinder, portValidator->getTypeValidator(), parent);
+        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
 
     return wireDelegate;
 }

@@ -33,12 +33,12 @@ public:
      *  The constructor.
      *
      *      @param [in] component           Component containing the edited ports.
-     *      @param [in] parameterCompleter  The completer to use for parameter names in expression editor.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
      *      @param [in] typeValidator       Validator for port type definitions.
      *      @param [in] parent              The parent object.
      */
-	TransactionalPortsDelegate(QSharedPointer<Component> component, QCompleter* parameterCompleter,
+	TransactionalPortsDelegate(QSharedPointer<Component> component, QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<PortTypeValidator> typeValidator,
         QObject* parent = 0);
 	

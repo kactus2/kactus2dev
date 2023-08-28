@@ -1882,12 +1882,6 @@
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp">
       <Filter>Source Files\editors\ComponentEditor\referenceCounter</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\ParameterCompleter.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\CompleterPopupTable.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTree.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </ClCompile>
@@ -2261,9 +2255,6 @@
       <Filter>Source Files\editors\ComponentEditor\indirectInterfaces</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\ConfigurableElementFinder.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.cpp">
@@ -3274,6 +3265,9 @@
     <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\modes</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -4106,12 +4100,6 @@
     <CustomBuild Include="editors\ComponentEditor\parameters\ParameterEditorHeaderView.h">
       <Filter>Header Files\editors\ComponentEditor\parameters</Filter>
     </CustomBuild>
-    <QtMoc Include="editors\ComponentEditor\common\ParameterCompleter.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\common\CompleterPopupTable.h">
-      <Filter>Header Files\editors\ComponentEditor\common</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\parameterReferenceTree\ParameterReferenceTree.h">
       <Filter>Header Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </QtMoc>

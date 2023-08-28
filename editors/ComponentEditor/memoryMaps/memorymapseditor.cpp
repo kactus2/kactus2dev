@@ -17,7 +17,6 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 #include <common/views/EditableTreeView/EditableTreeSortFilter.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
 
@@ -27,6 +26,7 @@
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
@@ -69,10 +69,7 @@ component_(component)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
-
-    delegate_ = new MemoryMapsDelegate(parameterCompleter, parameterFinder, getRemapStateNames(), this);
+    delegate_ = new MemoryMapsDelegate(componentParametersModel, parameterFinder, getRemapStateNames(), this);
     view_->setItemDelegate(delegate_);
 
     QHeaderView* header = new QHeaderView(Qt::Horizontal, this);

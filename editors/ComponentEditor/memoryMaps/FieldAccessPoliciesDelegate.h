@@ -16,7 +16,6 @@
 
 #include <QStyledItemDelegate>
 
-class ParameterCompleter;
 
 class FieldAccessPoliciesDelegate : public ExpressionDelegate
 {
@@ -24,7 +23,8 @@ class FieldAccessPoliciesDelegate : public ExpressionDelegate
 
 public:
 
-    FieldAccessPoliciesDelegate(ParameterCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
+    FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
+        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
 
     virtual ~FieldAccessPoliciesDelegate() = default;
 

@@ -15,7 +15,6 @@
 #include <common/GenericEditProvider.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -31,6 +30,7 @@
 #include <IPXACTmodels/common/validators/ValueFormatter.h>
 #include <IPXACTmodels/Design/Design.h>
 
+#include <QCompleter>
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QGroupBox>
@@ -62,13 +62,13 @@ AdhocPortEditor::AdhocPortEditor(QSharedPointer<ParameterFinder> designParameter
     ComponentParameterModel* parameterModel = new ComponentParameterModel(designParameterFinder, this);
     parameterModel->setExpressionParser(expressionParser_);
 
-    ParameterCompleter* tiedValueCompleter = new ParameterCompleter(this);
+    auto tiedValueCompleter = new QCompleter(this);
     tiedValueCompleter->setModel(parameterModel);
 
-    ParameterCompleter* tiedValueLeftBoundCompleter = new ParameterCompleter(this);
+    auto tiedValueLeftBoundCompleter = new QCompleter(this);
     tiedValueLeftBoundCompleter->setModel(parameterModel);
 
-    ParameterCompleter* tiedValueRightBoundCompleter = new ParameterCompleter(this);
+    auto tiedValueRightBoundCompleter = new QCompleter(this);
     tiedValueRightBoundCompleter->setModel(parameterModel);
 
     tiedValueEditor_->setAppendingCompleter(tiedValueCompleter);

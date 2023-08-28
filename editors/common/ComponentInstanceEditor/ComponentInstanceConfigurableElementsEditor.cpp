@@ -24,36 +24,32 @@
 // Function: ComponentInstanceConfigurableElementsEditor::ComponentInstanceConfigurableElementsEditor()
 //-----------------------------------------------------------------------------
 ComponentInstanceConfigurableElementsEditor::ComponentInstanceConfigurableElementsEditor(
-    QSharedPointer<ConfigurableElementFinder> elementFinder,
-    QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> configurableElementFormatter,
-    QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
+    ExpressionSet parameterExpressions,
+    ExpressionSet moduleParameterExpressions,
+    ExpressionSet defaultExpressions,
     QAbstractItemModel* completionModel, QWidget *parent):
-ConfigurableElementEditor(parameterFinder, configurableElementFormatter, completionModel, parent),
-model_(new ComponentInstanceConfigurableElementsModel(parameterFinder, elementFinder, configurableElementFormatter,
-    instanceExpressionFormatter, expressionParser, instanceParser, this))
+    QWidget(parent),
+    parameterEditor_(parameterExpressions, defaultExpressions, completionModel, this),
+    moduleParameterEditor_(moduleParameterExpressions, defaultExpressions, nullptr, this)
 {
-    auto filter = new ConfigurableElementsFilter(this);
-    setModel(model_, filter);
+    parameterEditor_.setTitle(tr("Parameters"));
+    connect(&parameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&parameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(&parameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
-    view_.setToolTip(QString());
-    view_.setAlternatingRowColors(false);
-    view_.setColumnHidden(ConfigurableElementsColumns::CHOICE, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_LEFT, true);
-    view_.setColumnHidden(ConfigurableElementsColumns::ARRAY_RIGHT, true);
+    moduleParameterEditor_.setTitle(tr("Module parameters"));
+    connect(&moduleParameterEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&moduleParameterEditor_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(&moduleParameterEditor_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
-    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(addConfigurableElement(QString const&, QString const&, int)),
-        model_, SLOT(onAddItem(QString const&, QString const&, int)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, int)),
-        model_, SLOT(onRemoveItem(QString const&, int)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
-        model_, SLOT(emitDataChangeForID(QString const&, QString const&)), Qt::UniqueConnection);
-    connect(model_, SIGNAL(invalidateFilter()), filter, SLOT(invalidate()), Qt::UniqueConnection);
-
-    connect(filterSelection_, SIGNAL(clicked(bool)),
-        filter, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(&parameterEditor_);
+    layout->addWidget(&moduleParameterEditor_);
+    layout->setContentsMargins(0, 0, 0, 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,9 +59,43 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
     QSharedPointer<ComponentInstance> instance, QSharedPointer<ViewConfiguration> viewConfiguration,
     QSharedPointer<IEditProvider> editProvider)
 {
-    model_->setParameters(component, instance, viewConfiguration);
-    delegate_->setChoices(component->getChoices());
-    delegate_->setEditProvider(editProvider);
+    parameterEditor_.setEditProvider(editProvider);
+    moduleParameterEditor_.setEditProvider(editProvider);
+
+    auto identifier = tr("component %1").arg(component->getVlnv().toString());
+    parameterEditor_.setParameters(identifier,component->getParameters(), component->getChoices(), 
+        instance->getConfigurableElementValues());
+
+
+    QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters(new QList<QSharedPointer<Parameter> >());
+
+    if (viewConfiguration && !viewConfiguration->getViewReference().isEmpty())
+    {
+        QString referencedView = viewConfiguration->getViewReference();
+        for (QSharedPointer<View> view : *component->getViews())
+        {
+            if (view->name() == referencedView)
+            {
+                QString referencedComponentInstantiation = view->getComponentInstantiationRef();
+                if (!referencedComponentInstantiation.isEmpty())
+                {
+                    for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
+                    {
+                        if (instantiation->name() == referencedComponentInstantiation)
+                        {
+                            for (QSharedPointer<ModuleParameter> moduleParameter : *instantiation->getModuleParameters())
+                            {
+                                moduleParameters->append(moduleParameter);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    moduleParameterEditor_.setParameters(identifier, moduleParameters, component->getChoices(), 
+        viewConfiguration->getViewConfigurableElements());
 }
 
 //-----------------------------------------------------------------------------
@@ -73,5 +103,6 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
 //-----------------------------------------------------------------------------
 void ComponentInstanceConfigurableElementsEditor::clear() 
 {
-	model_->clear();
+    parameterEditor_.clear();
+    moduleParameterEditor_.clear();
 }

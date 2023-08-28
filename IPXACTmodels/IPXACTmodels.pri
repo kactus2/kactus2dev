@@ -3,12 +3,7 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./Component/FieldReferenceReader.h \
-    ./Component/FieldAccessPolicy.h \
-    ./Component/FieldAccessPolicyReader.h \
-    ./Component/FieldReference.h \
-    ./Component/ModeReference.h \
-    ./generaldeclarations.h \
+HEADERS += ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
@@ -135,7 +130,16 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./Design/validator/ComponentInstanceValidator.h \
     ./Design/validator/DesignValidator.h \
     ./Design/validator/InterconnectionValidator.h \
+    ./Component/AccessPolicy.h \
+    ./Component/AccessPolicyReader.h \
+    ./Component/AccessPolicyWriter.h \
     ./Component/ExecutableImage.h \
+    ./Component/FieldAccessPolicy.h \
+    ./Component/FieldAccessPolicyReader.h \
+    ./Component/FieldAccessPolicyWriter.h \
+    ./Component/FieldReference.h \
+    ./Component/FieldReferenceReader.h \
+    ./Component/FieldReferenceWriter.h \
     ./Component/FieldReset.h \
     ./Component/InitiatorInterface.h \
     ./Component/LanguageTools.h \
@@ -144,7 +148,12 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./Component/MemoryArrayWriter.h \
     ./Component/MemoryBlockBaseReader.h \
     ./Component/MemoryBlockBaseWriter.h \
+    ./Component/ModeReference.h \
     ./Component/MirroredTargetInterface.h \
+    ./Component/Mode.h \
+    ./Component/ModeReader.h \
+    ./Component/ModeWriter.h \
+    ./Component/PortSlice.h \
     ./Component/Region.h \
     ./Component/SubSpaceMap.h \
     ./Component/SubspaceMapReader.h \
@@ -232,8 +241,11 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/RemapStateReader.h \
     ./Component/RemapStateWriter.h \
+    ./Component/validators/FieldAccessPolicyValidator.h \
+    ./Component/validators/FieldReferenceValidator.h \
     ./Component/validators/MemoryArrayValidator.h \
     ./Component/validators/MemoryBlockValidator.h \
+    ./Component/validators/ModeValidator.h \
     ./Component/validators/RegionValidator.h \
     ./Component/validators/RegisterBaseValidator.h \
     ./Component/validators/RegisterFileValidator.h \
@@ -281,23 +293,8 @@ HEADERS += ./Component/FieldReferenceReader.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/FieldReferenceWriter.h \
-    ./Component/FieldAccessPolicyWriter.h \
-    ./Component/validators/FieldReferenceValidator.h \
-    ./Component/validators/FieldAccessPolicyValidator.h \
-    ./Component/AccessPolicy.h \
-    ./Component/AccessPolicyReader.h \
-    ./Component/AccessPolicyWriter.h \
-    ./Component/ModeReader.h \
-    ./Component/Mode.h \
-    ./Component/ModeWriter.h \
-    ./Component/PortSlice.h \
-    ./Component/validators/ModeValidator.h
-SOURCES += ./Component/FieldReferenceReader.cpp \
-    ./Component/FieldAccessPolicy.cpp \
-    ./Component/FieldReference.cpp \
-    ./Component/ModeReference.cpp \
-    ./generaldeclarations.cpp \
+    ./Component/validators/PortSliceValidator.h
+SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
     ./kactusExtensions/ApiDefinitionWriter.cpp \
@@ -421,6 +418,9 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Design/validator/ComponentInstanceValidator.cpp \
     ./Design/validator/DesignValidator.cpp \
     ./Design/validator/InterconnectionValidator.cpp \
+    ./Component/AccessPolicy.cpp \
+    ./Component/AccessPolicyReader.cpp \
+    ./Component/AccessPolicyWriter.cpp \
     ./Component/AddressBlock.cpp \
     ./Component/AddressBlockReader.cpp \
     ./Component/AddressBlockWriter.cpp \
@@ -454,7 +454,13 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/EnumeratedValueWriter.cpp \
     ./Component/ExecutableImage.cpp \
     ./Component/Field.cpp \
+    ./Component/FieldAccessPolicy.cpp \
+    ./Component/FieldAccessPolicyReader.cpp \
+    ./Component/FieldAccessPolicyWriter.cpp \
     ./Component/FieldReader.cpp \
+    ./Component/FieldReference.cpp \
+    ./Component/FieldReferenceReader.cpp \
+    ./Component/FieldReferenceWriter.cpp \
     ./Component/FieldReset.cpp \
     ./Component/FieldWriter.cpp \
     ./Component/File.cpp \
@@ -485,14 +491,19 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/MemoryMapWriter.cpp \
     ./Component/MemoryRemap.cpp \
     ./Component/MirroredTargetInterface.cpp \
+    ./Component/Mode.cpp \
     ./Component/Model.cpp \
     ./Component/AbstractionType.cpp \
+    ./Component/ModeReference.cpp \
+    ./Component/ModeReader.cpp \
+    ./Component/ModeWriter.cpp \
     ./Component/OtherClockDriver.cpp \
     ./Component/OtherClockDriverReader.cpp \
     ./Component/OtherClockDriverWriter.cpp \
     ./Component/Port.cpp \
     ./Component/PortMap.cpp \
     ./Component/PortReader.cpp \
+    ./Component/PortSlice.cpp \
     ./Component/PortWriter.cpp \
     ./Component/Region.cpp \
     ./Component/Register.cpp \
@@ -528,6 +539,8 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/validators/ComponentValidator.cpp \
     ./Component/validators/CPUValidator.cpp \
     ./Component/validators/EnumeratedValueValidator.cpp \
+    ./Component/validators/FieldAccessPolicyValidator.cpp \
+    ./Component/validators/FieldReferenceValidator.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
@@ -535,6 +548,7 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./Component/validators/InstantiationsValidator.cpp \
     ./Component/validators/MemoryArrayValidator.cpp \
     ./Component/validators/MemoryBlockValidator.cpp \
+    ./Component/validators/ModeValidator.cpp \
     ./Component/validators/PortMapValidator.cpp \
     ./Component/validators/OtherClockDriverValidator.cpp \
     ./Component/validators/PortTypeValidator.cpp \
@@ -567,16 +581,4 @@ SOURCES += ./Component/FieldReferenceReader.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/ModeReader.cpp \
-    ./Component/Mode.cpp \
-    ./Component/ModeWriter.cpp \
-    ./Component/PortSlice.cpp \
-    ./Component/validators/ModeValidator.cpp \
-    ./Component/FieldAccessPolicyReader.cpp \
-    ./Component/FieldReferenceWriter.cpp \
-    ./Component/FieldAccessPolicyWriter.cpp \
-    ./Component/validators/FieldReferenceValidator.cpp \
-    ./Component/validators/FieldAccessPolicyValidator.cpp \
-    ./Component/AccessPolicy.cpp \
-    ./Component/AccessPolicyReader.cpp \
-    ./Component/AccessPolicyWriter.cpp
+    ./Component/validators/PortSliceValidator.cpp

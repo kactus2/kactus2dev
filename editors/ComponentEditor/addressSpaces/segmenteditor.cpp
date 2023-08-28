@@ -15,13 +15,13 @@
 #include "SegmentColumns.h"
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -71,10 +71,7 @@ component_(component)
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(completionModel);
-
-	view_.setItemDelegate(new SegmentDelegate(parameterCompleter, parameterFinder, this));
+	view_.setItemDelegate(new SegmentDelegate(completionModel, parameterFinder, this));
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
     proxy->setColumnToAcceptExpressions(SegmentColumns::OFFSET);

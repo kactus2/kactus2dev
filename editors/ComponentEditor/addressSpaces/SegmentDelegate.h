@@ -15,7 +15,6 @@
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentDelegate::SegmentDelegate()
@@ -28,11 +27,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterNameCompleter      The completer to use for parameter names in expression editor.
-     *      @param [in] parameterFinder             The parameter finder to use for for expression editor.
-     *      @param [in] parent                      The parent object.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
+     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *      @param [in] parent              The parent object.
      */
-    SegmentDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
+    SegmentDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QObject* parent);
 
     //! The destructor.

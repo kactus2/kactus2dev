@@ -20,8 +20,7 @@ EditorConfigurableElement::EditorConfigurableElement(QSharedPointer<Parameter> r
     QString const& evaluatedDefaultValue, QString const& configuratedValue):
 referencedParameter_(referencedParameter),
 evaluatedDefaultValue_(evaluatedDefaultValue),
-configuratedValue_(configuratedValue),
-type_("Parameter")
+configuratedValue_(configuratedValue)
 {
 
 }
@@ -72,20 +71,4 @@ QString const& EditorConfigurableElement::getConfiguratedValue() const
 void EditorConfigurableElement::setConfiguratedValue(QString const& newConfiguratedValue)
 {
     configuratedValue_ = newConfiguratedValue;
-}
-
-//-----------------------------------------------------------------------------
-// Function: EditorConfigurableElement::getType()
-//-----------------------------------------------------------------------------
-QString const& EditorConfigurableElement::getType() const
-{
-    return type_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: EditorConfigurableElement::setType()
-//-----------------------------------------------------------------------------
-void EditorConfigurableElement::setType(QString const& newType)
-{
-    type_ = newType;
 }

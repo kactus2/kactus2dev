@@ -17,9 +17,9 @@
 //-----------------------------------------------------------------------------
 // Function: AddressBlockDelegate::AddressBlockDelegate()
 //-----------------------------------------------------------------------------
-AddressBlockDelegate::AddressBlockDelegate(QCompleter* parameterNameCompleter,
+AddressBlockDelegate::AddressBlockDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent) 
+ExpressionDelegate(completionModel, parameterFinder, parent) 
 {
 
 }

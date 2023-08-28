@@ -15,9 +15,9 @@
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
+#include <QCompleter>
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -197,7 +197,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         presenceEditor_ = new ExpressionEditor(finder, this);
         presenceEditor_->setFixedHeight(24);
 
-        auto presenceCompleter = new ParameterCompleter(this);
+        auto presenceCompleter = new QCompleter(this);
         presenceCompleter->setModel(componentParametersModel);
         presenceEditor_->setAppendingCompleter(presenceCompleter);
 
@@ -225,7 +225,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         rangeEditor_->setFixedHeight(24);
         rangeEditor_->setProperty("mandatoryField", true);
 
-        auto rangeCompleter = new ParameterCompleter(this);
+        auto rangeCompleter = new QCompleter(this);
         rangeCompleter->setModel(componentParametersModel);
         rangeEditor_->setAppendingCompleter(rangeCompleter);
 
@@ -239,7 +239,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         widthEditor_->setFixedHeight(24);
         widthEditor_->setProperty("mandatoryField", true);
 
-        auto widthCompleter = new ParameterCompleter(this);
+        auto widthCompleter = new QCompleter(this);
         widthCompleter->setModel(componentParametersModel);
         widthEditor_->setAppendingCompleter(widthCompleter);
 
@@ -252,7 +252,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         aubEditor_ = new ExpressionEditor(finder, this);
         aubEditor_->setFixedHeight(24);
 
-        auto aubCompleter = new ParameterCompleter(this);
+        auto aubCompleter = new QCompleter(this);
         aubCompleter->setModel(componentParametersModel);
         aubEditor_->setAppendingCompleter(aubCompleter);
 

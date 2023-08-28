@@ -46,6 +46,8 @@ class RemapState;
 class RemapPort;
 class AbstractParameterInterface;
 class IndirectInterface;
+class Mode;
+class PortSlice;
 
 //-----------------------------------------------------------------------------
 //! Calculates the amount of references made to component parameters.
@@ -563,6 +565,35 @@ public:
     int countReferencesInSingleRemapPort(QString const& parameterID, QSharedPointer<RemapPort> port) const;
 
     /*!
+     *  Count the references made to the selected parameter in the contained modes.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the contained modes.
+     */
+    int countReferencesInModes(QString const& parameterID) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected mode.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] mode            The selected mode.
+     *
+     *      @return The amount of references made to the selected parameter in the selected mode.
+     */
+    int countReferencesInSingleMode(QString const& parameterID, QSharedPointer<Mode> mode) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the selected port slice.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] pportSliceort   The selected port slice.
+     *
+     *      @return The amount of references made to the selected parameter in the selected port slice.
+     */
+    int countReferencesInSinglePortSlice(QString const& targetID, QSharedPointer<PortSlice> portSlice) const;
+
+    /*!
      *  Count the references made to the selected parameter in indirect interfaces.
      *
      *      @param [in] parameterID     ID of the selected parameter.
@@ -620,6 +651,7 @@ public:
      *      @return The amount of references made to the selected parameter in the selected CPU region.
      */
     int countReferencesInSingleRegion(QString const& parameterID, QSharedPointer<Region> region) const;
+
 
 public slots:
 

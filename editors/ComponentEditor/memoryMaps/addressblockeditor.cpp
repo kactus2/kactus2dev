@@ -16,7 +16,6 @@
 #include "ExpressionProxyModel.h"
 #include "AddressBlockColumns.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/RegisterInterface.h>
@@ -25,6 +24,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 #include <QHeaderView>
 
@@ -54,8 +54,6 @@ registers_(registers)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
 
@@ -76,7 +74,7 @@ registers_(registers)
 	view_->setItemsDraggable(false);
 	view_->setSortingEnabled(true);
 
-    view_->setItemDelegate(new AddressBlockDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new AddressBlockDelegate(componentParametersModel, parameterFinder, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);

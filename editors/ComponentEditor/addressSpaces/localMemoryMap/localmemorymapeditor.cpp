@@ -16,7 +16,6 @@
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <editors/ComponentEditor/memoryMaps/MemoryMapColumns.h>
 #include <editors/ComponentEditor/memoryMaps/memorymapdelegate.h>
@@ -32,6 +31,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -73,8 +73,6 @@ handler_(handler)
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParameterModel);
 
     ExpressionProxyModel* proxy = new ExpressionProxyModel(expressionParser, this);
     proxy->setColumnToAcceptExpressions(MemoryMapColumns::BASE_COLUMN);
@@ -96,7 +94,7 @@ handler_(handler)
 
 	// items can not be dragged
 	view_->setItemsDraggable(false);
-    view_->setItemDelegate(new MemoryMapDelegate(parameterCompleter, parameterFinder, this));
+    view_->setItemDelegate(new MemoryMapDelegate(componentParameterModel, parameterFinder, this));
 	view_->setSortingEnabled(true);
     view_->setAllowElementCopying(true);
 

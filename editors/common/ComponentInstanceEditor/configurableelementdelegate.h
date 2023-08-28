@@ -38,12 +38,12 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterCompleter      Pointer to the completer, used in expression editor.
+     *      @param [in] completionModel         Model containing the completions used in expression editor.
 	 *      @param [in] parameterFinder         Pointer to the parameter finder, used in expression editor.
      *      @param [in] expressionFormatter     Expression formatter, used to change parameter ids to names.
 	 *      @param [in] parent                  Pointer to the owner of this delegate.
 	 */
-	ConfigurableElementDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+	ConfigurableElementDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionFormatter> expressionFormatter, QObject *parent);
 	
 	/*!

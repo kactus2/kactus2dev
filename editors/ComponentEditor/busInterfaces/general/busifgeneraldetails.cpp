@@ -15,11 +15,11 @@
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <common/KactusColors.h>
 
+#include <QCompleter>
 #include <QFormLayout>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -48,7 +48,7 @@ bitSteeringEditor_(finder, this)
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(finder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* bitInLauCompleter = new ParameterCompleter(this);
+    auto bitInLauCompleter = new QCompleter(this);
     bitInLauCompleter->setModel(componentParameterModel);
     bitsInLauEditor_.setAppendingCompleter(bitInLauCompleter);
     bitsInLauEditor_.setFixedHeight(20);
@@ -62,7 +62,7 @@ bitSteeringEditor_(finder, this)
     bitSteeringSelector_.addItem(QString(""));
     bitSteeringSelector_.setVisible(docRevision == Document::Revision::Std14);
 
-    ParameterCompleter* bitSteeringCompleter = new ParameterCompleter(this);
+    auto bitSteeringCompleter = new QCompleter(this);
     bitSteeringCompleter->setModel(componentParameterModel);
     bitSteeringEditor_.setAppendingCompleter(bitSteeringCompleter);
 

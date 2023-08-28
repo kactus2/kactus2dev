@@ -36,10 +36,10 @@
 //-----------------------------------------------------------------------------
 // Function: configurableelementdelegate::ConfigurableElemenetDelegate()
 //-----------------------------------------------------------------------------
-ConfigurableElementDelegate::ConfigurableElementDelegate(QCompleter* parameterCompleter,
+ConfigurableElementDelegate::ConfigurableElementDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent):
-ChoiceCreatorDelegate(parameterCompleter, parameterFinder, parent),
+ChoiceCreatorDelegate(completionModel, parameterFinder, parent),
 expressionFormatter_(expressionFormatter),
 editProvider_(0)
 {
@@ -311,7 +311,7 @@ void ConfigurableElementDelegate::connectElementRemoveCommand(ConfigurableElemen
         this, SIGNAL(addConfigurableElement(QString const&, QString const&, int)),
         Qt::UniqueConnection);
     connect(removeCommand, SIGNAL(removeConfigurableElement(QString const&, int)),
-        this, SIGNAL(removeConfigurableElement(QString const& int)), Qt::UniqueConnection);
+        this, SIGNAL(removeConfigurableElement(QString const&, int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -572,13 +572,10 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
     QString parameterValue = valueIndex.data(Qt::EditRole).toString();
     model->setArrayData(parameterValue);
 
-    view->setItemDelegate(new ArrayDelegate(getNameCompleter(), getParameterFinder(), selectedChoice, this->parent()));
+    view->setItemDelegate(new ArrayDelegate(completionModel_, getParameterFinder(), selectedChoice, this->parent()));
 
-    QModelIndex typeIndex = index.sibling(index.row(), ConfigurableElementsColumns::TYPE);
-    QString parameterType = typeIndex.data(Qt::DisplayRole).toString();
-    model->setParameterType(parameterType);
 
-    view->setItemDelegate(new ArrayDelegate(getNameCompleter(), getParameterFinder(), selectedChoice,
+    view->setItemDelegate(new ArrayDelegate(completionModel_, getParameterFinder(), selectedChoice,
         this->parent()));
     view->setModel(model);
     view->setSortingEnabled(false);

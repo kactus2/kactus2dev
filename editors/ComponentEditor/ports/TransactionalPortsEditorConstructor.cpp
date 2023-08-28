@@ -11,7 +11,6 @@
 
 #include "TransactionalPortsEditorConstructor.h"
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
@@ -20,6 +19,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+
+#include <QCompleter>
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructModel()
@@ -66,11 +67,11 @@ PortsView* TransactionalPortsEditorConstructor::constructView(QString const& def
 // Function: TransactionalPortsEditorConstructor::constructDelegate()
 //-----------------------------------------------------------------------------
 PortsDelegate* TransactionalPortsEditorConstructor::constructDelegate(QSharedPointer<Component> component,
-    ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortValidator> portValidator, QObject* parent) const
 {
     TransactionalPortsDelegate* transactionalDelegate = new TransactionalPortsDelegate(
-        component, parameterCompleter, parameterFinder, portValidator->getTypeValidator(), parent);
+        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
 
     return transactionalDelegate;
 }

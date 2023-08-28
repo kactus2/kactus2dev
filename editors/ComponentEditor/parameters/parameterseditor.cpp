@@ -18,7 +18,6 @@
 #include <common/widgets/summaryLabel/summarylabel.h>
 
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/parameters/ParametersView.h>
 #include <KactusAPI/include/ParametersInterface.h>
@@ -27,6 +26,7 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -51,8 +51,6 @@ parameterInterface_(parameterInterface)
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(componentParametersModel);
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
@@ -82,7 +80,7 @@ parameterInterface_(parameterInterface)
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
 
-    view_->setItemDelegate(new ParameterDelegate(component->getChoices(), parameterCompleter, parameterFinder,
+    view_->setItemDelegate(new ParameterDelegate(component->getChoices(), componentParametersModel, parameterFinder,
         expressionFormatter, this));
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),

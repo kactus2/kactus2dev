@@ -14,6 +14,7 @@
 
 #include <editors/ComponentEditor/itemeditor.h>
 
+#include <QAbstractItemModel>
 #include <QSharedPointer>
 #include <QWidget>
 
@@ -21,7 +22,6 @@ class ExpressionParser;
 class ParameterFinder;
 class ExpressionFormatter;
 class LibraryInterface;
-class ParameterCompleter;
 class Component;
 class Port;
 class PortsModel;
@@ -53,7 +53,7 @@ public:
      *      @param [in] editorConstructor   Constructor for required modules.
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
      *      @param [in] portValidator       Validator used for ports.
-     *      @param [in] parameterCompleter  Completer for expressions.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] defaultPath         The default import / export path.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this widget.
@@ -65,7 +65,7 @@ public:
         PortsEditorConstructor* editorConstructor,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<PortValidator> portValidator,
-        ParameterCompleter* parameterCompleter,
+        QAbstractItemModel* completionModel,
         QString const& defaultPath,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);

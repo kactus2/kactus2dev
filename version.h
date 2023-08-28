@@ -13,7 +13,7 @@
 #define VERSION_FULL           3.12.601.0
 
 #define VERSION_BASEYEAR       0
-#define VERSION_DATE           "2023-08-23"
+#define VERSION_DATE           "2023-08-28"
 #define VERSION_TIME           "13:19:04"
 
 #define VERSION_MAJOR          3

@@ -16,12 +16,12 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ExpressionProxyModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Region.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -71,10 +71,7 @@ model_(regions, regionValidator, expressions, this)
     ComponentParameterModel* completionModel = new ComponentParameterModel(expressions.finder, this);
     completionModel->setExpressionParser(expressions.parser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(completionModel);
-
-	auto delegate = new RegionsDelegate(parameterCompleter, expressions.finder, this);
+	auto delegate = new RegionsDelegate(completionModel, expressions.finder, this);
 	view_.setItemDelegate(delegate);
 
     connect(delegate, SIGNAL(increaseReferences(QString)),

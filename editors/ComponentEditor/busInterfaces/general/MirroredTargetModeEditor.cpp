@@ -20,13 +20,13 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ExpressionParser.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 
-#include <QLabel>
+#include <QCompleter>
 #include <QGridLayout>
+#include <QLabel>
 
 //-----------------------------------------------------------------------------
 // Function: MirroredTargetModeEditor::MirroredTargetModeEditor()
@@ -49,11 +49,11 @@ parameterFinder_(parameterFinder)
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* remapCompleter = new ParameterCompleter(this);
+    auto remapCompleter = new QCompleter(this);
     remapCompleter->setModel(componentParameterModel);
     remapEditor_->setAppendingCompleter(remapCompleter);
 
-    ParameterCompleter* rangeCompleter = new ParameterCompleter(this);
+    auto rangeCompleter = new QCompleter(this);
     rangeCompleter->setModel(componentParameterModel);
     rangeEditor_->setAppendingCompleter(rangeCompleter);
 

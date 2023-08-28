@@ -16,9 +16,9 @@
 #include <common/delegates/LineEditDelegate/lineeditdelegate.h>
 
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -62,10 +62,7 @@ component_(component)
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parameterModel);
-
-    delegate_ = new RemapConditionDelegate(component->getPortNames(), parameterCompleter, parameterFinder,
+    delegate_ = new RemapConditionDelegate(component->getPortNames(), parameterModel, parameterFinder,
         expressionParser, expressionFormatter, this);
 
     view_->setItemDelegate(delegate_);

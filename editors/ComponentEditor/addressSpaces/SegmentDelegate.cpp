@@ -15,9 +15,9 @@
 //-----------------------------------------------------------------------------
 // Function: SegmentDelegate::SegmentDelegate()
 //-----------------------------------------------------------------------------
-SegmentDelegate::SegmentDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder, 
+SegmentDelegate::SegmentDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QObject* parent)
-    : ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+    : ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

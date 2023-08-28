@@ -30,11 +30,11 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parameterCompleter  Pointer to the completer, used in expression editor.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] finder              Pointer to the parameter finder, used in expression editor.
      *      @param [in] parent              Pointer to the owner of this delegate.
      */
-    ChoiceCreatorDelegate(QCompleter* parameterCompleter, QSharedPointer<ParameterFinder> finder,
+    ChoiceCreatorDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> finder,
         QObject* parent = 0);
 
     /*!

@@ -15,7 +15,6 @@
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
 #include <editors/ComponentEditor/common/ModeReferenceEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/modWriteComboBox/modwritecombobox.h>
@@ -23,14 +22,15 @@
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/testConstraintComboBox/testconstraintcombobox.h>
 
+#include <QCompleter>
 #include <QLineEdit>
 
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
-FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(ParameterCompleter* parameterNameCompleter, 
+FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

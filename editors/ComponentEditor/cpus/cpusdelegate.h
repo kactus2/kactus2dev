@@ -18,6 +18,7 @@
 
 #include <QStyledItemDelegate>
 #include <QSharedPointer>
+#include <QCompleter>
 
 class Component;
 

@@ -17,6 +17,7 @@
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
 #include <QWidget>
+#include <QAbstractItemModel>
 
 class Component;
 class PortsModel;
@@ -24,7 +25,6 @@ class PortsView;
 class PortValidator;
 class PortsDelegate;
 class ExpressionParser;
-class ParameterCompleter;
 
 //-----------------------------------------------------------------------------
 //! Constructs transactional ports editor items.
@@ -89,7 +89,7 @@ public:
      *  Construct a delegate.
      *
      *      @param [in] component           The component being edited.
-     *      @param [in] parameterCompleter  Completer for expressions.
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] parameterFinder     The parameter finder.
      *      @param [in] portValidator       Validator used for ports.
      *      @param [in] parent              The owner of the delegate.
@@ -97,8 +97,8 @@ public:
      *      @return The created delegate.
      */
     virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
-        ParameterCompleter* parameterCompleter, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const override final;
+        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const final;
 
     //! No copying.
     TransactionalPortsEditorConstructor(const TransactionalPortsEditorConstructor& other) = delete;

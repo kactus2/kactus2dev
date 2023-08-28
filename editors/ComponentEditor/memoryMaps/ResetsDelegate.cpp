@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: ResetsDelegate::ResetsDelegate()
 //-----------------------------------------------------------------------------
-ResetsDelegate::ResetsDelegate(QCompleter* parameterNameCompleter, QSharedPointer<ParameterFinder> parameterFinder,
+ResetsDelegate::ResetsDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<QList<QSharedPointer<ResetType>>> resetTypes, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent),
+ExpressionDelegate(completionModel, parameterFinder, parent),
 resetTypes_(resetTypes)
 {
 

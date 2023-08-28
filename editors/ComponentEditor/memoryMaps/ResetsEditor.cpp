@@ -13,12 +13,12 @@
 
 #include <common/views/EditableTableView/editabletableview.h>
 
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsModel.h>
 #include <editors/ComponentEditor/memoryMaps/ResetsDelegate.h>
 #include <KactusAPI/include/ResetInterface.h>
 
+#include <QCompleter>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -48,10 +48,7 @@ interface_(resetInterface)
     ComponentParameterModel* parametersModel = new ComponentParameterModel(parameterFinder, this);
     parametersModel->setExpressionParser(expressionParser);
 
-    ParameterCompleter* parameterCompleter = new ParameterCompleter(this);
-    parameterCompleter->setModel(parametersModel);
-
-    resetsView_->setItemDelegate(new ResetsDelegate(parameterCompleter, parameterFinder, resetTypes, this));
+    resetsView_->setItemDelegate(new ResetsDelegate(parametersModel, parameterFinder, resetTypes, this));
 
 	connect(resetsModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(resetsView_, SIGNAL(addItem(const QModelIndex&)),

@@ -20,9 +20,9 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockDelegate::MemoryBlockDelegate()
 //-----------------------------------------------------------------------------
-MemoryBlockDelegate::MemoryBlockDelegate(QCompleter* parameterNameCompleter,
+MemoryBlockDelegate::MemoryBlockDelegate(QAbstractItemModel* completionModel,
                                      QSharedPointer<ParameterFinder> parameterFinder, QObject *parent):
-ExpressionDelegate(parameterNameCompleter, parameterFinder, parent)
+ExpressionDelegate(completionModel, parameterFinder, parent)
 {
 
 }

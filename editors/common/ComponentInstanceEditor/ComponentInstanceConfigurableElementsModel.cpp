@@ -98,7 +98,7 @@ void ComponentInstanceConfigurableElementsModel::setParameters(QSharedPointer<Co
 
             QSharedPointer<EditorConfigurableElement> newElement(new EditorConfigurableElement(
                 moduleParameterPointer, evaluatedDefaultValue, configuratedValue));
-            newElement->setType(QString("Module Parameter"));
+
             configurableElements_.append(newElement);
         }
     }
