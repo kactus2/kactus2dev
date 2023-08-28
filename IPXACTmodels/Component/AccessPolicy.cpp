@@ -28,14 +28,22 @@ AccessPolicy::AccessPolicy(AccessPolicy const& other) :
     modeReferences_(new QList<QSharedPointer<ModeReference> >()),
     access_(other.access_)
 {
-    for (auto const& modeRef : *other.modeReferences_)
+    Utilities::copyList(modeReferences_, other.modeReferences_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AccessPolicy::operator=()
+//-----------------------------------------------------------------------------
+AccessPolicy& AccessPolicy::operator=(AccessPolicy const& other)
+{
+    if (this != &other)
     {
-        if (modeRef)
-        {
-            auto copy = QSharedPointer<ModeReference>(new ModeReference(*modeRef));
-            modeReferences_->append(copy);
-        }
+        Extendable::operator=(other);
+        access_ = other.access_;
+        Utilities::copyList(modeReferences_, other.modeReferences_);
     }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -69,4 +77,3 @@ void AccessPolicy::setAccess(AccessTypes::Access newAccess)
 {
     access_ = newAccess;
 }
-

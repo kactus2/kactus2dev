@@ -173,16 +173,6 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
         }
     }
 
-    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
-    {
-        auto reservedEditor = qobject_cast<QLineEdit*>(editor);
-
-        if (reservedEditor)
-        {
-            reservedEditor->setText(index.data(Qt::DisplayRole).toString());
-        }
-    }
-
     else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
     {
         auto writeConstraintEditor = qobject_cast<QComboBox*>(editor);
@@ -269,15 +259,16 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
         }
     }
 
-    else if (index.column() == FieldAccessPolicyColumns::RESERVED)
+    else if (index.column() == FieldAccessPolicyColumns::WRITE_VALUE_CONSTRAINT)
     {
-        auto reservedEditor = qobject_cast<QLineEdit*>(editor);
+        auto writeConstraintEditor = qobject_cast<QComboBox*>(editor);
 
-        if (reservedEditor)
+        if (writeConstraintEditor)
         {
-            model->setData(index, reservedEditor->text(), Qt::EditRole);
+            model->setData(index, writeConstraintEditor->currentText(), Qt::EditRole);
         }
     }
+
     else
     {
         ExpressionDelegate::setModelData(editor, model, index);
@@ -358,6 +349,7 @@ void FieldAccessPoliciesDelegate::commitAndCloseEditor()
 bool FieldAccessPoliciesDelegate::columnAcceptsExpression(int column) const
 {
     return column == FieldAccessPolicyColumns::READ_RESPONSE ||
+        column == FieldAccessPolicyColumns::RESERVED ||
         column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MAXIMUM ||
         column == FieldAccessPolicyColumns::WRITE_CONSTRAINT_MINIMUM;
 }

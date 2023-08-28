@@ -62,6 +62,8 @@ public:
 
     Qualifier(Qualifier const& other);
 
+    Qualifier& operator=(Qualifier const& other);
+
     ~Qualifier() = default;
 
     /*!

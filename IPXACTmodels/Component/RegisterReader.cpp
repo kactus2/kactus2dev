@@ -6,7 +6,7 @@
 // Date: 29.09.2015
 //
 // Description:
-// Reader class for ipxact:register element.
+// Reader for ipxact:register element.
 //-----------------------------------------------------------------------------
 
 #include "RegisterReader.h"
@@ -15,58 +15,55 @@
 #include "RegisterDefinition.h"
 #include "AlternateRegister.h"
 #include "RegisterFile.h"
+#include "FieldReader.h"
+#include "MemoryArrayReader.h"
+#include "AccessPolicyReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
-#include <IPXACTmodels/Component/FieldReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: RegisterReader::RegisterReader()
-//-----------------------------------------------------------------------------
-RegisterReader::RegisterReader() : CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterReader::~RegisterReader()
-//-----------------------------------------------------------------------------
-RegisterReader::~RegisterReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: RegisterReader::createRegisterfrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& registerNode, Document::Revision docRevision) const
+QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& registerNode, Document::Revision docRevision)
 {
     QDomElement registerElement = registerNode.toElement();
 
     QSharedPointer<Register> newRegister(new Register());
 
-    parseNameGroup(registerNode, newRegister);
+    NameGroupReader::parseNameGroup(registerNode, newRegister);
 
-    parsePresence(registerNode, newRegister);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::parsePresence(registerNode, newRegister);
+        
+        Details::parseRegisterDimension(registerNode, newRegister);
 
-    parseRegisterDimension(registerNode, newRegister);
+        Details::parseAccess(registerNode, newRegister);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        Details::parseRegisterDefinitionReference(registerNode, newRegister);
 
-    newRegister->setAddressOffset(createAddressOffsetFrom(registerNode));
+        Details::parseRegisterMemoryArray(registerNode, newRegister);
+    
+        Details::parseAccessPolicies(registerNode, newRegister);
+    }
 
-    parseTypeIdentifier(registerNode, newRegister);
+    newRegister->setAddressOffset(Details::createAddressOffsetFrom(registerNode));
 
-    parseRegisterSize(registerNode, newRegister);
+    Details::parseTypeIdentifier(registerNode, newRegister);
 
-    parseVolatile(registerNode, newRegister);
+    Details::parseRegisterSize(registerNode, newRegister);
 
-    parseAccess(registerNode, newRegister);
+    Details::parseVolatile(registerNode, newRegister);
 
-    parseFields(registerElement, newRegister, docRevision);
+    Details::parseFields(registerElement, newRegister, docRevision);
 
-    parseAlternateRegisters(registerElement, newRegister, docRevision);
+    Details::parseAlternateRegisters(registerElement, newRegister, docRevision);
 
-    parseParameters(registerNode, newRegister);
+    Details::parseParameters(registerNode, newRegister);
 
-    parseVendorExtensions(registerNode, newRegister);
+    CommonItemsReader::parseVendorExtensions(registerNode, newRegister);
 
     return newRegister;
 }
@@ -74,47 +71,50 @@ QSharedPointer<Register> RegisterReader::createRegisterfrom(QDomNode const& regi
 //-----------------------------------------------------------------------------
 // Function: RegisterReader::createRegisterFileFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode const& registerFileNode, Document::Revision docRevision) const
+QSharedPointer<RegisterFile> RegisterReader::createRegisterFileFrom(QDomNode const& registerFileNode, Document::Revision docRevision)
 {
     QSharedPointer<RegisterFile> newRegisterFile (new RegisterFile());
 
-    parseNameGroup(registerFileNode, newRegisterFile);
+    NameGroupReader::parseNameGroup(registerFileNode, newRegisterFile);
 
-    parsePresence(registerFileNode, newRegisterFile);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::parsePresence(registerFileNode, newRegisterFile);
 
-    parseRegisterFileDimension(registerFileNode, newRegisterFile);
+        Details::parseRegisterFileDimension(registerFileNode, newRegisterFile);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        Details::parseRegisterFileMemoryArray(registerFileNode, newRegisterFile);
 
-    newRegisterFile->setAddressOffset(createAddressOffsetFrom(registerFileNode));
+        Details::parseRegisterFileDefinitionReference(registerFileNode, newRegisterFile);
 
-    parseTypeIdentifier(registerFileNode, newRegisterFile);
+        Details::parseAccessPolicies(registerFileNode, newRegisterFile);
+    }
 
-    parseRegisterFileRange(registerFileNode, newRegisterFile);
+    newRegisterFile->setAddressOffset(Details::createAddressOffsetFrom(registerFileNode));
 
-    parseRegisterFileRegisterData(registerFileNode, newRegisterFile, docRevision);
+    Details::parseTypeIdentifier(registerFileNode, newRegisterFile);
 
-    parseParameters(registerFileNode, newRegisterFile);
+    Details::parseRegisterFileRange(registerFileNode, newRegisterFile);
 
-    parseVendorExtensions(registerFileNode, newRegisterFile);
+    Details::parseRegisterFileRegisterData(registerFileNode, newRegisterFile, docRevision);
+
+    Details::parseParameters(registerFileNode, newRegisterFile);
+
+    CommonItemsReader::parseVendorExtensions(registerFileNode, newRegisterFile);
 
     return newRegisterFile;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseNameGroup()
+// Function: RegisterReader::Details::parseIsPresent()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseNameGroup(QDomNode const& nameGroupNode, QSharedPointer<RegisterBase> registerData) const
-{
-    NameGroupReader::parseNameGroup(nameGroupNode, registerData);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterReader::parseIsPresent()
-//-----------------------------------------------------------------------------
-void RegisterReader::parsePresence(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> registerBase)
-    const
+void RegisterReader::Details::parsePresence(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> registerBase)
+   
 {
     QDomElement isPresentElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
-    QString isPresent = parseIsPresent(isPresentElement);
+    QString isPresent = CommonItemsReader::parseIsPresent(isPresentElement);
 
     if (!isPresent.isEmpty())
     {
@@ -123,29 +123,29 @@ void RegisterReader::parsePresence(QDomNode const& registerBaseNode, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::createAddressOffset()
+// Function: RegisterReader::Details::createAddressOffset()
 //-----------------------------------------------------------------------------
-QString RegisterReader::createAddressOffsetFrom(QDomNode const& registerBaseNode) const
+QString RegisterReader::Details::createAddressOffsetFrom(QDomNode const& registerBaseNode)
 {
     QDomElement addressOffsetElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:addressOffset"));
     return addressOffsetElement.firstChild().nodeValue();
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseRegisterSize()
+// Function: RegisterReader::Details::parseRegisterSize()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseRegisterSize(QDomNode const& registerNode, QSharedPointer<Register> selectedRegister)
-    const
+void RegisterReader::Details::parseRegisterSize(QDomNode const& registerNode, QSharedPointer<Register> selectedRegister)
+   
 {
     QString registerSize = registerNode.firstChildElement(QStringLiteral("ipxact:size")).firstChild().nodeValue();
     selectedRegister->setSize(registerSize);
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::createRegisterDimension()
+// Function: RegisterReader::Details::createRegisterDimension()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseRegisterDimension(QDomNode const& registerNode,
-    QSharedPointer<Register> selectedRegister) const
+void RegisterReader::Details::parseRegisterDimension(QDomNode const& registerNode,
+    QSharedPointer<Register> selectedRegister)
 {
     QDomElement dimensionElement = registerNode.firstChildElement(QStringLiteral("ipxact:dim"));
     if (!dimensionElement.isNull())
@@ -155,10 +155,10 @@ void RegisterReader::parseRegisterDimension(QDomNode const& registerNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseTypeIdentifier()
+// Function: RegisterReader::Details::parseTypeIdentifier()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseTypeIdentifier(QDomNode const& registerBaseNode,
-    QSharedPointer<RegisterBase> registerBase) const
+void RegisterReader::Details::parseTypeIdentifier(QDomNode const& registerBaseNode,
+    QSharedPointer<RegisterBase> registerBase)
 {
     QDomElement typeIdentifierElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:typeIdentifier"));
     if (!typeIdentifierElement.isNull())
@@ -169,10 +169,10 @@ void RegisterReader::parseTypeIdentifier(QDomNode const& registerBaseNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseDefinitionVolatile()
+// Function: RegisterReader::Details::parseDefinitionVolatile()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseVolatile(QDomNode const& registerDefinitionNode,
-    QSharedPointer<RegisterDefinition> registerDefinition) const
+void RegisterReader::Details::parseVolatile(QDomNode const& registerDefinitionNode,
+    QSharedPointer<RegisterDefinition> registerDefinition)
 {
     QDomElement volatileElement = registerDefinitionNode.firstChildElement(QStringLiteral("ipxact:volatile"));
     if (!volatileElement.isNull())
@@ -191,10 +191,10 @@ void RegisterReader::parseVolatile(QDomNode const& registerDefinitionNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseAccess()
+// Function: RegisterReader::Details::parseAccess()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseAccess(QDomNode const& definitionNode,
-    QSharedPointer<RegisterDefinition> registerDefinition) const
+void RegisterReader::Details::parseAccess(QDomNode const& definitionNode,
+    QSharedPointer<RegisterDefinition> registerDefinition)
 {
     QDomElement accessElement = definitionNode.firstChildElement(QStringLiteral("ipxact:access"));
     if (!accessElement.isNull())
@@ -206,11 +206,11 @@ void RegisterReader::parseAccess(QDomNode const& definitionNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseFields()
+// Function: RegisterReader::Details::parseFields()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
+void RegisterReader::Details::parseFields(QDomElement const& registerDefinitionElement,
     QSharedPointer<RegisterDefinition> registerDefinition,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomNodeList fieldNodeList = registerDefinitionElement.childNodes();
 
@@ -228,11 +228,11 @@ void RegisterReader::parseFields(QDomElement const& registerDefinitionElement,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseAlternateRegisters()
+// Function: RegisterReader::Details::parseAlternateRegisters()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
+void RegisterReader::Details::parseAlternateRegisters(QDomElement const& registerElement,
     QSharedPointer<Register> targetRegister,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomElement multipleAlternaterRegisterNode = registerElement.firstChildElement(QStringLiteral("ipxact:alternateRegisters"));
     if (!multipleAlternaterRegisterNode.isNull())
@@ -252,36 +252,45 @@ void RegisterReader::parseAlternateRegisters(QDomElement const& registerElement,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseSingleAlternateRegister()
+// Function: RegisterReader::Details::parseSingleAlternateRegister()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseSingleAlternateRegister(QDomElement const& alternateRegisterElement,
+void RegisterReader::Details::parseSingleAlternateRegister(QDomElement const& alternateRegisterElement,
     QSharedPointer<AlternateRegister> newAlternateRegister,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
-    parseNameGroup(alternateRegisterElement, newAlternateRegister);
+    NameGroupReader::parseNameGroup(alternateRegisterElement, newAlternateRegister);
 
-    parsePresence(alternateRegisterElement, newAlternateRegister);
+    if (docRevision == Document::Revision::Std14)
+    {
+        parsePresence(alternateRegisterElement, newAlternateRegister);
 
-    parseAlternateGroups(alternateRegisterElement, newAlternateRegister);
+        parseAlternateGroups(alternateRegisterElement, newAlternateRegister);
+    
+        parseAccess(alternateRegisterElement, newAlternateRegister);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        parseAlternateRegisterModeRefs(alternateRegisterElement, newAlternateRegister);
+
+        parseAccessPolicies(alternateRegisterElement, newAlternateRegister);
+    }
 
     parseTypeIdentifier(alternateRegisterElement, newAlternateRegister);
 
     parseVolatile(alternateRegisterElement, newAlternateRegister);
 
-    parseAccess(alternateRegisterElement, newAlternateRegister);
-
     parseFields(alternateRegisterElement, newAlternateRegister, docRevision);
 
     parseParameters(alternateRegisterElement, newAlternateRegister);
 
-    parseVendorExtensions(alternateRegisterElement, newAlternateRegister);
+    CommonItemsReader::parseVendorExtensions(alternateRegisterElement, newAlternateRegister);
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseAlternateGroups()
+// Function: RegisterReader::Details::parseAlternateGroups()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseAlternateGroups(QDomElement const& alternateRegisterElement,
-    QSharedPointer<AlternateRegister> newAlternateRegister) const
+void RegisterReader::Details::parseAlternateGroups(QDomElement const& alternateRegisterElement,
+    QSharedPointer<AlternateRegister> newAlternateRegister)
 {
     QDomElement groupsElement = alternateRegisterElement.firstChildElement(QStringLiteral("ipxact:alternateGroups"));
     if (!groupsElement.isNull())
@@ -298,12 +307,13 @@ void RegisterReader::parseAlternateGroups(QDomElement const& alternateRegisterEl
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseParameters()
+// Function: RegisterReader::Details::parseParameters()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseParameters(QDomNode const& registerBaseNode,
-    QSharedPointer<RegisterBase> newRegisterBase) const
+void RegisterReader::Details::parseParameters(QDomNode const& registerBaseNode,
+    QSharedPointer<RegisterBase> newRegisterBase)
 {
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(registerBaseNode);
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = 
+        CommonItemsReader::parseAndCreateParameters(registerBaseNode);
 
     if (!newParameters->isEmpty())
     {
@@ -312,10 +322,10 @@ void RegisterReader::parseParameters(QDomNode const& registerBaseNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseRegisterFileRange()
+// Function: RegisterReader::Details::parseRegisterFileRange()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseRegisterFileRange(QDomNode const& registerFileNode,
-    QSharedPointer<RegisterFile> newRegisterFile) const
+void RegisterReader::Details::parseRegisterFileRange(QDomNode const& registerFileNode,
+    QSharedPointer<RegisterFile> newRegisterFile)
 {
     QDomElement rangeElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:range"));
     if (!rangeElement.isNull())
@@ -326,10 +336,10 @@ void RegisterReader::parseRegisterFileRange(QDomNode const& registerFileNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseRegisterFileDimension()
+// Function: RegisterReader::Details::parseRegisterFileDimension()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseRegisterFileDimension(QDomNode const& registerFileNode,
-    QSharedPointer<RegisterFile> newRegisterFile) const
+void RegisterReader::Details::parseRegisterFileDimension(QDomNode const& registerFileNode,
+    QSharedPointer<RegisterFile> newRegisterFile)
 {
     QDomElement dimensionElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:dim"));
     if (!dimensionElement.isNull())
@@ -340,11 +350,11 @@ void RegisterReader::parseRegisterFileDimension(QDomNode const& registerFileNode
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterReader::parseRegisterFileRegisterData()
+// Function: RegisterReader::Details::parseRegisterFileRegisterData()
 //-----------------------------------------------------------------------------
-void RegisterReader::parseRegisterFileRegisterData(QDomNode const& registerFileNode,
+void RegisterReader::Details::parseRegisterFileRegisterData(QDomNode const& registerFileNode,
     QSharedPointer<RegisterFile> newRegisterFile,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomNodeList childNodeList = registerFileNode.childNodes();
 
@@ -362,4 +372,100 @@ void RegisterReader::parseRegisterFileRegisterData(QDomNode const& registerFileN
             newRegisterFile->getRegisterData()->append(containedRegisterFile);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseRegisterDefinitionReference()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseRegisterDefinitionReference(QDomNode const& registerNode,
+    QSharedPointer<Register> newRegister)
+{
+    auto registerDefinitionReferenceElement = registerNode.firstChildElement(QStringLiteral("ipxact:registerDefinitionRef"));
+
+    if (!registerDefinitionReferenceElement.isNull())
+    {
+        newRegister->setRegisterDefinitionReference(registerDefinitionReferenceElement.firstChild().nodeValue());
+
+        newRegister->setTypeDefinitionsReference(
+            registerDefinitionReferenceElement.attribute(QStringLiteral("typeDefinitions")));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseRegisterMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseRegisterMemoryArray(QDomNode const& registerNode, QSharedPointer<Register> newRegister)
+{
+    auto memArrayElement = registerNode.firstChildElement(QStringLiteral("ipxact:array"));
+
+    if (!memArrayElement.isNull())
+    {
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+
+        newRegister->setMemoryArray(newMemoryArray);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseRegisterFileMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseRegisterFileMemoryArray(QDomNode const& registerFileNode, QSharedPointer<RegisterFile> newRegisterFile)
+{
+    auto memArrayElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:array"));
+
+    if (!memArrayElement.isNull())
+    {
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+
+        newRegisterFile->setMemoryArray(newMemoryArray);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseRegisterFileDefinitionReference()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseRegisterFileDefinitionReference(QDomNode const& registerFileNode, QSharedPointer<RegisterFile> newRegisterFile)
+{
+    auto registerDefinitionReferenceElement = registerFileNode.firstChildElement(QStringLiteral("ipxact:registerFileDefinitionRef"));
+
+    if (!registerDefinitionReferenceElement.isNull())
+    {
+        newRegisterFile->setRegisterFileDefinitionReference(registerDefinitionReferenceElement.firstChild().nodeValue());
+
+        newRegisterFile->setTypeDefinitionsReference(
+            registerDefinitionReferenceElement.attribute(QStringLiteral("typeDefinitions")));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseAccessPolicies(QDomNode const& registerBaseNode, QSharedPointer<RegisterBase> newRegisterBase)
+{
+    auto accessPoliciesElement = registerBaseNode.firstChildElement(QStringLiteral("ipxact:accessPolicies"));
+
+    if (accessPoliciesElement.isNull())
+    {
+        return;
+    }
+
+    auto accessPolicies = accessPoliciesElement.childNodes();
+
+    for (int i = 0; i < accessPolicies.size(); ++i)
+    {
+        if (accessPolicies.at(i).nodeName() == QStringLiteral("ipxact:accessPolicy"))
+        {
+            auto newAccessPolicy = AccessPolicyReader::createAccessPolicyFrom(accessPolicies.at(i));
+
+            newRegisterBase->getAccessPolicies()->append(newAccessPolicy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterReader::Details::parseAlternateRegisterModeRefs()
+//-----------------------------------------------------------------------------
+void RegisterReader::Details::parseAlternateRegisterModeRefs(QDomNode const& alternateRegisterNode, QSharedPointer<AlternateRegister> newAlternateRegister)
+{
+    newAlternateRegister->setModeReferences(CommonItemsReader::parseModeReferences(alternateRegisterNode));
 }

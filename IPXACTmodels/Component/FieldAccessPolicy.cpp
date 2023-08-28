@@ -19,14 +19,22 @@ FieldAccessPolicy::AccessRestriction::AccessRestriction(AccessRestriction const&
     readAccessMask_(other.readAccessMask_),
     writeAccessMask_(other.writeAccessMask_)
 {
-    for (auto const& modeRef : *other.modeRefs_)
+    Utilities::copyList(modeRefs_, other.modeRefs_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPolicy::AccessRestriction::operator=()
+//-----------------------------------------------------------------------------
+FieldAccessPolicy::AccessRestriction& FieldAccessPolicy::AccessRestriction::operator=(FieldAccessPolicy::AccessRestriction const& other)
+{
+    if (this != &other)
     {
-        if (modeRef)
-        {
-            auto copy = QSharedPointer<ModeReference>(new ModeReference(*modeRef));
-            modeRefs_->append(copy);
-        }
+        readAccessMask_ = other.readAccessMask_;
+        writeAccessMask_ = other.writeAccessMask_;
+        Utilities::copyList(modeRefs_, other.modeRefs_);
     }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,28 +65,36 @@ FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
     testConstraint_(other.testConstraint_),
     reserved_(other.reserved_)
 {
-    for (auto const& broadcast : *other.broadcasts_)
+    Utilities::copyList(broadcasts_, other.broadcasts_);
+    Utilities::copyList(accessRestrictions_, accessRestrictions_);
+    copyWriteValueConstraint(other);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPolicy::operator=()
+//-----------------------------------------------------------------------------
+FieldAccessPolicy& FieldAccessPolicy::operator=(FieldAccessPolicy const& other)
+{
+    if (this != &other)
     {
-        if (broadcast)
-        {
-            auto copy = QSharedPointer<FieldReference>(new FieldReference(*broadcast));
-            broadcasts_->append(copy);
-        }
+        AccessPolicy::operator=(other);
+        fieldAccessPolicyDefinitionRef_ = other.fieldAccessPolicyDefinitionRef_;
+        fieldAccessPolicyTypeDefinitionRef_ = other.fieldAccessPolicyTypeDefinitionRef_;
+        modifiedWrite_ = other.modifiedWrite_;
+        modifiedWriteModify_ = other.modifiedWriteModify_;
+        readAction_ = other.readAction_;
+        readActionModify_ = other.readActionModify_;
+        readResponse_ = other.readResponse_;
+        testable_ = other.testable_;
+        testConstraint_ = other.testConstraint_;
+        reserved_ = other.reserved_;
+
+        Utilities::copyList(broadcasts_, other.broadcasts_);
+        Utilities::copyList(accessRestrictions_, accessRestrictions_);
+        copyWriteValueConstraint(other);
     }
 
-    for (auto const& restriction : *other.accessRestrictions_)
-    {
-        if (restriction)
-        {
-            auto copy = QSharedPointer<AccessRestriction>(new AccessRestriction(*restriction));
-            accessRestrictions_->append(copy);
-        }
-    }
-
-    if (other.writeValueConstraint_)
-    {
-        writeValueConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));
-    }
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -278,6 +294,17 @@ QSharedPointer<QList<QSharedPointer<FieldAccessPolicy::FieldAccessPolicy::Access
 void FieldAccessPolicy::setAccessRestrictions(QSharedPointer<QList<QSharedPointer<AccessRestriction> > > newAccessRestrictions)
 {
     accessRestrictions_ = newAccessRestrictions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPolicy::copyWriteValueConstraint()
+//-----------------------------------------------------------------------------
+void FieldAccessPolicy::copyWriteValueConstraint(FieldAccessPolicy const& other)
+{
+    if (other.writeValueConstraint_)
+    {
+        writeValueConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));
+    }
 }
 
 //-----------------------------------------------------------------------------

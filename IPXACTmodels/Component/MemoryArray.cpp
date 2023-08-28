@@ -20,6 +20,29 @@ MemoryArray::MemoryArray()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryArray::MemoryArray()
+//-----------------------------------------------------------------------------
+MemoryArray::MemoryArray(MemoryArray const& other):
+    stride_(other.stride_)
+{
+    Utilities::copyList(dimensions_, other.dimensions_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryArray::operator=()
+//-----------------------------------------------------------------------------
+MemoryArray& MemoryArray::operator=(MemoryArray const& other)
+{
+    if (this != &other)
+    {
+        stride_ = other.stride_;
+        Utilities::copyList(dimensions_, other.dimensions_);
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryArray::getDimensions()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<MemoryArray::Dimension> > > MemoryArray::getDimensions() const

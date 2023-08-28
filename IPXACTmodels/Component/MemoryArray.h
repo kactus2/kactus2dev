@@ -35,6 +35,10 @@ public:
      */
     MemoryArray();
 
+    MemoryArray(MemoryArray const& other);
+
+    MemoryArray& operator=(MemoryArray const& other);
+
     /*!
      *	The destructor.
      */
@@ -70,7 +74,7 @@ public:
     void setStride(QString const& stride);
 
 private:
-    
+
     //! List of dimensions in the array.
     QSharedPointer<QList<QSharedPointer<Dimension> > > dimensions_ = 
         QSharedPointer<QList<QSharedPointer<Dimension> > >(new QList<QSharedPointer<Dimension> >);

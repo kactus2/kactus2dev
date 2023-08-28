@@ -30,6 +30,9 @@ public:
 
 	Packet(QString const& name = QString());
 
+	Packet(Packet const& other);
+	Packet& operator=(Packet const& other);
+
 	~Packet() = default;
 
 	/*!

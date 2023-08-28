@@ -60,14 +60,35 @@ FieldReference::FieldReference(FieldReference const& other) :
     addressSpaceRef_(other.addressSpaceRef_),
     memoryMapRef_(other.memoryMapRef_),
     memoryRemapRef_(other.memoryRemapRef_),
-    bankRefs_(other.bankRefs_),
     addressBlockRef_(other.addressBlockRef_),
-    registerFileRefs_(other.registerFileRefs_),
     registerRef_(other.registerRef_),
     alternateRegisterRef_(other.alternateRegisterRef_),
     fieldRef_(other.fieldRef_)
 {
+    Utilities::copyList(bankRefs_, other.bankRefs_);
+    Utilities::copyList(registerFileRefs_, other.registerFileRefs_);
+}
 
+//-----------------------------------------------------------------------------
+// Function: FieldReference::operator=()
+//-----------------------------------------------------------------------------
+FieldReference& FieldReference::operator=(FieldReference const& other)
+{
+    if (this != &other)
+    {
+        addressSpaceRef_ = other.addressSpaceRef_;
+        memoryMapRef_ = other.memoryMapRef_;
+        memoryRemapRef_ = other.memoryRemapRef_;
+        addressBlockRef_ = other.addressBlockRef_;
+        registerRef_ = other.registerRef_;
+        alternateRegisterRef_ = other.alternateRegisterRef_;
+        fieldRef_ = other.fieldRef_;
+
+        Utilities::copyList(bankRefs_, other.bankRefs_);
+        Utilities::copyList(registerFileRefs_, other.registerFileRefs_);
+    }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

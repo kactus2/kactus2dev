@@ -31,8 +31,6 @@ namespace AccessPolicyWriter
 
     namespace Details
     {
-        void writeModeRefs(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
-
         void writeAccess(QXmlStreamWriter& writer, QSharedPointer<AccessPolicy> accessPolicy);
     }
 }

@@ -2,11 +2,11 @@
 // File: FieldAccessPoliciesEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
-// Author: 
+// Author: Anton Hagqvist
 // Date: 8.8.2023
 //
 // Description:
-// 
+// Editor for field access policies.
 //-----------------------------------------------------------------------------
 
 #ifndef FIELDACCESSPOLICIESEDITOR_H
@@ -29,6 +29,34 @@ public:
     FieldAccessPoliciesEditor(QString const& fieldName, FieldInterface* fieldInterface, 
         QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent);
+
+    virtual ~FieldAccessPoliciesEditor() = default;
+
+    FieldAccessPoliciesEditor(FieldAccessPoliciesEditor& other) = delete;
+    FieldAccessPoliciesEditor& operator=(FieldAccessPoliciesEditor& other) = delete;
+
+signals:
+
+    /*!
+     *	Emitted whenever a field access policy has been edited.
+     */
+    void contentChanged();
+
+
+    /*!
+     *  Increase the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching id.
+     *
+     *      @param [in] id      Id of the parameter, whose references are being increased.
+     */
+    void decreaseReferences(QString const& id);
+
 
 private:
 

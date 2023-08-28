@@ -14,15 +14,17 @@
 
 #include <KactusAPI/include/FieldInterface.h>
 
-#include <QAbstractTableModel>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
 
-class FieldAccessPoliciesModel : public QAbstractTableModel
+class FieldAccessPoliciesModel : public ReferencingTableModel, public ParameterizableTable
 {
     Q_OBJECT
 
 public:
         
-    FieldAccessPoliciesModel(QString const& fieldName, FieldInterface* fieldInterface, QObject* parent);
+    FieldAccessPoliciesModel(QString const& fieldName,
+        QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QObject* parent);
 
     virtual ~FieldAccessPoliciesModel() = default;
 
@@ -36,7 +38,7 @@ public:
      *
      *      @return Number of rows the model has.
      */
-    virtual int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
 
     /*!
      *  Get the number of columns the model has to be displayed.
@@ -45,7 +47,7 @@ public:
      *
      *      @return The number of columns to be displayed.
      */
-    virtual int columnCount(const QModelIndex& parent = QModelIndex()) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const;
 
     /*!
      *  Get the item flags that defines the possible operations for the item.
@@ -65,7 +67,7 @@ public:
      *
      *      @return QVariant containing the requested data.
      */
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
     /*!
      *  Get the data for specified item.
@@ -75,7 +77,7 @@ public:
      *
      *      @return QVariant containing the data for the item.
      */
-    virtual QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
 
     /*!
      *  Save the data to the model for specified item.
@@ -88,13 +90,93 @@ public:
      */
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
+public slots:
+
+    /*!
+     *	Handler for adding a new field access policy.
+     *  
+     *      @param [in] index     The model index of the item that was selected.
+     */
+    void onAddRow(QModelIndex const& index);
+
+    /*!
+     *	Handler for removing a field access policy.
+     *  
+     *      @param [in] index     The model index for the item/row to be removed.
+     */
+    void onRemoveItem(QModelIndex const& index);
+
+signals:
+
+    /*!
+     *	Emitted when there has been a change in the number of rows.
+     */
+    void invalidateFilter();
+
+    /*!
+     *	Emitted whenever a field access policy has been edited.
+     */
+    void contentChanged();
+
+protected:
+
+    /*!
+     *  Get all the references made to the selected parameter from the selected row.
+     *
+     *      @param [in] row         The selected row.
+     *      @param [in] valueID     The target parameter.
+     *
+     *      @return Number of references made to the selected id from the selected row.
+     */
+    int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
+
+    /*!
+     *  Check if the column index is valid for containing expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      return True, if column can have expressions, false otherwise.
+     */
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
+
+    /*!
+     *  Gets the expression for the given index, or plain value if there is no expression.
+     *
+     *      @param [in] index   The index of target data.
+     *
+     *      return      Expression in the given index, or plain value.
+     */
+    QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
+
+    /*!
+     *  Validates the data in the cell given by the column.
+     *
+     *      @param [in] index   The index being validated.
+     *
+     *      return      True, if the data in the parameter is valid, false otherwise.
+     */
+    bool validateIndex(QModelIndex const& index) const override;
+
 private:
+
+    QVariant valueForIndex(QModelIndex const& index) const;
+
+    QVariant expressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    QVariant formattedExpressionForIndex(QModelIndex const& index) const;
 
     //! The field interface to use.
     FieldInterface* fieldInterface_;
 
     //! The name of the current field.
-    QString fieldName_;
+    std::string fieldName_;
 };
 
 

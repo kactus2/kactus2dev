@@ -27,6 +27,8 @@ public:
     AccessPolicy();
 
     AccessPolicy(AccessPolicy const& other);
+
+    AccessPolicy& operator=(AccessPolicy const& other);
     
     virtual ~AccessPolicy() = default;
 

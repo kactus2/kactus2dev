@@ -28,6 +28,7 @@ class AddressBlock;
 class Register;
 class RegisterFile;
 class Field;
+class FieldAccessPolicy;
 class FieldReset;
 class WriteValueConstraint;
 class Segment;
@@ -310,6 +311,17 @@ public:
      *      @return The amount of references made to the selected parameter in the selected field reset.
      */
     int countReferencesInSingleFieldReset(QString const& parameterID, QSharedPointer<FieldReset> fieldReset) const;
+
+    /*!
+     *	Count the references made to the selected parameter in the field access policies in the selected field.
+     *  
+     *      @param [in] parameterID        ID of the selected parameter
+     *      @param [in] accessPolicies     Field access policies of the selected field.
+     *	    
+     * 	    @return The number of references made to the selected parameters in the field access policies.
+     */
+    int countReferencesInFieldAccessPolicies(QString const& parameterID, 
+        QSharedPointer<QList<QSharedPointer<FieldAccessPolicy> > > accessPolicies) const;
 
     /*!
      *  Count the references made to the selected parameter in the contained address spaces.

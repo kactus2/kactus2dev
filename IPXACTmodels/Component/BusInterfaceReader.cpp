@@ -382,6 +382,7 @@ void BusinterfaceReader::Details::parseInterfaceMode(QDomElement const& busInter
     {
         QString systemGroup = systemNode.firstChildElement(QStringLiteral("ipxact:group")).firstChild().nodeValue();
         
+        newbusinterface->setInterfaceMode(General::SYSTEM);
         newbusinterface->setSystem(systemGroup);
         return;
     }

@@ -21,38 +21,13 @@ void AccessPolicyWriter::writeAccessPolicy(QXmlStreamWriter& writer,
 {
     writer.writeStartElement(QStringLiteral("ipxact:accessPolicy"));
 
-    Details::writeModeRefs(writer, fieldAccessPolicy->getModeReferences());
+    CommonItemsWriter::writeModeReferences(writer, fieldAccessPolicy->getModeReferences());
 
     Details::writeAccess(writer, fieldAccessPolicy);
 
     CommonItemsWriter::writeVendorExtensions(writer, fieldAccessPolicy);
 
     writer.writeEndElement(); // ipxact:accessPolicy
-}
-
-//-----------------------------------------------------------------------------
-// Function: AccessPolicyWriter::Details::writeModeRefs()
-//-----------------------------------------------------------------------------
-void AccessPolicyWriter::Details::writeModeRefs(QXmlStreamWriter& writer, 
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
-{
-    if (modeRefs->isEmpty())
-    {
-        return;
-    }
-
-    for (auto const& modeRef : *modeRefs)
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:modeRef"));
-
-        if (auto const& priority = modeRef->getPriority(); !priority.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("priority"), priority);
-        }
-
-        writer.writeCharacters(modeRef->getReference());
-        writer.writeEndElement(); // ipxact:modeRef
-    }
 }
 
 //-----------------------------------------------------------------------------

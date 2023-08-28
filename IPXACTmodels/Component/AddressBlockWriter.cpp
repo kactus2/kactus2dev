@@ -112,11 +112,9 @@ void AddressBlockWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPoin
 {
     if (!addressBlock->getRegisterData()->isEmpty())
     {
-        RegisterWriter registerWriter;
-
-        foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+        for (auto const& registerBase : *addressBlock->getRegisterData())
         {
-            registerWriter.writeRegisterData(writer, registerBase, docRevision);
+            RegisterWriter::writeRegisterData(writer, registerBase, docRevision);
         }
     }
 }

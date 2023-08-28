@@ -15,8 +15,45 @@
 // Function: PacketField::PacketField()
 //-----------------------------------------------------------------------------
 PacketField::PacketField(QString const& name):
-NameGroup(name)
+NameGroup(name),
+Extendable()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: PacketField::PacketField()
+//-----------------------------------------------------------------------------
+PacketField::PacketField(PacketField const& other) :
+    NameGroup(other),
+    Extendable(other),
+    width_(other.width_),
+    value_(other.value_),
+    endianness_(other.endianness_),
+    qualifier_(new Qualifier(*other.qualifier_))
+{
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: PacketField::operator==()
+//-----------------------------------------------------------------------------
+PacketField& PacketField::operator==(PacketField const& other)
+{
+    if (this != &other)
+    {
+        NameGroup::operator=(other);
+        Extendable::operator=(other);
+        width_ = other.width_;
+        value_ = other.value_;
+        endianness_ = other.endianness_;
+
+        if (other.qualifier_)
+        {
+            qualifier_ = QSharedPointer<Qualifier>(new Qualifier(*other.qualifier_));
+        }
+    }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

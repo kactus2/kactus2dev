@@ -12,29 +12,21 @@
 #include "RegisterBase.h"
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/AccessPolicy.h>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterBase::RegisterBase()
 //-----------------------------------------------------------------------------
 RegisterBase::RegisterBase(QString const& name /* = QString() */) :
 NameGroup(name),
-Extendable(),
-dimension_(),
-addressOffset_(),
-isPresent_(),
-typeIdentifier_(),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+Extendable()
 {
 
 }
 RegisterBase::RegisterBase(QString const& name,QString const& addressOffset) :
 NameGroup(name),
 Extendable(),
-dimension_(),
-addressOffset_(addressOffset),
-isPresent_(),
-typeIdentifier_(),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+addressOffset_(addressOffset)
 {
 
 }
@@ -47,10 +39,10 @@ Extendable(other),
 dimension_(other.dimension_),
 addressOffset_(other.addressOffset_),
 isPresent_(other.isPresent_),
-typeIdentifier_(other.typeIdentifier_),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+typeIdentifier_(other.typeIdentifier_)
 {
     copyParameters(other);
+    copyAccessPolicies(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,13 +54,15 @@ RegisterBase& RegisterBase::operator=(const RegisterBase& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
-        dimension_=other.dimension_;
+        dimension_ = other.dimension_;
         addressOffset_ = other.addressOffset_;
         isPresent_ = other.isPresent_;
         typeIdentifier_ = other.typeIdentifier_;
 
         parameters_->clear();
         copyParameters(other);
+        accessPolicies_->clear();
+        copyAccessPolicies(other);
     }
 
     return *this;
@@ -163,16 +157,47 @@ void RegisterBase::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> 
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterBase::getAccessPolicies()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessPolicy> > > RegisterBase::getAccessPolicies() const
+{
+    return accessPolicies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::setAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterBase::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies)
+{
+    accessPolicies_ = newAccessPolicies;
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterBase::copyParameters()
 //-----------------------------------------------------------------------------
 void RegisterBase::copyParameters(const RegisterBase& other)
 {
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+    for (auto const& parameter : *other.parameters_)
     {
         if (parameter)
         {
             QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
             parameters_->append(copy);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::copyAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterBase::copyAccessPolicies(const RegisterBase& other)
+{
+    for (auto const& accessPolicy : *other.accessPolicies_)
+    {
+        if (accessPolicy)
+        {
+            auto copy = QSharedPointer<AccessPolicy>(new AccessPolicy(*accessPolicy));
+            accessPolicies_->append(copy);
         }
     }
 }

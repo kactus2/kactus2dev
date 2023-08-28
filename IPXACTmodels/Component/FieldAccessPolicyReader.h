@@ -36,9 +36,9 @@ namespace FieldAccessPolicyReader
          *	Read mode references.
          *  
          *      @param [in] rootNode        The containing element.
-         *      @param [in/out] modeRefList     The mode reference list to read to.
+         *      @param [in] accessPolicy    The created field access policy.
          */
-        void parseModeRefs(QDomNode const& rootNode, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefList);
+        void parseModeRefs(QDomNode const& rootNode, QSharedPointer<FieldAccessPolicy> accessPolicy);
 
         /*!
          *	Read the access policy definition reference.

@@ -87,15 +87,9 @@ void tst_FieldAccessPolicyValidator::cleanup()
 //-----------------------------------------------------------------------------
 void tst_FieldAccessPolicyValidator::testModeRefsAreValid()
 {
-    QSharedPointer<ModeReference> modeRef(new ModeReference());
-    modeRef->setReference("testMode");
-    modeRef->setPriority("0");
-
-    QSharedPointer<ModeReference> modeRef2(new ModeReference(*modeRef)); // non-unique value, no priority
-
+    QSharedPointer<ModeReference> modeRef(new ModeReference()); // no reference or priority
     fieldAccessPolicy_->getModeReferences()->append(modeRef);
-    fieldAccessPolicy_->getModeReferences()->append(modeRef2);
-
+    
     QStringList errorList;
     
     validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
@@ -104,15 +98,14 @@ void tst_FieldAccessPolicyValidator::testModeRefsAreValid()
     QVERIFY(validator_.validate(fieldAccessPolicy_) == false);
     
     errorList.clear();
-    modeRef2->setPriority("0"); // non-unique
-
+    modeRef->setPriority("0"); // no reference
+    
     validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
-    QCOMPARE(errorList.size(), 2);
+    QCOMPARE(errorList.size(), 1);
     QVERIFY(validator_.validate(fieldAccessPolicy_) == false);
-
+    
     errorList.clear();
-    modeRef2->setPriority("1");
-    modeRef2->setReference("other");
+    modeRef->setReference("ref"); // valid
 
     validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
     QCOMPARE(errorList.size(), 0);

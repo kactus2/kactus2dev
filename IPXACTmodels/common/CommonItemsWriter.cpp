@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/ChoiceWriter.h>
 
 #include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/Component/ModeReference.h>
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
@@ -389,4 +390,28 @@ void CommonItemsWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer
     }
 
     writer.writeEndElement(); // ipxact:partSelect
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeModeReferences()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeModeReferences(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences)
+{
+    if (!modeReferences || modeReferences->isEmpty())
+    {
+        return;
+    }
+
+    for (auto const& modeRef : *modeReferences)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:modeRef"));
+
+        if (auto const& priority = modeRef->getPriority(); !priority.isEmpty())
+        {
+            writer.writeAttribute(QStringLiteral("priority"), priority);
+        }
+
+        writer.writeCharacters(modeRef->getReference());
+        writer.writeEndElement(); // ipxact:modeRef
+    }
 }

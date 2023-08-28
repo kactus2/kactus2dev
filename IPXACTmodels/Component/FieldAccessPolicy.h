@@ -42,11 +42,14 @@ public:
         AccessRestriction() = default;
 
         AccessRestriction(AccessRestriction const& other);
+
+        AccessRestriction& operator=(AccessRestriction const& other);
     };
 
     FieldAccessPolicy();
 
     FieldAccessPolicy(FieldAccessPolicy const& other);
+    FieldAccessPolicy& operator=(FieldAccessPolicy const& other);
     
     virtual ~FieldAccessPolicy() = default;
 
@@ -239,6 +242,15 @@ public:
     void setAccessRestrictions(QSharedPointer<QList<QSharedPointer<AccessRestriction> > > newAccessRestrictions);
 
 private:
+    
+    /*!
+     *	Copy the write value constraint of the field access policy.
+     */
+    void copyWriteValueConstraint(FieldAccessPolicy const& other);
+
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
 
     //! Reference to a field access policy definition.
     QString fieldAccessPolicyDefinitionRef_;

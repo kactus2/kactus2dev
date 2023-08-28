@@ -373,3 +373,34 @@ QSharedPointer<PartSelect> CommonItemsReader::parsePartSelect(QDomNode const& pa
 
     return newPartSelect;
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseModeReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > CommonItemsReader::parseModeReferences(QDomNode const& itemNode)
+{
+    auto modeRefNodes = itemNode.childNodes();
+
+    QSharedPointer<QList<QSharedPointer<ModeReference> > >modeRefList(new QList<QSharedPointer<ModeReference> >());
+
+    for (int i = 0; i < modeRefNodes.size(); ++i)
+    {
+        if (auto const& modeRefNode = modeRefNodes.at(i);
+            modeRefNode.nodeName() == QStringLiteral("ipxact:modeRef"))
+        {
+            QSharedPointer<ModeReference> newModeRef(new ModeReference());
+
+            newModeRef->setReference(modeRefNode.firstChild().nodeValue());
+
+            if (auto const& priority = modeRefNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
+                !priority.isEmpty())
+            {
+                newModeRef->setPriority(priority);
+            }
+
+            modeRefList->append(newModeRef);
+        }
+    }
+
+    return modeRefList;
+}

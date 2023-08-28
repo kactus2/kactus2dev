@@ -15,8 +15,37 @@
 // Function: Packet::Packet()
 //-----------------------------------------------------------------------------
 Packet::Packet(QString const& name):
-NameGroup(name)
+NameGroup(name),
+Extendable()
 {
+}
+
+//-----------------------------------------------------------------------------
+// Function: Packet::Packet()
+//-----------------------------------------------------------------------------
+Packet::Packet(Packet const& other) :
+    NameGroup(other),
+    Extendable(other),
+    endianness_(other.endianness_)
+{
+    Utilities::copyList(packetFields_, other.packetFields_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Packet::operator=()
+//-----------------------------------------------------------------------------
+Packet& Packet::operator=(Packet const& other)
+{
+    if (this != &other)
+    {
+        NameGroup::operator=(other);
+        Extendable::operator=(other);
+
+        endianness_ = other.endianness_;
+        Utilities::copyList(packetFields_, other.packetFields_);
+    }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

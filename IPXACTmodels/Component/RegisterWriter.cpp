@@ -6,7 +6,7 @@
 // Date: 28.09.2015
 //
 // Description:
-// Writer class for IP-XACT register element.
+// Writer for IP-XACT register element.
 //-----------------------------------------------------------------------------
 
 #include "RegisterWriter.h"
@@ -14,90 +14,91 @@
 #include "RegisterFile.h"
 #include "RegisterBase.h"
 #include "AlternateRegister.h"
+#include "FieldWriter.h"
+#include "AccessPolicyWriter.h"
+#include "MemoryArrayWriter.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
-#include <IPXACTmodels/Component/FieldWriter.h>
-
-//-----------------------------------------------------------------------------
-// Function: RegisterWriter::RegisterWriter()
-//-----------------------------------------------------------------------------
-RegisterWriter::RegisterWriter() : CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterWriter::~RegisterWriter()
-//-----------------------------------------------------------------------------
-RegisterWriter::~RegisterWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::writeRegisterData()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData, Document::Revision docRevision) const
+void RegisterWriter::writeRegisterData(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData, Document::Revision docRevision)
 {
     QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
     QSharedPointer<RegisterFile> registerFile = registerData.dynamicCast<RegisterFile>();
 
     if (targetRegister)
     {
-        writeRegister(writer, targetRegister, docRevision);
+        Details::writeRegister(writer, targetRegister, docRevision);
     }
     else if (registerFile)
     {
-        writeRegisterFile(writer, registerFile, docRevision);
+        Details::writeRegisterFile(writer, registerFile, docRevision);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeRegister()
+// Function: RegisterWriter::Details::writeRegister()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const
+void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:register"));
 
-    writeNameGroup(writer, targetRegister);
+    NameGroupWriter::writeNameGroup(writer, targetRegister, docRevision);
+    
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, targetRegister->getIsPresent());
 
-    writeIsPresent(writer, targetRegister->getIsPresent());
+        writeDimension(writer, targetRegister->getDimension());
 
-    writeDimension(writer, targetRegister->getDimension());
+        writeAddressOffset(writer, targetRegister->getAddressOffset());
 
-    writeAddressOffset(writer, targetRegister->getAddressOffset());
+        writeTypeIdentifier(writer, targetRegister);
 
-    writeTypeIdentifier(writer, targetRegister);
+        writer.writeTextElement(QStringLiteral("ipxact:size"), targetRegister->getSize());
+        
+        writeVolatile(writer, targetRegister);
 
-    writer.writeTextElement(QStringLiteral("ipxact:size"), targetRegister->getSize());
+        writeAccess(writer, targetRegister);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        MemoryArrayWriter::writeMemoryArray(writer, targetRegister->getMemoryArray(), false);
 
-    writeVolatile(writer, targetRegister);
+        writeAddressOffset(writer, targetRegister->getAddressOffset());
 
-    writeAccess(writer, targetRegister);
+        writeRegisterDefinitionReference(writer, targetRegister);
+
+        writeTypeIdentifier(writer, targetRegister);
+
+
+        if (auto const& regSize = targetRegister->getSize(); regSize.isEmpty() == false)
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:size"), targetRegister->getSize());
+        }
+
+        writeVolatile(writer, targetRegister);
+
+        writeAccessPolicies(writer, targetRegister);
+    }
 
     writeFields(writer, targetRegister, docRevision);
 
     writeAlternateRegisters(writer, targetRegister, docRevision);
 
-    writeParameters(writer, targetRegister->getParameters());
+    CommonItemsWriter::writeParameters(writer, targetRegister->getParameters());
 
-    writeVendorExtensions(writer, targetRegister);
+    CommonItemsWriter::writeVendorExtensions(writer, targetRegister);
 
     writer.writeEndElement(); // ipxact:register
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeNameGroup()
+// Function: RegisterWriter::Details::writeDim()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData) const
-{
-    NameGroupWriter::writeNameGroup(writer, registerData);
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeDim()
-//-----------------------------------------------------------------------------
-void RegisterWriter::writeDimension(QXmlStreamWriter& writer, QString const& dimension) const
+void RegisterWriter::Details::writeDimension(QXmlStreamWriter& writer, QString const& dimension)
 {
     if (!dimension.isEmpty())
     {
@@ -106,17 +107,17 @@ void RegisterWriter::writeDimension(QXmlStreamWriter& writer, QString const& dim
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeAddressOffset()
+// Function: RegisterWriter::Details::writeAddressOffset()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeAddressOffset(QXmlStreamWriter& writer, QString const& addressOffset) const
+void RegisterWriter::Details::writeAddressOffset(QXmlStreamWriter& writer, QString const& addressOffset)
 {
     writer.writeTextElement(QStringLiteral("ipxact:addressOffset"), addressOffset);
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeTypeIdentifier()
+// Function: RegisterWriter::Details::writeTypeIdentifier()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData) const
+void RegisterWriter::Details::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData)
 {
     if (!registerData->getTypeIdentifier().isEmpty())
     {
@@ -125,10 +126,10 @@ void RegisterWriter::writeTypeIdentifier(QXmlStreamWriter& writer, QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeVolatile()
+// Function: RegisterWriter::Details::writeVolatile()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
-    const
+void RegisterWriter::Details::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
+   
 {
     if (!registerDefinition->getVolatile().isEmpty())
     {
@@ -137,10 +138,10 @@ void RegisterWriter::writeVolatile(QXmlStreamWriter& writer, QSharedPointer<Regi
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeAccess()
+// Function: RegisterWriter::Details::writeAccess()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
-    const
+void RegisterWriter::Details::writeAccess(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition)
+   
 {
     if (registerDefinition->getAccess() != AccessTypes::ACCESS_COUNT)
     {
@@ -150,9 +151,9 @@ void RegisterWriter::writeAccess(QXmlStreamWriter& writer, QSharedPointer<Regist
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeFields()
+// Function: RegisterWriter::Details::writeFields()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition, Document::Revision docRevision) const
+void RegisterWriter::Details::writeFields(QXmlStreamWriter& writer, QSharedPointer<RegisterDefinition> registerDefinition, Document::Revision docRevision)
 {
     for (auto const& field : *registerDefinition->getFields())
     {
@@ -161,15 +162,15 @@ void RegisterWriter::writeFields(QXmlStreamWriter& writer, QSharedPointer<Regist
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeAlternateRegisters()
+// Function: RegisterWriter::Details::writeAlternateRegisters()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision) const
+void RegisterWriter::Details::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision)
 {
     if (!targetRegister->getAlternateRegisters()->isEmpty())
     {
         writer.writeStartElement(QStringLiteral("ipxact:alternateRegisters"));
 
-        foreach (QSharedPointer<AlternateRegister> alternateRegister, *targetRegister->getAlternateRegisters())
+        for (auto const& alternateRegister : *targetRegister->getAlternateRegisters())
         {
             writeSingleAlternateRegister(writer, alternateRegister, docRevision);
         }
@@ -179,45 +180,59 @@ void RegisterWriter::writeAlternateRegisters(QXmlStreamWriter& writer, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeSingleAlternateRegister()
+// Function: RegisterWriter::Details::writeSingleAlternateRegister()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeSingleAlternateRegister(QXmlStreamWriter& writer,
+void RegisterWriter::Details::writeSingleAlternateRegister(QXmlStreamWriter& writer,
     QSharedPointer<AlternateRegister> alternateRegister,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:alternateRegister"));
 
-    NameGroupWriter::writeNameGroup(writer, alternateRegister);
+    NameGroupWriter::writeNameGroup(writer, alternateRegister, docRevision);
 
-    writeIsPresent(writer, alternateRegister->getIsPresent());
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, alternateRegister->getIsPresent());
 
-    writeAlternateGroups(writer, alternateRegister);
+        writeAlternateGroups(writer, alternateRegister);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        CommonItemsWriter::writeModeReferences(writer, alternateRegister->getModeReferences());
+    }
 
     writeTypeIdentifier(writer, alternateRegister);
 
     writeVolatile(writer, alternateRegister);
 
-    writeAccess(writer, alternateRegister);
+    if (docRevision == Document::Revision::Std14)
+    {
+        writeAccess(writer, alternateRegister);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        writeAccessPolicies(writer, alternateRegister);
+    }
 
     writeFields(writer, alternateRegister, docRevision);
 
-    writeParameters(writer, alternateRegister->getParameters());
+    CommonItemsWriter::writeParameters(writer, alternateRegister->getParameters());
 
-    writeVendorExtensions(writer, alternateRegister);
+    CommonItemsWriter::writeVendorExtensions(writer, alternateRegister);
 
     writer.writeEndElement(); // ipxact:alternateRegister
 
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeAlternateGroups()
+// Function: RegisterWriter::Details::writeAlternateGroups()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeAlternateGroups(QXmlStreamWriter& writer,
-    QSharedPointer<AlternateRegister> alternateRegister) const
+void RegisterWriter::Details::writeAlternateGroups(QXmlStreamWriter& writer,
+    QSharedPointer<AlternateRegister> alternateRegister)
 {
     writer.writeStartElement(QStringLiteral("ipxact:alternateGroups"));
 
-    foreach (QString groupName, *alternateRegister->getAlternateGroups())
+    for (auto const& groupName : *alternateRegister->getAlternateGroups())
     {
         writer.writeTextElement(QStringLiteral("ipxact:alternateGroup"), groupName);
     }
@@ -226,42 +241,123 @@ void RegisterWriter::writeAlternateGroups(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeRegisterFile()
+// Function: RegisterWriter::Details::writeRegisterFile()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile, Document::Revision docRevision) const
+void RegisterWriter::Details::writeRegisterFile(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile, Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:registerFile"));
 
-    writeNameGroup(writer, registerFile);
+    NameGroupWriter::writeNameGroup(writer, registerFile, docRevision);
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, registerFile->getIsPresent());
 
-    writeIsPresent(writer, registerFile->getIsPresent());
+        writeDimension(writer, registerFile->getDimension());
 
-    writeDimension(writer, registerFile->getDimension());
+        writeAddressOffset(writer, registerFile->getAddressOffset());
 
-    writeAddressOffset(writer, registerFile->getAddressOffset());
+        writeTypeIdentifier(writer, registerFile);
 
-    writeTypeIdentifier(writer, registerFile);
+        writer.writeTextElement(QStringLiteral("ipxact:range"), registerFile->getRange());
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        MemoryArrayWriter::writeMemoryArray(writer, registerFile->getMemoryArray(), false);
 
-    writer.writeTextElement(QStringLiteral("ipxact:range"), registerFile->getRange());
+        writeAddressOffset(writer, registerFile->getAddressOffset());
+
+        writeRegisterFileDefinitionReference(writer, registerFile);
+
+        writeTypeIdentifier(writer, registerFile);
+
+        if (auto const& range = registerFile->getRange(); range.isEmpty() == false)
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:range"), registerFile->getRange());
+        }
+
+        writeAccessPolicies(writer, registerFile);
+    }
 
     writeRegisterFileRegisterData(writer, registerFile, docRevision);
 
-    writeParameters(writer, registerFile->getParameters());
+    CommonItemsWriter::writeParameters(writer, registerFile->getParameters());
 
-    writeVendorExtensions(writer, registerFile);
+    CommonItemsWriter::writeVendorExtensions(writer, registerFile);
 
     writer.writeEndElement(); // ipxact:registerFile
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterWriter::writeRegisterFileRegisterData()
+// Function: RegisterWriter::Details::writeRegisterFileRegisterData()
 //-----------------------------------------------------------------------------
-void RegisterWriter::writeRegisterFileRegisterData(QXmlStreamWriter& writer,
+void RegisterWriter::Details::writeRegisterFileRegisterData(QXmlStreamWriter& writer,
     QSharedPointer<RegisterFile> registerFile,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
-    foreach (QSharedPointer<RegisterBase> registerData, *registerFile->getRegisterData())
+    for (auto const& registerData : *registerFile->getRegisterData())
     {
         writeRegisterData(writer, registerData, docRevision);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterWriter::Details::writeAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterWriter::Details::writeAccessPolicies(QXmlStreamWriter& writer, 
+    QSharedPointer<RegisterBase> targetRegisterBase)
+{
+    if (auto accessPolicies = targetRegisterBase->getAccessPolicies();
+        accessPolicies->isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:accessPolicies"));
+
+        for (auto const& accessPolicy : *targetRegisterBase->getAccessPolicies())
+        {
+            AccessPolicyWriter::writeAccessPolicy(writer, accessPolicy);
+        }
+
+        writer.writeEndElement(); // ipxact:accessPolicies
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterWriter::Details::writeRegisterDefinitionReference()
+//-----------------------------------------------------------------------------
+void RegisterWriter::Details::writeRegisterDefinitionReference(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister)
+{
+    if (auto const& definitionReference = targetRegister->getRegisterDefinitionReference();
+        definitionReference.isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:registerDefinitionRef"));
+
+        if (auto const& typeDefinitionsRef = targetRegister->getTypeDefinitionsReference();
+            typeDefinitionsRef.isEmpty() == false)
+        {
+            writer.writeAttribute(QStringLiteral("typeDefinitions"), typeDefinitionsRef);
+        }
+
+        writer.writeCharacters(definitionReference);
+        writer.writeEndElement();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterWriter::Details::writeRegisterFileDefinitionReference()
+//-----------------------------------------------------------------------------
+void RegisterWriter::Details::writeRegisterFileDefinitionReference(QXmlStreamWriter& writer, QSharedPointer<RegisterFile> registerFile)
+{
+    if (auto const& definitionReference = registerFile->getRegisterFileDefinitionReference();
+        definitionReference.isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:registerFileDefinitionRef"));
+
+        if (auto const& typeDefinitionsRef = registerFile->getTypeDefinitionsReference();
+            typeDefinitionsRef.isEmpty() == false)
+        {
+            writer.writeAttribute(QStringLiteral("typeDefinitions"), typeDefinitionsRef);
+        }
+
+        writer.writeCharacters(definitionReference);
+        writer.writeEndElement();
     }
 }

@@ -21,6 +21,7 @@
 #include <QSharedPointer>
 
 class Parameter;
+class AccessPolicy;
 
 //-----------------------------------------------------------------------------
 //! Describes the base class for ipxact:register, ipxact:registerFile and ipxact:alternateRegister.
@@ -123,6 +124,20 @@ public:
      */
     void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
+    /*!
+     *	Get the access policies of the register.
+     *  
+     * 	    @return Pointer to a list containing the access policies.
+     */
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > getAccessPolicies() const;
+
+    /*!
+     *	Set the access policies of the register.
+     *  
+     *      @param [in] newAccessPolicies     The new access policies to set.
+     */
+    void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
+
 protected:
     //! Contains dimensions of a register array.
     QString dimension_;
@@ -138,7 +153,14 @@ private:
      *      @param [in] other   The register base class being copied.
      */
     void copyParameters(const RegisterBase& other);
-    
+
+    /*!
+     *  Copy the access policies.
+     *
+     *      @param [in] other   The register base class being copied.
+     */
+    void copyAccessPolicies(const RegisterBase& other);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -151,7 +173,12 @@ private:
 
 
 	//! Contains the parameters.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = 
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> > ());
+
+    //! The access policies.
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies_ =
+        QSharedPointer<QList<QSharedPointer<AccessPolicy> > >(new QList<QSharedPointer<AccessPolicy> >());;
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<RegisterBase>);

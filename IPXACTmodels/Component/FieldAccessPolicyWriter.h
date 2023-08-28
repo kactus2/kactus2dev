@@ -31,8 +31,6 @@ namespace FieldAccessPolicyWriter
 
     namespace Details
     {
-        void writeModeRefs(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
-
         void writeFieldAccessPolicyDefinitionRef(QXmlStreamWriter& writer, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy);
 
         void writeAccess(QXmlStreamWriter& writer, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy);

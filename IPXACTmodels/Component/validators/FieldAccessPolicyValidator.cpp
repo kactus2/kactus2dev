@@ -61,25 +61,7 @@ bool FieldAccessPolicyValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPo
 
     for (auto const& modeRef : *modeRefs)
     {
-        if (modeRef->getPriority().isEmpty())
-        {
-            return false;
-        }
-
-        if (!refs.contains(modeRef->getReference()))
-        {
-            refs.append(modeRef->getReference());
-        }
-        else
-        {
-            return false;
-        }
-
-        if (!priorities.contains(modeRef->getPriority()))
-        {
-            priorities.append(modeRef->getPriority());
-        }
-        else
+        if (modeRef->getPriority().isEmpty() || modeRef->getReference().isEmpty())
         {
             return false;
         }
@@ -203,9 +185,41 @@ bool FieldAccessPolicyValidator::hasValidAccessRestrictions(QSharedPointer<Field
         }
     }
 
-    if (!hasValidModeRefs(allModeRefs))
+    return hasValidAccessRestrictionsModeRefs(allModeRefs);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPolicyValidator::hasValidAccessRestrictionsModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldAccessPolicyValidator::hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const
+{
+    QStringList refs;
+    QStringList priorities;
+
+    for (auto const& modeRef : *modeRefs)
     {
-        return false;
+        if (modeRef->getPriority().isEmpty())
+        {
+            return false;
+        }
+
+        if (!refs.contains(modeRef->getReference()))
+        {
+            refs.append(modeRef->getReference());
+        }
+        else
+        {
+            return false;
+        }
+
+        if (!priorities.contains(modeRef->getPriority()))
+        {
+            priorities.append(modeRef->getPriority());
+        }
+        else
+        {
+            return false;
+        }
     }
 
     return true;
@@ -249,22 +263,9 @@ void FieldAccessPolicyValidator::findErrorsInModeRefs(QStringList& errors, QShar
             errors.append(QObject::tr("Mode reference in %1 has no priority.").arg(modeRefContext));
         }
 
-        if (!refs.contains(modeRef->getReference()))
+        if (modeRef->getReference().isEmpty())
         {
-            refs.append(modeRef->getReference());
-        }
-        else
-        {
-            errors.append(QObject::tr("Mode reference in %1 has a non-unique reference in the containing element.").arg(modeRefContext));
-        }
-
-        if (!priorities.contains(modeRef->getPriority()))
-        {
-            priorities.append(modeRef->getPriority());
-        }
-        else
-        {
-            errors.append(QObject::tr("Mode reference in %1 has a non-unique priority in the containing element.").arg(modeRefContext));
+            errors.append(QObject::tr("Mode reference in %1 has no reference value.").arg(modeRefContext));
         }
     }
 }
@@ -378,6 +379,7 @@ void FieldAccessPolicyValidator::findErrorsInBroadcasts(QStringList& errors, QSh
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPolicyValidator::findErrorsInAccessRestrictions()
 //-----------------------------------------------------------------------------
+
 void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const
 {
     if (fieldAccessPolicy->getAccessRestrictions()->isEmpty())
@@ -405,10 +407,10 @@ void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& err
         }
     }
 
-    if (!hasValidModeRefs(allModeRefs))
+    if (!hasValidAccessRestrictionsModeRefs(allModeRefs))
     {
         errors.append(QObject::tr("Field access policy access restrictions in %1"
-            " cannot have duplicate mode references and/or priorities.").arg(context));
+            " cannot have empty or duplicate mode references or priorities.").arg(context));
     }
 }
 

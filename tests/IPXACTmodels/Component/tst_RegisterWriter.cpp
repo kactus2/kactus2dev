@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/AlternateRegister.h>
 
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
@@ -39,6 +40,12 @@ private slots:
     void writeRegisterFields();
     void writeRegisterAlternateRegisters();
 
+    void writeRegisterAlternateRegisters2022();
+
+    void writeRegisterMemoryArray2022();
+    void writeRegisterDefinitionReference2022();
+    void writeRegisterAccessPolicies2022();
+
     void writeRegisterParameters();
     void writeRegisterVendorExtensions();
 
@@ -47,6 +54,10 @@ private slots:
     void writeRegisterFileDimension();
     void writeRegisterFileTypeIdentifier();
     void writeRegisterFileRegisterData();
+
+    void writeRegisterFileDefinitionReference2022();
+    void writeRegisterFileMemoryArray2022();
+    void writeRegisterFileAccessPolicies2022();
 
     void writeRegisterFileParameters();
     void writeRegisterFileVendorExtensions();
@@ -92,8 +103,7 @@ void tst_RegisterWriter::writeSimpleRegister()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -127,8 +137,7 @@ void tst_RegisterWriter::writeRegisterIsPresent()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -162,8 +171,7 @@ void tst_RegisterWriter::writeRegisterDimension()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -197,8 +205,7 @@ void tst_RegisterWriter::writeRegisterTypeIdentifier()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -232,8 +239,7 @@ void tst_RegisterWriter::writeRegisterVolatile()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -267,8 +273,7 @@ void tst_RegisterWriter::writeRegisterAccess()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -310,8 +315,7 @@ void tst_RegisterWriter::writeRegisterFields()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -399,8 +403,275 @@ void tst_RegisterWriter::writeRegisterAlternateRegisters()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterAlternateRegisters2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterAlternateRegisters2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+    
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setReference("testMode");
+    modeRef1->setPriority("0");
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setReference("testMode2");
+    modeRef2->setPriority("1");
+
+    QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
+    modeRef3->setReference("testMode3");
+    modeRef3->setPriority("2");
+
+
+    QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
+    accessPolicy1->getModeReferences()->append(modeRef1);
+    accessPolicy1->setAccess(AccessTypes::READ_ONLY);
+
+    QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
+    accessPolicy2->getModeReferences()->append(modeRef2);
+    accessPolicy2->getModeReferences()->append(modeRef3);
+
+    QSharedPointer<Parameter> testParameter(new Parameter());
+    testParameter->setValueId("testID");
+    testParameter->setName("testParameter");
+    testParameter->setValue("1");
+
+    QDomDocument document;
+    QDomElement extensionNode = document.createElement("testExtension");
+    extensionNode.setAttribute("testExtensionAttribute", "extension");
+    extensionNode.appendChild(document.createTextNode("testValue"));
+    QSharedPointer<GenericVendorExtension> testExtension(new GenericVendorExtension(extensionNode));
+
+    QSharedPointer<Field> altField(new Field("Hades"));
+    altField->setBitOffset("alternativeOffset");
+    altField->setBitWidth("alternativeWidth");
+
+    QSharedPointer<AlternateRegister> testAlternateRegister(new AlternateRegister("alteredBeast"));
+    testAlternateRegister->setDisplayName("alteredDisplay");
+    testAlternateRegister->setShortDescription("testShortDescription");
+    testAlternateRegister->setDescription("alteredDescription");
+    
+    testAlternateRegister->getModeReferences()->append(modeRef1);
+    testAlternateRegister->getModeReferences()->append(modeRef2);
+    
+    testAlternateRegister->getAccessPolicies()->append(accessPolicy1);
+    testAlternateRegister->getAccessPolicies()->append(accessPolicy2);
+
+    testAlternateRegister->setVolatile(false);
+    testAlternateRegister->setTypeIdentifier("Volgarr");
+    testAlternateRegister->getParameters()->append(testParameter);
+    testAlternateRegister->getVendorExtensions()->append(testExtension);
+
+    testAlternateRegister->getFields()->append(altField);
+
+    QSharedPointer<Field> simpleField(new Field("simpleField"));
+    simpleField->setBitOffset("fieldOffset");
+    simpleField->setBitWidth("fieldWidth");
+
+    QSharedPointer<Register> testRegister (new Register("testRegister", "offset", "10"));
+    testRegister->getFields()->append(simpleField);
+    testRegister->getAlternateRegisters()->append(testAlternateRegister);
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:addressOffset>offset</ipxact:addressOffset>"
+            "<ipxact:size>10</ipxact:size>"
+            "<ipxact:field>"
+                "<ipxact:name>simpleField</ipxact:name>"
+                "<ipxact:bitOffset>fieldOffset</ipxact:bitOffset>"
+                "<ipxact:bitWidth>fieldWidth</ipxact:bitWidth>"
+            "</ipxact:field>"
+            "<ipxact:alternateRegisters>"
+                "<ipxact:alternateRegister>"
+                    "<ipxact:name>alteredBeast</ipxact:name>"
+                    "<ipxact:displayName>alteredDisplay</ipxact:displayName>"
+                    "<ipxact:shortDescription>testShortDescription</ipxact:shortDescription>"
+                    "<ipxact:description>alteredDescription</ipxact:description>"
+                    "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                    "<ipxact:modeRef priority=\"1\">testMode2</ipxact:modeRef>"
+                    "<ipxact:typeIdentifier>Volgarr</ipxact:typeIdentifier>"
+                    "<ipxact:volatile>false</ipxact:volatile>"
+                    "<ipxact:accessPolicies>"
+                        "<ipxact:accessPolicy>"
+                            "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                            "<ipxact:access>read-only</ipxact:access>"
+                        "</ipxact:accessPolicy>"
+                        "<ipxact:accessPolicy>"
+                            "<ipxact:modeRef priority=\"1\">testMode2</ipxact:modeRef>"
+                            "<ipxact:modeRef priority=\"2\">testMode3</ipxact:modeRef>"
+                        "</ipxact:accessPolicy>"
+                    "</ipxact:accessPolicies>"
+                    "<ipxact:field>"
+                        "<ipxact:name>Hades</ipxact:name>"
+                        "<ipxact:bitOffset>alternativeOffset</ipxact:bitOffset>"
+                        "<ipxact:bitWidth>alternativeWidth</ipxact:bitWidth>"
+                    "</ipxact:field>"
+                    "<ipxact:parameters>"
+                        "<ipxact:parameter parameterId=\"testID\">"
+                            "<ipxact:name>testParameter</ipxact:name>"
+                            "<ipxact:value>1</ipxact:value>"
+                        "</ipxact:parameter>"
+                    "</ipxact:parameters>"
+                    "<ipxact:vendorExtensions>"
+                        "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                    "</ipxact:vendorExtensions>"
+                "</ipxact:alternateRegister>"
+            "</ipxact:alternateRegisters>"
+        "</ipxact:register>"
+        );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterMemoryArray2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MemoryArray::Dimension> dim1(new MemoryArray::Dimension());
+    dim1->indexVar_ = "testDim";
+    dim1->value_ = "1+1";
+    
+    QSharedPointer<MemoryArray::Dimension> dim2(new MemoryArray::Dimension());
+    dim2->value_ = "4";
+
+    QSharedPointer<MemoryArray> memArray(new MemoryArray());
+    memArray->setStride("4");
+    memArray->getDimensions()->append(dim1);
+    memArray->getDimensions()->append(dim2);
+
+    QSharedPointer<Field> simpleField(new Field("simpleField"));
+    simpleField->setBitOffset("fieldOffset");
+    simpleField->setBitWidth("fieldWidth");
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "offset", "10"));
+    testRegister->setDisplayName("displayed");
+    testRegister->setShortDescription("testShortDesc");
+    testRegister->setDescription("described");
+    testRegister->getFields()->append(simpleField);
+    testRegister->setMemoryArray(memArray);
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:displayName>displayed</ipxact:displayName>"
+            "<ipxact:shortDescription>testShortDesc</ipxact:shortDescription>"
+            "<ipxact:description>described</ipxact:description>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"testDim\">1+1</ipxact:dim>"
+                "<ipxact:dim>4</ipxact:dim>"
+                "<ipxact:stride>4</ipxact:stride>"
+            "</ipxact:array>"
+            "<ipxact:addressOffset>offset</ipxact:addressOffset>"
+            "<ipxact:size>10</ipxact:size>"
+            "<ipxact:field>"
+                "<ipxact:name>simpleField</ipxact:name>"
+                "<ipxact:bitOffset>fieldOffset</ipxact:bitOffset>"
+                "<ipxact:bitWidth>fieldWidth</ipxact:bitWidth>"
+            "</ipxact:field>"
+        "</ipxact:register>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterDefinitionReference2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterDefinitionReference2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "offset"));
+    testRegister->setRegisterDefinitionReference("testRegisterDef");
+    testRegister->setTypeDefinitionsReference("testTypeDefinitions");
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:addressOffset>offset</ipxact:addressOffset>"
+            "<ipxact:registerDefinitionRef typeDefinitions=\"testTypeDefinitions\">testRegisterDef</ipxact:registerDefinitionRef>"
+        "</ipxact:register>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterAccessPolicies2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setReference("testMode");
+    modeRef1->setPriority("0");
+
+    QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
+    accessPolicy1->getModeReferences()->append(modeRef1);
+    accessPolicy1->setAccess(AccessTypes::READ_ONLY);
+
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setReference("testMode2");
+    modeRef2->setPriority("1");
+
+    QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
+    modeRef3->setReference("testMode3");
+    modeRef3->setPriority("2");
+
+    QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
+    accessPolicy2->getModeReferences()->append(modeRef2);
+    accessPolicy2->getModeReferences()->append(modeRef3);
+
+    QSharedPointer<Field> simpleField(new Field("simpleField"));
+    simpleField->setBitOffset("fieldOffset");
+    simpleField->setBitWidth("fieldWidth");
+
+    QSharedPointer<Register> testRegister(new Register("testRegister", "offset", "10"));
+    testRegister->getFields()->append(simpleField);
+    testRegister->getAccessPolicies()->append(accessPolicy1);
+    testRegister->getAccessPolicies()->append(accessPolicy2);
+
+    QString expectedOutput(
+        "<ipxact:register>"
+            "<ipxact:name>testRegister</ipxact:name>"
+            "<ipxact:addressOffset>offset</ipxact:addressOffset>"
+            "<ipxact:size>10</ipxact:size>"
+            "<ipxact:accessPolicies>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                    "<ipxact:access>read-only</ipxact:access>"
+                "</ipxact:accessPolicy>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"1\">testMode2</ipxact:modeRef>"
+                    "<ipxact:modeRef priority=\"2\">testMode3</ipxact:modeRef>"
+                "</ipxact:accessPolicy>"
+            "</ipxact:accessPolicies>"
+            "<ipxact:field>"
+                "<ipxact:name>simpleField</ipxact:name>"
+                "<ipxact:bitOffset>fieldOffset</ipxact:bitOffset>"
+                "<ipxact:bitWidth>fieldWidth</ipxact:bitWidth>"
+            "</ipxact:field>"
+        "</ipxact:register>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -444,8 +715,7 @@ void tst_RegisterWriter::writeRegisterParameters()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -490,8 +760,7 @@ void tst_RegisterWriter::writeRegisterVendorExtensions()
         "</ipxact:register>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegister);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegister, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -517,8 +786,7 @@ void tst_RegisterWriter::writeSimpleRegisterFile()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -542,8 +810,7 @@ void tst_RegisterWriter::writeRegisterFileIsPresent()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -567,8 +834,7 @@ void tst_RegisterWriter::writeRegisterFileDimension()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -592,8 +858,7 @@ void tst_RegisterWriter::writeRegisterFileTypeIdentifier()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -646,8 +911,133 @@ void tst_RegisterWriter::writeRegisterFileRegisterData()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterFileDefinitionReference2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterFileDefinitionReference2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<RegisterFile> testRegisterFile(new RegisterFile("testFile", "fileOffset"));
+    testRegisterFile->setDisplayName("displayed");
+    testRegisterFile->setShortDescription("testShortDescription");
+    testRegisterFile->setDescription("described");
+
+    testRegisterFile->setRegisterFileDefinitionReference("testRegisterFileDefinition");
+    testRegisterFile->setTypeDefinitionsReference("testTypeDefinitions");
+
+    QString expectedOutput(
+        "<ipxact:registerFile>"
+            "<ipxact:name>testFile</ipxact:name>"
+            "<ipxact:displayName>displayed</ipxact:displayName>"
+            "<ipxact:shortDescription>testShortDescription</ipxact:shortDescription>"
+            "<ipxact:description>described</ipxact:description>"
+            "<ipxact:addressOffset>fileOffset</ipxact:addressOffset>"
+            "<ipxact:registerFileDefinitionRef typeDefinitions=\"testTypeDefinitions\">testRegisterFileDefinition</ipxact:registerFileDefinitionRef>"
+        "</ipxact:registerFile>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterFileMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterFileMemoryArray2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MemoryArray::Dimension> dim1(new MemoryArray::Dimension());
+    dim1->indexVar_ = "testDim";
+    dim1->value_ = "1+1";
+
+    QSharedPointer<MemoryArray::Dimension> dim2(new MemoryArray::Dimension());
+    dim2->value_ = "4";
+
+    QSharedPointer<MemoryArray> memArray(new MemoryArray());
+    memArray->setStride("4");
+    memArray->getDimensions()->append(dim1);
+    memArray->getDimensions()->append(dim2);
+
+    QSharedPointer<RegisterFile> testRegisterFile(new RegisterFile("testFile", "fileOffset", "8"));
+    testRegisterFile->setMemoryArray(memArray);
+
+    QString expectedOutput(
+        "<ipxact:registerFile>"
+            "<ipxact:name>testFile</ipxact:name>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"testDim\">1+1</ipxact:dim>"
+                "<ipxact:dim>4</ipxact:dim>"
+                "<ipxact:stride>4</ipxact:stride>"
+            "</ipxact:array>"
+            "<ipxact:addressOffset>fileOffset</ipxact:addressOffset>"
+            "<ipxact:range>8</ipxact:range>"
+        "</ipxact:registerFile>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterWriter::writeRegisterFileAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_RegisterWriter::writeRegisterFileAccessPolicies2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setReference("testMode");
+    modeRef1->setPriority("0");
+
+    QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
+    accessPolicy1->getModeReferences()->append(modeRef1);
+    accessPolicy1->setAccess(AccessTypes::READ_ONLY);
+
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setReference("testMode2");
+    modeRef2->setPriority("1");
+
+    QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
+    modeRef3->setReference("testMode3");
+    modeRef3->setPriority("2");
+
+    QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
+    accessPolicy2->getModeReferences()->append(modeRef2);
+    accessPolicy2->getModeReferences()->append(modeRef3);
+
+    QSharedPointer<RegisterFile> testRegisterFile(new RegisterFile("testFile", "fileOffset", "8"));
+    testRegisterFile->getAccessPolicies()->append(accessPolicy1);
+    testRegisterFile->getAccessPolicies()->append(accessPolicy2);
+
+    QString expectedOutput(
+        "<ipxact:registerFile>"
+            "<ipxact:name>testFile</ipxact:name>"
+            "<ipxact:addressOffset>fileOffset</ipxact:addressOffset>"
+            "<ipxact:range>8</ipxact:range>"
+            "<ipxact:accessPolicies>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                    "<ipxact:access>read-only</ipxact:access>"
+                "</ipxact:accessPolicy>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"1\">testMode2</ipxact:modeRef>"
+                    "<ipxact:modeRef priority=\"2\">testMode3</ipxact:modeRef>"
+                "</ipxact:accessPolicy>"
+            "</ipxact:accessPolicies>"
+        "</ipxact:registerFile>"
+    );
+
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -683,8 +1073,7 @@ void tst_RegisterWriter::writeRegisterFileParameters()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -719,8 +1108,7 @@ void tst_RegisterWriter::writeRegisterFileVendorExtensions()
         "</ipxact:registerFile>"
         );
 
-    RegisterWriter registerWriter;
-    registerWriter.writeRegisterData(xmlStreamWriter, testRegisterFile);
+    RegisterWriter::writeRegisterData(xmlStreamWriter, testRegisterFile, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

@@ -27,6 +27,7 @@ class ConfigurableElementValue;
 class Qualifier;
 class NameGroup;
 class PartSelect;
+class ModeReference;
 
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
@@ -172,6 +173,15 @@ public:
      *      @param [in] partSelect  The selected part select.
      */
     static void writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect);
+
+    /*!
+     *	Write mode references.
+     *  
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] modeReferences  The mode references to write.
+     */
+    static void writeModeReferences(QXmlStreamWriter& writer, 
+        QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences);
 };
 
 

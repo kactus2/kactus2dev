@@ -12,6 +12,8 @@
 #include "Register.h"
 #include "AlternateRegister.h"
 
+#include <IPXACTmodels/Component/MemoryArray.h>
+
 //-----------------------------------------------------------------------------
 // Function: Register::Register()
 //-----------------------------------------------------------------------------
@@ -29,9 +31,16 @@ alternateRegisters_(new QList<QSharedPointer<AlternateRegister> > ())
 Register::Register(const Register& other):
     RegisterDefinition(other),
     size_(other.size_),
-    alternateRegisters_(new QList<QSharedPointer<AlternateRegister> > ())
+    alternateRegisters_(new QList<QSharedPointer<AlternateRegister> > ()),
+    registerDefinitionReference_(other.registerDefinitionReference_),
+    typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
     copyAlternateRegisters(other);
+    
+    if (other.memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -43,7 +52,14 @@ Register& Register::operator=(const Register& other)
     {
         RegisterDefinition::operator=(other);
         size_ = other.size_;
-        
+        registerDefinitionReference_ = other.registerDefinitionReference_;
+        typeDefinitionsReference_ = other.typeDefinitionsReference_;
+
+        if (other.memoryArray_)
+        {
+            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+        }
+
         alternateRegisters_->clear();
         copyAlternateRegisters(other);
     }
@@ -102,16 +118,63 @@ void Register::setSize(QString const& newSize)
 }
 
 //-----------------------------------------------------------------------------
+// Function: Register::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> Register::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::setMemoryArray()
+//-----------------------------------------------------------------------------
+void Register::setMemoryArray(QSharedPointer<MemoryArray> newMemArray)
+{
+    memoryArray_ = newMemArray;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::getRegisterDefinitionReference()
+//-----------------------------------------------------------------------------
+QString Register::getRegisterDefinitionReference() const
+{
+    return registerDefinitionReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::setRegisterDefinitionReference()
+//-----------------------------------------------------------------------------
+void Register::setRegisterDefinitionReference(QString const& registerDefinitionRef)
+{
+    registerDefinitionReference_ = registerDefinitionRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::getTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+QString Register::getTypeDefinitionsReference() const
+{
+    return typeDefinitionsReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Register::setTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+void Register::setTypeDefinitionsReference(QString const& typeDefinitionsRef)
+{
+    typeDefinitionsReference_ = typeDefinitionsRef;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Register::copyAlternateRegisters()
 //-----------------------------------------------------------------------------
 void Register::copyAlternateRegisters(const Register& other)
 {
-    foreach (QSharedPointer<AlternateRegister> alternateRegister, *other.alternateRegisters_)
+    for (auto const& alternateRegister : *other.alternateRegisters_)
     {
         if (alternateRegister)
         {
-            QSharedPointer<AlternateRegister> copy =
-                QSharedPointer<AlternateRegister>(new AlternateRegister(*alternateRegister.data()));
+            auto copy = QSharedPointer<AlternateRegister>(new AlternateRegister(*alternateRegister));
             alternateRegisters_->append(copy);
         }
     }

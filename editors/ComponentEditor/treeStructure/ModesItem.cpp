@@ -12,7 +12,7 @@
 #include "ModesItem.h"
 #include "SingleModeItem.h"
 
-#include <editors/ComponentEditor/Modes/ModesEditor.h>
+#include <editors/ComponentEditor/modes/ModesEditor.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/Component/Component.h>
