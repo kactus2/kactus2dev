@@ -18,7 +18,6 @@
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
