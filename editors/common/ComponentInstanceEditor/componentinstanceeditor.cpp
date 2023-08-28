@@ -18,6 +18,7 @@
 
 #include <editors/common/DesignCompletionModel.h>
 #include <editors/common/TopComponentParameterFinder.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <editors/HWDesign/HWChangeCommands.h>
 #include <editors/HWDesign/HWComponentItem.h>
@@ -49,37 +50,38 @@ QWidget(parent),
     fileSetRefCombo_(new QComboBox(this)),
     propertyValueEditor_(new PropertyValueEditor(this)),
     editProvider_(0),
-    instanceFinder_(new ComponentParameterFinder(QSharedPointer<Component>(0))),
-    elementFinder_(new ConfigurableElementFinder()),
-    topFinder_(new TopComponentParameterFinder(QSharedPointer<Component>(0))),
+    instanceFinder_(new ComponentParameterFinder(nullptr)),
+    topFinder_(new TopComponentParameterFinder(nullptr)),
     designParameterFinder_(new ListParameterFinder()),
     topComponent_(),
     containingDesign_()
 {
-    QSharedPointer<MultipleParameterFinder> multiFinder(new MultipleParameterFinder());
-    multiFinder->addFinder(elementFinder_);
-    multiFinder->addFinder(designParameterFinder_);
+    QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
+    parameterFinder->addFinder(instanceFinder_);
+    parameterFinder->addFinder(designParameterFinder_);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(multiFinder));
-    QSharedPointer<IPXactSystemVerilogParser> instanceParser (new IPXactSystemVerilogParser(instanceFinder_));
+    QSharedPointer<IPXactSystemVerilogParser> parameterParser(new IPXactSystemVerilogParser(parameterFinder));
+    ExpressionSet parameterExpressions({ parameterFinder , parameterParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(parameterFinder)) });
+
+    QSharedPointer<IPXactSystemVerilogParser> defaultParser (new IPXactSystemVerilogParser(instanceFinder_));
+    ExpressionSet defaultExpressions({ instanceFinder_ , defaultParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)) });
 
     QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
-        new IPXactSystemVerilogParser(designParameterFinder_));
+        new IPXactSystemVerilogParser(parameterFinder));
 
     ComponentParameterModel* completionModel = new ComponentParameterModel(designParameterFinder_, this);
     completionModel->setExpressionParser(designParameterParser);
 
-    configurableElements_ = new ComponentInstanceConfigurableElementsEditor(elementFinder_, multiFinder, 
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(instanceFinder_)),
-        expressionParser, instanceParser, completionModel, this);
+    configurableElements_ = new ComponentInstanceConfigurableElementsEditor(parameterExpressions, 
+        defaultExpressions, defaultExpressions, completionModel, this);
 
 	setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
 
     vlnvDisplayer_->setFlat(true);
     nameGroup_->setFlat(true);
     swGroup_->setFlat(true);
-    configurableElements_->setFlat(true);
     propertyValueEditor_->setFlat(true);
 
 	vlnvDisplayer_->hide();
@@ -99,10 +101,10 @@ QWidget(parent),
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
 
-    connect(configurableElements_, SIGNAL(increaseReferences(QString)),
-        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(configurableElements_, SIGNAL(decreaseReferences(QString)),
-        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(configurableElements_, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(configurableElements_, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
     clear();
 }
@@ -115,8 +117,6 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     QSharedPointer<DesignConfiguration> designConfiguration, QString const& activeViewName)
 {
 	Q_ASSERT(componentItem);
-
-	//parentWidget()->raise();
 
 	// if previous component has been specified, then disconnect signals to this editor.
 	if (component_)

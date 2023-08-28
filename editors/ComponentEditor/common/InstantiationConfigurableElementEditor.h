@@ -48,20 +48,18 @@ public:
 	 *      @param [in] completionModel     The completion model for selecting parameter references.
 	 *      @param [in] parent              The parent widget.
 	 */
-    InstantiationConfigurableElementEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> elementFormatter,
-        QSharedPointer<ExpressionFormatter> parameterFormatter,
-        QSharedPointer<ExpressionParser> elementParser, QSharedPointer<ExpressionParser> parameterParser,
+    InstantiationConfigurableElementEditor(
+         QSharedPointer<ConfigurableElementFinder> elementFinder,
+        ExpressionSet elementExpressions,
+        ExpressionSet parameterExpressions,
+//         QSharedPointer<ParameterFinder> parameterFinder,
+//         QSharedPointer<ExpressionFormatter> elementFormatter,
+//         QSharedPointer<ExpressionFormatter> parameterFormatter,
+//         QSharedPointer<ExpressionParser> elementParser, QSharedPointer<ExpressionParser> parameterParser,
         QAbstractItemModel* completionModel, QWidget* parent);
 
 	//! The destructor.
     virtual ~InstantiationConfigurableElementEditor() = default;
-
-	/*!
-     *  Clear the editor from all data.
-	 */
-	void clear();
 
     /*!
      *  Setup the configurable element values for the model.
@@ -73,30 +71,16 @@ public:
     void setParameters(QString const& containerName, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedElements);
 
-private slots:
-
-    /*!
-     *  Handle the element removal.
-     *
-     *      @param [in] elementID   ID of the parameter referenced by the removed configurable element.
-     *      @param [in] elementRow  Index row of the removed configurable element.
-     */
-    void sendSignalForElementRemoval(QString const& elementID,  int elementRow);
-
 private:
 
     //! No copying.	No assignment.
 	InstantiationConfigurableElementEditor(const InstantiationConfigurableElementEditor& other);
 	InstantiationConfigurableElementEditor& operator=(const InstantiationConfigurableElementEditor& other);
 
-	//! The model to edit the configurable elements of a design instantiation.
-    ConfigurableElementsModel* model_;
 
     //! The used configurable element finder.
     QSharedPointer<ConfigurableElementFinder> elementFinder_;
 
-    //! The filter for the configurable element values.
-    ConfigurableElementsFilter* filter_;
 };
 
 #endif // INSTANTIATIONCONFIGURABLEELEMENTEDITOR_H

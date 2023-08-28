@@ -2257,9 +2257,6 @@
     <ClCompile Include="editors\ComponentEditor\common\ConfigurableElementFinder.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\common</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\parameterReferenceTree\ComponentParameterReferenceTree.cpp">
       <Filter>Source Files\editors\ComponentEditor\parameterReferenceTree</Filter>
     </ClCompile>
@@ -3267,6 +3264,9 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

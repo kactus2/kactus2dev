@@ -16,9 +16,10 @@
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
 
-#include <editors/ComponentEditor/software/PropertyValueEditor.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
+
+#include <editors/ComponentEditor/software/PropertyValueEditor.h>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h><>
 
 #include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h>
 
@@ -53,6 +54,12 @@ public:
 	
 	//! The destructor.
 	virtual ~ComponentInstanceEditor() = default;
+
+    //! No copying.
+    ComponentInstanceEditor(const ComponentInstanceEditor& other) = delete;
+
+    //! No assignment.
+    ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other) = delete;
 
 	/*!
      *  Set the component to be edited.
@@ -105,14 +112,14 @@ signals:
      *
      *      @param [in] id  ID of the parameter, whose references are being increased.
      */
-    void increaseReferences(QString id);
+    void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter with a matching ID.
      *
      *      @param [in] id  ID of the parameter, whose references are being decreased.
      */
-    void decreaseReferences(QString id);
+    void decreaseReferences(QString const& id);
 
 private slots:
 
@@ -135,13 +142,8 @@ private slots:
     void updateFileSetRef(QString const& fileSetRef);
 
 private:
-	//! No copying.
-	ComponentInstanceEditor(const ComponentInstanceEditor& other);
     void setupLayout();
 
-	//! No assignment.
-	ComponentInstanceEditor& operator=(const ComponentInstanceEditor& other);
-    
 	//! Pointer to the component instance being edited.
 	ComponentItem* component_;
 
@@ -170,9 +172,6 @@ private:
 
     //! The parameter finder for component instances.
     QSharedPointer<ComponentParameterFinder> instanceFinder_;
-
-    //! The parameter finder for configurable element values.
-    QSharedPointer<ConfigurableElementFinder> elementFinder_;
 
     //! The parameter finder for component instances.
     QSharedPointer<TopComponentParameterFinder> topFinder_;

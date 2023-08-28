@@ -70,10 +70,14 @@ designParameterFinder_(new ListParameterFinder())
     ComponentParameterModel* designParametersModel = new ComponentParameterModel(componentParameterFinder, this);
     designParametersModel->setExpressionParser(designParameterParser);
 
-    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, multiFinder,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)), multiParser,
-        designParameterParser, designParametersModel, this);
+    ExpressionSet parameterExpressions({ multiFinder , multiParser, 
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)) });
+    ExpressionSet designExpressions({ multiFinder ,designParameterParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designParameterFinder_)) });
+
+    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, 
+        parameterExpressions, designExpressions,
+        designParametersModel, this);
 
     designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, parentWindow, this);
     designEditor_->setTitle(tr("Design reference"));

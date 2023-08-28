@@ -389,9 +389,6 @@
     <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
-    <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp">
-      <Filter>Source Files\expressions</Filter>
-    </ClCompile>
     <ClCompile Include="expressions\ComponentInstantiationParameterFinder.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
@@ -482,6 +479,9 @@
     <ClCompile Include="library\TagManager.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
+    <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -492,9 +492,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <QtMoc Include="include\ComponentInstanceParameterFinder.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
     <QtMoc Include="include\ImportHighlighter.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
@@ -520,6 +517,9 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryLoader.h">
+      <Filter>Header Files\include</Filter>
+    </QtMoc>
+    <QtMoc Include="include\ComponentInstanceParameterFinder.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

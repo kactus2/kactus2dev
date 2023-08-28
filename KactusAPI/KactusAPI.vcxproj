@@ -23,8 +23,8 @@
     <ClInclude Include="include\CLIGenerator.h" />
     <ClInclude Include="include\CommonInterface.h" />
     <ClInclude Include="include\ComponentAndInstantiationsParameterFinder.h" />
-    <QtMoc Include="include\ComponentInstanceParameterFinder.h" />
     <ClInclude Include="include\ComponentInstanceInterface.h" />
+    <QtMoc Include="include\ComponentInstanceParameterFinder.h" />
     <ClInclude Include="include\ComponentInstantiationInterface.h" />
     <ClInclude Include="include\ComponentInstantiationParameterFinder.h" />
     <ClInclude Include="include\ComponentParameterFinder.h" />

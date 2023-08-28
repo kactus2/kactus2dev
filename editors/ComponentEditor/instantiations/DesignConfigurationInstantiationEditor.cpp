@@ -117,10 +117,13 @@ void DesignConfigurationInstantiationEditor::createConfigurableElementEditor(
     ComponentParameterModel* completionModel = new ComponentParameterModel(parameterFinder, this);
     completionModel->setExpressionParser(referenceParser);
 
-    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, multiFinder,
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)),
-        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designConfigurationParameterFinder_)),
-        multiParser, configurationParameterParser, completionModel, this);
+    ExpressionSet parameterExpressions({ multiFinder , multiParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(multiFinder)) });
+    ExpressionSet elementExpressions({ multiFinder ,configurationParameterParser,
+        QSharedPointer<ExpressionFormatter>(new ExpressionFormatter(designConfigurationParameterFinder_)) });
+
+    elementEditor_ = new InstantiationConfigurableElementEditor(elementFinder, 
+        parameterExpressions, elementExpressions, completionModel, this);
 }
 
 //-----------------------------------------------------------------------------

@@ -13,11 +13,13 @@
 #define COMPONENTINSTANCECONFIGURABLEELEMENTSEDITOR_H
 
 #include <editors/common/ComponentInstanceEditor/configurableelementeditor.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QAbstractItemModel>
 #include <QSharedPointer>
+#include <QWidget>
 
 class Component;
 class ComponentInstance;
@@ -26,7 +28,7 @@ class ComponentInstanceConfigurableElementsModel;
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a component instance.
 //-----------------------------------------------------------------------------
-class ComponentInstanceConfigurableElementsEditor : public ConfigurableElementEditor
+class ComponentInstanceConfigurableElementsEditor : public QWidget
 {
 	Q_OBJECT
 
@@ -35,26 +37,26 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] elementFinder                   The finder for the configurable element values.
-	 *      @param [in] parameterFinder                 The finder for configurable elements and top parameters.
-	 *      @param [in] configurableElementFormatter    Formats referencing expressions in configurable elements.
-	 *      @param [in] instanceExpressionFormatter     Formats referencing expressions in component instance.
-	 *      @param [in] expressionParser                Solves expressions in configurable elements.
-	 *      @param [in] instanceParser                  Solves expressions in default values (component instance).
-	 *      @param [in] completionModel                 The completion model for selecting parameter references.
+     *      @param [in] parameterExpressions            The expressions for selecting parameter references.
+     *      @param [in] moduleParameterExpressions      The expressions for selecting module parameter references.
+     *      @param [in] defaultExpressions              The expressions for resolving default values.
+     *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-    ComponentInstanceConfigurableElementsEditor(QSharedPointer<ConfigurableElementFinder> elementFinder,
-        QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ExpressionFormatter> configurableElementFormatter,
-        QSharedPointer<ExpressionFormatter> instanceExpressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionParser> instanceParser,
+    ComponentInstanceConfigurableElementsEditor(
+        ExpressionSet parameterExpressions,
+        ExpressionSet moduleParameterExpressions,
+        ExpressionSet defaultExpressions,
         QAbstractItemModel* completionModel, QWidget *parent);
 	
 	/*!
      *  The destructor.
      */
     virtual ~ComponentInstanceConfigurableElementsEditor() = default;
+
+    //! No copying.	No assignment.
+    ComponentInstanceConfigurableElementsEditor(const ComponentInstanceConfigurableElementsEditor& other) = delete;
+    ComponentInstanceConfigurableElementsEditor& operator=(const ComponentInstanceConfigurableElementsEditor& other) = delete;
 
 	/*!
      *  Set the component instance to be edited.
@@ -72,13 +74,33 @@ public:
 	 */
 	virtual void clear();
 
-private:
-    //! No copying.	No assignment.
-	ComponentInstanceConfigurableElementsEditor(const ComponentInstanceConfigurableElementsEditor& other);
-    ComponentInstanceConfigurableElementsEditor& operator=(const ComponentInstanceConfigurableElementsEditor& other);
+signals:
 
-	//! The model to edit the configurable elements of a component instance.
-	ComponentInstanceConfigurableElementsModel* model_;
+    //! Emitted when the content of the editor has changed.
+	void contentChanged();
+
+    /*!
+     *  Increase the amount of references to a parameter with the matching ID.
+     *
+     *      @param [in] id  ID of the parameter, whose references are being increased.
+     */
+    void increaseReferences(QString const& id);
+
+    /*!
+     *  Decrease the amount of references to a parameter with a matching ID.
+     *
+     *      @param [in] id  ID of the parameter, whose references are being decreased.
+     */
+    void decreaseReferences(QString const& id);
+
+private:
+
+    //! The editor for component instance parameters.
+	ConfigurableElementEditor parameterEditor_;
+
+    //! The editor for component instance module parameters.
+	ConfigurableElementEditor moduleParameterEditor_;
+
 };
 
 #endif // COMPONENTINSTANCECONFIGURABLEELEMENTSEDITOR_H

@@ -22,7 +22,6 @@ namespace ConfigurableElementsColumns
         CHOICE,             //!< Column for the selected choice of the parameter.
         ARRAY_LEFT,         //!< Column for the left side of the parameters array.
         ARRAY_RIGHT,        //!< Column for the right side of the parameters array.
-        TYPE,               //!< Column for the type of the parameter.
         COLUMN_COUNT
     };
 }

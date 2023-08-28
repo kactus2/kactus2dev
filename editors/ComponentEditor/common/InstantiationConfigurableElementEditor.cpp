@@ -11,6 +11,7 @@
 
 #include "InstantiationConfigurableElementEditor.h"
 
+#include <editors/common/ExpressionSet.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
 
@@ -20,28 +21,20 @@
 // Function: InstantiationConfigurableElementEditor::InstantiationConfigurableElementEditor()
 //-----------------------------------------------------------------------------
 InstantiationConfigurableElementEditor::InstantiationConfigurableElementEditor(
-    QSharedPointer<ConfigurableElementFinder> elementFinder, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> elementFormatter, QSharedPointer<ExpressionFormatter> parameterFormatter,
-    QSharedPointer<ExpressionParser> elementParser, QSharedPointer<ExpressionParser> parameterParser,
+     QSharedPointer<ConfigurableElementFinder> elementFinder, 
+    ExpressionSet elementExpressions,
+    ExpressionSet parameterExpressions,
+//     QSharedPointer<ParameterFinder> parameterFinder,
+//     QSharedPointer<ExpressionFormatter> elementFormatter,
+//     QSharedPointer<ExpressionFormatter> parameterFormatter,
+//     QSharedPointer<ExpressionParser> elementParser,
+//     QSharedPointer<ExpressionParser> parameterParser,
     QAbstractItemModel* completionModel, QWidget* parent):
-ConfigurableElementEditor(parameterFinder, elementFormatter, completionModel, parent),
-model_(new ConfigurableElementsModel(parameterFinder, elementFormatter, parameterFormatter, elementParser,
-    parameterParser, this)),
-elementFinder_(elementFinder),
-filter_(new ConfigurableElementsFilter(this))
+    ConfigurableElementEditor(elementExpressions, parameterExpressions,
+        completionModel, parent),
+elementFinder_(elementFinder)
 {
-    setModel(model_, filter_);
-    hideUnnecessaryColumns();
 
-    connect(filterSelection_, SIGNAL(clicked(bool)),
-        filter_, SLOT(setShowImmediateValues(bool)), Qt::UniqueConnection);
-
-    connect(delegate_, SIGNAL(removeConfigurableElement(QString const&, int)),
-        this, SLOT(sendSignalForElementRemoval(QString const&, int)), Qt::UniqueConnection);
-    connect(delegate_, SIGNAL(dataChangedInID(QString const&, QString const&)),
-        model_, SLOT(emitDataChangeForID(QString const&, QString const&)), Qt::UniqueConnection);
-
-    connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,26 +44,8 @@ void InstantiationConfigurableElementEditor::setParameters(QString const& contai
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedElements)
 {
-    model_->setParameters(
-        containerName, parameters, QSharedPointer<QList<QSharedPointer<Choice> > >(), storedElements);
+    ConfigurableElementEditor::setParameters(containerName, parameters, 
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), storedElements);
 
     elementFinder_->setConfigurableElementList(model_->getConfigurableElements());
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationConfigurableElementEditor::clear()
-//-----------------------------------------------------------------------------
-void InstantiationConfigurableElementEditor::clear() 
-{
-	model_->clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: InstantiationConfigurableElementEditor::sendSignalForElementRemoval()
-//-----------------------------------------------------------------------------
-void InstantiationConfigurableElementEditor::sendSignalForElementRemoval(QString const& elementID,
-     int elementRow)
-{
-	model_->onRemoveItem(elementID, elementRow);
-	filter_->invalidate();
 }

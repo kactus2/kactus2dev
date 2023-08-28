@@ -17,7 +17,9 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
-#include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h>
+#include <editors/common/ExpressionSet.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
+#include <editors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
 #include <editors/common/ComponentInstanceEditor/configurableelementdelegate.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsView.h>
 
@@ -44,16 +46,23 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] parameterFinder                 The finder for configurable elements and top parameters.
-	 *      @param [in] configurableElementFormatter    Formats referencing expressions in configurable elements.
+     *      @param [in] parameterExpressions            The expressions for selecting parameter references.
+     *      @param [in] defaultExpressions              The expressions for resolving default values.
 	 *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-    ConfigurableElementEditor(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> configurableElementFormatter, QAbstractItemModel* completionModel,
+    ConfigurableElementEditor(
+        ExpressionSet parameterExpressions,
+        ExpressionSet defaultExpressions,
+        QAbstractItemModel* completionModel,
         QWidget *parent);
 	
-	//! The destructor.
+    void setParameters(QString const& containingItemName, 
+        QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements);
+
+    //! The destructor.
 	virtual ~ConfigurableElementEditor() = default;
 
     //! No copying.
@@ -65,7 +74,9 @@ public:
 	/*!
      *  Clear the editor from all data.
 	 */
-	virtual void clear() = 0;
+    virtual void clear();;
+
+    void setEditProvider(QSharedPointer<IEditProvider> editProvider);
 
 signals:
 
@@ -77,24 +88,20 @@ signals:
      *
      *      @param [in] id      The ID of the parameter being searched for.
      */
-    void increaseReferences(QString id);
+    void increaseReferences(QString const& id);
 
     /*!
      *  Decrease the amount of references to a parameter corresponding to the ID.
      *
      *      @param [in] id      The ID of the parameter being searched for.
      */
-    void decreaseReferences(QString id);
+    void decreaseReferences(QString const& id);
+
+private slots:
+
+    void sendSignalForElementRemoval(QString const& elementID, int elementRow);
 
 protected:
-
-    /*!
-     *  Set the model and filter for the view.
-     *
-     *      @param [in] newModel    The new model.
-     *      @param [in] newFilter   The new filter.
-     */
-    void setModel(QAbstractItemModel* newModel, QSortFilterProxyModel* newFilter);
 
     /*!
      *  Hide the columns that should not be seen in the configurable elements editor.
@@ -107,10 +114,12 @@ protected:
     //! The delegate used in the display widget.
     ConfigurableElementDelegate* delegate_;
 
+    ConfigurableElementsFilter* filter_;
+
+    ConfigurableElementsModel* model_;
+
     //! The immediate configurable element values filter check box.
     QCheckBox* filterSelection_;
-
-
 
 };
 
