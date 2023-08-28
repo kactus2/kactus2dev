@@ -12,6 +12,9 @@
 #include "RegisterFileValidator.h"
 #include <KactusAPI/include/ExpressionParser.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
+#include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -45,9 +48,23 @@ QSharedPointer<RegisterValidator> RegisterFileValidator::getRegisterValidator() 
 //-----------------------------------------------------------------------------
 bool RegisterFileValidator::validate(QSharedPointer<RegisterFile> selectedRegisterFile) const
 {
-    return RegisterBaseValidator::validate(selectedRegisterFile) &&
-        hasValidRange(selectedRegisterFile) &&
-        hasValidRegisterData(selectedRegisterFile);
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        return RegisterBaseValidator::validate(selectedRegisterFile) &&
+            hasValidRange(selectedRegisterFile) &&
+            hasValidRegisterData(selectedRegisterFile);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        return RegisterBaseValidator::validate(selectedRegisterFile) &&
+            hasValidRange(selectedRegisterFile) &&
+            hasValidRegisterData(selectedRegisterFile) &&
+            hasValidMemoryArray(selectedRegisterFile) &&
+            hasValidAccessPolicies(selectedRegisterFile) &&
+            hasValidStructure(selectedRegisterFile);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +83,64 @@ bool RegisterFileValidator::hasValidRange(QSharedPointer<RegisterFile> selectedR
 //-----------------------------------------------------------------------------
 bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> selectedRegisterFile) const
 {
-    //TODO
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser_));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(expressionParser_, enumValidator, parameterValidator_));
+
+    RegisterValidator newRegisterValidator(expressionParser_, fieldValidator, parameterValidator_, docRevision_);
+
+    for (auto const& registerData : *selectedRegisterFile->getRegisterData())
+    {
+        if (auto asRegister = registerData.dynamicCast<Register>())
+        {
+            if (!newRegisterValidator.validate(asRegister))
+            {
+                return false;
+            }
+        }
+        else if (auto asRegisterFile = registerData.dynamicCast<RegisterFile>())
+        {
+            if (!validate(asRegisterFile))
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::hasValidMemoryArray()
+//-----------------------------------------------------------------------------
+bool RegisterFileValidator::hasValidMemoryArray(QSharedPointer<RegisterFile> selectedRegisterfile) const
+{
+    if (auto const& memArray = selectedRegisterfile->getMemoryArray())
+    {
+        MemoryArrayValidator memArrayValidator(expressionParser_);
+        return memArrayValidator.validate(selectedRegisterfile->getMemoryArray());
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::hasValidStructure()
+//-----------------------------------------------------------------------------
+bool RegisterFileValidator::hasValidStructure(QSharedPointer<RegisterFile> selectedRegisterFile) const
+{
+    if (!selectedRegisterFile->getRegisterFileDefinitionReference().isEmpty() &&
+        (!selectedRegisterFile->getTypeIdentifier().isEmpty() ||
+            !selectedRegisterFile->getRange().isEmpty() ||
+            !selectedRegisterFile->getAccessPolicies()->isEmpty() ||
+            !selectedRegisterFile->getRegisterData()->isEmpty()))
+    {
+        return false;
+    }
+
     return true;
 }
 
@@ -76,16 +150,32 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
 void RegisterFileValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<RegisterFile> selectedRegisterFile,
     QString const& context) const
 {
-    QString registerContext = QStringLiteral("register file") + selectedRegisterFile->name();
+    QString registerContext = QStringLiteral("register file ") + selectedRegisterFile->name();
 
-    findErrorsInName(errors, selectedRegisterFile, context);
-    findErrorsInIsPresent(errors, selectedRegisterFile, context);
-    findErrorsInDimension(errors, selectedRegisterFile, context);
-    findErrorsInAddressOffset(errors, selectedRegisterFile, context);
+    QString completeContext = QObject::tr("register file '%1' within %2").arg(selectedRegisterFile->name()).arg(context);
+
+    findErrorsInName(errors, selectedRegisterFile, completeContext);
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        findErrorsInIsPresent(errors, selectedRegisterFile, completeContext);
+        findErrorsInDimension(errors, selectedRegisterFile, completeContext);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        findErrorsInMemoryArray(errors, selectedRegisterFile, completeContext);
+        findErrorsInAccessPolicies(errors, selectedRegisterFile, context);
+
+        if (!hasValidStructure(selectedRegisterFile))
+        {
+            errors.append(QObject::tr("Register file '%1' in %2 contains both a register file definition reference and register file definition values.").arg(selectedRegisterFile->name()).arg(context));
+        }
+    }
+
+    findErrorsInAddressOffset(errors, selectedRegisterFile, completeContext);
     findErrorsInParameters(errors, selectedRegisterFile, registerContext);
-
     findErrorsInRange(errors, selectedRegisterFile, context);
-    findErrorsInRegisterData(errors, selectedRegisterFile, registerContext);
+    findErrorsInRegisterData(errors, selectedRegisterFile, completeContext);
 }
 
 //-----------------------------------------------------------------------------
@@ -109,5 +199,44 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QSharedPointer<RegisterFile> selectedRegisterFile,
     QString const& context) const
 {
-    //TODO
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(expressionParser_));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(expressionParser_, enumValidator, parameterValidator_));
+
+    RegisterValidator newRegisterValidator(expressionParser_, fieldValidator, parameterValidator_, docRevision_);
+
+    for (auto const& registerData : *selectedRegisterFile->getRegisterData())
+    {
+        if (auto asRegister = registerData.dynamicCast<Register>())
+        {
+            newRegisterValidator.findErrorsIn(errors, asRegister, context);
+        }
+        else if (auto asRegisterFile = registerData.dynamicCast<RegisterFile>())
+        {
+            findErrorsIn(errors, asRegisterFile, context);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::findErrorsInMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterFileValidator::findErrorsInMemoryArray(QStringList& errors, 
+    QSharedPointer<RegisterFile> selectedRegisterFile, QString const& context) const
+{
+    if (auto const& memArray = selectedRegisterFile->getMemoryArray())
+    {
+        MemoryArrayValidator memArrayValidator(expressionParser_);
+        memArrayValidator.findErrorsIn(errors, memArray, context);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::findErrorsInAccessPolicies()
+//-----------------------------------------------------------------------------
+void RegisterFileValidator::findErrorsInAccessPolicies(QStringList& errors, 
+    QSharedPointer<RegisterFile> selectedRegisterFile, QString const& context) const
+{
+    QString registerFileContext = QStringLiteral("register ") + selectedRegisterFile->name() + QStringLiteral(" within ") + context;
+
+    RegisterBaseValidator::findErrorsInAccessPolicies(errors, selectedRegisterFile, registerFileContext);
 }

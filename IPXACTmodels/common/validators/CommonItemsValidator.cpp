@@ -22,7 +22,10 @@
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidName(QString const& name)
 {
-    return (name.isEmpty() == false && name.trimmed().isEmpty() == false);
+    // Bad strings are strings with whitespace between words, empty strings and only whitespace strings.
+    QRegularExpression whiteSpaceRegex(QStringLiteral("^(?!\\s*\\S+\\s*$).*"));
+
+    return whiteSpaceRegex.match(name).hasMatch() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -72,8 +75,6 @@ bool CommonItemsValidator::isValidExpression(QString const& expression, QSharedP
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QStringList& checkedReferences, QStringList& checkedPriorities)
 {
-    QRegularExpression whiteSpaceRegex(QStringLiteral("\\s+"));
-
     for (auto const& modeRef : *modeRefs)
     {
         auto reference = modeRef->getReference();
@@ -82,7 +83,7 @@ bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<
         bool priorityValidInt = false;
         int priority = priorityStr.toUInt(&priorityValidInt);
 
-        if (whiteSpaceRegex.match(modeRef->getReference()).hasMatch())
+        if (!CommonItemsValidator::hasValidName(modeRef->getReference()))
         {
             return false;
         }

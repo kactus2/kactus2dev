@@ -349,27 +349,26 @@ void RegisterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Re
     QString const& context) const
 {
     QString registerContext = QStringLiteral("register ") + selectedRegister->name();
+    QString completeRegisterContext = QStringLiteral("register '") + selectedRegister->name() + QStringLiteral("' within ") + context;
 
     if (docRevision_ == Document::Revision::Std14)
     {
-        findErrorsInName(errors, selectedRegister, context);
-        findErrorsInIsPresent(errors, selectedRegister, context);
-        findErrorsInDimension(errors, selectedRegister, context);
-        findErrorsInAddressOffset(errors, selectedRegister, context);
-        findErrorsInSize(errors, selectedRegister, context);
+        findErrorsInName(errors, selectedRegister, completeRegisterContext);
+        findErrorsInIsPresent(errors, selectedRegister, completeRegisterContext);
+        findErrorsInDimension(errors, selectedRegister, completeRegisterContext);
+        findErrorsInAddressOffset(errors, selectedRegister, completeRegisterContext);
+        findErrorsInSize(errors, selectedRegister, completeRegisterContext);
         findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
         findErrorsInAlternateRegisters(errors, selectedRegister);
         findErrorsInParameters(errors, selectedRegister, registerContext);
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
-        registerContext = QStringLiteral("register ") + selectedRegister->name() + QStringLiteral(" within ") + context;
-
-        findErrorsInName(errors, selectedRegister, context);
-        findErrorsInMemoryArray(errors, selectedRegister, context);
-        findErrorsInAddressOffset(errors, selectedRegister, context);
-        findErrorsInSize(errors, selectedRegister, context);
-        findErrorsInAccessPolicies(errors, selectedRegister, registerContext);
+        findErrorsInName(errors, selectedRegister, completeRegisterContext);
+        findErrorsInMemoryArray(errors, selectedRegister, completeRegisterContext);
+        findErrorsInAddressOffset(errors, selectedRegister, completeRegisterContext);
+        findErrorsInSize(errors, selectedRegister, completeRegisterContext);
+        findErrorsInAccessPolicies(errors, selectedRegister, completeRegisterContext);
         findErrorsInFields(errors, selectedRegister, selectedRegister->getSize(), registerContext);
         findErrorsInAlternateRegisters(errors, selectedRegister);
         if (!hasValidStructure(selectedRegister))
@@ -387,8 +386,7 @@ void RegisterValidator::findErrorsInSize(QVector<QString>& errors, QSharedPointe
 {
     if (!hasValidSize(selectedRegister))
     {
-        errors.append(QObject::tr("Invalid size specified for register %1 within %2").
-            arg(selectedRegister->name()).arg(context));
+        errors.append(QObject::tr("Invalid size specified for %1").arg(context));
     }
 }
 
@@ -502,14 +500,14 @@ void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
             alternateGroupNames.append(alternateRegister->name());
         }
 
-        QString registerContext = QStringLiteral("alternate register ") + alternateRegister->name();
+        QString registerContext = QStringLiteral("alternate register ") + alternateRegister->name() + QStringLiteral(" within ") + context;
 
-        findErrorsInName(errors, alternateRegister, context);
+        findErrorsInName(errors, alternateRegister, registerContext);
         
         if (docRevision_ == Document::Revision::Std14)
         {
-            findErrorsInIsPresent(errors, alternateRegister, context);
-            findErrorsInAlternateGroups(errors, alternateRegister, context);
+            findErrorsInIsPresent(errors, alternateRegister, registerContext);
+            findErrorsInAlternateGroups(errors, alternateRegister, registerContext);
         }
         else if (docRevision_ == Document::Revision::Std22)
         {
@@ -531,8 +529,7 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
 {
     if (!hasValidAlternateGroups(selectedRegister))
     {
-        errors.append(QObject::tr("Alternate groups are not unique or not empty in %1 within %2").
-            arg(selectedRegister->name()).arg(context));
+        errors.append(QObject::tr("Alternate groups are not unique or not empty in %1").arg(context));
     }
 }
 
@@ -541,12 +538,10 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 void RegisterValidator::findErrorsInMemoryArray(QStringList& errors, QSharedPointer<Register> selectedRegister, QString const& context) const
 {
-    QString registerContext = QStringLiteral("register ") + selectedRegister->name() + QStringLiteral(" within ") + context;
-
     if (auto const& memArray = selectedRegister->getMemoryArray(); memArray)
     {
         MemoryArrayValidator validator(expressionParser_);
-        validator.findErrorsIn(errors, memArray, registerContext);
+        validator.findErrorsIn(errors, memArray, context);
     }
 }
 

@@ -165,7 +165,7 @@ void tst_RegisterValidator::testIsPresentIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid isPresent set for %1 within %2").
+        QString expectedError = QObject::tr("Invalid isPresent set for register '%1' within %2").
             arg(testRegister->name(), "test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -216,7 +216,7 @@ void tst_RegisterValidator::testDimensionIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid dimension set for register %1 within %2").
+        QString expectedError = QObject::tr("Invalid dimension set for register '%1' within %2").
             arg(testRegister->name(), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -267,7 +267,7 @@ void tst_RegisterValidator::testAddressOffsetIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid address offset set for register %1 within %2").
+        QString expectedError = QObject::tr("Invalid address offset set for register '%1' within %2").
             arg(testRegister->name()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -318,7 +318,7 @@ void tst_RegisterValidator::testSizeIsValid()
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid size specified for register %1 within %2").
+        QString expectedError = QObject::tr("Invalid size specified for register '%1' within %2").
             arg(testRegister->name()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -941,7 +941,7 @@ void tst_RegisterValidator::testAlternateRegisterIsValid()
         QString expectedError;
         if (!validator.hasValidName(testAlternateRegister))
         {
-            expectedError = QObject::tr("Invalid name specified for register '%1' within %2").
+            expectedError = QObject::tr("Invalid name specified for alternate register %1 within %2").
                 arg(testAlternateRegister->name()).arg("register " + testRegister->name());
 
             if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -952,7 +952,7 @@ void tst_RegisterValidator::testAlternateRegisterIsValid()
 
         if (!validator.hasValidIsPresent(testAlternateRegister))
         {
-            expectedError = QObject::tr("Invalid isPresent set for %1 within %2").
+            expectedError = QObject::tr("Invalid isPresent set for alternate register %1 within %2").
                 arg(testAlternateRegister->name()).arg("register " + testRegister->name());
 
             if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -963,7 +963,7 @@ void tst_RegisterValidator::testAlternateRegisterIsValid()
 
         if (!validator.hasValidAlternateGroups(testAlternateRegister))
         {
-            expectedError = QObject::tr("Alternate groups are not unique or not empty in %1 within %2").
+            expectedError = QObject::tr("Alternate groups are not unique or not empty in alternate register %1 within %2").
                 arg(testAlternateRegister->name()).arg("register " + testRegister->name());
 
             if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1082,8 +1082,9 @@ void tst_RegisterValidator::testAlternateRegisterParametersAreValid()
     QVector<QString> errorsFound;
     validator.findErrorsIn(errorsFound, testRegister, "test");
 
-    QString expectedError = QObject::tr("No value specified for %1 %2 within alternate register %3").
-        arg(testParameter->elementName()).arg(testParameter->name()).arg(testAlternateRegister->name());
+    QString expectedError = QObject::tr("No value specified for %1 %2 within alternate register %3 within register %4").
+        arg(testParameter->elementName()).arg(testParameter->name()).arg(testAlternateRegister->name()).
+        arg(testRegister->name());
 
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
     {
@@ -1099,8 +1100,8 @@ void tst_RegisterValidator::testAlternateRegisterParametersAreValid()
 
     errorsFound.clear();
     validator.findErrorsIn(errorsFound, testRegister, "test");
-    expectedError = QObject::tr("Name %1 of parameters in alternate register %2 is not unique.").
-        arg(otherParameter->name()).arg(testAlternateRegister->name());
+    expectedError = QObject::tr("Name %1 of parameters in alternate register %2 within register %3 is not unique.").
+        arg(otherParameter->name()).arg(testAlternateRegister->name()).arg(testRegister->name());
     if (errorIsNotFoundInErrorList(expectedError, errorsFound))
     {
         QFAIL("Error was not found");
@@ -1207,17 +1208,17 @@ void tst_RegisterValidator::testRegisterMemoryArrayIsValid2022()
 
         if (testMemArray->getDimensions()->isEmpty())
         {
-            expectedError = "No dimensions defined for memory array in register test within test";
+            expectedError = "No dimensions defined for memory array in register 'test' within test";
         }
 
         else if (!validDim)
         {
-            expectedError = "One or more dimensions of the memory array in register test within test have an invalid value.";
+            expectedError = "One or more dimensions of the memory array in register 'test' within test have an invalid value.";
         }
 
         else if (!validStride)
         {
-            expectedError = "Memory array in register test within test has an invalid stride value.";
+            expectedError = "Memory array in register 'test' within test has an invalid stride value.";
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -1282,8 +1283,8 @@ void tst_RegisterValidator::testRegisterAccessPoliciesAreValid2022()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in register test within test contain duplicate priority values."
-        << "One or more mode references of access policies in register test within test contain duplicate mode reference values."
+        << "One or more mode references of access policies in register 'test' within test contain duplicate priority values."
+        << "One or more mode references of access policies in register 'test' within test contain duplicate mode reference values."
         << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
@@ -1481,9 +1482,9 @@ void tst_RegisterValidator::testAlternateRegisterAccessPoliciesAreValid2022()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in alternate register testAlternate contain duplicate priority values."
-        << "One or more mode references of access policies in alternate register testAlternate contain duplicate mode reference values."
-        << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
+        << "One or more mode references of access policies in alternate register testAlternate within register testRegister contain duplicate priority values."
+        << "One or more mode references of access policies in alternate register testAlternate within register testRegister contain duplicate mode reference values."
+        << "In register 'test' in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
     // Test duplicate mode reference priority.

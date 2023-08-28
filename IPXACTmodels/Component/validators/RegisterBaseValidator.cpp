@@ -61,16 +61,7 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
 //-----------------------------------------------------------------------------
 bool RegisterBaseValidator::hasValidName(QSharedPointer<RegisterBase> selectedRegisterBase) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(selectedRegisterBase->name());
-
-    if (selectedRegisterBase->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(selectedRegisterBase->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -217,8 +208,7 @@ void RegisterBaseValidator::findErrorsInName(QVector<QString>& errors,
     if (!hasValidName(selectedRegisterBase))
     {
         errors.append(
-            QObject::tr("Invalid name specified for register '%1' within %2")
-            .arg(selectedRegisterBase->name(), context));
+            QObject::tr("Invalid name specified for %1").arg(context));
     }
 }
 
@@ -231,8 +221,7 @@ void RegisterBaseValidator::findErrorsInIsPresent(QVector<QString>& errors,
 {
     if (!hasValidIsPresent(selectedRegisterBase))
     {
-        errors.append(QObject::tr("Invalid isPresent set for %1 within %2").arg(selectedRegisterBase->name()).
-            arg(context));
+        errors.append(QObject::tr("Invalid isPresent set for %1").arg(context));
     }
 }
 
@@ -245,8 +234,7 @@ void RegisterBaseValidator::findErrorsInDimension(QVector<QString>& errors,
 {
     if (!hasValidDimension(selectedRegisterBase))
     {
-        errors.append(QObject::tr("Invalid dimension set for register %1 within %2").arg(
-            selectedRegisterBase->name(), context));
+        errors.append(QObject::tr("Invalid dimension set for %1").arg(context));
     }
 }
 
@@ -259,8 +247,7 @@ void RegisterBaseValidator::findErrorsInAddressOffset(QVector<QString>& errors,
 {
     if (!hasValidAddressOffset(selectedRegisterBase))
     {
-        errors.append(QObject::tr("Invalid address offset set for register %1 within %2")
-            .arg(selectedRegisterBase->name(), context));
+        errors.append(QObject::tr("Invalid address offset set for %1").arg(context));
     }
 }
 
