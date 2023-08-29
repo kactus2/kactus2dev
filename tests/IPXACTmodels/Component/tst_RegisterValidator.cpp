@@ -1283,8 +1283,8 @@ void tst_RegisterValidator::testRegisterAccessPoliciesAreValid2022()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in register 'test' within test contain duplicate priority values."
-        << "One or more mode references of access policies in register 'test' within test contain duplicate mode reference values."
+        << "One or more mode references in access policies of register 'test' within test contain duplicate priority values."
+        << "One or more mode references in access policies of register 'test' within test contain duplicate mode reference values."
         << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
@@ -1405,7 +1405,7 @@ void tst_RegisterValidator::testModeRefsOfAlternativeRegisetrsAreValid2022()
     modeRef1->setReference("value with whitespace");
     validator.findErrorsIn(errors, testRegister, "test");
     QCOMPARE(errors.size(), 1);
-    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid reference value 'value with whitespace'."));
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid or empty reference value 'value with whitespace'."));
     QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
 
     errors.clear();
@@ -1415,14 +1415,14 @@ void tst_RegisterValidator::testModeRefsOfAlternativeRegisetrsAreValid2022()
     modeRef1->setPriority("abc");
     validator.findErrorsIn(errors, testRegister, "test");
     QCOMPARE(errors.size(), 1);
-    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid priority 'abc'."));
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid or empty priority 'abc'."));
     QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
 
     errors.clear();
     modeRef1->setPriority("-1");
     validator.findErrorsIn(errors, testRegister, "test");
     QCOMPARE(errors.size(), 1);
-    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid priority '-1'."));
+    QVERIFY(errors.contains("Mode reference in alternate register testAlternate within register testRegister has invalid or empty priority '-1'."));
     QVERIFY(validator.hasValidAlternateRegisters(testRegister) == false);
 }
 
@@ -1482,8 +1482,8 @@ void tst_RegisterValidator::testAlternateRegisterAccessPoliciesAreValid2022()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in alternate register testAlternate within register testRegister contain duplicate priority values."
-        << "One or more mode references of access policies in alternate register testAlternate within register testRegister contain duplicate mode reference values."
+        << "One or more mode references in access policies of alternate register testAlternate within register testRegister contain duplicate priority values."
+        << "One or more mode references in access policies of alternate register testAlternate within register testRegister contain duplicate mode reference values."
         << "In register 'test' in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
@@ -1524,7 +1524,7 @@ bool tst_RegisterValidator::errorIsNotFoundInErrorList(QString const& expectedEr
     if (!errorList.contains(expectedError))
     {
         qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        for (auto& error : errorList)
         {
             qDebug() << error;
         }

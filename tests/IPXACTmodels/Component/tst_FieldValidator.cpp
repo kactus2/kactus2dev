@@ -1031,7 +1031,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     validator.findErrorsIn(errors, testField, "test");
     QCOMPARE(errors.size(), 1);
     QVERIFY(errors.first().contains("duplicate priority"));
-    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField) == false);
+    QVERIFY(validator.hasValidFieldAccessPolicyModeRefs(testField) == false);
 
     // Test duplicate reference.
     errors.clear();
@@ -1042,7 +1042,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     validator.findErrorsIn(errors, testField, "test");
     QCOMPARE(errors.size(), 1);
     QVERIFY(errors.first().contains("duplicate mode reference"));
-    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField) == false);
+    QVERIFY(validator.hasValidFieldAccessPolicyModeRefs(testField) == false);
 
     // Test valid.
     errors.clear();
@@ -1051,7 +1051,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
 
     validator.findErrorsIn(errors, testField, "test");
     QCOMPARE(errors.size(), 0);
-    QVERIFY(validator.hasValidAccessPolicyModeRefs(testField));
+    QVERIFY(validator.hasValidFieldAccessPolicyModeRefs(testField));
 }
 
 //-----------------------------------------------------------------------------

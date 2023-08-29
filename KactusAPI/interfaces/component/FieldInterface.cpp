@@ -593,7 +593,7 @@ bool FieldInterface::hasValidAccessPolicyModeRefs(std::string const& fieldName, 
         if (auto accessPolicies = field->getFieldAccessPolicies();
             accessPolicyIndex <= accessPolicies->size() - 1)
         {
-            return validator_->hasValidAccessPolicyModeRefs(field);
+            return validator_->hasValidFieldAccessPolicyModeRefs(field);
         }
     }
 

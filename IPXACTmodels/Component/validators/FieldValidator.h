@@ -240,7 +240,7 @@ public:
      *
      * 	    @return True, if the field mode references valid, otherwise false.
      */
-    bool hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) const;
+    bool hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const;
 
     /*!
      *  Locate errors within a field.

@@ -30,7 +30,7 @@ FieldAccessPolicyValidator::FieldAccessPolicyValidator(QSharedPointer<Expression
 //-----------------------------------------------------------------------------
 bool FieldAccessPolicyValidator::validate(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const
 {
-    return hasValidModeRefs(fieldAccessPolicy->getModeReferences()) && hasValidAccess(fieldAccessPolicy) &&
+    return hasValidAccess(fieldAccessPolicy) &&
         hasValidDefinitionRef(fieldAccessPolicy) && hasValidWriteValueConstraint(fieldAccessPolicy) &&
         hasValidReadResponse(fieldAccessPolicy) && hasValidBroadcasts(fieldAccessPolicy) &&
         hasValidAccessRestrictions(fieldAccessPolicy) && hasValidReserved(fieldAccessPolicy);
@@ -41,7 +41,6 @@ bool FieldAccessPolicyValidator::validate(QSharedPointer<FieldAccessPolicy> fiel
 //-----------------------------------------------------------------------------
 void FieldAccessPolicyValidator::findErrorsIn(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const
 {
-    findErrorsInModeRefs(errors, fieldAccessPolicy->getModeReferences(), context);
     finderrorsInDefinitionRef(errors, fieldAccessPolicy, context);
     findErrorsInAccess(errors, fieldAccessPolicy, context);
     findErrorsInWriteValueConstraint(errors, fieldAccessPolicy, context);
@@ -49,25 +48,6 @@ void FieldAccessPolicyValidator::findErrorsIn(QStringList& errors, QSharedPointe
     findErrorsInBroadcasts(errors, fieldAccessPolicy, context);
     findErrorsInAccessRestrictions(errors, fieldAccessPolicy, context);
     findErrorsInReserved(errors, fieldAccessPolicy, context);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicyValidator::hasValidModeRefs()
-//-----------------------------------------------------------------------------
-bool FieldAccessPolicyValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const
-{
-    QStringList refs;
-    QStringList priorities;
-
-    for (auto const& modeRef : *modeRefs)
-    {
-        if (modeRef->getPriority().isEmpty() || modeRef->getReference().isEmpty())
-        {
-            return false;
-        }
-    }
-
-    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -244,30 +224,6 @@ bool FieldAccessPolicyValidator::hasValidReserved(QSharedPointer<FieldAccessPoli
     }
 
     return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicyValidator::findErrorsInModeRefs()
-//-----------------------------------------------------------------------------
-void FieldAccessPolicyValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QString const& context) const
-{
-    QStringList refs;
-    QStringList priorities;
-
-    auto modeRefContext = QStringLiteral("field access policy within ") + context;
-
-    for (auto const& modeRef : *modeRefs)
-    {
-        if (modeRef->getPriority().isEmpty())
-        {
-            errors.append(QObject::tr("Mode reference in %1 has no priority.").arg(modeRefContext));
-        }
-
-        if (modeRef->getReference().isEmpty())
-        {
-            errors.append(QObject::tr("Mode reference in %1 has no reference value.").arg(modeRefContext));
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

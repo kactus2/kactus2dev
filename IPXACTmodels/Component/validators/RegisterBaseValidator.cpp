@@ -285,7 +285,7 @@ void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
 {
     bool hasAccessPolicyWithoutModeRef = false;
 
-    QString accessPolicyContext = QStringLiteral("access policies in ") + context;
+    QString accessPolicyContext = QStringLiteral("access policies of ") + context;
 
     bool duplicateModeRefErrorIssued = false;
     bool duplicateModePriorityErrorIssued = false;

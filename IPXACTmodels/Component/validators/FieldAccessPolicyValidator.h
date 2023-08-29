@@ -95,15 +95,6 @@ public:
 private:
 
     /*!
-     *  Check if the mode references of the field access policy are valid.
-     *
-     *      @param [in] fieldAccessPolicy   The selected field access policy.
-     *
-     *      @return True, if the mode references are valid, otherwise false.
-     */
-    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const;
-
-    /*!
      *  Check if the field access policy has a valid field access policy definition reference.
      *
      *      @param [in] fieldAccessPolicy   The selected field access policy.
@@ -129,15 +120,6 @@ private:
      * 	    @return True, if the access restriction mode refs are valid, otherwise false.
      */
     bool hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const;
-
-    /*!
-     *  Find errors within a list of mode references.
-     *
-     *      @param [in] errors      List of found errors.
-     *      @param [in] modeRefs    The selected mode references.
-     *      @param [in] context     Context to help locate the error.
-     */
-    void findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QString const& context) const;
 
     /*!
      *  Find errors within the field access policy definition reference.

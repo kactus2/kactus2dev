@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
@@ -92,7 +93,7 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
 
         // Check mode refs of all field access policies. Priority and reference must both be unique between
         // all field access policies.
-        if (!hasValidAccessPolicyModeRefs(field))
+        if (!hasValidFieldAccessPolicyModeRefs(field))
         {
             fieldAccessPoliciesAreValid = false;
         }
@@ -450,14 +451,14 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
 
         FieldAccessPolicyValidator fieldAccessPolicyValidator(expressionParser_);
         
-        auto newContext = QStringLiteral(" field ") + field->name() + QStringLiteral(" within") + context;
+        auto newContext = QStringLiteral("field ") + field->name() + QStringLiteral(" within ") + context;
 
         for (auto const& fieldAccessPolicy : *field->getFieldAccessPolicies())
         {
             fieldAccessPolicyValidator.findErrorsIn(errors, fieldAccessPolicy, newContext);
         }
 
-        findErrorsInModeRefs(errors, field, context);
+        findErrorsInModeRefs(errors, field, newContext);
 
         findErrorsInStructure(errors, field, context);
     }
@@ -864,12 +865,14 @@ void FieldValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<F
 //-----------------------------------------------------------------------------
 void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
 {
-    QStringList modeRefList;
-    QStringList priorityList;
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
 
     bool duplicateRefErrorIssued = false;
     bool duplicatePriorityErrorIssued = false;
     bool hasAccessPolicyWithoutModeRef = false;
+
+    QString fieldAccessPolicyContext = QStringLiteral("field access policies of ") + context;
 
     for (auto const& accessPolicy : *field->getFieldAccessPolicies())
     {
@@ -878,32 +881,8 @@ void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Fi
             hasAccessPolicyWithoutModeRef = true;
         }
 
-        for (auto const& modeRef : *accessPolicy->getModeReferences())
-        {
-            if (priorityList.contains(modeRef->getPriority()) && !duplicatePriorityErrorIssued)
-            {
-                errors.append(QObject::tr(
-                    "One or more field access policy mode references of field %1 in %2 contain duplicate priority values.")
-                    .arg(field->name()).arg(context));
-                duplicatePriorityErrorIssued = true;
-            }
-            else
-            {
-                priorityList.append(modeRef->getPriority());
-            }
-
-            if (modeRefList.contains(modeRef->getReference()) && !duplicateRefErrorIssued)
-            {
-                errors.append(QObject::tr(
-                    "One or more field access policy mode references of field %1 in %2 contain duplicate mode reference values.")
-                    .arg(field->name()).arg(context));
-                duplicateRefErrorIssued = true;
-            }
-            else
-            {
-                modeRefList.append(modeRef->getReference());
-            }
-        }
+        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), 
+            fieldAccessPolicyContext, checkedModeReferences, checkedModePriorities, &duplicateRefErrorIssued, &duplicatePriorityErrorIssued);
     }
 
     if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
@@ -972,10 +951,10 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 //-----------------------------------------------------------------------------
 // Function: FieldValidator::hasValidAccessPolicyModeRefs()
 //-----------------------------------------------------------------------------
-bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) const
+bool FieldValidator::hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const
 {
-    QStringList modeRefList;
-    QStringList priorityList;
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
 
     bool hasAccessPolicyWithoutModeRef = false;
 
@@ -986,25 +965,10 @@ bool FieldValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Field> field) c
             hasAccessPolicyWithoutModeRef = true;
         }
 
-        for (auto const& modeRef : *accessPolicy->getModeReferences())
+        if (!CommonItemsValidator::hasValidModeRefs(accessPolicy->getModeReferences(),
+            checkedModeReferences, checkedModePriorities))
         {
-            if (priorityList.contains(modeRef->getPriority()))
-            {
-                return false;
-            }
-            else
-            {
-                priorityList.append(modeRef->getPriority());
-            }
-
-            if (modeRefList.contains(modeRef->getReference()))
-            {
-                return false;
-            }
-            else
-            {
-                modeRefList.append(modeRef->getReference());
-            }
+            return false;
         }
     }
     

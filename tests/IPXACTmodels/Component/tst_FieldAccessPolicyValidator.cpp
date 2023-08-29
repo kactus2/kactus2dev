@@ -28,7 +28,6 @@ private slots:
     
     void init();
     void cleanup();
-    void testModeRefsAreValid();
     void testDefinitionRefIsValid();
 
     void testAccessIsValid();
@@ -80,36 +79,6 @@ void tst_FieldAccessPolicyValidator::init()
 void tst_FieldAccessPolicyValidator::cleanup()
 {
     fieldAccessPolicy_.clear();
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_FieldAccessPolicyValidator::testModeRefsAreValid()
-//-----------------------------------------------------------------------------
-void tst_FieldAccessPolicyValidator::testModeRefsAreValid()
-{
-    QSharedPointer<ModeReference> modeRef(new ModeReference()); // no reference or priority
-    fieldAccessPolicy_->getModeReferences()->append(modeRef);
-    
-    QStringList errorList;
-    
-    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
-
-    QCOMPARE(errorList.size(), 2);
-    QVERIFY(validator_.validate(fieldAccessPolicy_) == false);
-    
-    errorList.clear();
-    modeRef->setPriority("0"); // no reference
-    
-    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
-    QCOMPARE(errorList.size(), 1);
-    QVERIFY(validator_.validate(fieldAccessPolicy_) == false);
-    
-    errorList.clear();
-    modeRef->setReference("ref"); // valid
-
-    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
-    QCOMPARE(errorList.size(), 0);
-    QVERIFY(validator_.validate(fieldAccessPolicy_));
 }
 
 //-----------------------------------------------------------------------------
