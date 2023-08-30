@@ -81,13 +81,11 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
     {
         FieldAccessPolicyValidator fieldAccessPolicyValidator(expressionParser_);
 
-        bool fieldAccessPoliciesAreValid = true;
         for (auto const& fieldAccessPolicy : *field->getFieldAccessPolicies())
         {
             if (!fieldAccessPolicyValidator.validate(fieldAccessPolicy))
             {
-                fieldAccessPoliciesAreValid = false;
-                break;
+                return false;
             }
         }
 
@@ -95,13 +93,13 @@ bool FieldValidator::validate(QSharedPointer<Field> field) const
         // all field access policies.
         if (!hasValidFieldAccessPolicyModeRefs(field))
         {
-            fieldAccessPoliciesAreValid = false;
+            return false;
         }
 
         return hasValidName(field) && hasValidMemoryArray(field) && hasValidBitOffset(field) && hasValidResets(field) &&
             hasValidWriteValueConstraint(field) && hasValidReserved(field) && hasValidBitWidth(field) &&
             hasValidEnumeratedValues(field) && hasValidParameters(field) && hasValidAccess(field) &&
-            fieldAccessPoliciesAreValid && hasValidStructure(field);
+            hasValidStructure(field);
     }
 
     return true;
