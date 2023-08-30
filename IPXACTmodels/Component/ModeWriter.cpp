@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
+#include <IPXACTmodels/Component/FieldReferenceWriter.h>
 
 
 //-----------------------------------------------------------------------------
@@ -27,6 +28,8 @@ void ModeWriter::writeMode(QXmlStreamWriter& writer, QSharedPointer<Mode> mode)
     NameGroupWriter::writeNameGroup(writer, mode, Document::Revision::Std22);
 
     Details::writePortSlices(writer, mode);
+
+    Details::writeFieldSlices(writer, mode);
 
     writer.writeEndElement(); // ipxact:mode
 }
@@ -49,5 +52,22 @@ void ModeWriter::Details::writePortSlices(QXmlStreamWriter& writer, QSharedPoint
         CommonItemsWriter::writePartSelect(writer, slice->getPartSelect());
 
         writer.writeEndElement(); // ipxact:portSlice
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeWriter::Details::writeFieldSlices()
+//-----------------------------------------------------------------------------
+void ModeWriter::Details::writeFieldSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode)
+{
+    for (auto slice : *mode->getFieldSlices())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fieldSlice"));
+
+        NameGroupWriter::writeNameGroup(writer, slice, Document::Revision::Std22);
+
+        FieldReferenceWriter::writeFieldReference(writer, slice);
+
+        writer.writeEndElement(); // ipxact:fieldSlice
     }
 }

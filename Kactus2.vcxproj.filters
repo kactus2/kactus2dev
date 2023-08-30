@@ -3265,6 +3265,12 @@
     <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\modes</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -5695,6 +5701,9 @@
     <ClInclude Include="editors\ComponentEditor\modes\PortSliceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\modes\FieldSliceColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5868,6 +5877,12 @@
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\modes\PortSliceDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceModel.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </QtMoc>
   </ItemGroup>

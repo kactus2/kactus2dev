@@ -32,6 +32,11 @@ NameGroup(other),
     {
         portSlices_->append(QSharedPointer<PortSlice>(new PortSlice(*portSlice)));
     }
+
+    for (auto fieldSlice : *other.fieldSlices_)
+    {
+        fieldSlices_->append(QSharedPointer<FieldSlice>(new FieldSlice(*fieldSlice)));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -57,6 +62,12 @@ Mode& Mode::operator=( const Mode& other )
 		{
 			portSlices_->append(QSharedPointer<PortSlice>(new PortSlice(*portSlice)));
 		}
+
+        fieldSlices_->clear();
+        for (auto fieldSlice : *other.fieldSlices_)
+        {
+            fieldSlices_->append(QSharedPointer<FieldSlice>(new FieldSlice(*fieldSlice)));
+        }
 	}
 	return *this;
 }
@@ -83,4 +94,12 @@ void Mode::setCondition(QString const& conditionExpression)
 QSharedPointer<QList<QSharedPointer<PortSlice> > > Mode::getPortSlices() const
 {
 	return portSlices_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Mode::getFieldSlices()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<FieldSlice> > > Mode::getFieldSlices() const
+{
+    return fieldSlices_;
 }

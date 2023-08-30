@@ -25,7 +25,11 @@ public:
 private slots:
 
     void testReadNameGroup();
+    
     void testReadPortSlices();
+
+    void testReadFieldSlices();
+
 };
 
 //-----------------------------------------------------------------------------
@@ -112,6 +116,51 @@ void tst_ModeReader::testReadPortSlices()
     QCOMPARE(partSelect->getLeftRange(), QString("7"));
     QCOMPARE(partSelect->getRightRange(), QString("0"));
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModeReader::testReadFieldSlices()
+//-----------------------------------------------------------------------------
+void tst_ModeReader::testReadFieldSlices()
+{
+        QString documentContent(
+        "<ipxact:mode>"
+            "<ipxact:name>testMode</ipxact:name>"
+            "<ipxact:fieldSlice>"
+                "<ipxact:name>testSlice</ipxact:name>"
+                "<ipxact:displayName>sliceDisplay</ipxact:displayName>"
+                "<ipxact:shortDescription>sliceShortDescription</ipxact:shortDescription>"
+                "<ipxact:description>sliceDescription</ipxact:description>"
+                "<ipxact:memoryMapRef memoryMapRef=\"testMMRef\"/>"
+                "<ipxact:addressBlockRef addressBlockRef=\"testABRef\"/>"
+                "<ipxact:registerRef registerRef=\"testRegisterRef\"/>"
+                "<ipxact:fieldRef fieldRef=\"testFieldRef\"/>"
+            "</ipxact:fieldSlice>"
+             "<ipxact:fieldSlice>"
+                 "<ipxact:name>lastSlice</ipxact:name>"
+             "</ipxact:fieldSlice>"
+        "</ipxact:mode>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode modeNode = document.firstChildElement("ipxact:mode");
+
+    QSharedPointer<Mode> testMode = ModeReader::createModeFrom(modeNode);
+
+    QCOMPARE(testMode->getFieldSlices()->count(), 2);
+    auto fieldSlice = testMode->getFieldSlices()->first();
+
+    QCOMPARE(fieldSlice->name(), QString("testSlice"));
+    QCOMPARE(fieldSlice->displayName(), QString("sliceDisplay"));
+    QCOMPARE(fieldSlice->shortDescription(), QString("sliceShortDescription"));
+    QCOMPARE(fieldSlice->description(), QString("sliceDescription"));
+    QCOMPARE(fieldSlice->getReference(FieldReference::MEMORY_MAP)->reference_, QString("testMMRef"));
+    QCOMPARE(fieldSlice->getReference(FieldReference::ADDRESS_BLOCK)->reference_, QString("testABRef"));
+    QCOMPARE(fieldSlice->getReference(FieldReference::REGISTER)->reference_, QString("testRegisterRef"));
+    QCOMPARE(fieldSlice->getReference(FieldReference::FIELD)->reference_, QString("testFieldRef"));
+}
+
 
 QTEST_APPLESS_MAIN(tst_ModeReader)
 

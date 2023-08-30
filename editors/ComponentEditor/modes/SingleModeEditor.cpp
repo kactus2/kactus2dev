@@ -38,7 +38,8 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     mode_(mode),
     nameEditor_(mode, component->getRevision(), this, tr("Mode name and description")),
     conditionEditor_(this),
-    portSliceEditor_(component, mode, validator->getPortSliceValidator(), libHandler, expressions, this)
+    portSliceEditor_(component, mode, validator->getPortSliceValidator(), libHandler, expressions, this),
+    fieldSliceEditor_(component, mode, libHandler, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -91,6 +92,10 @@ void SingleModeEditor::setupLayout()
 
     auto fieldsGroup = new QGroupBox(tr("Condition fields"), this);
     fieldsGroup->setFlat(true);
+
+    auto fieldLayout = new QHBoxLayout(fieldsGroup);
+    fieldLayout->addWidget(&fieldSliceEditor_);
+
 
     auto topLayout = new QGridLayout(topWidget);
     topLayout->addWidget(&nameEditor_, 0, 0, 1, 1);

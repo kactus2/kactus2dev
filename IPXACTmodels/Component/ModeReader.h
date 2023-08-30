@@ -46,6 +46,8 @@ namespace ModeReader
          *      @param [in] newMode   The selected mode item.
          */
         void parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
+       
+        void parseFieldSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
     }
 
 

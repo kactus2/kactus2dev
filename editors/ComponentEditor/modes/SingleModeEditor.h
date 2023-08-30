@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
 
 #include "PortSliceEditor.h"
+#include "FieldSliceEditor.h"
 
 class Mode;
 class ExpressionParser;
@@ -94,6 +95,8 @@ private:
     QLineEdit conditionEditor_;
 
     PortSliceEditor portSliceEditor_;
+
+    FieldSliceEditor fieldSliceEditor_;
 };
 
 #endif // SINGLE_Mode_EDITOR_H

@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
 
+#include <IPXACTmodels/Component/FieldSlice.h>
+
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include "PortSlice.h"
@@ -67,6 +69,9 @@ public:
 	 */
 	QSharedPointer<QList<QSharedPointer<PortSlice> > > getPortSlices() const;
 
+
+	QSharedPointer<QList<QSharedPointer<FieldSlice> > > getFieldSlices() const;
+
 private:
 
 	//! The condition to activate the mode.
@@ -75,6 +80,11 @@ private:
 	//! The port slices available in the condition.
 	QSharedPointer<QList<QSharedPointer<PortSlice> > > portSlices_ =
 		QSharedPointer<QList<QSharedPointer<PortSlice> > >(new QList<QSharedPointer<PortSlice> >());
+
+
+    //! The field slices available in the condition.
+    QSharedPointer<QList<QSharedPointer<FieldSlice> > > fieldSlices_ =
+        QSharedPointer<QList<QSharedPointer<FieldSlice> > >(new QList<QSharedPointer<FieldSlice> >());
 
 };
 

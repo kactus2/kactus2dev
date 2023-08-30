@@ -49,7 +49,7 @@ public:
 
         IndexedReference() = default;
 
-        IndexedReference(QString const& reference, QList<QString> const& indices);
+        IndexedReference(QString const& reference, QList<QString> const& indices = QList<QString>());
         
         IndexedReference(IndexedReference const& other);
     };

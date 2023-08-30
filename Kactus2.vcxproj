@@ -628,6 +628,8 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\ModesEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\ModesModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\PortSliceDelegate.cpp" />
@@ -1721,6 +1723,9 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\SubspaceMapDelegate.h">
     </QtMoc>
+    <ClInclude Include="editors\ComponentEditor\modes\FieldSliceColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceModel.h" />
     <ClInclude Include="editors\ComponentEditor\modes\ModeColumns.h" />
     <QtMoc Include="editors\ComponentEditor\modes\ModesEditor.h" />
     <QtMoc Include="editors\ComponentEditor\modes\ModesModel.h" />

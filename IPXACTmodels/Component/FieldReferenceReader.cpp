@@ -33,19 +33,19 @@ QSharedPointer<FieldReference> FieldReferenceReader::createFieldReferenceFrom(QD
 //-----------------------------------------------------------------------------
 // Function: FieldReferenceReader::Details::readSingleReferenceElement()
 //-----------------------------------------------------------------------------
-void FieldReferenceReader::Details::readSingleReferenceElement(QDomNode const& currentNode, QSharedPointer<FieldReference> newFieldReference)
+void FieldReferenceReader::Details::readSingleReferenceElement(QDomNode const& currentNode,
+    QSharedPointer<FieldReference> newFieldReference)
 {
     auto nodeName = currentNode.nodeName().split(QStringLiteral(":")).back();
     auto refType = FieldReference::str2Type(nodeName);
     auto refValue = currentNode.attributes().namedItem(nodeName).nodeValue();
 
-    QSharedPointer<FieldReference::IndexedReference> newFieldRefElement(new FieldReference::IndexedReference());
-
-    if (refValue.isEmpty())
+    if (refValue.isEmpty() || refType == FieldReference::REFERENCE_TYPE_COUNT)
     {
         return;
     }
 
+    QSharedPointer<FieldReference::IndexedReference> newFieldRefElement(new FieldReference::IndexedReference());
     newFieldRefElement->reference_ = refValue;
 
     // Read possible indices.
@@ -60,7 +60,8 @@ void FieldReferenceReader::Details::readSingleReferenceElement(QDomNode const& c
 //-----------------------------------------------------------------------------
 // Function: FieldReferenceReader::Details::readReferenceIndices()
 //-----------------------------------------------------------------------------
-void FieldReferenceReader::Details::readReferenceIndices(QDomNode const& referenceNode, QSharedPointer<FieldReference::IndexedReference> newFieldRefElement)
+void FieldReferenceReader::Details::readReferenceIndices(QDomNode const& referenceNode, 
+    QSharedPointer<FieldReference::IndexedReference> newFieldRefElement)
 {
     auto indicesNode = referenceNode.firstChildElement(QStringLiteral("ipxact:indices"));
     auto const& indexNodes = indicesNode.childNodes();

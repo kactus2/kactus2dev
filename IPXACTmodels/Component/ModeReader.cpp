@@ -16,6 +16,7 @@
 #include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/PartSelect.h>
+#include <IPXACTmodels/Component/FieldReferenceReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: ModeReader::createModeFrom()
@@ -27,6 +28,8 @@ QSharedPointer<Mode> ModeReader::createModeFrom(QDomNode const& modeNode)
     NameGroupReader::parseNameGroup(modeNode, newMode);
 
     Details::parsePortSlices(modeNode, newMode);
+
+    Details::parseFieldSlices(modeNode, newMode);
 
     return newMode;
 }
@@ -59,5 +62,28 @@ void ModeReader::Details::parsePortSlices(QDomNode const& modeNode, QSharedPoint
         }
 
         newMode->getPortSlices()->append(newSlice);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeReader::parseFieldSlices()
+//-----------------------------------------------------------------------------
+void ModeReader::Details::parseFieldSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode)
+{
+    QDomNodeList sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:fieldSlice"));
+
+    const int SLICE_COUNT = sliceNodeList.count();
+    for (int i = 0; i < SLICE_COUNT; ++i)
+    {
+        auto fieldSliceElement = sliceNodeList.at(i).toElement();
+
+        QSharedPointer<FieldSlice> newSlice(new FieldSlice());
+
+        NameGroupReader::parseNameGroup(fieldSliceElement, newSlice);
+
+        auto ref = FieldReferenceReader::createFieldReferenceFrom(fieldSliceElement);
+        newSlice->FieldReference::operator=(*ref);
+
+        newMode->getFieldSlices()->append(newSlice);
     }
 }

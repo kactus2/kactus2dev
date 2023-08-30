@@ -36,6 +36,7 @@ namespace ModeWriter
     namespace Details
     {
         void writePortSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
+        void writeFieldSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
     }
 };
 
