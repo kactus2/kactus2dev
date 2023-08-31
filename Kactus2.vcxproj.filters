@@ -3268,6 +3268,15 @@
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5869,6 +5878,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\modes\PortSliceDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

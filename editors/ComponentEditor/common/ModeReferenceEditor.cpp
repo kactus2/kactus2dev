@@ -40,7 +40,7 @@ view_(new EditableTableView(this))
     view_->setModel(proxy);
     view_->setItemDelegate(delegate);
     view_->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-    
+
     setupLayout();
 
     setFixedHeight(sizeHint().height());

@@ -290,32 +290,36 @@ public:
     bool setVolatile(std::string const& registerName, std::string const& newVolatile);
     
     /*!
-     *  Get the access string of the selected register.
+     *  Get the access string of the selected register or access policy given by the access policy index.
+     *  Use the default access policy index of -1 to fetch the access value stored directly in the register.
      *
-     *      @param [in] registerName    Name of the selected register.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return The access string of the selected register.
      */
-    std::string getAccessString(std::string const& registerName) const;
+    std::string getAccessString(std::string const& registerName, int accessPolicyIndex = -1) const;
 
     /*!
-     *  Get the access of the selected register.
+     *  Get the access of the selected register or access policy given by the access policy index.
      *
-     *      @param [in] registerName    Name of the selected register.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return The access value of the selected register.
      */
-    AccessTypes::Access getAccess(std::string const& registerName) const;
+    AccessTypes::Access getAccess(std::string const& registerName, int accessPolicyIndex = -1) const;
 
     /*!
-     *  Set the access value for the selected register.
+     *  Set the access value for the selected register or its access policy given by the access policy index.
      *
-     *      @param [in] registerName    Name of the selected register.
-     *      @param [in] newAccess       The new access value.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] newAccess           The new access value.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAccess(std::string const& registerName, std::string const& newAccess);
+    bool setAccess(std::string const& registerName, std::string const& newAccess, int accessPolicyIndex = -1);
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -443,6 +447,63 @@ public:
      */
     FieldInterface* getSubInterface() const;
 
+    /*!
+     *	Get the number of register access policies.
+     *  
+     *      @param [in] registerName     The name of the register.
+     *	    
+     * 	    @return The number of access policies.
+     */
+    int getAccessPolicyCount(std::string const& registerName) const;
+
+    /*!
+     *	Get the modereferences of a selected register access policy.
+     *  
+     *      @param [in] registerName          The selected register.
+     *      @param [in] accessPolicyIndex     The index of the selected access policy.
+     *	    
+     * 	    @return The mode references of the acces policy.
+     */
+    std::vector<std::pair<std::string, int> > getModeRefs(std::string const& registerName, int accessPolicyIndex) const;
+
+    /*!
+     *	Set the mode references of a selected register access policy.
+     *  
+     *      @param [in] registerName          The selected register.
+     *      @param [in] newModeRefs           The mode references to set.
+     *      @param [in] accessPolicyIndex     The index of the selected access policy.
+     *	    
+     * 	    @return  True, if the operation was successful, otherwise false.
+     */
+    bool setModeRefs(std::string const& registerName, std::vector<std::pair<std::string, int> > const& newModeRefs, int accessPolicyIndex);
+
+    /*!
+     *	Validate all access policy mode references of a register.
+     *  
+     *      @param [in] registerName          The selected register.
+     *
+     * 	    @return True, if the mode references are valid, otherwise false.
+     */
+    bool hasValidModeRefs(std::string const& registerName) const;
+
+    /*!
+     *	Add a new access policy to a selected register.
+     *  
+     *      @param [in] registerName     Name of the selected register.
+     *	    
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool addAccessPolicy(std::string const& registerName);
+
+    /*!
+     *	Remove an access policy from a selected register.
+     *
+     *      @param [in] registerName          Name of the selected register.
+     *      @param [in] accessPolicyIndex     Index of the access policy to be removed.
+     *
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool removeAccessPolicy(std::string const& registerName, int accessPolicyIndex);
 
 private:
 

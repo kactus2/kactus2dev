@@ -48,7 +48,7 @@ fields_(fields)
     view_->verticalHeader()->setMinimumWidth(view_->horizontalHeader()->fontMetrics().horizontalAdvance(tr("Name"))*2);
     view_->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
-    model_ = new RegisterTableModel(fieldInterface, expressionParser, parameterFinder, this);
+    model_ = new RegisterTableModel(fieldInterface, expressionParser, parameterFinder, component->getRevision(), this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -77,6 +77,11 @@ fields_(fields)
     view_->setItemDelegate(new RegisterDelegate(componentParametersModel, parameterFinder, this));
 
     view_->sortByColumn(RegisterColumns::OFFSET_COLUMN, Qt::AscendingOrder);
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(RegisterColumns::IS_PRESENT_COLUMN);
+    }
 
     connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(graphicsChanged(int)), Qt::UniqueConnection);
     connect(model_, SIGNAL(addressingChanged(int)), this, SIGNAL(addressingChanged(int)), Qt::UniqueConnection);

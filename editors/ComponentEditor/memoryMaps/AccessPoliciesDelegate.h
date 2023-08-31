@@ -1,42 +1,29 @@
 //-----------------------------------------------------------------------------
-// File: FieldAccessPoliciesDelegate.h
+// File: AccessPoliciesDelegate.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Anton Hagqvist
-// Date: 8.8.2023
+// Date: 28.8.2023
 //
 // Description:
-// Delegate for field access policies.
+// Provides editors for access policies.
 //-----------------------------------------------------------------------------
 
-#ifndef FIELDACCESSPOLICIESDELEGATE_H
-#define FIELDACCESSPOLICIESDELEGATE_H
-
-#include <editors/ComponentEditor/common/ExpressionDelegate.h>
+#ifndef ACCESSPOLICIESDELEGATE_H
+#define ACCESSPOLICIESDELEGATE_H
 
 #include <QStyledItemDelegate>
 
-
-class FieldAccessPoliciesDelegate : public ExpressionDelegate
+class AccessPoliciesDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
 
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
-     *      @param [in] parent              The parent object.
-     */
-    FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
-        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
+    AccessPoliciesDelegate(QWidget* parent);
 
-    virtual ~FieldAccessPoliciesDelegate() = default;
-
-    FieldAccessPoliciesDelegate(FieldAccessPoliciesDelegate& other) = delete;
-    FieldAccessPoliciesDelegate& operator=(FieldAccessPoliciesDelegate& other) = delete;
+    AccessPoliciesDelegate(AccessPoliciesDelegate const& other) = delete;
+    AccessPoliciesDelegate& operator=(AccessPoliciesDelegate const& other) = delete;
 
     /*!
      *  Create a new editor for the given item
@@ -75,33 +62,20 @@ public:
      */
     virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const override;
 
-protected slots:
+private slots:
 
     /*!
      *  Commit the data from the sending editor and close the editor.
      */
     void commitAndCloseEditor();
 
-protected:
-
     /*!
-     *  Checks if the given column supports expressions in the editor.
-     *
-     *      @param [in] column   The column to check.
-     *
-     *      @return True, if the cells in the column allow expressions, otherwise false.
+     *  Handle canceling editing.
      */
-    bool columnAcceptsExpression(int column) const override;
-
-    /*!
-     *  Gets the column that contains the description cells. In this case there is no such column.
-     */
-    int descriptionColumn() const override;
-
-private slots:
-
     void onEditingCanceled();
-
 };
 
-#endif // FIELDACCESSPOLICIESDELEGATE_H
+#endif // ACCESSPOLICIESDELEGATE_H
+
+
+
