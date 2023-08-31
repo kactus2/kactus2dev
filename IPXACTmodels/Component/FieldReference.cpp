@@ -46,6 +46,20 @@ FieldReference::IndexedReference::IndexedReference(QString const& reference, QLi
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::operator=()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference& FieldReference::IndexedReference::operator=(FieldReference::IndexedReference const& other)
+{
+    if (this != &other)
+    {
+        reference_ = other.reference_;
+        indices_ = other.indices_;
+    }
+
+    return *this;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldReference::FieldReference()
 //-----------------------------------------------------------------------------
 FieldReference::FieldReference()

@@ -454,7 +454,7 @@ bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointe
             *component->getDesignConfigurationInstantiations())
         {
             if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation))
+                !instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation, component->getRevision()))
             {
                 return false;
             }

@@ -52,6 +52,7 @@ public:
         IndexedReference(QString const& reference, QList<QString> const& indices);
         
         IndexedReference(IndexedReference const& other);
+        IndexedReference& operator=(IndexedReference const& other);
     };
 
     /*!

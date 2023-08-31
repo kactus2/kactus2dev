@@ -17,6 +17,7 @@
 View::View(QString const& name /* = QString() */, QString const& displayName /* = QString() */,
     QString const& description /* = QString() */) :
 NameGroup(name, displayName, description),
+Extendable(),
 isPresent_(),
 envIdentifiers_(new QList<QSharedPointer<EnvironmentIdentifier> >),
 componentInstantiationRef_(),
@@ -31,6 +32,7 @@ designConfigurationInstantiationRef_()
 //-----------------------------------------------------------------------------
 View::View(const View &other):
 NameGroup(other),
+Extendable(other),
 isPresent_(other.isPresent_),
 envIdentifiers_(other.envIdentifiers_),
 componentInstantiationRef_(other.componentInstantiationRef_),
@@ -48,6 +50,7 @@ View& View::operator=(const View &other)
     if (this != &other)
     {
         NameGroup::operator=(other);
+        Extendable::operator=(other);
         isPresent_ = other.isPresent_;
         envIdentifiers_ = other.envIdentifiers_;
         componentInstantiationRef_ = other.componentInstantiationRef_;

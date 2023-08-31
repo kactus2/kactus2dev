@@ -26,7 +26,10 @@ namespace Utilities
 
         for (auto item = listFrom->cbegin(); item != listFrom->cend(); ++item)
         {
-            listTo->append(QSharedPointer<ContainerItem>(new ContainerItem(**item)));
+            if (*item)
+            {
+                listTo->append(QSharedPointer<ContainerItem>(new ContainerItem(**item)));
+            }
         }
     };
 };

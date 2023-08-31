@@ -301,6 +301,7 @@ void FieldAccessPolicy::setAccessRestrictions(QSharedPointer<QList<QSharedPointe
 //-----------------------------------------------------------------------------
 void FieldAccessPolicy::copyWriteValueConstraint(FieldAccessPolicy const& other)
 {
+    writeValueConstraint_.clear();
     if (other.writeValueConstraint_)
     {
         writeValueConstraint_ = QSharedPointer<WriteValueConstraint>(new WriteValueConstraint(*other.writeValueConstraint_));

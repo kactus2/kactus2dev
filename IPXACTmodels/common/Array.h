@@ -40,10 +40,10 @@ public:
     virtual ~Array();
 
     //! Disable copying.
-    Array(Array const& other) = delete;
+    Array(Array const& other);
 
 	// Disable assignment.
-    Array& operator=(Array const& rhs) = delete;
+    Array& operator=(Array const& other);
 
     /*!
      *	Set the array id.

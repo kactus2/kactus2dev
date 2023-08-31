@@ -49,11 +49,10 @@ broadcast_(other.broadcast_),
 isAddressable_(other.isAddressable_),
 maxMasters_(other.maxMasters_),
 maxSlaves_(other.maxSlaves_),
-choices_(other.choices_),
 systemGroupNames_(other.systemGroupNames_),
 extends_(other.extends_)
 {
-
+	Utilities::copyList(choices_, other.choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,9 +68,10 @@ BusDefinition & BusDefinition::operator=(BusDefinition const& other)
 		isAddressable_ = other.isAddressable_;
 		maxMasters_ = other.maxMasters_;
 		maxSlaves_ = other.maxSlaves_;
-		choices_ = other.choices_;
 		systemGroupNames_ = other.systemGroupNames_;
 		extends_ = other.extends_;
+
+        Utilities::copyList(choices_, other.choices_);
 	}
 	return *this;
 }

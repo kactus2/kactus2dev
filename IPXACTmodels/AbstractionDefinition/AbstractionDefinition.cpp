@@ -51,10 +51,10 @@ Document(revision)
 AbstractionDefinition::AbstractionDefinition(AbstractionDefinition const& other):
 Document(other),
     busType_(other.busType_),
-    extends_(other.extends_),
-    logicalPorts_(new QList<QSharedPointer<PortAbstraction> >())
+    extends_(other.extends_)
 {
     Utilities::copyList(logicalPorts_, other.logicalPorts_);
+    Utilities::copyList(choices_, other.choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,6 +69,7 @@ AbstractionDefinition & AbstractionDefinition::operator=(AbstractionDefinition c
 		extends_ = other.extends_;
 
         Utilities::copyList(logicalPorts_, other.logicalPorts_);
+        Utilities::copyList(choices_, other.choices_);
 	}
 	return *this;
 }

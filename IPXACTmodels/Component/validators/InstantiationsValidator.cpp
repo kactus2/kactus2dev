@@ -131,10 +131,10 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 // Function: InstantiationsValidator::validateDesignConfigurationInstantiation()
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::validateDesignConfigurationInstantiation(
-	QSharedPointer<DesignConfigurationInstantiation> instantiation) const
+	QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision) const
 {
     return hasValidName(instantiation->name()) && hasValidDesignConfigurationReference(instantiation) &&
-        hasValidParameters(instantiation->getParameters());
+        hasValidParameters(instantiation->getParameters(), docRevision);
 }
 
 //-----------------------------------------------------------------------------
@@ -157,14 +157,14 @@ bool InstantiationsValidator::hasValidDesignConfigurationReference(
 // Function: InstantiationsValidator::hasValidParameters()
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::hasValidParameters(
-    QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters) const
+    QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters, Document::Revision docRevision) const
 {
     if (!availableParameters->isEmpty())
     {
         QStringList parameterNames;
         for( QSharedPointer<Parameter> parameter : *availableParameters )
         {
-            if ( parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) )
+            if ( parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter, docRevision) )
             {
                 return false;
             }
@@ -236,7 +236,7 @@ bool InstantiationsValidator::validateComponentInstantiation (QSharedPointer<Com
         componentInstantiationFileBuildersAreValid(instantiation) &&
         componentInstantiationFileSetReferencesAreValid(instantiation) &&
         hasValidModuleParameters(instantiation, docRevision) &&
-        hasValidParameters(instantiation->getParameters());
+        hasValidParameters(instantiation->getParameters(), docRevision);
 }
 
 //-----------------------------------------------------------------------------
@@ -318,7 +318,7 @@ bool InstantiationsValidator::hasValidModuleParameters(QSharedPointer<ComponentI
         QStringList moduleParameterNames;
         for ( QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters() )
         {
-            if ( moduleParameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter) ||
+            if ( moduleParameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter, docRevision) ||
                 !moduleParameterHasValidPresence(parameter) || !moduleParameterHasValidUsageType(parameter, docRevision))
             {
                 return false;
@@ -370,7 +370,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
     QStringList duplicateParameterNames;
 	for ( QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters() )
 	{
-		parameterValidator_->findErrorsIn(errors,parameter,context);
+		parameterValidator_->findErrorsIn(errors,parameter,context, docRevision);
 
 		if ( !moduleParameterHasValidPresence(parameter) )
 		{
@@ -400,7 +400,7 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
     duplicateParameterNames.clear();
 	for ( QSharedPointer<Parameter> parameter : *instantiation->getParameters() )
 	{
-        parameterValidator_->findErrorsIn(errors,parameter,context);
+        parameterValidator_->findErrorsIn(errors,parameter,context, docRevision);
         
         if (parameterNames.contains(parameter->name()) && !duplicateParameterNames.contains(parameter->name()))
         {

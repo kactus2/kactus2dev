@@ -104,8 +104,7 @@ public:
      *
      *      @return True, if the design configuration instantiation is valid IP-XACT, otherwise false.
      */
-	bool validateDesignConfigurationInstantiation(QSharedPointer<DesignConfigurationInstantiation> instantiation)
-        const;
+	bool validateDesignConfigurationInstantiation(QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision) const;
 	
     /*!
      *  Check if the design configuration reference is valid.
@@ -201,7 +200,7 @@ private:
      *
      *      @return True, if the parameters are valid, otherwise false.
      */
-    bool hasValidParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters) const;
+    bool hasValidParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters, Document::Revision docRevision) const;
 
     /*!
      *  Check if the contained module parameters are valid.

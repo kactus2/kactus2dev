@@ -402,34 +402,13 @@ public:
 private:
 
 	/*!
-	 *  Copy the resets values.
-	 *
-	 *      @param [in] other   The copied field.
-	 */
-	void copyResets(const Field& other);
-
-	/*!
-	 *  Copy the enumerated values.
-	 *
-	 *      @param [in] other   The copied field.
-	 */
-	void copyEnumeratedValues(const Field& other);
-
-	/*!
-	 *  Copy the parameters.
-	 *
-	 *      @param [in] other   The copied field.
-	 */
-	void copyParameters(const Field& other);
-
-	/*!
 	 *  Copy the write value constraint.
 	 *
 	 *      @param [in] other   The copied field.
 	 */
 	void copyWriteValueConstraint(const Field& other);
 
-	void copyFieldAccessPolicies(Field const& other);
+	void copyMemoryArray(Field const& other);
 
 	//-----------------------------------------------------------------------------
 	// Data.

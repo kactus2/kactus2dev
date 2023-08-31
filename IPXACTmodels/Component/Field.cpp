@@ -54,6 +54,8 @@ Extendable(other),
 id_(other.id_),
 isPresent_(other.isPresent_),
 bitOffset_(other.bitOffset_),
+fieldDefinitionRef_(other.fieldDefinitionRef_),
+typeDefinitionsRef_(other.typeDefinitionsRef_),
 resets_(new QList<QSharedPointer<FieldReset> >()),
 typeIdentifier_(other.typeIdentifier_),
 bitWidth_(other.bitWidth_),
@@ -68,14 +70,14 @@ readActionModify_(other.readActionModify_),
 testable_(other.testable_),
 testConstraint_(other.testConstraint_),
 reserved_(other.reserved_),
-parameters_(new QList<QSharedPointer<Parameter> > ()),
-fieldAccessPolicies_(new QList<QSharedPointer<FieldAccessPolicy> >())
+parameters_(new QList<QSharedPointer<Parameter> > ())
 {
-    copyEnumeratedValues(other);
-    copyParameters(other);
+    Utilities::copyList(enumeratedValues_, other.enumeratedValues_);
+    Utilities::copyList(parameters_, other.parameters_);
+    Utilities::copyList(resets_, other.resets_);
+    Utilities::copyList(fieldAccessPolicies_, other.fieldAccessPolicies_);
     copyWriteValueConstraint(other);
-    copyResets(other);
-    copyFieldAccessPolicies(other);
+    copyMemoryArray(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -91,6 +93,8 @@ Field& Field::operator=( const Field& other )
         isPresent_ = other.isPresent_;
         bitOffset_ = other.bitOffset_;
         typeIdentifier_ = other.typeIdentifier_;
+        fieldDefinitionRef_ = other.fieldDefinitionRef_;
+        typeDefinitionsRef_ = other.typeDefinitionsRef_;
         bitWidth_ = other.bitWidth_;
         volatile_ = other.volatile_;
         access_ = other.access_;
@@ -102,16 +106,12 @@ Field& Field::operator=( const Field& other )
         testConstraint_ = other.testConstraint_;
         reserved_ = other.reserved_;
 
-        enumeratedValues_->clear();
-        copyEnumeratedValues(other);
-        writeValueConstraint_.clear();
+        Utilities::copyList(enumeratedValues_, other.enumeratedValues_);
+        Utilities::copyList(parameters_, other.parameters_);
+        Utilities::copyList(resets_, other.resets_);
+        Utilities::copyList(fieldAccessPolicies_, other.fieldAccessPolicies_);
         copyWriteValueConstraint(other);
-        parameters_->clear();
-        copyParameters(other);
-        resets_->clear();
-        copyResets(other);
-        fieldAccessPolicies_->clear();
-        copyFieldAccessPolicies(other);
+        copyMemoryArray(other);
     }
 
     return *this;
@@ -515,41 +515,11 @@ void Field::setFieldAccessPolicies(QSharedPointer<QList<QSharedPointer<FieldAcce
 }
 
 //-----------------------------------------------------------------------------
-// Function: Field::copyEnumeratedValues()
-//-----------------------------------------------------------------------------
-void Field::copyEnumeratedValues(const Field& other)
-{
-    for (auto const& enumValue : *other.enumeratedValues_)
-    {
-        if (enumValue)
-        {
-            QSharedPointer<EnumeratedValue> copy =
-                QSharedPointer<EnumeratedValue>(new EnumeratedValue(*enumValue));
-            enumeratedValues_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Field::copyParameters()
-//-----------------------------------------------------------------------------
-void Field::copyParameters(const Field& other)
-{
-    for (auto const& param : *other.parameters_)
-    {
-        if (param)
-        {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*param));
-            parameters_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: Field::copyWriteValueConstraint()
 //-----------------------------------------------------------------------------
 void Field::copyWriteValueConstraint(const Field& other)
 {
+    writeValueConstraint_.clear();
     if (other.writeValueConstraint_)
     {
         writeValueConstraint_ =
@@ -558,31 +528,13 @@ void Field::copyWriteValueConstraint(const Field& other)
 }
 
 //-----------------------------------------------------------------------------
-// Function: Field::copyWriteValueConstraint()
+// Function: Field::copyMemoryArray()
 //-----------------------------------------------------------------------------
-void Field::copyResets(const Field& other)
+void Field::copyMemoryArray(Field const& other)
 {
-    for (auto const& other_reset : *other.resets_)
+    memoryArray_.clear();
+    if (other.memoryArray_)
     {
-        if (other_reset)
-        {
-            QSharedPointer<FieldReset> copy = QSharedPointer<FieldReset>(new FieldReset(*other_reset));
-            resets_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Field::copyFieldAccessPolicies()
-//-----------------------------------------------------------------------------
-void Field::copyFieldAccessPolicies(Field const& other)
-{
-    for (auto const& fieldAccessPolicy : *other.fieldAccessPolicies_)
-    {
-        if (fieldAccessPolicy)
-        {
-            QSharedPointer<FieldAccessPolicy> copy = QSharedPointer<FieldAccessPolicy>(new FieldAccessPolicy(*fieldAccessPolicy));
-            fieldAccessPolicies_->append(copy);
-        }
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
     }
 }
