@@ -90,6 +90,13 @@ public:
      */
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
+    /*!
+     *  Get the list of acceptable mime types.
+     *
+     *      @return The list of acceptable mime types.
+     */
+    virtual QStringList mimeTypes() const;
+
 public slots:
 
     /*!
@@ -105,6 +112,18 @@ public slots:
      *      @param [in] index     The model index for the item/row to be removed.
      */
     void onRemoveItem(QModelIndex const& index);
+
+    /*!
+     *  Copy the items in the selected rows.
+     *
+     *      @param [in] indices   List of indexes pointing to the selected rows.
+     */
+    void onCopyRows(QModelIndexList const& indices);
+
+    /*!
+     *  Paste the copied items.
+     */
+    void onPasteRows();
 
 signals:
 
@@ -171,6 +190,14 @@ private:
      *      @return The formatted value of an expression in the selected index.
      */
     QVariant formattedExpressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *	Increase the references of the parameters in a field access policy given by row, when copy pasting a
+     *  the field access policy.
+     *  
+     *      @param [in] row     Description
+     */
+    void increaseReferencesInFieldAccessPolicy(int const& row);
 
     //! The field interface to use.
     FieldInterface* fieldInterface_;

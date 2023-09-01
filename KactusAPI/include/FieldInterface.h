@@ -873,6 +873,23 @@ public:
      */
     bool hasValidAccessPolicyModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
+    /*!
+     *	Copy selected field access policies to clipboard.
+     *  
+     *      @param [in] fieldName                  The field containing the access policies.
+     *      @param [in] selectedAccessPolicies     List containing the indices of the selected access policies.
+     */
+    void copyFieldAccessPolicies(std::string const& fieldName, std::vector<int> const& selectedAccessPolicies);
+    
+    /*!
+     *	Paste the selected field access policies.
+     *  
+     *      @param [in] fieldName     The name of the field to paste into.
+     *	    
+     * 	    @return  The number of pasted field access policies.
+     */
+    int pasteFieldaccessPolicies(std::string const& fieldName);
+
 private:
 
     /*!

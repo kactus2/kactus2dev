@@ -46,11 +46,15 @@ view_(new EditableTableView(this))
     view_->setModel(proxy);
     view_->setItemDelegate(delegate);
     view_->horizontalHeader()->setStretchLastSection(false);
+    view_->setAllowElementCopying(true);
 
     connect(view_, SIGNAL(addItem(QModelIndex const&)),
         model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
     connect(view_, SIGNAL(removeItem(QModelIndex const&)),
         model, SLOT(onRemoveItem(QModelIndex const&)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(copyRows(QModelIndexList)),
+        model, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
+    connect(view_, SIGNAL(pasteRows()), model, SLOT(onPasteRows()), Qt::UniqueConnection);
 
     connect(model, SIGNAL(invalidateFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
     connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

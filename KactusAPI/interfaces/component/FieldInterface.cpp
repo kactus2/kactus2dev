@@ -601,6 +601,67 @@ bool FieldInterface::hasValidAccessPolicyModeRefs(std::string const& fieldName, 
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldInterface::copyFieldAccessPolicies()
+//-----------------------------------------------------------------------------
+void FieldInterface::copyFieldAccessPolicies(std::string const& fieldName,
+    std::vector<int> const& selectedAccessPolicies)
+{
+    if (auto const& field = getField(fieldName))
+    {
+        QList<QSharedPointer<FieldAccessPolicy> > copiedFieldAccessPolicies;
+        for (auto index : selectedAccessPolicies)
+        {
+            auto accessPolicy = field->getFieldAccessPolicies()->at(index);
+            copiedFieldAccessPolicies.append(accessPolicy);
+        }
+
+        QVariant accessPolicyVariant;
+        accessPolicyVariant.setValue(copiedFieldAccessPolicies);
+
+        QMimeData* newMimeData = new QMimeData();
+        newMimeData->setData("text/xml/ipxact:fieldAccessPolicy", QByteArray());
+        newMimeData->setImageData(accessPolicyVariant);
+
+        QApplication::clipboard()->setMimeData(newMimeData);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::pasteFieldaccessPolicies()
+//-----------------------------------------------------------------------------
+int FieldInterface::pasteFieldaccessPolicies(std::string const& fieldName)
+{
+    auto field = getField(fieldName);
+    if (!field)
+    {
+        return 0;
+    }
+
+    const QMimeData* pasteData = QApplication::clipboard()->mimeData();
+    
+    int numPasted = 0;
+
+    if (pasteData->hasImage())
+    {
+        QVariant pasteVariant = pasteData->imageData();
+        if (pasteVariant.canConvert<QList<QSharedPointer<FieldAccessPolicy> > >())
+        {
+            auto copiedFieldAccessPolicies = pasteVariant.value<QList<QSharedPointer<FieldAccessPolicy> > >();
+
+            for (auto copiedFieldAccessPolicy : copiedFieldAccessPolicies)
+            {
+                QSharedPointer<FieldAccessPolicy> newFieldAccessPolicy(new FieldAccessPolicy(*copiedFieldAccessPolicy));
+                field->getFieldAccessPolicies()->append(newFieldAccessPolicy);
+
+                numPasted++;
+            }
+        }
+    }
+
+    return numPasted;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessType()
 //-----------------------------------------------------------------------------
 AccessTypes::Access FieldInterface::getAccessType(std::string const& fieldName, int accessPolicyIndex /*= -1*/)
