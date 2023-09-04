@@ -66,7 +66,7 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
     // Disable editing until editor is made.
     else if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     // Disable write constraint min/max, when that option is not set.
@@ -75,13 +75,13 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
         QString::fromStdString(fieldInterface_->getWriteConstraint(
             fieldName_, index.row())) != QStringLiteral("Set minimum and maximum limits"))
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT &&
         fieldInterface_->getTestableBool(fieldName_, index.row()) == false)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -168,7 +168,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
     else if (role == Qt::BackgroundRole)
     {
-        if (index.flags() == Qt::NoItemFlags)
+        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             return KactusColors::DISABLED_FIELD;
         }

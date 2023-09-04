@@ -65,19 +65,25 @@ int RegisterTableModel::columnCount( const QModelIndex& parent /*= QModelIndex()
 //-----------------------------------------------------------------------------
 Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const 
 {
-	if (!index.isValid() || index.column() == RegisterColumns::RESETS_COLUMN)
+	if (!index.isValid())
     {
 		return Qt::NoItemFlags;
 	}
 
     std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
+    // Lock resets column
+    if (index.column() == RegisterColumns::RESETS_COLUMN)
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+
     // Lock std14 columns (values located in field access policy for std22), if there are multiple field access 
     // policies defined for the field.
     if (isStd14Column(index) && docRevision_ == Document::Revision::Std22 &&
         fieldInterface_->getAccessPolicyCount(fieldName) > 1)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
 	// if the field is not testable then the test constraint can not be set
@@ -85,7 +91,7 @@ Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const
         index.column() == RegisterColumns::TEST_CONSTR_COLUMN && 
         !fieldInterface_->getTestableBool(fieldName, accessPolicyIndex))
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
@@ -234,7 +240,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
             return KactusColors::MANDATORY_FIELD;
         }
         else if (index.column() == RegisterColumns::RESETS_COLUMN ||
-            index.flags() == Qt::NoItemFlags)
+            index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             return KactusColors::DISABLED_FIELD;
         }
@@ -670,7 +676,7 @@ QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index
     if (isStd14Column(index) && docRevision_ == Document::Revision::Std22)
     {
         // If more than one field access policies.
-        if (index.flags() == Qt::NoItemFlags)
+        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             // Indicate multiple access policies.
             if (index.column() == RegisterColumns::ACCESS_COLUMN)
