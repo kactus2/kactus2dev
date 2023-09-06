@@ -41,8 +41,7 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     scriptView_(this),
     interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, false)),    
     toolBar_(this),
-    progressBar_(this),
-    scriptThread_(this)
+    progressBar_(this)
 {    
     connect(&outputChannel_, SIGNAL(data(QString const&)),
         &scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
@@ -354,9 +353,6 @@ void PythonSourceEditor::applySettings(ScriptInputEditor* editor) const
 //-----------------------------------------------------------------------------
 bool PythonSourceEditor::setupInterpreter()
 {
-    interpreter_->moveToThread(&scriptThread_);
-    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
-
     bool enabled = interpreter_->initialize(false);
     if (enabled)
     {
@@ -371,7 +367,6 @@ bool PythonSourceEditor::setupInterpreter()
         connect(interpreter_, SIGNAL(executeDone()),
             this, SLOT(onRunComplete()), Qt::UniqueConnection);
 
-        scriptThread_.start();
     }
 
     return enabled;
