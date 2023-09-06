@@ -12,6 +12,8 @@
 #ifndef COMPONENTINSTANTIATION_H
 #define COMPONENTINSTANTIATION_H
 
+#include "FileSetRef.h"
+
 #include <IPXACTmodels/common/NameGroup.h>
 #include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -198,16 +200,23 @@ public:
     /*!
      *  Get the file set references.
      *
-     *      @return Pointer to a list containing referenced file set names.
+     *      @return Pointer to a list containing referenced file sets.
      */
-    QSharedPointer<QStringList> getFileSetReferences() const;
+    QSharedPointer<QList<QSharedPointer<FileSetRef> > > getFileSetReferences() const;
+
+    /*!
+     *	Get the file set references as a list of strings.
+     *  
+     * 	    @return The file set references as strings.
+     */
+    QStringList getFileSetReferenceStrings() const;
 
     /*!
      *  Set the file set references.
      *
-     *      @param [in] newFileSetReferences    The names of the referenced file sets.
+     *      @param [in] newFileSetReferences    The new file set references.
      */
-    void setFileSetReferences(QSharedPointer<QStringList> newFileSetReferences);
+    void setFileSetReferences(QSharedPointer<QList<QSharedPointer<FileSetRef> > > newFileSetReferences);
 
     /*!
      *  Get the parameters.
@@ -224,26 +233,6 @@ public:
     void setParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
 
 private:
-
-    /*!
-     *  Copy module parameters.
-     */
-    void copyModuleParameters(const ComponentInstantiation& other) const;
-
-    /*!
-     *  Copy default file builders.
-     */
-    void copyDefaultFileBuilders(const ComponentInstantiation& other) const;
-
-    /*!
-     *  Copy file set references.
-     */
-    void copyFileSetReferences(const ComponentInstantiation& other) const;
-
-    /*!
-     *  Copy parameters.
-     */
-    void copyParameters(const ComponentInstantiation& other) const;
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -274,16 +263,20 @@ private:
     QString configurationName_;
 
     //! A list of module parameters.
-    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters_;
+    QSharedPointer<QList<QSharedPointer<ModuleParameter> > > moduleParameters_ =
+        QSharedPointer<QList<QSharedPointer<ModuleParameter> > >(new QList<QSharedPointer<ModuleParameter> > ());
 
     //! A list of default file builders.
-    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_;
+    QSharedPointer<QList<QSharedPointer<FileBuilder> > > defaultFileBuilders_ = 
+        QSharedPointer<QList<QSharedPointer<FileBuilder> > >(new QList<QSharedPointer<FileBuilder> > ());
 
     //! A list of file set references.
-    QSharedPointer<QStringList> fileSetReferences_;
+    QSharedPointer<QList<QSharedPointer<FileSetRef> > > fileSetReferences_ = 
+        QSharedPointer<QList<QSharedPointer<FileSetRef> > >(new QList<QSharedPointer<FileSetRef> >());
 
     //! A list of instantiation parameters.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = 
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> > ());
 };
 
 #endif // DESIGNINSTANTIATION_H

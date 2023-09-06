@@ -141,6 +141,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/FieldReferenceReader.h \
     ./Component/FieldReferenceWriter.h \
     ./Component/FieldReset.h \
+    ./Component/FileSetRef.h \
     ./Component/InitiatorInterface.h \
     ./Component/LanguageTools.h \
     ./Component/MemoryArray.h \
@@ -246,6 +247,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/validators/MemoryArrayValidator.h \
     ./Component/validators/MemoryBlockValidator.h \
     ./Component/validators/ModeValidator.h \
+    ./Component/validators/PortSliceValidator.h \
     ./Component/validators/RegionValidator.h \
     ./Component/validators/RegisterBaseValidator.h \
     ./Component/validators/RegisterFileValidator.h \
@@ -292,8 +294,7 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/validators/PortSliceValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -551,6 +552,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/ModeValidator.cpp \
     ./Component/validators/PortMapValidator.cpp \
     ./Component/validators/OtherClockDriverValidator.cpp \
+    ./Component/validators/PortSliceValidator.cpp \
     ./Component/validators/PortTypeValidator.cpp \
     ./Component/validators/PortValidator.cpp \
     ./Component/validators/RegionValidator.cpp \
@@ -581,4 +583,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/validators/PortSliceValidator.cpp
+    ./Component/FileSetRef.cpp

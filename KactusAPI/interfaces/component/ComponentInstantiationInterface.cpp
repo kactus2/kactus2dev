@@ -555,12 +555,11 @@ std::vector<std::string> ComponentInstantiationInterface::getFileSetReferences(
 {
     std::vector<std::string> fileSetReferences;
 
-    QSharedPointer<ComponentInstantiation> editedInstantiation = getComponentInstantiation(instantiationName);
-    if (editedInstantiation)
+    if (auto editedInstantiation = getComponentInstantiation(instantiationName))
     {
         for (auto fileReference : *editedInstantiation->getFileSetReferences())
         {
-            fileSetReferences.push_back(fileReference.toStdString());
+            fileSetReferences.push_back(fileReference->getReference().toStdString());
         }
     }
 
@@ -578,11 +577,62 @@ bool ComponentInstantiationInterface::setFileSetReferences(std::string const& in
     {
         return false;
     }
-
-    editedItem->getFileSetReferences()->clear();
-    for (auto setReference : newReferences)
+    
+    // Convert to QString once.
+    QStringList newReferencesQ;
+    for (auto const& ref : newReferences)
     {
-        editedItem->getFileSetReferences()->append(QString::fromStdString(setReference));
+        newReferencesQ << QString::fromStdString(ref);
+    }
+
+    auto existingFileSetRefs = editedItem->getFileSetReferences();
+
+    // Extract reference names
+    QStringList existingReferencesStr;
+    for (auto const& reference : *existingFileSetRefs)
+    {
+        existingReferencesStr.append(reference->getReference());
+    }
+    
+    std::vector<int> indexesToDelete;
+
+    // Check for removed references.
+    for (int i = 0; i < existingReferencesStr.size(); ++i)
+    {
+        auto const& currentExistingRef = existingReferencesStr.at(i);
+
+        bool currentItemStillExists = false;
+
+        for (auto const& newRef : newReferencesQ)
+        {
+            if (currentExistingRef == newRef)
+            {
+                currentItemStillExists = true;
+            }
+        }
+
+        if (!currentItemStillExists)
+        {
+            indexesToDelete.push_back(i);
+        }
+    }
+
+    // Remove deleted file set refs.
+    for (auto index : indexesToDelete)
+    {
+        existingFileSetRefs->removeAt(index);
+        existingReferencesStr.removeAt(index);
+    }
+
+    // Check for new refs.
+    for (auto const& newRef : newReferencesQ)
+    {
+        if (existingReferencesStr.contains(newRef) == false)
+        {
+            QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+            newFileSetRef->setReference(newRef);
+            existingFileSetRefs->append(newFileSetRef);
+        }
     }
 
     return true;

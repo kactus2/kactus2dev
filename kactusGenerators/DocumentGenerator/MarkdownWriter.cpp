@@ -938,19 +938,19 @@ void MarkdownWriter::writeImplementationDetails(QTextStream& stream,
 void MarkdownWriter::writeFileSetReferences(QTextStream& stream,
     QSharedPointer<ComponentInstantiation> instantiation)
 {
-    QStringList fileSetRefs = *instantiation->getFileSetReferences();
+    auto fileSetRefs = instantiation->getFileSetReferences();
 
-    if (fileSetRefs.isEmpty())
+    if (fileSetRefs->isEmpty())
     {
         return;
     }
 
     stream << "**File sets containend in this instantiation:**  " << Qt::endl;
 
-    for (auto const& fileSetRef : fileSetRefs)
+    for (auto const& fileSetRef : *fileSetRefs)
     {
-        // Link won't work until writeSubHeader is fixed
-        stream << "- [" << fileSetRef << "](#" << vlnvString_ << ".fileSet." << fileSetRef + ")  " << Qt::endl;
+        stream << "- [" << fileSetRef->getReference() << "](#" << vlnvString_ << ".fileSet." << 
+            fileSetRef->getReference() << ")  " << Qt::endl;
     }
 
     stream << Qt::endl;

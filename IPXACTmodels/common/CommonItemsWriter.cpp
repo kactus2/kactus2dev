@@ -18,6 +18,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
+#include <IPXACTmodels/Component/FileSetRef.h>
 
 #include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/common/ConfigurableElementValue.h>
@@ -413,5 +414,30 @@ void CommonItemsWriter::writeModeReferences(QXmlStreamWriter& writer, QSharedPoi
 
         writer.writeCharacters(modeRef->getReference());
         writer.writeEndElement(); // ipxact:modeRef
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeFileSetReferences()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeFileSetReferences(QXmlStreamWriter& writer, 
+    QSharedPointer<QList<QSharedPointer<FileSetRef> > > fileSetRefs, Document::Revision docRevision)
+{
+    for (auto const& fileSetRef : *fileSetRefs)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:fileSetRef"));
+
+        writer.writeTextElement(QStringLiteral("ipxact:localName"), fileSetRef->getReference());
+
+        if (docRevision == Document::Revision::Std14)
+        {
+            CommonItemsWriter::writeIsPresent(writer, fileSetRef->getIsPresent());
+        }
+        else if (docRevision == Document::Revision::Std22)
+        {
+            CommonItemsWriter::writeVendorExtensions(writer, fileSetRef);
+        }
+
+        writer.writeEndElement(); // ipxact:fileSetRef
     }
 }

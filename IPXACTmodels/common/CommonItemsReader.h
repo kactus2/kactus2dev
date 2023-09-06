@@ -24,6 +24,7 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
+#include <IPXACTmodels/Component/FileSetRef.h>
 
 #include <QPointF>
 #include <QSharedPointer>
@@ -155,6 +156,16 @@ public:
      * 	    @return A list of parsed mode references.
      */
     static QSharedPointer<QList<QSharedPointer<ModeReference> > > parseModeReferences(QDomNode const& itemNode);
+
+    /*!
+     *	Parse file set references.
+     *  
+     *      @param [in] itemNode       XML description of the IP-XACT element.
+     *      @param [in] docRevision    The IP-XACT standard revision in use.
+     *	    
+     * 	    @return A list of parsed file set references.
+     */
+    static QSharedPointer<QList<QSharedPointer<FileSetRef> > > parseFileSetReferences(QDomElement const& itemNode, Document::Revision docRevision);
 };
 
 #endif // DOCUMENTREADER_H

@@ -353,7 +353,7 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 {
     for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
-        for (QString const& fileSetReference : group->fileSetRefs_)
+        for (auto const& fileSetReference : *group->fileSetRefs_)
         {
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
@@ -368,11 +368,11 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceValidator::slaveFileSetReferenceIsValid()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QString const& fileSetReference) const
+bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const
 {
-    for (QSharedPointer<FileSet> fileset : *availableFileSets_)
+    for (auto const& fileset : *availableFileSets_)
     {
-        if (fileSetReference == fileset->name())
+        if (fileSetReference->getReference() == fileset->name())
         {
             return true;
         }
@@ -831,12 +831,12 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
 
     for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
     {
-        for (QString fileSetReference : group->fileSetRefs_)
+        for (auto const& fileSetReference : *group->fileSetRefs_)
         {
             if (!slaveFileSetReferenceIsValid(fileSetReference))
             {
                 errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3").arg(
-                    fileSetReference, group->group_, context));
+                    fileSetReference->getReference(), group->group_, context));
             }
         }
     }

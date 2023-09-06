@@ -58,7 +58,9 @@ void ComponentInstantiationDisplayer::refresh()
         moduleNameLabel_->setText(instantiation_->getModuleName());
         architectureLabel_->setText(instantiation_->getArchitectureName());
         configurationLabel_->setText(instantiation_->getConfigurationName());
-        filesetsLabel_->setText(instantiation_->getFileSetReferences()->join(", "));
+        
+        auto fileSetRefs = instantiation_->getFileSetReferenceStrings();
+        filesetsLabel_->setText(fileSetRefs.join(", "));
     }
 
     setVisible(instantiation_.isNull() == false);

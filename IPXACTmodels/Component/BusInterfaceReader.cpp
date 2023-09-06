@@ -552,11 +552,10 @@ void BusinterfaceReader::Details::parseTargetInterface(QDomElement const& target
         QDomNode groupNode = fileSetRefElement.firstChildElement(QStringLiteral("ipxact:group"));
         fileSetGroup->group_ = XmlUtils::removeWhiteSpace(groupNode.firstChild().nodeValue());
 
-        QDomNodeList filesetNodes = fileSetRefElement.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
-        int filesetNodeCount = filesetNodes.count();
-        for (int j = 0; j < filesetNodeCount; j++)
+        if (auto fileSetRefs = CommonItemsReader::parseFileSetReferences(fileSetRefElement, docRevision);
+            fileSetRefs->isEmpty() == false)
         {
-            fileSetGroup->fileSetRefs_.append(filesetNodes.at(j).firstChild().nodeValue());
+            fileSetGroup->fileSetRefs_ = fileSetRefs;
         }
 
         // Another file set ref group is extracted.

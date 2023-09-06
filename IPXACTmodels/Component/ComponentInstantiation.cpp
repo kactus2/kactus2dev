@@ -25,11 +25,7 @@ libraryName_(),
 packageName_(),
 moduleName_(),
 architectureName_(),
-configurationName_(),
-moduleParameters_(new QList<QSharedPointer<ModuleParameter> > ()),
-defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-fileSetReferences_(new QStringList()),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+configurationName_()
 {
 
 }
@@ -47,16 +43,12 @@ libraryName_(other.libraryName_),
 packageName_(other.packageName_),
 moduleName_(other.moduleName_),
 architectureName_(other.architectureName_),
-configurationName_(other.configurationName_),
-moduleParameters_(new QList<QSharedPointer<ModuleParameter> > ()),
-defaultFileBuilders_(new QList<QSharedPointer<FileBuilder> > ()),
-fileSetReferences_(new QStringList),
-parameters_(new QList<QSharedPointer<Parameter> > ())
+configurationName_(other.configurationName_)
 {
-    copyModuleParameters(other);
-    copyDefaultFileBuilders(other);
-    copyFileSetReferences(other);
-    copyParameters(other);
+    Utilities::copyList(moduleParameters_, other.moduleParameters_);
+    Utilities::copyList(defaultFileBuilders_, other.defaultFileBuilders_);
+    Utilities::copyList(fileSetReferences_, other.fileSetReferences_);
+    Utilities::copyList(parameters_, other.parameters_);
 }
 
 //-----------------------------------------------------------------------------
@@ -78,14 +70,10 @@ ComponentInstantiation& ComponentInstantiation::operator=(const ComponentInstant
         architectureName_ = other.architectureName_;
         configurationName_ = other.configurationName_;
 
-        moduleParameters_->clear();
-        copyModuleParameters(other);
-        defaultFileBuilders_->clear();
-        copyDefaultFileBuilders(other);
-        fileSetReferences_->clear();
-        copyFileSetReferences(other);
-        parameters_->clear();
-        copyParameters(other);
+        Utilities::copyList(moduleParameters_, other.moduleParameters_);
+        Utilities::copyList(defaultFileBuilders_, other.defaultFileBuilders_);
+        Utilities::copyList(fileSetReferences_, other.fileSetReferences_);
+        Utilities::copyList(parameters_, other.parameters_);
     }
 
     return *this;
@@ -269,15 +257,30 @@ void ComponentInstantiation::setDefaultFileBuilders(
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::getFileSetReferences()
 //-----------------------------------------------------------------------------
-QSharedPointer<QStringList> ComponentInstantiation::getFileSetReferences() const
+QSharedPointer<QList<QSharedPointer<FileSetRef> > > ComponentInstantiation::getFileSetReferences() const
 {
     return fileSetReferences_;
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentInstantiation::getFileSetReferenceStrings()
+//-----------------------------------------------------------------------------
+QStringList ComponentInstantiation::getFileSetReferenceStrings() const
+{
+    QStringList referenceStrings;
+    std::transform(fileSetReferences_->cbegin(), fileSetReferences_->cend(), std::back_inserter(referenceStrings),
+        [](QSharedPointer<FileSetRef> fileSetRef)
+        {
+            return fileSetRef->getReference();
+        });
+
+    return referenceStrings;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::setFileSetReferences()
 //-----------------------------------------------------------------------------
-void ComponentInstantiation::setFileSetReferences(QSharedPointer<QStringList> newFileSetReferences)
+void ComponentInstantiation::setFileSetReferences(QSharedPointer<QList<QSharedPointer<FileSetRef> > > newFileSetReferences)
 {
     fileSetReferences_ = newFileSetReferences;
 }
@@ -297,61 +300,4 @@ void ComponentInstantiation::setParameters(QSharedPointer<QList<QSharedPointer<P
 {
     parameters_->clear();
     parameters_ = newParameters;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::copyModuleParameters()
-//-----------------------------------------------------------------------------
-void ComponentInstantiation::copyModuleParameters(const ComponentInstantiation& other) const
-{
-    foreach (QSharedPointer<ModuleParameter> moduleParameter, *other.moduleParameters_)
-    {
-        if (moduleParameter)
-        {
-            QSharedPointer<ModuleParameter> copy =
-                QSharedPointer<ModuleParameter>(new ModuleParameter(*moduleParameter.data()));
-            moduleParameters_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::copyDefaultFileBuilders()
-//-----------------------------------------------------------------------------
-void ComponentInstantiation::copyDefaultFileBuilders(const ComponentInstantiation& other) const
-{
-    foreach (QSharedPointer<FileBuilder> fileBuilder, *other.defaultFileBuilders_)
-    {
-        if (fileBuilder)
-        {
-            QSharedPointer<FileBuilder> copy = QSharedPointer<FileBuilder>(new FileBuilder(*fileBuilder.data()));
-            defaultFileBuilders_->append(copy);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::copyFileSetReferences()
-//-----------------------------------------------------------------------------
-void ComponentInstantiation::copyFileSetReferences(const ComponentInstantiation& other) const
-{
-    foreach (QString reference, *other.fileSetReferences_)
-    {
-        fileSetReferences_->append(reference);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiation::copyParameters()
-//-----------------------------------------------------------------------------
-void ComponentInstantiation::copyParameters(const ComponentInstantiation& other) const
-{
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-    {
-        if (parameter)
-        {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-            parameters_->append(copy);
-        }
-    }
 }

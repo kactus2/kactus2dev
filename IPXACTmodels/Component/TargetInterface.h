@@ -13,6 +13,7 @@
 #define TARGETINTERFACE_H
 
 #include "TransparentBridge.h"
+#include "FileSetRef.h"
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -34,11 +35,28 @@ public:
 		//! The group name.
 		QString group_;
 
-        //! The referenced fileset names.
-		QStringList fileSetRefs_;
+        //! The referenced filesets.
+		QSharedPointer<QList<QSharedPointer<FileSetRef> > > fileSetRefs_ =
+			QSharedPointer<QList<QSharedPointer<FileSetRef> > >(new QList<QSharedPointer<FileSetRef> > ());
 
 		//! The constructor.	
-		FileSetRefGroup(): group_(), fileSetRefs_() {}
+		FileSetRefGroup(): group_() {}
+
+		FileSetRefGroup(FileSetRefGroup const& other) : group_(other.group_)
+		{
+			Utilities::copyList(fileSetRefs_, other.fileSetRefs_);
+		}
+
+		FileSetRefGroup& operator=(FileSetRefGroup const& other)
+		{
+			if (this != &other)
+			{
+				group_ = other.group_;
+				Utilities::copyList(fileSetRefs_, other.fileSetRefs_);
+			}
+
+			return *this;
+		}
 	};
 
 	//! The default constructor.

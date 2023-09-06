@@ -113,7 +113,7 @@ void InstantiationsWriter::writeComponentInstantiation(QXmlStreamWriter& writer,
 
     Details::writeDefaultFileBuilders(writer, instantiation->getDefaultFileBuilders(), docRevision);
 
-    Details::writeFileSetReferences(writer, instantiation->getFileSetReferences());
+    Details::writeFileSetReferences(writer, instantiation, docRevision);
 
     CommonItemsWriter::writeParameters(writer, instantiation->getParameters(), docRevision);
 
@@ -186,18 +186,13 @@ void InstantiationsWriter::Details::writeDefaultFileBuilders(QXmlStreamWriter& w
 //-----------------------------------------------------------------------------
 // Function: InstantiationsWriter::Details::writeFileSetReferences()
 //-----------------------------------------------------------------------------
-void InstantiationsWriter::Details::writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references)
-   
+void InstantiationsWriter::Details::writeFileSetReferences(QXmlStreamWriter& writer, 
+    QSharedPointer<ComponentInstantiation> instantiation, 
+    Document::Revision docRevision)
 {
-    if (!references->isEmpty())
+    if (auto fileSetRefs = instantiation->getFileSetReferences();
+        fileSetRefs->isEmpty() == false)
     {
-        for (auto const& fileSetReference : *references)
-        {
-            writer.writeStartElement(QStringLiteral("ipxact:fileSetRef"));
-
-            writer.writeTextElement(QStringLiteral("ipxact:localName"), fileSetReference);
-
-            writer.writeEndElement(); // ipxact:fileSetRef
-        }
+        CommonItemsWriter::writeFileSetReferences(writer, fileSetRefs, docRevision);
     }
 }

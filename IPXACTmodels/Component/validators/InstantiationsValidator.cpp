@@ -20,6 +20,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/FileSetRef.h>
 
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -280,7 +281,7 @@ bool InstantiationsValidator::fileBuilderReplaceDefaultFlagsIsValid(QSharedPoint
 bool InstantiationsValidator::componentInstantiationFileSetReferencesAreValid(
     QSharedPointer<ComponentInstantiation> instantiation) const
 {
-    for ( QString const& fileSetRef : *instantiation->getFileSetReferences() )
+    for ( auto const& fileSetRef : *instantiation->getFileSetReferences() )
     {
         if ( !fileSetReferenceIsValid(fileSetRef) )
         {
@@ -294,11 +295,11 @@ bool InstantiationsValidator::componentInstantiationFileSetReferencesAreValid(
 //-----------------------------------------------------------------------------
 // Function: InstantiationsValidator::existingReference()
 //-----------------------------------------------------------------------------
-bool InstantiationsValidator::fileSetReferenceIsValid(QString const& fileSetRef) const
+bool InstantiationsValidator::fileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetRef) const
 {
-    for ( QSharedPointer<FileSet> fileSet : *availableFileSets_ )
+    for ( auto const& fileSet : *availableFileSets_ )
     {
-        if ( fileSetRef == fileSet->name() )
+        if ( fileSetRef->getReference() == fileSet->name() )
         {
             return true;
         }
@@ -344,11 +345,11 @@ void InstantiationsValidator::findErrorsInComponentInstantiation(QVector<QString
             .arg(instantiation->name()).arg(context));
     }
 
-    for ( QString const& fileSetRef : *instantiation->getFileSetReferences() )
+    for ( auto const& fileSetRef : *instantiation->getFileSetReferences() )
     {
         if ( !fileSetReferenceIsValid(fileSetRef) )
         {
-            errors.append(QObject::tr("Referenced file set %1 does not exist.").arg(fileSetRef));
+            errors.append(QObject::tr("Referenced file set %1 does not exist.").arg(fileSetRef->getReference()));
         }
     }
 

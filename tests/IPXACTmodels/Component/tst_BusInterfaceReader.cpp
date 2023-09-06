@@ -160,8 +160,12 @@ void tst_businterfaceReader::testReadSlave()
 		        "</ipxact:transparentBridge>"
 		        "<ipxact:fileSetRefGroup>"
 		            "<ipxact:group>testGroup</ipxact:group>"
-		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
-		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset1</ipxact:localName>"
+					"</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset2</ipxact:localName>"
+					"</ipxact:fileSetRef>"
 		        "</ipxact:fileSetRefGroup>"
 		    "</ipxact:slave>"
 		"</ipxact:busInterface>"
@@ -182,9 +186,9 @@ void tst_businterfaceReader::testReadSlave()
 
 	QSharedPointer<TargetInterface::FileSetRefGroup> refg = testbusinterface->getSlave()->getFileSetRefGroup()->first();
 	QCOMPARE(refg->group_, QString("testGroup"));
-	QCOMPARE(refg->fileSetRefs_.size(), 2);
-	QCOMPARE(refg->fileSetRefs_.first(), QString("fileset1"));
-	QCOMPARE(refg->fileSetRefs_.last(), QString("fileset2"));
+	QCOMPARE(refg->fileSetRefs_->size(), 2);
+	QCOMPARE(refg->fileSetRefs_->first()->getReference(), QString("fileset1"));
+	QCOMPARE(refg->fileSetRefs_->last()->getReference(), QString("fileset2"));
 }
 
 //-----------------------------------------------------------------------------
@@ -415,8 +419,12 @@ void tst_businterfaceReader::testReadTarget2022()
 		        "</ipxact:transparentBridge>"
 		        "<ipxact:fileSetRefGroup>"
 		            "<ipxact:group>testGroup</ipxact:group>"
-		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
-		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+					"<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset1</ipxact:localName>"
+					"</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset2</ipxact:localName>"
+					"</ipxact:fileSetRef>"
 		        "</ipxact:fileSetRefGroup>"
 		    "</ipxact:target>"
 		"</ipxact:busInterface>"
@@ -441,9 +449,9 @@ void tst_businterfaceReader::testReadTarget2022()
 
     QSharedPointer<TargetInterface::FileSetRefGroup> refg = testbusinterface->getTarget()->getFileSetRefGroup()->first();
     QCOMPARE(refg->group_, QString("testGroup"));
-    QCOMPARE(refg->fileSetRefs_.size(), 2);
-    QCOMPARE(refg->fileSetRefs_.first(), QString("fileset1"));
-    QCOMPARE(refg->fileSetRefs_.last(), QString("fileset2"));
+    QCOMPARE(refg->fileSetRefs_->size(), 2);
+    QCOMPARE(refg->fileSetRefs_->first()->getReference(), QString("fileset1"));
+    QCOMPARE(refg->fileSetRefs_->last()->getReference(), QString("fileset2"));
 }
 
 //-----------------------------------------------------------------------------

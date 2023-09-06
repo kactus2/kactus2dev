@@ -1052,13 +1052,13 @@ void HtmlWriter::writeImplementationDetails(QTextStream& stream,
 //-----------------------------------------------------------------------------
 void HtmlWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<ComponentInstantiation> instantiation)
 {
-    QStringList fileSetRefs = *instantiation->getFileSetReferences().data();
-    
-    if (fileSetRefs.isEmpty())
+    auto fileSetRefs = instantiation->getFileSetReferences();
+
+    if (fileSetRefs->isEmpty())
     {
         return;
     }
-    
+
     stream << indent(3) << "<p>" << Qt::endl;
     stream << indent(4) << "File sets contained in this component instantiation: </strong>" <<
         Qt::endl;
@@ -1066,10 +1066,11 @@ void HtmlWriter::writeFileSetReferences(QTextStream& stream, QSharedPointer<Comp
 
     stream << indent(3) << "<ul>" << Qt::endl;
 
-    for(auto const& fileSetRef : fileSetRefs)
+    for (auto const& fileSetRef : *fileSetRefs)
     {
         stream << indent(4) << "<li><a href=\"#" << component_->getVlnv().toString() <<
-            ".fileSet." << fileSetRef << "\">" << fileSetRef << "</a></li>" << Qt::endl;
+            ".fileSet." << fileSetRef->getReference() << "\">" << fileSetRef->getReference() << 
+            "</a></li>" << Qt::endl;
     }
 
     stream << indent(3) << "</ul>" << Qt::endl;

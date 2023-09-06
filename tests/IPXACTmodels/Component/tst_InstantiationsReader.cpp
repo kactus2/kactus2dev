@@ -153,7 +153,7 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiation()
     QDomNode instantiationNode = document.firstChildElement("ipxact:designConfigurationInstantiation");
 
     QSharedPointer<DesignConfigurationInstantiation> testInstantiation =
-        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode);
+        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode, Document::Revision::Std14);
 
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
     QCOMPARE(testInstantiation->displayName(), QString("display"));
@@ -197,7 +197,7 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiationLanguage()
     QDomNode instantiationNode = document.firstChildElement("ipxact:designConfigurationInstantiation");
 
     QSharedPointer<DesignConfigurationInstantiation> testInstantiation =
-        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode);
+        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode, Document::Revision::Std14);
 
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
     QCOMPARE(testInstantiation->getLanguage(), QString("vhdl"));
@@ -218,7 +218,7 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiationLanguage()
     document.setContent(documentContent);
     instantiationNode = document.firstChildElement("ipxact:designConfigurationInstantiation");
 
-    testInstantiation = InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode);
+    testInstantiation = InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode, Document::Revision::Std14);
 
     QCOMPARE(testInstantiation->name(), QString("designConfigurationInstantiation"));
     QCOMPARE(testInstantiation->getLanguage(), QString("verilog"));
@@ -258,7 +258,7 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiationParameters()
     QDomNode instantiationNode = document.firstChildElement("ipxact:designConfigurationInstantiation");
 
     QSharedPointer<DesignConfigurationInstantiation> testInstantiation =
-        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode);
+        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode, Document::Revision::Std14);
 
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
     
@@ -297,7 +297,7 @@ void tst_InstantiationsReader::readDesignConfigurationInstantiationExtensions()
     QDomNode instantiationNode = document.firstChildElement("ipxact:designConfigurationInstantiation");
 
     QSharedPointer<DesignConfigurationInstantiation> testInstantiation =
-        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode);
+        InstantiationsReader::createDesignConfigurationInstantiationFrom(instantiationNode, Document::Revision::Std14);
 
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
 
@@ -609,6 +609,7 @@ void tst_InstantiationsReader::readComponentInstantiationFileSetReferences()
             "<ipxact:name>testInstantiation</ipxact:name>"
             "<ipxact:fileSetRef>"
                 "<ipxact:localName>otherFile</ipxact:localName>"
+                "<ipxact:isPresent>1</ipxact:isPresent>"
             "</ipxact:fileSetRef>"
             "<ipxact:fileSetRef>"
                 "<ipxact:localName>referencedFile</ipxact:localName>"
@@ -627,8 +628,37 @@ void tst_InstantiationsReader::readComponentInstantiationFileSetReferences()
     QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
 
     QCOMPARE(testInstantiation->getFileSetReferences()->count(), 2);
-    QCOMPARE(testInstantiation->getFileSetReferences()->first(), QString("otherFile"));
-    QCOMPARE(testInstantiation->getFileSetReferences()->last(), QString("referencedFile"));
+    QCOMPARE(testInstantiation->getFileSetReferences()->first()->getReference(), QString("otherFile"));
+    QCOMPARE(testInstantiation->getFileSetReferences()->first()->getIsPresent(), QString("1"));
+    QCOMPARE(testInstantiation->getFileSetReferences()->last()->getReference(), QString("referencedFile"));
+
+    documentContent =
+        "<ipxact:componentInstantiation>"
+            "<ipxact:name>testInstantiation</ipxact:name>"
+            "<ipxact:fileSetRef>"
+                "<ipxact:localName>otherFile</ipxact:localName>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:fileSetRef>"
+            "<ipxact:fileSetRef>"
+                "<ipxact:localName>referencedFile</ipxact:localName>"
+            "</ipxact:fileSetRef>"
+        "</ipxact:designConfigurationInstantiation>"
+        ;
+
+    document.setContent(documentContent);
+    instantiationNode = document.firstChildElement("ipxact:componentInstantiation");
+
+    testInstantiation = InstantiationsReader::createComponentInstantiationFrom(
+        instantiationNode, Document::Revision::Std22);
+
+    QCOMPARE(testInstantiation->name(), QString("testInstantiation"));
+
+    QCOMPARE(testInstantiation->getFileSetReferences()->count(), 2);
+    QCOMPARE(testInstantiation->getFileSetReferences()->first()->getReference(), QString("otherFile"));
+    QCOMPARE(testInstantiation->getFileSetReferences()->first()->getVendorExtensions()->size(), 1);
+    QCOMPARE(testInstantiation->getFileSetReferences()->last()->getReference(), QString("referencedFile"));
 }
 
 //-----------------------------------------------------------------------------

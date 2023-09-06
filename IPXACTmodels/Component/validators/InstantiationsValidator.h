@@ -28,6 +28,7 @@ class DesignConfigurationInstantiation;
 
 class FileBuilder;
 class FileSet;
+class FileSetRef;
 class Parameter;
 class ModuleParameter;
 class ParameterValidator;
@@ -171,7 +172,7 @@ public:
      *
      *      @return True, if the file set reference is valid, otherwise false.
      */
-	bool fileSetReferenceIsValid(QString const& fileSetRef) const;
+	bool fileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetRef) const;
 
     /*!
      *  Finds possible errors in a instantiation and creates a list of them.
