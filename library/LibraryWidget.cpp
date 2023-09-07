@@ -43,6 +43,7 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     itemExporter_(library_, this, this),
     hierarchyWidget_(new HierarchyWidget(library_, library_->getHierarchyModel(), this)),
     treeWidget_(new LibraryTreeWidget(library_, library_->getTreeModel(), this)),
+    searchBar_(new QLineEdit(this)),
     previewWidget_(new ComponentPreviewBox(library, this)),
     previewHideButton_(new QPushButton(QString(), this)),
     integrityWidget_(nullptr),
@@ -60,6 +61,14 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
+    searchBar_->setPlaceholderText(tr("Search"));
+    searchBar_->addAction(QIcon(":/icons/common/graphics/search.png"), QLineEdit::LeadingPosition);
+    searchBar_->setClearButtonEnabled(true);
+
+    connect(searchBar_, SIGNAL(textChanged(QString const&)),
+        hierarchyWidget_, SLOT(onSearchTextChanged(QString const&)), Qt::UniqueConnection);
+    connect(searchBar_, SIGNAL(textChanged(QString const&)),
+        treeWidget_, SLOT(onSearchTextChanged(QString const&)), Qt::UniqueConnection);
 
     QSettings settings;
     hidePreview_ = !settings.value("PreviewWidget/Hidden", true).toBool();
@@ -367,41 +376,45 @@ void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
 //-----------------------------------------------------------------------------
 void LibraryWidget::setupLayout()
 {
-    QWidget* libraryGroup = new QWidget(this);
+    auto libraryGroup = new QWidget(this);
 
-    QTabWidget* navigationTabs = new QTabWidget(this);
+    auto navigationTabs = new QTabWidget(this);
     navigationTabs->addTab(treeWidget_, tr("VLNV Tree"));
     navigationTabs->addTab(hierarchyWidget_, tr("Hierarchy"));
 
+    searchBar_->setContentsMargins(2, 0, 4, 0);
+
     auto libraryLayout = new QVBoxLayout(libraryGroup);
     libraryLayout->addWidget(navigationTabs, 1);
+    libraryLayout->addWidget(searchBar_);
     libraryLayout->addWidget(dialer_);
+    libraryLayout->setSpacing(2);
     libraryLayout->setContentsMargins(0, 0, 0, 0);
 
-    QWidget* previewGroup = new QWidget(this);
+    auto previewGroup = new QWidget(this);
 
     auto previewLayout = new QGridLayout(previewGroup);
 
-    QLabel* previewLabel = new QLabel(tr("Component Preview"), this);
+    auto previewLabel = new QLabel(tr("Component Preview"), this);
 
     previewLayout->addWidget(previewLabel, 0, 0, 1, 1);
     previewLayout->addWidget(previewHideButton_, 0, 1, 1, 1, Qt::AlignRight);
     previewLayout->addWidget(previewWidget_, 1, 0, 1, 2);
     previewLayout->setContentsMargins(4, 0, 4, 0);
 
-    QSplitter* viewSplit = new QSplitter(this);
+    auto viewSplit = new QSplitter(this);
     viewSplit->setOrientation(Qt::Vertical);
     viewSplit->addWidget(libraryGroup);
     viewSplit->addWidget(previewGroup);
     viewSplit->setStretchFactor(0, 4);
     viewSplit->setContentsMargins(0, 0, 0, 0);
 
-    QSplitterHandle* handle = viewSplit->handle(1);
-    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    auto handle = viewSplit->handle(1);
+    auto handleLayout = new QVBoxLayout(handle);
     handleLayout->setSpacing(0);
     handleLayout->setContentsMargins(2, 0, 0, 0);
 
-    QFrame* line = new QFrame(handle);
+    auto line = new QFrame(handle);
     line->setLineWidth(2);
     line->setMidLineWidth(2);
     line->setFrameShape(QFrame::HLine);

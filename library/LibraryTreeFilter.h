@@ -53,6 +53,17 @@ protected:
 	*/
 	virtual bool filterAcceptsRow(int sourceRow, QModelIndex const& sourceParent) const override final;
 
+private:
+
+	/*!
+	 *  Checks if the VLNV should be shown in the view or not based on filters.
+	 *
+	 *      @param [in] vlnv		The VLNV to check.
+	 *
+	 *      @return True, if the VLNV should be shown, otherwise false.
+	 */
+	bool checkType(VLNV const& vlnv) const;
+
 };
 
 #endif // LIBRARYTREEFILTER_H

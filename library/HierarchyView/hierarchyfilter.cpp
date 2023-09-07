@@ -110,5 +110,5 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
         }
     }
 
-    return checkVLNVs(item->getVLNVs());
+    return checkVLNVs(item->getVLNVs()) && QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }

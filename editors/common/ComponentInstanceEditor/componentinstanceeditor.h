@@ -19,7 +19,7 @@
 #include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
-#include <editors/ComponentEditor/common/ConfigurableElementFinder.h><>
+#include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h>
 

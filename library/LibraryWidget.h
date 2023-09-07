@@ -172,6 +172,9 @@ private:
     //! The widget containing the library items in a tree-like view.
     LibraryTreeWidget* treeWidget_;
 
+    //! The search bar for library items.
+    QLineEdit* searchBar_;
+
     //! The widget that contains the component preview.
     ComponentPreviewBox* previewWidget_;
 

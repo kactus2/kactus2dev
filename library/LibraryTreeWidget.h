@@ -69,6 +69,10 @@ signals:
 	//! Emitted when an item identifying unique vlnv is selected.
 	void itemSelected(const VLNV& vlnv);
 
+public slots:
+
+    void onSearchTextChanged(QString const& text);
+
 private:
 
 	//! No copying.

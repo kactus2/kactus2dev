@@ -66,6 +66,10 @@ signals:
 	//! The specified component has been selected in the view.
 	void componentSelected(const VLNV& vlnv);
 
+public slots:
+
+	void onSearchTextChanged(QString const& text);
+
 private:
 	//! No copying
 	HierarchyWidget(const HierarchyWidget& other);
