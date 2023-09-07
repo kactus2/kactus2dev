@@ -995,6 +995,12 @@
     <Filter Include="Source Files\editors\ComponentEditor\modes">
       <UniqueIdentifier>{3a45f3a2-1937-47a0-bd0b-6979b8663878}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\common\widgets\TreeItemSelector">
+      <UniqueIdentifier>{75f50c07-a7aa-4363-a0b5-3d958b0dc52a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\common\widgets\TreeItemSelector">
+      <UniqueIdentifier>{c43541ee-dc36-4e8b-b40d-ddd33b0768f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3273,6 +3279,21 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\TreeItemSelector\TreeItemEditor.cpp">
+      <Filter>Source Files\common\widgets\TreeItemSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\TreeItemSelector\TreeItemModel.cpp">
+      <Filter>Source Files\common\widgets\TreeItemSelector</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\MemoryTreeFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\modes</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.cpp">
+      <Filter>Source Files\common\widgets\TreeItemSelector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5704,6 +5725,12 @@
     <ClInclude Include="editors\ComponentEditor\modes\FieldSliceColumns.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </ClInclude>
+    <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h">
+      <Filter>Header Files\common\widgets\TreeItemSelector</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\common\MemoryTreeFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5884,6 +5911,18 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\modes\FieldSliceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\TreeItemSelector\TreeItemEditor.h">
+      <Filter>Header Files\common\widgets\TreeItemSelector</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\TreeItemSelector\TreeItemModel.h">
+      <Filter>Header Files\common\widgets\TreeItemSelector</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\modes</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h">
+      <Filter>Header Files\common\widgets\TreeItemSelector</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

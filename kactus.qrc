@@ -154,6 +154,7 @@
 		<file>common/graphics/log.png</file>
 		<file>common/graphics/automation.png</file>
 		<file>common/graphics/ruler.png</file>
+		<file>common/graphics/search.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

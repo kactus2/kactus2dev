@@ -295,6 +295,9 @@ CreateHelp
     <ClCompile Include="common\widgets\tagEditor\TagLabel.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelector.cpp" />
     <ClCompile Include="common\widgets\tagEditor\TagSelectorContainer.cpp" />
+    <ClCompile Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.cpp" />
+    <ClCompile Include="common\widgets\TreeItemSelector\TreeItemEditor.cpp" />
+    <ClCompile Include="common\widgets\TreeItemSelector\TreeItemModel.cpp" />
     <ClCompile Include="common\widgets\viewSelector\viewselector.cpp" />
     <ClCompile Include="common\widgets\vlnvDisplayer\vlnvdisplayer.cpp" />
     <ClCompile Include="common\widgets\assistedTextEdit\AssistedTextEdit.cpp" />
@@ -506,6 +509,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\MemoryTreeFactory.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceModel.cpp" />
@@ -628,6 +632,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\SubspaceMapsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\WriteValueConstraintComboBox.cpp" />
+    <ClCompile Include="editors\ComponentEditor\modes\FieldSliceDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\FieldSliceEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\FieldSliceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\modes\ModesEditor.cpp" />
@@ -1256,6 +1261,10 @@ CreateHelp
     <QtMoc Include="common\widgets\EnumCollectionEditor\EnumerationEditor.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\absdefgroup.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionEditor.h" />
+    <QtMoc Include="common\widgets\TreeItemSelector\TreeItemEditor.h" />
+    <QtMoc Include="common\widgets\TreeItemSelector\TreeItemModel.h" />
+    <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h" />
+    <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsDelegate.h" />
@@ -1592,6 +1601,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceModel.h" />
+    <ClInclude Include="editors\ComponentEditor\common\MemoryTreeFactory.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\SingleCpuEditor.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h" />
@@ -1726,6 +1736,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\modes\FieldSliceColumns.h" />
     <QtMoc Include="editors\ComponentEditor\modes\FieldSliceEditor.h" />
     <QtMoc Include="editors\ComponentEditor\modes\FieldSliceModel.h" />
+    <QtMoc Include="editors\ComponentEditor\modes\FieldSliceDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\modes\ModeColumns.h" />
     <QtMoc Include="editors\ComponentEditor\modes\ModesEditor.h" />
     <QtMoc Include="editors\ComponentEditor\modes\ModesModel.h" />

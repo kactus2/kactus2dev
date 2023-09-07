@@ -145,7 +145,11 @@ private:
 
 	//! Gets the value of the cell in index.
     QVariant valueForIndex(QModelIndex const& index) const;
-	
+
+    void setFieldRef(QSharedPointer<FieldSlice> slice, QStringList const& fieldPath);
+    
+	QStringList getFieldRefPath(QSharedPointer<FieldSlice> slice) const;
+
 	//! The validator for the Field slices.
 	//QSharedPointer<FieldSliceValidator> validator_;
 

@@ -22,7 +22,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-//#include "FieldSliceDelegate.h"
+#include "FieldSliceDelegate.h"
 
 #include <QVBoxLayout>
 #include <QHeaderView>
@@ -59,9 +59,9 @@ QWidget(parent),
 
 
 
-	//delegate_ = new FieldSliceDelegate(parameterCompleter, expressions, this);
+	auto delegate = new FieldSliceDelegate(component->getMemoryMaps(), component->getAddressSpaces(), this);
 
-	//view_.setItemDelegate(delegate_);
+	view_.setItemDelegate(delegate);
 
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
