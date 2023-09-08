@@ -121,7 +121,7 @@ void ComponentEditorViewsItem::createChild( int index )
 void ComponentEditorViewsItem::createInterfaces()
 {
     QSharedPointer<ParameterValidator> validator(
-        new ParameterValidator(expressionParser_, component_->getChoices()));
+        new ParameterValidator(expressionParser_, component_->getChoices(), component_->getRevision()));
 
     QSharedPointer<ComponentInstantiationParameterFinder> instantiationParameterFinder(
         new ComponentInstantiationParameterFinder(QSharedPointer<ComponentInstantiation>()));

@@ -41,11 +41,11 @@ elementFinder_(elementFinder)
 // Function: InstantiationConfigurableElementEditor::setParameters()
 //-----------------------------------------------------------------------------
 void InstantiationConfigurableElementEditor::setParameters(QString const& containerName,
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, Document::Revision docRevision,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedElements)
 {
     ConfigurableElementEditor::setParameters(containerName, parameters, 
-        QSharedPointer<QList<QSharedPointer<Choice> > >(), storedElements);
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), docRevision, storedElements);
 
     elementFinder_->setConfigurableElementList(model_->getConfigurableElements());
 }

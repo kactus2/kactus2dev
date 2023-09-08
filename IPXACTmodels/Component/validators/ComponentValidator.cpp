@@ -65,7 +65,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::ComponentValidator()
 //-----------------------------------------------------------------------------
-ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
+ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision) :
 component_(),
 busInterfaceValidator_(),
 indirectInterfaceValidator_(),
@@ -86,7 +86,7 @@ parameterValidator_(),
 assertionValidator_()
 {
     parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), docRevision));
 
     QSharedPointer<PortMapValidator> portMapvalidator(
         new PortMapValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > (), library));

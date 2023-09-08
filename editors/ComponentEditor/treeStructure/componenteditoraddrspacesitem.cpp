@@ -147,7 +147,7 @@ void ComponentEditorAddrSpacesItem::createChild( int index )
 void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
 {
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(expressionParser_,
-        component_->getChoices()));
+        component_->getChoices(), component_->getRevision()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(expressionParser_));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(expressionParser_, enumValidator, parameterValidator));
@@ -197,7 +197,7 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser_,
-        component_->getChoices()));
+        component_->getChoices(), component_->getRevision()));
 
     ParametersInterface* parameterInterface(
         new ParametersInterface(parameterValidator, expressionParser_, expressionFormatter_));

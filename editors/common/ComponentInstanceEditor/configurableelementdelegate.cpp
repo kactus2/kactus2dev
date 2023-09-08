@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------------
 ConfigurableElementDelegate::ConfigurableElementDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QObject *parent):
+    QObject *parent) :
 ChoiceCreatorDelegate(completionModel, parameterFinder, parent),
 expressionFormatter_(expressionFormatter),
 editProvider_(0)
@@ -566,7 +566,7 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(getParameterFinder()));
     QSharedPointer<Choice> selectedChoice = findChoice(index);
     ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-        expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, view);
+        expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, docRevision_, view);
     
     QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
     QString parameterValue = valueIndex.data(Qt::EditRole).toString();
@@ -634,4 +634,12 @@ QSize ConfigurableElementDelegate::sizeHint(const QStyleOptionViewItem &option, 
 
     QSize newSize (givenSize.width(), 20);
     return newSize;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConfigurableElementDelegate::setStdRevision()
+//-----------------------------------------------------------------------------
+void ConfigurableElementDelegate::setStdRevision(Document::Revision docRevision)
+{
+    docRevision_ = docRevision;
 }

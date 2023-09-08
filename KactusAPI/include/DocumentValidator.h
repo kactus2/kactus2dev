@@ -124,9 +124,6 @@ private:
      //! The used catalog validator.
      CatalogValidator catalogValidator_;
 
-     //! The used component validator.
-     ComponentValidator componentValidator_;
-
      //! The parameter finder used in the design validator.
      QSharedPointer<ListParameterFinder> designValidatorFinder_;
 

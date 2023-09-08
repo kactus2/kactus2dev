@@ -30,11 +30,13 @@
 //-----------------------------------------------------------------------------
 RemapConditionDelegate::RemapConditionDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel,
                         QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser,
-                        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
+                        QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, 
+                        QObject* parent /*= 0*/) :
 ExpressionDelegate(completionModel, finder, parent),
 expressionFormatter_(expressionFormatter),
 expressionParser_(expressionParser),
-availablePortNames_(portNameList)
+availablePortNames_(portNameList),
+docRevision_(docRevision)
 {
 
 }
@@ -72,7 +74,7 @@ QWidget* RemapConditionDelegate::createEditor(QWidget* parent, QStyleOptionViewI
     else if (index.column() == RemapConditionColumns::VALUE_COLUMN && valueIsArray(index))
     {
         ValueOrIndexedValueEditor* editor =
-            new ValueOrIndexedValueEditor(getParameterFinder(), expressionParser_, expressionFormatter_, parent);
+            new ValueOrIndexedValueEditor(getParameterFinder(), expressionParser_, expressionFormatter_, docRevision_, parent);
 
         parent->installEventFilter(editor);
 

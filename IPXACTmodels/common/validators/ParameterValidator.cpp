@@ -28,10 +28,11 @@
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
 ParameterValidator::ParameterValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices):
+    QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices, Document::Revision docRevision):
 expressionParser_(expressionParser),
     availableChoices_(availableChoices),
-    typeValidator_(QRegularExpression(QStringLiteral("bit|byte|shortint|int|longint|shortreal|real|string|^$")))
+    typeValidator_(QRegularExpression(QStringLiteral("bit|byte|shortint|int|longint|shortreal|real|string|^$"))),
+    docRevision_(docRevision)
 {
 }
 
@@ -44,9 +45,17 @@ void ParameterValidator::componentChange(QSharedPointer<QList<QSharedPointer<Cho
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParameterValidator::setStdRevision()
+//-----------------------------------------------------------------------------
+void ParameterValidator::setStdRevision(Document::Revision docRevision)
+{
+    docRevision_ = docRevision;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParameterValidator::validate()
 //-----------------------------------------------------------------------------
-bool ParameterValidator::validate(QSharedPointer<const Parameter> parameter, Document::Revision revision) const
+bool ParameterValidator::validate(QSharedPointer<const Parameter> parameter) const
 {
     return hasValidName(parameter) &&
         hasValidValue(parameter) &&
@@ -55,7 +64,7 @@ bool ParameterValidator::validate(QSharedPointer<const Parameter> parameter, Doc
         hasValidChoice(parameter) &&
         hasValidResolve(parameter) &&
         hasValidValueId(parameter) &&
-        hasValidVector(parameter, revision);
+        hasValidVector(parameter);
 }
 
 //-----------------------------------------------------------------------------
@@ -192,7 +201,7 @@ bool ParameterValidator::isArrayValidForType(QString const& arrayExpression, QSt
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator::hasValidVector()
 //-----------------------------------------------------------------------------
-bool ParameterValidator::hasValidVector(QSharedPointer<const Parameter> parameter, Document::Revision revision) const
+bool ParameterValidator::hasValidVector(QSharedPointer<const Parameter> parameter) const
 {
     if ((!parameter->getVectors()->isEmpty() && parameter->getType() != QLatin1String("bit")) ||
         !validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight()))
@@ -200,7 +209,7 @@ bool ParameterValidator::hasValidVector(QSharedPointer<const Parameter> paramete
         return false;
     }
 
-    if (revision != Document::Revision::Std22 && vectorIdExists(parameter))
+    if (docRevision_ != Document::Revision::Std22 && vectorIdExists(parameter))
     {
         return false;
     }
@@ -351,7 +360,7 @@ bool ParameterValidator::valueIsGreaterThanMaximum(QSharedPointer<const Paramete
 // Function: ParameterValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
-    QString const& context, Document::Revision revision /*= Document::Revision::Std14*/) const
+    QString const& context) const
 {
     findErrorsInName(errors, parameter, context);
     findErrorsInValue(errors, parameter, context);
@@ -361,7 +370,7 @@ void ParameterValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<P
     findErrorsInChoice(errors, parameter, context);
     findErrorsInResolve(errors, parameter, context);
     findErrorsInValueId(errors, parameter, context);
-    findErrorsInVector(errors, parameter, context, revision);
+    findErrorsInVector(errors, parameter, context);
 }
 
 //-----------------------------------------------------------------------------
@@ -540,7 +549,7 @@ void ParameterValidator::findErrorsInValueId(QVector<QString>& errors, QSharedPo
 // Function: ParameterValidator::findErrorsInVector()
 //-----------------------------------------------------------------------------
 void ParameterValidator::findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter,
-    QString const& context, Document::Revision revision) const
+    QString const& context) const
 {
     if ((!parameter->getVectors()->isEmpty() && parameter->getType() != QLatin1String("bit")) ||
         !validateArrayValues(parameter->getVectorLeft(), parameter->getVectorRight()))
@@ -549,7 +558,7 @@ void ParameterValidator::findErrorsInVector(QVector<QString>& errors, QSharedPoi
             parameter->elementName(), parameter->name(), context));
     }
 
-    if (revision != Document::Revision::Std22 && vectorIdExists(parameter))
+    if (docRevision_ != Document::Revision::Std22 && vectorIdExists(parameter))
     {
         errors.append(QObject::tr("Vector ID specified for %1 %2 within %3 not using IP-XACT standard"
             " revision 2022").arg(parameter->elementName(), parameter->name(), context));

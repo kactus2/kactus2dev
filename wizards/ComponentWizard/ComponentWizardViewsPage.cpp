@@ -191,7 +191,7 @@ void ComponentWizardViewsPage::createEditorForView(QSharedPointer<Component> com
     QSharedPointer<ExpressionFormatter> moduleFormatter(new ExpressionFormatter(combinedInstantiationFinder));
 
     QSharedPointer<ParameterValidator> validator(
-        new ParameterValidator(expressionParser, component->getChoices()));
+        new ParameterValidator(expressionParser, component->getChoices(), component->getRevision()));
     ModuleParameterInterface* moduleParameterInterface = new ModuleParameterInterface(
         validator, expressionParser, moduleFormatter, instantiationParameterFinder);
 

@@ -13,7 +13,6 @@
 
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsFilter.h>
-#include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
@@ -27,7 +26,7 @@ ComponentInstanceConfigurableElementsEditor::ComponentInstanceConfigurableElemen
     ExpressionSet parameterExpressions,
     ExpressionSet moduleParameterExpressions,
     ExpressionSet defaultExpressions,
-    QAbstractItemModel* completionModel, QWidget *parent):
+    QAbstractItemModel* completionModel, QWidget *parent) :
     QWidget(parent),
     parameterEditor_(parameterExpressions, defaultExpressions, completionModel, this),
     moduleParameterEditor_(moduleParameterExpressions, defaultExpressions, nullptr, this)
@@ -63,8 +62,8 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
     moduleParameterEditor_.setEditProvider(editProvider);
 
     auto identifier = tr("component %1").arg(component->getVlnv().toString());
-    parameterEditor_.setParameters(identifier,component->getParameters(), component->getChoices(), 
-        instance->getConfigurableElementValues());
+    parameterEditor_.setParameters(identifier, component->getParameters(), component->getChoices(), 
+        component->getRevision(), instance->getConfigurableElementValues());
 
 
     QSharedPointer<QList<QSharedPointer<Parameter> > > moduleParameters(new QList<QSharedPointer<Parameter> >());
@@ -95,7 +94,7 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
     }
 
     moduleParameterEditor_.setParameters(identifier, moduleParameters, component->getChoices(), 
-        viewConfiguration->getViewConfigurableElements());
+        component->getRevision(), viewConfiguration->getViewConfigurableElements());
 }
 
 //-----------------------------------------------------------------------------

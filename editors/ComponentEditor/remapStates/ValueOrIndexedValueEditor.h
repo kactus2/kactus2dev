@@ -12,6 +12,8 @@
 #ifndef VALUEORINDEXEDVALUEEDITOR_H
 #define VALUEORINDEXEDVALUEEDITOR_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QTableView>
 #include <QCompleter>
 
@@ -38,8 +40,7 @@ public:
      *      @param [in] formatter   The used expression formatter.
      *      @param [in] parent      The parent widget of this table.
      */
-    ValueOrIndexedValueEditor(QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> parser,
-        QSharedPointer<ExpressionFormatter> formatter, QWidget* parent);
+    ValueOrIndexedValueEditor(QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> parser, QSharedPointer<ExpressionFormatter> formatter, Document::Revision docRevision, QWidget* parent);
 
     /*!
      *  The destructor.
@@ -173,6 +174,9 @@ private:
 
     //! The parameter model for the expression editors.
     ComponentParameterModel* parameterModel_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // VALUEORINDEXEDVALUEEDITOR_H

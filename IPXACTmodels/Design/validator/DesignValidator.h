@@ -214,11 +214,11 @@ private:
     //! The used ad hoc connection validator.
     QSharedPointer<AdHocConnectionValidator> adHocConnectionValidator_;
 
-    //! The used parameter validator.
-    QSharedPointer<ParameterValidator> parameterValidator_;
-
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;
+
+    //! The used expression parser
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // DESIGNVALIDATOR_H

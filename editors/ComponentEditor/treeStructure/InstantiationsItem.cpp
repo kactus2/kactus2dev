@@ -42,8 +42,8 @@ InstantiationsItem::InstantiationsItem(ComponentEditorTreeModel* model, LibraryI
 ComponentEditorItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
 validator_(new InstantiationsValidator(expressionParser, component->getFileSets(),
-    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())),
-    libHandler)),
+    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices(),
+        component->getRevision())), libHandler)),
 componentInstantiationsItem_(0),
 designConfigurationInstantiationsItem_(
     new DesignConfigurationInstantiationsItem(model, libHandler, component, validator_, referenceCounter,
@@ -171,7 +171,7 @@ void InstantiationsItem::constructInterfaces()
         QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(cimpFinder));
 
     QSharedPointer<ParameterValidator> validator(
-        new ParameterValidator(cimpParser, component_->getChoices()));
+        new ParameterValidator(cimpParser, component_->getChoices(), component_->getRevision()));
 
     QSharedPointer<ExpressionFormatter> moduleFormatter(new ExpressionFormatter(cimpFinder));
 

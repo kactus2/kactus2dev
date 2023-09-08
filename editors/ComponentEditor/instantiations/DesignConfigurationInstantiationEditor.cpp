@@ -45,7 +45,7 @@ instantiation_(instantiation),
 nameGroupEditor_(new NameGroupEditor(instantiation, component->getRevision(), this,
     tr("Design configuration instance name and description"))),
 designConfigurationEditor_(0),
-parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, this),
+parameters_(instantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, component->getRevision(), this),
 elementEditor_(0),
 designConfigurationParameterFinder_(new ListParameterFinder())
 {
@@ -178,7 +178,8 @@ void DesignConfigurationInstantiationEditor::setupParametersAsConfigurableElemen
 
     if (designConfiguration && instantiation_->getDesignConfigurationReference())
     {
-        elementEditor_->setParameters(designConfiguration->getVlnv().toString(), newParameters, newElements);
+        elementEditor_->setParameters(designConfiguration->getVlnv().toString(), newParameters, 
+            designConfiguration->getRevision(), newElements);
     }
     else
     {

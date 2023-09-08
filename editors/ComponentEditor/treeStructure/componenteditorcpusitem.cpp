@@ -32,7 +32,7 @@ ComponentEditorCpusItem::ComponentEditorCpusItem(ComponentEditorTreeModel* model
 ComponentEditorItem(model, libHandler, component, parent),
     cpus_(component->getCpus()),
     validator_(new CPUValidator(
-        QSharedPointer<ParameterValidator>(new ParameterValidator(expressions.parser, component->getChoices())),
+        QSharedPointer<ParameterValidator>(new ParameterValidator(expressions.parser, component->getChoices(), component->getRevision())),
         expressions.parser, component->getAddressSpaces(), component->getMemoryMaps(), component->getRevision())),
     expressions_(expressions)
 {

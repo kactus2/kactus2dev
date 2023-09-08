@@ -71,7 +71,7 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::Details::createCommonBusInt
     fileSetInterface->setFileSets(component->getFileSets());
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser,
-        component->getChoices()));
+        component->getChoices(), component->getRevision()));
 
     ParametersInterface* parameterInterface =
         Details::createParameterInterface(parameterValidator, expressionParser, expressionFormatter);

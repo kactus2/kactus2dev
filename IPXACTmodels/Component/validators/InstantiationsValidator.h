@@ -201,7 +201,7 @@ private:
      *
      *      @return True, if the parameters are valid, otherwise false.
      */
-    bool hasValidParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters, Document::Revision docRevision) const;
+    bool hasValidParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > availableParameters) const;
 
     /*!
      *  Check if the contained module parameters are valid.

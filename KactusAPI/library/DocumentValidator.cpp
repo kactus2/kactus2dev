@@ -33,8 +33,6 @@ DocumentValidator::DocumentValidator(LibraryInterface* library) :
     busValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
     catalogValidator_(),
     componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
-    componentValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(componentValidatorFinder_)),
-        library_),
     designValidatorFinder_(new ListParameterFinder()),
     designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), library_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_),
@@ -66,7 +64,10 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
         QSharedPointer<Component> currentComponent = document.dynamicCast<Component>();
         changeComponentValidatorParameterFinder(currentComponent);
 
-        return componentValidator_.validate(currentComponent);
+        ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
+            new IPXactSystemVerilogParser(componentValidatorFinder_)), library_, currentComponent->getRevision());
+
+        return componentValidator.validate(currentComponent);
     }
     else if (documentType == VLNV::DESIGN)
     {
@@ -161,8 +162,9 @@ void DocumentValidator::findErrorsInAbstractionDefinition(QSharedPointer<Abstrac
 void DocumentValidator::findErrorsInComponent(QSharedPointer<Component> component, QVector<QString>& errorList)
 {
     changeComponentValidatorParameterFinder(component);
-
-    componentValidator_.findErrorsIn(errorList, component);
+    ComponentValidator componentValidator(QSharedPointer<ExpressionParser>(
+        new IPXactSystemVerilogParser(componentValidatorFinder_)), library_, component->getRevision());
+    componentValidator.findErrorsIn(errorList, component);
 }
 
 //-----------------------------------------------------------------------------

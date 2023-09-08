@@ -30,7 +30,8 @@ ComponentEditorItem(model, libHandler, component, parent),
 indirectInterfaces_(component->getIndirectInterfaces()),
 expressionParser_(expressionParser),
 validator_(new IndirectInterfaceValidator(component, expressionParser,
-    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices())))),
+    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices(), 
+        component_->getRevision())))),
 parentWnd_(parentWnd),
 busInterface_(busInterface)
 {

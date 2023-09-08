@@ -23,7 +23,6 @@
 
 class Component;
 class ComponentInstance;
-class ComponentInstanceConfigurableElementsModel;
 
 //-----------------------------------------------------------------------------
 //! Editor for configurable elements of a component instance.
@@ -43,10 +42,8 @@ public:
      *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-    ComponentInstanceConfigurableElementsEditor(
-        ExpressionSet parameterExpressions,
-        ExpressionSet moduleParameterExpressions,
-        ExpressionSet defaultExpressions,
+    ComponentInstanceConfigurableElementsEditor( ExpressionSet parameterExpressions,
+        ExpressionSet moduleParameterExpressions, ExpressionSet defaultExpressions, 
         QAbstractItemModel* completionModel, QWidget *parent);
 	
 	/*!

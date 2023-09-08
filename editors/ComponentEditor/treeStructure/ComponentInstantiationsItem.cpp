@@ -142,7 +142,7 @@ QSharedPointer<SingleComponentInstantiationItem> ComponentInstantiationsItem::cr
     QSharedPointer<InstantiationsValidator> cimpValidator = QSharedPointer<InstantiationsValidator>(
         new InstantiationsValidator(cimpParser, component_->getFileSets(),
             QSharedPointer<ParameterValidator>(
-                new ParameterValidator(cimpParser, component_->getChoices())), libHandler_));
+                new ParameterValidator(cimpParser, component_->getChoices(), component_->getRevision())), libHandler_));
 
     QSharedPointer<SingleComponentInstantiationItem> componentInstantiationItem(
         new SingleComponentInstantiationItem(model_, libHandler_, component_, instantiation, cimpValidator,

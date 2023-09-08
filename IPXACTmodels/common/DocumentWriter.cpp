@@ -92,7 +92,7 @@ void DocumentWriter::writeDocumentNameGroup(QXmlStreamWriter& writer, QSharedPoi
 //-----------------------------------------------------------------------------
 void DocumentWriter::writeParameters(QXmlStreamWriter& writer, QSharedPointer<Document> document) 
 {
-    CommonItemsWriter::writeParameters(writer, document->getParameters());
+    CommonItemsWriter::writeParameters(writer, document->getParameters(), document->getRevision());
 }
 
 //-----------------------------------------------------------------------------

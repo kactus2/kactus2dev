@@ -51,15 +51,13 @@ public:
 	 *      @param [in] completionModel                 The completion model for selecting parameter references.
 	 *      @param [in] parent                          The parent widget.
 	 */
-    ConfigurableElementEditor(
-        ExpressionSet parameterExpressions,
-        ExpressionSet defaultExpressions,
-        QAbstractItemModel* completionModel,
-        QWidget *parent);
+    ConfigurableElementEditor( ExpressionSet parameterExpressions, ExpressionSet defaultExpressions, 
+        QAbstractItemModel* completionModel, QWidget *parent);
 	
     void setParameters(QString const& containingItemName, 
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        Document::Revision docRevision,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements);
 
     //! The destructor.

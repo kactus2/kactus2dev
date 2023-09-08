@@ -38,7 +38,7 @@ QWidget(parent),
         parentWnd, this)),
     modeStack_(busInterface_, busName, component, expressions.finder, libHandler, expressions.parser, this),
     details_(busInterface_, busName, component->getRevision(), expressions.finder, expressions.parser, this),
-    parameters_(busif->getParameters(), component->getChoices(), expressions.finder, expressions.formatter, this),
+    parameters_(busif->getParameters(), component->getChoices(), expressions.finder, expressions.formatter, component->getRevision(), this),
     libHandler_(libHandler),
     docRevision_(component->getRevision())
 {

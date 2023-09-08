@@ -27,7 +27,7 @@ ComponentEditorParametersItem::ComponentEditorParametersItem(ComponentEditorTree
     QSharedPointer<ExpressionFormatter> expressionFormatter, ComponentEditorItem* parent):
 ParameterizableItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
-validator_(new ParameterValidator(expressionParser, component->getChoices())),
+validator_(new ParameterValidator(expressionParser, component->getChoices(), component->getRevision())),
 parameterInterface_(new ParametersInterface(validator_, expressionParser, expressionFormatter))
 {
     parameterInterface_->setParameters(component->getParameters());

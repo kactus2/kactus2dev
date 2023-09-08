@@ -13,6 +13,7 @@
 #define PARAMETERGROUPBOX_H
 
 #include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QGroupBox>
 #include <QList>
@@ -23,6 +24,8 @@ class Component;
 class Choice;
 class ParameterFinder;
 class ParametersModel;
+class ParameterDelegate;
+class ParameterValidator;
 class ExpressionFormatter;
 class ParametersView;
 class ParametersInterface;
@@ -44,13 +47,12 @@ public:
 	 *      @param [in]  choices                The available choices for the parameters.
 	 *      @param [in]  parameterFinder        The parameter finder used to search the components parameters.
 	 *      @param [in]  expressionFormatter    The expression formatter.
+	 *      @param [in]  docRevision            The IP-XACT standard revision to use.
 	 *      @param [in]  parent                 The owner of this editor.
 	 */
-	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters, 
-        QSharedPointer<QList<QSharedPointer<Choice> > > choices,
-        QSharedPointer<ParameterFinder> parameterFinder, 
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QWidget *parent);
+	ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, QWidget *parent);
 
 	/*!
      *  The destructor.
@@ -67,7 +69,7 @@ public:
      *
      *      @param [in] newParameters   New parameter list.
      */
-    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters);
+    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, Document::Revision docRevision);
 
 signals:
 
@@ -129,11 +131,17 @@ private:
 	//! The model that holds the data to be displayed to the user
 	ParametersModel* model_;
 
+    //! The parameter delegate.
+    ParameterDelegate* delegate_;
+
     //! The parameter finder for locating the contained parameters.
     QSharedPointer<ParameterFinder> parameterFinder_;
 
     //! Interface for accessing parameters.
     ParametersInterface* parameterInterface_;
+
+    //! The parameter validator.
+    QSharedPointer<ParameterValidator> parameterValidator_;
 };
 
 #endif // PARAMETERGROUPBOX_H

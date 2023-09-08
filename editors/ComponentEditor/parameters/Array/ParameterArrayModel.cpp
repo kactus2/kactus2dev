@@ -22,7 +22,7 @@
 ParameterArrayModel::ParameterArrayModel(int sizeOfArray, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<Choice> selectedChoice, QColor valueBackGroundColor, int arrayStartIndex,
-    QObject* parent):
+    Document::Revision docRevision, QObject* parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 sizeOfArray_(sizeOfArray),
@@ -37,7 +37,7 @@ arrayStartIndex_(arrayStartIndex)
     QSharedPointer<QList<QSharedPointer<Choice> > > choices(new QList<QSharedPointer<Choice> >());
     choices->append(selectedChoice);
 
-    validator_ = new ParameterValidator(expressionParser, choices);
+    validator_ = new ParameterValidator(expressionParser, choices, docRevision);
 
     QString repeater = ",";
     QString newArray = repeater.repeated(sizeOfArray_ - 1);

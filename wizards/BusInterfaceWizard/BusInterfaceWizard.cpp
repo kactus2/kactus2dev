@@ -52,7 +52,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(
-        expressionParser, component->getChoices()));
+        expressionParser, component->getChoices(), component->getRevision()));
 
     BusInterfaceWizardAbsDefinitionPage::SignalNamingPolicy namingPolicy =
         BusInterfaceWizardAbsDefinitionPage::NAME;

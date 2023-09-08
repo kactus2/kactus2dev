@@ -84,9 +84,6 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! The validator for parameters.
-    QSharedPointer<ParameterValidator> parameterValidator_;
-
     //! The validator for choices.
     QSharedPointer<ChoiceValidator> choiceValidator_;
 };

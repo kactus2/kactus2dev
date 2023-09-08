@@ -7,7 +7,7 @@
 //
 // Description:
 // Reference to a field in the encapsulating component. Describes the elements 
-// in the fieldReferenceGroup group.
+// in the fieldReferenceGroup and fieldSliceReferenceGroup.
 //-----------------------------------------------------------------------------
 
 #include "FieldReference.h"

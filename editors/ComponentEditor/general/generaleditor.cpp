@@ -45,7 +45,7 @@ GeneralEditor::GeneralEditor(LibraryInterface* libHandler, QSharedPointer<Compon
     headerEditor_(new QPlainTextEdit(this)),
     finder_(new ParameterCache(component)),
     parser_(new IPXactSystemVerilogParser(finder_)),
-    validator_(new ComponentValidator(parser_, libHandler)),
+    validator_(new ComponentValidator(parser_, libHandler, component->getRevision())),
     library_(libHandler)
 {
     Q_ASSERT(libHandler != 0);

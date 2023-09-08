@@ -12,6 +12,8 @@
 #ifndef REMAPCONDITIONDELEGATE_H
 #define REMAPCONDITIONDELEGATE_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <editors/ComponentEditor/common/ExpressionDelegate.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -38,11 +40,9 @@ public:
      *      @param [in] expressionFormatter     The expression formatter for changing ids to parameter names.
      *      @param [in] parent                  The parent of the object.
      */
-    RemapConditionDelegate(QStringList const& portNameList,
-        QAbstractItemModel* completionModel,
-        QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+    RemapConditionDelegate(QStringList const& portNameList, QAbstractItemModel* completionModel, 
+        QSharedPointer<ParameterFinder> finder, QSharedPointer<ExpressionParser> expressionParser, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, 
         QObject* parent = 0);
 
 	//! The destructor
@@ -178,6 +178,9 @@ private:
 
     //! The list of port names within the component.
     QStringList componentPortNames_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // REMAPCONDITIONDELEGATE_H
