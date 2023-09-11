@@ -487,7 +487,7 @@ void QuartusGenerator::parseFilesFromFlatView(QSharedPointer<Component> componen
 
     if (instance)
     {
-        fileSets = *instance->getFileSetReferences();
+        fileSets = instance->getFileSetReferenceStrings();
     }
 
     parseFileSets(component, fileSets);

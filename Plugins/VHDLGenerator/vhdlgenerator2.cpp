@@ -386,9 +386,12 @@ bool VhdlGenerator2::addRTLView(QString const& fileSetName, const QString& vhdlF
 
     componentInstantiation->setArchitectureName(architectureName);
 
-    if (!componentInstantiation->getFileSetReferences()->contains(fileSetName))
+    if (!componentInstantiation->getFileSetReferenceStrings().contains(fileSetName))
     {
-        componentInstantiation->getFileSetReferences()->append(fileSetName);
+        QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+        newFileSetRef->setReference(fileSetName);
+
+        componentInstantiation->getFileSetReferences()->append(newFileSetRef);
     }	
 
 	return true;
@@ -625,7 +628,7 @@ void VhdlGenerator2::parseInstances()
         if (componentInstantiation)
         {
             // add the libraries of the instantiated component to the library list.
-            foreach (QString const& fileSetRef, *componentInstantiation->getFileSetReferences())
+            for (auto const& fileSetRef : componentInstantiation->getFileSetReferenceStrings())
             {
                 QSharedPointer<FileSet> fileSet = compInstance->componentModel()->getFileSet(fileSetRef);
 

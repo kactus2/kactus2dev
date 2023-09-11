@@ -82,15 +82,15 @@ ViewSelection::ViewSelection(QString const& targetLanguage,
     fileSet_ = fileSets_.value(settings->lastFileSetName_);
 
     // If instantiation exists and it has file set references, it may affect the choice.
-    if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0)
+    if (instantiation_ && instantiation_->getFileSetReferences()->isEmpty() == false)
     {
         // If the default file set exists and is referred by the instantiation, it is a valid choice.
-        if (!fileSet_ || !instantiation_->getFileSetReferences()->contains(fileSet_->name()))
+        if (!fileSet_ || !instantiation_->getFileSetReferenceStrings().contains(fileSet_->name()))
         {
             // If not, try to first find one with a matching group identifier.
-            foreach (QString fileSetRef, *instantiation_->getFileSetReferences())
+            for (auto const& fileSetRef : *instantiation_->getFileSetReferences())
             {
-                QSharedPointer<FileSet> inspect =  fileSets_.value(fileSetRef);
+                QSharedPointer<FileSet> inspect =  fileSets_.value(fileSetRef->getReference());
 
                 if (inspect->getGroups()->contains(targetGroup))
                 {
@@ -101,7 +101,7 @@ ViewSelection::ViewSelection(QString const& targetLanguage,
             // If none found, pick the first one.
             if (!fileSet_)
             {
-                fileSet_ = fileSets_.value(instantiation_->getFileSetReferences()->first());
+                fileSet_ = fileSets_.value(instantiation_->getFileSetReferences()->first()->getReference());
             }
         }
     }
@@ -176,9 +176,10 @@ void ViewSelection::setView(QString const& viewName)
     {
         instantiation_ = instantiations_.value(view_->getComponentInstantiationRef());
 
-        if (instantiation_ && instantiation_->getFileSetReferences()->size() > 0)
+        if (instantiation_ && instantiation_->getFileSetReferences()->isEmpty() == false)
         {
-            QSharedPointer<FileSet> newFileSet = fileSets_.value(instantiation_->getFileSetReferences()->first());
+            QSharedPointer<FileSet> newFileSet = fileSets_.value(
+                instantiation_->getFileSetReferences()->first()->getReference());
 
             if (newFileSet)
             {

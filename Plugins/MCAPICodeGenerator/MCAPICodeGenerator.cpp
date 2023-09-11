@@ -183,7 +183,9 @@ void MCAPICodeGenerator::generateMCAPIForComponent(QString dir, QSharedPointer<C
 
         if(insta)
         {
-           insta->getFileSetReferences()->append(fileSet->name());
+            QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+            newFileSetRef->setReference(fileSet->name());
+            insta->getFileSetReferences()->append(newFileSetRef);
         }
     }
 }

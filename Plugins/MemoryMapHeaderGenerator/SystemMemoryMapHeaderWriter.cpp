@@ -100,7 +100,7 @@ void SystemMemoryMapHeaderWriter::writeMemoryMapHeader(QSharedPointer<Component>
 
             if (insta)
             {
-                QStringList fileSets = *insta->getFileSetReferences().data();
+                QStringList fileSets = insta->getFileSetReferenceStrings();
 
                 // the files that are included in the active view
                 QStringList files = instComponent->getFilesFromFileSets(fileSets, usedFileTypes);

@@ -90,9 +90,13 @@ bool GenerationControl::writeDocuments()
         }
 
         // If instantiation exists, make sure that the instantiation refers to the file set.
-        if (instantiation && !instantiation->getFileSetReferences()->contains(fileSet->name()))
+        QStringList fileSetRefs = instantiation->getFileSetReferenceStrings();
+        
+        if (instantiation && !fileSetRefs.contains(fileSet->name()))
         {
-            instantiation->getFileSetReferences()->append(fileSet->name());
+            QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+            newFileSetRef->setReference(fileSet->name());
+            instantiation->getFileSetReferences()->append(newFileSetRef);
         }
     }
 
