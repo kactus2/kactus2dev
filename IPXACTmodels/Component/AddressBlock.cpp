@@ -12,6 +12,8 @@
 #include "AddressBlock.h"
 #include "RegisterBase.h"
 #include "Register.h"
+#include "MemoryArray.h"
+#include "AccessPolicy.h"
 
 //-----------------------------------------------------------------------------
 // Function: AddressBlock::AddressBlock()
@@ -25,8 +27,7 @@ width_(),
 widthAttributes_(),
 usage_(General::USAGE_COUNT),
 volatile_(),
-access_(AccessTypes::ACCESS_COUNT),
-registerData_(new QList<QSharedPointer<RegisterBase> > ())
+access_(AccessTypes::ACCESS_COUNT)
 {
 
 }
@@ -36,6 +37,9 @@ registerData_(new QList<QSharedPointer<RegisterBase> > ())
 //-----------------------------------------------------------------------------
 AddressBlock::AddressBlock(const AddressBlock &other):
 MemoryBlockBase(other),
+misalignmentAllowed_(other.misalignmentAllowed_),
+addressBlockDefinitionRef_(other.addressBlockDefinitionRef_),
+typeDefinitionsRef_(other.typeDefinitionsRef_),
 typeIdentifier_(other.typeIdentifier_),
 range_(other.range_),
 rangeAttributes_(other.rangeAttributes_),
@@ -43,10 +47,15 @@ width_(other.width_),
 widthAttributes_(other.widthAttributes_),
 usage_(other.usage_),
 volatile_(other.volatile_),
-access_(other.access_),
-registerData_(new QList<QSharedPointer<RegisterBase> > ())
+access_(other.access_)
 {
     copyRegisterData(other);
+    Utilities::copyList(accessPolicies_, other.accessPolicies_);
+
+    if (other.memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -57,6 +66,9 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
     if (this != &other)
     {
         MemoryBlockBase::operator=(other);
+        misalignmentAllowed_ = other.misalignmentAllowed_;
+        addressBlockDefinitionRef_ = other.addressBlockDefinitionRef_;
+        typeDefinitionsRef_ = other.typeDefinitionsRef_;
         typeIdentifier_ = other.typeIdentifier_;
         range_ = other.range_;
         rangeAttributes_ = other.rangeAttributes_;
@@ -68,6 +80,14 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
 
         registerData_->clear();
         copyRegisterData(other);
+
+        Utilities::copyList(accessPolicies_, other.accessPolicies_);
+
+        memoryArray_.clear();
+        if (other.memoryArray_)
+        {
+            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+        }
     }
 
     return *this;
@@ -259,11 +279,91 @@ QStringList AddressBlock::getAllRegisterOffsets() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlock::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> AddressBlock::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::setMemoryArray()
+//-----------------------------------------------------------------------------
+void AddressBlock::setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray)
+{
+    memoryArray_ = newMemoryArray;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::getMisalignmentAllowed()
+//-----------------------------------------------------------------------------
+QString AddressBlock::getMisalignmentAllowed() const
+{
+    return misalignmentAllowed_.toString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::setMisalignmentAllowed()
+//-----------------------------------------------------------------------------
+void AddressBlock::setMisalignmentAllowed(bool newMisalignmentAllowed)
+{
+    misalignmentAllowed_.setValue(newMisalignmentAllowed);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::getAddressBlockDefinitionRef()
+//-----------------------------------------------------------------------------
+QString AddressBlock::getAddressBlockDefinitionRef() const
+{
+    return addressBlockDefinitionRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::setAddressBlockDefinitionRef()
+//-----------------------------------------------------------------------------
+void AddressBlock::setAddressBlockDefinitionRef(QString const& newAddressBlockDefinitionRef)
+{
+    addressBlockDefinitionRef_ = newAddressBlockDefinitionRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::getTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+QString AddressBlock::getTypeDefinitionsRef() const
+{
+    return typeDefinitionsRef_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::setTypeDefinitionsRef()
+//-----------------------------------------------------------------------------
+void AddressBlock::setTypeDefinitionsRef(QString const& newTypeDefinitionsRef)
+{
+    typeDefinitionsRef_ = newTypeDefinitionsRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::getAccessPolicies()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AccessPolicy> > > AddressBlock::getAccessPolicies() const
+{
+    return accessPolicies_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlock::setAccessPolicies()
+//-----------------------------------------------------------------------------
+void AddressBlock::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies)
+{
+    accessPolicies_ = newAccessPolicies;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlock::copyRegisterData()
 //-----------------------------------------------------------------------------
 void AddressBlock::copyRegisterData(const AddressBlock& other)
 {
-    foreach (QSharedPointer<RegisterBase> registerBase, *other.registerData_)
+    for (auto registerBase : *other.registerData_)
     {
         if (registerBase)
         {

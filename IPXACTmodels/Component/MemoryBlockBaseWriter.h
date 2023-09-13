@@ -6,7 +6,7 @@
 // Date: 28.01.2022
 //
 // Description:
-// Writer class for base memory block element.
+// Writer for base memory block element.
 //-----------------------------------------------------------------------------
 
 #ifndef MEMORYBLOCKBASEWRITER_H
@@ -22,35 +22,18 @@
 class MemoryBlockBase;
 
 //-----------------------------------------------------------------------------
-//! Writer class for base memory block element.
+//! Writer for base memory block element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryBlockBaseWriter : public CommonItemsWriter
+namespace  MemoryBlockBaseWriter
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    MemoryBlockBaseWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~MemoryBlockBaseWriter() = default;
-
-    //! No copying allowed.
-    MemoryBlockBaseWriter(MemoryBlockBaseWriter const& rhs);
-    MemoryBlockBaseWriter& operator=(MemoryBlockBaseWriter const& rhs);
-
-protected:
-
     /*!
      *  Write the name group.
      *
      *      @param [in] writer          Used XML writer.
      *      @param [in] memoryBlock     Selected memory block.
      */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock) const;
+    IPXACTMODELS_EXPORT void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock, 
+        Document::Revision docRevision);
 
     /*!
      *  Write the base address.
@@ -58,7 +41,7 @@ protected:
      *      @param [in] writer          Used XML writer.
      *      @param [in] memoryBlock     Selected memory block.
      */
-    void writeBaseAddress(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock) const;
+    IPXACTMODELS_EXPORT void writeBaseAddress(QXmlStreamWriter& writer, QSharedPointer<MemoryBlockBase> memoryBlock);
 };
 
 #endif // ADDRESSBLOCKWRITER_H

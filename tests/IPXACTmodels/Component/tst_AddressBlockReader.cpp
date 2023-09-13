@@ -14,6 +14,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -39,6 +40,11 @@ private slots:
     void readParameters();
 
     void readRegisterData();
+
+    void readMisalignmentAllowed2022();
+    void readMemoryArray2022();
+    void readAddressBlockDefinitionRef2022();
+    void readAccessPolicies2022();
 
     void readVendorExtensions();
 };
@@ -72,8 +78,7 @@ void tst_AddressBlockReader::readSimpleAddressBlock()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->displayName(), QString("displayed"));
@@ -103,8 +108,7 @@ void tst_AddressBlockReader::readIsPresent()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getIsPresent(), QString("presence"));
@@ -130,8 +134,7 @@ void tst_AddressBlockReader::readTypeIdentifier()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getTypeIdentifier(), QString("identifier"));
@@ -157,8 +160,7 @@ void tst_AddressBlockReader::readUsage()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getUsage(), General::REGISTER);
@@ -184,8 +186,7 @@ void tst_AddressBlockReader::readVolatile()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getVolatile(), QString("true"));
@@ -202,7 +203,7 @@ void tst_AddressBlockReader::readVolatile()
 
     document.setContent(documentContent);
     addressBlockNode = document.firstChildElement("ipxact:addressBlock");
-    testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getVolatile(), QString("false"));
@@ -228,8 +229,7 @@ void tst_AddressBlockReader::readAccess()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
     QCOMPARE(testAddressBlock->getAccess(), AccessTypes::WRITEONCE);
@@ -260,8 +260,7 @@ void tst_AddressBlockReader::readParameters()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
 
@@ -309,8 +308,7 @@ void tst_AddressBlockReader::readRegisterData()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
 
@@ -338,6 +336,123 @@ void tst_AddressBlockReader::readRegisterData()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_AddressBlockReader::readMisallignmentAllowed2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockReader::readMisalignmentAllowed2022()
+{
+    QString documentContent(
+        "<ipxact:addressBlock misalignmentAllowed=\"false\">"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+        "</ipxact:addressBlock>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
+
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std22);
+
+    QCOMPARE(testAddressBlock->name(), QString("testBlock"));
+    QCOMPARE(testAddressBlock->getMisalignmentAllowed(), QString("false"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockReader::readMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockReader::readMemoryArray2022()
+{
+    QString documentContent(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"testDim\">1+1</ipxact:dim>"
+                "<ipxact:dim>4</ipxact:dim>"
+                "<ipxact:stride>4</ipxact:stride>"
+            "</ipxact:array>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"    
+        "</ipxact:addressBlock>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
+
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std22);
+
+    QCOMPARE(testAddressBlock->getMemoryArray()->getDimensions()->size(), 2);
+    
+    QCOMPARE(testAddressBlock->getMemoryArray()->getDimensions()->first()->indexVar_, QString("testDim"));
+    QCOMPARE(testAddressBlock->getMemoryArray()->getDimensions()->first()->value_, QString("1+1"));
+    
+    QCOMPARE(testAddressBlock->getMemoryArray()->getDimensions()->last()->indexVar_, QString(""));
+    QCOMPARE(testAddressBlock->getMemoryArray()->getDimensions()->last()->value_, QString("4"));
+
+    QCOMPARE(testAddressBlock->getMemoryArray()->getStride(), QString("4"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockReader::readAddressBlockDefinitionRef2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockReader::readAddressBlockDefinitionRef2022()
+{
+    QString documentContent(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:addressBlockDefinitionRef typeDefinitions=\"testDefinitions\">someBlock</ipxact:addressBlockDefinitionRef>"
+        "</ipxact:addressBlock>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
+
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std22);
+
+    QCOMPARE(testAddressBlock->getAddressBlockDefinitionRef(), QString("someBlock"));
+    QCOMPARE(testAddressBlock->getTypeDefinitionsRef(), QString("testDefinitions"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockReader::readAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockReader::readAccessPolicies2022()
+{
+    QString documentContent(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+            "<ipxact:accessPolicies>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"1\">testMode</ipxact:modeRef>"
+                    "<ipxact:access>read-only</ipxact:access>"
+                "</ipxact:accessPolicy>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"2\">testMode2</ipxact:modeRef>"
+                "</ipxact:accessPolicy>"
+            "</ipxact:accessPolicies>"
+        "</ipxact:addressBlock>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+    QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
+
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std22);
+
+    QCOMPARE(testAddressBlock->getAccessPolicies()->size(), 2);
+    QCOMPARE(testAddressBlock->getAccessPolicies()->first()->getModeReferences()->first()->getReference(), QString("testMode"));
+    QCOMPARE(testAddressBlock->getAccessPolicies()->first()->getAccess(), AccessTypes::READ_ONLY);
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_AddressBlockReader::readVendorExtensions()
 //-----------------------------------------------------------------------------
 void tst_AddressBlockReader::readVendorExtensions()
@@ -359,8 +474,7 @@ void tst_AddressBlockReader::readVendorExtensions()
 
     QDomNode addressBlockNode = document.firstChildElement("ipxact:addressBlock");
 
-    AddressBlockReader addressBlockReader;
-    QSharedPointer<AddressBlock> testAddressBlock = addressBlockReader.createAddressBlockFrom(addressBlockNode);
+    QSharedPointer<AddressBlock> testAddressBlock = AddressBlockReader::createAddressBlockFrom(addressBlockNode, Document::Revision::Std14);
 
     QCOMPARE(testAddressBlock->name(), QString("testBlock"));
 

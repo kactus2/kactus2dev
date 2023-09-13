@@ -63,21 +63,18 @@ void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPoi
 {
     if (!MemoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        AddressBlockWriter addressBlockWriter;
-        SubSpaceMapWriter subspaceMapWriter;
-
-        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *MemoryMapBase->getMemoryBlocks())
+        for (auto const& memoryBlock : *MemoryMapBase->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                addressBlockWriter.writeAddressBlock(writer, addressBlock, docRevision);
+                AddressBlockWriter::writeAddressBlock(writer, addressBlock, docRevision);
             }
 
             QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();
             if (subspaceMap)
             {
-                subspaceMapWriter.writeSubSpaceMap(writer, subspaceMap);
+                SubSpaceMapWriter::writeSubSpaceMap(writer, subspaceMap, docRevision);
             }
         }
     }

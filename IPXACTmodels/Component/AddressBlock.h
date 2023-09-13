@@ -24,6 +24,7 @@
 #include <QSharedPointer>
 
 class RegisterBase;
+class AccessPolicy;
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:addressBlock element.
@@ -195,6 +196,26 @@ public:
      */
     QStringList getAllRegisterOffsets() const;
 
+    QSharedPointer<MemoryArray> getMemoryArray() const;
+
+    void setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray);
+
+    QString getMisalignmentAllowed() const;
+
+    void setMisalignmentAllowed(bool newMisalignmentAllowed);
+
+    QString getAddressBlockDefinitionRef() const;
+
+    void setAddressBlockDefinitionRef(QString const& newAddressBlockDefinitionRef);
+
+    QString getTypeDefinitionsRef() const;
+
+    void setTypeDefinitionsRef(QString const& newTypeDefinitionsRef);
+
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > getAccessPolicies() const;
+
+    void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
+
 private:
 
     /*!
@@ -207,6 +228,18 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! The attribute allowing or disallowing register address offset misalignment in the address block.
+    BooleanValue misalignmentAllowed_;
+
+    //! Contains the memory array of the address block.
+    QSharedPointer<MemoryArray> memoryArray_;
+
+    //! The address block definition reference.
+    QString addressBlockDefinitionRef_;
+
+    //! The type definitions reference.
+    QString typeDefinitionsRef_;
 
     //! Indicates the type of the address block.
     QString typeIdentifier_;
@@ -232,8 +265,13 @@ private:
     //! Specifies the accessibility of the address block data.
     AccessTypes::Access access_;
 
+    //! The access poclicies of the address block.
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies_ = 
+        QSharedPointer<QList<QSharedPointer<AccessPolicy> > >(new QList<QSharedPointer<AccessPolicy> >());
+
 	//! Contains information about the grouping of bits into registers and fields.
-    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
+    QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_ = 
+        QSharedPointer<QList<QSharedPointer<RegisterBase> > >(new QList<QSharedPointer<RegisterBase> > ());
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<AddressBlock>);

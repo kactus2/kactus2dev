@@ -6,7 +6,7 @@
 // Date: 21.01.2022
 //
 // Description:
-// Reader class for ipxact:subspaceMap element.
+// Reader for ipxact:subspaceMap element.
 //-----------------------------------------------------------------------------
 
 #ifndef SUBSPACEMAPREADER_H
@@ -22,22 +22,10 @@
 class SubSpaceMap;
 
 //-----------------------------------------------------------------------------
-//! Reader class for ipxact:subspaceMap element.
+//! Reader for ipxact:subspaceMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT SubspaceMapReader : public MemoryBlockBaseReader
+namespace SubspaceMapReader
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    SubspaceMapReader();
-
-    /*!
-     *  The destructor.
-     */
-    ~SubspaceMapReader() = default;
-
     /*!
      *  Creates a new subspace map from a given subspace map node.
      *
@@ -45,21 +33,18 @@ public:
      *
      *      @return The created subspace map.
      */
-    QSharedPointer<SubSpaceMap> createSubspaceMapFrom(QDomNode const& subspaceMapNode) const;
+    IPXACTMODELS_EXPORT QSharedPointer<SubSpaceMap> createSubspaceMapFrom(QDomNode const& subspaceMapNode, Document::Revision docRevision);
 
-private:
-
-    //! No copying allowed.
-    SubspaceMapReader(SubspaceMapReader const& rhs);
-    SubspaceMapReader& operator=(SubspaceMapReader const& rhs);
-    
-    /*!
-     *  Reads the attributes from XML to a subspace map.
-     *
-     *      @param [in] subspaceMapNode     The XML description of the subspace map.
-     *      @param [in/out] newSubspaceMap  The subspace map to insert the attributes into.
-     */
-    void parseAttributes(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap) const;
-};
+    namespace Details
+    {
+        /*!
+         *  Reads the attributes from XML to a subspace map.
+         *
+         *      @param [in] subspaceMapNode     The XML description of the subspace map.
+         *      @param [in/out] newSubspaceMap  The subspace map to insert the attributes into.
+         */
+        void parseAttributes(QDomNode const& subspaceMapNode, QSharedPointer<SubSpaceMap> newSubspaceMap);
+    }
+}
 
 #endif // SUBSPACEMAPREADER_H

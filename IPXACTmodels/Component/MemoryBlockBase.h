@@ -23,6 +23,7 @@
 #include <QList>
 
 class Parameter;
+class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the base class for ipxact:addressBlock, ipxact:bank and ipxact:subspaceMap elements.

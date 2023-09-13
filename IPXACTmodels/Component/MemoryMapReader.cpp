@@ -64,15 +64,13 @@ void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
 {
     QDomNodeList childNodes = memoryMapBaseNode.childNodes();
 
-    AddressBlockReader addressBlockReader;
-
     for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
     {
         QDomNode addressBlockNode = childNodes.at(childIndex);
         if (addressBlockNode.nodeName() == QStringLiteral("ipxact:addressBlock"))
         {
             QSharedPointer<AddressBlock> newAddressBlock =
-                addressBlockReader.createAddressBlockFrom(addressBlockNode, docRevision);
+                AddressBlockReader::createAddressBlockFrom(addressBlockNode, docRevision);
 
             newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
         }
