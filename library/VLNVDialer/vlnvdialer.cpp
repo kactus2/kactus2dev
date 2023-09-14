@@ -112,6 +112,10 @@ void VLNVDialer::loadFilterSettings(QSettings& settings)
     filters.firmness.mutable_ = settings.value("ShowMutable", true).toBool();
     filters.firmness.fixed_ = settings.value("ShowFixed", true).toBool();
     settings.endGroup();
+    settings.beginGroup("Validity");
+    filters.validity.valid_ = settings.value("ShowValid", true).toBool();
+    filters.validity.invalid_ = settings.value("ShowErrors", true).toBool();
+    settings.endGroup();
 
     filters_.setFilters(filters);
 }
@@ -150,6 +154,10 @@ void VLNVDialer::saveFilterSettings(QSettings& settings) const
     settings.setValue("ShowMutable", filters.firmness.mutable_);
     settings.setValue("ShowFixed", filters.firmness.fixed_);
     settings.endGroup(); // Firmness
+    settings.beginGroup("Validity");
+    settings.setValue("ShowValid", filters.validity.valid_);
+    settings.setValue("ShowErrors", filters.validity.invalid_);
+    settings.endGroup(); // Validity
     settings.endGroup(); // LibraryFilters
 }
 
