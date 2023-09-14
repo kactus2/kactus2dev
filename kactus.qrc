@@ -127,34 +127,35 @@
         <file>common/graphics/requires_provides.png</file>
         <file>common/graphics/script-save.png</file>
         <file>common/graphics/script-save-as.png</file>
-        <file>common/graphics/script-run.png</file>
         <file>common/graphics/script-run-all.png</file>
         <file>common/graphics/script-run-file.png</file>
         <file>common/graphics/script-new.png</file>
-		<file>common/graphics/filter.png</file>
-		<file>common/graphics/box.png</file>
-		<file>common/graphics/circuit.png</file>
-		<file>common/graphics/chip.png</file>
-		<file>common/graphics/soc.png</file>
-		<file>common/graphics/square.png</file>
-		<file>common/graphics/capacitor.png</file>
-		<file>common/graphics/transistor.png</file>
-		<file>common/graphics/fixed.png</file>
-		<file>common/graphics/mutable.png</file>
-		<file>common/graphics/template.png</file>
-		<file>common/graphics/check-all.png</file>
-		<file>common/graphics/uncheck-all.png</file>
-		<file>common/graphics/code-file.png</file>
-		<file>common/graphics/puzzle.png</file>
-		<file>common/graphics/hw-component-edit.png</file>
-		<file>common/graphics/preview.png</file>
+        <file>common/graphics/filter.png</file>
+        <file>common/graphics/box.png</file>
+        <file>common/graphics/circuit.png</file>
+        <file>common/graphics/chip.png</file>
+        <file>common/graphics/soc.png</file>
+        <file>common/graphics/square.png</file>
+        <file>common/graphics/capacitor.png</file>
+        <file>common/graphics/transistor.png</file>
+        <file>common/graphics/fixed.png</file>
+        <file>common/graphics/mutable.png</file>
+        <file>common/graphics/template.png</file>
+        <file>common/graphics/check-all.png</file>
+        <file>common/graphics/uncheck-all.png</file>
+        <file>common/graphics/code-file.png</file>
+        <file>common/graphics/puzzle.png</file>
+        <file>common/graphics/hw-component-edit.png</file>
+        <file>common/graphics/preview.png</file>
         <file>common/graphics/hide.png</file>
-		<file>common/graphics/adhoc.png</file>
-		<file>common/graphics/mapping.png</file>
-		<file>common/graphics/log.png</file>
-		<file>common/graphics/automation.png</file>
-		<file>common/graphics/ruler.png</file>
-		<file>common/graphics/search.png</file>
+        <file>common/graphics/adhoc.png</file>
+        <file>common/graphics/mapping.png</file>
+        <file>common/graphics/log.png</file>
+        <file>common/graphics/automation.png</file>
+        <file>common/graphics/ruler.png</file>
+        <file>common/graphics/search.png</file>
+        <file>common/graphics/fail.png</file>
+        <file>common/graphics/pass.png</file>
     </qresource>
     <qresource prefix="/">
         <file>common/graphics/splash.png</file>

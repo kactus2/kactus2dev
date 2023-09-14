@@ -76,6 +76,9 @@ public slots:
 	//! Handler for when hierarchy options change.
 	void onHierarchyChanged(Utils::HierarchyOptions const& options);
 
+    //! Handler for when validity options change.
+    void onValidityChanged(Utils::ValidityOptions const& options);
+
     /*!
      *  Handler for changing the filtered tags.
      *
@@ -132,6 +135,16 @@ protected:
 	bool checkHierarchy(QSharedPointer<Component const> component) const;
 
     /*!
+     * 
+     *  Check the validity of the selected document.
+     *
+     *      @param [in] document    The selected document.
+     *
+     *      @return True, if the document is valid, false otherwise.
+     */
+    bool checkValidity(bool isValid) const;
+
+    /*!
      *  Check the tag matching of the selected document.
      *
      *      @param [in] document    The selected document.
@@ -147,6 +160,7 @@ protected:
 	 *      @return True if at least one match is found.
 	*/
 	bool checkVLNVs(QVector<VLNV> const& list) const;
+
 
     /*!
      *  Get the access to the library.
@@ -187,7 +201,10 @@ private:
 	Utils::TypeOptions type_;
  
 	//! Contains filters for hierarchy
-	Utils::HierarchyOptions hierarchy_; //!
+	Utils::HierarchyOptions hierarchy_; 
+    
+    //! Contains filters for validity
+    Utils::ValidityOptions validity_;
 
     //! List of the visible tags.
     QVector<TagData> tags_;

@@ -31,7 +31,7 @@ model_(dataModel)
 	layout->addWidget(&view_);
 	layout->setContentsMargins(0, 0, 0, 0);
 
-    filter_->setRecursiveFilteringEnabled(true);
+    //filter_->setRecursiveFilteringEnabled(true);
     filter_->setSourceModel(dataModel);    
 
 	view_.setModel(filter_);
@@ -93,6 +93,7 @@ LibraryFilter* HierarchyWidget::getFilter() const
 void HierarchyWidget::onSearchTextChanged(QString const& text)
 {
     filter_->setFilterRegularExpression(QRegularExpression(text, QRegularExpression::CaseInsensitiveOption));
+    filter_->setRecursiveFilteringEnabled(text.isEmpty() == false);
 }
 
 //-----------------------------------------------------------------------------

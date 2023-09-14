@@ -108,6 +108,21 @@ namespace Utils
         KACTUS2_API TypeOptions();
     };
 
+    struct ValidityOptions
+    {
+        //! If true then valid objects should be included in search.
+        bool valid_;
+
+        //! If true then invalid objects should be included in search.
+        bool invalid_;
+
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true.
+         */
+        KACTUS2_API ValidityOptions();
+    };
+
     struct FilterOptions
     {
         //! Contains Type settings.
@@ -122,11 +137,14 @@ namespace Utils
         //! Contains Firmness settings.
         Utils::FirmnessOptions firmness;
 
+        //! Contains Validity settings.
+        Utils::ValidityOptions validity;
+
         /*! The default constructor
          *
          * Constructs struct with all options set to true.
         */
-        KACTUS2_API FilterOptions() : type(), implementation(), hierarchy(), firmness() {};
+        KACTUS2_API FilterOptions() : type(), implementation(), hierarchy(), firmness(), validity() {};
     };
 
     /*!

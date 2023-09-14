@@ -365,6 +365,8 @@ void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
         filter, SLOT(onHierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
     connect(dialer_, SIGNAL(typeChanged(const Utils::TypeOptions&)),
         filter, SLOT(onTypeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
+    connect(dialer_, SIGNAL(validityChanged(const Utils::ValidityOptions&)),
+        filter, SLOT(onValidityChanged(const Utils::ValidityOptions&)), Qt::UniqueConnection);
     connect(dialer_, SIGNAL(filtersChanged(Utils::FilterOptions const&)),
         filter, SLOT(onFiltersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
     connect(dialer_, SIGNAL(tagFiltersChanged(QVector<TagData>)),

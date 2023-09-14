@@ -154,6 +154,15 @@ void LibraryFilter::onHierarchyChanged(Utils::HierarchyOptions const& options)
 }
 
 //-----------------------------------------------------------------------------
+// Function: LibraryFilter::onValidityChanged()
+//-----------------------------------------------------------------------------
+void LibraryFilter::onValidityChanged(Utils::ValidityOptions const& options)
+{
+    validity_ = options;
+    invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
 // Function: LibraryFilter::onTagFilterChanged()
 //-----------------------------------------------------------------------------
 void LibraryFilter::onTagFilterChanged(QVector<TagData> filteredTags)
@@ -300,6 +309,14 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
     {
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::checkValidity()
+//-----------------------------------------------------------------------------
+bool LibraryFilter::checkValidity(bool isValid) const
+{
+    return (isValid && validity_.valid_) || (isValid == false && validity_.invalid_);
 }
 
 //-----------------------------------------------------------------------------

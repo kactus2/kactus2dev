@@ -18,6 +18,7 @@
 #include "implementationgroup.h"
 #include "typegroup.h"
 #include "hierarchygroup.h"
+#include "ValidityGroup.h"
 
 #include <QWidget>
 
@@ -41,6 +42,10 @@ public:
      *  The destructor.
      */
 	virtual ~FilterWidget();
+
+    //! No copying. No assignment.
+    FilterWidget(const FilterWidget& other) = delete;
+    FilterWidget& operator=(const FilterWidget& other) = delete;
 
     /*!
      *  Setup the filters.
@@ -86,14 +91,16 @@ signals:
 	void hierarchyChanged(const Utils::HierarchyOptions& options);
 
     /*!
+     *  Emitted when validity options change.
+     */
+    void validityChanged(const Utils::ValidityOptions& options);
+
+    /*!
      *  Emitted when all options change.
      */
     void optionsChanged(Utils::FilterOptions const& options);
 
 private:
-	//! No copying. No assignment.
-	FilterWidget(const FilterWidget& other);
-	FilterWidget& operator=(const FilterWidget& other);
 
 	//! Contains items to select the re-usability options.
 	FirmnessGroup firmness_;
@@ -106,6 +113,9 @@ private:
 
 	//! Contains items to select the hierarchy options.
 	HierarchyGroup hierarchy_;
+
+    //! Contains items to select the validity options.
+    ValidityGroup validity_;
 };
 
 #endif // FILTERWIDGET_H

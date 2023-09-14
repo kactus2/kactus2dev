@@ -50,10 +50,10 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
         return false;
     }
 
-
     for (VLNV const& vlnv : list)
     {
-        if (checkType(vlnv) && filterRegularExpression().match(vlnv.toString()).hasMatch())
+        if (checkType(vlnv) && filterRegularExpression().match(vlnv.toString()).hasMatch() &&
+            checkValidity(item->isValid()))
         {
             return true;
         }

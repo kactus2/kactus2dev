@@ -3295,6 +3295,9 @@
     <ClCompile Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.cpp">
       <Filter>Source Files\common\widgets\TreeItemSelector</Filter>
     </ClCompile>
+    <ClCompile Include="library\VLNVDialer\ValidityGroup.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5923,6 +5926,9 @@
     </QtMoc>
     <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h">
       <Filter>Header Files\common\widgets\TreeItemSelector</Filter>
+    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\ValidityGroup.h">
+      <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

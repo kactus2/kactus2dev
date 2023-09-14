@@ -100,6 +100,9 @@ signals:
 	//! Emitted when hierarchy options change.
 	void hierarchyChanged(Utils::HierarchyOptions const& options);
 
+    //! Emitted when validity options change.
+    void validityChanged(Utils::ValidityOptions const& options);
+
     //! Emitted when all options change.
     void filtersChanged(Utils::FilterOptions const&);
 

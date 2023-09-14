@@ -24,7 +24,7 @@
 HierarchyFilter::HierarchyFilter(LibraryInterface* libraryAccess, QObject *parent):
 LibraryFilter(libraryAccess, parent)
 {
-
+    setRecursiveFilteringEnabled(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,6 +42,11 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     }
 
 	HierarchyItem* item = static_cast<HierarchyItem*>(itemIndex.internalPointer());
+
+    if (checkValidity(item->isValid()) == false)
+    {
+        return false;
+    }
 
     QSharedPointer<const Document> document = getLibraryInterface()->getModelReadOnly(item->getVLNV());
     if (!checkTags(document))
@@ -109,6 +114,7 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
             return false;
         }
     }
+
 
     return checkVLNVs(item->getVLNVs()) && QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }

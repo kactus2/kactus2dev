@@ -21,21 +21,15 @@ QWidget(parent),
 firmness_(this),
 implementation_(this),
 type_(this),
-hierarchy_(this)
+hierarchy_(this),
+validity_(this)
 {
-    QString uncheckedText =
-        "QCheckBox::indicator:unchecked {image: url(:icons/common/graphics/traffic-light_gray.png);}";
-    QString checkedText =
-        "QCheckBox::indicator:checked {image: url(:icons/common/graphics/traffic-light_green.png);}";
-    QString styleText = uncheckedText + checkedText;
-
-    setStyleSheet(styleText);
-
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);
 	layout->addWidget(&implementation_);
 	layout->addWidget(&hierarchy_);
 	layout->addWidget(&firmness_);
+    layout->addWidget(&validity_);
 	layout->addStretch();
 	layout->setSpacing(0);
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -48,6 +42,8 @@ hierarchy_(this)
 		this, SIGNAL(typeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
 	connect(&hierarchy_, SIGNAL(optionsChanged(const Utils::HierarchyOptions&)),
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
+    connect(&validity_, SIGNAL(optionsChanged(const Utils::ValidityOptions&)),
+               this, SIGNAL(validityChanged(const Utils::ValidityOptions&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +62,8 @@ void FilterWidget::setFilters(Utils::FilterOptions options)
     type_.setTypes(options.type);  
     implementation_.setImplementation(options.implementation);  
     hierarchy_.setHierarchy(options.hierarchy);  
-    firmness_.setFirmness(options.firmness);    
+    firmness_.setFirmness(options.firmness);
+    validity_.setValidity(options.validity);
     blockSignals(false);
 
     emit optionsChanged(options);
@@ -82,6 +79,7 @@ Utils::FilterOptions FilterWidget::getFilters() const
     options.implementation = implementation_.getImplementation();
     options.hierarchy = hierarchy_.getHierarchy();
     options.firmness = firmness_.getFirmness();
+    options.validity = validity_.getValidity();
     return options;
 }
 
@@ -94,4 +92,5 @@ void FilterWidget::selectAll(bool select)
     implementation_.selectAll(select);
     hierarchy_.selectAll(select);
     firmness_.selectAll(select);
+    validity_.selectAll(select);
 }

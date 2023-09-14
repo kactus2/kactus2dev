@@ -926,6 +926,7 @@ CreateHelp
     <ClCompile Include="library\VLNVDialer\hierarchygroup.cpp" />
     <ClCompile Include="library\VLNVDialer\implementationgroup.cpp" />
     <ClCompile Include="library\VLNVDialer\typegroup.cpp" />
+    <ClCompile Include="library\VLNVDialer\ValidityGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\vlnvdialer.cpp" />
     <ClCompile Include="mainwindow\CommandLineParser.cpp" />
     <ClCompile Include="mainwindow\DeleteWorkspaceDialog.cpp" />
@@ -2204,6 +2205,7 @@ CreateHelp
     <QtMoc Include="mainwindow\DockWidgetHandler.h">
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\FilterGroup.h" />
+    <QtMoc Include="library\VLNVDialer\ValidityGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />
