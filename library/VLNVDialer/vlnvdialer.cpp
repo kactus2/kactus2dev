@@ -26,7 +26,6 @@ VLNVDialer::VLNVDialer(QWidget *parent):
     hideButton_(QIcon(":/icons/common/graphics/filter.png"), QString(), this),
     selectAllButton_(QIcon(":/icons/common/graphics/check-all.png"), QString(), this),
     filters_(this),
-    dialer_(this),
     tagGroup_(tr("Tags"), this),
     tagFilter_(new TagSelectorContainer(this))
 {
@@ -46,15 +45,6 @@ VLNVDialer::VLNVDialer(QWidget *parent):
     connect(&hideButton_, SIGNAL(clicked(bool)), this, SLOT(onHideShowClick()), Qt::UniqueConnection);
     connect(&selectAllButton_, SIGNAL(clicked(bool)), this, SLOT(onSelectAll()), Qt::UniqueConnection);
 
-	connect(&dialer_, SIGNAL(vendorChanged(const QString&)),
-		this, SIGNAL(vendorChanged(const QString&)), Qt::UniqueConnection);
-	connect(&dialer_, SIGNAL(libraryChanged(const QString&)),
-		this, SIGNAL(libraryChanged(const QString&)), Qt::UniqueConnection);
-	connect(&dialer_, SIGNAL(nameChanged(const QString&)),
-		this, SIGNAL(nameChanged(const QString&)), Qt::UniqueConnection);
-	connect(&dialer_, SIGNAL(versionChanged(const QString&)),
-		this, SIGNAL(versionChanged(const QString&)), Qt::UniqueConnection);
-
 	connect(&filters_, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)),
 		this, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);
 	connect(&filters_, SIGNAL(implementationChanged(const Utils::ImplementationOptions&)),
@@ -70,14 +60,6 @@ VLNVDialer::VLNVDialer(QWidget *parent):
     connect(tagFilter_, SIGNAL(contentChanged()), this, SLOT(onHandleTagFilterChange()), Qt::UniqueConnection);
 
     setupLayout();
-}
-
-//-----------------------------------------------------------------------------
-// Function: VLNVDialer::setRootItem()
-//-----------------------------------------------------------------------------
-void VLNVDialer::setRootItem(const LibraryItem* rootItem)
-{
-    dialer_.setRootItem(rootItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -162,14 +144,6 @@ void VLNVDialer::saveFilterSettings(QSettings& settings) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: VLNVDialer::refreshLibrary()
-//-----------------------------------------------------------------------------
-void VLNVDialer::refreshLibrary()
-{
-    dialer_.refreshVendors();
-}
-
-//-----------------------------------------------------------------------------
 // Function: vlnvdialer::onHandleTagFilterChange()
 //-----------------------------------------------------------------------------
 void VLNVDialer::onHandleTagFilterChange()
@@ -186,7 +160,6 @@ void VLNVDialer::onHideShowClick()
 	hideFilters_ = !hideFilters_;
 
     filters_.setHidden(hideFilters_);
-    dialer_.setHidden(hideFilters_);
     tagGroup_.setHidden(hideFilters_);
 
     if (hideFilters_)
@@ -236,7 +209,6 @@ void VLNVDialer::setupLayout()
     layout->addWidget(new QLabel(tr("Library Filters"), this), 0, 0, 1, 1, Qt::AlignLeft);
     layout->addWidget(&hideButton_, 0, 1, 1, 1, Qt::AlignRight);
     layout->addWidget(&selectAllButton_, 0, 2, 1, 1, Qt::AlignRight);
-    layout->addWidget(&dialer_, 1, 0, 1, 3);
     layout->addWidget(&filters_, 2, 0, 1, 3);
     layout->addWidget(&tagGroup_, 3, 0, 1, 3);
 

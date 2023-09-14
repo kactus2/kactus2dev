@@ -176,9 +176,6 @@ signals:
 	//! Refresh the item filtering because changes have been made
 	void invalidateFilter();
 
-	//! Items have changed so th VLNVDialer should refresh itself.
-	void refreshDialer();
-
 public slots:
 
 	//! Open the selected hierarchical design

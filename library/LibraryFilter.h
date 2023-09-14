@@ -18,7 +18,6 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
-#include <QRegularExpressionValidator>
 #include <QSharedPointer>
 #include <QSortFilterProxyModel>
 #include <QString>
@@ -47,19 +46,13 @@ public:
 	//! The destructor
     virtual ~LibraryFilter() = default;
 
+    //! No copying
+    LibraryFilter(const LibraryFilter& other) = delete;
+
+    //! No assignment
+    LibraryFilter& operator=(const LibraryFilter& other) = delete;
+
 public slots:
-
-	//! Handler for when the text in vendor combobox is changed.
-	void onVendorChanged(QString const& vendorText);
-
-	//! Handler for when the text in library combobox is changed.
-	void onLibraryChanged(QString const& libraryText);
-
-	//! Handler for when the text in name combobox is changed.
-	void onNameChanged(QString const& nameText);
-
-	//! Handler for when the text in version combobox is changed.
-	void onVersionChanged(QString const& versionText);
 
     //! Handler for when all options are changed.
     void onFiltersChanged(Utils::FilterOptions const& filters);
@@ -118,13 +111,6 @@ protected:
      */   
     Utils::TypeOptions type() const;
 
-    /*!
-     *  Checks if no VLVN filters have been set.
-     *
-     *      @return True, if all fields of VLNV filters are empty, otherwise false.
-     */
-    bool hasEmptyVLNVfilter() const;
-
     //! Check the firmness matching.
 	bool checkFirmness(QSharedPointer<Component const> component) const;
 
@@ -153,15 +139,6 @@ protected:
      */
     bool checkTags(QSharedPointer<Document const> document) const;
 
-	/*! Check the list of vlnvs if they match the search rules
-	 *
-	 *      @param [in]  list Contains the vlnvs to check. 
-	 *
-	 *      @return True if at least one match is found.
-	*/
-	bool checkVLNVs(QVector<VLNV> const& list) const;
-
-
     /*!
      *  Get the access to the library.
      *
@@ -170,12 +147,6 @@ protected:
     LibraryInterface* getLibraryInterface() const;
 
 private:
-
-	//! No copying
-	LibraryFilter(const LibraryFilter& other);
-
-	//! No assignment
-	LibraryFilter& operator=(const LibraryFilter& other);
 
     /*!
      *  Check if a document contains the selected tag.
@@ -208,30 +179,6 @@ private:
 
     //! List of the visible tags.
     QVector<TagData> tags_;
-
-	//! The validator that checks vendor rules
-	QRegularExpressionValidator vendorValidator_;
-
-	//! The validator that checks library rules
-	QRegularExpressionValidator libraryValidator_;
-
-	//! The validator that checks name rules
-	QRegularExpressionValidator nameValidator_;
-
-	//! The validator that checks version rules
-	QRegularExpressionValidator versionValidator_;
-
-	//! Contains filters for vendor
-	QString vendorFilter_;
-
-	//! Contains filters for library
-	QString libraryFilter_; 
-
-	//! Contains filters for name
-    QString nameFilter_;  
-
-	//! Contains filters for version
-	QString versionFilter_; 
 
     //! Access to the library.
     LibraryInterface* libraryAccess_;

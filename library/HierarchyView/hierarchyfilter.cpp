@@ -54,38 +54,26 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
         return false;
     }
 
-    // If no search rules for vlnv are defined then display only non-duplicate children of root.
-    if (hasEmptyVLNVfilter() && item->parentIsRoot() && item->isDuplicate())
+    // Display only non-duplicate children of root.
+    if (item->parentIsRoot() && item->isDuplicate())
     {
         return false;
     }
 
     HierarchyItem::ObjectType itemType = item->type();
-    if (itemType == HierarchyItem::COMPONENT)
+    if (itemType == HierarchyItem::COMPONENT && !type().components_)
     {
-        if (!type().components_)
-        {
-            return false;
-        }
+        return false;
     }
 
-    else if (itemType == HierarchyItem::CATALOG)
+    else if (itemType == HierarchyItem::CATALOG && !type().catalogs_)
     {
-        if (!type().catalogs_)
-        {
-            return false;
-        }
+        return false;
     }
 
     else if (itemType == HierarchyItem::APIDEFINITION || itemType == HierarchyItem::COMDEFINITION)
     {
-        if (!type().apis_)
-        {
-            return false;
-        }
-
-        // if SW should not be displayed then this is not shown
-        if (!implementation().sw_)
+        if (!type().apis_ || !implementation().sw_)
         {
             return false;
         }
@@ -94,12 +82,7 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
 
     else if (itemType == HierarchyItem::BUSDEFINITION || itemType == HierarchyItem::ABSDEFINITION)
     {
-        if (!type().buses_)
-        {
-            return false;
-        }
-        // if hw should not be displayed then this is not shown
-        if (!implementation().hw_)
+        if (!type().buses_ || !implementation().hw_)
         {
             return false;
         }
@@ -116,5 +99,5 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     }
 
 
-    return checkVLNVs(item->getVLNVs()) && QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
+    return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }

@@ -457,8 +457,6 @@ void LibraryTreeModel::onAddVLNV(VLNV const& vlnv)
     beginInsertRows(parentIndex, rowToAdd, rowToAdd);
     rootItem_->createChild(vlnv, static_cast<LibraryItem::Level>(0));
     endInsertRows();
-
-    emit refreshDialer();
 }
 
 //-----------------------------------------------------------------------------
@@ -476,8 +474,6 @@ void LibraryTreeModel::removeLibraryItem(LibraryItem* toRemove)
      beginRemoveRows(parentIndex, row, row);
      toRemove->parent()->removeChild(toRemove);
      endRemoveRows();
-
-    emit refreshDialer();
 }
 
 //-----------------------------------------------------------------------------
@@ -512,8 +508,6 @@ void LibraryTreeModel::onResetModel()
     validate(rootItem_);
 
     endResetModel();
-
-    emit refreshDialer();
 }
 
 //-----------------------------------------------------------------------------

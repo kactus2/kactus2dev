@@ -67,6 +67,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./common/widgets/tagEditor/TagSelector.h \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.h \
     ./common/widgets/segmentComboBox/SegmentComboBox.h \
+    ./common/widgets/TreeItemSelector/TreeItem.h \
+    ./common/widgets/TreeItemSelector/TreeItemEditor.h \
+    ./common/widgets/TreeItemSelector/TreeItemModel.h \
+    ./common/widgets/TreeItemSelector/FramedTreeItemEditor.h \
     ./common/validators/LibraryPathValidator/librarypathvalidator.h \
     ./common/layouts/HCollisionLayout.h \
     ./common/layouts/HStackedLayout.h \
@@ -216,7 +220,6 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/objectremovedialog.h \
     ./library/ObjectSelectionDialog.h \
     ./library/ObjectExportDialog.h \
-    ./library/VLNVDialer/dialerwidget.h \
     ./library/VLNVDialer/filterwidget.h \
     ./library/VLNVDialer/firmnessgroup.h \
     ./library/VLNVDialer/hierarchygroup.h \
@@ -483,6 +486,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ConfigurableElementFinder.h \
     ./editors/ComponentEditor/common/DesignConfigurationInstantiationParameterFinder.h \
     ./editors/ComponentEditor/common/MasterExpressionEditor.h \
+    ./editors/ComponentEditor/common/MemoryTreeFactory.h \
     ./editors/ComponentEditor/common/ParameterizableTable.h \
     ./editors/ComponentEditor/common/AbstractParameterModel.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.h \
@@ -605,6 +609,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/modes/PortSliceColumns.h \
     ./editors/ComponentEditor/modes/FieldSliceEditor.h \
     ./editors/ComponentEditor/modes/FieldSliceModel.h \
+    ./editors/ComponentEditor/modes/FieldSliceDelegate.h \
     ./editors/ComponentEditor/modes/ModesEditor.h \
     ./editors/ComponentEditor/modes/ModesModel.h \
     ./editors/ComponentEditor/modes/SingleModeEditor.h \
@@ -857,7 +862,8 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./library/VLNVDialer/ValidityGroup.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -927,6 +933,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/tagEditor/TagSelectorContainer.cpp \
     ./common/widgets/busReferenceComboBox/BusReferenceComboBox.cpp \
     ./common/widgets/segmentComboBox/SegmentComboBox.cpp \
+    ./common/widgets/TreeItemSelector/FramedTreeItemEditor.cpp \
+    ./common/widgets/TreeItemSelector/TreeItemEditor.cpp \
+    ./common/widgets/TreeItemSelector/TreeItemModel.cpp \
     ./common/graphicsItems/GraphicsColumnAddCommand.cpp \
     ./common/graphicsItems/CommonGraphicsUndoCommands.cpp \
     ./common/graphicsItems/ComponentItem.cpp \
@@ -1045,7 +1054,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./library/TableViewDialog.cpp \
     ./library/ObjectSelectionDialog.cpp \
     ./library/ObjectSelectionListItem.cpp \
-    ./library/VLNVDialer/dialerwidget.cpp \
     ./library/VLNVDialer/FilterGroup.cpp \
     ./library/VLNVDialer/filterwidget.cpp \
     ./library/VLNVDialer/firmnessgroup.cpp \
@@ -1337,6 +1345,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
+    ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.cpp \
     ./editors/ComponentEditor/common/ModeReferenceEditor.cpp \
     ./editors/ComponentEditor/common/ModeReferenceModel.cpp \
@@ -1383,6 +1392,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.cpp \
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.cpp \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.cpp \
+    ./editors/ComponentEditor/modes/FieldSliceDelegate.cpp \
     ./editors/ComponentEditor/modes/FieldSliceEditor.cpp \
     ./editors/ComponentEditor/modes/FieldSliceModel.cpp \
     ./editors/ComponentEditor/modes/ModesEditor.cpp \
@@ -1616,5 +1626,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./library/VLNVDialer/ValidityGroup.cpp
 RESOURCES += kactus.qrc

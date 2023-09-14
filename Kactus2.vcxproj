@@ -919,7 +919,6 @@ CreateHelp
     <ClCompile Include="library\ObjectSelectionDialog.cpp" />
     <ClCompile Include="library\ObjectSelectionListItem.cpp" />
     <ClCompile Include="library\TableViewDialog.cpp" />
-    <ClCompile Include="library\VLNVDialer\dialerwidget.cpp" />
     <ClCompile Include="library\VLNVDialer\FilterGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\filterwidget.cpp" />
     <ClCompile Include="library\VLNVDialer\firmnessgroup.cpp" />
@@ -2189,8 +2188,6 @@ CreateHelp
     </QtMoc>
     <ClInclude Include="library\ObjectSelectionListItem.h" />
     <ClInclude Include="library\TableViewDialog.h" />
-    <QtMoc Include="library\VLNVDialer\dialerwidget.h">
-    </QtMoc>
     <QtMoc Include="library\VLNVDialer\filterwidget.h">
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\firmnessgroup.h">

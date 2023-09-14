@@ -56,8 +56,6 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
             this, SIGNAL(statusMessage(QString const&)));
     }
 
-    dialer_->setRootItem(library_->getTreeRoot());
-
     connectLibraryFilter(hierarchyWidget_->getFilter());
     connectLibraryFilter(treeWidget_->getFilter());
 
@@ -88,7 +86,6 @@ LibraryWidget::LibraryWidget(LibraryHandler* library, MessageMediator* messageCh
         library_, SIGNAL(itemSelected(const VLNV&)), Qt::UniqueConnection);
     
     auto treeModel = library_->getTreeModel();
-    connect(treeModel, SIGNAL(refreshDialer()), dialer_, SLOT(refreshLibrary()), Qt::UniqueConnection);
 
     connect(treeModel, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
@@ -348,15 +345,6 @@ void LibraryWidget::onPreviewShowHideClick()
 //-----------------------------------------------------------------------------
 void LibraryWidget::connectLibraryFilter(LibraryFilter* filter) const
 {
-    connect(dialer_, SIGNAL(vendorChanged(const QString&)),
-        filter, SLOT(onVendorChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer_, SIGNAL(libraryChanged(const QString&)),
-        filter, SLOT(onLibraryChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer_, SIGNAL(nameChanged(const QString&)),
-        filter, SLOT(onNameChanged(const QString&)), Qt::UniqueConnection);
-    connect(dialer_, SIGNAL(versionChanged(const QString&)),
-        filter, SLOT(onVersionChanged(const QString&)), Qt::UniqueConnection);
-
     connect(dialer_, SIGNAL(firmnessChanged(const Utils::FirmnessOptions&)),
         filter, SLOT(onFirmnessChanged(const Utils::FirmnessOptions&)), Qt::UniqueConnection);
     connect(dialer_, SIGNAL(implementationChanged(const Utils::ImplementationOptions&)),

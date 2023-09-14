@@ -25,7 +25,6 @@
 #include <QString>
 #include <QSettings>
 
-class LibraryItem;
 class TagContainer;
 
 //-----------------------------------------------------------------------------
@@ -53,13 +52,6 @@ public:
     //! No assignment
     VLNVDialer& operator=(VLNVDialer const& other) = delete;
 
-	/*! Set the root item used to create the suggestions for dialer.
-	 *
-	 *      @param [in] rootItem    The root item of the library.
-	 *
-	*/
-	void setRootItem(LibraryItem const* rootItem);
-
 	/*!
 	 *  Set filter settings for the library.
 	 *
@@ -75,18 +67,6 @@ public:
 	void saveFilterSettings(QSettings& settings) const;
 
 signals:
-
-	//! Emitted when the text in vendor combobox is changed.
-	void vendorChanged(QString const& vendorText);
-
-	//! Emitted when the text in library combobox is changed.
-	void libraryChanged(QString const& libraryText);
-
-	//! Emitted when the text in name combobox is changed.
-	void nameChanged(QString const& nameText);
-
-	//! Emitted when the text in version combobox is changed.
-	void versionChanged(QString const& versionText);
 
 	//! Emitted when re-usability options change.
 	void firmnessChanged(Utils::FirmnessOptions const& options);
@@ -112,11 +92,6 @@ signals:
      *      @param [in] tagFilters  The new visible tags.
      */
     void tagFiltersChanged(QVector<TagData> tagFilters);
-
-public slots:
-
-	//! Refresh the list of vendors on the library
-	void refreshLibrary();
 
 private slots:
 
@@ -148,9 +123,6 @@ private:
 
 	//! Contains the items to set filters for search.
 	FilterWidget filters_;
-
-	//! Contains the items to set the rules for vlnv search
-	DialerWidget dialer_;
 
 	//! Group box for tag filters.
     QGroupBox tagGroup_;

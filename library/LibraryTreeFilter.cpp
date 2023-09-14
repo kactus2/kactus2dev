@@ -41,16 +41,7 @@ bool LibraryTreeFilter::filterAcceptsRow(int sourceRow, const QModelIndex& sourc
 
     auto item = static_cast<LibraryItem*>(itemIndex.internalPointer());
 
-    // get all vlnvs for the item
-    QVector<VLNV> list = item->getVLNVs();
-
-    // if none of the vlnvs match the filter rules
-    if (!checkVLNVs(list))
-    {
-        return false;
-    }
-
-    for (VLNV const& vlnv : list)
+    for (VLNV const& vlnv : item->getVLNVs())
     {
         if (checkType(vlnv) && filterRegularExpression().match(vlnv.toString()).hasMatch() &&
             checkValidity(item->isValid()))

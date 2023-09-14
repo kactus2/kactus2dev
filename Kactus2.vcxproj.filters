@@ -2203,9 +2203,6 @@
     <ClCompile Include="library\TableViewDialog.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
-    <ClCompile Include="library\VLNVDialer\dialerwidget.cpp">
-      <Filter>Source Files\library\VLNVDialer</Filter>
-    </ClCompile>
     <ClCompile Include="library\VLNVDialer\filterwidget.cpp">
       <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
@@ -4420,9 +4417,6 @@
     </QtMoc>
     <QtMoc Include="library\HierarchyView\hierarchyfilter.h">
       <Filter>Header Files\library\HierarchyView</Filter>
-    </QtMoc>
-    <QtMoc Include="library\VLNVDialer\dialerwidget.h">
-      <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\filterwidget.h">
       <Filter>Header Files\library\VLNVDialer</Filter>

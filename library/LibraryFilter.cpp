@@ -15,8 +15,6 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
-#include <QRegularExpression>
-
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::LibraryFilter()
 //-----------------------------------------------------------------------------
@@ -26,84 +24,15 @@ QSortFilterProxyModel(parent),
     implementation_(),
     hierarchy_(),
     tags_(),
-    vendorValidator_(this),
-    libraryValidator_(this),
-    nameValidator_(this),
-    versionValidator_(this),
-    vendorFilter_(),
-    libraryFilter_(),
-    nameFilter_(),
-    versionFilter_(),
     libraryAccess_(libraryAccess)
 {
 	// set settings for filter
 	setSortLocaleAware(true);
 	setSortCaseSensitivity(Qt::CaseInsensitive);
 
-	QRegularExpression regExp(".*", QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
-	vendorValidator_.setRegularExpression(regExp);
-	libraryValidator_.setRegularExpression(regExp);
-	nameValidator_.setRegularExpression(regExp);
-	versionValidator_.setRegularExpression(regExp);
-
     Q_ASSERT(libraryAccess_);
 }
 
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::onVendorChanged()
-//-----------------------------------------------------------------------------
-void LibraryFilter::onVendorChanged(QString const& vendorText)
-{
-    vendorFilter_ = vendorText + ".*";
-
-	// update the reg exp for validator
-	QRegularExpression regExp(vendorFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
-	vendorValidator_.setRegularExpression(regExp);
-
-	invalidateFilter();
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::onLibraryChanged()
-//-----------------------------------------------------------------------------
-void LibraryFilter::onLibraryChanged(QString const& libraryText)
-{
-    libraryFilter_ = libraryText + ".*";
-
-	// update the reg exp for validator
-	QRegularExpression regExp(libraryFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
-	libraryValidator_.setRegularExpression(regExp);
-
-	invalidateFilter();
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::onNameChanged()
-//-----------------------------------------------------------------------------
-void LibraryFilter::onNameChanged(QString const& nameText)
-{
-    nameFilter_ = nameText + ".*";
-
-	// update the reg exp for validator
-	QRegularExpression regExp(nameFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
-	nameValidator_.setRegularExpression(regExp);
-
-	invalidateFilter();
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::onVersionChanged()
-//-----------------------------------------------------------------------------
-void LibraryFilter::onVersionChanged(QString const& versionText)
-{
-    versionFilter_ = versionText + ".*";
-
-	// update the reg exp for validator
-	QRegularExpression regExp(versionFilter_, QRegularExpression::CaseInsensitiveOption | QRegularExpression::DotMatchesEverythingOption);
-	versionValidator_.setRegularExpression(regExp);
-
-	invalidateFilter();
-}
 
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::onFiltersChanged()
@@ -193,15 +122,6 @@ Utils::ImplementationOptions LibraryFilter::implementation() const
 Utils::TypeOptions LibraryFilter::type() const
 {
     return type_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::hasEmptyVLNVfilter()
-//-----------------------------------------------------------------------------
-bool LibraryFilter::hasEmptyVLNVfilter() const
-{
-    return vendorFilter_.isEmpty() && libraryFilter_.isEmpty() && nameFilter_.isEmpty() && 
-        versionFilter_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -366,34 +286,6 @@ bool LibraryFilter::documentContainsTag(QSharedPointer<Document const> document,
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryFilter::checkVLNVs()
-//-----------------------------------------------------------------------------
-bool LibraryFilter::checkVLNVs(QVector<VLNV> const& list) const
-{
-    for (VLNV const& vlnv : list)
-    {
-        int pos = 0;
-
-        // QT library Forced to use temp variables
-        QString vendor = vlnv.getVendor();
-        QString library =  vlnv.getLibrary();
-        QString name =  vlnv.getName();
-        QString version =  vlnv.getVersion();
-
-        // if the vlnv matches the search rules
-        if ((vendorValidator_.validate(vendor, pos) == QValidator::Acceptable) &&
-            (libraryValidator_.validate(library, pos) == QValidator::Acceptable) &&
-            (nameValidator_.validate(name, pos) == QValidator::Acceptable) &&
-            (versionValidator_.validate(version, pos) == QValidator::Acceptable)) 
-        {
-            return true;
-        }
-    }
-    // if none of the vlnvs matched
-	return false;
 }
 
 //-----------------------------------------------------------------------------
