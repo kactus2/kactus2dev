@@ -39,9 +39,11 @@ expressionParser_(expressionParser),
 //-----------------------------------------------------------------------------
 // Function: ParameterValidator::componentChange()
 //-----------------------------------------------------------------------------
-void ParameterValidator::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices)
+void ParameterValidator::componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
+    Document::Revision docRevision)
 {
     availableChoices_ = newChoices;
+    setStdRevision(docRevision);
 }
 
 //-----------------------------------------------------------------------------

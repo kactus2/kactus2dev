@@ -112,9 +112,9 @@ assertionValidator_()
     modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(sliceValidator, nullptr, parser));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
-    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));
-    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator, parameterValidator_));
-    QSharedPointer<RegisterFileValidator> registerFileValidator (new RegisterFileValidator(parser, registerValidator, parameterValidator_));
+    QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_, docRevision));
+    QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(parser, fieldValidator, parameterValidator_, docRevision));
+    QSharedPointer<RegisterFileValidator> registerFileValidator (new RegisterFileValidator(parser, registerValidator, parameterValidator_, docRevision));
 
     QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
         parser, registerValidator, registerFileValidator, parameterValidator_));
@@ -1288,7 +1288,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
             newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
             newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates());
         indirectInterfaceValidator_->componentChange(newComponent);
-        parameterValidator_->componentChange(newComponent->getChoices());
+        parameterValidator_->componentChange(newComponent->getChoices(), newComponent->getRevision());
         channelValidator_->componentChange(newComponent->getBusInterfaces());
         remapStateValidator_->componentChange(newComponent->getPorts());
         modeValidator_->componentChange(newComponent);

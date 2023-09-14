@@ -89,7 +89,8 @@ parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Co
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
-parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >())),
+parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), 
+    Document::Revision::Unknown)),
 mapValidator_()
 {
     portsInterface_ = new PortsInterface(portValidator_, expressionParser_, expressionFormatter_);
@@ -429,7 +430,7 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
             portValidator_->componentChange(component->getViews());
             portsInterface_->setPorts(component);
 
-            parameterValidator_->componentChange(component->getChoices());
+            parameterValidator_->componentChange(component->getChoices(), component->getRevision());
             componentParameterInterface_->setParameters(component->getParameters());
             componentParameterInterface_->setChoices(component->getChoices());
 

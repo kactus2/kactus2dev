@@ -52,7 +52,7 @@ public:
      *
      *      @param [in] newChoices  The new choices.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices);
+    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision);
 
     void setStdRevision(Document::Revision docRevision);
 

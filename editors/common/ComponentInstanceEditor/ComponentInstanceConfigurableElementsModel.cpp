@@ -103,7 +103,7 @@ void ComponentInstanceConfigurableElementsModel::setParameters(QSharedPointer<Co
         }
     }
 
-    validator_->componentChange(component->getChoices());
+    validator_->componentChange(component->getChoices(), component->getRevision());
 
     restoreStoredConfigurableElements();
 

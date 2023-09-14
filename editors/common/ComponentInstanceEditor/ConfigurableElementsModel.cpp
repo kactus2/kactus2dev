@@ -82,7 +82,7 @@ void ConfigurableElementsModel::setParameters(QString const& containingItemName,
         }
     }
     
-    validator_->componentChange(choices);
+    validator_->componentChange(choices, docRevision);
 
     restoreStoredConfigurableElements();
 
