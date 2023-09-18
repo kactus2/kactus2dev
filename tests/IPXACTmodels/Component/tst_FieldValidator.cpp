@@ -105,7 +105,7 @@ void tst_FieldValidator::testNameIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidName(testField), isValid);
 
@@ -152,7 +152,7 @@ void tst_FieldValidator::testIsPresentIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidIsPresent(testField), isValid);
 
@@ -213,7 +213,7 @@ void tst_FieldValidator::testMemoryArrayIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
 
     QCOMPARE(validator.hasValidMemoryArray(testField), isValid);
@@ -259,7 +259,7 @@ void tst_FieldValidator::testBitOffsetIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidBitOffset(testField), isValid);
 
@@ -314,7 +314,7 @@ void tst_FieldValidator::testfieldDefinitionRefIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
     QCOMPARE(validator.hasValidFieldDefinitionRef(testField), isValid);
 
@@ -366,7 +366,7 @@ void tst_FieldValidator::testResetsAreValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidResetValue(testField->getResets()->first()), resetValueIsValid);
 
@@ -444,7 +444,7 @@ void tst_FieldValidator::testResetTypeRefIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
 
     if (buildResetType)
@@ -543,7 +543,7 @@ void tst_FieldValidator::testMultipleResetTypeRefIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     
     QSharedPointer<Component> dummyComponent(new Component(VLNV(), Document::Revision::Std14));
@@ -615,7 +615,7 @@ void tst_FieldValidator::testWriteValueConstraintIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidWriteValueConstraint(testField), isValid);
 
@@ -711,7 +711,7 @@ void tst_FieldValidator::testReservedIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidReserved(testField), isValid);
 
@@ -757,7 +757,7 @@ void tst_FieldValidator::testBitWidthIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidBitWidth(testField), isValid);
 
@@ -803,7 +803,7 @@ void tst_FieldValidator::testEnumeratedValuesAreValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
 
     QSharedPointer<EnumeratedValue> enumeratedValue(new EnumeratedValue("test", "4"));
@@ -885,7 +885,7 @@ void tst_FieldValidator::testParametersAreValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     
     QCOMPARE(validator.hasValidParameters(testField), true);
@@ -939,7 +939,7 @@ void tst_FieldValidator::testAccessIsValid()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator (
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator);
     QCOMPARE(validator.hasValidAccess(testField), isValid);
 
@@ -1022,7 +1022,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
 
     QStringList errors;
@@ -1079,7 +1079,7 @@ void tst_FieldValidator::testStructureValidity()
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
 
     QStringList errors;

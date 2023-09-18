@@ -138,10 +138,11 @@ MemoryMapInterface* BusInterfaceInterfaceFactory::Details::createMapInterface(
         new RegisterFileValidator(expressionParser, registerValidator, parameterValidator));
 
     QSharedPointer<AddressBlockValidator> blockValidator(
-        new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator));
+        new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator, 
+            component->getRevision()));
 
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser, parameterValidator));
+        new SubspaceMapValidator(expressionParser, parameterValidator, component->getRevision()));
 
     QSharedPointer<MemoryMapValidator> memoryMapValidator(
         new MemoryMapValidator(expressionParser, blockValidator, subspaceValidator, component));

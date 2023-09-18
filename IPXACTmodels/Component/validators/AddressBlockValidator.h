@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/Component/validators/MemoryBlockValidator.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -41,14 +42,19 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] registerValidator   Validator used for registers.
      *      @param [in] parameterValidator  Validator used for parameters.
+     *      @param [in] docRevision         The IP-XACT standard revision to comply to.
 	 */
-    AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
+    AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser, 
         QSharedPointer<RegisterValidator> registerValidator,
-        QSharedPointer<RegisterFileValidator> registerFileValidator,
-        QSharedPointer<ParameterValidator> parameterValidator);
+        QSharedPointer<RegisterFileValidator> registerFileValidator, 
+        QSharedPointer<ParameterValidator> parameterValidator, Document::Revision docRevision);
 
 	//! The destructor.
-	~AddressBlockValidator() = default;
+	virtual ~AddressBlockValidator() = default;
+
+    // Disable copying.
+    AddressBlockValidator(AddressBlockValidator const& rhs) = delete;
+    AddressBlockValidator& operator=(AddressBlockValidator const& rhs) = delete;
     
     /*!
      *  Change the containing component.
@@ -141,6 +147,42 @@ public:
     bool hasValidUsage(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
+     *	Check if the registers contained within the address block are aligned correctly according to the misalignment allowed attribute.
+     *  
+     *      @param [in] addressBlock     The selected address block.
+     *	    
+     * 	    @return Bool, if the registers are aligned correctly, otherwise false.
+     */
+    bool hasValidRegisterAlignment(QSharedPointer<AddressBlock> addressBlock) const;
+
+    /*!
+     *	Check if the memory array of the address block is valid.
+     *  
+     *      @param [in] addressBlock     The selected address block.
+     *	    
+     * 	    @return True, if the memory array is valid, otherwise false.
+     */
+    bool hasValidMemoryArray(QSharedPointer<AddressBlock> addressBlock) const;
+
+    /*!
+     *	Check if the address block has valid access policies.
+     *  
+     *      @param [in] addressBlock     The selected address block.
+     *	    
+     * 	    @return True, if the access policies are valid, otherwise false.
+     */
+    bool hasValidAccessPolicies(QSharedPointer<AddressBlock> addressBlock) const;
+
+    /*!
+     *	Check if the combination of defined sub-elements of the address block is valid.
+     *  
+     *      @param [in] addressBlock     The selected address block.
+     *	    
+     * 	    @return True, if the combination of sub-elements is valid, otherwise false.
+     */
+    bool hasValidStructure(QSharedPointer<AddressBlock> addressBlock) const;
+
+    /*!
      *  Locate errors within an address block.
      *
      *      @param [in] errors              List of found errors.
@@ -152,10 +194,6 @@ public:
         QString const& addressUnitBits, QString const& context) const;
 
 private:
-
-	// Disable copying.
-	AddressBlockValidator(AddressBlockValidator const& rhs);
-	AddressBlockValidator& operator=(AddressBlockValidator const& rhs);
 
     /*!
      *  Get the type of the memory block.
@@ -186,6 +224,24 @@ private:
      */
     bool hasValidAccessWithRegister(QSharedPointer<AddressBlock> addressBlock,
         QSharedPointer<Register> targetRegister) const;
+
+    /*!
+     *	Checks if the address block has any address block definition group elements defined.
+     *  
+     *      @param [in] addressBlock    The selected address block.
+     *
+     * 	    @return True, if any elements in the address block definition group are defined, otherwise false.
+     */
+    bool hasAddressBlockDefinitionGroupDefined(QSharedPointer<AddressBlock> addressBlock) const;
+
+    /*!
+     *	Checks if the address block has any memory block data group elements defined.
+     *
+     *      @param [in] addressBlock    The selected address block.
+     *
+     * 	    @return True, if any elements in the memory block data group are defined, otherwise false.
+     */
+    bool hasMemoryBlockDataGroupDefined(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
      *  Gets the register size in LAU.
@@ -237,6 +293,46 @@ private:
      */
     void findErrorsInRegisterData(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
         QString const& addressUnitBits, QString const& context) const;
+
+    /*!
+     *	Find errors within the address block memory array.
+     *  
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected addressBlock.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInMemoryArray(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
+        QString const& context) const;
+
+    /*!
+     *	Find errors within the address block access policies.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected addressBlock.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
+        QString const& context) const;
+
+    /*!
+     *	Find errors regarding the register alignment of the address block registers.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected addressBlock.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInRegisterAlignment(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
+        QString const& context) const;
+
+    /*!
+     *	Find errors in the address block structure, the combination of sub-elements.
+     *  
+     *      @param [in] errors              List of found errors.
+     *      @param [in] addressBlock        The selected addressBlock.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInStructure(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
+        QString const& context) const;
 
     //-----------------------------------------------------------------------------
     // Data.

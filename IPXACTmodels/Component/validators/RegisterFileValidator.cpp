@@ -44,6 +44,14 @@ QSharedPointer<RegisterValidator> RegisterFileValidator::getRegisterValidator() 
 }
 
 //-----------------------------------------------------------------------------
+// Function: RegisterFileValidator::componentChange()
+//-----------------------------------------------------------------------------
+void RegisterFileValidator::componentChange(Document::Revision newDocRevision)
+{
+    docRevision_ = newDocRevision;
+}
+
+//-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::validate()
 //-----------------------------------------------------------------------------
 bool RegisterFileValidator::validate(QSharedPointer<RegisterFile> selectedRegisterFile) const

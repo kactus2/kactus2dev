@@ -21,8 +21,9 @@
 // Function: SubspaceMapValidator::SubspaceMapValidator()
 //-----------------------------------------------------------------------------
 SubspaceMapValidator::SubspaceMapValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterValidator> parameterValidator):
-MemoryBlockValidator(expressionParser, parameterValidator),
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
+MemoryBlockValidator(expressionParser, parameterValidator, docRevision),
 availableBuses_(),
 availableSpaces_()
 {

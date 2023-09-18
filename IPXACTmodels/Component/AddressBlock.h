@@ -196,24 +196,74 @@ public:
      */
     QStringList getAllRegisterOffsets() const;
 
+    /*!
+     *	Get the address block memory array.
+     *  
+     * 	    @return Pointer to the memory array of the address block.
+     */
     QSharedPointer<MemoryArray> getMemoryArray() const;
 
+    /*!
+     *	Set the memory array of the address block.
+     *  
+     *      @param [in] newMemoryArray     The memory array to set.
+     */
     void setMemoryArray(QSharedPointer<MemoryArray> newMemoryArray);
 
+    /*!
+     *	Get the misalignment allowed attribute.
+     *	    
+     * 	    @return The misalignment attribute.
+     */
     QString getMisalignmentAllowed() const;
 
+    /*!
+     *	Set the misalignment allowed attribute.
+     *  
+     *      @param [in] newMisalignmentAllowed     New misalignment allowed value.
+     */
     void setMisalignmentAllowed(bool newMisalignmentAllowed);
 
+    /*!
+     *	Get the address block definition reference.
+     *  
+     * 	    @return The address block definition reference.
+     */
     QString getAddressBlockDefinitionRef() const;
 
+    /*!
+     *	Set the address block definition reference.
+     *  
+     *      @param [in] newAddressBlockDefinitionRef     The definition reference to set.
+     */
     void setAddressBlockDefinitionRef(QString const& newAddressBlockDefinitionRef);
 
+    /*!
+     *	Get the type definitions reference.
+     *  
+     * 	    @return The referenced type definitions.
+     */
     QString getTypeDefinitionsRef() const;
 
+    /*!
+     *	Set the type definitions reference.
+     *  
+     *      @param [in] newTypeDefinitionsRef     The type definitions reference to set.
+     */
     void setTypeDefinitionsRef(QString const& newTypeDefinitionsRef);
 
+    /*!
+     *	Get the access policies of the address block.
+     *	    
+     * 	    @return Pointer to a list of access policies contained within the address block.
+     */
     QSharedPointer<QList<QSharedPointer<AccessPolicy> > > getAccessPolicies() const;
 
+    /*!
+     *	Set the access policies of the address block.
+     *  
+     *      @param [in] newAccessPolicies     The access policies to set.
+     */
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
 
 private:

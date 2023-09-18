@@ -53,6 +53,8 @@ public:
 
     QSharedPointer<RegisterValidator> getRegisterValidator() const;
 
+    void componentChange(Document::Revision newDocRevision);
+
     /*!
     *  Validates the given register file.
     *

@@ -75,11 +75,12 @@ private:
     /*!
      *	Validates a given value as an unsigned, nonzero long int.
      *  
-     *      @param [in] value     Description
+     *      @param [in] value       The value to check.
+     *      @param [in] canBeEmpty  Flag that indicates if the value given can be empty or not.
      *	    
      * 	    @return True, if the given value is valid, false otherwise.
      */
-    bool hasValidElementValue(QString const& value) const;
+    bool hasValidElementValue(QString const& value, bool canBeEmpty) const;
 
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;

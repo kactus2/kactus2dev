@@ -43,7 +43,7 @@ void MemoryArrayValidator::findErrorsIn(QStringList& errorList, QSharedPointer<M
     bool invalidDim = false;
     for (auto const& dim : *memoryArray->getDimensions())
     {
-        if (!hasValidElementValue(dim->value_))
+        if (!hasValidElementValue(dim->value_, false))
         {
             invalidDim = true;
             break;
@@ -79,12 +79,12 @@ bool MemoryArrayValidator::hasValidDimensions(QSharedPointer<MemoryArray> memory
 
     for (auto const& dim : *memoryArray->getDimensions())
     {
-        if (!hasValidElementValue(dim->value_))
+        if (!hasValidElementValue(dim->value_, false))
         {
             return false;
         }
     }
-
+        
     return true;
 }
 
@@ -93,13 +93,13 @@ bool MemoryArrayValidator::hasValidDimensions(QSharedPointer<MemoryArray> memory
 //-----------------------------------------------------------------------------
 bool MemoryArrayValidator::hasValidStride(QSharedPointer<MemoryArray> memoryArray) const
 {
-    return hasValidElementValue(memoryArray->getStride());
+    return hasValidElementValue(memoryArray->getStride(), true);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryArrayValidator::hasValidElementValue()
 //-----------------------------------------------------------------------------
-bool MemoryArrayValidator::hasValidElementValue(QString const& value) const
+bool MemoryArrayValidator::hasValidElementValue(QString const& value, bool canBeEmpty) const
 {
     if (!value.isEmpty())
     {
@@ -116,7 +116,9 @@ bool MemoryArrayValidator::hasValidElementValue(QString const& value) const
         {
             return false;
         }
+
+        return true;
     }
 
-    return true;
+    return canBeEmpty;
 }

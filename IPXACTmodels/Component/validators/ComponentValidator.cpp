@@ -117,9 +117,9 @@ assertionValidator_()
     QSharedPointer<RegisterFileValidator> registerFileValidator (new RegisterFileValidator(parser, registerValidator, parameterValidator_, docRevision));
 
     QSharedPointer<AddressBlockValidator> addressBlockValidator(new AddressBlockValidator(
-        parser, registerValidator, registerFileValidator, parameterValidator_));
+        parser, registerValidator, registerFileValidator, parameterValidator_, docRevision));
 
-    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator_));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator_, docRevision));
 
     QSharedPointer<MemoryMapBaseValidator> localMapValidator(new MemoryMapBaseValidator(
         parser, addressBlockValidator, subspaceValidator));

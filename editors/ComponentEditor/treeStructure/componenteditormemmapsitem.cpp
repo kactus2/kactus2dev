@@ -196,10 +196,11 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
         new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator));
 
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator));
+        new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator, 
+            component_->getRevision()));
 
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser_, parameterValidator));
+        new SubspaceMapValidator(expressionParser_, parameterValidator, component_->getRevision()));
 
     QSharedPointer<MemoryMapValidator> memoryMapValidator(new MemoryMapValidator(
         expressionParser_, addressBlockValidator, subspaceValidator, component_));

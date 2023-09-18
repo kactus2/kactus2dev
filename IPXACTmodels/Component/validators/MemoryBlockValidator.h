@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -34,14 +36,13 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] parameterValidator  Validator used for parameters.
 	 */
-    MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterValidator> parameterValidator);
+    MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterValidator> parameterValidator, Document::Revision docRevision);
 
 	/*!
      *  The destructor.
      */
     ~MemoryBlockValidator() = default;
-    
+
     /*!
      *  Validates the given memory block.
      *
@@ -135,6 +136,9 @@ protected:
      */
     void findErrorsInParameters(QVector<QString>& errors, QSharedPointer<MemoryBlockBase> memoryBlock,
         QString const& context) const;
+
+    //! The IP-XACT standard revision to comply to.
+    Document::Revision docRevision_;
 
 private:
 

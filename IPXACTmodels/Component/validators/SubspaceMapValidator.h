@@ -37,8 +37,8 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] parameterValidator  Validator used for parameters.
 	 */
-    SubspaceMapValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<ParameterValidator> parameterValidator);
+    SubspaceMapValidator(QSharedPointer<ExpressionParser> expressionParser, 
+        QSharedPointer<ParameterValidator> parameterValidator, Document::Revision docRevision);
 
 	/*!
      *  The destructor.
