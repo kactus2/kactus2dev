@@ -12,16 +12,16 @@
 #include "AccessPoliciesModel.h"
 
 #include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <common/KactusColors.h>
 
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesModel::AccessPoliciesModel()
 //-----------------------------------------------------------------------------
-AccessPoliciesModel::AccessPoliciesModel(QString const& registerName, RegisterInterface* interface, QObject* parent) :
+AccessPoliciesModel::AccessPoliciesModel(AccessPolicyInterface* accessPolicyInterface, QObject* parent) :
     QAbstractTableModel(parent),
-    interface_(interface),
-    registerName_(registerName.toStdString())
+    interface_(accessPolicyInterface)
 {
 
 }
@@ -36,7 +36,7 @@ int AccessPoliciesModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/)
         return 0;
     }
 
-    return interface_->getAccessPolicyCount(registerName_);
+    return interface_->getAccessPolicyCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::Di
         // Data for mode ref editor.
         if (index.column() == 0)
         {
-            auto const& modeRefsList = interface_->getModeRefs(registerName_, index.row());
+            auto const& modeRefsList = interface_->getModeRefs(index.row());
 
             QList<QPair<QString, int> > modeRefs;
             for (auto const& [reference, priority] : modeRefsList)
@@ -153,7 +153,7 @@ QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::Di
 bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
 {
     if (!index.isValid() || index.row() < 0 ||
-        index.row() >= interface_->getAccessPolicyCount(registerName_) ||
+        index.row() >= interface_->getAccessPolicyCount() ||
         !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
     {
         return false;
@@ -169,12 +169,12 @@ bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& valu
             modeRefsStdType.emplace_back(reference.toStdString(), priority);
         }
 
-        interface_->setModeRefs(registerName_, modeRefsStdType, index.row());
+        interface_->setModeRefs(modeRefsStdType, index.row());
     }
 
     else if (index.column() == 1)
     {
-        interface_->setAccess(registerName_, value.toString().toStdString(), index.row());
+        interface_->setAccess(value.toString().toStdString(), index.row());
     }
 
     emit dataChanged(index, index);
@@ -186,10 +186,10 @@ bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& valu
 //-----------------------------------------------------------------------------
 void AccessPoliciesModel::onAddRow(QModelIndex const& index)
 {
-    int lastRow = interface_->getAccessPolicyCount(registerName_);
+    int lastRow = interface_->getAccessPolicyCount();
 
     beginInsertRows(QModelIndex(), lastRow, lastRow);
-    interface_->addAccessPolicy(registerName_);
+    interface_->addAccessPolicy();
     endInsertRows();
 
     emit invalidateFilter();
@@ -202,13 +202,13 @@ void AccessPoliciesModel::onAddRow(QModelIndex const& index)
 void AccessPoliciesModel::onRemoveItem(QModelIndex const& index)
 {
     if (!index.isValid() || index.row() < 0 ||
-        index.row() >= interface_->getAccessPolicyCount(registerName_))
+        index.row() >= interface_->getAccessPolicyCount())
     {
         return;
     }
 
     beginRemoveRows(QModelIndex(), index.row(), index.row());
-    interface_->removeAccessPolicy(registerName_, index.row());
+    interface_->removeAccessPolicy(index.row());
     endRemoveRows();
 
     emit invalidateFilter();
@@ -222,7 +222,7 @@ QVariant AccessPoliciesModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == 0) // Mode ref display values
     {
-        auto modeRefsList = interface_->getModeRefs(registerName_, index.row());
+        auto modeRefsList = interface_->getModeRefs(index.row());
 
         QStringList valueList;
         for (auto const& [reference, priority] : modeRefsList)
@@ -235,7 +235,7 @@ QVariant AccessPoliciesModel::valueForIndex(QModelIndex const& index) const
 
     else if (index.column() == 1) // Access display values
     {
-        return QString::fromStdString(interface_->getAccessString(registerName_, index.row()));
+        return QString::fromStdString(interface_->getAccessString(index.row()));
     }
 
     return QVariant();
@@ -248,7 +248,7 @@ bool AccessPoliciesModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == 0)
     {
-        return interface_->hasValidModeRefs(registerName_);
+        return interface_->hasValidAccessPolicies();
     }
 
     return true;

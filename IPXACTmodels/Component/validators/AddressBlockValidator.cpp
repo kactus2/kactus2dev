@@ -403,34 +403,7 @@ bool AddressBlockValidator::hasValidMemoryArray(QSharedPointer<AddressBlock> add
 //-----------------------------------------------------------------------------
 bool AddressBlockValidator::hasValidAccessPolicies(QSharedPointer<AddressBlock> addressBlock) const
 {
-    bool hasAccessPolicyWithoutModeRef = false;
-
-    QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
-
-    for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
-    {
-        if (accessPolicy->getModeReferences()->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
-        // all address block access policies.
-        if (!CommonItemsValidator::hasValidModeRefs(accessPolicy->getModeReferences(),
-            checkedModeReferences, checkedModePriorities))
-        {
-            return false;
-        }
-    }
-
-    // Number of access policies cannot be greater than one if an access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && addressBlock->getAccessPolicies()->size() > 1)
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidAccessPolicies(addressBlock->getAccessPolicies());
 }
 
 //-----------------------------------------------------------------------------

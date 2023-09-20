@@ -264,39 +264,6 @@ bool RegisterValidator::hasValidStructure(QSharedPointer<Register> selectedRegis
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidAccessPolciyModeRefs()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidAccessPolicyModeRefs(QSharedPointer<Register> selectedRegister) const
-{
-    QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
-
-    bool hasAccessPolicyWithoutModeRef = false;
-
-    for (auto const& accessPolicy : *selectedRegister->getAccessPolicies())
-    {
-        if (accessPolicy->getModeReferences()->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        if (!CommonItemsValidator::hasValidModeRefs(accessPolicy->getModeReferences(), 
-            checkedModeReferences, checkedModePriorities))
-        {
-            return false;
-        }
-    }
-
-    // Number of field access policies cannot be greater than one if a field access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && selectedRegister->getAccessPolicies()->size() > 1)
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterValidator::fieldHasValidAccess()
 //-----------------------------------------------------------------------------
 bool RegisterValidator::fieldHasValidAccess(QSharedPointer<RegisterDefinition> selectedRegsiter,

@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 
 #include <FieldInterface.h>
+#include <AccessPolicyInterface.h>
 #include <RegisterExpressionsGatherer.h>
 
 #include <QMimeData>
@@ -39,11 +40,12 @@ namespace
 //-----------------------------------------------------------------------------
 RegisterInterface::RegisterInterface(QSharedPointer<RegisterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    FieldInterface* subInterface):
+    FieldInterface* subInterface, AccessPolicyInterface* accessPolicyInterface) :
 ParameterizableInterface(expressionParser, expressionFormatter),
 registers_(),
 validator_(validator),
 subInterface_(subInterface),
+accessPolicyInterface_(accessPolicyInterface),
 addressUnitBits_(0)
 {
 
@@ -432,22 +434,11 @@ bool RegisterInterface::setVolatile(std::string const& registerName, std::string
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getAccessString()
 //-----------------------------------------------------------------------------
-std::string RegisterInterface::getAccessString(std::string const& registerName, int accessPolicyIndex /*= -1*/) const
+std::string RegisterInterface::getAccessString(std::string const& registerName) const
 {
     if (auto selectedRegister = getRegister(registerName))
     {
-        if (accessPolicyIndex == -1)
-        {
-            return AccessTypes::access2Str(selectedRegister->getAccess()).toStdString();
-        }
-        else if (accessPolicyIndex >= 0)
-        {
-            if (auto accessPolicies = selectedRegister->getAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
-            {
-                return AccessTypes::access2Str(accessPolicies->at(accessPolicyIndex)->getAccess()).toStdString();
-            }
-        }
+        return AccessTypes::access2Str(selectedRegister->getAccess()).toStdString();
     }
 
     return string("");
@@ -456,22 +447,11 @@ std::string RegisterInterface::getAccessString(std::string const& registerName, 
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getAccess()
 //-----------------------------------------------------------------------------
-AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName, int accessPolicyIndex /*= -1*/) const
+AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName) const
 {
     if (auto selectedRegister = getRegister(registerName))
     {
-        if (accessPolicyIndex == -1)
-        {
-            return selectedRegister->getAccess();
-        }
-        else if (accessPolicyIndex >= 0)
-        {
-            if (auto accessPolicies = selectedRegister->getAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
-            {
-                return accessPolicies->at(accessPolicyIndex)->getAccess();
-            }
-        }
+        return selectedRegister->getAccess();
     }
 
     return AccessTypes::ACCESS_COUNT;
@@ -480,26 +460,14 @@ AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::setAccess()
 //-----------------------------------------------------------------------------
-bool RegisterInterface::setAccess(std::string const& registerName, std::string const& newAccess, int accessPolicyIndex /*= -1*/)
+bool RegisterInterface::setAccess(std::string const& registerName, std::string const& newAccess)
 {
     if (auto selectedRegister = getRegister(registerName))
     {
         auto newAccessType = AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT);
 
-        if (accessPolicyIndex == -1)
-        {
-            selectedRegister->setAccess(newAccessType);
-            return true;
-        }
-        else if (accessPolicyIndex >= 0)
-        {
-            if (auto accessPolicies = selectedRegister->getAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
-            {
-                accessPolicies->at(accessPolicyIndex)->setAccess(newAccessType);
-                return true;
-            }
-        }
+        selectedRegister->setAccess(newAccessType);
+        return true;
     }
 
     return false;
@@ -803,120 +771,11 @@ FieldInterface* RegisterInterface::getSubInterface() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterInterface::getAccessPolicyCount()
+// Function: RegisterInterface::getAccessPolicyInterface()
 //-----------------------------------------------------------------------------
-int RegisterInterface::getAccessPolicyCount(std::string const& registerName) const
+AccessPolicyInterface* RegisterInterface::getAccessPolicyInterface() const
 {
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        return selectedRegister->getAccessPolicies()->size();
-    }
-
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::getModeRefs()
-//-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, int> > RegisterInterface::getModeRefs(std::string const& registerName, int accessPolicyIndex) const
-{
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        if (auto accessPolicies = selectedRegister->getAccessPolicies(); 
-            accessPolicyIndex <= accessPolicies->size() - 1)
-        {
-            auto accessPolicyModeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
-            
-            std::vector<std::pair<std::string, int> > modeRefsList;
-
-            for (auto const& modeRef : *accessPolicyModeRefs)
-            {
-                modeRefsList.emplace_back(modeRef->getReference().toStdString(), modeRef->getPriority().toInt());
-            }
-
-            return modeRefsList;
-        }
-    }
-
-    return std::vector<std::pair<std::string, int> >();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::setModeRefs()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::setModeRefs(std::string const& registerName, std::vector<std::pair<std::string, int> > const& newModeRefs, int accessPolicyIndex)
-{
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        if (auto accessPolicies = selectedRegister->getAccessPolicies();
-            accessPolicyIndex <= accessPolicies->size() - 1)
-        {
-            // Clear old access policy mode refs.
-            auto modeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
-            modeRefs->clear();
-
-            // Create and add new mode refs.
-            for (auto const& [reference, priority] : newModeRefs)
-            {
-                QSharedPointer<ModeReference> newModeRef(new ModeReference());
-                newModeRef->setReference(QString::fromStdString(reference));
-                newModeRef->setPriority(QString::number(priority));
-
-                modeRefs->append(newModeRef);
-            }
-
-            return true;
-        }
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::hasValidModeRefs()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::hasValidModeRefs(std::string const& registerName) const
-{
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        return validator_->hasValidAccessPolicyModeRefs(selectedRegister);
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::addAccessPolicy()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::addAccessPolicy(std::string const& registerName)
-{
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        QSharedPointer<AccessPolicy> newAccessPolicy(new AccessPolicy());
-        selectedRegister->getAccessPolicies()->append(newAccessPolicy);
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterInterface::removeAccessPolicy()
-//-----------------------------------------------------------------------------
-bool RegisterInterface::removeAccessPolicy(std::string const& registerName, int accessPolicyIndex)
-{
-    if (auto selectedRegister = getRegister(registerName))
-    {
-        auto accessPolicies = selectedRegister->getAccessPolicies();
-
-        if (accessPolicyIndex <= accessPolicies->size() - 1)
-        {
-            accessPolicies->removeAt(accessPolicyIndex);
-            return true;
-        }
-    }
-
-    return false;
+    return accessPolicyInterface_;
 }
 
 //-----------------------------------------------------------------------------

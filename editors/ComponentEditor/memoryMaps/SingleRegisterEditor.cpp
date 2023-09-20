@@ -22,6 +22,7 @@
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -56,6 +57,7 @@ containingRegisterData_(containingRegisterData),
 registerInterface_(registerInterface)
 {
     registerInterface_->setRegisters(containingRegisterData_);
+    registerInterface_->getAccessPolicyInterface()->setAccessPolicies(selectedRegister->getAccessPolicies());
 
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
@@ -129,7 +131,8 @@ void SingleRegisterEditor::setupLayout()
     {
         registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
-        AccessPoliciesEditor* accessPoliciesEditor(new AccessPoliciesEditor(registerInterface_, QString::fromStdString(registerName_), this));
+        AccessPoliciesEditor* accessPoliciesEditor(new AccessPoliciesEditor(
+            registerInterface_->getAccessPolicyInterface(), QString::fromStdString(registerName_), this));
 
         connect(accessPoliciesEditor, SIGNAL(contentChanged()), 
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);

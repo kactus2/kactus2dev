@@ -136,8 +136,6 @@ public:
      */
     bool hasValidStructure(QSharedPointer<Register> selectedRegister) const;
 
-    bool hasValidAccessPolicyModeRefs(QSharedPointer<Register> selectedRegister) const;
-
     /*!
      *  Locate errors within a register.
      *

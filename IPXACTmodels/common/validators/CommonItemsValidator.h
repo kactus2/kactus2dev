@@ -14,10 +14,13 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
+#include <IPXACTmodels/ipxactmodels_global.h>
+
 #include <QSharedPointer>
 
 class ModeReference;
 class RegisterBase;
+class AccessPolicy;
 
 namespace CommonItemsValidator
 {
@@ -71,7 +74,15 @@ namespace CommonItemsValidator
     void findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs,
         QString const& context, QStringList& checkedRefs, QStringList& checkedPriorities, 
         bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued);
-
+    
+    /*!
+     *	Validate given access policies.
+     *  
+     *      @param [in] accessPolicies     The access policies to validate.
+     *	    
+     * 	    @return True, if the access policies are valid, otherwise false.
+     */
+    IPXACTMODELS_EXPORT bool hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies);
 };
 
 

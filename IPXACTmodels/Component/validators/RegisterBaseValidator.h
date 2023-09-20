@@ -111,7 +111,7 @@ public:
     bool hasValidParameters(QSharedPointer<RegisterBase> selectedRegisterBase) const;
 
     /*!
-     *	Check if the register has valid access policies.
+     *	Check if the register has valid access policies (or rather the mode references of the access policies).
      *  
      *      @param [in] registerBase     The register base to check
      *	    

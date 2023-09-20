@@ -13,7 +13,7 @@
 #include "AccessPoliciesDelegate.h"
 #include "AccessPoliciesModel.h"
 
-#include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <common/views/EditableTableView/editabletableview.h>
 
@@ -23,14 +23,14 @@
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesEditor::AccessPoliciesEditor()
 //-----------------------------------------------------------------------------
-AccessPoliciesEditor::AccessPoliciesEditor(RegisterInterface* interface_, QString const& registerName, QWidget* parent) :
+AccessPoliciesEditor::AccessPoliciesEditor(AccessPolicyInterface* accessPolicyInterface, QString const& registerName, QWidget* parent) :
     QGroupBox(tr("Access policies"), parent)
 {
     auto topLayout = new QVBoxLayout(this);
     auto view = new EditableTableView(this);
     topLayout->addWidget(view);
 
-    auto model = new AccessPoliciesModel(registerName, interface_, this);
+    auto model = new AccessPoliciesModel(accessPolicyInterface, this);
     auto delegate = new AccessPoliciesDelegate(this);
     auto proxy = new QSortFilterProxyModel(this);
 

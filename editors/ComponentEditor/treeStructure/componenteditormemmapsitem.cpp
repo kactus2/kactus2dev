@@ -23,6 +23,7 @@
 #include <KactusAPI/include/SubspaceMapInterface.h>
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -193,7 +194,7 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(expressionParser_, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator));
+        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator, component_->getRevision()));
 
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
         new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator, 
@@ -229,8 +230,9 @@ void ComponentEditorMemMapsItem::createMemoryMapInterface()
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
     RegisterInterface* registerInterface(
-        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, accessPolicyInterface));
 
     BusInterfaceInterface* busInterface = createInterfaceForBus(parameterValidator);
 

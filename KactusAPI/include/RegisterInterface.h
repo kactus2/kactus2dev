@@ -23,6 +23,7 @@ class Register;
 class RegisterBase;
 class RegisterValidator;
 class FieldInterface;
+class AccessPolicyInterface;
 
 #include <QVector>
 #include <QMap>
@@ -46,7 +47,8 @@ public:
     RegisterInterface(QSharedPointer<RegisterValidator> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        FieldInterface* subInterface);
+        FieldInterface* subInterface,
+        AccessPolicyInterface* accessPolicyInterface);
 	
 	/*!
      *  The destructor.
@@ -298,7 +300,7 @@ public:
      *
      *      @return The access string of the selected register.
      */
-    std::string getAccessString(std::string const& registerName, int accessPolicyIndex = -1) const;
+    std::string getAccessString(std::string const& registerName) const;
 
     /*!
      *  Get the access of the selected register or access policy given by the access policy index.
@@ -308,7 +310,7 @@ public:
      *
      *      @return The access value of the selected register.
      */
-    AccessTypes::Access getAccess(std::string const& registerName, int accessPolicyIndex = -1) const;
+    AccessTypes::Access getAccess(std::string const& registerName) const;
 
     /*!
      *  Set the access value for the selected register or its access policy given by the access policy index.
@@ -319,7 +321,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAccess(std::string const& registerName, std::string const& newAccess, int accessPolicyIndex = -1);
+    bool setAccess(std::string const& registerName, std::string const& newAccess);
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.
@@ -448,62 +450,11 @@ public:
     FieldInterface* getSubInterface() const;
 
     /*!
-     *	Get the number of register access policies.
+     *	Get the access policy interface.
      *  
-     *      @param [in] registerName     The name of the register.
-     *	    
-     * 	    @return The number of access policies.
+     * 	    @return Interface for accessing the register access policies.
      */
-    int getAccessPolicyCount(std::string const& registerName) const;
-
-    /*!
-     *	Get the modereferences of a selected register access policy.
-     *  
-     *      @param [in] registerName          The selected register.
-     *      @param [in] accessPolicyIndex     The index of the selected access policy.
-     *	    
-     * 	    @return The mode references of the acces policy.
-     */
-    std::vector<std::pair<std::string, int> > getModeRefs(std::string const& registerName, int accessPolicyIndex) const;
-
-    /*!
-     *	Set the mode references of a selected register access policy.
-     *  
-     *      @param [in] registerName          The selected register.
-     *      @param [in] newModeRefs           The mode references to set.
-     *      @param [in] accessPolicyIndex     The index of the selected access policy.
-     *	    
-     * 	    @return  True, if the operation was successful, otherwise false.
-     */
-    bool setModeRefs(std::string const& registerName, std::vector<std::pair<std::string, int> > const& newModeRefs, int accessPolicyIndex);
-
-    /*!
-     *	Validate all access policy mode references of a register.
-     *  
-     *      @param [in] registerName          The selected register.
-     *
-     * 	    @return True, if the mode references are valid, otherwise false.
-     */
-    bool hasValidModeRefs(std::string const& registerName) const;
-
-    /*!
-     *	Add a new access policy to a selected register.
-     *  
-     *      @param [in] registerName     Name of the selected register.
-     *	    
-     * 	    @return True, if the operation was successful, otherwise false.
-     */
-    bool addAccessPolicy(std::string const& registerName);
-
-    /*!
-     *	Remove an access policy from a selected register.
-     *
-     *      @param [in] registerName          Name of the selected register.
-     *      @param [in] accessPolicyIndex     Index of the access policy to be removed.
-     *
-     * 	    @return True, if the operation was successful, otherwise false.
-     */
-    bool removeAccessPolicy(std::string const& registerName, int accessPolicyIndex);
+    AccessPolicyInterface* getAccessPolicyInterface() const;
 
 private:
 
@@ -540,6 +491,9 @@ private:
 
     //! Interface for accessing fields.
     FieldInterface* subInterface_;
+
+    //! Interface for accessing register access policies.
+    AccessPolicyInterface* accessPolicyInterface_;
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;

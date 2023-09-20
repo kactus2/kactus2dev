@@ -14,7 +14,7 @@
 
 #include <QAbstractTableModel>
 
-class RegisterInterface;
+class AccessPolicyInterface;
 
 class AccessPoliciesModel : public QAbstractTableModel
 {
@@ -22,7 +22,7 @@ class AccessPoliciesModel : public QAbstractTableModel
 
 public:
 
-    AccessPoliciesModel(QString const& registerName, RegisterInterface* interface, QObject* parent);
+    AccessPoliciesModel(AccessPolicyInterface* accessPolicyInterface, QObject* parent);
 
     virtual ~AccessPoliciesModel() = default;
 
@@ -137,8 +137,8 @@ private:
      */
     bool validateIndex(QModelIndex const& index) const;
 
-    //! The interface 
-    RegisterInterface* interface_;
+    //! The interface.
+    AccessPolicyInterface* interface_;
     
     //! The name of the register being edited.
     std::string registerName_;

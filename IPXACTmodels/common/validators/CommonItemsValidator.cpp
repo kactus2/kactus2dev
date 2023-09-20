@@ -165,3 +165,38 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
         }
     }
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::hasValidAccessPolicies()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies)
+{
+    bool hasAccessPolicyWithoutModeRef = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
+    for (auto const& accessPolicy : *accessPolicies)
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
+        // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
+        // all address block access policies.
+        if (!hasValidModeRefs(accessPolicy->getModeReferences(),
+            checkedModeReferences, checkedModePriorities))
+        {
+            return false;
+        }
+    }
+
+    // Number of access policies cannot be greater than one if an access policy has no mode references.
+    if (hasAccessPolicyWithoutModeRef && accessPolicies->size() > 1)
+    {
+        return false;
+    }
+
+    return true;
+}

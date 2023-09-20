@@ -14,7 +14,7 @@
 
 #include <QGroupBox>
 
-class RegisterInterface;
+class AccessPolicyInterface;
 
 class AccessPoliciesEditor : public QGroupBox
 {
@@ -22,7 +22,7 @@ class AccessPoliciesEditor : public QGroupBox
 
 public:
 
-    AccessPoliciesEditor(RegisterInterface* interface_, QString const& registerName, QWidget* parent);
+    AccessPoliciesEditor(AccessPolicyInterface* accessPolicyInterface, QString const& registerName, QWidget* parent);
 
     virtual ~AccessPoliciesEditor() = default;
 
