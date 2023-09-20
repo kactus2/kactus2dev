@@ -27,6 +27,7 @@ class ExpressionEditor;
 class ExpressionParser;
 class RegisterFileValidator;
 class RegisterInterface;
+class AccessPoliciesEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for a single register file item in component editor tree.

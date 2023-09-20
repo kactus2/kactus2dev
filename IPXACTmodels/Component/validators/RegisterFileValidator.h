@@ -41,7 +41,7 @@ public:
     RegisterFileValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<RegisterValidator> registerValidator,
         QSharedPointer<ParameterValidator> parameterValidator,
-        Document::Revision docRevision = Document::Revision::Std14);
+        Document::Revision docRevision);
 
     //! The destructor.
     virtual ~RegisterFileValidator() = default;

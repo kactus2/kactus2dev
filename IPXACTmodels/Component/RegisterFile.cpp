@@ -37,10 +37,14 @@ RegisterFile::RegisterFile(const RegisterFile& other):
 RegisterBase(other),
 range_(other.range_),
 registerData_(new QList<QSharedPointer<RegisterBase> > ()),
-memoryArray_(new MemoryArray(*other.memoryArray_)),
 registerFileDefinitionReference_(other.registerFileDefinitionReference_),
 typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
+    if (other.memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+    }
+
     copyRegisterData(other);
 }
 
