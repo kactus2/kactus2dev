@@ -550,13 +550,15 @@ void PythonAPI::constructMemoryValidators()
     QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(
         expressionParser_, fieldValidator, parameterValidator_));
     QSharedPointer<RegisterFileValidator> registerFileValidator(
-        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator_));
+        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator_,
+            Document::Revision::Unknown));
 
     QSharedPointer<AddressBlockValidator> blockValidator(new AddressBlockValidator(
-        expressionParser_, registerValidator, registerFileValidator, parameterValidator_));
+        expressionParser_, registerValidator, registerFileValidator, parameterValidator_, 
+        Document::Revision::Unknown));
 
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser_, parameterValidator_));
+        new SubspaceMapValidator(expressionParser_, parameterValidator_, Document::Revision::Unknown));
 
     QSharedPointer<MemoryMapValidator> mapValidator(
         new MemoryMapValidator(expressionParser_, blockValidator, subspaceValidator, QSharedPointer<Component>()));

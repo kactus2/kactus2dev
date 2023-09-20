@@ -50,6 +50,7 @@ void SubspaceMapValidator::componentChange(QSharedPointer<Component> component)
     {
         availableBuses_ = component->getBusInterfaces();
         availableSpaces_ = component->getAddressSpaces();
+        docRevision_ = component->getRevision();
     }
 }
 
