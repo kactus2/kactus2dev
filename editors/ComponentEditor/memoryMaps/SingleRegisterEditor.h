@@ -33,6 +33,7 @@ class RegisterValidator;
 class RegisterInterface;
 class AddressBlock;
 class RegisterBase;
+class AccessPoliciesEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single register.
@@ -226,6 +227,9 @@ private:
 
     //! Interface for registers.
     RegisterInterface* registerInterface_;
+
+    //! The editor for access policies.
+    AccessPoliciesEditor* accessPoliciesEditor_;
 };
 
 #endif // SINGLEREGISTEREDITOR_H

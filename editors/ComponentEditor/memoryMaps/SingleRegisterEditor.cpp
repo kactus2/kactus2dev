@@ -54,10 +54,11 @@ volatileEditor_(new BooleanComboBox(this)),
 accessEditor_(new AccessComboBox(this)),
 expressionParser_(expressionParser),
 containingRegisterData_(containingRegisterData),
-registerInterface_(registerInterface)
+registerInterface_(registerInterface),
+accessPoliciesEditor_(new AccessPoliciesEditor(selectedRegister->getAccessPolicies(), 
+    registerInterface->getAccessPolicyInterface(), this))
 {
     registerInterface_->setRegisters(containingRegisterData_);
-    registerInterface_->getAccessPolicyInterface()->setAccessPolicies(selectedRegister->getAccessPolicies());
 
     offsetEditor_->setFixedHeight(20);
     sizeEditor_->setFixedHeight(20);
@@ -131,16 +132,10 @@ void SingleRegisterEditor::setupLayout()
     {
         registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
-        AccessPoliciesEditor* accessPoliciesEditor(new AccessPoliciesEditor(
-            registerInterface_->getAccessPolicyInterface(), QString::fromStdString(registerName_), this));
-
-        connect(accessPoliciesEditor, SIGNAL(contentChanged()), 
-            this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-
         QGridLayout* layout = new QGridLayout();
         layout->addWidget(&nameEditor_, 0, 0, 2, 1);
         layout->addWidget(registerDefinitionGroup, 0, 1);
-        layout->addWidget(accessPoliciesEditor, 1, 1);
+        layout->addWidget(accessPoliciesEditor_, 1, 1);
         topOfPageLayout = layout;
     }
 
@@ -184,6 +179,7 @@ void SingleRegisterEditor::refresh()
 
     nameEditor_.refresh();
     fieldsEditor_->refresh();
+    accessPoliciesEditor_->refresh();
 
     changeExpressionEditorsSignalBlockStatus(true);
     
@@ -273,6 +269,8 @@ void SingleRegisterEditor::connectSignals()
 
     connect(fieldsEditor_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
         this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(accessPoliciesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

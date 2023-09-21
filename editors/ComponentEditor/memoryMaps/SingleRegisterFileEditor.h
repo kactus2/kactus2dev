@@ -147,6 +147,9 @@ private:
     //! The editor for the register files.
     RegisterFileEditor* registerFileEditor_;
 
+    //! The editor for access policies.
+    AccessPoliciesEditor* accessPoliciesEditor_;
+
     //! The editor for register file offset.
     ExpressionEditor* offsetEditor_;
     

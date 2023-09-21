@@ -15,6 +15,9 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <editors/ComponentEditor/memoryMaps/addressblockeditor.h>
+#include <editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.h>
+
+#include <KactusAPI/include/RegisterInterface.h>
 
 #include <QCompleter>
 #include <QFormLayout>
@@ -36,6 +39,8 @@ registersEditor_(new AddressBlockEditor(
     registerFile->getRegisterData(), registerInterface, component, handler, parameterFinder, this)),
 registerFileEditor_(new RegisterFileEditor(registerFile_->getRegisterData(), component, handler,
     parameterFinder, expressionFormatter, registerFileValidator, this)),
+accessPoliciesEditor_(new AccessPoliciesEditor(registerFile->getAccessPolicies(), 
+    registerInterface->getAccessPolicyInterface(), this)),
 offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
@@ -95,6 +100,8 @@ void SingleRegisterFileEditor::refresh()
 
     registersEditor_->refresh();
     registerFileEditor_->refresh();
+
+    accessPoliciesEditor_->refresh();
 
     changeExpressionEditorsSignalBlockStatus(true);
 
@@ -186,14 +193,39 @@ void SingleRegisterFileEditor::setupLayout()
     QGroupBox* registerDefinitionGroup = new QGroupBox(tr("Register file definition"));
 
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
-    registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
-    registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
-    registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
-    registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+    
+    QLayout* topOfPageLayout;
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
+        registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
+        registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
+        registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(registerDefinitionGroup, 0);
+        QHBoxLayout* newTopOfPageLayout = new QHBoxLayout();
+        newTopOfPageLayout->addWidget(&nameEditor_, 0);
+        newTopOfPageLayout->addWidget(registerDefinitionGroup, 0);
+        topOfPageLayout = newTopOfPageLayout;
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
+        registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
+
+        auto spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        registerDefinitionLayout->addRow(spacer);
+
+        QGridLayout* newTopOfPageLayout = new QGridLayout();
+        newTopOfPageLayout->addWidget(&nameEditor_, 0, 0, 2, 1);
+        newTopOfPageLayout->addWidget(registerDefinitionGroup, 0, 1);
+        newTopOfPageLayout->addWidget(accessPoliciesEditor_, 1, 1);
+
+        newTopOfPageLayout->setRowStretch(0, 1);
+        newTopOfPageLayout->setRowStretch(1, 3);
+
+        topOfPageLayout = newTopOfPageLayout;
+    }
 
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -205,9 +237,19 @@ void SingleRegisterFileEditor::setupLayout()
     verticalSplitter->addWidget(topOfPageWidget);
     verticalSplitter->addWidget(registersEditor_);
     verticalSplitter->addWidget(registerFileEditor_);
-    verticalSplitter->setStretchFactor(0, 1);
-    verticalSplitter->setStretchFactor(1, 2);
-    verticalSplitter->setStretchFactor(2, 2);
+
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        verticalSplitter->setStretchFactor(0, 1);
+        verticalSplitter->setStretchFactor(1, 2);
+        verticalSplitter->setStretchFactor(2, 2);
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        verticalSplitter->setStretchFactor(0, 2);
+        verticalSplitter->setStretchFactor(1, 3);
+        verticalSplitter->setStretchFactor(2, 3);
+    }
 
     for (int i = 1; i < 3; ++i)
     {
@@ -298,6 +340,8 @@ void SingleRegisterFileEditor::connectSignals()
 
     connect(registersEditor_, SIGNAL(registerNameChanged(QString const&, QString const&)),
         this, SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(accessPoliciesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
