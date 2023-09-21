@@ -28,6 +28,7 @@
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 #include <KactusAPI/include/ResetInterface.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
@@ -579,8 +580,12 @@ void PythonAPI::constructMemoryInterface()
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
+
     RegisterInterface* registerInterface(
-        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, 
+            accessPolicyInterface));
 
     AddressBlockInterface* blockInterface(new AddressBlockInterface(blockValidator, expressionParser_,
         expressionFormatter_, busInterface_, registerInterface, componentParameterInterface_));
