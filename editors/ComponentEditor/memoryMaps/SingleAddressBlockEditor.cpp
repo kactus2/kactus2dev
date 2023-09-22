@@ -21,7 +21,9 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
+#include <editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/RegisterInterface.h>
 
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
@@ -57,7 +59,9 @@ registerFilesEditor_(new RegisterFileEditor(addressBlock->getRegisterData(), com
 blockName_(addressBlock->name().toStdString()),
 blockInterface_(blockInterface),
 containingMap_(containingMap),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+accessPoliciesEditor_(new AccessPoliciesEditor(addressBlock->getAccessPolicies(), 
+    blockInterface->getSubInterface()->getAccessPolicyInterface(), this))
 {
     blockInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
 
@@ -113,6 +117,8 @@ void SingleAddressBlockEditor::refresh()
 
     nameEditor_.refresh();
     registersEditor_->refresh();
+
+    accessPoliciesEditor_->refresh();
 
     General::Usage usage = blockInterface_->getUsage(blockName_);
     registersEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
@@ -249,28 +255,53 @@ void SingleAddressBlockEditor::setupLayout()
     addressBlockDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
     addressBlockDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
     addressBlockDefinitionLayout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-    addressBlockDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-
-    usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
-    addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
-
-    accessEditor_ = new AccessComboBox(addressBlockDefinitionGroup);
-    addressBlockDefinitionLayout->addRow(tr("Access:"), accessEditor_);
+    
     volatileEditor_ = new BooleanComboBox(addressBlockDefinitionGroup);
-    addressBlockDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+    usageEditor_ = new UsageComboBox(addressBlockDefinitionGroup);
+    accessEditor_ = new AccessComboBox(addressBlockDefinitionGroup);
 
-    connect(usageEditor_, SIGNAL(currentTextChanged(QString const&)),
-        this, SLOT(onUsageSelected(QString const&)), Qt::UniqueConnection);
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        addressBlockDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        addressBlockDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+        addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
+        addressBlockDefinitionLayout->addRow(tr("Access:"), accessEditor_);
+    }
+    else
+    {
+        addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
 
-    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
-        this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
+        auto spacer = new QWidget();
+        spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+        addressBlockDefinitionLayout->addRow(spacer);
 
-    connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
-        this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
+        isPresentEditor_->setVisible(false);
+        volatileEditor_->setVisible(false);
+        accessEditor_->setVisible(false);
+    }
+    
+    QLayout* topOfPageLayout;
 
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(addressBlockDefinitionGroup, 0);
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        QHBoxLayout* oldStdLayout = new QHBoxLayout();
+        oldStdLayout->addWidget(&nameEditor_, 0);
+        oldStdLayout->addWidget(addressBlockDefinitionGroup, 0);
+        topOfPageLayout = oldStdLayout;
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        QGridLayout* newStdLayout = new QGridLayout();
+
+        newStdLayout->addWidget(&nameEditor_, 0, 0, 2, 1);
+        newStdLayout->addWidget(addressBlockDefinitionGroup, 0, 1);
+        newStdLayout->addWidget(accessPoliciesEditor_, 1, 1);
+
+        newStdLayout->setRowStretch(0, 1);
+        newStdLayout->setRowStretch(1, 2);
+
+        topOfPageLayout = newStdLayout;
+    }
 
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -282,9 +313,9 @@ void SingleAddressBlockEditor::setupLayout()
     verticalSplitter->addWidget(topOfPageWidget);
     verticalSplitter->addWidget(registersEditor_);
     verticalSplitter->addWidget(registerFilesEditor_);
-    verticalSplitter->setStretchFactor(0, 1);
-    verticalSplitter->setStretchFactor(1, 2);
-    verticalSplitter->setStretchFactor(2, 2);
+    verticalSplitter->setStretchFactor(0, 4);
+    verticalSplitter->setStretchFactor(1, 5);
+    verticalSplitter->setStretchFactor(2, 5);
 
     for (int i = 1; i <= 2; ++i)
     {
@@ -383,6 +414,17 @@ void SingleAddressBlockEditor::connectSignals() const
     connect(this, SIGNAL(addressUnitBitsChanged(int)),
         registerFilesEditor_, SIGNAL(addressUnitBitsChanged(int)), Qt::UniqueConnection);
     connect(registerFilesEditor_, SIGNAL(childAddressingChanged(int)), this, SIGNAL(childAddressingChanged(int)), Qt::UniqueConnection);
+
+    connect(usageEditor_, SIGNAL(currentTextChanged(QString const&)),
+        this, SLOT(onUsageSelected(QString const&)), Qt::UniqueConnection);
+
+    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
+        this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
+
+    connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
+        this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
+
+    connect(accessPoliciesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

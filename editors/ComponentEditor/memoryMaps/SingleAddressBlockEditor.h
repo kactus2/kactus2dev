@@ -35,6 +35,7 @@ class RegisterFileEditor;
 class AddressBlockValidator;
 class AddressBlockInterface;
 class MemoryMapBase;
+class AccessPoliciesEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single address block.
@@ -247,6 +248,9 @@ private:
 
     //! The expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
+
+    //! Editor for access policies.
+    AccessPoliciesEditor* accessPoliciesEditor_;
 };
 
 #endif // SINGLEADDRESSBLOCKEDITOR_H
