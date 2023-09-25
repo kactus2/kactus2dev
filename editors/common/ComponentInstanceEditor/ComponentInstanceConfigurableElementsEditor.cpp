@@ -61,6 +61,7 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
 {
     parameterEditor_.setEditProvider(editProvider);
     moduleParameterEditor_.setEditProvider(editProvider);
+    moduleParameterEditor_.clear();
 
     auto identifier = tr("component %1").arg(component->getVlnv().toString());
     parameterEditor_.setParameters(identifier,component->getParameters(), component->getChoices(), 
@@ -92,10 +93,10 @@ void ComponentInstanceConfigurableElementsEditor::setComponent(QSharedPointer<Co
                 }
             }
         }
-    }
 
-    moduleParameterEditor_.setParameters(identifier, moduleParameters, component->getChoices(), 
-        viewConfiguration->getViewConfigurableElements());
+        moduleParameterEditor_.setParameters(identifier, moduleParameters, component->getChoices(),
+            viewConfiguration->getViewConfigurableElements());
+    }
 }
 
 //-----------------------------------------------------------------------------
