@@ -12,6 +12,8 @@
 #ifndef PARAMETERDELEGATE_H
 #define PARAMETERDELEGATE_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -39,10 +41,8 @@ public:
 	 *      @param [in] parent                  The parent of the object.
 	 */
 	ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-        QAbstractItemModel* completionModel,
-        QSharedPointer<ParameterFinder> finder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QObject* parent = 0);
+        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> finder, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent = 0);
 
 	//! The destructor
 	virtual ~ParameterDelegate();
@@ -92,6 +92,8 @@ public:
      */
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
         const QModelIndex &index) const;
+
+    void setStdRevision(Document::Revision docRevision);
 
 signals:
 
@@ -293,6 +295,9 @@ private:
 
     //! The expression formatter used to change parameter uuids in references to parameter names.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_ = Document::Revision::Std14;
 };
 
 #endif // ParameterDelegate_H

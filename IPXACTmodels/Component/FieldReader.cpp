@@ -99,11 +99,13 @@ void FieldReader::Details::parsePresence(QDomElement const& fieldElement, QShare
 // Function: FieldReader::Details::parseMemoryArray()
 //-----------------------------------------------------------------------------
 void FieldReader::Details::parseMemoryArray(QDomElement const& fieldElement, QSharedPointer<Field> newField)
-{
-    auto newArray = MemoryArrayReader::createMemoryArrayFrom(
-        fieldElement.firstChildElement(QStringLiteral("ipxact:array")), true);
-
-    newField->setMemoryArray(newArray);
+{   
+    if (auto memArrayElement = fieldElement.firstChildElement(QStringLiteral("ipxact:array"));
+        !memArrayElement.isNull())
+    {
+        auto newArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, true);
+        newField->setMemoryArray(newArray);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -237,9 +239,12 @@ void FieldReader::Details::parseFieldReference(QDomElement const& fieldElement, 
 {
     QDomElement rootReferenceElement = fieldElement.firstChildElement(QStringLiteral("ipxact:aliasOf"));
     
-    auto newFieldReference = FieldReferenceReader::createFieldReferenceFrom(rootReferenceElement);
+    if (!rootReferenceElement.isNull())
+    {
+        auto newFieldReference = FieldReferenceReader::createFieldReferenceFrom(rootReferenceElement);
 
-    newField->setFieldReference(newFieldReference);
+        newField->setFieldReference(newFieldReference);
+    }
 }
 
 //-----------------------------------------------------------------------------

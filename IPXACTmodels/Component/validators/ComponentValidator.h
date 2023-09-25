@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -55,7 +57,7 @@ public:
      *      @param [in] parser      The used expression parser.
      *      @param [in] library     The used library interface.
      */
-    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library);
+    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision);
 
 	//! The destructor.
 	~ComponentValidator() = default;

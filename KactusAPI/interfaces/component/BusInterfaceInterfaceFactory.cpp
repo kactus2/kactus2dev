@@ -71,7 +71,7 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::Details::createCommonBusInt
     fileSetInterface->setFileSets(component->getFileSets());
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser,
-        component->getChoices()));
+        component->getChoices(), component->getRevision()));
 
     ParametersInterface* parameterInterface =
         Details::createParameterInterface(parameterValidator, expressionParser, expressionFormatter);
@@ -135,13 +135,14 @@ MemoryMapInterface* BusInterfaceInterfaceFactory::Details::createMapInterface(
     QSharedPointer<RegisterValidator> registerValidator(
         new RegisterValidator(expressionParser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator(
-        new RegisterFileValidator(expressionParser, registerValidator, parameterValidator));
+        new RegisterFileValidator(expressionParser, registerValidator, parameterValidator, component->getRevision()));
 
     QSharedPointer<AddressBlockValidator> blockValidator(
-        new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator));
+        new AddressBlockValidator(expressionParser, registerValidator, registerFileValidator, parameterValidator, 
+            component->getRevision()));
 
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser, parameterValidator));
+        new SubspaceMapValidator(expressionParser, parameterValidator, component->getRevision()));
 
     QSharedPointer<MemoryMapValidator> memoryMapValidator(
         new MemoryMapValidator(expressionParser, blockValidator, subspaceValidator, component));

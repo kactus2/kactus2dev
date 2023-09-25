@@ -6,7 +6,7 @@
 // Date: 27.01.2022
 //
 // Description:
-// Base reader class for memory map sub elements.
+// Base reader for memory map sub elements.
 //-----------------------------------------------------------------------------
 
 #include "MemoryBlockBaseReader.h"
@@ -17,18 +17,10 @@
 #include <IPXACTmodels/Component/RegisterReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: MemoryBlockBaseReader::MemoryBlockBaseReader()
-//-----------------------------------------------------------------------------
-MemoryBlockBaseReader::MemoryBlockBaseReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryBlockBaseReader::parseNameGroup()
 //-----------------------------------------------------------------------------
 void MemoryBlockBaseReader::parseNameGroup(QDomNode const& memoryBlockNode,
-    QSharedPointer<MemoryBlockBase> newMemoryBlock) const
+    QSharedPointer<MemoryBlockBase> newMemoryBlock)
 {
     NameGroupReader::parseNameGroup(memoryBlockNode, newMemoryBlock);
 }
@@ -37,7 +29,7 @@ void MemoryBlockBaseReader::parseNameGroup(QDomNode const& memoryBlockNode,
 // Function: MemoryBlockBaseReader::parsePresence()
 //-----------------------------------------------------------------------------
 void MemoryBlockBaseReader::parsePresence(QDomNode const& memoryBlockNode,
-    QSharedPointer<MemoryBlockBase> newMemoryBlock) const
+    QSharedPointer<MemoryBlockBase> newMemoryBlock)
 {
     QDomElement isPresentElement = memoryBlockNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
     if (!isPresentElement.isNull())
@@ -51,7 +43,7 @@ void MemoryBlockBaseReader::parsePresence(QDomNode const& memoryBlockNode,
 // Function: MemoryBlockBaseReader::parseBaseAddress()
 //-----------------------------------------------------------------------------
 void MemoryBlockBaseReader::parseBaseAddress(QDomNode const& memoryBlockNode,
-    QSharedPointer<MemoryBlockBase> newMemoryBlock) const
+    QSharedPointer<MemoryBlockBase> newMemoryBlock)
 {
     QDomElement baseAddressElement = memoryBlockNode.firstChildElement(QStringLiteral("ipxact:baseAddress"));
     if (!baseAddressElement.isNull())
@@ -64,10 +56,12 @@ void MemoryBlockBaseReader::parseBaseAddress(QDomNode const& memoryBlockNode,
 //-----------------------------------------------------------------------------
 // Function: AddressBlockReader::parseParameters()
 //-----------------------------------------------------------------------------
-void MemoryBlockBaseReader::parseParameters(QDomNode const& addressBlockNode,
-    QSharedPointer<MemoryBlockBase> newMemoryBlock) const
+IPXACTMODELS_EXPORT void MemoryBlockBaseReader::parseParameters(QDomNode const& addressBlockNode,
+    QSharedPointer<MemoryBlockBase> newMemoryBlock,
+    Document::Revision docRevision)
 {
-    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = parseAndCreateParameters(addressBlockNode);
+    QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = 
+        CommonItemsReader::parseAndCreateParameters(addressBlockNode);
     if (!newParameters->isEmpty())
     {
         newMemoryBlock->setParameters(newParameters);

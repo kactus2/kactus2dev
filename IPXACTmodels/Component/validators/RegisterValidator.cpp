@@ -151,7 +151,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
                 return false;
             }
 
-            if (!fieldHasValidAccess(selectedRegister, field))
+            if (docRevision_ == Document::Revision::Std14 && !fieldHasValidAccess(selectedRegister, field))
             {
                 return false;
             }

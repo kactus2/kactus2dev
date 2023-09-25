@@ -56,7 +56,7 @@ QString SingleDesignConfigurationInstantiationItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleDesignConfigurationInstantiationItem::isValid() const
 {
-    return validator_->validateDesignConfigurationInstantiation(instantiation_);
+    return validator_->validateDesignConfigurationInstantiation(instantiation_, component_->getRevision());
 }
 
 //-----------------------------------------------------------------------------

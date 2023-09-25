@@ -35,9 +35,10 @@ public:
 	 *
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] availavleChocies    The currently available choices.
+     *      @param [in] revision            The IP-XACT standard revision of the element being checked.
 	 */
     ParameterValidator(QSharedPointer<ExpressionParser> expressionParser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices);
+        QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices, Document::Revision docRevision);
 
     // Disable copying.
     ParameterValidator(ParameterValidator const& rhs) = delete;
@@ -51,18 +52,18 @@ public:
      *
      *      @param [in] newChoices  The new choices.
      */
-    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices);
+    void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision);
+
+    void setStdRevision(Document::Revision docRevision);
 
     /*!
      *  Validates the given parameter.
      *
      *      @param [in] parameter           The parameter to validate.
-     *      @param [in] revision            The standard revision of the element being checked.
      * 
      *      @return True, if the parameter is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<const Parameter> parameter,
-        Document::Revision revision = Document::Revision::Std14) const;
+    virtual bool validate(QSharedPointer<const Parameter> parameter) const;
 
     /*!
      *  Check if the parameter has a valid name.
@@ -187,8 +188,7 @@ public:
      *      @param [in] parameter   The parameter whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context,
-        Document::Revision revision = Document::Revision::Std14)
+    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
         const;
 
     /*!
@@ -205,12 +205,10 @@ public:
      *  Check if the given parameter vector is valid.
      *
      *      @param [in] parameter   The parameter being examined.
-     *      @param [in] revision    The standard revision of the element being checked.
      * 
      *      @return True, if the vector is valid, false otherwise.
      */
-    virtual bool hasValidVector(QSharedPointer<const Parameter> parameter,
-        Document::Revision revision = Document::Revision::Std14) const; 
+    virtual bool hasValidVector(QSharedPointer<const Parameter> parameter) const; 
 
     /*!
      *	Check if any vector of the parameter has a vector ID.
@@ -340,8 +338,8 @@ protected:
      *      @param [in] parameter   The parameter whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    void findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context, 
-        Document::Revision revision) const;
+    void findErrorsInVector(QVector<QString>& errors, QSharedPointer<Parameter> parameter, QString const& context)
+        const;
 
 private:
 
@@ -406,6 +404,8 @@ private:
     QSharedPointer<QList<QSharedPointer<Choice> > > availableChoices_;
 
     QRegularExpressionValidator typeValidator_;
+
+    Document::Revision docRevision_;
 };
 
 #endif // SYSTEMVERILOGVALIDATOR_H

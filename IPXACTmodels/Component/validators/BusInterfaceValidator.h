@@ -30,6 +30,7 @@ class AddressSpace;
 class Choice;
 class ExpressionParser;
 class FileSet;
+class FileSetRef;
 class LibraryInterface;
 class InitiatorInterface;
 class MemoryMap;
@@ -274,7 +275,7 @@ private:
      *
      *      @return True, if the file set reference is valid, otherwise false.
      */
-    bool slaveFileSetReferenceIsValid(QString const& fileSetReference) const;
+    bool slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const;
 
     /*!
      *  Check if the system interface is valid.

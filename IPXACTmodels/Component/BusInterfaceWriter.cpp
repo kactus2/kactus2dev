@@ -441,10 +441,7 @@ void BusInterfaceWriter::Details::writeTargetInterface(QXmlStreamWriter& writer,
         writer.writeTextElement(QStringLiteral("ipxact:group"), group->group_);
 
         // Write all the fileSetRefs for this group.
-        for (QString const& filesetRef : group->fileSetRefs_)
-        {
-            writer.writeTextElement(QStringLiteral("ipxact:fileSetRef"), filesetRef);
-        }
+        CommonItemsWriter::writeFileSetReferences(writer, group->fileSetRefs_, docRevision);
 
         writer.writeEndElement(); // ipxact:fileSetRefGroup
     }

@@ -38,16 +38,13 @@ ParameterizableTable(parameterFinder),
 configurableElements_(),
 choices_(),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
+configurableElementExpressionParser_(configurableElementExpressionParser),
 defaultValueFormatter_(defaultValueFormatter),
 defaultValueParser_(defaultValueParser),
 validator_(0),
 itemConfigurableElementValues_(0)
 {
     setExpressionParser(configurableElementExpressionParser);
-
-    QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
-    validator_ = QSharedPointer<ParameterValidator>(
-        new ParameterValidator(configurableElementExpressionParser, noChoices));
 }
 
 //-----------------------------------------------------------------------------
@@ -56,8 +53,13 @@ itemConfigurableElementValues_(0)
 void ConfigurableElementsModel::setParameters(QString const& containingItemName,
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    Document::Revision docRevision,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements)
 {
+    QSharedPointer<QList<QSharedPointer<Choice> > > noChoices(new QList<QSharedPointer<Choice> >());
+    validator_ = QSharedPointer<ParameterValidator>(
+        new ParameterValidator(configurableElementExpressionParser_, noChoices, docRevision));
+
     containingItemName_ = containingItemName;
     choices_ = choices;
     itemConfigurableElementValues_ = storedConfigurableElements;
@@ -80,7 +82,7 @@ void ConfigurableElementsModel::setParameters(QString const& containingItemName,
         }
     }
     
-    validator_->componentChange(choices);
+    validator_->componentChange(choices, docRevision);
 
     restoreStoredConfigurableElements();
 

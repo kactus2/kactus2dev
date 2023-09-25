@@ -6,7 +6,7 @@
 // Date: 21.01.2022
 //
 // Description:
-// Reader class for ipxact:subspaceMap element.
+// Reader for ipxact:subspaceMap element.
 //-----------------------------------------------------------------------------
 
 #include "SubspaceMapReader.h"
@@ -15,43 +15,32 @@
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::SubspaceMapReader()
-//-----------------------------------------------------------------------------
-SubspaceMapReader::SubspaceMapReader() :
-MemoryBlockBaseReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SubspaceMapReader::createMemoryBlockFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<SubSpaceMap> SubspaceMapReader::createSubspaceMapFrom(QDomNode const& subspaceMapNode) const
+IPXACTMODELS_EXPORT QSharedPointer<SubSpaceMap> SubspaceMapReader::createSubspaceMapFrom(QDomNode const& subspaceMapNode, Document::Revision docRevision)
 {
     QSharedPointer<SubSpaceMap> newSubspaceMap(new SubSpaceMap());
 
-    parseNameGroup(subspaceMapNode, newSubspaceMap);
+    Details::parseAttributes(subspaceMapNode, newSubspaceMap);
 
-    parseAttributes(subspaceMapNode, newSubspaceMap);
+    MemoryBlockBaseReader::parseNameGroup(subspaceMapNode, newSubspaceMap);
 
-    parseNameGroup(subspaceMapNode, newSubspaceMap);
+    MemoryBlockBaseReader::parsePresence(subspaceMapNode, newSubspaceMap);
 
-    parsePresence(subspaceMapNode, newSubspaceMap);
+    MemoryBlockBaseReader::parseBaseAddress(subspaceMapNode, newSubspaceMap);
 
-    parseBaseAddress(subspaceMapNode, newSubspaceMap);
+    MemoryBlockBaseReader::parseParameters(subspaceMapNode, newSubspaceMap, docRevision);
 
-    parseParameters(subspaceMapNode, newSubspaceMap);
-
-    parseVendorExtensions(subspaceMapNode, newSubspaceMap);
+    CommonItemsReader::parseVendorExtensions(subspaceMapNode, newSubspaceMap);
 
     return newSubspaceMap;
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapReader::parseAttributes()
+// Function: SubspaceMapReader::Details::parseAttributes()
 //-----------------------------------------------------------------------------
-void SubspaceMapReader::parseAttributes(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap) const
+void SubspaceMapReader::Details::parseAttributes(QDomNode const& subspaceMapNode,
+    QSharedPointer<SubSpaceMap> newSubspaceMap)
 {
     QDomNamedNodeMap attributes = subspaceMapNode.attributes();
     for (int j = 0; j < attributes.size(); ++j)

@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 
 #include <FieldInterface.h>
+#include <AccessPolicyInterface.h>
 #include <RegisterExpressionsGatherer.h>
 
 #include <QMimeData>
@@ -39,11 +40,12 @@ namespace
 //-----------------------------------------------------------------------------
 RegisterInterface::RegisterInterface(QSharedPointer<RegisterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    FieldInterface* subInterface):
+    FieldInterface* subInterface, AccessPolicyInterface* accessPolicyInterface) :
 ParameterizableInterface(expressionParser, expressionFormatter),
 registers_(),
 validator_(validator),
 subInterface_(subInterface),
+accessPolicyInterface_(accessPolicyInterface),
 addressUnitBits_(0)
 {
 
@@ -432,10 +434,9 @@ bool RegisterInterface::setVolatile(std::string const& registerName, std::string
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getAccessString()
 //-----------------------------------------------------------------------------
-string RegisterInterface::getAccessString(std::string const& registerName) const
+std::string RegisterInterface::getAccessString(std::string const& registerName) const
 {
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (selectedRegister)
+    if (auto selectedRegister = getRegister(registerName))
     {
         return AccessTypes::access2Str(selectedRegister->getAccess()).toStdString();
     }
@@ -448,8 +449,7 @@ string RegisterInterface::getAccessString(std::string const& registerName) const
 //-----------------------------------------------------------------------------
 AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName) const
 {
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (selectedRegister)
+    if (auto selectedRegister = getRegister(registerName))
     {
         return selectedRegister->getAccess();
     }
@@ -462,15 +462,15 @@ AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName
 //-----------------------------------------------------------------------------
 bool RegisterInterface::setAccess(std::string const& registerName, std::string const& newAccess)
 {
-    QSharedPointer<Register> selectedRegister = getRegister(registerName);
-    if (!selectedRegister)
+    if (auto selectedRegister = getRegister(registerName))
     {
-        return false;
+        auto newAccessType = AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT);
+
+        selectedRegister->setAccess(newAccessType);
+        return true;
     }
 
-    selectedRegister->setAccess(
-        AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT));
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -768,6 +768,14 @@ std::vector<std::string> RegisterInterface::
 FieldInterface* RegisterInterface::getSubInterface() const
 {
     return subInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::getAccessPolicyInterface()
+//-----------------------------------------------------------------------------
+AccessPolicyInterface* RegisterInterface::getAccessPolicyInterface() const
+{
+    return accessPolicyInterface_;
 }
 
 //-----------------------------------------------------------------------------

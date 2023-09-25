@@ -63,7 +63,7 @@ component_(component)
     parameterModel->setExpressionParser(expressionParser);
 
     delegate_ = new RemapConditionDelegate(component->getPortNames(), parameterModel, parameterFinder,
-        expressionParser, expressionFormatter, this);
+        expressionParser, expressionFormatter, component->getRevision(), this);
 
     view_->setItemDelegate(delegate_);
 

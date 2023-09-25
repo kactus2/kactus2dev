@@ -20,6 +20,7 @@
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <KactusAPI/include/ParametersInterface.h>
 
@@ -147,7 +148,7 @@ void ComponentEditorAddrSpacesItem::createChild( int index )
 void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
 {
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(expressionParser_,
-        component_->getChoices()));
+        component_->getChoices(), component_->getRevision()));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(expressionParser_));
     QSharedPointer<FieldValidator> fieldValidator (
         new FieldValidator(expressionParser_, enumValidator, parameterValidator));
@@ -155,13 +156,14 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
         new RegisterValidator(expressionParser_, fieldValidator, parameterValidator));
 
     QSharedPointer<RegisterFileValidator> registerFileValidator(
-        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator));
+        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator, component_->getRevision()));
 
 
     QSharedPointer<AddressBlockValidator> blockValidator(
-        new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator));
+        new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator, 
+            component_->getRevision()));
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser_, parameterValidator));
+        new SubspaceMapValidator(expressionParser_, parameterValidator, component_->getRevision()));
 
     QSharedPointer<MemoryMapBaseValidator> localMapValidator(
         new MemoryMapBaseValidator(expressionParser_, blockValidator, subspaceValidator));
@@ -197,7 +199,7 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     QSharedPointer<FieldValidator> fieldValidator = registerValidator->getFieldValidator();
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(expressionParser_,
-        component_->getChoices()));
+        component_->getChoices(), component_->getRevision()));
 
     ParametersInterface* parameterInterface(
         new ParametersInterface(parameterValidator, expressionParser_, expressionFormatter_));
@@ -206,8 +208,10 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
 
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
+
     RegisterInterface* registerInterface(
-        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, accessPolicyInterface));
 
     BusInterfaceInterface* busInterface = createInterfaceForBus(parameterValidator);
 

@@ -23,6 +23,7 @@ class Register;
 class RegisterBase;
 class RegisterValidator;
 class FieldInterface;
+class AccessPolicyInterface;
 
 #include <QVector>
 #include <QMap>
@@ -46,7 +47,8 @@ public:
     RegisterInterface(QSharedPointer<RegisterValidator> validator,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,
-        FieldInterface* subInterface);
+        FieldInterface* subInterface,
+        AccessPolicyInterface* accessPolicyInterface);
 	
 	/*!
      *  The destructor.
@@ -290,28 +292,32 @@ public:
     bool setVolatile(std::string const& registerName, std::string const& newVolatile);
     
     /*!
-     *  Get the access string of the selected register.
+     *  Get the access string of the selected register or access policy given by the access policy index.
+     *  Use the default access policy index of -1 to fetch the access value stored directly in the register.
      *
-     *      @param [in] registerName    Name of the selected register.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return The access string of the selected register.
      */
     std::string getAccessString(std::string const& registerName) const;
 
     /*!
-     *  Get the access of the selected register.
+     *  Get the access of the selected register or access policy given by the access policy index.
      *
-     *      @param [in] registerName    Name of the selected register.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return The access value of the selected register.
      */
     AccessTypes::Access getAccess(std::string const& registerName) const;
 
     /*!
-     *  Set the access value for the selected register.
+     *  Set the access value for the selected register or its access policy given by the access policy index.
      *
-     *      @param [in] registerName    Name of the selected register.
-     *      @param [in] newAccess       The new access value.
+     *      @param [in] registerName        Name of the selected register.
+     *      @param [in] newAccess           The new access value.
+     *      @param [in] accessPolicyIndex   The index of the selected access policy.
      *
      *      @return True, if successful, false otherwise.
      */
@@ -443,6 +449,12 @@ public:
      */
     FieldInterface* getSubInterface() const;
 
+    /*!
+     *	Get the access policy interface.
+     *  
+     * 	    @return Interface for accessing the register access policies.
+     */
+    AccessPolicyInterface* getAccessPolicyInterface() const;
 
 private:
 
@@ -479,6 +491,9 @@ private:
 
     //! Interface for accessing fields.
     FieldInterface* subInterface_;
+
+    //! Interface for accessing register access policies.
+    AccessPolicyInterface* accessPolicyInterface_;
 
     //! The address unit bits of the memory map.
     unsigned int addressUnitBits_;

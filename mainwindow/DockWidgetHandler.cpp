@@ -382,8 +382,10 @@ void DockWidgetHandler::setupDesignParametersEditor()
     designParameterTree_ =
         new DesignParameterReferenceTree(referenceTreeFormatter, designParameterReferenceCounter_, mainWindow_);
 
+    // Set placeholder std revision here, real revision is set when the editor parameters are set in
+    // documentChanged and refreshDesignDocument.
     designParametersEditor_ = new ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > >(),
-        QSharedPointer<QList<QSharedPointer<Choice> > >(), designParameterFinder_, formatter, mainWindow_);
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), designParameterFinder_, formatter, Document::Revision::Std14, mainWindow_);
 
     ParameterReferenceTreeWindow* designParameterReferenceWindow =
         new ParameterReferenceTreeWindow(designParameterTree_, designParametersEditor_);
@@ -801,7 +803,7 @@ void DockWidgetHandler::documentChanged(TabDocument* doc)
 
             QSharedPointer<Design> design = designwidget->getDiagram()->getDesign();
             designParametersEditor_->setDisabled(designwidget->isProtected());
-            designParametersEditor_->setNewParameters(design->getParameters());
+            designParametersEditor_->setNewParameters(design->getParameters(), design->getRevision());
             designParameterTree_->setDesign(design);
             designParameterReferenceCounter_->setDesign(design);
 
@@ -1134,7 +1136,7 @@ void DockWidgetHandler::refreshDesignDocument(QWidget* currentTabWidget)
         instanceEditor_->setContext(topComponent, designWidget->getDiagram()->getEditProvider());
 
         QSharedPointer<Design> design = designWidget->getDiagram()->getDesign();
-        designParametersEditor_->setNewParameters(design->getParameters());
+        designParametersEditor_->setNewParameters(design->getParameters(), design->getRevision());
         designParameterTree_->setDesign(design);
         designParameterReferenceCounter_->setDesign(design);
 

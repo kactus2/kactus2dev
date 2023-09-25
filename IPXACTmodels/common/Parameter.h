@@ -334,10 +334,12 @@ private:
     QSharedPointer<Vector> bitWidthVector_;
 
     //! Vectors for defining parameter bit width.
-    QSharedPointer<QList<QSharedPointer<Vector> > > vectors_;
+    QSharedPointer<QList<QSharedPointer<Vector> > > vectors_ = 
+        QSharedPointer<QList<QSharedPointer<Vector> > >(new QList<QSharedPointer<Vector> >());
 
     //! Arrays for defining parameter as an array of values.
-    QSharedPointer<QList<QSharedPointer<Array> > > arrays_;
+    QSharedPointer<QList<QSharedPointer<Array> > > arrays_ =
+        QSharedPointer<QList<QSharedPointer<Array> > >(new QList<QSharedPointer<Array> >());;
 
 };
 

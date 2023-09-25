@@ -7,7 +7,7 @@
 //
 // Description:
 // Reference to a field in the encapsulating component. Describes the elements 
-// in the fieldReferenceGroup group.
+// in the fieldReferenceGroup and fieldSliceReferenceGroup.
 //-----------------------------------------------------------------------------
 
 #include "FieldReference.h"
@@ -43,6 +43,20 @@ FieldReference::IndexedReference::IndexedReference(QString const& reference, QLi
     indices_(indices)
 {
 
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldReference::IndexedReference::operator=()
+//-----------------------------------------------------------------------------
+FieldReference::IndexedReference& FieldReference::IndexedReference::operator=(FieldReference::IndexedReference const& other)
+{
+    if (this != &other)
+    {
+        reference_ = other.reference_;
+        indices_ = other.indices_;
+    }
+
+    return *this;
 }
 
 //-----------------------------------------------------------------------------

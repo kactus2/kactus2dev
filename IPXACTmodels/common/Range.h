@@ -29,6 +29,10 @@ public:
 	//! The destructor.
 	virtual ~Range();
     
+    Range(Range const& other);
+
+    Range& operator=(Range const& other);
+
     /*!
      *  Gets the left value of the range.
      *
@@ -58,10 +62,6 @@ public:
     void setRight(QString const& newright);
 
 private:
-
-	// Disable copying.
-	Range(Range const& rhs);
-	Range& operator=(Range const& rhs);
 
     //! The left side of the range.
     QString left_;

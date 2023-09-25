@@ -404,3 +404,38 @@ QSharedPointer<QList<QSharedPointer<ModeReference> > > CommonItemsReader::parseM
 
     return modeRefList;
 }
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseFileSetReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<FileSetRef> > > CommonItemsReader::parseFileSetReferences(
+    QDomElement const& itemNode, Document::Revision docRevision)
+{
+    QDomNodeList fileSetReferenceNodeList = itemNode.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
+
+    QSharedPointer<QList<QSharedPointer<FileSetRef> > > newFileSetRefList(new QList<QSharedPointer<FileSetRef> >());
+
+    for (int i = 0; i < fileSetReferenceNodeList.count(); ++i)
+    {
+        QDomNode fileSetNode = fileSetReferenceNodeList.at(i);
+        QString referenceName = fileSetNode.firstChildElement(QStringLiteral("ipxact:localName")).firstChild().nodeValue();
+
+        QSharedPointer<FileSetRef> newReference(new FileSetRef());
+        
+        newReference->setReference(referenceName);
+
+        if (docRevision == Document::Revision::Std14)
+        {
+            newReference->setIsPresent(
+                fileSetNode.firstChildElement(QStringLiteral("ipxact:isPresent")).firstChild().nodeValue());
+        }
+        else if (docRevision == Document::Revision::Std22)
+        {
+            parseVendorExtensions(fileSetNode, newReference);
+        }
+
+        newFileSetRefList->append(newReference);
+    }
+
+    return newFileSetRefList;
+}

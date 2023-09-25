@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QAbstractTableModel>
 #include <QSharedPointer>
@@ -44,10 +45,11 @@ public:
 	 *      @param [in] fieldInterface      Interface for fields.
 	 *      @param [in] expressionParser    Pointer to the expression parser.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] docRevision         The IP-XACT standard revision in use.
 	 *      @param [in] parent              Pointer to the owner of the model.
 	 */
-    RegisterTableModel(FieldInterface* fieldInterface, QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder, QObject *parent);
+    RegisterTableModel(FieldInterface* fieldInterface, QSharedPointer <ExpressionParser> expressionParser, 
+        QSharedPointer <ParameterFinder> parameterFinder, Document::Revision docRevision, QObject *parent);
 
 
 	/*!
@@ -271,12 +273,49 @@ private:
      */
     QMap<QString, int> getReferencedParameters(QString const& fieldName) const;
 
+    /*!
+     *	Check if the column of a given index is displaying values stored directly in the field according 
+     *  to the 2014 IP-XACT standard revision.
+     *  
+     *      @param [in] index     Description
+     *	    
+     * 	    @return True, if the column is a std14 column, otherwise false.
+     */
+    bool isStd14Column(QModelIndex const& index) const;
+
+    /*!
+     *	Get the right index value to display according to which IP-XACT standard is in use. The values for access,
+     *  modified write, read action testable and test constraint should be retrieved from the field, if std2014 is
+     *  in use. For std2022, the value is none (except for access displaying '[multiple]') if the field has
+     *  multiple field access policies. If the field has one field access policy, the values displayed will be 
+     *  the values of that field access policy. The values are empty if the field has no field access policies.
+     *  
+     *      @param [in] index     The index to get the value of.
+     *	    
+     * 	    @return The index value.
+     */
+    QVariant getIndexValueByStdRevision(QModelIndex const& index) const;
+
+    /*!
+     *	Set the index data for the first field access policy of the field.
+     *  
+     *      @param [in] index       The model index of the item that's data is to be saved.
+     *      @param [in] value       The data that is to be saved.
+     *      @param [in] fieldName   The name of the field.
+     *	    
+     * 	    @return True, if the setting the data succeeded, otherwise false.
+     */
+    bool setDataForFirstFieldAccessPolicy(QModelIndex const& index, QVariant const& value, std::string const& fieldName);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Interface for fields.
     FieldInterface* fieldInterface_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // REGISTERTABLEMODEL_H

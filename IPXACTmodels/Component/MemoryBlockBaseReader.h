@@ -6,7 +6,7 @@
 // Date: 27.01.2022
 //
 // Description:
-// Base reader class for memory map sub elements.
+// Base reader for memory map sub elements.
 //-----------------------------------------------------------------------------
 
 #ifndef MEMORYBLOCKBASEREADER_H
@@ -22,35 +22,17 @@
 class MemoryBlockBase;
 
 //-----------------------------------------------------------------------------
-//! Base reader class for memory map sub elements.
+//! Base reader for memory map sub elements.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryBlockBaseReader : public CommonItemsReader
+namespace MemoryBlockBaseReader
 {
-public:
-
-    /*!
-     *  The constructor.
-     */
-    MemoryBlockBaseReader();
-
-    /*!
-     *  The destructor.
-     */
-    ~MemoryBlockBaseReader() = default;
-
-    //! No copying allowed.
-    MemoryBlockBaseReader(MemoryBlockBaseReader const& rhs) = delete;
-    MemoryBlockBaseReader& operator=(MemoryBlockBaseReader const& rhs) = delete;
-
-protected:
-
     /*!
      *  Reads the name group.
      *
      *      @param [in] memoryBlockNode     XML description of the memory block.
      *      @param [in] newMemoryBlock      The new memory block.
      */
-    void parseNameGroup(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock) const;
+    IPXACTMODELS_EXPORT void parseNameGroup(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
 
     /*!
      *  Reads the presence.
@@ -58,7 +40,7 @@ protected:
      *      @param [in] memoryBlockNode     XML description of the memory block.
      *      @param [in] newMemoryBlock      The new memory block.
      */
-    void parsePresence(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock) const;
+    IPXACTMODELS_EXPORT void parsePresence(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
 
     /*!
      *  Reads the base address.
@@ -66,7 +48,7 @@ protected:
      *      @param [in] memoryBlockNode     XML description of the memory block.
      *      @param [in] newMemoryBlock      The new memory block.
      */
-    void parseBaseAddress(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock) const;
+    IPXACTMODELS_EXPORT void parseBaseAddress(QDomNode const& memoryBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock);
 
     /*!
      *  Reads the parameters.
@@ -74,7 +56,7 @@ protected:
      *      @param [in] memoryBlockNode     XML description of the memory block.
      *      @param [in] newMemoryBlock      The new memory block.
      */
-    void parseParameters(QDomNode const& addressBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock) const;
-};
+    IPXACTMODELS_EXPORT void parseParameters(QDomNode const& addressBlockNode, QSharedPointer<MemoryBlockBase> newMemoryBlock, Document::Revision docRevision);
+}
 
 #endif // MEMORYBLOCKBASEREADER_H

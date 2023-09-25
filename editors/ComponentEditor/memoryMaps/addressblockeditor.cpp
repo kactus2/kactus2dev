@@ -76,6 +76,14 @@ registers_(registers)
 
     view_->setItemDelegate(new AddressBlockDelegate(componentParametersModel, parameterFinder, this));
 
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(AddressBlockColumns::REGISTER_DIMENSION);
+        view_->hideColumn(AddressBlockColumns::VOLATILE);
+        view_->hideColumn(AddressBlockColumns::REGISTER_ACCESS);
+        view_->hideColumn(AddressBlockColumns::IS_PRESENT);
+    }
+
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)),

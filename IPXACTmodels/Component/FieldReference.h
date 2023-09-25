@@ -7,7 +7,7 @@
 //
 // Description:
 // Reference to a field in the encapsulating component. Describes the elements 
-// in the fieldReferenceGroup group.
+// in the fieldReferenceGroup and fieldSliceReferenceGroup.
 //-----------------------------------------------------------------------------
 
 #ifndef FIELDREFERENCE_H
@@ -38,7 +38,7 @@ public:
         REFERENCE_TYPE_COUNT
     };
 
-    //! Reference with indices.
+    //! Reference with indices.x
     struct IPXACTMODELS_EXPORT IndexedReference
     {
         //! The reference.
@@ -52,6 +52,7 @@ public:
         IndexedReference(QString const& reference, QList<QString> const& indices = QList<QString>());
         
         IndexedReference(IndexedReference const& other);
+        IndexedReference& operator=(IndexedReference const& other);
     };
 
     /*!

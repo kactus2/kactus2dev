@@ -36,7 +36,7 @@
 // Function: ValueOrIndexedValueEditor::ValueOrIndexedValueEditor()
 //-----------------------------------------------------------------------------
 ValueOrIndexedValueEditor::ValueOrIndexedValueEditor(QSharedPointer<ParameterFinder> finder,
-    QSharedPointer<ExpressionParser> parser, QSharedPointer<ExpressionFormatter> formatter, QWidget* parent):
+    QSharedPointer<ExpressionParser> parser, QSharedPointer<ExpressionFormatter> formatter, Document::Revision docRevision, QWidget* parent) :
 QTableView(parent),
 singleValueEditor_(new ExpressionEditor(finder)),
 arrayView_(new ArrayView(this)),
@@ -158,7 +158,7 @@ void ValueOrIndexedValueEditor::setupArrayEditor(QString const& value, int const
     QSharedPointer<Choice> newChoice(new Choice());
 
     ParameterArrayModel* arrayModel = new ParameterArrayModel(arraySize, expressionParser_, parameterFinder_,
-        expressionFormatter_, newChoice, KactusColors::REGULAR_FIELD, arrayStart, arrayView_);
+        expressionFormatter_, newChoice, KactusColors::REGULAR_FIELD, arrayStart, docRevision_, arrayView_);
 
     if (value.contains('{') && value.contains('}'))
     {

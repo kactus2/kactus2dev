@@ -35,9 +35,9 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterGroupBox::ParameterGroupBox()
 //-----------------------------------------------------------------------------
-ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter>>> parameters,
-    QSharedPointer<QList<QSharedPointer<Choice>>> choices, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QWidget *parent):
+ParameterGroupBox::ParameterGroupBox(QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, Document::Revision docRevision, QWidget *parent) :
 QGroupBox(tr("Parameters"), parent),
 view_(new ParametersView(this)),
 proxy_(new QSortFilterProxyModel(this)),
@@ -55,10 +55,10 @@ parameterInterface_()
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    QSharedPointer<ParameterValidator> validator(new ParameterValidator(expressionParser, 
-        choices));
+    parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, 
+        choices, docRevision));
 
-    parameterInterface_ = new ParametersInterface(validator, expressionParser, expressionFormatter);
+    parameterInterface_ = new ParametersInterface(parameterValidator_, expressionParser, expressionFormatter);
 
     parameterInterface_->setParameters(parameters);
     parameterInterface_->setChoices(choices);
@@ -87,8 +87,10 @@ parameterInterface_()
     ComponentParameterModel* parameterModel = new ComponentParameterModel(parameterFinder, this);
     parameterModel->setExpressionParser(expressionParser);
 
-    view_->setItemDelegate(new ParameterDelegate(choices, parameterModel, parameterFinder,
-        expressionFormatter, this));
+    delegate_ = new ParameterDelegate(choices, parameterModel, parameterFinder,
+        expressionFormatter, this);
+
+    view_->setItemDelegate(delegate_);
 
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), 
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -147,10 +149,13 @@ void ParameterGroupBox::refresh()
 //-----------------------------------------------------------------------------
 // Function: parametergroupbox::setNewParameters()
 //-----------------------------------------------------------------------------
-void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters)
+void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, 
+    Document::Revision docRevision)
 {
     parameterInterface_->setParameters(newParameters);
     model_->resetModelItems();
+    delegate_->setStdRevision(docRevision);
+    parameterValidator_->setStdRevision(docRevision);
 
     QSharedPointer<ListParameterFinder> listFinder = parameterFinder_.dynamicCast<ListParameterFinder>();
     if (listFinder)

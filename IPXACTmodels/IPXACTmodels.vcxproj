@@ -247,6 +247,7 @@
     <ClCompile Include="Component\FileReader.cpp" />
     <ClCompile Include="Component\FileSet.cpp" />
     <ClCompile Include="Component\FileSetReader.cpp" />
+    <ClCompile Include="Component\FileSetRef.cpp" />
     <ClCompile Include="Component\FileSetWriter.cpp" />
     <ClCompile Include="Component\FileWriter.cpp" />
     <ClCompile Include="Component\Function.cpp" />
@@ -430,6 +431,7 @@
     <ClInclude Include="Component\FieldReset.h" />
     <ClInclude Include="Component\FieldSlice.h" />
     <ClInclude Include="Component\InitiatorInterface.h" />
+    <ClInclude Include="Component\FileSetRef.h" />
     <ClInclude Include="Component\LanguageTools.h" />
     <ClInclude Include="Component\MemoryArray.h" />
     <ClInclude Include="Component\MemoryArrayReader.h" />

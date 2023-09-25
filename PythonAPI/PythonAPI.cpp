@@ -28,6 +28,7 @@
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/FieldInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 #include <KactusAPI/include/ResetInterface.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
@@ -89,7 +90,8 @@ parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Co
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
-parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >())),
+parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), 
+    Document::Revision::Unknown)),
 mapValidator_()
 {
     portsInterface_ = new PortsInterface(portValidator_, expressionParser_, expressionFormatter_);
@@ -429,7 +431,7 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
             portValidator_->componentChange(component->getViews());
             portsInterface_->setPorts(component);
 
-            parameterValidator_->componentChange(component->getChoices());
+            parameterValidator_->componentChange(component->getChoices(), component->getRevision());
             componentParameterInterface_->setParameters(component->getParameters());
             componentParameterInterface_->setChoices(component->getChoices());
 
@@ -549,13 +551,15 @@ void PythonAPI::constructMemoryValidators()
     QSharedPointer<RegisterValidator> registerValidator (new RegisterValidator(
         expressionParser_, fieldValidator, parameterValidator_));
     QSharedPointer<RegisterFileValidator> registerFileValidator(
-        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator_));
+        new RegisterFileValidator(expressionParser_, registerValidator, parameterValidator_,
+            Document::Revision::Unknown));
 
     QSharedPointer<AddressBlockValidator> blockValidator(new AddressBlockValidator(
-        expressionParser_, registerValidator, registerFileValidator, parameterValidator_));
+        expressionParser_, registerValidator, registerFileValidator, parameterValidator_, 
+        Document::Revision::Unknown));
 
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
-        new SubspaceMapValidator(expressionParser_, parameterValidator_));
+        new SubspaceMapValidator(expressionParser_, parameterValidator_, Document::Revision::Unknown));
 
     QSharedPointer<MemoryMapValidator> mapValidator(
         new MemoryMapValidator(expressionParser_, blockValidator, subspaceValidator, QSharedPointer<Component>()));
@@ -576,8 +580,12 @@ void PythonAPI::constructMemoryInterface()
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
+
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
+
     RegisterInterface* registerInterface(
-        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface));
+        new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, 
+            accessPolicyInterface));
 
     AddressBlockInterface* blockInterface(new AddressBlockInterface(blockValidator, expressionParser_,
         expressionFormatter_, busInterface_, registerInterface, componentParameterInterface_));

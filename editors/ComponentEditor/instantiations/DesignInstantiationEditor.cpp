@@ -152,7 +152,8 @@ void DesignInstantiationEditor::setupParametersAsConfigurableElements()
 
     if (currentDesign && instantiation_->getDesignReference())
     {
-        elementEditor_->setParameters(currentDesign->getVlnv().toString(), newParameters, newElements);
+        elementEditor_->setParameters(currentDesign->getVlnv().toString(), newParameters, 
+            designDocument->getRevision(), newElements);
     }
     else
     {

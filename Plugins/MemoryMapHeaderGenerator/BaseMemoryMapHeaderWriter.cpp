@@ -148,7 +148,10 @@ void BaseMemoryMapHeaderWriter::addHeaderFile(QSharedPointer<Component> componen
 
             if (insta)
             {
-                insta->getFileSetReferences()->append(filesetName);
+                QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+                newFileSetRef->setReference(filesetName);
+
+                insta->getFileSetReferences()->append(newFileSetRef);
             }
         }
     }

@@ -14,7 +14,7 @@
 #include "registerfiledelegate.h"
 #include "registerfilemodel.h"
 #include "ExpressionProxyModel.h"
-#include "AddressBlockColumns.h"
+#include "RegisterFileColumns.h"
 
 #include <common/views/EditableTableView/editabletableview.h>
 
@@ -62,13 +62,19 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
 
     ExpressionProxyModel *proxy =
         new ExpressionProxyModel(expressionParser, this);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_OFFSET);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_SIZE);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::REGISTER_DIMENSION);
-    proxy->setColumnToAcceptExpressions(AddressBlockColumns::IS_PRESENT);
+    proxy->setColumnToAcceptExpressions(RegisterFileColumns::ADDRESS_OFFSET);
+    proxy->setColumnToAcceptExpressions(RegisterFileColumns::RANGE);
+    proxy->setColumnToAcceptExpressions(RegisterFileColumns::DIMENSION);
+    proxy->setColumnToAcceptExpressions(RegisterFileColumns::IS_PRESENT);
 
     proxy->setSourceModel(model_);
     view_->setModel(proxy);
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(RegisterFileColumns::IS_PRESENT);
+        view_->hideColumn(RegisterFileColumns::DIMENSION);
+    }
 
     //! Enable import/export csv file
     const QString compPath = handler->getDirectoryPath(component->getVlnv());
@@ -87,7 +93,7 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
     connect(view_->itemDelegate(), SIGNAL(increaseReferences(QString)), this,
         SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
 
-    view_->sortByColumn(AddressBlockColumns::REGISTER_OFFSET, Qt::AscendingOrder);
+    view_->sortByColumn(RegisterFileColumns::ADDRESS_OFFSET, Qt::AscendingOrder);
 
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(view_);

@@ -57,7 +57,7 @@ bridgeSelection_(new QCheckBox(tr("Transparent bridge"), this)),
 memoryMapSelector_(new ReferenceSelector(this)),
 transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), this)),
 parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(), finder,
-    formatter, this))
+    formatter, component->getRevision(), this))
 {
     addressSelector_->setProperty("mandatoryField", true);
     dataSelector_->setProperty("mandatoryField", true);

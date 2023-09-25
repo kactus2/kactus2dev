@@ -37,7 +37,6 @@ RegisterFile::RegisterFile(const RegisterFile& other):
 RegisterBase(other),
 range_(other.range_),
 registerData_(new QList<QSharedPointer<RegisterBase> > ()),
-
 registerFileDefinitionReference_(other.registerFileDefinitionReference_),
 typeDefinitionsReference_(other.typeDefinitionsReference_)
 {

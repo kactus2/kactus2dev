@@ -27,6 +27,7 @@ class ExpressionEditor;
 class ExpressionParser;
 class RegisterFileValidator;
 class RegisterInterface;
+class AccessPoliciesEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for a single register file item in component editor tree.
@@ -145,6 +146,9 @@ private:
 
     //! The editor for the register files.
     RegisterFileEditor* registerFileEditor_;
+
+    //! The editor for access policies.
+    AccessPoliciesEditor* accessPoliciesEditor_;
 
     //! The editor for register file offset.
     ExpressionEditor* offsetEditor_;

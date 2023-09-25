@@ -47,7 +47,6 @@ AbstractionDefinitionValidator::AbstractionDefinitionValidator(LibraryInterface*
     QSharedPointer<ExpressionParser> expressionParser) : 
 library_(library), 
     expressionParser_(expressionParser),
-    parameterValidator_(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > > ()),
     protocolValidator_()
 {
 
@@ -56,13 +55,20 @@ library_(library),
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionValidator::validateInstantiation()
 //-----------------------------------------------------------------------------
-bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
 	// Must have a valid VLNV.
 	if (!abstractionDefinition->getVlnv().isValid())
 	{
 		return false;
 	}
+
+    if (!parameterValidator_)
+    {
+        parameterValidator_ = QSharedPointer<ParameterValidator>(
+            new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), 
+                abstractionDefinition->getRevision()));
+    }
 
 	// The defined bus must exist in the library as a component.
     QSharedPointer<const BusDefinition> busDefinition = getBusDefinition(abstractionDefinition);
@@ -80,7 +86,7 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 	// Any parameters must be valid.
 	for (auto const& parameter : *abstractionDefinition->getParameters())
 	{
-		if (!parameterValidator_.hasValidValue(parameter))
+		if (!parameterValidator_->hasValidValue(parameter))
 		{
 			return false;
 		}
@@ -125,8 +131,15 @@ bool AbstractionDefinitionValidator::validate(QSharedPointer<AbstractionDefiniti
 // Function: AbstractionDefinitionValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
-	QSharedPointer<AbstractionDefinition> abstractionDefinition) const
+	QSharedPointer<AbstractionDefinition> abstractionDefinition)
 {
+    if (!parameterValidator_)
+    {
+        parameterValidator_ = QSharedPointer<ParameterValidator>(
+            new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(),
+                abstractionDefinition->getRevision()));
+    }
+
 	// Must have a valid VLNV.
 	if (!abstractionDefinition->getVlnv().isValid())
 	{
@@ -149,7 +162,7 @@ void AbstractionDefinitionValidator::findErrorsIn(QVector<QString>& errors,
     // Any parameters must be valid.
 	for (auto const& currentPara : *abstractionDefinition->getParameters())
 	{
-		parameterValidator_.findErrorsIn(errors, currentPara, context, abstractionDefinition->getRevision());
+		parameterValidator_->findErrorsIn(errors, currentPara, context);
 	}
 
 	// Must have at least one logical port.

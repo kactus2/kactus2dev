@@ -76,7 +76,7 @@ void ParameterWriter::Details::writeArrays(QXmlStreamWriter& writer, QSharedPoin
             writer.writeStartElement(QStringLiteral("ipxact:array"));
             if (docRevision == Document::Revision::Std22)
             {
-                writer.writeAttribute(QStringLiteral("arrayId"), array->getId());
+                CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("arrayId"), array->getId());
             }
 
             writer.writeTextElement(QStringLiteral("ipxact:left"), array->getLeft());
@@ -103,7 +103,7 @@ void ParameterWriter::Details::writeVectors(QXmlStreamWriter& writer, QSharedPoi
 
             if (docRevision == Document::Revision::Std22)
             {
-                writer.writeAttribute(QStringLiteral("vectorId"), vector->getId());
+                CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("vectorId"), vector->getId());
             }
 
             writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());

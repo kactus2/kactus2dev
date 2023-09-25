@@ -907,9 +907,9 @@ std::vector<std::string> BusInterfaceInterface::getFileSetReferences(std::string
         {
             if (fileGroup->group_.compare(DEFAULT_FILEGROUP) == 0)
             {
-                for (auto fileReference : fileGroup->fileSetRefs_)
+                for (auto fileReference : *fileGroup->fileSetRefs_)
                 {
-                    newFileSetItems.push_back(fileReference.toStdString());
+                    newFileSetItems.push_back(fileReference->getReference().toStdString());
                 }
             }
         }
@@ -930,30 +930,80 @@ bool BusInterfaceInterface::setFileSetReferences(std::string const& busName,
         return false;
     }
 
-    if (slave->getFileSetRefGroup())
+    // Convert to QString once.
+    QStringList newFileSetReferencesQ;
+    for (auto const& ref : newFileSetReferences)
     {
-        slave->getFileSetRefGroup()->clear();
-    }
-    else
-    {
-        QSharedPointer<QList<QSharedPointer<TargetInterface::FileSetRefGroup> > > newFileSetRefGroup
-        (new QList<QSharedPointer<TargetInterface::FileSetRefGroup> >());
-        slave->getFileSetRefGroup() = newFileSetRefGroup;
+        newFileSetReferencesQ << QString::fromStdString(ref);
     }
 
-    QStringList newItems;
-    for (auto fileSetReference : newFileSetReferences)
+    QSharedPointer<QList<QSharedPointer<FileSetRef> > > allExistingFileSetRefs(
+        new QList<QSharedPointer<FileSetRef> >());
+
+    // References as strings.
+    QStringList allExistingReferencesStr;
+    
+    // Group all file set refs together.
+    for (auto const& fileSetRefGroup : *slave->getFileSetRefGroup())
     {
-        newItems.append(QString::fromStdString(fileSetReference));
+        for (auto const& fileSetInGroup : *fileSetRefGroup->fileSetRefs_)
+        {
+            allExistingFileSetRefs->append(fileSetInGroup);
+            allExistingReferencesStr << fileSetInGroup->getReference();
+        }
     }
 
-    if (!newItems.isEmpty())
-    {
-        QSharedPointer<TargetInterface::FileSetRefGroup> fileGroup(new TargetInterface::FileSetRefGroup());
-        fileGroup->group_ = DEFAULT_FILEGROUP;
+    std::vector<int> indexesToDelete;
 
-        fileGroup->fileSetRefs_ = newItems;
-        slave->getFileSetRefGroup()->append(fileGroup);
+    // Check for removed references.
+    for (int i = 0; i < allExistingReferencesStr.size(); ++i)
+    {
+        auto const& currentExistingRef = allExistingReferencesStr.at(i);
+
+        bool currentItemStillExists = false;
+
+        for (auto const& newRef : newFileSetReferencesQ)
+        {
+            if (currentExistingRef == newRef)
+            {
+                currentItemStillExists = true;
+            }
+        }
+
+        if (!currentItemStillExists)
+        {
+            indexesToDelete.push_back(i);
+        }
+    }
+
+    // Remove deleted file set refs.
+    for (auto index : indexesToDelete)
+    {
+        allExistingFileSetRefs->removeAt(index);
+        allExistingReferencesStr.removeAt(index);
+    }
+    
+    // Check for new refs.
+    for (auto const& newRef : newFileSetReferencesQ)
+    {
+        if (allExistingReferencesStr.contains(newRef) == false)
+        {
+            QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+            newFileSetRef->setReference(newRef);
+            allExistingFileSetRefs->append(newFileSetRef);
+        }
+    }
+
+    slave->getFileSetRefGroup()->clear();
+    
+    // Put all file set refs to same group, if there are file set references.
+    if (!allExistingFileSetRefs->isEmpty())
+    {
+        QSharedPointer<TargetInterface::FileSetRefGroup> fileSetRefGroup(new TargetInterface::FileSetRefGroup());
+        fileSetRefGroup->fileSetRefs_ = allExistingFileSetRefs;
+        fileSetRefGroup->group_ = DEFAULT_FILEGROUP;
+    
+        slave->getFileSetRefGroup()->append(fileSetRefGroup);
     }
 
     return true;

@@ -111,10 +111,11 @@ namespace InstantiationsWriter
         /*!
          *  Writes the file set references.
          *
-         *      @param [in] writer      The used XML writer.
-         *      @param [in] references  A list of referenced file set names.
+         *      @param [in] writer          The used XML writer.
+         *      @param [in] instantiation   The instantiation whose file set refs are written.
+         *      @param [in] docRevision     The IP-XACT standard revision in use.
          */
-        void writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<QStringList> references);
+        void writeFileSetReferences(QXmlStreamWriter& writer, QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision);
     }
 };
 

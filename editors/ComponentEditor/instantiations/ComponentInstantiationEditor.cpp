@@ -47,7 +47,7 @@ fileBuilders_(instantiationInterface->getFileBuilderInterface(), parameterFinder
               expressionFormatter, componentInstantiation->getDefaultFileBuilders(), this),
 moduleParameters_(componentInstantiation, component->getChoices(), parameterFinder, expressionFormatter,
     instantiationInterface->getModuleParameterInterface(), component->getRevision(), this),
-parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter,
+parameters_(componentInstantiation->getParameters(), component->getChoices(), parameterFinder, expressionFormatter, component->getRevision(),
     this),
 instantiationInterface_(instantiationInterface),
 availableInstantiations_(component->getComponentInstantiations())

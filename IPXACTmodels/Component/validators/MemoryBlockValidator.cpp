@@ -14,6 +14,7 @@
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 
@@ -23,9 +24,11 @@
 // Function: MemoryBlockValidator::MemoryBlockValidator()
 //-----------------------------------------------------------------------------
 MemoryBlockValidator::MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
-    QSharedPointer<ParameterValidator> parameterValidator):
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
 expressionParser_(expressionParser),
-parameterValidator_(parameterValidator)
+parameterValidator_(parameterValidator),
+docRevision_(docRevision)
 {
 
 }
@@ -54,16 +57,7 @@ bool MemoryBlockValidator::validate(QSharedPointer<MemoryBlockBase> memoryBlock)
 //-----------------------------------------------------------------------------
 bool MemoryBlockValidator::hasValidName(QSharedPointer<MemoryBlockBase> memoryBlock) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(memoryBlock->name());
-
-    if (memoryBlock->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(memoryBlock->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +65,7 @@ bool MemoryBlockValidator::hasValidName(QSharedPointer<MemoryBlockBase> memoryBl
 //-----------------------------------------------------------------------------
 bool MemoryBlockValidator::hasValidIsPresent(QSharedPointer<MemoryBlockBase> memoryBlock) const
 {
-    if (!memoryBlock->getIsPresent().isEmpty())
+    if (docRevision_ != Document::Revision::Std22 && !memoryBlock->getIsPresent().isEmpty())
     {
         QString solvedValue = expressionParser_->parseExpression(memoryBlock->getIsPresent());
 

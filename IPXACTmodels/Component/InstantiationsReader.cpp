@@ -109,7 +109,7 @@ QSharedPointer<ComponentInstantiation> InstantiationsReader::createComponentInst
 
     Details::parseDefaultFileBuilders(instantiationNode, newInstantiation, docRevision);
 
-    Details::parseFileSetReferences(instantiationNode, newInstantiation);
+    Details::parseFileSetReferences(instantiationNode, newInstantiation, docRevision);
 
     newInstantiation->setParameters(CommonItemsReader::parseAndCreateParameters(instantiationNode, docRevision));
 
@@ -202,20 +202,17 @@ void InstantiationsReader::Details::parseDefaultFileBuilders(QDomNode const& ins
 // Function: InstantiationsReader::Details::parseFileSetReferences()
 //-----------------------------------------------------------------------------
 void InstantiationsReader::Details::parseFileSetReferences(QDomNode const& instantiationNode,
-    QSharedPointer<ComponentInstantiation> instantiation)
+    QSharedPointer<ComponentInstantiation> instantiation,
+    Document::Revision docRevision)
 {
     QDomElement instantiationElement = instantiationNode.toElement();
     
     if (!instantiationElement.isNull())
     {
-        QDomNodeList fileSetReferenceNodeList = instantiationElement.elementsByTagName(QStringLiteral("ipxact:fileSetRef"));
-
-        for (int i = 0; i < fileSetReferenceNodeList.count(); ++i)
+        if (auto fileSetRefs = CommonItemsReader::parseFileSetReferences(instantiationNode.toElement(), docRevision);
+            fileSetRefs->isEmpty() == false)
         {
-            QDomNode fileSetNode = fileSetReferenceNodeList.at(i);
-            QString referenceName = fileSetNode.firstChildElement(QStringLiteral("ipxact:localName")).firstChild().nodeValue();
-
-            instantiation->getFileSetReferences()->append(referenceName);
+            instantiation->setFileSetReferences(fileSetRefs);
         }
     }
 }

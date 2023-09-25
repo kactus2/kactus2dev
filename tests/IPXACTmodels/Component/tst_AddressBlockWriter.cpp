@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
@@ -45,6 +46,11 @@ private slots:
     void writeParameters();
 
     void writeRegisterData();
+
+    void writeMisalignmentAllowed2022();
+    void writeMemoryArray2022();
+    void writeAddressBlockDefinitionRef2022();
+    void writeAccessPolicies2022();
 
     void writeVendorExtensions();
 
@@ -118,8 +124,7 @@ void tst_AddressBlockWriter::writeSimpleAddressBlock()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -143,8 +148,7 @@ void tst_AddressBlockWriter::writeIsPresent()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -168,8 +172,7 @@ void tst_AddressBlockWriter::writeTypeIdentifier()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -193,8 +196,7 @@ void tst_AddressBlockWriter::writeUsage()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -218,8 +220,7 @@ void tst_AddressBlockWriter::writeVolatile()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -243,8 +244,7 @@ void tst_AddressBlockWriter::writeAccess()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -278,8 +278,7 @@ void tst_AddressBlockWriter::writeParameters()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -332,8 +331,141 @@ void tst_AddressBlockWriter::writeRegisterData()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockWriter::writeMisalignmentAllowed2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockWriter::writeMisalignmentAllowed2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testAddressBlock_->setMisalignmentAllowed(false);
+
+    QString expectedOutput(
+        "<ipxact:addressBlock misalignmentAllowed=\"false\">"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+        "</ipxact:addressBlock>"
+        );
+
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockWriter::writeMemoryArray2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockWriter::writeMemoryArray2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MemoryArray> memArray(new MemoryArray());
+    QSharedPointer<MemoryArray::Dimension> testDim(new MemoryArray::Dimension());
+    testDim->indexVar_ = "testVar";
+    testDim->value_ = "2";
+
+    memArray->getDimensions()->append(testDim);
+    memArray->setStride("4");
+
+    testAddressBlock_->setMemoryArray(memArray);
+
+    QString expectedOutput(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:array>"
+                "<ipxact:dim indexVar=\"testVar\">2</ipxact:dim>"
+                "<ipxact:stride>4</ipxact:stride>"
+            "</ipxact:array>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+        "</ipxact:addressBlock>"
+        );
+
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockWriter::writeAddressBlockDefinitionRef2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockWriter::writeAddressBlockDefinitionRef2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testAddressBlock_->setWidth("");
+    testAddressBlock_->setRange("");
+
+    testAddressBlock_->setAddressBlockDefinitionRef("someOtherAddressBlock");
+    testAddressBlock_->setTypeDefinitionsRef("someTypeDefinitions");
+
+    QString expectedOutput(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:addressBlockDefinitionRef typeDefinitions=\"someTypeDefinitions\">someOtherAddressBlock</ipxact:addressBlockDefinitionRef>"
+        "</ipxact:addressBlock>"
+        );
+
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_AddressBlockWriter::writeAccessPolicies2022()
+//-----------------------------------------------------------------------------
+void tst_AddressBlockWriter::writeAccessPolicies2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<AccessPolicy> testAccessPolicy1(new AccessPolicy());
+    QSharedPointer<AccessPolicy> testAccessPolicy2(new AccessPolicy());
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+
+    modeRef1->setPriority("1");
+    modeRef1->setReference("testMode");
+    
+    modeRef2->setPriority("2");
+    modeRef2->setReference("testMode2");
+
+    testAccessPolicy1->getModeReferences()->append(modeRef1);
+    testAccessPolicy1->setAccess(AccessTypes::READ_ONLY);
+
+    testAccessPolicy2->getModeReferences()->append(modeRef2);
+
+    testAddressBlock_->getAccessPolicies()->append(testAccessPolicy1);
+    testAddressBlock_->getAccessPolicies()->append(testAccessPolicy2);
+
+    QString expectedOutput(
+        "<ipxact:addressBlock>"
+            "<ipxact:name>testBlock</ipxact:name>"
+            "<ipxact:baseAddress>StarControl</ipxact:baseAddress>"
+            "<ipxact:range>Kzer-Za</ipxact:range>"
+            "<ipxact:width>Kohr-Ah</ipxact:width>"
+            "<ipxact:accessPolicies>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"1\">testMode</ipxact:modeRef>"
+                    "<ipxact:access>read-only</ipxact:access>"
+                "</ipxact:accessPolicy>"
+                "<ipxact:accessPolicy>"
+                    "<ipxact:modeRef priority=\"2\">testMode2</ipxact:modeRef>"
+                "</ipxact:accessPolicy>"
+            "</ipxact:accessPolicies>"
+        "</ipxact:addressBlock>"
+        );
+
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -366,8 +498,7 @@ void tst_AddressBlockWriter::writeVendorExtensions()
         "</ipxact:addressBlock>"
         );
 
-    AddressBlockWriter blockWriter;
-    blockWriter.writeAddressBlock(xmlStreamWriter, testAddressBlock_);
+    AddressBlockWriter::writeAddressBlock(xmlStreamWriter, testAddressBlock_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

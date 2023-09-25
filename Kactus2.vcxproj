@@ -582,6 +582,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\instantiations\ModuleParameterModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\itemeditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\itemvisualizer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesModel.cpp" />
@@ -1664,6 +1667,9 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesEditor.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\FieldAccessPoliciesModel.h" />
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.h" />
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\AddressBlockColumns.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\ExpressionProxyModel.h">
     </QtMoc>

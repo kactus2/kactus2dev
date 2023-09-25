@@ -22,7 +22,7 @@
 //-----------------------------------------------------------------------------
 bool CommonItemsValidator::hasValidName(QString const& name)
 {
-    QRegularExpression validNameRegex(QStringLiteral("^[a-zA-Z:_][a-zA-Z0-9-_:]*$"));
+    QRegularExpression validNameRegex(QStringLiteral("^[a-zA-Z:_][a-zA-Z0-9-_:.]*$"));
     return validNameRegex.match(name).hasMatch();
 }
 
@@ -121,8 +121,6 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
     QStringList& checkedRefs, QStringList& checkedPriorities, bool* duplicateRefErrorIssued, 
     bool* duplicatePriorityErrorIssued)
 {
-    QRegularExpression whiteSpaceRegex(QStringLiteral("\\s+"));
-
     for (auto const& modeRef : *modeRefs)
     {
         auto reference = modeRef->getReference();
@@ -131,22 +129,22 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
         bool priorityValidInt = false;
         int priority = priorityStr.toUInt(&priorityValidInt);
 
-        if (whiteSpaceRegex.match(modeRef->getReference()).hasMatch())
+        if (!hasValidName(reference))
         {
             errors.append(QObject::tr(
-                "Mode reference in %1 has invalid reference value '%2'.").arg(context).arg(reference));
+                "Mode reference in %1 has invalid or empty reference value '%2'.").arg(context).arg(reference));
         }
 
         if (!priorityValidInt || priority < 0)
         {
             errors.append(QObject::tr(
-                "Mode reference in %1 has invalid priority '%2'.").arg(context).arg(priorityStr));
+                "Mode reference in %1 has invalid or empty priority '%2'.").arg(context).arg(priorityStr));
         }
 
         if (checkedPriorities.contains(modeRef->getPriority()) && *duplicatePriorityErrorIssued == false)
         {
             errors.append(QObject::tr(
-                "One or more mode references of %1 contain duplicate priority values.").arg(context));
+                "One or more mode references in %1 contain duplicate priority values.").arg(context));
             *duplicatePriorityErrorIssued = true;
         }
         else
@@ -157,7 +155,7 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
         if (checkedRefs.contains(modeRef->getReference()) && *duplicateRefErrorIssued == false)
         {
             errors.append(QObject::tr(
-                "One or more mode references of %1 contain duplicate mode reference values.")
+                "One or more mode references in %1 contain duplicate mode reference values.")
                 .arg(context));
             *duplicateRefErrorIssued = true;
         }
@@ -166,4 +164,39 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
             checkedRefs.append(modeRef->getReference());
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::hasValidAccessPolicies()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies)
+{
+    bool hasAccessPolicyWithoutModeRef = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
+    for (auto const& accessPolicy : *accessPolicies)
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
+        // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
+        // all address block access policies.
+        if (!hasValidModeRefs(accessPolicy->getModeReferences(),
+            checkedModeReferences, checkedModePriorities))
+        {
+            return false;
+        }
+    }
+
+    // Number of access policies cannot be greater than one if an access policy has no mode references.
+    if (hasAccessPolicyWithoutModeRef && accessPolicies->size() > 1)
+    {
+        return false;
+    }
+
+    return true;
 }

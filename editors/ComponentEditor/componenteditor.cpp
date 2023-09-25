@@ -95,7 +95,7 @@ fullParameterFinder_(),
 referenceCounter_(0),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(expressionParser_, libHandler_),
+validator_(expressionParser_, libHandler_, component->getRevision()),
 parameterReferenceTree_(0),
 parameterReferenceWindow_()
 {

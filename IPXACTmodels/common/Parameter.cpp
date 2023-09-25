@@ -25,9 +25,7 @@ Parameter::Parameter(): NameGroup(),
     value_(), 
     attributes_(), 
     valueAttributes_(), 
-    bitWidthVector_(), 
-    vectors_(new QList<QSharedPointer<Vector> >()),
-    arrays_(new QList<QSharedPointer<Array> >())
+    bitWidthVector_()
 {
     createUuid();
 }
@@ -40,11 +38,11 @@ Parameter::Parameter( const Parameter &other ): NameGroup(other),
     value_(other.value_),
     attributes_(other.attributes_),
     valueAttributes_(other.valueAttributes_), 
-    bitWidthVector_(other.bitWidthVector_), 
-    vectors_(other.vectors_), 
-    arrays_(other.arrays_)
+    bitWidthVector_(other.bitWidthVector_)
 {
-
+    Utilities::copyList(vectors_, other.vectors_);
+    Utilities::copyList(arrays_, other.arrays_);
+    copyVendorExtensions(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,6 +66,9 @@ Parameter & Parameter::operator=(Parameter const& other)
 		value_ = other.value_;
         attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
+        
+        Utilities::copyList(vectors_, other.vectors_);
+        Utilities::copyList(arrays_, other.arrays_);
 
         copyVendorExtensions(other);
 	}

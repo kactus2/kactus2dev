@@ -29,11 +29,13 @@
 // Function: registertablemodel::RegisterTableModel()
 //-----------------------------------------------------------------------------
 RegisterTableModel::RegisterTableModel(FieldInterface* fieldInterface,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
+    QSharedPointer <ExpressionParser> expressionParser, QSharedPointer <ParameterFinder> parameterFinder,
+    Document::Revision docRevision,
+    QObject *parent) :
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-fieldInterface_(fieldInterface)
+fieldInterface_(fieldInterface),
+docRevision_(docRevision)
 {
     setExpressionParser(expressionParser);
 }
@@ -63,16 +65,33 @@ int RegisterTableModel::columnCount( const QModelIndex& parent /*= QModelIndex()
 //-----------------------------------------------------------------------------
 Qt::ItemFlags RegisterTableModel::flags( const QModelIndex& index ) const 
 {
-	if (!index.isValid() || index.column() == RegisterColumns::RESETS_COLUMN)
+	if (!index.isValid())
     {
 		return Qt::NoItemFlags;
 	}
 
     std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
-	// if the field is not testable then the test constraint can not be set
-    if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN && !fieldInterface_->getTestableBool(fieldName))
+
+    // Lock resets column
+    if (index.column() == RegisterColumns::RESETS_COLUMN)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+
+    // Lock std14 columns (values located in field access policy for std22), if there are multiple field access 
+    // policies defined for the field.
+    if (isStd14Column(index) && docRevision_ == Document::Revision::Std22 &&
+        fieldInterface_->getAccessPolicyCount(fieldName) > 1)
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+    }
+
+	// if the field is not testable then the test constraint can not be set
+    if (int accessPolicyIndex = docRevision_ == Document::Revision::Std22 ? 0 : -1;
+        index.column() == RegisterColumns::TEST_CONSTR_COLUMN && 
+        !fieldInterface_->getTestableBool(fieldName, accessPolicyIndex))
+    {
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 
 	return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
@@ -170,19 +189,7 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
 
 	if (Qt::DisplayRole == role) 
     {
-        if (isValidExpressionColumn(index))
-        {
-            return formattedExpressionForIndex(index);
-        }
-        else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
-        {
-            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$", 
-                QRegularExpression::DotMatchesEverythingOption), "...");
-        }
-        else
-        {
-            return valueForIndex(index);
-        }
+        return getIndexValueByStdRevision(index);
 	}
 
     else if (role == Qt::EditRole)
@@ -232,7 +239,8 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
         {
             return KactusColors::MANDATORY_FIELD;
         }
-        else if (index.column() == RegisterColumns::RESETS_COLUMN)
+        else if (index.column() == RegisterColumns::RESETS_COLUMN ||
+            index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             return KactusColors::DISABLED_FIELD;
         }
@@ -302,6 +310,10 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
 {
     std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
+    // Get the value from first field access policy if std22 is used, and there are zero or one field
+    // access policies defined for the field. Get the value from the field if using std14.
+    int accessPolicyIndex = docRevision_ == Document::Revision::Std22 ? 0 : -1;
+
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
         return QString::fromStdString(fieldName);
@@ -328,23 +340,23 @@ QVariant RegisterTableModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getAccessString(fieldName));
+        return QString::fromStdString(fieldInterface_->getAccessString(fieldName, accessPolicyIndex));
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName));
+        return QString::fromStdString(fieldInterface_->getModifiedWriteString(fieldName, accessPolicyIndex));
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getReadActionString(fieldName));
+        return QString::fromStdString(fieldInterface_->getReadActionString(fieldName, accessPolicyIndex));
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getTestableValue(fieldName));
+        return QString::fromStdString(fieldInterface_->getTestableValue(fieldName, accessPolicyIndex));
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName));
+        return QString::fromStdString(fieldInterface_->getTestConstraintString(fieldName, accessPolicyIndex));
     }
     else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
     {
@@ -416,31 +428,6 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         {
             fieldInterface_->setVolatile(fieldName, value.toString().toStdString());
         }
-        else if (index.column() == RegisterColumns::ACCESS_COLUMN)
-        {
-            fieldInterface_->setAccess(fieldName, value.toString().toStdString());
-        }
-        else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
-        {
-            fieldInterface_->setModifiedWrite(fieldName, value.toString().toStdString());
-        }
-        else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
-        {
-            fieldInterface_->setReadAction(fieldName, value.toString().toStdString());
-        }
-        else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
-        {
-            fieldInterface_->setTestable(fieldName, value.toString().toStdString());
-            if (value.toString() == QLatin1String("false"))
-            {
-                QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
-                emit dataChanged(constrIndex, constrIndex);
-            }
-        }
-        else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
-        {
-            fieldInterface_->setTestConstraint(fieldName, value.toString().toStdString());
-        }
         else if (index.column() == RegisterColumns::IS_PRESENT_COLUMN)
         {
             if (!value.isValid())
@@ -453,6 +440,13 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
 
             emit graphicsChanged(index.row());
             emit addressingChanged(index.row());
+        }
+        else if (isStd14Column(index))
+        {
+            if (!setDataForFirstFieldAccessPolicy(index, value, fieldName))
+            {
+                return false;
+            }
         }
         else
         {
@@ -508,6 +502,8 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
 {
     std::string fieldName = fieldInterface_->getIndexedItemName(index.row());
 
+    int accessPolicyIndex = docRevision_ == Document::Revision::Std22 ? 0 : -1;
+
     if (index.column() == RegisterColumns::NAME_COLUMN)
     {
         return fieldInterface_->itemHasValidName(fieldName);
@@ -530,7 +526,7 @@ bool RegisterTableModel:: validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        return fieldInterface_->hasValidAccess(fieldName);
+        return fieldInterface_->hasValidAccess(fieldName, accessPolicyIndex);
     }
 
     return true;
@@ -657,6 +653,104 @@ QMap<QString, int> RegisterTableModel::getReferencedParameters(QString const& fi
     ReferenceCalculator memoryMapReferenceCalculator(getParameterFinder());
 
     return memoryMapReferenceCalculator.getReferencedParameters(expressionListQT);
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::isStd14Column()
+//-----------------------------------------------------------------------------
+bool RegisterTableModel::isStd14Column(QModelIndex const& index) const
+{
+    int col = index.column();
+    return col == RegisterColumns::ACCESS_COLUMN ||
+        col == RegisterColumns::MOD_WRITE_COLUMN ||
+        col == RegisterColumns::READ_ACTION_COLUMN ||
+        col == RegisterColumns::TESTABLE_COLUMN ||
+        col == RegisterColumns::TEST_CONSTR_COLUMN;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::getIndexValueByStdRevision()
+//-----------------------------------------------------------------------------
+QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index) const
+{
+    if (isStd14Column(index) && docRevision_ == Document::Revision::Std22)
+    {
+        // If more than one field access policies.
+        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
+        {
+            // Indicate multiple access policies.
+            if (index.column() == RegisterColumns::ACCESS_COLUMN)
+            {
+                return QStringLiteral("[multiple]");
+            }
+
+            return QVariant();
+        }
+
+        return valueForIndex(index);
+    }
+    else
+    {
+        if (isValidExpressionColumn(index))
+        {
+            return formattedExpressionForIndex(index);
+        }
+        else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$",
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterTableModel::setDataForFieldAccessPolicy()
+//-----------------------------------------------------------------------------
+bool RegisterTableModel::setDataForFirstFieldAccessPolicy(QModelIndex const& index, QVariant const& value, std::string const& fieldName)
+{
+    // Add a new field access policy, if there are none AND if the new index value is not empty.
+    if (fieldInterface_->getAccessPolicyCount(fieldName) == 0 && value.toString().isEmpty() == false)
+    {
+        fieldInterface_->addFieldAccessPolicy(fieldName);
+    }
+
+    if (index.column() == RegisterColumns::ACCESS_COLUMN)
+    {
+        fieldInterface_->setAccess(fieldName, value.toString().toStdString(), 0);
+    }
+    else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
+    {
+        fieldInterface_->setModifiedWrite(fieldName, value.toString().toStdString(), 0);
+    }
+    else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
+    {
+        fieldInterface_->setReadAction(fieldName, value.toString().toStdString(), 0);
+    }
+    else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
+    {
+        fieldInterface_->setTestable(fieldName, value.toString().toStdString(), 0);
+        if (value.toString() == QLatin1String("false"))
+        {
+            QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
+            emit dataChanged(constrIndex, constrIndex);
+        }
+    }
+    else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
+    {
+        fieldInterface_->setTestConstraint(fieldName, value.toString().toStdString(), 0);
+    }
+    else
+    {
+        return false;
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

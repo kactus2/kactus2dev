@@ -38,8 +38,8 @@ DesignValidator::DesignValidator(QSharedPointer<ExpressionParser> parser, Librar
 componentInstanceValidator_(new ComponentInstanceValidator(parser, library)),
 interconnectionValidator_(new InterconnectionValidator(parser, library)),
 adHocConnectionValidator_(new AdHocConnectionValidator(parser, library)),
-parameterValidator_(new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
-assertionValidator_(new AssertionValidator(parser))
+assertionValidator_(new AssertionValidator(parser)),
+expressionParser_(parser)
 {
 
 }
@@ -184,10 +184,12 @@ bool DesignValidator::hasValidParameters(QSharedPointer<Design> design) const
         return true;
     }
 
+    ParameterValidator parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), design->getRevision());
+
     QVector<QString> parameterNames;
     for (QSharedPointer<Parameter> parameter : *design->getParameters())
     {
-        if (parameterNames.contains(parameter->name()) || !parameterValidator_->validate(parameter))
+        if (parameterNames.contains(parameter->name()) || !parameterValidator.validate(parameter))
         {
             return false;
         }
@@ -368,6 +370,7 @@ void DesignValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPo
     {
         return;
     }
+    ParameterValidator parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), design->getRevision());
 
     QVector<QString> parameterNames;
     QVector<QString> duplicateNames;
@@ -381,7 +384,7 @@ void DesignValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPo
         }
 
         parameterNames.append(parameter->name());
-        parameterValidator_->findErrorsIn(errors, parameter, context);
+        parameterValidator.findErrorsIn(errors, parameter, context);
     }
 }
 

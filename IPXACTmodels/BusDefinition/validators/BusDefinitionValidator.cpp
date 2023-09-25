@@ -27,7 +27,6 @@ BusDefinitionValidator::BusDefinitionValidator(LibraryInterface* library,
     QSharedPointer<ExpressionParser> expressionParser):
 library_(library),
 expressionParser_(expressionParser),
-parameterValidator_(new ParameterValidator(expressionParser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
 choiceValidator_(new ChoiceValidator(expressionParser))
 {
 
@@ -70,9 +69,11 @@ bool BusDefinitionValidator::validate(QSharedPointer<const BusDefinition> busDef
 		return false;
 	}
 
+    ParameterValidator parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), busDefinition->getRevision());
+
  	for (auto const& currentParameter : *busDefinition->getParameters())
 	{
-        if (parameterValidator_->validate(currentParameter) == false)
+        if (parameterValidator.validate(currentParameter) == false)
 		{
 			return false;
 		}
@@ -155,9 +156,11 @@ void BusDefinitionValidator::findErrorsIn(QVector<QString>& errors,
             QString::fromStdString(busDefinition->getMaxTargets()), context));
 	}
 
+    ParameterValidator parameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), busDefinition->getRevision());
+
     for (auto const& currentParameter : *busDefinition->getParameters())
     {
-        parameterValidator_->findErrorsIn(errors, currentParameter, context);
+        parameterValidator.findErrorsIn(errors, currentParameter, context);
     }
 
     if (!busDefinition->getChoices()->isEmpty()

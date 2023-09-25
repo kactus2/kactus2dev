@@ -234,6 +234,9 @@ private:
 
     //! The used view configuration validator.
     QSharedPointer<ViewConfigurationValidator> viewConfigurationValidator_;
+
+    //! The used expression parser.
+    QSharedPointer<ExpressionParser> expressionParser_;
 };
 
 #endif // DESIGNCONFIGURATIONVALIDATOR_H

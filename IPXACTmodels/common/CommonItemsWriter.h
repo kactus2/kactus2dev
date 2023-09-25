@@ -28,6 +28,7 @@ class Qualifier;
 class NameGroup;
 class PartSelect;
 class ModeReference;
+class FileSetRef;
 
 //-----------------------------------------------------------------------------
 //! Writer class for common IP-XACT elements: VLNV, parameters, assertions, vendor extensions and presence.
@@ -182,7 +183,17 @@ public:
      */
     static void writeModeReferences(QXmlStreamWriter& writer, 
         QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences);
-};
 
+    /*!
+     *	Write file set references.
+     *  
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] fileSetRefs     The file set references to write.
+     *      @param [in] docRevision     The IP-XACT standard revision in use.
+     */
+    static void writeFileSetReferences(QXmlStreamWriter& writer,
+        QSharedPointer<QList<QSharedPointer<FileSetRef> > > fileSetRefs,
+        Document::Revision docRevision);
+};
 
 #endif // DOCUMENTWRITER_H

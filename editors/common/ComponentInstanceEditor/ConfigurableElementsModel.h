@@ -79,6 +79,7 @@ public:
     void setParameters(QString const& containingItemName,
         QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
         QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+        Document::Revision docRevision,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements);
 
 	/*!
@@ -397,6 +398,9 @@ private:
 
     //! The formatter for referencing expressions in values.
     QSharedPointer<ExpressionFormatter> configurableElementExpressionFormatter_;
+
+    //! The parser for referencing expressions in values.
+    QSharedPointer<ExpressionParser> configurableElementExpressionParser_;
 
     //! The formatter for referencing expressions in default values.
     QSharedPointer<ExpressionFormatter> defaultValueFormatter_;

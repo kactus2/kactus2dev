@@ -186,9 +186,9 @@ void MetaComponent::sortParameters(QSharedPointer<QList<QSharedPointer<Parameter
 //-----------------------------------------------------------------------------
 void MetaComponent::parsesFileSets()
 {
-    for (QString const& fileSetRef : *activeInstantiation_->getFileSetReferences())
+    for (auto const& fileSetRef : *activeInstantiation_->getFileSetReferences())
     {
-        QSharedPointer<FileSet> fileSet = component_->getFileSet(fileSetRef);
+        QSharedPointer<FileSet> fileSet = component_->getFileSet(fileSetRef->getReference());
         if (fileSet)
         {
             fileSets_->append(fileSet);

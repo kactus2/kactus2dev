@@ -15,40 +15,32 @@
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 
 //-----------------------------------------------------------------------------
-// Function: SubSpaceMapWriter::SubSpaceMapWriter()
-//-----------------------------------------------------------------------------
-SubSpaceMapWriter::SubSpaceMapWriter():
-MemoryBlockBaseWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SubSpaceMapWriter::writeSubSpaceMap()
 //-----------------------------------------------------------------------------
-void SubSpaceMapWriter::writeSubSpaceMap(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const
+void SubSpaceMapWriter::writeSubSpaceMap(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap, 
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:subspaceMap"));
 
-    writeAttributes(writer, subMap);
+    Details::writeAttributes(writer, subMap);
 
-    writeNameGroup(writer, subMap);
+    MemoryBlockBaseWriter::writeNameGroup(writer, subMap, docRevision);
 
-    writeIsPresent(writer, subMap->getIsPresent());
+    CommonItemsWriter::writeIsPresent(writer, subMap->getIsPresent());
 
-    writeBaseAddress(writer, subMap);
+    MemoryBlockBaseWriter::writeBaseAddress(writer, subMap);
 
-    writeParameters(writer, subMap->getParameters());
+    CommonItemsWriter::writeParameters(writer, subMap->getParameters(), docRevision);
 
-    writeVendorExtensions(writer, subMap);
+    CommonItemsWriter::writeVendorExtensions(writer, subMap);
 
     writer.writeEndElement(); // ipxact:subspaceMap
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubSpaceMapWriter::writeAttributes()
+// Function: SubSpaceMapWriter::Details::writeAttributes()
 //-----------------------------------------------------------------------------
-void SubSpaceMapWriter::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap) const
+void SubSpaceMapWriter::Details::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap)
 {
     writer.writeAttribute(QStringLiteral("masterRef"), subMap->getMasterReference());
 

@@ -12,6 +12,8 @@
 #ifndef INSTANTIATIONCONFIGURABLEELEMENTEDITOR_H
 #define INSTANTIATIONCONFIGURABLEELEMENTEDITOR_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <editors/common/ComponentInstanceEditor/configurableelementeditor.h>
 #include <editors/common/ComponentInstanceEditor/ConfigurableElementsModel.h>
 
@@ -69,6 +71,7 @@ public:
      *      @param [in] storedElements  List of the stored configurable element values.
      */
     void setParameters(QString const& containerName, QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
+        Document::Revision docRevision,
         QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedElements);
 
 private:
@@ -80,6 +83,8 @@ private:
 
     //! The used configurable element finder.
     QSharedPointer<ConfigurableElementFinder> elementFinder_;
+
+    Document::Revision docRevision_;
 
 };
 

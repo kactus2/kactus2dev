@@ -648,10 +648,14 @@ void tst_businterfaceWriter::testWriteSlave()
     QSharedPointer<TargetInterface::FileSetRefGroup> fileSetReference(new TargetInterface::FileSetRefGroup());
     fileSetReference->group_ = "group1";
 
-    QStringList refs;
-    refs.append("fileset1");
-    refs.append("fileset2");
-    fileSetReference->fileSetRefs_ = refs;
+	QSharedPointer<FileSetRef> fileSetRef1(new FileSetRef());
+	QSharedPointer<FileSetRef> fileSetRef2(new FileSetRef());
+
+    fileSetRef1->setReference("fileset1");
+    fileSetRef2->setReference("fileset2");
+
+    fileSetReference->fileSetRefs_->append(fileSetRef1);
+    fileSetReference->fileSetRefs_->append(fileSetRef2);
 
     slaveInterface->getFileSetRefGroup()->append(fileSetReference);
 
@@ -669,8 +673,12 @@ void tst_businterfaceWriter::testWriteSlave()
 		        "</ipxact:transparentBridge>"
 		        "<ipxact:fileSetRefGroup>"
 		            "<ipxact:group>group1</ipxact:group>"
-		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
-		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset1</ipxact:localName>"
+					"</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset2</ipxact:localName>"
+					"</ipxact:fileSetRef>"
 		        "</ipxact:fileSetRefGroup>"
 		    "</ipxact:slave>"
 		"</ipxact:busInterface>"
@@ -880,10 +888,14 @@ void tst_businterfaceWriter::testWriteTarget2022()
     QSharedPointer<TargetInterface::FileSetRefGroup> fileSetReference(new TargetInterface::FileSetRefGroup());
     fileSetReference->group_ = "group1";
 
-    QStringList refs;
-    refs.append("fileset1");
-    refs.append("fileset2");
-    fileSetReference->fileSetRefs_ = refs;
+    QSharedPointer<FileSetRef> fileSetRef1(new FileSetRef());
+    QSharedPointer<FileSetRef> fileSetRef2(new FileSetRef());
+
+    fileSetRef1->setReference("fileset1");
+    fileSetRef2->setReference("fileset2");
+
+    fileSetReference->fileSetRefs_->append(fileSetRef1);
+    fileSetReference->fileSetRefs_->append(fileSetRef2);
 
 	targetInterface->getFileSetRefGroup()->append(fileSetReference);
 
@@ -905,8 +917,12 @@ void tst_businterfaceWriter::testWriteTarget2022()
 		        "</ipxact:transparentBridge>"
 		        "<ipxact:fileSetRefGroup>"
 		            "<ipxact:group>group1</ipxact:group>"
-		            "<ipxact:fileSetRef>fileset1</ipxact:fileSetRef>"
-		            "<ipxact:fileSetRef>fileset2</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset1</ipxact:localName>"
+					"</ipxact:fileSetRef>"
+		            "<ipxact:fileSetRef>"
+						"<ipxact:localName>fileset2</ipxact:localName>"
+					"</ipxact:fileSetRef>"
 		        "</ipxact:fileSetRefGroup>"
 		    "</ipxact:target>"
 		"</ipxact:busInterface>"

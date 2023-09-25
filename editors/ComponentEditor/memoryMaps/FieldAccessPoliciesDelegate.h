@@ -23,6 +23,13 @@ class FieldAccessPoliciesDelegate : public ExpressionDelegate
 
 public:
 
+    /*!
+     *  The constructor.
+     *
+     *      @param [in] completionModel     Model containing the completions used in expression editor.
+     *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *      @param [in] parent              The parent object.
+     */
     FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
         QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
 

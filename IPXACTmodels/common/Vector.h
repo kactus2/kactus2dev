@@ -36,6 +36,9 @@ public:
     //! Copy constructor.
     Vector(Vector const& other);
 
+	// Assignment.
+    Vector& operator=(Vector const& other);
+
 	/*!
 	 *  The destructor.
 	*/
@@ -56,9 +59,6 @@ public:
     QString getId() const;
 
 private:
-
-	// Disable assignment.
-    Vector& operator=(Vector const& rhs);
 
     //! Name for referencing the vector.
     QString vectorId_;

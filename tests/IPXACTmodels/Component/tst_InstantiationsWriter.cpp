@@ -223,7 +223,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         );
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -244,7 +244,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         ;
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -266,7 +266,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiation()
         ;
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -303,7 +303,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationLanguage()
         );
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -324,7 +324,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationLanguage()
         ;
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -382,7 +382,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationParameters()
         );
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -428,7 +428,7 @@ void tst_InstantiationsWriter::writeDesignConfigurationInstantiationExtensions()
         );
 
     InstantiationsWriter::writeDesignConfigurationInstantiation(xmlStreamWriter,
-        testDesignConfigurationInstantiation);
+        testDesignConfigurationInstantiation, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -758,8 +758,15 @@ void tst_InstantiationsWriter::writeComponentInstantiationFileSetReferences()
 
     QSharedPointer<ComponentInstantiation> testComponentInstantiation
         (new ComponentInstantiation("testInstantiation"));
-    testComponentInstantiation->getFileSetReferences()->append("referencedFile");
-    testComponentInstantiation->getFileSetReferences()->append("otherFile");
+
+    QSharedPointer<FileSetRef> fileSetRef1(new FileSetRef());
+    QSharedPointer<FileSetRef> fileSetRef2(new FileSetRef());
+
+    fileSetRef1->setReference("referencedFile");
+    fileSetRef2->setReference("otherFile");
+
+    testComponentInstantiation->getFileSetReferences()->append(fileSetRef1);
+    testComponentInstantiation->getFileSetReferences()->append(fileSetRef2);
 
     QString expectedOutput(
         "<ipxact:componentInstantiation>"

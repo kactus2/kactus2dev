@@ -604,18 +604,18 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
-    ./editors/ComponentEditor/modes/FieldSliceColumns.h \
     ./editors/ComponentEditor/modes/ModeColumns.h \
     ./editors/ComponentEditor/modes/PortSliceColumns.h \
-    ./editors/ComponentEditor/modes/FieldSliceEditor.h \
-    ./editors/ComponentEditor/modes/FieldSliceModel.h \
-    ./editors/ComponentEditor/modes/FieldSliceDelegate.h \
     ./editors/ComponentEditor/modes/ModesEditor.h \
     ./editors/ComponentEditor/modes/ModesModel.h \
     ./editors/ComponentEditor/modes/SingleModeEditor.h \
     ./editors/ComponentEditor/modes/PortSliceEditor.h \
     ./editors/ComponentEditor/modes/PortSliceModel.h \
     ./editors/ComponentEditor/modes/PortSliceDelegate.h \
+    ./editors/ComponentEditor/modes/FieldSliceColumns.h \
+    ./editors/ComponentEditor/modes/FieldSliceEditor.h \
+    ./editors/ComponentEditor/modes/FieldSliceModel.h \
+    ./editors/ComponentEditor/modes/FieldSliceDelegate.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -863,7 +863,11 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./library/VLNVDialer/ValidityGroup.h
+    ./editors/ComponentEditor/modes/PortSliceDelegate.h \
+    ./library/VLNVDialer/ValidityGroup.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1345,10 +1349,10 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
-    ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.cpp \
     ./editors/ComponentEditor/common/ModeReferenceEditor.cpp \
     ./editors/ComponentEditor/common/ModeReferenceModel.cpp \
+    ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
@@ -1627,5 +1631,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.cpp \
     ./library/VLNVDialer/ValidityGroup.cpp
 RESOURCES += kactus.qrc

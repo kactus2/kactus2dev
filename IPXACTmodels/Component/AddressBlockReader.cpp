@@ -15,57 +15,64 @@
 #include "Register.h"
 #include "RegisterFile.h"
 
+#include "MemoryArrayReader.h"
+#include "AccessPolicyReader.h"
+
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/Component/RegisterReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::AddressBlockReader()
-//-----------------------------------------------------------------------------
-AddressBlockReader::AddressBlockReader():
-MemoryBlockBaseReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: AddressBlockReader::createAddressBlockFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode const& addressBlockNode, Document::Revision docRevision) const
+QSharedPointer<AddressBlock> AddressBlockReader::createAddressBlockFrom(QDomNode const& addressBlockNode, Document::Revision docRevision)
 {
     QSharedPointer<AddressBlock> newAddressBlock(new AddressBlock());
 
-    parseNameGroup(addressBlockNode, newAddressBlock);
+    MemoryBlockBaseReader::parseNameGroup(addressBlockNode, newAddressBlock);
+    
+    if (docRevision == Document::Revision::Std14)
+    {
+        MemoryBlockBaseReader::parsePresence(addressBlockNode, newAddressBlock);
+        
+        Details::parseAccess(addressBlockNode, newAddressBlock);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        Details::parseMisalignmentAllowed(addressBlockNode, newAddressBlock);
 
-    parsePresence(addressBlockNode, newAddressBlock);
+        Details::parseMemoryArray(addressBlockNode, newAddressBlock);
 
-    parseBaseAddress(addressBlockNode, newAddressBlock);
+        Details::parseAddressBlockDefinitionRef(addressBlockNode, newAddressBlock);
 
-    parseTypeIdentifier(addressBlockNode, newAddressBlock);
+        Details::parseAccessPolicies(addressBlockNode, newAddressBlock);
+    }
 
-    parseRange(addressBlockNode, newAddressBlock);
+    MemoryBlockBaseReader::parseBaseAddress(addressBlockNode, newAddressBlock);
 
-    parseWidth(addressBlockNode, newAddressBlock);
+    Details::parseTypeIdentifier(addressBlockNode, newAddressBlock);
 
-    parseUsage(addressBlockNode, newAddressBlock);
+    Details::parseRange(addressBlockNode, newAddressBlock);
 
-    parseVolatile(addressBlockNode, newAddressBlock);
+    Details::parseWidth(addressBlockNode, newAddressBlock);
 
-    parseAccess(addressBlockNode, newAddressBlock);
+    Details::parseUsage(addressBlockNode, newAddressBlock);
 
-    parseParameters(addressBlockNode, newAddressBlock);
+    Details::parseVolatile(addressBlockNode, newAddressBlock);
 
-    parseRegisterData(addressBlockNode, newAddressBlock, docRevision);
+    MemoryBlockBaseReader::parseParameters(addressBlockNode, newAddressBlock, docRevision);
 
-    parseVendorExtensions(addressBlockNode, newAddressBlock);
+    Details::parseRegisterData(addressBlockNode, newAddressBlock, docRevision);
+
+    CommonItemsReader::parseVendorExtensions(addressBlockNode, newAddressBlock);
 
     return newAddressBlock;
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseTypeIdentifier()
+// Function: AddressBlockReader::Details::parseTypeIdentifier()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseTypeIdentifier(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
+void AddressBlockReader::Details::parseTypeIdentifier(QDomNode const& addressBlockNode,
+    QSharedPointer<AddressBlock> newAddressBlock)
 {
     QDomElement typeIdentifierElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:typeIdentifier"));
     if (!typeIdentifierElement.isNull())
@@ -76,30 +83,30 @@ void AddressBlockReader::parseTypeIdentifier(QDomNode const& addressBlockNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseRange()
+// Function: AddressBlockReader::Details::parseRange()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseRange(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
-    const
+void AddressBlockReader::Details::parseRange(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+   
 {
     QString range = addressBlockNode.firstChildElement(QStringLiteral("ipxact:range")).firstChild().nodeValue();
     newAddressBlock->setRange(range);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseWidth()
+// Function: AddressBlockReader::Details::parseWidth()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseWidth(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
-    const
+void AddressBlockReader::Details::parseWidth(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+   
 {
     QString width = addressBlockNode.firstChildElement(QStringLiteral("ipxact:width")).firstChild().nodeValue();
     newAddressBlock->setWidth(width);
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseUsage()
+// Function: AddressBlockReader::Details::parseUsage()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseUsage(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
-    const
+void AddressBlockReader::Details::parseUsage(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+   
 {
     QDomElement usageElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:usage"));
     if (!usageElement.isNull())
@@ -111,10 +118,10 @@ void AddressBlockReader::parseUsage(QDomNode const& addressBlockNode, QSharedPoi
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseVolatile()
+// Function: AddressBlockReader::Details::parseVolatile()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseVolatile(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
+void AddressBlockReader::Details::parseVolatile(QDomNode const& addressBlockNode,
+    QSharedPointer<AddressBlock> newAddressBlock)
 {
     QDomElement volatileElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:volatile"));
     if (!volatileElement.isNull())
@@ -132,10 +139,10 @@ void AddressBlockReader::parseVolatile(QDomNode const& addressBlockNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseAccess()
+// Function: AddressBlockReader::Details::parseAccess()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseAccess(QDomNode const& addressBlockNode,
-    QSharedPointer<AddressBlock> newAddressBlock) const
+void AddressBlockReader::Details::parseAccess(QDomNode const& addressBlockNode,
+    QSharedPointer<AddressBlock> newAddressBlock)
 {
     QDomElement accessElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:access"));
     if (!accessElement.isNull())
@@ -147,11 +154,11 @@ void AddressBlockReader::parseAccess(QDomNode const& addressBlockNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockReader::parseRegisterData()
+// Function: AddressBlockReader::Details::parseRegisterData()
 //-----------------------------------------------------------------------------
-void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
+void AddressBlockReader::Details::parseRegisterData(QDomNode const& addressBlockNode,
     QSharedPointer<AddressBlock> newAddressBlock,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomNodeList childNodeList = addressBlockNode.childNodes();
 
@@ -167,6 +174,75 @@ void AddressBlockReader::parseRegisterData(QDomNode const& addressBlockNode,
         {
             QSharedPointer<RegisterFile> newFile = RegisterReader::createRegisterFileFrom(currentNode, docRevision);
             newAddressBlock->getRegisterData()->append(newFile);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockReader::Details::parseMemoryArray()
+//-----------------------------------------------------------------------------
+void AddressBlockReader::Details::parseMemoryArray(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+{
+    auto memArrayElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:array"));
+
+    if (!memArrayElement.isNull())
+    {
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+
+        newAddressBlock->setMemoryArray(newMemoryArray);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockReader::Details::parseMisalignmentAllowed()
+//-----------------------------------------------------------------------------
+void AddressBlockReader::Details::parseMisalignmentAllowed(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+{
+    auto attributes = CommonItemsReader::parseAttributes(addressBlockNode);
+
+    auto misalignmentAllowedStr = attributes.value(QStringLiteral("misalignmentAllowed"), QString());
+
+    newAddressBlock->setMisalignmentAllowed(General::str2Bool(misalignmentAllowedStr, true));
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockReader::Details::parseAddressBlockDefinitionRef()
+//-----------------------------------------------------------------------------
+void AddressBlockReader::Details::parseAddressBlockDefinitionRef(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+{
+    auto definitionRefElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:addressBlockDefinitionRef"));
+
+    if (!definitionRefElement.isNull())
+    {
+        QString definitionRef = definitionRefElement.firstChild().nodeValue();
+        QString typeDefinitionsRef = definitionRefElement.attribute(QStringLiteral("typeDefinitions"), QString());
+
+        newAddressBlock->setAddressBlockDefinitionRef(definitionRef);
+        newAddressBlock->setTypeDefinitionsRef(typeDefinitionsRef);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockReader::Details::parseAccessPolicies()
+//-----------------------------------------------------------------------------
+void AddressBlockReader::Details::parseAccessPolicies(QDomNode const& addressBlockNode, QSharedPointer<AddressBlock> newAddressBlock)
+{
+    auto accessPoliciesElement = addressBlockNode.firstChildElement(QStringLiteral("ipxact:accessPolicies"));
+
+    if (accessPoliciesElement.isNull())
+    {
+        return;
+    }
+
+    auto accessPolicies = accessPoliciesElement.childNodes();
+
+    for (int i = 0; i < accessPolicies.size(); ++i)
+    {
+        if (accessPolicies.at(i).nodeName() == QStringLiteral("ipxact:accessPolicy"))
+        {
+            auto newAccessPolicy = AccessPolicyReader::createAccessPolicyFrom(accessPolicies.at(i));
+
+            newAddressBlock->getAccessPolicies()->append(newAccessPolicy);
         }
     }
 }

@@ -276,9 +276,13 @@ void ImportEditor::onChangeSelectedComponent(int index)
         foreach(QSharedPointer<ComponentInstantiation> componentInstantiation,
             *importComponent_->getComponentInstantiations())
         {
-            if (!componentInstantiation->getFileSetReferences()->contains(selectedFileSet_->name()))
+            auto fileSetRefsAsStrings = componentInstantiation->getFileSetReferenceStrings();
+
+            if (fileSetRefsAsStrings.contains(selectedFileSet_->name()))
             {
-                componentInstantiation->getFileSetReferences()->append(selectedFileSet_->name());
+                QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+                newFileSetRef->setReference(selectedFileSet_->name());
+                componentInstantiation->getFileSetReferences()->append(newFileSetRef);
             }
         }
     }

@@ -41,7 +41,7 @@ namespace InstantiationsReader
      *  Creates a new design configuration instantiation.
      *
      *      @param [in] instantiationNode   XML description of the instantiation.
-     *      @param [in] docRevision         The IP-XACT standard to comply to.
+     *      @param [in] docRevision         The IP-XACT standard revision to comply to.
      *
      *      @return The created design configuration instantiation.
      */
@@ -93,7 +93,7 @@ namespace InstantiationsReader
          *
          *      @param [in] instantiationNode   XML description of the instantiation.
          *      @param [in] instantiation       The selected instantiation.
-         *      @param [in] docRevision         The IP-XACT standard to comply to.
+         *      @param [in] docRevision         The IP-XACT standard revision to comply to.
          */
         void parseModuleParameters(QDomNode const& instantiationNode,
             QSharedPointer<ComponentInstantiation> instantiation, Document::Revision docRevision);
@@ -103,6 +103,7 @@ namespace InstantiationsReader
          *
          *      @param [in] instantiationNode   XML description of the instantiation.
          *      @param [in] instantiation       The selected instantiation.
+         *      @param [in] docRevision         The IP-XACT standard revision to comply to.
          */
         void parseDefaultFileBuilders(QDomNode const& instantiationNode,
             QSharedPointer<ComponentInstantiation> instantiation,
@@ -113,9 +114,11 @@ namespace InstantiationsReader
          *
          *      @param [in] instantiationNode   XML description of the instantiation.
          *      @param [in] instantiation       The selected instantiation.
+         *      @param [in] docRevision         The IP-XACT standard revision to comply to.
          */
         void parseFileSetReferences(QDomNode const& instantiationNode,
-            QSharedPointer<ComponentInstantiation> instantiation);
+            QSharedPointer<ComponentInstantiation> instantiation,
+            Document::Revision docRevision);
     }
 };
 

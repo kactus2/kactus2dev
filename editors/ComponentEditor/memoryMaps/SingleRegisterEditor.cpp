@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "SingleRegisterEditor.h"
+#include "AccessPoliciesEditor.h"
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/booleanComboBox/booleancombobox.h>
@@ -21,6 +22,7 @@
 #include <KactusAPI/include/ExpressionParser.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/RegisterInterface.h>
+#include <KactusAPI/include/AccessPolicyInterface.h>
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -48,11 +50,13 @@ offsetEditor_(new ExpressionEditor(parameterFinder, this)),
 sizeEditor_(new ExpressionEditor(parameterFinder, this)),
 dimensionEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-volatileEditor_(),
-accessEditor_(),
+volatileEditor_(new BooleanComboBox(this)),
+accessEditor_(new AccessComboBox(this)),
 expressionParser_(expressionParser),
 containingRegisterData_(containingRegisterData),
-registerInterface_(registerInterface)
+registerInterface_(registerInterface),
+accessPoliciesEditor_(new AccessPoliciesEditor(selectedRegister->getAccessPolicies(), 
+    registerInterface->getAccessPolicyInterface(), this))
 {
     registerInterface_->setRegisters(containingRegisterData_);
 
@@ -107,25 +111,37 @@ void SingleRegisterEditor::setupLayout()
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Size [bits], f(x):"), sizeEditor_);
-    registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
-    registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
 
-    volatileEditor_ = new BooleanComboBox(registerDefinitionGroup);
-    registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+    QLayout* topOfPageLayout;
+    if (component()->getRevision() == Document::Revision::Std14)
+    {
+        registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
+        registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+        registerDefinitionLayout->addRow(tr("Access:"), accessEditor_);
+
+        connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
+            this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
+
+        QHBoxLayout* layout = new QHBoxLayout();
+        layout->addWidget(&nameEditor_, 0);
+        layout->addWidget(registerDefinitionGroup, 0);
+        topOfPageLayout = layout;
+    }
+    else if (component()->getRevision() == Document::Revision::Std22)
+    {
+        registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
+
+        QGridLayout* layout = new QGridLayout();
+        layout->addWidget(&nameEditor_, 0, 0, 2, 1);
+        layout->addWidget(registerDefinitionGroup, 0, 1);
+        layout->addWidget(accessPoliciesEditor_, 1, 1);
+        topOfPageLayout = layout;
+    }
 
     connect(volatileEditor_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onVolatileSelected(QString const&)), Qt::UniqueConnection);
-
-    accessEditor_ = new AccessComboBox(registerDefinitionGroup);
-    registerDefinitionLayout->addRow(tr("Access:"), accessEditor_);
-
-    connect(accessEditor_, SIGNAL(currentTextChanged(QString const&)),
-        this, SLOT(onAccessSelected(QString const&)), Qt::UniqueConnection);
-
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(registerDefinitionGroup, 0);
-
+    
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     topOfPageWidget->setLayout(topOfPageLayout);
@@ -163,6 +179,7 @@ void SingleRegisterEditor::refresh()
 
     nameEditor_.refresh();
     fieldsEditor_->refresh();
+    accessPoliciesEditor_->refresh();
 
     changeExpressionEditorsSignalBlockStatus(true);
     
@@ -252,6 +269,8 @@ void SingleRegisterEditor::connectSignals()
 
     connect(fieldsEditor_, SIGNAL(fieldNameChanged(QString const&, QString const&)),
         this, SIGNAL(fieldNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(accessPoliciesEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

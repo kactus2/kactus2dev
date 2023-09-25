@@ -55,6 +55,7 @@ public:
         QSharedPointer<Choice> selectedChoice,
         QColor valueBackGroundColor,
         int arrayStartIndex,
+        Document::Revision docRevision,
         QObject* parent = 0);
 
     /*!

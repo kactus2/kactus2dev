@@ -66,7 +66,7 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
     // Disable editing until editor is made.
     else if (index.column() == FieldAccessPolicyColumns::TYPE_DEFINITION)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     // Disable write constraint min/max, when that option is not set.
@@ -75,13 +75,13 @@ Qt::ItemFlags FieldAccessPoliciesModel::flags(const QModelIndex& index) const
         QString::fromStdString(fieldInterface_->getWriteConstraint(
             fieldName_, index.row())) != QStringLiteral("Set minimum and maximum limits"))
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     else if (index.column() == FieldAccessPolicyColumns::TEST_CONSTRAINT &&
         fieldInterface_->getTestableBool(fieldName_, index.row()) == false)
     {
-        return Qt::NoItemFlags;
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
     }
 
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -168,7 +168,7 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
     else if (role == Qt::BackgroundRole)
     {
-        if (index.flags() == Qt::NoItemFlags)
+        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             return KactusColors::DISABLED_FIELD;
         }
@@ -303,6 +303,18 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::mimeTypes()
+//-----------------------------------------------------------------------------
+QStringList FieldAccessPoliciesModel::mimeTypes() const
+{
+    QStringList types(QAbstractItemModel::mimeTypes());
+
+    types << "text/xml/ipxact:fieldAccessPolicy";
+
+    return types;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesModel::onAddRow()
 //-----------------------------------------------------------------------------
 void FieldAccessPoliciesModel::onAddRow(QModelIndex const& index)
@@ -334,6 +346,49 @@ void FieldAccessPoliciesModel::onRemoveItem(QModelIndex const& index)
     endRemoveRows();
 
     emit invalidateFilter();
+    emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::onCopyRows()
+//-----------------------------------------------------------------------------
+void FieldAccessPoliciesModel::onCopyRows(QModelIndexList const& indices)
+{
+    
+    std::vector<int> rowsToCopy;
+    for (auto const& index : indices)
+    {
+        rowsToCopy.push_back(index.row());
+    }
+
+    fieldInterface_->copyFieldAccessPolicies(fieldName_, rowsToCopy);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::onPasteRows()
+//-----------------------------------------------------------------------------
+void FieldAccessPoliciesModel::onPasteRows()
+{
+    int accessPolicyRowBegin = fieldInterface_->getAccessPolicyCount(fieldName_);
+    int pastedAccessPoliciesCount = fieldInterface_->pasteFieldaccessPolicies(fieldName_);
+
+    if (pastedAccessPoliciesCount < 1)
+    {
+        return;
+    }
+
+    int rowEnd = accessPolicyRowBegin + pastedAccessPoliciesCount - 1;
+
+    beginInsertRows(QModelIndex(), accessPolicyRowBegin, rowEnd);
+
+    // Update the counts of any referenced parameter in the pasted access policies.
+    for (int i = 0; i < pastedAccessPoliciesCount; ++i)
+    {
+        increaseReferencesInFieldAccessPolicy(accessPolicyRowBegin + i);
+    }
+
+    endInsertRows();
+
     emit contentChanged();
 }
 
@@ -532,3 +587,18 @@ QVariant FieldAccessPoliciesModel::formattedExpressionForIndex(QModelIndex const
     return QVariant();
 }
 
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesModel::increaseReferencesInFieldAccessPolicy()
+//-----------------------------------------------------------------------------
+void FieldAccessPoliciesModel::increaseReferencesInFieldAccessPolicy(int const& row)
+{
+    for (auto const& parameter : getParameterFinder()->getAllParameterIds())
+    {
+        int referencesToParam = getAllReferencesToIdInItemOnRow(row, parameter);
+
+        for (int i = 0; i < referencesToParam; ++i)
+        {
+            emit increaseReferences(parameter);
+        }
+    }
+}

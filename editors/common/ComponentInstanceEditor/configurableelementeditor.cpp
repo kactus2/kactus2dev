@@ -26,7 +26,7 @@ ConfigurableElementEditor::ConfigurableElementEditor(
     ExpressionSet parameterExpressions,
     ExpressionSet defaultExpressions, 
      QAbstractItemModel* completionModel,
-    QWidget *parent):
+    QWidget *parent) :
 QGroupBox(tr("Configurable element values"), parent),
 view_(this),
 delegate_(new ConfigurableElementDelegate(completionModel, parameterExpressions.finder, parameterExpressions.formatter, this)),
@@ -85,9 +85,11 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
 void ConfigurableElementEditor::setParameters(QString const& containingItemName,
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters,
     QSharedPointer<QList<QSharedPointer<Choice> > > choices,
+    Document::Revision docRevision,
     QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > storedConfigurableElements)
 {
-    model_->setParameters(containingItemName, parameters, choices, storedConfigurableElements);
+    model_->setParameters(containingItemName, parameters, choices, docRevision, storedConfigurableElements);
+    delegate_->setStdRevision(docRevision);
 }
 
 //-----------------------------------------------------------------------------

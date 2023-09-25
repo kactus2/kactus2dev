@@ -103,6 +103,8 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 
     auto busDefinition = libraryHandler_->getModel<BusDefinition>(absDef->getBusType());
 
+    portInterface_->setAbsDef(absDef);
+
     wirePortsEditor_->setBusDef(busDefinition);
     transactionalPortsEditor_->setBusDef(busDefinition);
 

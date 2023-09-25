@@ -16,8 +16,11 @@
 #include <IPXACTmodels/Component/validators/MemoryReserve.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
+#include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -32,8 +35,9 @@
 AddressBlockValidator::AddressBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<RegisterValidator> registerValidator,
     QSharedPointer<RegisterFileValidator> registerFileValidator,
-    QSharedPointer<ParameterValidator> parameterValidator):
-MemoryBlockValidator(expressionParser, parameterValidator),
+    QSharedPointer<ParameterValidator> parameterValidator,
+    Document::Revision docRevision) :
+MemoryBlockValidator(expressionParser, parameterValidator, docRevision),
 registerValidator_(registerValidator),
 registerFileValidator_(registerFileValidator)
 {
@@ -54,6 +58,12 @@ QString AddressBlockValidator::getBlockType() const
 void AddressBlockValidator::componentChange(QSharedPointer<Component> newComponent)
 {
     registerValidator_->componentChange(newComponent);
+
+    if (newComponent)
+    {
+        registerFileValidator_->componentChange(newComponent->getRevision());
+        docRevision_ = newComponent->getRevision();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -77,11 +87,31 @@ QSharedPointer<RegisterFileValidator> AddressBlockValidator::getRegisterFileVali
 bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits)
     const
 {
-    return MemoryBlockValidator::validate(addressBlock) &&
-        hasValidRange(addressBlock) &&
-        hasValidWidth(addressBlock) &&
-        hasValidRegisterData(addressBlock, addressUnitBits) &&
-        hasValidUsage(addressBlock);
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        return MemoryBlockValidator::validate(addressBlock) &&
+            hasValidRange(addressBlock) &&
+            hasValidWidth(addressBlock) &&
+            hasValidRegisterData(addressBlock, addressUnitBits) &&
+            hasValidUsage(addressBlock);
+    }
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        // Check mandatory elements, if there is no definition reference.
+        if (addressBlock->getAddressBlockDefinitionRef().isEmpty() &&
+            (!hasValidRange(addressBlock) || !hasValidWidth(addressBlock)))
+        {
+            return false;
+        }
+
+        return MemoryBlockValidator::validate(addressBlock) &&
+            hasValidRegisterAlignment(addressBlock) && hasValidMemoryArray(addressBlock) &&
+            hasValidUsage(addressBlock) && hasValidAccessPolicies(addressBlock) &&
+            hasValidStructure(addressBlock);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -240,6 +270,25 @@ bool AddressBlockValidator::hasValidAccessWithRegister(QSharedPointer<AddressBlo
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasAddressBlockDefinitionGroupDefined()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasAddressBlockDefinitionGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return !addressBlock->getTypeIdentifier().isEmpty() || !addressBlock->getRange().isEmpty() ||
+        !addressBlock->getWidth().isEmpty() || hasMemoryBlockDataGroupDefined(addressBlock) ||
+        !addressBlock->getRegisterData()->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasMemoryBlockDataGroupDefined()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasMemoryBlockDataGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return addressBlock->getUsage() != General::USAGE_COUNT || !addressBlock->getVolatile().isEmpty() ||
+        !addressBlock->getAccessPolicies()->isEmpty() || !addressBlock->getParameters()->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::registersHaveSimilarDefinitionGroups()
 //-----------------------------------------------------------------------------
 bool AddressBlockValidator::registersHaveSimilarDefinitionGroups(QSharedPointer<Register> targetRegister,
@@ -295,21 +344,118 @@ bool AddressBlockValidator::hasValidUsage(QSharedPointer<AddressBlock> addressBl
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidRegisterAlignment()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidRegisterAlignment(QSharedPointer<AddressBlock> addressBlock) const
+{
+    // Check scr 7.27 (for each register in address block, if misalignment == false 
+    // then the following should be true: (register bit offset % addressBlock width) + register size <= address block width)
+
+    if (docRevision_ != Document::Revision::Std22 || General::str2Bool(addressBlock->getMisalignmentAllowed(), true))
+    {
+        return true;
+    }
+
+    bool addressBlockExpressionOk;
+    qint64 addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth(), &addressBlockExpressionOk).toLongLong();
+
+    for (auto const& singleRegisterData : *addressBlock->getRegisterData())
+    {
+        if (auto singleRegister = singleRegisterData.dynamicCast<Register>())
+        {
+            bool registerSizeOk;
+            qint64 registerSize = getExpressionParser()->parseExpression(singleRegister->getSize(), &registerSizeOk).toLongLong();
+
+            bool registerOffsetOk;
+            qint64 registerOffset = getExpressionParser()->parseExpression(singleRegister->getAddressOffset(), &registerOffsetOk).toLongLong();
+
+            // SCR 7.27
+            qint64 valueToCheck = (registerOffset % addressBlockWidth) + registerSize;
+
+            if (addressBlockExpressionOk && registerOffsetOk && registerSizeOk &&
+                valueToCheck > addressBlockWidth)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidMemoryArray()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidMemoryArray(QSharedPointer<AddressBlock> addressBlock) const
+{
+    if (auto memArray = addressBlock->getMemoryArray())
+    {
+        MemoryArrayValidator validator(getExpressionParser());
+
+        return validator.validate(memArray);
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidAccessPolicies()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidAccessPolicies(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return CommonItemsValidator::hasValidAccessPolicies(addressBlock->getAccessPolicies());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidStructure()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidStructure(QSharedPointer<AddressBlock> addressBlock) const
+{
+    if (docRevision_ == Document::Revision::Std22)
+    {
+        if (!addressBlock->getTypeDefinitionsRef().isEmpty() && hasAddressBlockDefinitionGroupDefined(addressBlock))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressBlock> addressBlock,
     QString const& addressUnitBits, QString const& context) const
-{
+{    
     QString addressBlockContext = getBlockType() + QStringLiteral(" ") + addressBlock->name();
-
     findErrorsInName(errors, addressBlock, context);
-    findErrorsInIsPresent(errors, addressBlock, context);
     findErrorsInBaseAddress(errors, addressBlock, context);
-    findErrorsInRange(errors, addressBlock, context);
-    findErrorsInWidth(errors, addressBlock, context);
     findErrorsInUsage(errors, addressBlock, context);
     findErrorsInParameters(errors, addressBlock, addressBlockContext);
     findErrorsInRegisterData(errors, addressBlock, addressUnitBits, addressBlockContext);
+
+    if (docRevision_ == Document::Revision::Std14)
+    {
+        findErrorsInIsPresent(errors, addressBlock, context);
+        findErrorsInRange(errors, addressBlock, context);
+        findErrorsInWidth(errors, addressBlock, context);
+    }
+
+    else if (docRevision_ == Document::Revision::Std22)
+    {
+        if (addressBlock->getAddressBlockDefinitionRef().isEmpty())
+        {
+            findErrorsInRange(errors, addressBlock, context);
+            findErrorsInWidth(errors, addressBlock, context);
+        }
+
+        QString preciseContext = QStringLiteral("address block ") + addressBlock->name() + QStringLiteral(" within ") + context;
+        findErrorsInMemoryArray(errors, addressBlock, preciseContext);
+        findErrorsInAccessPolicies(errors, addressBlock, preciseContext);
+        findErrorsInRegisterAlignment(errors, addressBlock, preciseContext);
+        findErrorsInStructure(errors, addressBlock, context);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -464,6 +610,80 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
         }
 
         reservedArea.findErrorsInOverlap(errors, QLatin1String("Registers"), context);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::findErrorsInMemoryArray()
+//-----------------------------------------------------------------------------
+void AddressBlockValidator::findErrorsInMemoryArray(QStringList& errors, QSharedPointer<AddressBlock> addressBlock, QString const& context) const
+{
+    if (auto memArray = addressBlock->getMemoryArray())
+    {
+        MemoryArrayValidator validator(getExpressionParser());
+
+        validator.findErrorsIn(errors, memArray, context);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::findErrorsInAccessPolicies()
+//-----------------------------------------------------------------------------
+void AddressBlockValidator::findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<AddressBlock> addressBlock, QString const& context) const
+{
+    bool hasAccessPolicyWithoutModeRef = false;
+
+    QString accessPolicyContext = QStringLiteral("access policies of ") + context;
+
+    bool duplicateModeRefErrorIssued = false;
+    bool duplicateModePriorityErrorIssued = false;
+
+    QStringList checkedModeReferences;
+    QStringList checkedModePriorities;
+
+    for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            hasAccessPolicyWithoutModeRef = true;
+        }
+
+        // Check mode references in current access policy, and look for duplicate references.
+        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext,
+            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued);
+    }
+
+    // Number of access policies cannot be greater than one if one access policy has no mode references.
+    if (hasAccessPolicyWithoutModeRef && addressBlock->getAccessPolicies()->size() > 1)
+    {
+        errors.append(QObject::tr("In %1, multiple access policies are not allowed if one "
+            "of them lacks a mode reference.").arg(addressBlock->name()).arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::findErrorsInRegisterAlignment()
+//-----------------------------------------------------------------------------
+void AddressBlockValidator::findErrorsInRegisterAlignment(QStringList& errors, QSharedPointer<AddressBlock> addressBlock, QString const& context) const
+{
+    if (!hasValidRegisterAlignment(addressBlock))
+    {
+        errors.append(QObject::tr("Register misalignment set to false for %1, "
+            "where one or more registers are fully or partly offset outside of the address block width.")
+            .arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::findErrorsInStructure()
+//-----------------------------------------------------------------------------
+void AddressBlockValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<AddressBlock> addressBlock,
+    QString const& context) const
+{
+    if (!hasValidStructure(addressBlock))
+    {
+        errors.append(QObject::tr("Address block %1 in %2 must not be explicitly defined while also containing" 
+            " a definition reference.").arg(addressBlock->name()).arg(context));
     }
 }
 

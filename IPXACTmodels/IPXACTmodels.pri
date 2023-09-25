@@ -142,6 +142,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/FieldReferenceReader.h \
     ./Component/FieldReferenceWriter.h \
     ./Component/FieldReset.h \
+    ./Component/FileSetRef.h \
     ./Component/FieldSlice.h \
     ./Component/InitiatorInterface.h \
     ./Component/LanguageTools.h \
@@ -584,4 +585,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./Component/FileSetRef.cpp

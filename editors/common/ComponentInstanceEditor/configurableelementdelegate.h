@@ -14,6 +14,8 @@
 
 #include <common/IEditProvider.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <editors/ComponentEditor/parameters/ChoiceCreatorDelegate.h>
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -122,6 +124,8 @@ public:
      *      @return The size needed by the delegate to display the item in index.
      */
     virtual QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+    void setStdRevision(Document::Revision docRevision);
 
 public slots:
 
@@ -341,6 +345,9 @@ private:
 
     //! Edit provider for stacking undo commands.
     QSharedPointer<IEditProvider> editProvider_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_ = Document::Revision::Std14;
 };
 
 #endif // CONFIGURABLEELEMENTDELEGATE_H

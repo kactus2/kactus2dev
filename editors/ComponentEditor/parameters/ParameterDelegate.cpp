@@ -40,9 +40,9 @@
 // Function: ParameterDelegate::ParameterDelegate()
 //-----------------------------------------------------------------------------
 ParameterDelegate::ParameterDelegate(QSharedPointer<QList<QSharedPointer<Choice> > > choices, 
-    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent):
-ChoiceCreatorDelegate(completionModel, parameterFinder, parent),
+    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> finder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, QObject* parent /*= 0*/) :
+ChoiceCreatorDelegate(completionModel, finder, parent),
 expressionFormatter_(expressionFormatter)
 {
     setChoices(choices);
@@ -165,7 +165,7 @@ void ParameterDelegate::setEditorData(QWidget* editor, QModelIndex const& index)
         QSharedPointer<Choice> selectedChoice = findChoice(index);
 
         ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
-            expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, view);
+            expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, docRevision_, view);
 
         QModelIndex valueIndex = index.sibling(index.row(), valueColumn());
         QString parameterValue = valueIndex.data(Qt::EditRole).toString();
@@ -499,6 +499,14 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
     return combo;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParameterDelegate::setStdRevision()
+//-----------------------------------------------------------------------------
+void ParameterDelegate::setStdRevision(Document::Revision docRevision)
+{
+    docRevision_ = docRevision;
 }
 
 //-----------------------------------------------------------------------------

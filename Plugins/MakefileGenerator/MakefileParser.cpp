@@ -103,9 +103,9 @@ void MakefileParser::parseMakeObjects( QSharedPointer<MakeFileData> makeData,
 	QString componentPath = componentQfi.absolutePath() + "/";
 
     // Go through the fileSets referenced in the software view.
-    foreach(QString fsetName, *stackPart->instantiation->getFileSetReferences())
+    for (auto fileSetRef : *stackPart->instantiation->getFileSetReferences())
     {
-        QSharedPointer<FileSet> fset = stackPart->component->getFileSet(fsetName);
+        QSharedPointer<FileSet> fset = stackPart->component->getFileSet(fileSetRef->getReference());
 
 		// Skip, if no such file set exist!
 		if (fset)

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClInclude Include="include\AbstractionTypeInterface.h" />
     <ClInclude Include="include\AbstractParameterInterface.h" />
+    <ClInclude Include="include\AccessPolicyInterface.h" />
     <ClInclude Include="include\AddressBlockExpressionsGatherer.h" />
     <ClInclude Include="include\AddressBlockInterface.h" />
     <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
@@ -119,6 +120,7 @@
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
+    <ClCompile Include="include\AccessPolicyInterface.cpp" />
     <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />

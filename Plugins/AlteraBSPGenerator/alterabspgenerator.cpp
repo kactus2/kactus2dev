@@ -188,7 +188,9 @@ void AlteraBSPGenerator::runGenerator(IPluginUtility* utility,
 
         if (insta)
         {
-            insta->getFileSetReferences()->append(fileSetName);
+			QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
+			newFileSetRef->setReference(fileSetName);
+            insta->getFileSetReferences()->append(newFileSetRef);
         }
 	}
 
