@@ -28,7 +28,7 @@ public:
 
 	//! The destructor.
 	virtual ~Range();
-    
+
     Range(Range const& other);
 
     Range& operator=(Range const& other);
@@ -62,6 +62,7 @@ public:
     void setRight(QString const& newright);
 
 private:
+
 
     //! The left side of the range.
     QString left_;

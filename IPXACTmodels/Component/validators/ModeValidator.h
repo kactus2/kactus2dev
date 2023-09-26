@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Component/validators/PortSliceValidator.h>
+#include <IPXACTmodels/Component/validators/FieldSliceValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -41,7 +42,7 @@ public:
      *      @param [in] mode           The expression parser for solving expressions in modes.
 	 *
 	 */
-    ModeValidator(QSharedPointer<PortSliceValidator> sliceValidator, 
+    ModeValidator(
         QSharedPointer<Component> component,
         QSharedPointer<ExpressionParser> expressionParser);
 
@@ -79,6 +80,8 @@ public:
      */
     bool hasValidPortSlices(QSharedPointer<Mode> mode) const;
 
+    bool hasValidFieldSlices(QSharedPointer<Mode> mode) const;
+
     /*!
      *  Finds possible errors in a mode and creates a list of them.
      *
@@ -92,13 +95,18 @@ public:
     // Change the active component.
     void componentChange(QSharedPointer<Component> newComponent);
 
-    // Get the port slice validator.
+    //! Get the port slice validator.
     QSharedPointer<PortSliceValidator> getPortSliceValidator() const;
+
+    //! Get the field slice validator.
+    QSharedPointer<FieldSliceValidator> getFieldSliceValidator() const;
 
 private:
     
     //! The port slice validator to use.
-    QSharedPointer<PortSliceValidator> sliceValidator_;
+    QSharedPointer<PortSliceValidator> portValidator_;
+
+    QSharedPointer<FieldSliceValidator> fieldValidator_;
 
     //! The component containing the modes.
     QSharedPointer<Component> component_ = nullptr;

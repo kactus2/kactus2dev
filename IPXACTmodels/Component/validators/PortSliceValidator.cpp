@@ -194,7 +194,7 @@ void PortSliceValidator::componentChange(QSharedPointer<Component> newComponent)
 bool PortSliceValidator::isInValidRange(QString const& value, int leftBound, int rightBound) const
 {
     bool validExpression = false;
-    auto leftRange = expressionParser_->parseExpression(value, &validExpression).toInt();
+    auto rangeValue = expressionParser_->parseExpression(value, &validExpression).toInt();
 
-    return validExpression && (leftBound <= leftRange && leftRange <= rightBound);
+    return validExpression && (rightBound <= rangeValue && rangeValue <= leftBound);
 }

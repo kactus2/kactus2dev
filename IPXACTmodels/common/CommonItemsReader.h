@@ -134,7 +134,7 @@ public:
      *      @return A list of choices.
      */
     static QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode);
-    
+   
     /*!
      *  Parses a qualifier.
      *

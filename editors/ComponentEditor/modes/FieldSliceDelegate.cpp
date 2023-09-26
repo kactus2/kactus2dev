@@ -20,8 +20,10 @@
 //-----------------------------------------------------------------------------
 FieldSliceDelegate::FieldSliceDelegate(QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
+    QAbstractItemModel* completionModel,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QObject* parent):
-    MultilineDescriptionDelegate(parent),
+    ExpressionDelegate(completionModel, parameterFinder, parent),
 memoryMaps_(memoryMaps),
 addressSpaces_(addressSpaces)
 {
@@ -47,7 +49,7 @@ QWidget* FieldSliceDelegate::createEditor(QWidget* parent, QStyleOptionViewItem 
     }
     else
     {
-        return MultilineDescriptionDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -65,7 +67,7 @@ void FieldSliceDelegate::setEditorData(QWidget* editor, QModelIndex const& index
     }
     else
     {
-        MultilineDescriptionDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -84,7 +86,7 @@ void FieldSliceDelegate::setModelData(QWidget* editor, QAbstractItemModel* model
     }
     else
     {
-        MultilineDescriptionDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -120,7 +122,7 @@ void FieldSliceDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptio
     }
     else
     {
-        MultilineDescriptionDelegate::updateEditorGeometry(editor, option, index);
+        ExpressionDelegate::updateEditorGeometry(editor, option, index);
     }
 }
 
@@ -130,6 +132,14 @@ void FieldSliceDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptio
 int FieldSliceDelegate::descriptionColumn() const
 {
     return FieldSliceColumns::DESCRIPTION;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldSliceDelegate::columnAcceptsExpression()
+//-----------------------------------------------------------------------------
+bool FieldSliceDelegate::columnAcceptsExpression(int column) const
+{
+    return column == FieldSliceColumns::RANGE_LEFT || column == FieldSliceColumns::RANGE_RIGHT;
 }
 
 //-----------------------------------------------------------------------------

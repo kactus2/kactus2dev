@@ -25,13 +25,17 @@
 // Function: FieldSliceModel::FieldSliceModel()
 //-----------------------------------------------------------------------------
 FieldSliceModel::FieldSliceModel(QSharedPointer <Mode> mode,
- //   QSharedPointer<FieldSliceValidator> validator,
+    QSharedPointer<FieldSliceValidator> validator,
+    ExpressionSet expressions,
     QObject* parent): 
-    QAbstractTableModel(parent),
- //   validator_(validator),
-    fieldSlices_(mode->getFieldSlices())
+    ReferencingTableModel(expressions.finder, parent),
+    ParameterizableTable(expressions.finder),
+    validator_(validator),
+    fieldSlices_(mode->getFieldSlices()),
+    expressionFormatter_(expressions.formatter)
 {
-    
+    setExpressionParser(expressions.parser);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -91,6 +95,14 @@ QVariant FieldSliceModel::headerData(int section, Qt::Orientation orientation, i
     {
         return tr("Field");
     }
+    else if (section == FieldSliceColumns::RANGE_LEFT)
+    {
+        return tr("Leftmost bit") + getExpressionSymbol();
+    }
+    else if (section == FieldSliceColumns::RANGE_RIGHT)
+    {
+        return tr("Rightmost bit") + getExpressionSymbol();
+    }
     else if (section == FieldSliceColumns::DESCRIPTION)
     {
         return tr("Description");
@@ -116,7 +128,14 @@ QVariant FieldSliceModel::data(QModelIndex const& index, int role) const
 
     if (role == Qt::DisplayRole)
     {
-        return valueForIndex(index).toString();
+        if (isValidExpressionColumn(index))
+        {
+            return expressionFormatter_->formatReferringExpression(valueForIndex(index).toString());
+        }
+        else
+        {
+            return valueForIndex(index).toString();
+        }
     }
 
     else if (role == Qt::EditRole)
@@ -133,9 +152,21 @@ QVariant FieldSliceModel::data(QModelIndex const& index, int role) const
 
     else if (role == Qt::ToolTipRole)
     {
-        return valueForIndex(index);
+        if (isValidExpressionColumn(index))
+        {
+            return formattedValueFor(valueForIndex(index).toString());
+        }
+        else
+        {
+            return expressionOrValueForIndex(index);
+        }
     }
 
+    else if (role == Qt::ForegroundRole)
+    {
+        return blackForValidOrRedForInvalidIndex(index);
+    }
+     
     else if (role == Qt::BackgroundRole)
     {
         if (column == FieldSliceColumns::NAME || column == FieldSliceColumns::FIELD_REF)
@@ -167,6 +198,14 @@ bool FieldSliceModel::setData(QModelIndex const& index, QVariant const& value, i
     else if (column == FieldSliceColumns::FIELD_REF)
     {
         setFieldRef(slice, value.toStringList());
+    }
+    else if (column == FieldSliceColumns::RANGE_LEFT)
+    {
+        slice->setLeft(value.toString());
+    }
+    else if (column == FieldSliceColumns::RANGE_RIGHT)
+    {
+        slice->setRight(value.toString());
     }
     else if (column == FieldSliceColumns::DESCRIPTION)
     {
@@ -232,14 +271,54 @@ bool FieldSliceModel::validateIndex(QModelIndex const& index) const
 {
     const int column = index.column();
     auto fieldSlice = fieldSlices_->at(index.row());
-// 
-//     if (column == FieldSliceColumns::NAME)
-//     {
-//         return validator_->hasValidName(FieldSlice->name());
-//     }
 
+    if (column == FieldSliceColumns::NAME)
+    {
+        return validator_->hasValidName(fieldSlice->name());
+    }
+    else if (column == FieldSliceColumns::FIELD_REF)
+    {
+        return validator_->hasValidFieldReference(fieldSlice);
+    }
+    else if (column == FieldSliceColumns::RANGE_LEFT)
+    {
+        return validator_->hasValidLeftRange(fieldSlice);
+    }
+    else if (column == FieldSliceColumns::RANGE_RIGHT)
+    {
+        return validator_->hasValidRightRange(fieldSlice);
+    }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldSliceModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int FieldSliceModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
+{
+    auto fieldSlice = fieldSlices_->at(row);
+
+    int referencesInLeft = fieldSlice->getLeft().count(valueID);
+    int referencesInRight = fieldSlice->getRight().count(valueID);
+
+    return referencesInLeft + referencesInRight;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldSliceModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool FieldSliceModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    return index.column() == FieldSliceColumns::RANGE_LEFT || index.column() == FieldSliceColumns::RANGE_RIGHT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldSliceModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant FieldSliceModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    return valueForIndex(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -262,6 +341,14 @@ QVariant FieldSliceModel::valueForIndex(QModelIndex const& index) const
         {
             return ref->reference_;
         }
+    }
+    else if (column == FieldSliceColumns::RANGE_LEFT)
+    {
+        return slice->getLeft();
+    }
+    else if (column == FieldSliceColumns::RANGE_RIGHT)
+    {
+        return slice->getRight();
     }
     else if (column == FieldSliceColumns::DESCRIPTION)
     {

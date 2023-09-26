@@ -22,10 +22,11 @@
 //-----------------------------------------------------------------------------
 // Function: ModeValidator::ModeValidator()
 //-----------------------------------------------------------------------------
-ModeValidator::ModeValidator(QSharedPointer<PortSliceValidator> sliceValidator, 
+ModeValidator::ModeValidator(
 	QSharedPointer<Component> component, 
 	QSharedPointer<ExpressionParser> expressionParser):
-	sliceValidator_(sliceValidator),
+	portValidator_(new PortSliceValidator(component, expressionParser)),
+	fieldValidator_(new FieldSliceValidator(component, expressionParser)),
 	component_(component),
 expressionParser_(expressionParser)
 {
@@ -55,6 +56,11 @@ bool ModeValidator::validate(QSharedPointer<Mode> mode) const
 		return false;
 	}
 
+	if (hasValidFieldSlices(mode) == false)
+	{
+		return false;
+	}
+
 	return true;
 }
 
@@ -80,7 +86,7 @@ bool ModeValidator::hasValidPortSlices(QSharedPointer<Mode> mode) const
             return false;
         }
 
-		if (sliceValidator_->validate(portSlice) == false)
+		if (portValidator_->validate(portSlice) == false)
 		{
 			return false;
 		}
@@ -89,6 +95,31 @@ bool ModeValidator::hasValidPortSlices(QSharedPointer<Mode> mode) const
 	}
 
 	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::hasValidFieldSlices()
+//-----------------------------------------------------------------------------
+bool ModeValidator::hasValidFieldSlices(QSharedPointer<Mode> mode) const
+{
+    QStringList sliceNames;
+
+    for (auto const& fieldSlice : *mode->getFieldSlices())
+    {
+        if (sliceNames.contains(fieldSlice->name()))
+        {
+            return false;
+        }
+
+        if (fieldValidator_->validate(fieldSlice) == false)
+        {
+            return false;
+        }
+
+        sliceNames.append(fieldSlice->name());
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +148,21 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
 		}
         sliceNames.append(portSlice->name());
 
-		sliceValidator_->findErrorsIn(errors, portSlice, modeContext);
+		portValidator_->findErrorsIn(errors, portSlice, modeContext);
+    }
+
+    for (auto const& fieldSlice : *mode->getFieldSlices())
+    {
+        if (sliceNames.contains(fieldSlice->name()) && reportedNames.contains(fieldSlice->name()) == false)
+        {
+            errors.append(QObject::tr("Field condition name '%1' is not unique within %2.").arg(
+                fieldSlice->name(), modeContext));
+
+            reportedNames.append(fieldSlice->name());
+        }
+        sliceNames.append(fieldSlice->name());
+
+        fieldValidator_->findErrorsIn(errors, fieldSlice, modeContext);
     }
 }
 
@@ -127,7 +172,8 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
 void ModeValidator::componentChange(QSharedPointer<Component> newComponent)
 {
 	component_ = newComponent;
-	sliceValidator_->componentChange(newComponent);
+	portValidator_->componentChange(newComponent);
+    fieldValidator_->componentChange(newComponent);
 }
 
 //-----------------------------------------------------------------------------
@@ -135,5 +181,14 @@ void ModeValidator::componentChange(QSharedPointer<Component> newComponent)
 //-----------------------------------------------------------------------------
 QSharedPointer<PortSliceValidator> ModeValidator::getPortSliceValidator() const
 {
-	return sliceValidator_;
+	return portValidator_;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::getFieldSliceValidator()
+//-----------------------------------------------------------------------------
+QSharedPointer<FieldSliceValidator> ModeValidator::getFieldSliceValidator() const
+{
+    return fieldValidator_;
 }

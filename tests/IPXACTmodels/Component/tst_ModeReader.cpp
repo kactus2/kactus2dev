@@ -134,6 +134,10 @@ void tst_ModeReader::testReadFieldSlices()
                 "<ipxact:addressBlockRef addressBlockRef=\"testABRef\"/>"
                 "<ipxact:registerRef registerRef=\"testRegisterRef\"/>"
                 "<ipxact:fieldRef fieldRef=\"testFieldRef\"/>"
+                "<ipxact:range>"
+                    "<ipxact:left>7</ipxact:left>"
+                    "<ipxact:right>0</ipxact:right>"
+                "</ipxact:range>"
             "</ipxact:fieldSlice>"
              "<ipxact:fieldSlice>"
                  "<ipxact:name>lastSlice</ipxact:name>"
@@ -159,6 +163,8 @@ void tst_ModeReader::testReadFieldSlices()
     QCOMPARE(fieldSlice->getReference(FieldReference::ADDRESS_BLOCK)->reference_, QString("testABRef"));
     QCOMPARE(fieldSlice->getReference(FieldReference::REGISTER)->reference_, QString("testRegisterRef"));
     QCOMPARE(fieldSlice->getReference(FieldReference::FIELD)->reference_, QString("testFieldRef"));
+    QCOMPARE(fieldSlice->getLeft(), QString("7"));
+    QCOMPARE(fieldSlice->getRight(), QString("0"));
 }
 
 

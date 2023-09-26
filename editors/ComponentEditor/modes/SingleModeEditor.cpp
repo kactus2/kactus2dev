@@ -39,7 +39,7 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     nameEditor_(mode, component->getRevision(), this, tr("Mode name and description")),
     conditionEditor_(this),
     portSliceEditor_(component, mode, validator->getPortSliceValidator(), libHandler, expressions, this),
-    fieldSliceEditor_(component, mode, libHandler, this)
+    fieldSliceEditor_(component, mode, validator->getFieldSliceValidator(), expressions, libHandler, this)
 {
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -47,8 +47,8 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     connect(&portSliceEditor_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(decreaseReferences(QString const&)),
-
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
     setupLayout();
 }
 
