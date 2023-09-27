@@ -97,7 +97,9 @@ assertionValidator_()
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), portMapvalidator, parameterValidator_, library));
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (), 
+        nullptr,
+        portMapvalidator, parameterValidator_, library));
 
     indirectInterfaceValidator_ = QSharedPointer<IndirectInterfaceValidator>(
         new IndirectInterfaceValidator(component_, parser, parameterValidator_));
@@ -1285,7 +1287,8 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
     {
         busInterfaceValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(),
             newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
-            newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates());
+            newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates(),
+            newComponent->getModes());
         indirectInterfaceValidator_->componentChange(newComponent);
         parameterValidator_->componentChange(newComponent->getChoices(), newComponent->getRevision());
         channelValidator_->componentChange(newComponent->getBusInterfaces());

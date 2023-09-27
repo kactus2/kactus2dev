@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -61,6 +62,7 @@ public:
      *      @param [in] busInterfaces       List of available bus interfaces.
      *      @param [in] fileSets            List of available file sets.
      *      @param [in] remapStates         List of available remap states.
+     *      @param [in] modes               List of available modes.
      *      @param [in] portMapValidator    Validator used for port maps.
      *      @param [in] parameterValidator  Validator used for parameters.
      *      @param [in] libraryHandler      The library interface.
@@ -74,6 +76,7 @@ public:
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+        QSharedPointer<QList<QSharedPointer<Mode> > > modes,
         QSharedPointer<PortMapValidator> portMapValidator,
         QSharedPointer<ParameterValidator> parameterValidator,
         LibraryInterface* libraryHandler);
@@ -92,6 +95,7 @@ public:
      *      @param [in] newBusInterfaces    The new bus interfaces.
      *      @param [in] newFileSets         The new file sets.
      *      @param [in] newRemapStates      The new remap states.
+     *      @param [in] newRemapStates      The new modes.
      */
     void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
         QSharedPointer<QList<QSharedPointer<View> > > newViews,
@@ -100,7 +104,8 @@ public:
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
         QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+        QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+        QSharedPointer<QList<QSharedPointer<Mode> > > newModes);
 
     /*!
      *  Get the used abstraction type validator.
@@ -227,6 +232,8 @@ private:
      *      @return True, if the master interface is valid, otherwise false.
      */
     bool hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const;
+
+    bool hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const;
 
     /*!
      *  Check if the slave interface is valid.
@@ -415,6 +422,8 @@ private:
     void findErrorsInMasterInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> master,
         QString const& context) const;
 
+    void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, QString const& context) const;
+   
     /*!
      *  Find errors within slave interface.
      *
@@ -507,6 +516,9 @@ private:
 
     //! The currently available remap states.
     QSharedPointer<QList<QSharedPointer<RemapState> > > availableRemapStates_;
+
+    //! The currently available modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes_;
 
     //! The library interface.
     LibraryInterface* libraryHandler_;

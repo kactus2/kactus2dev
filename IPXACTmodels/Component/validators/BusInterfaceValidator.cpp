@@ -38,6 +38,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/utilities/Search.h>
 
 
 //-----------------------------------------------------------------------------
@@ -52,6 +53,7 @@ BusInterfaceValidator::BusInterfaceValidator(QSharedPointer<ExpressionParser> ex
     QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+    QSharedPointer<QList<QSharedPointer<Mode> > > modes,
     QSharedPointer<PortMapValidator> portMapValidator,
     QSharedPointer<ParameterValidator> parameterValidator,
     LibraryInterface* libraryHandler):
@@ -64,6 +66,7 @@ availableMemoryMaps_(memoryMaps),
 availableBusInterfaces_(busInterfaces),
 availableFileSets_(fileSets),
 availableRemapStates_(remapStates),
+availableModes_(modes),
 libraryHandler_(libraryHandler),
 parameterValidator_(parameterValidator),
 abstractionValidator_(new AbstractionTypeValidator(expressionParser, views, portMapValidator, libraryHandler))
@@ -88,7 +91,8 @@ void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
     QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
     QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
-    QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates)
+    QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+    QSharedPointer<QList<QSharedPointer<Mode> > > newModes)
 {
     availableChoices_ = newChoices;
     availableViews_ = newViews;
@@ -98,6 +102,7 @@ void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<
     availableBusInterfaces_ = newBusInterfaces;
     availableFileSets_ = newFileSets;
     availableRemapStates_ = newRemapStates;
+    availableModes_ = newModes;
 
     abstractionValidator_->changeComponent(newViews, newPorts);
 }
@@ -195,6 +200,10 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidMonitorInterface(busInterface, busInterface->getMonitor());
     }
+    else if (interfaceMode == General::INITIATOR)
+    {
+        return hasValidInitiatorInterface(busInterface->getInitiator());
+    }
 
     return false;
 }
@@ -218,15 +227,61 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInte
             {
                 bool changeOk = true;
                 bool expressionValid = false;
-                expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
+                auto value = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
 
-                return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid)) &&
+                return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid && value >= 0)) &&
                     hasValidIsPresent(master->getIsPresent()) &&
                     interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent());
             }
         }
 
         return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidInitiatorInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const
+{
+    if (initiator->getAddressSpaceRef().isEmpty() && initiator->getBaseAddress().isEmpty())
+    {
+        return true;
+    }
+
+    if (initiator->getAddressSpaceRef().isEmpty() == false)
+    {
+        auto space = Search::findByName(initiator->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull())
+        {
+            return false;
+        }
+    }
+    else if (initiator->getBaseAddress().isEmpty() == false || initiator->getModeRefs().isEmpty() == false)
+    {
+        return false;
+    }
+
+    if (initiator->getBaseAddress().isEmpty() == false)
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+        auto value = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+
+        if (!changeOk || !expressionValid || value < 0)
+        {
+            return false;
+        }
+    }
+
+    for (auto modeRef : initiator->getModeRefs())
+    {
+        if (auto mode = Search::findByName(modeRef, *availableModes_); mode.isNull())
+        {
+            return false;
+        }
     }
 
     return true;
@@ -370,15 +425,9 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const
 {
-    for (auto const& fileset : *availableFileSets_)
-    {
-        if (fileSetReference->getReference() == fileset->name())
-        {
-            return true;
-        }
-    }
+    auto fileSet = Search::findByName(fileSetReference->getReference(), *availableFileSets_);
 
-    return false;
+    return fileSet.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -412,21 +461,18 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
         return true;
     }
 
-    if (mirroredSlaveRangeIsValid(mirroredSlave))
+    if (mirroredSlaveRangeIsValid(mirroredSlave) && !mirroredSlave->getRemapAddresses()->isEmpty())
     {
-        if (!mirroredSlave->getRemapAddresses()->isEmpty())
+        for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
+            *mirroredSlave->getRemapAddresses())
         {
-            for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
-                *mirroredSlave->getRemapAddresses())
+            if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
             {
-                if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
-                {
-                    return false;
-                }
+                return false;
             }
-
-            return true;
         }
+
+        return true;
     }
 
     return false;
@@ -471,15 +517,9 @@ bool BusInterfaceValidator::mirroredSlaveStateIsValid(
         return true;
     }
 
-    for (QSharedPointer<RemapState> remapState : *availableRemapStates_)
-    {
-        if (remapState->name() == remapAddress->state_)
-        {
-            return true;
-        }
-    }
+    auto remapState = Search::findByName(remapAddress->state_, *availableRemapStates_);
 
-    return false;
+    return remapState.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -737,7 +777,15 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInMonitorInterface(errors, busInterface, busInterface->getMonitor(), newContext);
     }
-    else if (interfaceMode != General::MIRRORED_MASTER)
+    else if (interfaceMode == General::MIRRORED_MASTER)
+    {
+        // Intentionally empty.
+    }
+    else if (interfaceMode == General::INITIATOR)
+    {
+        findErrorsInInitiatorInterface(errors, busInterface->getInitiator(), newContext);
+    }
+    else
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
             .arg(busInterface->name(), containingContext));
@@ -750,50 +798,94 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
 void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors,
     QSharedPointer<InitiatorInterface> master, QString const& context) const
 {
-    if (master)
+    if (master.isNull())
     {
-        if (!master->getAddressSpaceRef().isEmpty())
+        return;
+    }
+
+    if (!master->getAddressSpaceRef().isEmpty())
+    {
+        auto space = Search::findByName(master->getAddressSpaceRef(), *availableAddressSpaces_);
+
+        if (space.isNull() == false)
         {
-            bool found = false;
-            for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
+            if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
             {
-                if (master->getAddressSpaceRef() == space->name())
-                {
-                    found = true;
-
-                    if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
-                    {
-                        errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
-                            .arg(space->name()).arg(context));
-                    }
-                    break;
-                }
-            }
-            if (!found)
-            {
-                errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
-                    .arg(master->getAddressSpaceRef()).arg(context));
-            }
-            if (!master->getBaseAddress().isEmpty())
-            {
-                bool changeOk = true;
-                bool expressionValid = false;
-
-                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
-
-                if (!changeOk || !expressionValid || baseAddress < 0)
-                {
-                    errors.append(QObject::tr("Invalid base address set for %1").arg(context));
-                }
-            }
-            if (!hasValidIsPresent(master->getIsPresent()))
-            {
-                errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
+                errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
+                    .arg(space->name()).arg(context));
             }
         }
-        else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
+        else
         {
-            errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+            errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
+                .arg(master->getAddressSpaceRef()).arg(context));
+        }
+        if (!master->getBaseAddress().isEmpty())
+        {
+            bool changeOk = true;
+            bool expressionValid = false;
+
+            int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
+
+            if (!changeOk || !expressionValid || baseAddress < 0)
+            {
+                errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+            }
+        }
+        if (!hasValidIsPresent(master->getIsPresent()))
+        {
+            errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
+        }
+    }
+    else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
+    {
+        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInInitiatorInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInInitiatorInterface(QVector<QString>& errors,
+    QSharedPointer<InitiatorInterface> initiator, QString const& context) const
+{
+    if (initiator.isNull())
+    {
+        return;
+    }
+
+    if (!initiator->getAddressSpaceRef().isEmpty())
+    {
+        auto space = Search::findByName(initiator->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull())
+        {
+            errors.append(QObject::tr("Could not find address space %1 referenced by the %2").arg(
+                initiator->getAddressSpaceRef(), context));
+        }
+    }
+    else if (initiator->getBaseAddress().isEmpty() == false || initiator->getModeRefs().isEmpty() == false)
+    {
+        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+    }
+
+    if (!initiator->getBaseAddress().isEmpty())
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+
+        int baseAddress = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toInt(&changeOk);
+
+        if (!changeOk || !expressionValid || baseAddress < 0)
+        {
+            errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+        }
+    }
+
+    for (auto modeRef : initiator->getModeRefs())
+    {
+        if (auto mode = Search::findByName(modeRef, *availableModes_); mode.isNull())
+        {
+            errors.append(QObject::tr("Could not find mode %1 referenced by the %2").arg(modeRef, context));
         }
     }
 }
