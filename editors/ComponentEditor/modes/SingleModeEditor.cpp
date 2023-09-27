@@ -58,6 +58,8 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
 void SingleModeEditor::refresh()
 {
     nameEditor_.refresh();
+    portSliceEditor_.refresh();
+    fieldSliceEditor_.refresh();
 }
 
 //-----------------------------------------------------------------------------
