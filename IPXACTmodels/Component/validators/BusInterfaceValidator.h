@@ -83,7 +83,12 @@ public:
 
 	//! The destructor.
 	virtual ~BusInterfaceValidator();
-    
+
+
+    // Disable copying.
+    BusInterfaceValidator(BusInterfaceValidator const& rhs) = delete;
+    BusInterfaceValidator& operator=(BusInterfaceValidator const& rhs) = delete;
+
     /*!
      *  Change the available component elements.
      *
@@ -220,10 +225,6 @@ public:
 
 private:
 
-	// Disable copying.
-	BusInterfaceValidator(BusInterfaceValidator const& rhs);
-	BusInterfaceValidator& operator=(BusInterfaceValidator const& rhs);
-
     /*!
      *  Check if the master interface is valid.
      *
@@ -233,8 +234,22 @@ private:
      */
     bool hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const;
 
+    /*!
+     *  Check if the initiator interface is valid.
+     *
+     *      @param [in] initiator  The selected initiator interface.
+     *
+     *      @return True, if the initiator interface is valid, otherwise false.
+     */
     bool hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const;
 
+    /*!
+     *  Check if the given mode references are valid.
+     *
+     *      @param [in] modeRefs    The mode references to check.
+     *
+     *      @return True, if all the references are valid, otherwise false.
+     */
     bool hasValidModeRefs(QStringList const& modeRefs) const;
 
     /*!
@@ -248,6 +263,14 @@ private:
     bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, 
         QSharedPointer<TargetInterface> slave) const;
 
+    /*!
+     *  Check if the target interface is valid.
+     *
+     *      @param [in] busInterface    The containing bus interface.
+     *      @param [in] target          The selected target interface.
+     *
+     *      @return True, if the target interface is valid, otherwise false.
+     */
     bool hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> target) const;
 
@@ -308,7 +331,15 @@ private:
      */
     bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
+    /*!
+     *  Check if the mirrored target interface is valid.
+     *
+     *      @param [in] mirroredTarget   The selected mirrored target interface.
+     *
+     *      @return True, if the mirrored target interface is valid, otherwise false.
+     */
     bool hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget) const;
+
     /*!
      *  Check if the mirrored slave interface range is valid.
      *
@@ -428,10 +459,25 @@ private:
     void findErrorsInMasterInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> master,
         QString const& context) const;
 
-    void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, QString const& context) const;
+    /*!
+     *  Find errors within initiator interface.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] master      The selected initiator interface.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, 
+        QString const& context) const;
 
-    void findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, QString const& context) const;
-
+    /*!
+     *  Find errors within mode references.
+     *
+     *      @param [in] modeRefs    The references to check.
+     *      @param [in] errors      List of found errors.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, 
+        QString const& context) const;
 
     /*!
      *  Find errors within slave interface.
@@ -443,8 +489,17 @@ private:
      */
     void findErrorsInSlaveInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> slave, QString const& context) const;
+    /*!
+     *  Find errors within target interface.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] busInterface    The containing bus interface.
+     *      @param [in] target          The selected target interface.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInTargetInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface, 
+        QSharedPointer<TargetInterface> target, QString const& context) const;
 
-    void findErrorsInTargetInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave, QString const& context) const;
     /*!
      *  Find errors within system mode.
      *
@@ -466,7 +521,16 @@ private:
     void findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
         QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const;
 
-    void findErrorsInMirroredTargetInterface(QVector<QString>& errors, QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const;
+    /*!
+     *  Find errors within mirrored target interface.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] mirroredTarget  The selected mirrored target interface.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInMirroredTargetInterface(QVector<QString>& errors, 
+        QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const;
+
     /*!
      *  Find errors within monitor interface.
      *
