@@ -204,6 +204,10 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidInitiatorInterface(busInterface->getInitiator());
     }
+    else if (interfaceMode == General::TARGET)
+    {
+        return hasValidTargetInterface(busInterface, busInterface->getTarget());
+    }
 
     return false;
 }
@@ -213,32 +217,32 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const
 {
-    if (master->getAddressSpaceRef().isEmpty() && master->getIsPresent().isEmpty() &&
-        master->getBaseAddress().isEmpty())
+    if (master->getAddressSpaceRef().isEmpty() == false)
     {
-        return true;
-    }
-
-    else if (!master->getAddressSpaceRef().isEmpty())
-    {
-        for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
+        auto space = Search::findByName(master->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull() || !interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
         {
-            if (master->getAddressSpaceRef() == space->name())
-            {
-                bool changeOk = true;
-                bool expressionValid = false;
-                auto value = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
-
-                return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid && value >= 0)) &&
-                    hasValidIsPresent(master->getIsPresent()) &&
-                    interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent());
-            }
+            return false;
         }
-
+    }
+    else if (master->getBaseAddress().isEmpty() == false || master->getIsPresent().isEmpty() == false)
+    {
         return false;
     }
 
-    return true;
+    if (master->getBaseAddress().isEmpty() == false)
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+        auto value = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+
+        if (!changeOk || !expressionValid || value < 0)
+        {
+            return false;
+        }
+    }
+
+    return hasValidIsPresent(master->getIsPresent());
 }
 
 //-----------------------------------------------------------------------------
@@ -246,11 +250,6 @@ bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInte
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const
 {
-    if (initiator->getAddressSpaceRef().isEmpty() && initiator->getBaseAddress().isEmpty())
-    {
-        return true;
-    }
-
     if (initiator->getAddressSpaceRef().isEmpty() == false)
     {
         auto space = Search::findByName(initiator->getAddressSpaceRef(), *availableAddressSpaces_);
@@ -276,7 +275,15 @@ bool BusInterfaceValidator::hasValidInitiatorInterface(QSharedPointer<InitiatorI
         }
     }
 
-    for (auto modeRef : initiator->getModeRefs())
+    return hasValidModeRefs(initiator->getModeRefs());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidModeRefs()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidModeRefs(QStringList const& modeRefs) const
+{
+    for (auto const& modeRef : modeRefs)
     {
         if (auto mode = Search::findByName(modeRef, *availableModes_); mode.isNull())
         {
@@ -323,28 +330,32 @@ bool BusInterfaceValidator::hasValidSlaveInterface(QSharedPointer<BusInterface> 
     QSharedPointer<TargetInterface> slave) const
 {
     bool validMemoryMapRef = slaveInterfaceHasValidMemoryMapRef(busInterface, slave);
-    bool validBridges = slaveInterfaceHasValidBridges(slave->getBridges());
+    bool validBridges = hasValidBridges(slave->getBridges());
     bool validFileSetRefs = slaveInterfaceFileSetRefGroupsAreValid(slave);
 
+    // Memory map and bridges are mutually exclusive.
     if (validMemoryMapRef && validBridges)
     {
         return false;
     }
 
-    if ((slave->getMemoryMapRef().isEmpty() && slave->getBridges()->isEmpty() && slave->getFileSetRefGroup()->isEmpty())
-        || (validFileSetRefs && 
-        ((!slave->getMemoryMapRef().isEmpty() && validMemoryMapRef) ||
-        (!slave->getBridges()->isEmpty() && validBridges) ||
-        !slave->getFileSetRefGroup()->isEmpty())))
-    {
-        return true;
-    }
-
-    return false;
+    return validFileSetRefs &&
+        (validMemoryMapRef || slave->getMemoryMapRef().isEmpty()) &&
+        (validBridges || slave->getBridges()->isEmpty());
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::hasValidSlaveInterface()
+// Function: BusInterfaceValidator::hasValidTargetInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
+    QSharedPointer<TargetInterface> target) const
+{
+    return hasValidSlaveInterface(busInterface, target) &&
+        hasValidModeRefs(target->getModeRefs());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
     QSharedPointer<TargetInterface> slave) const
@@ -364,12 +375,11 @@ bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<Bu
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::slaveInterfaceHasValidBridges()
+// Function: BusInterfaceValidator::hasValidBridges()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveInterfaceHasValidBridges(
-    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges) const
+bool BusInterfaceValidator::hasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const
 {
-    if (!bridges)
+    if (bridges.isNull())
     {
         return true;
     }
@@ -426,7 +436,6 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const
 {
     auto fileSet = Search::findByName(fileSetReference->getReference(), *availableFileSets_);
-
     return fileSet.isNull() == false;
 }
 
@@ -785,6 +794,10 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInInitiatorInterface(errors, busInterface->getInitiator(), newContext);
     }
+    else if (interfaceMode == General::TARGET)
+    {
+        findErrorsInTargetInterface(errors, busInterface, busInterface->getTarget(), newContext);
+    }
     else
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
@@ -881,7 +894,15 @@ void BusInterfaceValidator::findErrorsInInitiatorInterface(QVector<QString>& err
         }
     }
 
-    for (auto modeRef : initiator->getModeRefs())
+    findErrorsInModeReferences(initiator->getModeRefs(), errors, context);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInModeReferences()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, QString const& context) const
+{
+    for (auto modeRef : modeRefs)
     {
         if (auto mode = Search::findByName(modeRef, *availableModes_); mode.isNull())
         {
@@ -932,6 +953,49 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
             }
         }
     }
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInTargetInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInTargetInterface(QVector<QString>& errors,
+    QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> target, 
+    QString const& context) const
+{
+    if (!target->getMemoryMapRef().isEmpty() && !target->getBridges()->isEmpty())
+    {
+        errors.append(QObject::tr("Both a memory map reference and transparent bridges are contained within %1")
+            .arg(context));
+    }
+    if (!target->getMemoryMapRef().isEmpty() && !slaveInterfaceHasValidMemoryMapRef(busInterface, target))
+    {
+        errors.append(QObject::tr("Memory map %1 referenced by the %2 was not found")
+            .arg(target->getMemoryMapRef(), context));
+    }
+
+    for (QSharedPointer<TransparentBridge> bridge : *target->getBridges())
+    {
+        if (!slaveBridgeReferencesValidMaster(bridge))
+        {
+            errors.append(QObject::tr("Initiator bus interface %1 referenced by the %2 was not found")
+                .arg(bridge->getInitiatorRef(), context));
+        }
+    }
+
+    for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *target->getFileSetRefGroup())
+    {
+        for (auto const& fileSetReference : *group->fileSetRefs_)
+        {
+            if (!slaveFileSetReferenceIsValid(fileSetReference))
+            {
+                errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3").arg(
+                    fileSetReference->getReference(), group->group_, context));
+            }
+        }
+    }
+
+    findErrorsInModeReferences(target->getModeRefs(), errors, context);
 }
 
 //-----------------------------------------------------------------------------

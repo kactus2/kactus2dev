@@ -216,7 +216,7 @@ public:
      *
      *      @return True, if the bridges are valid, otherwise false.
      */
-    bool slaveInterfaceHasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
+    bool hasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
 
 private:
 
@@ -235,6 +235,8 @@ private:
 
     bool hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const;
 
+    bool hasValidModeRefs(QStringList const& modeRefs) const;
+
     /*!
      *  Check if the slave interface is valid.
      *
@@ -243,8 +245,11 @@ private:
      *
      *      @return True, if the slave interface is valid, otherwise false.
      */
-    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave)
-        const;
+    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, 
+        QSharedPointer<TargetInterface> slave) const;
+
+    bool hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<TargetInterface> target) const;
 
     /*!
      *  Check if the slave interface has a valid memory map reference.
@@ -423,7 +428,10 @@ private:
         QString const& context) const;
 
     void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, QString const& context) const;
-   
+
+    void findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, QString const& context) const;
+
+
     /*!
      *  Find errors within slave interface.
      *
@@ -435,6 +443,7 @@ private:
     void findErrorsInSlaveInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> slave, QString const& context) const;
 
+    void findErrorsInTargetInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave, QString const& context) const;
     /*!
      *  Find errors within system mode.
      *

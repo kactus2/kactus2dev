@@ -80,6 +80,8 @@ private slots:
 
     void testHasValidInitiatorInterface2022();
     void testHasValidInitiatorInterface2022_data();
+    void testHasValidTargetInterface2022();
+    void testHasValidTargetInterface2022_data();
 
     void testHasValidBitsInLau();
     void testHasValidBitsInLau_data();
@@ -1294,6 +1296,163 @@ void tst_BusInterfaceValidator::testHasValidInitiatorInterface2022_data()
         << "Could not find mode no-mode referenced by the initiator bus interface testBus";
     QTest::newRow("Reference to existing mode is valid") << "space" << "0" << "mode1" << true << true
         << "";
+    QTest::newRow("Reference to mode without address space is not valid") << "" << "" << "mode1" << false << false
+        << "Invalid address space reference set for initiator bus interface testBus";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusInterfaceValidator::testHasValidTargetInterface2022()
+//-----------------------------------------------------------------------------
+void tst_BusInterfaceValidator::testHasValidTargetInterface2022()
+{
+    QFETCH(QString, memoryMapRef);
+    QFETCH(QString, bridgeMasterRef);
+    QFETCH(QString, fileSetRef);
+    QFETCH(QString, modeRef);
+    QFETCH(bool, createMemoryMap);
+    QFETCH(bool, createMaster);
+    QFETCH(bool, createFileSet);
+    QFETCH(bool, isValid);
+    QFETCH(QString, expectedError);
+
+    QSharedPointer<TargetInterface> testTarget(new TargetInterface());
+    testTarget->setMemoryMapRef(memoryMapRef);
+
+    QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps(new QList<QSharedPointer<MemoryMap> >());
+    if (createMemoryMap)
+    {
+        QSharedPointer<MemoryMap> testMap(new MemoryMap(memoryMapRef));
+        if (memoryMapRef.isEmpty())
+        {
+            testMap->setName(QLatin1String("Champloo"));
+        }
+        memoryMaps->append(testMap);
+    }
+
+    if (!bridgeMasterRef.isEmpty())
+    {
+        QSharedPointer<TransparentBridge> testBridge(new TransparentBridge());
+        testBridge->setMasterRef(bridgeMasterRef);
+
+        testTarget->getBridges()->append(testBridge);
+    }
+
+    QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces(new QList<QSharedPointer<BusInterface> >());
+    if (createMaster)
+    {
+        QSharedPointer<BusInterface> masterBus(new BusInterface());
+        masterBus->setName(bridgeMasterRef);
+        masterBus->setInterfaceMode(General::MASTER);
+        if (bridgeMasterRef.isEmpty())
+        {
+            masterBus->setName("Samurai");
+        }
+        busInterfaces->append(masterBus);
+    }
+
+    if (!fileSetRef.isEmpty())
+    {
+        QSharedPointer<TargetInterface::FileSetRefGroup> testGroup(new TargetInterface::FileSetRefGroup());
+        testGroup->group_ = fileSetRef + " group";
+
+        QSharedPointer<FileSetRef> ref = QSharedPointer<FileSetRef>(new FileSetRef());
+        ref->setReference(fileSetRef);
+
+        testGroup->fileSetRefs_->append(ref);
+        testTarget->getFileSetRefGroup()->append(testGroup);
+    }
+
+    QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets(new QList<QSharedPointer<FileSet> >());
+    if (createFileSet)
+    {
+        QSharedPointer<FileSet> testSet(new FileSet(fileSetRef));
+        if (fileSetRef.isEmpty())
+        {
+            testSet->setName("fileSetReplacement");
+        }
+        fileSets->append(testSet);
+    }
+
+    if (modeRef.isEmpty() == false)
+    {
+        testTarget->setModeRefs(QStringList({ modeRef }));
+    }
+
+    QSharedPointer<BusInterface> testBus(new BusInterface());
+    testBus->setName("testBus");
+    testBus->setTarget(testTarget);
+    busInterfaces->append(testBus);
+
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes(new QList<QSharedPointer<Mode> >());
+    QSharedPointer<Mode> testMode(new Mode("mode1"));
+    componentModes->append(testMode);
+
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<BusInterfaceValidator> validator = createBusInterfaceValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(),
+        QSharedPointer<QList<QSharedPointer<View> > >(), QSharedPointer<QList<QSharedPointer<Port> > >(),
+        QSharedPointer<QList<QSharedPointer<AddressSpace> > >(), memoryMaps, busInterfaces, fileSets,
+        QSharedPointer<QList<QSharedPointer<RemapState> > >(),
+        componentModes,
+        nullptr);
+
+    QCOMPARE(validator->hasValidInterfaceMode(testBus), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> errorsFound;
+        validator->findErrorsIn(errorsFound, testBus, "test", Document::Revision::Std22);
+
+        if (errorIsNotFoundInErrorList(expectedError, errorsFound))
+        {
+            QFAIL("Error was not found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_BusInterfaceValidator::testHasValidTargetInterface2022_data()
+//-----------------------------------------------------------------------------
+void tst_BusInterfaceValidator::testHasValidTargetInterface2022_data()
+{
+    QTest::addColumn<QString>("memoryMapRef");
+    QTest::addColumn<QString>("bridgeMasterRef");
+    QTest::addColumn<QString>("fileSetRef");
+    QTest::addColumn<QString>("modeRef");
+    QTest::addColumn<bool>("createMemoryMap");
+    QTest::addColumn<bool>("createMaster");
+    QTest::addColumn<bool>("createFileSet");
+    QTest::addColumn<bool>("isValid");
+    QTest::addColumn<QString>("expectedError");
+
+    QTest::newRow("Empty target is valid") << "" << "" << "" << "" << true << true << true << true << "";
+    QTest::newRow("Target referencing memory map is valid")
+        << "testMap" << "" << "" << "" << true << false << false << true << "";
+    QTest::newRow("Target referencing non-existing memory map is not valid")
+        << "testMap" << "" << "" << "" << false << false << false << false <<
+        "Memory map testMap referenced by the target bus interface testBus was not found";
+
+    QTest::newRow("Target bridge referencing master is valid")
+        << "" << "testInitiator" << "" << "" << false << true << false << true << "";
+    QTest::newRow("Target bridge referencing non-existing master is not valid")
+        << "" << "testInitiator" << "" << "" << false << false << false << false <<
+        "Initiator bus interface testInitiator referenced by the target bus interface testBus was not found";
+
+    QTest::newRow("Target with both memory map ref and bridge is not valid")
+        << "testMap" << "testMaster" << "" << "" << true << true << false << false <<
+        "Both a memory map reference and transparent bridges are contained within target bus interface testBus";
+
+    QTest::newRow("Target with file set ref group is valid")
+        << "" << "" <<  "testFileGroup" << "" << false << false << true << true << "";
+    QTest::newRow("Target with file set ref group referencing non-existing file set is not valid")
+        << "" << "" << "testFiles" << "" << false << false << false << false <<
+        "Invalid file set testFiles referenced within group testFiles group of target bus interface testBus";
+
+    QTest::newRow("Target with non-existing mode reference is not valid")
+        << "" << "" << "" << "no-mode" << false << false << false << false << 
+        "Could not find mode no-mode referenced by the target bus interface testBus";
+    QTest::newRow("Target with existing mode reference is valid")
+        << "" << "" << "" << "mode1" << false << false << false << true << "";
 }
 
 //-----------------------------------------------------------------------------
