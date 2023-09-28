@@ -87,7 +87,7 @@ void tst_RegisterFileValidator::testNameIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -137,7 +137,7 @@ void tst_RegisterFileValidator::testIsPresentIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -188,21 +188,21 @@ void tst_RegisterFileValidator::testDimensionIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
 
     RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std14);
 
-    QCOMPARE(validator.hasValidDimension(testRegisterFile), isValid);
+    QCOMPARE(validator.hasValidDimensions(testRegisterFile), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegisterFile, "test");
 
-        QString expectedError = QObject::tr("Invalid dimension set for register file '%1' within %2").
+        QString expectedError = QObject::tr("Invalid dimensions set for register file '%1' within %2").
             arg(testRegisterFile->name(), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -222,7 +222,7 @@ void tst_RegisterFileValidator::testDimensionIsValid_data()
 
     QTest::newRow("Dimension 3 is valid") << "3" << true;
     QTest::newRow("Dimension -8 is invalid") << "-8" << false;
-    QTest::newRow("Dimension 4*4/2-8 is valid") << "0" << true;
+    QTest::newRow("Dimension 4*4/2-8 is invalid") << "0" << false;
     QTest::newRow("Text value is invalid for dimension") << "text" << false;
     QTest::newRow("String value is invalid for dimension") << "\"text\"" << false;
 
@@ -241,7 +241,7 @@ void tst_RegisterFileValidator::testAddressOffsetIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -295,7 +295,7 @@ void tst_RegisterFileValidator::testRangeIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -365,7 +365,7 @@ void tst_RegisterFileValidator::testMemoryArrayIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -453,7 +453,7 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -463,8 +463,8 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in register test within test contain duplicate priority values."
-        << "One or more mode references of access policies in register test within test contain duplicate mode reference values."
+        << "One or more mode references in access policies of register test within test contain duplicate priority values."
+        << "One or more mode references in access policies of register test within test contain duplicate mode reference values."
         << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
@@ -515,7 +515,7 @@ void tst_RegisterFileValidator::testRegisterDataIsValid()
     // Test no field error in child register.
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));

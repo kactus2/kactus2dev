@@ -40,7 +40,13 @@ QStringList RegisterExpressionsGatherer::getExpressions(QSharedPointer<Register>
 
     expressionList.append(currentRegister->getAddressOffset());
     expressionList.append(currentRegister->getSize());
-    expressionList.append(currentRegister->getDimension());
+    //expressionList.append(currentRegister->getDimension());
+    for (auto const& dim : *currentRegister->getMemoryArray()->getDimensions())
+    {
+        expressionList.append(dim->value_);
+    }
+
+
     expressionList.append(currentRegister->getIsPresent());
 
     FieldExpressionsGatherer fieldGatherer;

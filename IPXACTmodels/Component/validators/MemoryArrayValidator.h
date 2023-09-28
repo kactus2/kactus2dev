@@ -44,6 +44,15 @@ public:
     bool validate(QSharedPointer<MemoryArray> memoryArray) const;
     
     /*!
+     *	Checks if a given memory array has dimensions defined.
+     *
+     *      @param [in] memoryArray     The memory array to check.
+     *
+     * 	    @return True, if at least one dimension is defined for the array.
+     */
+    bool hasValidDimensions(QSharedPointer<MemoryArray> memoryArray) const;
+    
+    /*!
      *	Finds errors within a memory array.
      *
      *      @param [in] errorList       A list of found errors.
@@ -52,16 +61,9 @@ public:
      */
     void findErrorsIn(QStringList& errorList, QSharedPointer<MemoryArray> memoryArray,
         QString const& context) const;
+
 private:
 
-    /*!
-     *	Checks if a given memory array has dimensions defined.
-     *
-     *      @param [in] memoryArray     The memory array to check.
-     *
-     * 	    @return True, if at least one dimension is defined for the array.
-     */
-    bool hasValidDimensions(QSharedPointer<MemoryArray> memoryArray) const;
 
     /*!
      *	Validate the (bit)stride of the array.

@@ -84,19 +84,6 @@ public:
 	 *      @param [in] newRegisterData     Pointer to a list containing the register data.
 	 */
     void setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData);
-    /*!
-     *	Get the register file's memory array.
-     *  
-     * 	    @return Pointer to the memory array of the register file.
-     */
-    QSharedPointer<MemoryArray> getMemoryArray() const;
-
-    /*!
-     *	Set the memory array of the register file.
-     *  
-     *      @param [in] newMemArray     Pointer to the memory array to set.
-     */
-    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
 
     /*!
      *	Get the register file definition reference.
@@ -144,9 +131,6 @@ private:
 
 	//! Contains pointers to the register data.
     QSharedPointer<QList<QSharedPointer<RegisterBase> > > registerData_;
-
-    //! The memory array of the register file.
-    QSharedPointer<MemoryArray> memoryArray_;
 
     //! The name of the referenced register file definition.
     QString registerFileDefinitionReference_;

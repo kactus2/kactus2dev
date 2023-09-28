@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QXmlStreamWriter>
 
 class MemoryArray;
@@ -29,9 +31,11 @@ namespace MemoryArrayWriter
      *  
      *      @param [in] writer          The XML writer to use.
      *      @param [in] memoryArray     The memory array to write.
+     *      @param [in] docRevision     The IP-XACT standard revision to comply to.
      *      @param [in] isField         Flag indicating if the array is within a field.
      */
-    IPXACTMODELS_EXPORT void writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, bool isField);
+    IPXACTMODELS_EXPORT void writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, 
+        Document::Revision docRevision, bool isField);
 
     namespace Details
     {
@@ -40,8 +44,9 @@ namespace MemoryArrayWriter
          *  
          *      @param [in] writer          The XML writer to use.
          *      @param [in] memoryArray     The memory array whose dimensions are written.
+         *      @param [in] docRevision     The IP-XACT standard revision to comply to.
          */
-        void writeDimensions(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray);
+        void writeDimensions(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, Document::Revision docRevision);
 
         /*!
          *	Write the stride or bitStride of the memory array.
@@ -49,7 +54,7 @@ namespace MemoryArrayWriter
          *      @param [in] writer          The XML writer to use.
          *      @param [in] memoryArray     The memory array to write.
          *      @param [in] isField         Indicates whether the memory array is within a field or not. 
-         *                                  Write bitStride if true, otherwise write stride.
+         *                                  Write bitStride to XML if true, otherwise write stride.
          */
         void writeStride(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, bool isField);
     }

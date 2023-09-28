@@ -51,7 +51,7 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
     {
         CommonItemsWriter::writeIsPresent(writer, targetRegister->getIsPresent());
 
-        writeDimension(writer, targetRegister->getDimension());
+        writeDimensions(writer, targetRegister);
 
         writeAddressOffset(writer, targetRegister->getAddressOffset());
 
@@ -65,7 +65,7 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
     }
     else if (docRevision == Document::Revision::Std22)
     {
-        MemoryArrayWriter::writeMemoryArray(writer, targetRegister->getMemoryArray(), false);
+        MemoryArrayWriter::writeMemoryArray(writer, targetRegister->getMemoryArray(), docRevision, false);
 
         writeAddressOffset(writer, targetRegister->getAddressOffset());
 
@@ -98,11 +98,11 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
 //-----------------------------------------------------------------------------
 // Function: RegisterWriter::Details::writeDim()
 //-----------------------------------------------------------------------------
-void RegisterWriter::Details::writeDimension(QXmlStreamWriter& writer, QString const& dimension)
+void RegisterWriter::Details::writeDimensions(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData)
 {
-    if (!dimension.isEmpty())
+    if (!registerData->getDimension().isEmpty())
     {
-        writer.writeTextElement(QStringLiteral("ipxact:dim"), dimension);
+        writer.writeTextElement(QStringLiteral("ipxact:dim"), registerData->getDimension());
     }
 }
 
@@ -252,7 +252,7 @@ void RegisterWriter::Details::writeRegisterFile(QXmlStreamWriter& writer, QShare
     {
         CommonItemsWriter::writeIsPresent(writer, registerFile->getIsPresent());
 
-        writeDimension(writer, registerFile->getDimension());
+        writeDimensions(writer, registerFile);
 
         writeAddressOffset(writer, registerFile->getAddressOffset());
 
@@ -262,7 +262,7 @@ void RegisterWriter::Details::writeRegisterFile(QXmlStreamWriter& writer, QShare
     }
     else if (docRevision == Document::Revision::Std22)
     {
-        MemoryArrayWriter::writeMemoryArray(writer, registerFile->getMemoryArray(), false);
+        MemoryArrayWriter::writeMemoryArray(writer, registerFile->getMemoryArray(), docRevision, false);
 
         writeAddressOffset(writer, registerFile->getAddressOffset());
 

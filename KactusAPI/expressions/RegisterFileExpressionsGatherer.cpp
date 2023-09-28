@@ -32,7 +32,12 @@ QStringList RegisterFileExpressionsGatherer::getExpressions(QSharedPointer<Regis
 
     expressionList.append(currentRegisterFile->getAddressOffset());
     expressionList.append(currentRegisterFile->getRange());
-    expressionList.append(currentRegisterFile->getDimension());
+    //expressionList.append(currentRegisterFile->getDimension());
+    for (auto const& dim : *currentRegisterFile->getMemoryArray()->getDimensions())
+    {
+        expressionList.append(dim->value_);
+    }
+
     expressionList.append(currentRegisterFile->getIsPresent());
 
     RegisterExpressionsGatherer regGatherer;

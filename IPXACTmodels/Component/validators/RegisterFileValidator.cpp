@@ -67,7 +67,6 @@ bool RegisterFileValidator::validate(QSharedPointer<RegisterFile> selectedRegist
         return RegisterBaseValidator::validate(selectedRegisterFile) &&
             hasValidRange(selectedRegisterFile) &&
             hasValidRegisterData(selectedRegisterFile) &&
-            hasValidMemoryArray(selectedRegisterFile) &&
             hasValidAccessPolicies(selectedRegisterFile) &&
             hasValidStructure(selectedRegisterFile);
     }
@@ -116,20 +115,6 @@ bool RegisterFileValidator::hasValidRegisterData(QSharedPointer<RegisterFile> se
         {
             return false;
         }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileValidator::hasValidMemoryArray()
-//-----------------------------------------------------------------------------
-bool RegisterFileValidator::hasValidMemoryArray(QSharedPointer<RegisterFile> selectedRegisterfile) const
-{
-    if (auto const& memArray = selectedRegisterfile->getMemoryArray())
-    {
-        MemoryArrayValidator memArrayValidator(expressionParser_);
-        return memArrayValidator.validate(selectedRegisterfile->getMemoryArray());
     }
 
     return true;
@@ -222,19 +207,6 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
         {
             findErrorsIn(errors, asRegisterFile, context);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFileValidator::findErrorsInMemoryArray()
-//-----------------------------------------------------------------------------
-void RegisterFileValidator::findErrorsInMemoryArray(QStringList& errors, 
-    QSharedPointer<RegisterFile> selectedRegisterFile, QString const& context) const
-{
-    if (auto const& memArray = selectedRegisterFile->getMemoryArray())
-    {
-        MemoryArrayValidator memArrayValidator(expressionParser_);
-        memArrayValidator.findErrorsIn(errors, memArray, context);
     }
 }
 

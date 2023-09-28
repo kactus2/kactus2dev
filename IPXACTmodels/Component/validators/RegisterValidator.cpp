@@ -230,20 +230,6 @@ bool RegisterValidator::hasValidAlternateGroups(QSharedPointer<AlternateRegister
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterValidator::hasValidMemoryArray()
-//-----------------------------------------------------------------------------
-bool RegisterValidator::hasValidMemoryArray(QSharedPointer<Register> selectedRegister) const
-{
-    if (!selectedRegister->getMemoryArray())
-    {
-        return true;
-    }
-
-    MemoryArrayValidator memArrayValidator(expressionParser_);
-    return memArrayValidator.validate(selectedRegister->getMemoryArray());
-}
-
-//-----------------------------------------------------------------------------
 // Function: RegisterValidator::hasValidStructure()
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidStructure(QSharedPointer<Register> selectedRegister) const
@@ -530,18 +516,6 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
     if (!hasValidAlternateGroups(selectedRegister))
     {
         errors.append(QObject::tr("Alternate groups are not unique or not empty in %1").arg(context));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterValidator::findErrorsInMemoryArray()
-//-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInMemoryArray(QStringList& errors, QSharedPointer<Register> selectedRegister, QString const& context) const
-{
-    if (auto const& memArray = selectedRegister->getMemoryArray(); memArray)
-    {
-        MemoryArrayValidator validator(expressionParser_);
-        validator.findErrorsIn(errors, memArray, context);
     }
 }
 

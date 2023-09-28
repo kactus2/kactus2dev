@@ -40,11 +40,6 @@ registerData_(new QList<QSharedPointer<RegisterBase> > ()),
 registerFileDefinitionReference_(other.registerFileDefinitionReference_),
 typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
-    if (other.memoryArray_)
-    {
-        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-    }
-
     copyRegisterData(other);
 }
 
@@ -59,11 +54,6 @@ RegisterFile& RegisterFile::operator=(const RegisterFile& other)
         range_ = other.range_;
         registerData_->clear();
         copyRegisterData(other);
-
-        if (other.memoryArray_)
-        {
-            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-        }
 
         registerFileDefinitionReference_ = other.registerFileDefinitionReference_;
         typeDefinitionsReference_ = other.typeDefinitionsReference_;
@@ -119,22 +109,6 @@ QSharedPointer<QList<QSharedPointer<RegisterBase> > > RegisterFile::getRegisterD
 void RegisterFile::setRegisterData(QSharedPointer<QList<QSharedPointer<RegisterBase> > > newRegisterData)
 {
     registerData_ = newRegisterData;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFile::getMemoryArray()
-//-----------------------------------------------------------------------------
-QSharedPointer<MemoryArray> RegisterFile::getMemoryArray() const
-{
-    return memoryArray_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterFile::setMemoryArray()
-//-----------------------------------------------------------------------------
-void RegisterFile::setMemoryArray(QSharedPointer<MemoryArray> newMemArray)
-{
-    memoryArray_ = newMemArray;
 }
 
 //-----------------------------------------------------------------------------

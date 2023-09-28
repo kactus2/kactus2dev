@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryArrayWriter::writeMemoryArray()
 //-----------------------------------------------------------------------------
-void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, bool isField)
+void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, Document::Revision docRevision, bool isField)
 {
     if (!memoryArray)
     {
@@ -24,9 +24,12 @@ void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointe
 
     writer.writeStartElement(QStringLiteral("ipxact:array"));
 
-    Details::writeDimensions(writer, memoryArray);
+    Details::writeDimensions(writer, memoryArray, docRevision);
 
-    Details::writeStride(writer, memoryArray, isField);
+    if (docRevision == Document::Revision::Std22)
+    {
+        Details::writeStride(writer, memoryArray, isField);
+    }
 
     writer.writeEndElement(); // ipxact:array
 }
@@ -34,13 +37,14 @@ void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MemoryArrayWriter::Details::writeDimensions()
 //-----------------------------------------------------------------------------
-void MemoryArrayWriter::Details::writeDimensions(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray)
+void MemoryArrayWriter::Details::writeDimensions(QXmlStreamWriter& writer, QSharedPointer<MemoryArray> memoryArray, 
+    Document::Revision docRevision)
 {
     for (auto const& dimension : *memoryArray->getDimensions())
     {
         writer.writeStartElement(QStringLiteral("ipxact:dim"));
 
-        if (dimension->indexVar_.isEmpty() == false)
+        if (dimension->indexVar_.isEmpty() == false && docRevision == Document::Revision::Std22)
         {
             writer.writeAttribute(QStringLiteral("indexVar"), dimension->indexVar_);
         }

@@ -209,14 +209,14 @@ void tst_RegisterValidator::testDimensionIsValid()
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     RegisterValidator validator(parser, fieldValidator, parameterValidator);
 
-    QCOMPARE(validator.hasValidDimension(testRegister), isValid);
+    QCOMPARE(validator.hasValidDimensions(testRegister), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testRegister, "test");
 
-        QString expectedError = QObject::tr("Invalid dimension set for register '%1' within %2").
+        QString expectedError = QObject::tr("Invalid dimensions set for register '%1' within %2").
             arg(testRegister->name(), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -236,7 +236,7 @@ void tst_RegisterValidator::testDimensionIsValid_data()
 
     QTest::newRow("Dimension 3 is valid") << "3" << true;
     QTest::newRow("Dimension -8 is invalid") << "-8" << false;
-    QTest::newRow("Dimension 4*4/2-8 is valid") << "0" << true;
+    QTest::newRow("Dimension 4*4/2-8 is invalid") << "0" << false;
     QTest::newRow("Text value is invalid for dimension") << "text" << false;
     QTest::newRow("String value is invalid for dimension") << "\"text\"" << false;
 

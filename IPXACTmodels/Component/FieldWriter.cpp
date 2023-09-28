@@ -77,7 +77,7 @@ void FieldWriter::Details::writeMemoryArray(QXmlStreamWriter& writer, QSharedPoi
     if (auto memArray = field->getMemoryArray();
         memArray && docRevision == Document::Revision::Std22)
     {
-        MemoryArrayWriter::writeMemoryArray(writer, memArray, true);
+        MemoryArrayWriter::writeMemoryArray(writer, memArray, docRevision, true);
     }
 }
 

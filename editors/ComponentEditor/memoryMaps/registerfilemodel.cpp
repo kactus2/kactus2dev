@@ -421,7 +421,7 @@ bool RegisterFileModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == RegisterFileColumns::DIMENSION)
     {
-        return registerFileValidator_->hasValidDimension(regFile);
+        return registerFileValidator_->hasValidDimensions(regFile);
     }
 
     else if (index.column() == RegisterFileColumns::ADDRESS_OFFSET)

@@ -83,15 +83,6 @@ public:
     bool hasValidRegisterData(QSharedPointer<RegisterFile> selectedRegisterFile) const;
 
     /*!
-     *	Check if the register file has a valid memory array.
-     *  
-     *      @param [in] selectedRegisterfile     The selected register file to check.
-     *	    
-     * 	    @return True, if the memory array is valid, otherwise false.
-     */
-    bool hasValidMemoryArray(QSharedPointer<RegisterFile> selectedRegisterfile) const;
-
-    /*!
      *	Check if the register file has a valid structure (choice of elements).
      *  
      *      @param [in] selectedRegisterFile     The selected register file to check.
@@ -133,16 +124,6 @@ private:
     */
     void findErrorsInRegisterData(QVector<QString>& errors,
         QSharedPointer<RegisterFile> selectedRegisterFile,
-        QString const& context) const;
-
-    /*!
-     *	Find errors within the memory array of the register file.
-     *  
-     *      @param [in/out] errors               List of found errors.
-     *      @param [in] selectedRegisterFile     The selected register file.
-     *      @param [in] context                  Context to help locate the error.
-     */
-    void findErrorsInMemoryArray(QStringList& errors, QSharedPointer<RegisterFile> selectedRegisterFile, 
         QString const& context) const;
 
     /*!

@@ -103,7 +103,7 @@ void FieldReader::Details::parseMemoryArray(QDomElement const& fieldElement, QSh
     if (auto memArrayElement = fieldElement.firstChildElement(QStringLiteral("ipxact:array"));
         !memArrayElement.isNull())
     {
-        auto newArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, true);
+        auto newArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, Document::Revision::Std22, true);
         newField->setMemoryArray(newArray);
     }
 }

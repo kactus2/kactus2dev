@@ -36,11 +36,6 @@ Register::Register(const Register& other):
     typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
     copyAlternateRegisters(other);
-    
-    if (other.memoryArray_)
-    {
-        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -54,11 +49,6 @@ Register& Register::operator=(const Register& other)
         size_ = other.size_;
         registerDefinitionReference_ = other.registerDefinitionReference_;
         typeDefinitionsReference_ = other.typeDefinitionsReference_;
-
-        if (other.memoryArray_)
-        {
-            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
-        }
 
         alternateRegisters_->clear();
         copyAlternateRegisters(other);
@@ -115,22 +105,6 @@ QString Register::getSize() const
 void Register::setSize(QString const& newSize)
 {
     size_ = newSize;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Register::getMemoryArray()
-//-----------------------------------------------------------------------------
-QSharedPointer<MemoryArray> Register::getMemoryArray() const
-{
-    return memoryArray_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Register::setMemoryArray()
-//-----------------------------------------------------------------------------
-void Register::setMemoryArray(QSharedPointer<MemoryArray> newMemArray)
-{
-    memoryArray_ = newMemArray;
 }
 
 //-----------------------------------------------------------------------------

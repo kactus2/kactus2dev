@@ -187,7 +187,7 @@ void AddressBlockReader::Details::parseMemoryArray(QDomNode const& addressBlockN
 
     if (!memArrayElement.isNull())
     {
-        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, Document::Revision::Std22, false);
 
         newAddressBlock->setMemoryArray(newMemoryArray);
     }

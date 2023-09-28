@@ -27,7 +27,8 @@ RegisterBaseValidator::RegisterBaseValidator(QSharedPointer<ExpressionParser> ex
     Document::Revision docRevision) :
 expressionParser_(expressionParser),
 parameterValidator_(parameterValidator),
-docRevision_(docRevision)
+docRevision_(docRevision),
+memArrayValidator_(expressionParser)
 {
 
 }
@@ -41,7 +42,7 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
     {
         return hasValidName(selectedRegisterBase) &&
                hasValidIsPresent(selectedRegisterBase) &&
-               hasValidDimension(selectedRegisterBase) &&
+               hasValidDimensions(selectedRegisterBase) &&
                hasValidAddressOffset(selectedRegisterBase) &&
                hasValidParameters(selectedRegisterBase);
     }
@@ -49,6 +50,7 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
     {
         return hasValidName(selectedRegisterBase) &&
             hasValidAddressOffset(selectedRegisterBase) &&
+            hasValidMemoryArray(selectedRegisterBase) &&
             hasValidAccessPolicies(selectedRegisterBase) &&
             hasValidParameters(selectedRegisterBase);
     }
@@ -88,20 +90,9 @@ bool RegisterBaseValidator::hasValidIsPresent(QSharedPointer<RegisterBase> selec
 //-----------------------------------------------------------------------------
 // Function: RegisterBaseValidator::hasValidDimension()
 //-----------------------------------------------------------------------------
-bool RegisterBaseValidator::hasValidDimension(QSharedPointer<RegisterBase> selectedRegisterBase) const
+bool RegisterBaseValidator::hasValidDimensions(QSharedPointer<RegisterBase> selectedRegisterBase) const
 {
-    if (!selectedRegisterBase->getDimension().isEmpty())
-    {
-        bool dimensionValid = false;
-        QString solvedValue = expressionParser_->parseExpression(selectedRegisterBase->getDimension(), &dimensionValid);
-
-        bool toIntOk = true;
-        solvedValue.toULongLong(&toIntOk);
-
-        return dimensionValid && toIntOk;
-    }
-
-    return true;
+    return memArrayValidator_.hasValidDimensions(selectedRegisterBase->getMemoryArray());
 }
 
 //-----------------------------------------------------------------------------
@@ -152,23 +143,16 @@ bool RegisterBaseValidator::hasValidAccessPolicies(QSharedPointer<RegisterBase> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterBaseValidator::findErrorsIn()
+// Function: RegisterBaseValidator::hasValidMemoryArray()
 //-----------------------------------------------------------------------------
-void RegisterBaseValidator::findErrorsIn(QVector<QString>& errors,
-                                         QSharedPointer<RegisterBase> selectedRegisterBase,
-                                         QString const& context) const
+bool RegisterBaseValidator::hasValidMemoryArray(QSharedPointer<RegisterBase> registerBase) const
 {
-    QString registerContext = QStringLiteral("register ") + selectedRegisterBase->name();
-
-    findErrorsInName(errors, selectedRegisterBase, context);
-
-    if (docRevision_ == Document::Revision::Std14)
+    if (!registerBase->getMemoryArray())
     {
-        findErrorsInIsPresent(errors, selectedRegisterBase, context);
-        findErrorsInDimension(errors, selectedRegisterBase, context);
+        return true;
     }
 
-    findErrorsInAddressOffset(errors, selectedRegisterBase, context);
+    return memArrayValidator_.validate(registerBase->getMemoryArray());
 }
 
 //-----------------------------------------------------------------------------
@@ -205,9 +189,9 @@ void RegisterBaseValidator::findErrorsInDimension(QVector<QString>& errors,
                                                   QSharedPointer<RegisterBase> selectedRegisterBase,
                                                   QString const& context) const
 {
-    if (!hasValidDimension(selectedRegisterBase))
+    if (!hasValidDimensions(selectedRegisterBase))
     {
-        errors.append(QObject::tr("Invalid dimension set for %1").arg(context));
+        errors.append(QObject::tr("Invalid dimensions set for %1").arg(context));
     }
 }
 
@@ -283,5 +267,17 @@ void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
     {
         errors.append(QObject::tr("In %1, multiple access policies are not allowed if one "
             "of them lacks a mode reference.").arg(registerBase->name()).arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBaseValidator::findErrorsInMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterBaseValidator::findErrorsInMemoryArray(QStringList& errors, QSharedPointer<RegisterBase> registerBase,
+    QString const& context) const
+{
+    if (auto const& memArray = registerBase->getMemoryArray())
+    {
+        memArrayValidator_.findErrorsIn(errors, memArray, context);
     }
 }
