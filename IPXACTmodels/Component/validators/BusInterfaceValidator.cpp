@@ -204,9 +204,17 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidInitiatorInterface(busInterface->getInitiator());
     }
+    else if (interfaceMode == General::MIRRORED_INITIATOR)
+    {
+        return true;
+    }
     else if (interfaceMode == General::TARGET)
     {
         return hasValidTargetInterface(busInterface, busInterface->getTarget());
+    }
+    else if (interfaceMode == General::MIRRORED_TARGET)
+    {
+        return hasValidMirroredTargetInterface(busInterface->getMirroredTarget());
     }
 
     return false;
@@ -476,6 +484,34 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
             *mirroredSlave->getRemapAddresses())
         {
             if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidMirroredTargetInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget)
+const
+{
+    if (mirroredTarget->getRemapAddresses()->isEmpty() && mirroredTarget->getRange().isEmpty())
+    {
+        return true;
+    }
+
+    if (mirroredSlaveRangeIsValid(mirroredTarget) && !mirroredTarget->getRemapAddresses()->isEmpty())
+    {
+        for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
+            *mirroredTarget->getRemapAddresses())
+        {
+            if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !hasValidModeRefs(remapAddress->modeRefs_))
             {
                 return false;
             }
@@ -778,6 +814,10 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInSystemInterface(errors, busInterface->getSystem(), busInterface, newContext);
     }
+    else if (interfaceMode == General::MIRRORED_MASTER)
+    {
+        // Intentionally empty.
+    }
     else if (interfaceMode == General::MIRRORED_SLAVE)
     {
         findErrorsInMirroredSlaveInterface(errors, busInterface->getMirroredSlave(), newContext);
@@ -786,10 +826,7 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInMonitorInterface(errors, busInterface, busInterface->getMonitor(), newContext);
     }
-    else if (interfaceMode == General::MIRRORED_MASTER)
-    {
-        // Intentionally empty.
-    }
+
     else if (interfaceMode == General::INITIATOR)
     {
         findErrorsInInitiatorInterface(errors, busInterface->getInitiator(), newContext);
@@ -797,6 +834,14 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     else if (interfaceMode == General::TARGET)
     {
         findErrorsInTargetInterface(errors, busInterface, busInterface->getTarget(), newContext);
+    }
+    else if (interfaceMode == General::MIRRORED_INITIATOR)
+    {
+        // Intentionally empty.
+    }
+    else if (interfaceMode == General::MIRRORED_TARGET)
+    {
+        findErrorsInMirroredTargetInterface(errors, busInterface->getMirroredTarget(), newContext);
     }
     else
     {
@@ -1052,6 +1097,37 @@ void BusInterfaceValidator::findErrorsInMirroredSlaveInterface(QVector<QString>&
         }
 
         if (!mirroredSlaveRangeIsValid(mirroredSlave))
+        {
+            errors.append(QObject::tr("Invalid range set for %1").arg(context));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInMirroredTargetInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInMirroredTargetInterface(QVector<QString>& errors,
+    QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const
+{
+    if (!mirroredTarget->getRange().isEmpty() || !mirroredTarget->getRemapAddresses()->isEmpty())
+    {
+        if (mirroredTarget->getRemapAddresses()->isEmpty())
+        {
+            errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
+        }
+
+        for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
+            *mirroredTarget->getRemapAddresses())
+        {
+            if (!mirroredSlaveRemapAddressIsValid(remapAddress))
+            {
+                errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
+            }
+
+            findErrorsInModeReferences(remapAddress->modeRefs_, errors, context);
+        }
+
+        if (!mirroredSlaveRangeIsValid(mirroredTarget))
         {
             errors.append(QObject::tr("Invalid range set for %1").arg(context));
         }

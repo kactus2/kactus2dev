@@ -231,7 +231,7 @@ BusInterfaceInterface* ComponentEditorAddrSpacesItem::createInterfaceForBus(
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         component_->getMemoryMaps(), component_->getBusInterfaces(), component_->getFileSets(),
-        component_->getRemapStates(), portMapValidator, parameterValidator, libHandler_));
+        component_->getRemapStates(), component_->getModes(), portMapValidator, parameterValidator, libHandler_));
 
     BusInterfaceInterface* busInterface(
         new BusInterfaceInterface(busValidator, expressionParser_, expressionFormatter_));

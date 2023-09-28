@@ -308,6 +308,7 @@ private:
      */
     bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
 
+    bool hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget) const;
     /*!
      *  Check if the mirrored slave interface range is valid.
      *
@@ -465,6 +466,7 @@ private:
     void findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
         QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const;
 
+    void findErrorsInMirroredTargetInterface(QVector<QString>& errors, QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const;
     /*!
      *  Find errors within monitor interface.
      *
