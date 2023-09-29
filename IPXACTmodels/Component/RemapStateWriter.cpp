@@ -63,7 +63,7 @@ void RemapStateWriter::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<
     {
         writer.writeStartElement(QStringLiteral("ipxact:remapPorts"));
 
-        foreach (QSharedPointer<RemapPort> remapPort, *remapState->getRemapPorts())
+        for (auto const& remapPort : *remapState->getRemapPorts())
         {
             writeSingleRemapPort(writer, remapPort);
         }

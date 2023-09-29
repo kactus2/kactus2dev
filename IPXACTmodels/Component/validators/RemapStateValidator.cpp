@@ -17,6 +17,10 @@
 #include <IPXACTmodels/Component/RemapPort.h>
 #include <IPXACTmodels/Component/Port.h>
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
+#include <IPXACTmodels/utilities/Search.h>
+
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -51,16 +55,7 @@ bool RemapStateValidator::validate(QSharedPointer<RemapState> remapState) const
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::hasValidName(QSharedPointer<RemapState> remapState) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(remapState->name());
-
-    if (remapState->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(remapState->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -68,16 +63,11 @@ bool RemapStateValidator::hasValidName(QSharedPointer<RemapState> remapState) co
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::hasValidRemapPorts(QSharedPointer<RemapState> remapState) const
 {
-    for (QSharedPointer<RemapPort> remapPort : *remapState->getRemapPorts())
-    {
-        if (!remapPortHasValidPortReference(remapPort) ||
-            !remapPortHasValidValue(remapPort))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(remapState->getRemapPorts()->cbegin(), remapState->getRemapPorts()->cend(),
+        [this](auto remapPort) 
+        { 
+            return remapPortHasValidPortReference(remapPort) && remapPortHasValidValue(remapPort);  
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -85,15 +75,8 @@ bool RemapStateValidator::hasValidRemapPorts(QSharedPointer<RemapState> remapSta
 //-----------------------------------------------------------------------------
 bool RemapStateValidator::remapPortHasValidPortReference(QSharedPointer<RemapPort> remapPort) const
 {
-    for (QSharedPointer<Port> port : *availablePorts_)
-    {
-        if (remapPort->getPortNameRef() == port->name())
-        {
-            return remapPortHasValidIndex(remapPort, port);
-        }
-    }
-
-    return false;
+    auto port = Search::findByName(remapPort->getPortNameRef(), *availablePorts_);
+    return port.isNull() == false && remapPortHasValidIndex(remapPort, port);
 }
 
 //-----------------------------------------------------------------------------
@@ -182,19 +165,14 @@ void RemapStateValidator::findErrorsInRemapPorts(QVector<QString>& errors, QShar
 void RemapStateValidator::findErrorsInRemapPortPortReference(QVector<QString>& errors,
     QSharedPointer<RemapPort> remapPort, QString const& context) const
 {
-    for (QSharedPointer<Port> port : *availablePorts_)
+    auto port = Search::findByName(remapPort->getPortNameRef(), *availablePorts_);
+    if (port.isNull())
     {
-        if (remapPort->getPortNameRef() == port->name())
-        {
-            if (!remapPortHasValidIndex(remapPort, port))
-            {
-                errors.append(QObject::tr("Invalid port index set for remap port %1 within %2")
-                    .arg(remapPort->getPortNameRef()).arg(context));
-            }
-
-            return;
-        }
+        errors.append(QObject::tr("Invalid port %1 set for %2").arg(remapPort->getPortNameRef(), context));
     }
-
-    errors.append(QObject::tr("Invalid port %1 set for %2").arg(remapPort->getPortNameRef()).arg(context));
+    else if (!remapPortHasValidIndex(remapPort, port))
+    {
+        errors.append(QObject::tr("Invalid port index set for remap port %1 within %2")
+            .arg(remapPort->getPortNameRef(), context));
+    }
 }
