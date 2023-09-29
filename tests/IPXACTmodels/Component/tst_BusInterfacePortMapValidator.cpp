@@ -26,7 +26,7 @@
 
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -567,7 +567,7 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortDirectionsAreVali
 
     if (isMirroredInterface)
     {
-        busMode = General::MIRROREDMASTER;
+        busMode = General::MIRRORED_MASTER;
     }
 
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
@@ -999,8 +999,8 @@ bool tst_BusInterfacePortMapValidator::errorIsNotFoundInErrorList(QString const&
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }
