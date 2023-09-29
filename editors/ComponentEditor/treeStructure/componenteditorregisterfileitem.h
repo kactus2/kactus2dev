@@ -134,6 +134,14 @@ public:
 
     void setVisualizer(MemoryMapsVisualizer* visualizer);
 
+
+    /*!
+     *	Update the currently set address unit bits value.
+     *  
+     *      @param [in] newAddressUnitBits     The new address unit bits value to set.
+     */
+    void addressUnitBitsChanged(int newAddressUnitBits);
+
 signals:
 
     void addressingChanged();
@@ -184,6 +192,9 @@ private:
 
     //! Address block containing the edited register file.
     QSharedPointer<AddressBlock> containingBlock_;
+
+    //! The currently set address unit bits.
+    unsigned int addressUnitBits_;
 };
 
 #endif // COMPONENTEDITORREGISTERFILEITEM_H

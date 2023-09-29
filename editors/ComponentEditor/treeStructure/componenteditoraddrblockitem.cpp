@@ -367,6 +367,14 @@ void ComponentEditorAddrBlockItem::addressUnitBitsChanged(int newAddressUnitBits
 {
     addressUnitBits_ = newAddressUnitBits;
 
+    for (auto const& child : childItems_)
+    {
+        if (auto regFileItem = child.dynamicCast<ComponentEditorRegisterFileItem>())
+        {
+            regFileItem->addressUnitBitsChanged(newAddressUnitBits);
+        }
+    }
+
     if (graphItem_)
     {
         graphItem_->setAddressableUnitBits(newAddressUnitBits);

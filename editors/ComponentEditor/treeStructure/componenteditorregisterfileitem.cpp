@@ -23,6 +23,7 @@
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
 
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
@@ -45,7 +46,8 @@ registerFileItem_(nullptr),
 expressionParser_(expressionParser),
 registerFileValidator_(registerFileValidator),
 registerInterface_(registerInterface),
-containingBlock_(containingBlock)
+containingBlock_(containingBlock),
+addressUnitBits_(0)
 {
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -80,7 +82,7 @@ QString ComponentEditorRegisterFileItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorRegisterFileItem::isValid() const
 {
-    return registerFileValidator_->validate(registerFile_);
+    return registerFileValidator_->validate(registerFile_, QString::number(addressUnitBits_), containingBlock_->getWidth());
 }
 
 //-----------------------------------------------------------------------------
@@ -239,6 +241,14 @@ void ComponentEditorRegisterFileItem::setVisualizer( MemoryMapsVisualizer* visua
     }
 
     registerFileItem_->redoChildLayout();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorRegisterFileItem::addressUnitBitsChanged()
+//-----------------------------------------------------------------------------
+void ComponentEditorRegisterFileItem::addressUnitBitsChanged(int newAddressUnitBits)
+{
+    addressUnitBits_ = newAddressUnitBits;
 }
 
 //-----------------------------------------------------------------------------

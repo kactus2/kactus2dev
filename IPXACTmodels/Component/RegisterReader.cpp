@@ -17,6 +17,7 @@
 #include "RegisterFile.h"
 #include "FieldReader.h"
 #include "MemoryArrayReader.h"
+#include "MemoryArray.h"
 #include "AccessPolicyReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>

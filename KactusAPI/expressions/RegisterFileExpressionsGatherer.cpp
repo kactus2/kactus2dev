@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileExpressionsGatherer::RegisterFileExpressionsGatherer()
@@ -32,10 +33,13 @@ QStringList RegisterFileExpressionsGatherer::getExpressions(QSharedPointer<Regis
 
     expressionList.append(currentRegisterFile->getAddressOffset());
     expressionList.append(currentRegisterFile->getRange());
-    //expressionList.append(currentRegisterFile->getDimension());
-    for (auto const& dim : *currentRegisterFile->getMemoryArray()->getDimensions())
+    
+    if (auto memArray = currentRegisterFile->getMemoryArray())
     {
-        expressionList.append(dim->value_);
+        for (auto const& dim : *memArray->getDimensions())
+        {
+            expressionList.append(dim->value_);
+        }
     }
 
     expressionList.append(currentRegisterFile->getIsPresent());
