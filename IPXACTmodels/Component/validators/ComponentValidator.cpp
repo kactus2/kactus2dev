@@ -97,7 +97,9 @@ assertionValidator_()
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
         QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
         QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), portMapvalidator, parameterValidator_, library));
+        QSharedPointer<QList<QSharedPointer<RemapState> > > (), 
+        nullptr,
+        portMapvalidator, parameterValidator_, library));
 
     indirectInterfaceValidator_ = QSharedPointer<IndirectInterfaceValidator>(
         new IndirectInterfaceValidator(component_, parser, parameterValidator_));
@@ -108,8 +110,7 @@ assertionValidator_()
     remapStateValidator_ = QSharedPointer<RemapStateValidator>(
         new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
   
-    QSharedPointer<PortSliceValidator> sliceValidator(new PortSliceValidator(component_, parser));
-    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(sliceValidator, nullptr, parser));
+    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(component_, parser));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_, docRevision));
@@ -1286,7 +1287,8 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
     {
         busInterfaceValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(),
             newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
-            newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates());
+            newComponent->getBusInterfaces(), newComponent->getFileSets(), newComponent->getRemapStates(),
+            newComponent->getModes());
         indirectInterfaceValidator_->componentChange(newComponent);
         parameterValidator_->componentChange(newComponent->getChoices(), newComponent->getRevision());
         channelValidator_->componentChange(newComponent->getBusInterfaces());

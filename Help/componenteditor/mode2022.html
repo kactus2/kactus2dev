@@ -36,7 +36,7 @@
       in the mode. 
     </p>
 	  <p>
-	    <b>Name</b> is a mandatory identifier for the <i>port</i> reference.
+	    <b>Name</b> is a mandatory identifier for the <i>port reference</i>.
     </p>
     <p>
 	    <b>Physical port</b> is a mandatory and identifies the <i>port</i> in the 
@@ -54,14 +54,23 @@
     </p>
 
     <h3>Condition fields</h3>
-  
-
-
-    <hr>
     <p>
-      EXAMPLE 1. The example goes here.
-	  <br>
-<!--      <img src="../images/ports.png" alt="VHDL and screen_cap"> -->
+      The condition fields can be referenced in the condition to check for their bit
+      pattern in the mode. 
+    </p>
+	  <p>
+	    <b>Name</b> is a mandatory identifier for the <i>field reference</i>.
+    </p>
+    <p>
+	    <b>Field</b> is a mandatory and identifies the <i>field</i> in the 
+      component whose bit pattern may be checked in the condition.
+    </p>
+    <p>
+      <b>Leftmost bit</b> and <b>rightmost bit</b> are optional for selecting a range of
+      bits in the field. If no indices are defined, the whole field is selected.
+    </p>
+    <p>
+      <b>Description</b> is an optional field for textual description of the <i>port</i>.		
     </p>
 
   </body>

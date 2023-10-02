@@ -84,6 +84,24 @@ void ModeReader::Details::parseFieldSlices(QDomNode const& modeNode, QSharedPoin
         auto ref = FieldReferenceReader::createFieldReferenceFrom(fieldSliceElement);
         newSlice->FieldReference::operator=(*ref);
 
+        Details::parseRange(fieldSliceElement, newSlice);
+
         newMode->getFieldSlices()->append(newSlice);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeReader::Details::parseRange()
+//-----------------------------------------------------------------------------
+void ModeReader::Details::parseRange(QDomElement const& element, QSharedPointer<Range> range)
+{
+    QDomElement rangeElement = element.firstChildElement(QStringLiteral("ipxact:range"));
+    if (!rangeElement.isNull())
+    {
+        QString leftRange = rangeElement.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+        QString rightRange = rangeElement.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
+
+        range->setLeft(leftRange);
+        range->setRight(rightRange);
     }
 }

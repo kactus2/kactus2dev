@@ -160,7 +160,7 @@ bool TransparentBridgeInterface::validateItems() const
 {
     if (busValidator_)
     {
-        return busValidator_->slaveInterfaceHasValidBridges(bridges_);
+        return busValidator_->hasValidBridges(bridges_);
     }
     else if (indirectValidator_)
     {

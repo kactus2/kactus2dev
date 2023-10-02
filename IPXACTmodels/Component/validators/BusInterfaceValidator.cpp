@@ -38,6 +38,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/utilities/Search.h>
 
 
 //-----------------------------------------------------------------------------
@@ -52,6 +53,7 @@ BusInterfaceValidator::BusInterfaceValidator(QSharedPointer<ExpressionParser> ex
     QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
     QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
     QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+    QSharedPointer<QList<QSharedPointer<Mode> > > modes,
     QSharedPointer<PortMapValidator> portMapValidator,
     QSharedPointer<ParameterValidator> parameterValidator,
     LibraryInterface* libraryHandler):
@@ -64,6 +66,7 @@ availableMemoryMaps_(memoryMaps),
 availableBusInterfaces_(busInterfaces),
 availableFileSets_(fileSets),
 availableRemapStates_(remapStates),
+availableModes_(modes),
 libraryHandler_(libraryHandler),
 parameterValidator_(parameterValidator),
 abstractionValidator_(new AbstractionTypeValidator(expressionParser, views, portMapValidator, libraryHandler))
@@ -88,7 +91,8 @@ void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
     QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
     QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
-    QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates)
+    QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+    QSharedPointer<QList<QSharedPointer<Mode> > > newModes)
 {
     availableChoices_ = newChoices;
     availableViews_ = newViews;
@@ -98,6 +102,7 @@ void BusInterfaceValidator::componentChange(QSharedPointer<QList<QSharedPointer<
     availableBusInterfaces_ = newBusInterfaces;
     availableFileSets_ = newFileSets;
     availableRemapStates_ = newRemapStates;
+    availableModes_ = newModes;
 
     abstractionValidator_->changeComponent(newViews, newPorts);
 }
@@ -195,6 +200,22 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
     {
         return hasValidMonitorInterface(busInterface, busInterface->getMonitor());
     }
+    else if (interfaceMode == General::INITIATOR)
+    {
+        return hasValidInitiatorInterface(busInterface->getInitiator());
+    }
+    else if (interfaceMode == General::MIRRORED_INITIATOR)
+    {
+        return true;
+    }
+    else if (interfaceMode == General::TARGET)
+    {
+        return hasValidTargetInterface(busInterface, busInterface->getTarget());
+    }
+    else if (interfaceMode == General::MIRRORED_TARGET)
+    {
+        return hasValidMirroredTargetInterface(busInterface->getMirroredTarget());
+    }
 
     return false;
 }
@@ -204,32 +225,74 @@ bool BusInterfaceValidator::hasValidInterfaceMode(QSharedPointer<BusInterface> b
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const
 {
-    if (master->getAddressSpaceRef().isEmpty() && master->getIsPresent().isEmpty() &&
-        master->getBaseAddress().isEmpty())
+    if (master->getAddressSpaceRef().isEmpty() == false)
     {
-        return true;
-    }
-
-    else if (!master->getAddressSpaceRef().isEmpty())
-    {
-        for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
+        auto space = Search::findByName(master->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull() || !interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
         {
-            if (master->getAddressSpaceRef() == space->name())
-            {
-                bool changeOk = true;
-                bool expressionValid = false;
-                expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toULongLong(&changeOk);
-
-                return (master->getBaseAddress().isEmpty() || (changeOk && expressionValid)) &&
-                    hasValidIsPresent(master->getIsPresent()) &&
-                    interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent());
-            }
+            return false;
         }
-
+    }
+    else if (master->getBaseAddress().isEmpty() == false || master->getIsPresent().isEmpty() == false)
+    {
         return false;
     }
 
-    return true;
+    if (master->getBaseAddress().isEmpty() == false)
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+        auto value = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+
+        if (!changeOk || !expressionValid || value < 0)
+        {
+            return false;
+        }
+    }
+
+    return hasValidIsPresent(master->getIsPresent());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidInitiatorInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const
+{
+    if (initiator->getAddressSpaceRef().isEmpty() == false)
+    {
+        auto space = Search::findByName(initiator->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull())
+        {
+            return false;
+        }
+    }
+    else if (initiator->getBaseAddress().isEmpty() == false || initiator->getModeRefs().isEmpty() == false)
+    {
+        return false;
+    }
+
+    if (initiator->getBaseAddress().isEmpty() == false)
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+        auto value = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toLongLong(&changeOk);
+
+        if (!changeOk || !expressionValid || value < 0)
+        {
+            return false;
+        }
+    }
+
+    return hasValidModeRefs(initiator->getModeRefs());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidModeRefs()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidModeRefs(QStringList const& modeRefs) const
+{
+    return std::all_of(modeRefs.cbegin(), modeRefs.cend(),
+        [this](auto mode) {return Search::findByName(mode, *availableModes_).isNull() == false;  });
 }
 
 //-----------------------------------------------------------------------------
@@ -268,66 +331,53 @@ bool BusInterfaceValidator::hasValidSlaveInterface(QSharedPointer<BusInterface> 
     QSharedPointer<TargetInterface> slave) const
 {
     bool validMemoryMapRef = slaveInterfaceHasValidMemoryMapRef(busInterface, slave);
-    bool validBridges = slaveInterfaceHasValidBridges(slave->getBridges());
+    bool validBridges = hasValidBridges(slave->getBridges());
     bool validFileSetRefs = slaveInterfaceFileSetRefGroupsAreValid(slave);
 
-    if (validMemoryMapRef && validBridges)
-    {
-        return false;
-    }
-
-    if ((slave->getMemoryMapRef().isEmpty() && slave->getBridges()->isEmpty() && slave->getFileSetRefGroup()->isEmpty())
-        || (validFileSetRefs && 
-        ((!slave->getMemoryMapRef().isEmpty() && validMemoryMapRef) ||
-        (!slave->getBridges()->isEmpty() && validBridges) ||
-        !slave->getFileSetRefGroup()->isEmpty())))
-    {
-        return true;
-    }
-
-    return false;
+    return validFileSetRefs && validMemoryMapRef && validBridges &&
+        (slave->getBridges()->isEmpty() || slave->getMemoryMapRef().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::hasValidSlaveInterface()
+// Function: BusInterfaceValidator::hasValidTargetInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
+    QSharedPointer<TargetInterface> target) const
+{
+    return hasValidSlaveInterface(busInterface, target) &&
+        hasValidModeRefs(target->getModeRefs());
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef()
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceHasValidMemoryMapRef(QSharedPointer<BusInterface> busInterface,
     QSharedPointer<TargetInterface> slave) const
 {
-    if (!slave->getMemoryMapRef().isEmpty())
+    if (slave->getMemoryMapRef().isEmpty())
     {
-        for (QSharedPointer<MemoryMap> memoryMap : *availableMemoryMaps_)
-        {
-            if (slave->getMemoryMapRef() == memoryMap->name())
-            {
-                return interfaceReferenceHasValidPresence(busInterface->getIsPresent(), memoryMap->getIsPresent());
-            }
-        }
+        return true;
     }
-
-    return false;
+    
+    auto memoryMap = Search::findByName(slave->getMemoryMapRef(), *availableMemoryMaps_);
+    return memoryMap.isNull() == false &&
+        interfaceReferenceHasValidPresence(busInterface->getIsPresent(), memoryMap->getIsPresent());
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceValidator::slaveInterfaceHasValidBridges()
+// Function: BusInterfaceValidator::hasValidBridges()
 //-----------------------------------------------------------------------------
-bool BusInterfaceValidator::slaveInterfaceHasValidBridges(
-    QSharedPointer<QList<QSharedPointer<TransparentBridge>>> bridges) const
+bool BusInterfaceValidator::hasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const
 {
-    if (!bridges)
+    if (bridges.isNull())
     {
         return true;
     }
 
-    for (QSharedPointer<TransparentBridge> bridge : *bridges)
-    {
-        if (slaveBridgeReferencesValidMaster(bridge))
+    return std::all_of(bridges->cbegin(), bridges->cend(), [this](auto bridge)
         {
-            return hasValidIsPresent(bridge->getIsPresent());
-        }
-    }
-
-    return false;
+            return slaveBridgeReferencesValidMaster(bridge) && hasValidIsPresent(bridge->getIsPresent());
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -335,15 +385,10 @@ bool BusInterfaceValidator::slaveInterfaceHasValidBridges(
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<TransparentBridge> bridge) const
 {
-    for (QSharedPointer<BusInterface> busInterface : *availableBusInterfaces_)
-    {
-        if (busInterface->getInterfaceMode() == General::MASTER && bridge->getMasterRef() == busInterface->name())
-        {
-            return true;
-        }
-    }
+    auto bridgeTarget = Search::findByName(bridge->getMasterRef(), *availableBusInterfaces_);
 
-    return false;
+    return bridgeTarget.isNull() == false &&
+        (bridgeTarget->getInterfaceMode() == General::MASTER || bridgeTarget->getInterfaceMode() == General::INITIATOR);
 }
 
 //-----------------------------------------------------------------------------
@@ -351,18 +396,11 @@ bool BusInterfaceValidator::slaveBridgeReferencesValidMaster(QSharedPointer<Tran
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointer<TargetInterface> slave) const
 {
-    for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *slave->getFileSetRefGroup())
-    {
-        for (auto const& fileSetReference : *group->fileSetRefs_)
+    return std::all_of(slave->getFileSetRefGroup()->cbegin(), slave->getFileSetRefGroup()->cend(), [this](auto group)
         {
-            if (!slaveFileSetReferenceIsValid(fileSetReference))
-            {
-                return false;
-            }
-        }
-    }
-
-    return true;
+            return std::all_of(group->fileSetRefs_->cbegin(), group->fileSetRefs_->cend(),
+            [this](auto fileSetReference) { return slaveFileSetReferenceIsValid(fileSetReference); });
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -370,15 +408,8 @@ bool BusInterfaceValidator::slaveInterfaceFileSetRefGroupsAreValid(QSharedPointe
 //-----------------------------------------------------------------------------
 bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QSharedPointer<FileSetRef> fileSetReference) const
 {
-    for (auto const& fileset : *availableFileSets_)
-    {
-        if (fileSetReference->getReference() == fileset->name())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    auto fileSet = Search::findByName(fileSetReference->getReference(), *availableFileSets_);
+    return fileSet.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -387,18 +418,14 @@ bool BusInterfaceValidator::slaveFileSetReferenceIsValid(QSharedPointer<FileSetR
 bool BusInterfaceValidator::hasValidSystemInterface(QSharedPointer<BusInterface> busInterface,
     QString const& systemGroup) const
 {
-    if (!systemGroup.isEmpty())
+    if (systemGroup.isEmpty())
     {
-        QSharedPointer<Document const> definitionDocument = libraryHandler_->getModelReadOnly(busInterface->getBusType());
-		QSharedPointer<BusDefinition const> busDefinition = definitionDocument.dynamicCast<BusDefinition const>();
-
-        if (busDefinition)
-        {
-            return busDefinition->getSystemGroupNames().contains(systemGroup);
-        }
+        return false;
     }
 
-    return false;
+    auto busDefinition = libraryHandler_->getModelReadOnly<BusDefinition>(busInterface->getBusType());
+
+    return (busDefinition && busDefinition->getSystemGroupNames().contains(systemGroup));
 }
 
 //-----------------------------------------------------------------------------
@@ -412,21 +439,36 @@ bool BusInterfaceValidator::hasValidMirroredSlaveInterface(QSharedPointer<Mirror
         return true;
     }
 
-    if (mirroredSlaveRangeIsValid(mirroredSlave))
+    if (mirroredSlaveRangeIsValid(mirroredSlave) && !mirroredSlave->getRemapAddresses()->isEmpty())
     {
-        if (!mirroredSlave->getRemapAddresses()->isEmpty())
-        {
-            for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
-                *mirroredSlave->getRemapAddresses())
+        return std::all_of(mirroredSlave->getRemapAddresses()->cbegin(), mirroredSlave->getRemapAddresses()->cend(), 
+            [this](auto remapAddress)
             {
-                if (!mirroredSlaveRemapAddressIsValid(remapAddress) || !mirroredSlaveStateIsValid(remapAddress))
-                {
-                    return false;
-                }
-            }
+                return mirroredSlaveRemapAddressIsValid(remapAddress) && mirroredSlaveStateIsValid(remapAddress);
+            });
+    }
 
-            return true;
-        }
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::hasValidMirroredTargetInterface()
+//-----------------------------------------------------------------------------
+bool BusInterfaceValidator::hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget)
+const
+{
+    if (mirroredTarget->getRemapAddresses()->isEmpty() && mirroredTarget->getRange().isEmpty())
+    {
+        return true;
+    }
+
+    if (mirroredSlaveRangeIsValid(mirroredTarget) && !mirroredTarget->getRemapAddresses()->isEmpty())
+    {
+        return std::all_of(mirroredTarget->getRemapAddresses()->cbegin(), mirroredTarget->getRemapAddresses()->cend(),
+            [this](auto remapAddress)
+            {
+                return mirroredSlaveRemapAddressIsValid(remapAddress) && hasValidModeRefs(remapAddress->modeRefs_);
+            });
     }
 
     return false;
@@ -471,15 +513,9 @@ bool BusInterfaceValidator::mirroredSlaveStateIsValid(
         return true;
     }
 
-    for (QSharedPointer<RemapState> remapState : *availableRemapStates_)
-    {
-        if (remapState->name() == remapAddress->state_)
-        {
-            return true;
-        }
-    }
+    auto remapState = Search::findByName(remapAddress->state_, *availableRemapStates_);
 
-    return false;
+    return remapState.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -729,6 +765,10 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInSystemInterface(errors, busInterface->getSystem(), busInterface, newContext);
     }
+    else if (interfaceMode == General::MIRRORED_MASTER)
+    {
+        // Intentionally empty.
+    }
     else if (interfaceMode == General::MIRRORED_SLAVE)
     {
         findErrorsInMirroredSlaveInterface(errors, busInterface->getMirroredSlave(), newContext);
@@ -737,7 +777,24 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
     {
         findErrorsInMonitorInterface(errors, busInterface, busInterface->getMonitor(), newContext);
     }
-    else if (interfaceMode != General::MIRRORED_MASTER)
+
+    else if (interfaceMode == General::INITIATOR)
+    {
+        findErrorsInInitiatorInterface(errors, busInterface->getInitiator(), newContext);
+    }
+    else if (interfaceMode == General::TARGET)
+    {
+        findErrorsInTargetInterface(errors, busInterface, busInterface->getTarget(), newContext);
+    }
+    else if (interfaceMode == General::MIRRORED_INITIATOR)
+    {
+        // Intentionally empty.
+    }
+    else if (interfaceMode == General::MIRRORED_TARGET)
+    {
+        findErrorsInMirroredTargetInterface(errors, busInterface->getMirroredTarget(), newContext);
+    }
+    else
     {
         errors.append(QObject::tr("Unknown interface mode set for bus interface %1 within %2")
             .arg(busInterface->name(), containingContext));
@@ -750,50 +807,102 @@ void BusInterfaceValidator::findErrorsInInterfaceMode(QVector<QString>& errors,
 void BusInterfaceValidator::findErrorsInMasterInterface(QVector<QString>& errors,
     QSharedPointer<InitiatorInterface> master, QString const& context) const
 {
-    if (master)
+    if (master.isNull())
     {
-        if (!master->getAddressSpaceRef().isEmpty())
+        return;
+    }
+
+    if (!master->getAddressSpaceRef().isEmpty())
+    {
+        auto space = Search::findByName(master->getAddressSpaceRef(), *availableAddressSpaces_);
+
+        if (space.isNull() == false)
         {
-            bool found = false;
-            for (QSharedPointer<AddressSpace> space : *availableAddressSpaces_)
+            if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
             {
-                if (master->getAddressSpaceRef() == space->name())
-                {
-                    found = true;
-
-                    if (!interfaceReferenceHasValidPresence(master->getIsPresent(), space->getIsPresent()))
-                    {
-                        errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
-                            .arg(space->name()).arg(context));
-                    }
-                    break;
-                }
-            }
-            if (!found)
-            {
-                errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
-                    .arg(master->getAddressSpaceRef()).arg(context));
-            }
-            if (!master->getBaseAddress().isEmpty())
-            {
-                bool changeOk = true;
-                bool expressionValid = false;
-
-                int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
-
-                if (!changeOk || !expressionValid || baseAddress < 0)
-                {
-                    errors.append(QObject::tr("Invalid base address set for %1").arg(context));
-                }
-            }
-            if (!hasValidIsPresent(master->getIsPresent()))
-            {
-                errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
+                errors.append(QObject::tr("Cannot refer to non-present address space %1 in %2")
+                    .arg(space->name()).arg(context));
             }
         }
-        else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
+        else
         {
-            errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+            errors.append(QObject::tr("Could not find address space %1 referenced by the %2")
+                .arg(master->getAddressSpaceRef()).arg(context));
+        }
+        if (!master->getBaseAddress().isEmpty())
+        {
+            bool changeOk = true;
+            bool expressionValid = false;
+
+            int baseAddress = expressionParser_->parseExpression(master->getBaseAddress(), &expressionValid).toInt(&changeOk);
+
+            if (!changeOk || !expressionValid || baseAddress < 0)
+            {
+                errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+            }
+        }
+        if (!hasValidIsPresent(master->getIsPresent()))
+        {
+            errors.append(QObject::tr("Invalid is present set for address space reference in %1").arg(context));
+        }
+    }
+    else if (!master->getIsPresent().isEmpty() || !master->getBaseAddress().isEmpty())
+    {
+        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInInitiatorInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInInitiatorInterface(QVector<QString>& errors,
+    QSharedPointer<InitiatorInterface> initiator, QString const& context) const
+{
+    if (initiator.isNull())
+    {
+        return;
+    }
+
+    if (!initiator->getAddressSpaceRef().isEmpty())
+    {
+        auto space = Search::findByName(initiator->getAddressSpaceRef(), *availableAddressSpaces_);
+        if (space.isNull())
+        {
+            errors.append(QObject::tr("Could not find address space %1 referenced by the %2").arg(
+                initiator->getAddressSpaceRef(), context));
+        }
+    }
+    else if (initiator->getBaseAddress().isEmpty() == false || initiator->getModeRefs().isEmpty() == false)
+    {
+        errors.append(QObject::tr("Invalid address space reference set for %1").arg(context));
+    }
+
+    if (!initiator->getBaseAddress().isEmpty())
+    {
+        bool changeOk = true;
+        bool expressionValid = false;
+
+        int baseAddress = expressionParser_->parseExpression(initiator->getBaseAddress(), &expressionValid).toInt(&changeOk);
+
+        if (!changeOk || !expressionValid || baseAddress < 0)
+        {
+            errors.append(QObject::tr("Invalid base address set for %1").arg(context));
+        }
+    }
+
+    findErrorsInModeReferences(initiator->getModeRefs(), errors, context);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInModeReferences()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, QString const& context) const
+{
+    for (auto modeRef : modeRefs)
+    {
+        if (auto mode = Search::findByName(modeRef, *availableModes_); mode.isNull())
+        {
+            errors.append(QObject::tr("Could not find mode %1 referenced by the %2").arg(modeRef, context));
         }
     }
 }
@@ -840,6 +949,49 @@ void BusInterfaceValidator::findErrorsInSlaveInterface(QVector<QString>& errors,
             }
         }
     }
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInTargetInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInTargetInterface(QVector<QString>& errors,
+    QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> target, 
+    QString const& context) const
+{
+    if (!target->getMemoryMapRef().isEmpty() && !target->getBridges()->isEmpty())
+    {
+        errors.append(QObject::tr("Both a memory map reference and transparent bridges are contained within %1")
+            .arg(context));
+    }
+    if (!target->getMemoryMapRef().isEmpty() && !slaveInterfaceHasValidMemoryMapRef(busInterface, target))
+    {
+        errors.append(QObject::tr("Memory map %1 referenced by the %2 was not found")
+            .arg(target->getMemoryMapRef(), context));
+    }
+
+    for (QSharedPointer<TransparentBridge> bridge : *target->getBridges())
+    {
+        if (!slaveBridgeReferencesValidMaster(bridge))
+        {
+            errors.append(QObject::tr("Initiator bus interface %1 referenced by the %2 was not found")
+                .arg(bridge->getInitiatorRef(), context));
+        }
+    }
+
+    for (QSharedPointer<TargetInterface::FileSetRefGroup> group : *target->getFileSetRefGroup())
+    {
+        for (auto const& fileSetReference : *group->fileSetRefs_)
+        {
+            if (!slaveFileSetReferenceIsValid(fileSetReference))
+            {
+                errors.append(QObject::tr("Invalid file set %1 referenced within group %2 of %3").arg(
+                    fileSetReference->getReference(), group->group_, context));
+            }
+        }
+    }
+
+    findErrorsInModeReferences(target->getModeRefs(), errors, context);
 }
 
 //-----------------------------------------------------------------------------
@@ -896,6 +1048,37 @@ void BusInterfaceValidator::findErrorsInMirroredSlaveInterface(QVector<QString>&
         }
 
         if (!mirroredSlaveRangeIsValid(mirroredSlave))
+        {
+            errors.append(QObject::tr("Invalid range set for %1").arg(context));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceValidator::findErrorsInMirroredTargetInterface()
+//-----------------------------------------------------------------------------
+void BusInterfaceValidator::findErrorsInMirroredTargetInterface(QVector<QString>& errors,
+    QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const
+{
+    if (!mirroredTarget->getRange().isEmpty() || !mirroredTarget->getRemapAddresses()->isEmpty())
+    {
+        if (mirroredTarget->getRemapAddresses()->isEmpty())
+        {
+            errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
+        }
+
+        for (QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress :
+            *mirroredTarget->getRemapAddresses())
+        {
+            if (!mirroredSlaveRemapAddressIsValid(remapAddress))
+            {
+                errors.append(QObject::tr("Invalid remap address set for %1").arg(context));
+            }
+
+            findErrorsInModeReferences(remapAddress->modeRefs_, errors, context);
+        }
+
+        if (!mirroredSlaveRangeIsValid(mirroredTarget))
         {
             errors.append(QObject::tr("Invalid range set for %1").arg(context));
         }

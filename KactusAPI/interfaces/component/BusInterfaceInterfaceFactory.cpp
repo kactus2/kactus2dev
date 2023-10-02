@@ -85,7 +85,7 @@ BusInterfaceInterface* BusInterfaceInterfaceFactory::Details::createCommonBusInt
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser,
         component->getChoices(), component->getViews(), component->getPorts(), component->getAddressSpaces(),
         component->getMemoryMaps(), component->getBusInterfaces(), component->getFileSets(),
-        component->getRemapStates(), portMapValidator, parameterValidator, library));
+        component->getRemapStates(), component->getModes(), portMapValidator, parameterValidator, library));
 
     BusInterfaceInterface* busInterface(new BusInterfaceInterface(busValidator, expressionParser,
         expressionFormatter));

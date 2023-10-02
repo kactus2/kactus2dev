@@ -19,6 +19,8 @@
 #include <IPXACTmodels/common/DirectionTypes.h>
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
@@ -103,14 +105,10 @@ bool PortMapValidator::validate(QSharedPointer<PortMap> const& portMap) const
             return connectedPortsHaveValidPortTypes(logicalPort, physicalPort) &&
                 connectedPortsHaveValidDirections(logicalPort, physicalPort) &&
                 connectedPortsHaveValidInitiatives(logicalPort, physicalPort) &&
-                logicalPortHasValidRange(logical->range_, logicalPort) &&
-                physicalPortHasValidPartSelect(physical->partSelect_, physicalPort) &&
                 connectedPortsHaveSameRange(logical->range_, physical->partSelect_);
         }
-        else if (hasValidTieOff(portMap->getLogicalTieOff()))
-        {
-            return true;
-        }
+
+        return hasValidTieOff(portMap->getLogicalTieOff());
     }
 
     return false;
@@ -121,19 +119,7 @@ bool PortMapValidator::validate(QSharedPointer<PortMap> const& portMap) const
 //-----------------------------------------------------------------------------
 bool PortMapValidator::hasValidIsPresent(QSharedPointer<PortMap> const& portMap) const
 {
-    if (!portMap->getIsPresent().isEmpty())
-    {
-        bool isPresentOk = true;
-        quint64 isPresetValue = 0;
-        std::tie(isPresentOk, isPresetValue) = checkAndParseExpression(portMap->getIsPresent());
-
-        if (!isPresentOk || isPresetValue < 0 || isPresetValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(portMap->getIsPresent(), expressionParser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -196,14 +182,7 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<Range> const & lo
 //-----------------------------------------------------------------------------
 bool PortMapValidator::bothRangeValuesExist(QString const& leftRange, QString const& rightRange) const
 {
-    if ((leftRange.isEmpty() && !rightRange.isEmpty()) || (!leftRange.isEmpty() && rightRange.isEmpty()))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return leftRange.isEmpty() == rightRange.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -226,17 +205,10 @@ quint64 PortMapValidator::getLogicalPortWidth(QSharedPointer<PortAbstraction> co
 //-----------------------------------------------------------------------------
 // Function: PortMapValidator::rangeIsWithinWidth()
 //-----------------------------------------------------------------------------
-bool PortMapValidator::rangeIsWithinWidth(quint64 const& rangeLeft, quint64 const& rangeRight,
+bool PortMapValidator::rangeIsWithinWidth(qint64 const& rangeLeft, qint64 const& rangeRight,
     quint64 const& width) const
 {
-    if (rangeLeft < 0 || rangeRight < 0 || rangeLeft > width - 1 || rangeRight > width - 1)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return (0 <= rangeLeft && rangeLeft <= width-1) && (0 <= rangeRight && rangeRight <= width - 1);
 }
 
 //-----------------------------------------------------------------------------
@@ -247,7 +219,7 @@ bool PortMapValidator::hasValidPhysicalMapping(QSharedPointer<PortMap> const& po
     QSharedPointer<PortMap::PhysicalPort> physical = portMap->getPhysicalPort();
     QString const& tieOff = portMap->getLogicalTieOff();
 
-    return !physical.isNull() != !tieOff.isEmpty();
+    return !physical.isNull() || !tieOff.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -365,52 +337,50 @@ bool PortMapValidator::connectedPortsHaveValidInitiatives(QSharedPointer<PortAbs
 bool PortMapValidator::physicalPortHasValidPartSelect(QSharedPointer<PartSelect> const& physicalPart,
     QSharedPointer<Port> const& referencedPort) const
 {
-    if (physicalPart)
+    if (physicalPart.isNull())
     {
-        if (physicalPart->getLeftRange().isEmpty() && physicalPart->getRightRange().isEmpty())
-        {
-            return true;
-        }
-
-        if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
-        {
-            return false;
-        }
-
-        bool leftOK = true;
-        qint64 leftValue = 0;
-        std::tie(leftOK, leftValue) = checkAndParseExpression(physicalPart->getLeftRange());
-        if (!leftOK)
-        {
-            return false;
-        }
-
-        bool rightOK = true;
-        qint64 rightValue = 0;
-        std::tie(rightOK, rightValue) = checkAndParseExpression(physicalPart->getRightRange());
-        if (!rightOK)
-        {
-            return false;
-        }
-
-        if (referencedPort->getWire())
-        {
-            return rangeIsValidInWire(leftValue, rightValue,
-                expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
-                expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong());
-        }
-        else if (referencedPort->getTransactional())
-        {
-            return rangeIsWithinWidth(leftValue, rightValue, expressionParser_->parseExpression(
-                referencedPort->getTransactional()->getBusWidth()).toULongLong());
-        }
-        else
-        {
-            return false;
-        }
+        return true;
     }
 
-    return true;
+    if (physicalPart->getLeftRange().isEmpty() && physicalPart->getRightRange().isEmpty())
+    {
+        return true;
+    }
+
+    if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
+    {
+        return false;
+    }
+
+    bool leftOK = true;
+    qint64 leftValue = 0;
+    std::tie(leftOK, leftValue) = checkAndParseExpression(physicalPart->getLeftRange());
+    if (!leftOK)
+    {
+        return false;
+    }
+
+    bool rightOK = true;
+    qint64 rightValue = 0;
+    std::tie(rightOK, rightValue) = checkAndParseExpression(physicalPart->getRightRange());
+    if (!rightOK)
+    {
+        return false;
+    }
+
+    if (referencedPort->getWire())
+    {
+        return rangeIsValidInWire(leftValue, rightValue,
+            expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+            expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong());
+    }
+    else if (referencedPort->getTransactional())
+    {
+        return rangeIsWithinWidth(leftValue, rightValue, expressionParser_->parseExpression(
+            referencedPort->getTransactional()->getBusWidth()).toULongLong());
+    }
+  
+     return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -582,8 +552,8 @@ void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
             {
                 bool leftValid = false;
                 bool rightValid = false;
-                quint64 rangeLeft = 0;
-                quint64 rangeRight = 0;
+                qint64 rangeLeft = 0;
+                qint64 rangeRight = 0;
 
                 std::tie(leftValid, rangeLeft) = checkAndParseExpression(logicalRange->getLeft());
                 std::tie(rightValid, rangeRight) = checkAndParseExpression(logicalRange->getRight());
@@ -669,8 +639,8 @@ void PortMapValidator::findErrorsInPhysicalPort(QVector<QString>& errors,
                 {
                     bool leftValid = false;
                     bool rightValid = false;
-                    quint64 rangeLeft = 0;
-                    quint64 rangeRight = 0;
+                    qint64 rangeLeft = 0;
+                    qint64 rangeRight = 0;
 
                     std::tie(leftValid, rangeLeft) = checkAndParseExpression(physicalPart->getLeftRange());
                     std::tie(rightValid, rangeRight) = checkAndParseExpression(physicalPart->getRightRange());

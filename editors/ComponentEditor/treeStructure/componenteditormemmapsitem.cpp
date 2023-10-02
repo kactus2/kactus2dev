@@ -258,6 +258,7 @@ BusInterfaceInterface* ComponentEditorMemMapsItem::createInterfaceForBus(
     QSharedPointer<BusInterfaceValidator> busValidator(new BusInterfaceValidator(expressionParser_,
         component_->getChoices(), component_->getViews(), component_->getPorts(), component_->getAddressSpaces(),
         memoryMaps_, component_->getBusInterfaces(), component_->getFileSets(), component_->getRemapStates(),
+        component_->getModes(),
         portMapValidator, parameterValidator, libHandler_));
 
     BusInterfaceInterface* busInterface(

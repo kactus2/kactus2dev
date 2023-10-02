@@ -32,14 +32,15 @@
 //-----------------------------------------------------------------------------
 FieldSliceEditor::FieldSliceEditor(QSharedPointer<Component> component, 
 	QSharedPointer<Mode> mode, 
-	//QSharedPointer<FieldSliceValidator> validator,
+	QSharedPointer<FieldSliceValidator> validator,
+	ExpressionSet expressions,
 	LibraryInterface* handler, 
 	QWidget* parent) :
 QWidget(parent),
 	component_(component),
     view_(this),
     proxy_(this),
-    model_(mode, this)
+    model_(mode, validator, expressions, this)
 {
 
 	QVBoxLayout* layout = new QVBoxLayout(this);
@@ -58,8 +59,11 @@ QWidget(parent),
 
 
 
+    ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
+    parameterModel->setExpressionParser(expressions.parser);
 
-	auto delegate = new FieldSliceDelegate(component->getMemoryMaps(), component->getAddressSpaces(), this);
+	auto delegate = new FieldSliceDelegate(component->getMemoryMaps(), component->getAddressSpaces(),
+		parameterModel, expressions.finder, this);
 
 	view_.setItemDelegate(delegate);
 

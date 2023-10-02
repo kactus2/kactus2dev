@@ -16,6 +16,8 @@ namespace FieldSliceColumns
     {
         NAME = 0,
         FIELD_REF,
+        RANGE_LEFT,
+        RANGE_RIGHT,
         DESCRIPTION,
         COLUMN_COUNT
     };

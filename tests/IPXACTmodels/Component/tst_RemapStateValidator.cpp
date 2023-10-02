@@ -9,7 +9,7 @@
 // Unit test for class RemapStateValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/RemapStateValidator.h>
 
@@ -275,8 +275,8 @@ bool tst_RemapStateValidator::errorIsNotFoundInErrorList(QString const& expected
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }

@@ -68,6 +68,15 @@ void ModeWriter::Details::writeFieldSlices(QXmlStreamWriter& writer, QSharedPoin
 
         FieldReferenceWriter::writeFieldReference(writer, slice);
 
+        // Write range of the field slice.
+        if (slice->getLeft().isEmpty() == false || slice->getRight().isEmpty() == false)
+        {
+            writer.writeStartElement(QStringLiteral("ipxact:range"));
+            writer.writeTextElement(QStringLiteral("ipxact:left"), slice->getLeft());
+            writer.writeTextElement(QStringLiteral("ipxact:right"), slice->getRight());
+            writer.writeEndElement(); //! ipxact:range
+        }
+
         writer.writeEndElement(); // ipxact:fieldSlice
     }
 }

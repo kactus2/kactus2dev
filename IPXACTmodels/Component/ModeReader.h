@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Range.h>
+
 #include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
@@ -47,7 +49,25 @@ namespace ModeReader
          */
         void parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
        
+        /*!
+         *  Read the field slices.
+         *
+         *      @param [in] modeNode  XML description of the mode.
+         *      @param [in] newMode   The selected mode item.
+         */
         void parseFieldSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
+
+
+        /*!
+         *   Parses range.
+         *
+         *      @param [in] element    XML description of the IP-XACT element.
+         *      @param [in] range      The range to read to.
+         *
+         */
+        void parseRange(QDomElement const& element, QSharedPointer<Range> range);
+
+
     }
 
 

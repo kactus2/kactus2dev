@@ -15,7 +15,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 
-#include <editors/ComponentEditor/common/MultilineDescriptionDelegate.h>
+#include <editors/ComponentEditor/common/ExpressionDelegate.h>
 
 #include <QSharedPointer>
 
@@ -24,7 +24,7 @@
 //-----------------------------------------------------------------------------
 //! Delegate that provides widgets for editing remap condition.
 //-----------------------------------------------------------------------------
-class FieldSliceDelegate : public MultilineDescriptionDelegate
+class FieldSliceDelegate : public ExpressionDelegate
 {
 	Q_OBJECT
 
@@ -40,6 +40,8 @@ public:
      */
     FieldSliceDelegate(QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps, 
 		QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
+        QAbstractItemModel* completionModel,
+        QSharedPointer<ParameterFinder> parameterFinder,
 		QObject* parent = nullptr);
 
 	//! The destructor
@@ -90,6 +92,9 @@ signals:
     void contentChanged();
 protected:
     int descriptionColumn() const override;
+
+
+	bool columnAcceptsExpression(int column) const override;
 
 private slots:
 

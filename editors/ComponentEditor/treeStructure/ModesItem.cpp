@@ -31,7 +31,7 @@ ModesItem::ModesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandl
 ComponentEditorItem(model, libHandler, component, parent),
 modes_(component->getModes()),
 expressions_(expressions),
-validator_(new ModeValidator(QSharedPointer<PortSliceValidator>(new PortSliceValidator(component, expressions.parser)), component, expressions.parser))
+validator_(new ModeValidator(component, expressions.parser))
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);

@@ -110,7 +110,7 @@ void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newCompon
 
     busValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(), newComponent->getPorts(),
         newComponent->getAddressSpaces(), newComponent->getMemoryMaps(), busInterfaces_,
-        newComponent->getFileSets(), newComponent->getRemapStates());
+        newComponent->getFileSets(), newComponent->getRemapStates(), newComponent->getModes());
 }
 
 //-----------------------------------------------------------------------------

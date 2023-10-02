@@ -207,7 +207,7 @@ public:
      *      @param [in] portMap     The selected port map.
      *      @param [in] context     Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<PortMap> portMap, QString const& context)
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<PortMap> portMap, QString const& context)
         const;
 
 private:
@@ -240,7 +240,7 @@ private:
      *
      *      @return True, if the range is within the selected width, false otherwise.
      */
-    bool rangeIsWithinWidth(quint64 const& rangeLeft, quint64 const& rangeRight, quint64 const& width) const;
+    bool rangeIsWithinWidth(qint64 const& rangeLeft, qint64 const& rangeRight, quint64 const& width) const;
 
     /*!
      *  Check if the range is valid in a wire port.

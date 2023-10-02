@@ -139,6 +139,9 @@ void tst_ModeWriter::testWriteFieldSlices()
     QSharedPointer<FieldReference::IndexedReference> fieldRef(new FieldReference::IndexedReference(QString("testFieldRef")));
     fieldSlice->setReference(fieldRef, FieldReference::Type::FIELD);
 
+    fieldSlice->setLeft("7");
+    fieldSlice->setRight("0");
+
     testMode->getFieldSlices()->append(fieldSlice);
 
     ModeWriter::writeMode(xmlStreamWriter, testMode);
@@ -155,6 +158,10 @@ void tst_ModeWriter::testWriteFieldSlices()
                 "<ipxact:addressBlockRef addressBlockRef=\"testABRef\"/>"
                 "<ipxact:registerRef registerRef=\"testRegisterRef\"/>"
                 "<ipxact:fieldRef fieldRef=\"testFieldRef\"/>"
+                "<ipxact:range>"
+                    "<ipxact:left>7</ipxact:left>"
+                    "<ipxact:right>0</ipxact:right>"
+                "</ipxact:range>"
             "</ipxact:fieldSlice>"
         "</ipxact:mode>"
     );

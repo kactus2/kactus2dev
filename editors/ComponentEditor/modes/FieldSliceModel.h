@@ -18,7 +18,7 @@
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 
 #include <IPXACTmodels/Component/FieldSlice.h>
-//#include <IPXACTmodels/Component/validators/FieldSliceValidator.h>
+#include <IPXACTmodels/Component/validators/FieldSliceValidator.h>
 
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -33,7 +33,7 @@ class ModeValidator;
 //-----------------------------------------------------------------------------
 //! Model for Mode elements within a component.
 //-----------------------------------------------------------------------------
-class FieldSliceModel : public QAbstractTableModel
+class FieldSliceModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -46,7 +46,8 @@ public:
 	 *      @param [in] parent      The owner of this model.
 	*/
 	FieldSliceModel(QSharedPointer<Mode> mode, 
-//		QSharedPointer<FieldSliceValidator> validator,
+		QSharedPointer<FieldSliceValidator> validator,
+		ExpressionSet expressions,
         QObject* parent);
 	
 	//! The destructor
@@ -141,6 +142,15 @@ protected:
 	 */
 	virtual bool validateIndex(QModelIndex const& index) const final;
 
+
+	int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const override;
+
+
+	bool isValidExpressionColumn(QModelIndex const& index) const override;
+
+
+	QVariant expressionOrValueForIndex(QModelIndex const& index) const override;
+
 private:
 
 	//! Gets the value of the cell in index.
@@ -151,7 +161,7 @@ private:
 	QStringList getFieldRefPath(QSharedPointer<FieldSlice> slice) const;
 
 	//! The validator for the Field slices.
-	//QSharedPointer<FieldSliceValidator> validator_;
+	QSharedPointer<FieldSliceValidator> validator_;
 
 	//! Contains the FieldSlice being edited.
 	QSharedPointer<QList<QSharedPointer<FieldSlice> > > fieldSlices_;

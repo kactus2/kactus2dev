@@ -38,14 +38,16 @@ public:
 	/*! The constructor
 	 *
 	 *      @param [in] component   The component being edited.
-	 *      @param [in] handler     The instance managing the library.
+	 *		@param [in] mode		The mode being edited.
      *      @param [in] validator   The validator for FieldSlice.
      *      @param [in] expressions	The collection of objects for expression handling.
+	 *      @param [in] handler     The instance managing the library.
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	FieldSliceEditor(QSharedPointer<Component> component, 
         QSharedPointer<Mode> mode,
-        //QSharedPointer<FieldSliceValidator> validator,
+        QSharedPointer<FieldSliceValidator> validator,
+		ExpressionSet expressions,
 		LibraryInterface* handler,
 		QWidget* parent = nullptr);
 	

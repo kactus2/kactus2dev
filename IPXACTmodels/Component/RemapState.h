@@ -83,8 +83,9 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! List of remap ports definining the remap state.
-    QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts_;
+    //! List of remap ports defining the remap state.
+    QSharedPointer<QList<QSharedPointer<RemapPort> > > remapPorts_ =
+        QSharedPointer<QList<QSharedPointer<RemapPort> > >(new QList<QSharedPointer<RemapPort> >());
 };
 
 #endif // REMAPSTATE_H

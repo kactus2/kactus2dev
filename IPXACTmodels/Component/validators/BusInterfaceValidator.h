@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/Component/MirroredTargetInterface.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -61,6 +62,7 @@ public:
      *      @param [in] busInterfaces       List of available bus interfaces.
      *      @param [in] fileSets            List of available file sets.
      *      @param [in] remapStates         List of available remap states.
+     *      @param [in] modes               List of available modes.
      *      @param [in] portMapValidator    Validator used for port maps.
      *      @param [in] parameterValidator  Validator used for parameters.
      *      @param [in] libraryHandler      The library interface.
@@ -74,13 +76,19 @@ public:
         QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets,
         QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates,
+        QSharedPointer<QList<QSharedPointer<Mode> > > modes,
         QSharedPointer<PortMapValidator> portMapValidator,
         QSharedPointer<ParameterValidator> parameterValidator,
         LibraryInterface* libraryHandler);
 
 	//! The destructor.
 	virtual ~BusInterfaceValidator();
-    
+
+
+    // Disable copying.
+    BusInterfaceValidator(BusInterfaceValidator const& rhs) = delete;
+    BusInterfaceValidator& operator=(BusInterfaceValidator const& rhs) = delete;
+
     /*!
      *  Change the available component elements.
      *
@@ -92,6 +100,7 @@ public:
      *      @param [in] newBusInterfaces    The new bus interfaces.
      *      @param [in] newFileSets         The new file sets.
      *      @param [in] newRemapStates      The new remap states.
+     *      @param [in] newRemapStates      The new modes.
      */
     void componentChange(QSharedPointer<QList<QSharedPointer<Choice> > > newChoices,
         QSharedPointer<QList<QSharedPointer<View> > > newViews,
@@ -100,7 +109,8 @@ public:
         QSharedPointer<QList<QSharedPointer<MemoryMap> > > newMemoryMaps,
         QSharedPointer<QList<QSharedPointer<BusInterface> > > newBusInterfaces,
         QSharedPointer<QList<QSharedPointer<FileSet> > > newFileSets,
-        QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates);
+        QSharedPointer<QList<QSharedPointer<RemapState> > > newRemapStates,
+        QSharedPointer<QList<QSharedPointer<Mode> > > newModes);
 
     /*!
      *  Get the used abstraction type validator.
@@ -211,13 +221,9 @@ public:
      *
      *      @return True, if the bridges are valid, otherwise false.
      */
-    bool slaveInterfaceHasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
+    bool hasValidBridges(QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges) const;
 
 private:
-
-	// Disable copying.
-	BusInterfaceValidator(BusInterfaceValidator const& rhs);
-	BusInterfaceValidator& operator=(BusInterfaceValidator const& rhs);
 
     /*!
      *  Check if the master interface is valid.
@@ -229,6 +235,24 @@ private:
     bool hasValidMasterInterface(QSharedPointer<InitiatorInterface> master) const;
 
     /*!
+     *  Check if the initiator interface is valid.
+     *
+     *      @param [in] initiator  The selected initiator interface.
+     *
+     *      @return True, if the initiator interface is valid, otherwise false.
+     */
+    bool hasValidInitiatorInterface(QSharedPointer<InitiatorInterface> initiator) const;
+
+    /*!
+     *  Check if the given mode references are valid.
+     *
+     *      @param [in] modeRefs    The mode references to check.
+     *
+     *      @return True, if all the references are valid, otherwise false.
+     */
+    bool hasValidModeRefs(QStringList const& modeRefs) const;
+
+    /*!
      *  Check if the slave interface is valid.
      *
      *      @param [in] busInterface    The containing bus interface.
@@ -236,8 +260,19 @@ private:
      *
      *      @return True, if the slave interface is valid, otherwise false.
      */
-    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, QSharedPointer<TargetInterface> slave)
-        const;
+    bool hasValidSlaveInterface(QSharedPointer<BusInterface> busInterface, 
+        QSharedPointer<TargetInterface> slave) const;
+
+    /*!
+     *  Check if the target interface is valid.
+     *
+     *      @param [in] busInterface    The containing bus interface.
+     *      @param [in] target          The selected target interface.
+     *
+     *      @return True, if the target interface is valid, otherwise false.
+     */
+    bool hasValidTargetInterface(QSharedPointer<BusInterface> busInterface,
+        QSharedPointer<TargetInterface> target) const;
 
     /*!
      *  Check if the slave interface has a valid memory map reference.
@@ -295,6 +330,15 @@ private:
      *      @return True, if the mirrored slave interface is valid, otherwise false.
      */
     bool hasValidMirroredSlaveInterface(QSharedPointer<MirroredTargetInterface> mirroredSlave) const;
+
+    /*!
+     *  Check if the mirrored target interface is valid.
+     *
+     *      @param [in] mirroredTarget   The selected mirrored target interface.
+     *
+     *      @return True, if the mirrored target interface is valid, otherwise false.
+     */
+    bool hasValidMirroredTargetInterface(QSharedPointer<MirroredTargetInterface> mirroredTarget) const;
 
     /*!
      *  Check if the mirrored slave interface range is valid.
@@ -416,6 +460,26 @@ private:
         QString const& context) const;
 
     /*!
+     *  Find errors within initiator interface.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] master      The selected initiator interface.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInInitiatorInterface(QVector<QString>& errors, QSharedPointer<InitiatorInterface> initiator, 
+        QString const& context) const;
+
+    /*!
+     *  Find errors within mode references.
+     *
+     *      @param [in] modeRefs    The references to check.
+     *      @param [in] errors      List of found errors.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInModeReferences(QStringList const& modeRefs, QVector<QString>& errors, 
+        QString const& context) const;
+
+    /*!
      *  Find errors within slave interface.
      *
      *      @param [in] errors          List of found errors.
@@ -425,6 +489,16 @@ private:
      */
     void findErrorsInSlaveInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface,
         QSharedPointer<TargetInterface> slave, QString const& context) const;
+    /*!
+     *  Find errors within target interface.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] busInterface    The containing bus interface.
+     *      @param [in] target          The selected target interface.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInTargetInterface(QVector<QString>& errors, QSharedPointer<BusInterface> busInterface, 
+        QSharedPointer<TargetInterface> target, QString const& context) const;
 
     /*!
      *  Find errors within system mode.
@@ -446,6 +520,16 @@ private:
      */
     void findErrorsInMirroredSlaveInterface(QVector<QString>& errors,
         QSharedPointer<MirroredTargetInterface> mirroredSlave, QString const& context) const;
+
+    /*!
+     *  Find errors within mirrored target interface.
+     *
+     *      @param [in] errors          List of found errors.
+     *      @param [in] mirroredTarget  The selected mirrored target interface.
+     *      @param [in] context         Context to help locate the error.
+     */
+    void findErrorsInMirroredTargetInterface(QVector<QString>& errors, 
+        QSharedPointer<MirroredTargetInterface> mirroredTarget, QString const& context) const;
 
     /*!
      *  Find errors within monitor interface.
@@ -507,6 +591,9 @@ private:
 
     //! The currently available remap states.
     QSharedPointer<QList<QSharedPointer<RemapState> > > availableRemapStates_;
+
+    //! The currently available modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes_;
 
     //! The library interface.
     LibraryInterface* libraryHandler_;

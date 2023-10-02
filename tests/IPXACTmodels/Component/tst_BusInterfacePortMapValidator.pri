@@ -3,9 +3,7 @@
 # ------------------------------------------------------
 
 
-HEADERS += ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.h \
-    ../../MockObjects/LibraryMock.h 
+HEADERS += ../../MockObjects/LibraryMock.h 
    
 SOURCES += ../../MockObjects/LibraryMock.cpp \
-    ../../../editors/ComponentEditor/common/SystemVerilogExpressionParser.cpp \
     ./tst_BusInterfacePortMapValidator.cpp
