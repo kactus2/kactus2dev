@@ -3304,6 +3304,15 @@
     <ClCompile Include="library\VLNVDialer\ValidityGroup.cpp">
       <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\MemoryAlignScene.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionScene.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\CpuVisualizer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -4456,9 +4465,6 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -5941,6 +5947,18 @@
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\ValidityGroup.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\MemoryAlignScene.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionScene.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\CpuVisualizer.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

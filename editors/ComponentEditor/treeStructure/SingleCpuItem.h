@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/ComponentEditor/cpus/CpuVisualizer.h>
+
 #include <editors/common/ExpressionSet.h>
 
 class Cpu;
@@ -87,16 +89,23 @@ public:
 	 */
 	ItemEditor* editor() final;
 
+
+    ItemVisualizer* visualizer() override;
+
 private:
 
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! Pointer to the currently selected remap state.
     QSharedPointer<Cpu> cpu_;
 
     QSharedPointer<CPUValidator> validator_;
 
     ExpressionSet expressions_;
+
+    CpuVisualizer* visualizer_ = nullptr;
+protected:
+    void onGraphicsChanged() override;
+
 };
 
 #endif // SINGLE_CPU_ITEM_H

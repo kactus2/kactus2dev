@@ -509,6 +509,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\MemoryAlignScene.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MemoryTreeFactory.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ModeReferenceEditor.cpp" />
@@ -522,6 +523,8 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\cpus\cpusdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpuseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\cpusmodel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\cpus\CpuVisualizer.cpp" />
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionScene.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\cpus\RegionsModel.cpp" />
@@ -1604,14 +1607,17 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceModel.h" />
+    <QtMoc Include="editors\ComponentEditor\common\MemoryAlignScene.h" />
     <ClInclude Include="editors\ComponentEditor\common\MemoryTreeFactory.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\CpuColumns.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\SingleCpuEditor.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\CpuDetailsEditor.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\RegionsModel.h" />
+    <QtMoc Include="editors\ComponentEditor\cpus\CpuVisualizer.h" />
     <ClInclude Include="editors\ComponentEditor\cpus\RegionColumns.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\RegionsEditor.h" />
     <QtMoc Include="editors\ComponentEditor\cpus\RegionsDelegate.h" />
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionScene.h" />
     <ClInclude Include="editors\ComponentEditor\fileBuilders\FileBuilderColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\dependencyAnalysis\FileDependencyColumns.h" />
     <ClInclude Include="editors\ComponentEditor\fileSet\FileSetColumns.h" />

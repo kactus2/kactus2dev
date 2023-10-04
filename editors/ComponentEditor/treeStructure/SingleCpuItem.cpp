@@ -11,6 +11,7 @@
 
 #include "SingleCpuItem.h"
 
+
 #include <editors/ComponentEditor/cpus/SingleCpuEditor.h>
 #include <editors/common/ExpressionSet.h>
 
@@ -33,6 +34,11 @@ ComponentEditorItem(model, libHandler, component, parent),
     setParameterFinder(expressions_.finder);
     setExpressionFormatter(expressions_.formatter);
     setReferenceCounter(referenceCounter);
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        visualizer_ = new CpuVisualizer(cpu, component->getMemoryMaps(), expressions.parser, nullptr);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -75,8 +81,29 @@ ItemEditor* SingleCpuItem::editor()
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
             this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 
+        connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);
+
         connectItemEditorToReferenceCounter();
     }
 
     return editor_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleCpuItem::visualizer()
+//-----------------------------------------------------------------------------
+ItemVisualizer* SingleCpuItem::visualizer()
+{
+    return visualizer_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleCpuItem::onGraphicsChanged()
+//-----------------------------------------------------------------------------
+void SingleCpuItem::onGraphicsChanged()
+{
+    if (visualizer_)
+    {
+        visualizer_->refresh();
+    }
 }

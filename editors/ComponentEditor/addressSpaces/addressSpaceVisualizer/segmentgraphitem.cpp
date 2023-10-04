@@ -15,14 +15,14 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <IPXACTmodels/Component/Segment.h>
+#include <IPXACTmodels/Component/Region.h>
 
 #include <QBrush>
 
 //-----------------------------------------------------------------------------
 // Function: SegmentGraphItem::SegmentGraphItem()
 //-----------------------------------------------------------------------------
-SegmentGraphItem::SegmentGraphItem(QSharedPointer<Segment> segment, QString const& addressSpaceWidth,
+SegmentGraphItem::SegmentGraphItem(QSharedPointer<Region> segment, QString const& addressSpaceWidth,
                                    QSharedPointer<ExpressionParser> expressionParser, QGraphicsItem* parent):
 AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 segment_(segment)
@@ -31,7 +31,6 @@ segment_(segment)
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
 	setDefaultBrush(brush);
-	//setNamePosition(VisualizerItem::NAME_RIGHT_ALIGN, VisualizerItem::NAME_MIDDLE);
     setLayoutType(LABELS_RIGHT);
 }
 
