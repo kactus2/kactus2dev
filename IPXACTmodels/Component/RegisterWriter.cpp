@@ -17,6 +17,7 @@
 #include "FieldWriter.h"
 #include "AccessPolicyWriter.h"
 #include "MemoryArrayWriter.h"
+#include "MemoryArray.h"
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
@@ -51,7 +52,8 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
     {
         CommonItemsWriter::writeIsPresent(writer, targetRegister->getIsPresent());
 
-        writeDimensions(writer, targetRegister);
+        // Write dimensions
+        MemoryArrayWriter::writeMemoryArray(writer, targetRegister->getMemoryArray(), docRevision, false);
 
         writeAddressOffset(writer, targetRegister->getAddressOffset());
 
@@ -93,17 +95,6 @@ void RegisterWriter::Details::writeRegister(QXmlStreamWriter& writer, QSharedPoi
     CommonItemsWriter::writeVendorExtensions(writer, targetRegister);
 
     writer.writeEndElement(); // ipxact:register
-}
-
-//-----------------------------------------------------------------------------
-// Function: RegisterWriter::Details::writeDim()
-//-----------------------------------------------------------------------------
-void RegisterWriter::Details::writeDimensions(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData)
-{
-    if (!registerData->getDimension().isEmpty())
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:dim"), registerData->getDimension());
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +243,7 @@ void RegisterWriter::Details::writeRegisterFile(QXmlStreamWriter& writer, QShare
     {
         CommonItemsWriter::writeIsPresent(writer, registerFile->getIsPresent());
 
-        writeDimensions(writer, registerFile);
+        MemoryArrayWriter::writeMemoryArray(writer, registerFile->getMemoryArray(), docRevision, false);
 
         writeAddressOffset(writer, registerFile->getAddressOffset());
 
