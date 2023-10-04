@@ -299,25 +299,14 @@ QList<General::InterfaceMode> ActiveBusInterfaceItem::getOpposingModes(QSharedPo
         return possibleModes;
     }
 
-    possibleModes.append(General::getCompatibleInterfaceMode(sourceMode));
-
-    if (sourceMode == General::MASTER)
+    auto busDef = getLibraryAccess()->getModelReadOnly<BusDefinition>(busIf->getBusType());
+    if (busDef != nullptr && busDef->getDirectConnection())
     {
-        QSharedPointer<BusDefinition const> busDef = 
-            getLibraryAccess()->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
-        if (busDef != nullptr && busDef->getDirectConnection())
-        {
-            possibleModes.append(General::SLAVE);      
-        }
+        possibleModes.append(General::getCompatibleInterfaceModesForActiveInterface(sourceMode));
     }
-    else if (sourceMode == General::SLAVE)
+    else
     {
-        QSharedPointer<BusDefinition const> busDef = 
-            getLibraryAccess()->getModelReadOnly(busIf->getBusType()).dynamicCast<BusDefinition const>();
-        if (busDef != nullptr && busDef->getDirectConnection())
-        {
-            possibleModes.append(General::MASTER);      
-        }
+        possibleModes.append(General::getCompatibleInterfaceMode(sourceMode));
     }
 
     return possibleModes;

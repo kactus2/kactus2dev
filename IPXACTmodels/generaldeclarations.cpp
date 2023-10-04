@@ -225,6 +225,22 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     {
         return MONITOR;
     }
+    else if (mode == General::INITIATOR)
+    {
+        return MIRRORED_MASTER;
+    }
+    else if (mode == General::TARGET)
+    {
+        return MIRRORED_SLAVE;
+    }
+    else if (mode == General::MIRRORED_INITIATOR)
+    {
+        return INITIATOR;
+    }
+    else if (mode == General::MIRRORED_TARGET)
+    {
+        return TARGET;
+    }
     else
     {
         return INTERFACE_MODE_COUNT;
@@ -274,7 +290,23 @@ QVector<General::InterfaceMode> General::getCompatibleInterfaceModesForActiveInt
         //!     if Mode == System || MirroredSystem
         //!         -> System groups match
         compatibleModes = { General::MASTER, General::MIRRORED_MASTER, General::SLAVE, General::MIRRORED_SLAVE,
-            General::SYSTEM, General::MIRRORED_SYSTEM };
+            General::INITIATOR, General::TARGET, General::SYSTEM, General::MIRRORED_SYSTEM };
+    }
+    else if (mode == General::INITIATOR)
+    {
+        compatibleModes = { General::TARGET, General::MIRRORED_INITIATOR, General::MONITOR };
+    }
+    else if (mode == General::MIRRORED_INITIATOR)
+    {
+        compatibleModes = { General::INITIATOR, General::MONITOR };
+    }
+    else if (mode == General::TARGET)
+    {
+        compatibleModes = { General::INITIATOR, General::MIRRORED_TARGET, General::MONITOR };
+    }
+    else if (mode == General::MIRRORED_TARGET)
+    {
+        compatibleModes = { General::TARGET, General::MONITOR };
     }
 
     return compatibleModes;

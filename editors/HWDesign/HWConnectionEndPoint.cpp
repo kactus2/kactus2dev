@@ -79,19 +79,19 @@ void HWConnectionEndpoint::updateInterface()
 
     General::InterfaceMode mode = getInterfaceMode();
 
-    if (mode == General::MASTER)
+    if (mode == General::MASTER || mode == General::INITIATOR)
     {
         setBrush(QBrush(KactusColors::MASTER_INTERFACE));
     }
-    else if (mode == General::SLAVE)
+    else if (mode == General::SLAVE || mode == General::TARGET)
     {
         setBrush(QBrush(KactusColors::SLAVE_INTERFACE));
     }
-    else if (mode == General::MIRRORED_MASTER)
+    else if (mode == General::MIRRORED_MASTER || mode == General::MIRRORED_INITIATOR)
     {
         setBrush(QBrush(KactusColors::MIRROREDMASTER_INTERFACE));
     }
-    else if (mode == General::MIRRORED_SLAVE)
+    else if (mode == General::MIRRORED_SLAVE || mode == General::MIRRORED_TARGET)
     {
         setBrush(QBrush(KactusColors::MIRROREDSLAVE_INTERFACE));
     }
