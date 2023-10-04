@@ -444,13 +444,13 @@ void FieldValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Field
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
-        findErrorsInMemoryArray(errors, field, context);
+        auto newContext = QStringLiteral("field ") + field->name() + QStringLiteral(" within ") + context;
+
+        findErrorsInMemoryArray(errors, field, newContext);
         findErrorsInFieldDefinitionRef(errors, field, context);
 
         FieldAccessPolicyValidator fieldAccessPolicyValidator(expressionParser_);
         
-        auto newContext = QStringLiteral("field ") + field->name() + QStringLiteral(" within ") + context;
-
         for (auto const& fieldAccessPolicy : *field->getFieldAccessPolicies())
         {
             fieldAccessPolicyValidator.findErrorsIn(errors, fieldAccessPolicy, newContext);

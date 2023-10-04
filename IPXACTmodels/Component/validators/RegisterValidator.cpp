@@ -24,6 +24,7 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/AlternateRegister.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
@@ -114,7 +115,7 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
         }
         else
         {
-            quint64 bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toLongLong();
+            quint64 bitWidth = getTrueFieldBitWidth(field);
 
             qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
             qint64 rangeEnd = rangeBegin + bitWidth - 1;
@@ -400,7 +401,7 @@ void RegisterValidator::findErrorsInFields(QVector<QString>& errors,
                     QObject::tr("Name %1 of fields in %2 is not unique.").arg(field->name()).arg(context));
             }
 
-            qint64 bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toLongLong();
+            qint64 bitWidth = getTrueFieldBitWidth(field);
 
             qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
             qint64 rangeEnd = rangeBegin + bitWidth - 1;
@@ -568,4 +569,26 @@ bool RegisterValidator::alternateRegisterIsValid(QSharedPointer<AlternateRegiste
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterValidator::getTrueFieldBitWidth()
+//-----------------------------------------------------------------------------
+quint64 RegisterValidator::getTrueFieldBitWidth(QSharedPointer<Field> field) const
+{
+    quint64 bitWidth = expressionParser_->parseExpression(field->getBitWidth()).toULongLong();
+
+    // Calculate true bit width taking memory array dimensions into account.
+    if (auto memArray = field->getMemoryArray();
+        memArray && docRevision_ == Document::Revision::Std22)
+    {
+        auto fieldDimensions = field->getMemoryArray()->getDimensions();
+
+        std::for_each(fieldDimensions->cbegin(), fieldDimensions->cend(), [&bitWidth, this](auto dim)
+            {
+                bitWidth *= expressionParser_->parseExpression(dim->value_).toULongLong();
+            });
+    }
+
+    return bitWidth;
 }
