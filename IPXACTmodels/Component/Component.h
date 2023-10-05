@@ -42,6 +42,7 @@ class Mode;
 class IndirectInterface;
 class OtherClockDriver;
 class Port;
+class PowerDomain;
 class RemapState;
 class View;
 class ResetType;
@@ -129,6 +130,8 @@ public:
      *      @return True if the component has hierarchical SW, false otherwise.
      */
     bool isHierarchicalSW() const;
+
+    QSharedPointer<QList<QSharedPointer<PowerDomain> > > getPowerDomains() const;
 
 	/*!
      *  Get list of the bus interfaces of a component.
@@ -875,6 +878,13 @@ public:
 private:
 
     /*!
+     *  Copy power domains.
+     *
+     *      @param [in] other   The component being copied.
+     */
+    void copyPowerDomains(const Component& other) const;
+    
+    /*!
      *  Copy bus interfaces.
      *
      *      @param [in] other   The component being copied.
@@ -975,6 +985,10 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    //! Specifies all the power domains for this component.
+    QSharedPointer<QList<QSharedPointer<PowerDomain> > > powerDomains_ =
+        QSharedPointer<QList<QSharedPointer<PowerDomain> > >(new QList<QSharedPointer<PowerDomain> >());
 
     //! Specifies all the bus interfaces for this component.
 	QSharedPointer<QList<QSharedPointer<BusInterface> > > busInterfaces_ =

@@ -44,7 +44,7 @@ QList<IPlugin*> PluginManager::getActivePlugins() const
     QSettings settings;
     QList<IPlugin*> activePlugins;
 
-    foreach (IPlugin* plugin, plugins_)
+    for (IPlugin* plugin : plugins_)
     {
         if (settings.value(QStringLiteral("PluginSettings/") + XmlUtils::removeWhiteSpace(plugin->getName()) + 
             QStringLiteral("/Active"), true).toBool())
@@ -75,7 +75,7 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
     QSettings settings;
     settings.beginGroup(QStringLiteral("PluginSettings"));
 
-    foreach (QString const& dirName, pluginPaths)
+    for (QString const& dirName : pluginPaths)
     {
         QDir pluginDirectory(dirName);
         if (pluginDirectory.isRelative())
@@ -83,7 +83,7 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
             pluginDirectory.setPath(QCoreApplication::applicationDirPath() + QLatin1Char('/') + dirName);
         }        
 
-        foreach (QFileInfo const& fileInfo, pluginDirectory.entryInfoList(QDir::Files))
+        for (QFileInfo const& fileInfo : pluginDirectory.entryInfoList(QDir::Files))
         {
             QPluginLoader loader(fileInfo.absoluteFilePath());
             IPlugin* plugin = qobject_cast<IPlugin*>(loader.instance());
@@ -112,7 +112,7 @@ QList<IPlugin*> PluginManager::findPluginsInPaths(QStringList const& pluginPaths
 //-----------------------------------------------------------------------------
 bool PluginManager::isUnique(IPlugin* plugin, QList<IPlugin*> const& plugins)
 {
-    foreach(IPlugin* knownPlugin, plugins)
+    for (IPlugin* knownPlugin : plugins)
     {
         if (QString::compare(knownPlugin->getName(), plugin->getName()) == 0 && 
             QString::compare(knownPlugin->getVersion(), plugin->getVersion()) == 0)

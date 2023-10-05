@@ -286,6 +286,9 @@
     <ClCompile Include="Component\PortReader.cpp" />
     <ClCompile Include="Component\PortSlice.cpp" />
     <ClCompile Include="Component\PortWriter.cpp" />
+    <ClCompile Include="Component\PowerDomain.cpp" />
+    <ClCompile Include="Component\PowerDomainReader.cpp" />
+    <ClCompile Include="Component\PowerDomainWriter.cpp" />
     <ClCompile Include="Component\Region.cpp" />
     <ClCompile Include="Component\Register.cpp" />
     <ClCompile Include="Component\RegisterBase.cpp" />
@@ -445,6 +448,9 @@
     <ClInclude Include="Component\ModeReader.h" />
     <ClInclude Include="Component\ModeWriter.h" />
     <ClInclude Include="Component\PortSlice.h" />
+    <ClInclude Include="Component\PowerDomain.h" />
+    <ClInclude Include="Component\PowerDomainReader.h" />
+    <ClInclude Include="Component\PowerDomainWriter.h" />
     <ClInclude Include="Component\Region.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />

@@ -23,6 +23,7 @@
 #include "ViewWriter.h"
 #include "InstantiationsWriter.h"
 #include "PortWriter.h"
+#include "PowerDomainWriter.h"
 #include "ComponentGeneratorWriter.h"
 #include "FileSetWriter.h"
 #include "CPUWriter.h"
@@ -65,6 +66,8 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 
     writeVLNVElements(writer, component->getVlnv());
 
+    writePowerDomains(writer, component);
+
     writeBusInterfaces(writer, component);
 
     writeIndirectInterfaces(writer, component);
@@ -104,6 +107,26 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
     writer.writeEndElement(); // ipxact:component
 
     writer.writeEndDocument();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentWriter::writePowerDomains()
+//-----------------------------------------------------------------------------
+void ComponentWriter::writePowerDomains(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
+{
+    if (component->getPowerDomains()->isEmpty())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:powerDomains"));
+
+    for (QSharedPointer<PowerDomain> domain : *component->getPowerDomains())
+    {
+        PowerDomainWriter::write(writer, domain);
+    }
+
+    writer.writeEndElement(); // ipxact:powerDomains
 }
 
 //-----------------------------------------------------------------------------
@@ -451,3 +474,4 @@ void ComponentWriter::writeComponentExtensions(QXmlStreamWriter& writer, QShared
 
     writeVendorExtensions(writer, component);
 }
+

@@ -23,6 +23,7 @@
 #include "DesignInstantiation.h"
 #include "DesignConfigurationInstantiation.h"
 #include "Port.h"
+#include "PowerDomain.h"
 #include "ComponentGenerator.h"
 #include "Choice.h"
 #include "FileSet.h"
@@ -59,6 +60,7 @@ Document(vlnv, revision)
 Component::Component(const Component &other):
 Document(other)
 {
+    copyPowerDomains(other);
     copyBusInterfaces(other);
     copyIndirectInterfaces(other);
     copyChannels(other);
@@ -86,6 +88,7 @@ Component& Component::operator=( const Component& other)
 
         pendingFileDependencies_ = other.pendingFileDependencies_;
 
+        powerDomains_->clear();
         busInterfaces_->clear();
         indirectInterfaces_->clear();
         channels_->clear();
@@ -102,6 +105,7 @@ Component& Component::operator=( const Component& other)
         otherClockDrivers_->clear();
         resetTypes_->clear();
 
+        copyPowerDomains(other);
         copyBusInterfaces(other);
         copyIndirectInterfaces(other);
         copyChannels(other);
@@ -195,6 +199,14 @@ bool Component::isCpu() const
 bool Component::isHierarchical() const
 {
     return model_->hasHierView();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::getPowerDomains()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<PowerDomain> > > Component::getPowerDomains() const
+{
+    return powerDomains_;
 }
 
 //-----------------------------------------------------------------------------
@@ -1527,11 +1539,24 @@ QStringList Component::getDependentDirs() const
 {
     QStringList dirs;
 
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
+    for (QSharedPointer<FileSet> fileSet : *fileSets_)
     {
-        dirs.append(*fileSet->getDependencies().data());
+        dirs.append(*fileSet->getDependencies());
     }
+
     return dirs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::copyPowerDomains()
+//-----------------------------------------------------------------------------
+void Component::copyPowerDomains(const Component& other) const
+{
+    for (QSharedPointer<PowerDomain> domain : *other.powerDomains_)
+    {
+        auto copy = QSharedPointer<PowerDomain>(new PowerDomain(*domain));
+        powerDomains_->append(copy);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1539,12 +1564,11 @@ QStringList Component::getDependentDirs() const
 //-----------------------------------------------------------------------------
 void Component::copyBusInterfaces(const Component& other) const
 {
-    foreach (QSharedPointer<BusInterface> busInterface, *other.busInterfaces_)
+    for (QSharedPointer<BusInterface> busInterface : *other.busInterfaces_)
     {
         if (busInterface)
         {
-            QSharedPointer<BusInterface> copy =
-                QSharedPointer<BusInterface>(new BusInterface(*busInterface.data()));
+            auto copy = QSharedPointer<BusInterface>(new BusInterface(*busInterface));
             busInterfaces_->append(copy);
         }
     }
@@ -1555,10 +1579,9 @@ void Component::copyBusInterfaces(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyIndirectInterfaces(Component const& other) const
 {
-    foreach (QSharedPointer<IndirectInterface> indirectInterface, *other.indirectInterfaces_)
+    for (QSharedPointer<IndirectInterface> indirectInterface : *other.indirectInterfaces_)
     {
-        QSharedPointer<IndirectInterface> copy =
-            QSharedPointer<IndirectInterface>(new IndirectInterface(*indirectInterface.data()));
+        auto copy = QSharedPointer<IndirectInterface>(new IndirectInterface(*indirectInterface));
         indirectInterfaces_->append(copy);
     }
 }
@@ -1568,11 +1591,11 @@ void Component::copyIndirectInterfaces(Component const& other) const
 //-----------------------------------------------------------------------------
 void Component::copyChannels(const Component& other) const
 {
-    foreach (QSharedPointer<Channel> channel, *other.channels_)
+    for (QSharedPointer<Channel> channel : *other.channels_)
     {
         if (channel)
         {
-            QSharedPointer<Channel> copy = QSharedPointer<Channel>(new Channel(*channel.data()));
+            auto copy = QSharedPointer<Channel>(new Channel(*channel));
             channels_->append(copy);
         }
     }
@@ -1583,11 +1606,11 @@ void Component::copyChannels(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyRemapStates(const Component& other) const
 {
-    foreach (QSharedPointer<RemapState> remapState, *other.remapStates_)
+    for (QSharedPointer<RemapState> remapState : *other.remapStates_)
     {
         if (remapState)
         {
-            QSharedPointer<RemapState> copy = QSharedPointer<RemapState>(new RemapState(*remapState.data()));
+            auto copy = QSharedPointer<RemapState>(new RemapState(*remapState));
             remapStates_->append(copy);
         }
     }
@@ -1600,7 +1623,7 @@ void Component::copyModes(const Component& other) const
 {
     for (auto const& mode : *other.modes_)
     {
-        QSharedPointer<Mode> copy = QSharedPointer<Mode>(new Mode(*mode));
+        auto copy = QSharedPointer<Mode>(new Mode(*mode));
         modes_->append(copy);
     }
 }
@@ -1610,12 +1633,11 @@ void Component::copyModes(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyAddressSpaces(const Component& other) const
 {
-    foreach (QSharedPointer<AddressSpace> addressSpace, *other.addressSpaces_)
+    for (QSharedPointer<AddressSpace> addressSpace : *other.addressSpaces_)
     {
         if (addressSpace)
         {
-            QSharedPointer<AddressSpace> copy =
-                QSharedPointer<AddressSpace>(new AddressSpace(*addressSpace.data()));
+            auto copy = QSharedPointer<AddressSpace>(new AddressSpace(*addressSpace));
             addressSpaces_->append(copy);
         }
     }
@@ -1626,11 +1648,11 @@ void Component::copyAddressSpaces(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyMemoryMaps(const Component& other) const
 {
-    foreach (QSharedPointer<MemoryMap> memoryMap, *other.memoryMaps_)
+    for (QSharedPointer<MemoryMap> memoryMap : *other.memoryMaps_)
     {
         if (memoryMap)
         {
-            QSharedPointer<MemoryMap> copy = QSharedPointer<MemoryMap>(new MemoryMap(*memoryMap.data()));
+            auto copy = QSharedPointer<MemoryMap>(new MemoryMap(*memoryMap));
             memoryMaps_->append(copy);
         }
     }
@@ -1643,7 +1665,7 @@ void Component::copyModel(const Component& other)
 {
     if (other.model_)
     {
-        model_ = QSharedPointer<Model> (new Model(*other.model_.data()));
+        model_ = QSharedPointer<Model> (new Model(*other.model_));
     }
 }
 
@@ -1652,12 +1674,11 @@ void Component::copyModel(const Component& other)
 //-----------------------------------------------------------------------------
 void Component::copyComponentGenerators(const Component& other) const
 {
-    foreach (QSharedPointer<ComponentGenerator> generator, *other.componentGenerators_)
+    for (QSharedPointer<ComponentGenerator> generator : *other.componentGenerators_)
     {
         if (generator)
         {
-            QSharedPointer<ComponentGenerator> copy =
-                QSharedPointer<ComponentGenerator>(new ComponentGenerator(*generator.data()));
+            auto copy = QSharedPointer<ComponentGenerator>(new ComponentGenerator(*generator));
             componentGenerators_->append(copy);
         }
     }
@@ -1668,11 +1689,11 @@ void Component::copyComponentGenerators(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyChoices(const Component& other) const
 {
-    foreach (QSharedPointer<Choice> choice, *other.choices_)
+    for (QSharedPointer<Choice> choice : *other.choices_)
     {
         if (choice)
         {
-            QSharedPointer<Choice> copy = QSharedPointer<Choice>(new Choice(*choice.data()));
+            auto copy = QSharedPointer<Choice>(new Choice(*choice));
             choices_->append(copy);
         }
     }
@@ -1683,11 +1704,11 @@ void Component::copyChoices(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyFileSets(const Component& other) const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *other.fileSets_)
+    for (QSharedPointer<FileSet> fileSet : *other.fileSets_)
     {
         if (fileSet)
         {
-            QSharedPointer<FileSet> copy = QSharedPointer<FileSet>(new FileSet(*fileSet.data()));
+            auto copy = QSharedPointer<FileSet>(new FileSet(*fileSet));
             fileSets_->append(copy);
         }
     }
@@ -1698,11 +1719,11 @@ void Component::copyFileSets(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyCpus(const Component& other) const
 {
-    foreach (QSharedPointer<Cpu> cpu, *other.cpus_)
+    for (QSharedPointer<Cpu> cpu : *other.cpus_)
     {
         if (cpu)
         {
-            QSharedPointer<Cpu> copy = QSharedPointer<Cpu>(new Cpu(*cpu.data()));
+            auto copy = QSharedPointer<Cpu>(new Cpu(*cpu));
             cpus_->append(copy);
         }
     }
@@ -1713,12 +1734,11 @@ void Component::copyCpus(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyOtherClockDrivers(const Component& other) const
 {
-    foreach (QSharedPointer<OtherClockDriver> driver, *other.otherClockDrivers_)
+    for (QSharedPointer<OtherClockDriver> driver : *other.otherClockDrivers_)
     {
         if (driver)
         {
-            QSharedPointer<OtherClockDriver> copy =
-                QSharedPointer<OtherClockDriver>(new OtherClockDriver(*driver.data()));
+            auto copy = QSharedPointer<OtherClockDriver>(new OtherClockDriver(*driver));
             otherClockDrivers_->append(copy);
         }
     }
@@ -1729,11 +1749,11 @@ void Component::copyOtherClockDrivers(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyResetTypes(const Component& other) const
 {
-    foreach(QSharedPointer<ResetType> resetType, *other.resetTypes_)
+    for (QSharedPointer<ResetType> resetType : *other.resetTypes_)
     {
         if (resetType)
         {
-            QSharedPointer<ResetType> copy = QSharedPointer<ResetType>(new ResetType(*resetType.data()));
+            auto copy = QSharedPointer<ResetType>(new ResetType(*resetType));
             resetTypes_->append(copy);
         }
     }
