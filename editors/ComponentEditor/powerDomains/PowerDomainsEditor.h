@@ -55,12 +55,13 @@ public:
 
     //! No copying.
     PowerDomainsEditor(const PowerDomainsEditor& other) = delete;
-    PowerDomainsEditor& operator=(const PowerDomainsEditor& other) = delete;
+	PowerDomainsEditor& operator=(const PowerDomainsEditor& other) = delete;
 
 	/*!
      *  Reload the information from the model to the editor.
 	 */
 	virtual void refresh();
+
 
 protected:
 
@@ -69,6 +70,8 @@ protected:
 
 private:
 	
+	//! Setup the widget layout.
+    void setupLayout();
 
 	//! The view that displays the parameters.
 	EditableTableView view_;

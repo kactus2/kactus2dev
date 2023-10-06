@@ -19,11 +19,13 @@
 // Function: PowerDomainsItem::PowerDomainsItem()
 //-----------------------------------------------------------------------------
 PowerDomainsItem::PowerDomainsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-    QSharedPointer<Component> component, ExpressionSet expressions, ComponentEditorItem* parent):
+    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter, 
+    ExpressionSet expressions, ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 expressions_(expressions)
 {
 
+    setReferenceCounter(referenceCounter);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,6 +65,8 @@ ItemEditor* PowerDomainsItem::editor()
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+
+        connectItemEditorToReferenceCounter();
 	}
 
 	return editor_;

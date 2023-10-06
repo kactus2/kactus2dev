@@ -57,8 +57,10 @@ model_(component, expressions, this)
 
 	view_.setSortingEnabled(true);
 	view_.setItemsDraggable(false);
-	view_.setItemDelegate(new PowerDomainsDelegate(component->getPowerDomains(), completionModel,
-		expressions.finder, this));
+
+    auto delegate = new PowerDomainsDelegate(component->getPowerDomains(), completionModel, expressions.finder,
+        this);
+	view_.setItemDelegate(delegate);
 
 	// Set proxy to do the sorting automatically.
 	proxy_ = new QSortFilterProxyModel(this);	
@@ -71,14 +73,17 @@ model_(component, expressions, this)
 	// sort the view
 	view_.sortByColumn(0, Qt::AscendingOrder);
 
-	// display a label on top the table
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Power domains"), this);
+    connect(delegate, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);;
 
-	// create the layout, add widgets to it
-	QVBoxLayout* layout = new QVBoxLayout(this);
-	layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-	layout->addWidget(&view_);
-	layout->setContentsMargins(0, 0, 0, 0);
+    connect(&model_, SIGNAL(decreaseReferences(QString)),
+        this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(increaseReferences(QString)),
+        this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+
+	setupLayout();
 
 	PowerDomainsEditor::refresh();
 }
@@ -98,4 +103,18 @@ void PowerDomainsEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
 	emit helpUrlRequested("componenteditor/powerdomains.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: PowerDomainsEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void PowerDomainsEditor::setupLayout()
+{
+    // Display a label on top the table.
+    SummaryLabel* summaryLabel = new SummaryLabel(tr("Power domains"), this);
+
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(&view_);
+    layout->setContentsMargins(0, 0, 0, 0);
 }

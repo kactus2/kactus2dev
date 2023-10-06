@@ -284,6 +284,11 @@ private:
      *      @param [in] parent      The parent of the upcoming item.
      */
     void createItemsForRegion(QSharedPointer<Region> region, QTreeWidgetItem* parent);
+        
+    /*!
+     *  Create references for power domains.
+     */
+    void createReferencesForPowerDomains();
 
     /*!
      *  Create tree items for a port that is referencing this parameter.

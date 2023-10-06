@@ -36,6 +36,7 @@ public:
      */
     PowerDomainsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
         QSharedPointer<Component> component, 
+		QSharedPointer<ReferenceCounter> referenceCounter,
 		ExpressionSet expressions, 
 		ComponentEditorItem* parent);
 

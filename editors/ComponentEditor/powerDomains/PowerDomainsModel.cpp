@@ -232,12 +232,11 @@ void PowerDomainsModel::onRemoveRow(int row)
 
 	beginRemoveRows(QModelIndex(), row, row);
 
-	// remove the object from the map
+    removeReferencesInItemOnRow(row);
 	table_->removeAt(row);
 
 	endRemoveRows();
 
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
@@ -246,18 +245,16 @@ void PowerDomainsModel::onRemoveRow(int row)
 //-----------------------------------------------------------------------------
 void PowerDomainsModel::onRemoveItem(QModelIndex const&  index)
 {
-	// don't remove anything if index is invalid
 	if (!index.isValid() || index.row() < 0 || index.row() >= table_->size())
     {
 		return;
     }
 
-	// remove the specified item
 	beginRemoveRows(QModelIndex(), index.row(), index.row());
+    removeReferencesInItemOnRow(index.row());
 	table_->removeAt(index.row());
 	endRemoveRows();
 
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
@@ -270,7 +267,6 @@ void PowerDomainsModel::onAddRow()
 	table_->append(QSharedPointer<PowerDomain>(new PowerDomain()));
 	endInsertRows();
 
-	// tell also parent widget that contents have been changed
 	emit contentChanged();
 }
 
