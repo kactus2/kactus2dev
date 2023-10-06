@@ -685,6 +685,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsFilter.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp" />
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ComponentParameterReferenceCounter.cpp" />
     <ClCompile Include="editors\ComponentEditor\referenceCounter\ParameterReferenceCounter.cpp" />
     <ClCompile Include="editors\ComponentEditor\remapStates\RemapConditionDelegate.cpp" />
@@ -756,6 +759,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\MemoryRemapItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ModesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ParameterizableItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\RemapStatesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\ResetTypesItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleComponentInstantiationItem.cpp" />
@@ -1889,6 +1893,10 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\WirePortsDelegate.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.h" />
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.h" />
+    <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h" />
     <QtMoc Include="editors\ComponentEditor\remapStates\RemapConditionModel.h">
     </QtMoc>
@@ -1939,6 +1947,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleCpuItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\ModesItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>

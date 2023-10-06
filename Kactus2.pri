@@ -868,7 +868,12 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/extensions/IOCatcher.h \
     ./editors/ComponentEditor/common/MemoryAlignScene.h \
     ./editors/ComponentEditor/cpus/RegionScene.h \
-    ./editors/ComponentEditor/cpus/CpuVisualizer.h
+    ./editors/ComponentEditor/cpus/CpuVisualizer.h \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainColumns.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1638,5 +1643,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/extensions/IOCatcher.cpp \
     ./editors/ComponentEditor/common/MemoryAlignScene.cpp \
     ./editors/ComponentEditor/cpus/RegionScene.cpp \
-    ./editors/ComponentEditor/cpus/CpuVisualizer.cpp
+    ./editors/ComponentEditor/cpus/CpuVisualizer.cpp \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.cpp
 RESOURCES += kactus.qrc

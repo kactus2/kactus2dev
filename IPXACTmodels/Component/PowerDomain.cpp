@@ -1,9 +1,9 @@
 //-----------------------------------------------------------------------------
 // File: PowerDomain.cpp
 //-----------------------------------------------------------------------------
-// Project: Kactus 2
-// Author: Janne Virtanen
-// Date: 20.09.2015
+// Project: Kactus2
+// Author: Esko Pekkarinen
+// Date: 4.10.2023
 //
 // Description:
 // Implementation for ipxact:powerDomain element.
@@ -25,9 +25,11 @@ PowerDomain::PowerDomain(): NameGroup(), Extendable()
 //-----------------------------------------------------------------------------
 PowerDomain::PowerDomain(PowerDomain const& other):
 NameGroup(other),
-Extendable(other)
+Extendable(other),
+alwaysOn_(other.alwaysOn_),
+subDomainOf_(other.subDomainOf_)
 {
-
+    copyParameters(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -39,6 +41,11 @@ PowerDomain& PowerDomain::operator=(PowerDomain const& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
+
+        alwaysOn_ = other.alwaysOn_;
+        subDomainOf_ = other.subDomainOf_;
+
+        copyParameters(other);
 	}
 
 	return *this;
@@ -97,4 +104,15 @@ void PowerDomain::setParameters(QSharedPointer<QList<QSharedPointer<Parameter> >
 QSharedPointer<QList<QSharedPointer<Parameter> > > PowerDomain::getParameters()
 {
     return parameters_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PowerDomain::copyParameters()
+//-----------------------------------------------------------------------------
+void PowerDomain::copyParameters(PowerDomain const& other)
+{
+    for (auto parameter : *other.parameters_)
+    {
+        parameters_->append(QSharedPointer<Parameter>(new Parameter(*parameter)));
+    }
 }

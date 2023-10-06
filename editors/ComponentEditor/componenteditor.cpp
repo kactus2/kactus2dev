@@ -33,6 +33,7 @@
 #include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
 #include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
 #include <editors/ComponentEditor/treeStructure/ModesItem.h>
+#include <editors/ComponentEditor/treeStructure/PowerDomainsItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
@@ -710,6 +711,12 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 
         root->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
             new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component, expressionParser_, root)));
+
+        if (docRevision == Document::Revision::Std22)
+        {
+            root->addChildItem(QSharedPointer<PowerDomainsItem>(
+                new PowerDomainsItem(&navigationModel_, libHandler_, component, expressionsSupport, root)));
+        }
 
         root->addChildItem(QSharedPointer<ResetTypesItem>(
             new ResetTypesItem(&navigationModel_, libHandler_, component, validator_, root)));

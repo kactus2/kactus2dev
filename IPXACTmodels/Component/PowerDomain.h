@@ -57,6 +57,8 @@ public:
 
 private:
 
+	void copyParameters(PowerDomain const& other);
+
 	//! Expression for power domain being always on.
 	QString alwaysOn_;
 
