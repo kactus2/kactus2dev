@@ -102,7 +102,7 @@ void PowerDomainsEditor::refresh()
 void PowerDomainsEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/powerdomains.html");
+	emit helpUrlRequested("componenteditor/powerdomains2022.html");
 }
 
 //-----------------------------------------------------------------------------
