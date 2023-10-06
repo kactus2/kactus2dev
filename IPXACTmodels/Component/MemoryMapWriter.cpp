@@ -6,7 +6,7 @@
 // Date: 01.10.2015
 //
 // Description:
-// Writer class for ipxact:memoryMap element.
+// Writer for ipxact:memoryMap element.
 //-----------------------------------------------------------------------------
 
 #include "MemoryMapWriter.h"
@@ -15,73 +15,93 @@
 #include "MemoryMapBase.h"
 
 #include "AddressBlock.h"
+#include "MemoryMapBaseWriter.h"
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/AddressBlockWriter.h>
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::MemoryMapWriter()
-//-----------------------------------------------------------------------------
-MemoryMapWriter::MemoryMapWriter(): MemoryMapBaseWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::~MemoryMapWriter()
-//-----------------------------------------------------------------------------
-MemoryMapWriter::~MemoryMapWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapWriter::writeMemoryMap()
 //-----------------------------------------------------------------------------
 void MemoryMapWriter::writeMemoryMap(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, 
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     writer.writeStartElement(QStringLiteral("ipxact:memoryMap"));
 
-	writeMemoryMapBase(writer, memoryMap, docRevision);
+    if (docRevision == Document::Revision::Std14)
+    {
+	    MemoryMapBaseWriter::writeMemoryMapBase(writer, memoryMap, docRevision);
 
-    writeMemoryRemaps(writer, memoryMap, docRevision);
+        Details::writeMemoryRemaps(writer, memoryMap, docRevision);
 
-    writeAddressUnitBits(writer, memoryMap);
+        Details::writeAddressUnitBits(writer, memoryMap);
 
-    writeShared(writer, memoryMap);
+        Details::writeShared(writer, memoryMap);
 
-    writeVendorExtensions(writer, memoryMap);
+        CommonItemsWriter::writeVendorExtensions(writer, memoryMap);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        NameGroupWriter::writeNameGroup(writer, memoryMap, docRevision);
+
+        Details::writeMemoryMapDefinitionReference(writer, memoryMap);
+
+        MemoryMapBaseWriter::Details::writeMemoryBlocks(writer, memoryMap, docRevision);
+
+        Details::writeMemoryRemaps(writer, memoryMap, docRevision);
+
+        Details::writeAddressUnitBits(writer, memoryMap);
+
+        Details::writeShared(writer, memoryMap);
+
+        CommonItemsWriter::writeVendorExtensions(writer, memoryMap);
+    }
 
     writer.writeEndElement(); // ipxact:memoryMap
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::writeMemoryRemaps()
+// Function: MemoryMapWriter::Details::writeMemoryRemaps()
 //-----------------------------------------------------------------------------
-void MemoryMapWriter::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, 
-    Document::Revision docRevision) const
+void MemoryMapWriter::Details::writeMemoryRemaps(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap, 
+    Document::Revision docRevision)
 {
     for (auto const& memoryRemap : *memoryMap->getMemoryRemaps())
     {
         writer.writeStartElement(QStringLiteral("ipxact:memoryRemap"));
 
-        writer.writeAttribute(QStringLiteral("state"), memoryRemap->getRemapState());
+        if (docRevision == Document::Revision::Std14)
+        {
+            writer.writeAttribute(QStringLiteral("state"), memoryRemap->getRemapState());
 
-        writeNameGroup(writer, memoryRemap, docRevision);
+            NameGroupWriter::writeNameGroup(writer, memoryRemap, docRevision);
 
-        writeIsPresent(writer, memoryRemap->getIsPresent());
+            CommonItemsWriter::writeIsPresent(writer, memoryRemap->getIsPresent());
 
-        writeMemoryBlocks(writer, memoryRemap, docRevision);
+            MemoryMapBaseWriter::Details::writeMemoryBlocks(writer, memoryRemap, docRevision);
+        }
+        else if (docRevision == Document::Revision::Std22)
+        {
+            NameGroupWriter::writeNameGroup(writer, memoryRemap, docRevision);
+
+            CommonItemsWriter::writeModeReferences(writer, memoryRemap->getModeReferences());
+
+            writeRemapDefinitionReference(writer, memoryRemap);
+
+            MemoryMapBaseWriter::Details::writeMemoryBlocks(writer, memoryRemap, docRevision);
+
+            CommonItemsWriter::writeVendorExtensions(writer, memoryRemap);
+        }
 
         writer.writeEndElement(); // ipxact:memoryRemap
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::writeAddressUnitBits()
+// Function: MemoryMapWriter::Details::writeAddressUnitBits()
 //-----------------------------------------------------------------------------
-void MemoryMapWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const
+void MemoryMapWriter::Details::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap)
 {
     if (!memoryMap->getAddressUnitBits().isEmpty())
     {
@@ -90,9 +110,9 @@ void MemoryMapWriter::writeAddressUnitBits(QXmlStreamWriter& writer, QSharedPoin
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapWriter::writeShared()
+// Function: MemoryMapWriter::Details::writeShared()
 //-----------------------------------------------------------------------------
-void MemoryMapWriter::writeShared(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap) const
+void MemoryMapWriter::Details::writeShared(QXmlStreamWriter& writer, QSharedPointer<MemoryMap> memoryMap)
 {
     if (!memoryMap->getShared().isEmpty())
     {
@@ -108,5 +128,43 @@ void MemoryMapWriter::writeShared(QXmlStreamWriter& writer, QSharedPointer<Memor
         }
 
         writer.writeEndElement(); // ipxact:shared
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapWriter::Details::writeMemoryMapDefinitionReference()
+//-----------------------------------------------------------------------------
+void MemoryMapWriter::Details::writeMemoryMapDefinitionReference(QXmlStreamWriter& writer, 
+    QSharedPointer<MemoryMap> memoryMap)
+{
+    if (!memoryMap->getMemoryMapDefinitionReference().isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:memoryMapDefinitionRef"));
+
+        CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("typeDefinitions"),
+            memoryMap->getTypeDefinitionsReference());
+
+        writer.writeCharacters(memoryMap->getMemoryMapDefinitionReference());
+
+        writer.writeEndElement(); // ipxact:remapDefinitionRef
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapWriter::Details::writeRemapDefinitionReference()
+//-----------------------------------------------------------------------------
+void MemoryMapWriter::Details::writeRemapDefinitionReference(QXmlStreamWriter& writer, 
+    QSharedPointer<MemoryRemap> memoryRemap)
+{
+    if (!memoryRemap->getMemoryRemapDefinitionReference().isEmpty())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:remapDefinitionRef"));
+
+        CommonItemsWriter::writeNonEmptyAttribute(writer, QStringLiteral("typeDefinitions"),
+            memoryRemap->getTypeDefinitionsReference());
+
+        writer.writeCharacters(memoryRemap->getMemoryRemapDefinitionReference());
+
+        writer.writeEndElement(); // ipxact:remapDefinitionRef
     }
 }

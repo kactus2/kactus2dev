@@ -282,7 +282,7 @@ QSharedPointer<AddressSpace> MemoryMapBaseValidator::getReferencedAddressSpace(
 {
     for (auto bus : *availableBusInterfaces_)
     {
-        if (subspace->getMasterReference() == bus->name())
+        if (subspace->getInitiatorReference() == bus->name())
         {
             for (auto space : *availableSpaces_)
             {

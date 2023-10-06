@@ -6,7 +6,7 @@
 // Date: 01.10.2015
 //
 // Description:
-// Reader class for ipxact:MemoryMapBase element.
+// Reader for ipxact:MemoryMapBase element.
 //-----------------------------------------------------------------------------
 
 #ifndef MemoryMapBaseREADER_H
@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QSharedPointer>
 #include <QDomNode>
@@ -23,19 +23,10 @@ class MemoryMapBase;
 class MemoryRemap;
 
 //-----------------------------------------------------------------------------
-//! Reader class for ipxact:MemoryMapBase element.
+//! Reader for ipxact:MemoryMapBase element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMapBaseReader : public CommonItemsReader
+namespace MemoryMapBaseReader
 {
-public:
-
-    //! The constructor.
-    MemoryMapBaseReader();
-
-    /*!
-     *  The destructor.
-     */
-    ~MemoryMapBaseReader();
 
     /*!
      *  Creates a new memory map from a given memory map node.
@@ -44,39 +35,35 @@ public:
      *
      *      @return The created memory map.
      */
-    void readMemoryMapBase(QDomNode const& MemoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision) const;
+    IPXACTMODELS_EXPORT void readMemoryMapBase(QDomNode const& MemoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision);
 
-protected:
+    namespace Details
+    {
 
-    /*!
-     *  Reads the name group.
-     *
-     *      @param [in] MemoryMapBaseBaseNode   XML description of the memory map base.
-     *      @param [in] newMemoryMapBaseBase    The new memory map base item.
-     */
-    void parseNameGroup(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase) const;
+        /*!
+         *  Reads the name group.
+         *
+         *      @param [in] MemoryMapBaseBaseNode   XML description of the memory map base.
+         *      @param [in] newMemoryMapBaseBase    The new memory map base item.
+         */
+        void parseNameGroup(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase);
 
-    /*!
-     *  Reads the isPresent value.
-     *
-     *      @param [in] MemoryMapBaseBaseNode   XML description of the memory map base.
-     *      @param [in] newMemoryMapBaseBase    The new memory map base item.
-     */
-    void parsePresence(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase) const;
+        /*!
+         *  Reads the isPresent value.
+         *
+         *      @param [in] MemoryMapBaseBaseNode   XML description of the memory map base.
+         *      @param [in] newMemoryMapBaseBase    The new memory map base item.
+         */
+        void parsePresence(QDomNode const& MemoryMapBaseBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase);
 
-    /*!
-     *  Reads the contained memory blocks.
-     *
-     *      @param [in] memoryMapBaseBaseNode   XML description of the memory map base.
-     *      @param [in] newMemoryMapBaseBase    The new memory map base item.
-     */
-    void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision) const;
-
-private:
-
-    //! No copying allowed.
-    MemoryMapBaseReader(MemoryMapBaseReader const& rhs);
-    MemoryMapBaseReader& operator=(MemoryMapBaseReader const& rhs);
+        /*!
+         *  Reads the contained memory blocks.
+         *
+         *      @param [in] memoryMapBaseBaseNode   XML description of the memory map base.
+         *      @param [in] newMemoryMapBaseBase    The new memory map base item.
+         */
+        void parseMemoryBlocks(QDomNode const& memoryMapBaseNode, QSharedPointer<MemoryMapBase> newMemoryMapBase, Document::Revision docRevision);
+    }
 };
 
 #endif // MemoryMapBaseREADER_H

@@ -11,6 +11,8 @@
 
 #include "MemoryRemap.h"
 
+#include <IPXACTmodels/Component/ModeReference.h>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryRemap::MemoryRemap()
 //-----------------------------------------------------------------------------
@@ -26,9 +28,11 @@ remapState_(remapState)
 //-----------------------------------------------------------------------------
 MemoryRemap::MemoryRemap(const MemoryRemap& other):
 MemoryMapBase(other),
-remapState_(other.remapState_)
+remapState_(other.remapState_),
+memoryRemapDefinitionReference_(other.memoryRemapDefinitionReference_),
+typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
-
+    Utilities::copyList(modeReferences_, other.modeReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,6 +44,10 @@ MemoryRemap& MemoryRemap::operator=(const MemoryRemap& other)
     {
         MemoryMapBase::operator=(other);
         remapState_ = other.remapState_;
+        memoryRemapDefinitionReference_ = other.memoryRemapDefinitionReference_;
+        typeDefinitionsReference_ = other.typeDefinitionsReference_;
+
+        Utilities::copyList(modeReferences_, other.modeReferences_);
     }
 
     return *this;
@@ -75,4 +83,52 @@ QString MemoryRemap::getRemapState() const
 void MemoryRemap::setRemapState(QString newRemapState)
 {
     remapState_ = newRemapState;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::getMemoryRemapDefinitionReference()
+//-----------------------------------------------------------------------------
+QString MemoryRemap::getMemoryRemapDefinitionReference() const
+{
+    return memoryRemapDefinitionReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::setMemoryRemapDefinitionReference()
+//-----------------------------------------------------------------------------
+void MemoryRemap::setMemoryRemapDefinitionReference(QString const& newDefinitionRef)
+{
+    memoryRemapDefinitionReference_ = newDefinitionRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::getTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+QString MemoryRemap::getTypeDefinitionsReference() const
+{
+    return typeDefinitionsReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::setTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+void MemoryRemap::setTypeDefinitionsReference(QString const& newTypeDefinitionsRef)
+{
+    typeDefinitionsReference_ = newTypeDefinitionsRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::getModeReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > MemoryRemap::getModeReferences() const
+{
+    return modeReferences_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryRemap::setModeReferences()
+//-----------------------------------------------------------------------------
+void MemoryRemap::setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs)
+{
+    modeReferences_ = newModeRefs;
 }

@@ -62,14 +62,14 @@ public:
      *
      *      @return The master reference.
      */
-    QString getMasterReference() const;
+    QString getInitiatorReference() const;
 
     /*!
-     *  Set the reference to the master interface.
+     *  Set the reference to the initiator interface.
      *
-     *      @param [in] newMasterReference  The new master interface reference.
+     *      @param [in] newInitiatorReference  The new initiator interface reference.
      */
-    void setMasterReference(QString const& newMasterReference);
+    void setInitiatorReference(QString const& newInitiatorReference);
 
     /*!
      *  Get the segment reference.
@@ -91,10 +91,10 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    // The reference to the master interface whose address space is being mapped.
-    QString masterReference_;
+    // The reference to the initiator interface whose address space is being mapped.
+    QString initiatorReference_;
 
-    //! Reference to a segment in the address space of the referenced master reference.
+    //! Reference to a segment in the address space of the referenced initiator reference.
     QString segmentRef_;
 };
 

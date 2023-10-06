@@ -53,10 +53,10 @@ void tst_MemoryArrayReader::readSingleDimension()
     QDomDocument document;
     document.setContent(documentContent);
 
-    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), false);
+    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), Document::Revision::Std22, false);
 
     QCOMPARE(array->getDimensions()->size(), 1);
-    QCOMPARE(array->getDimensions()->first()->dimension_, "8");
+    QCOMPARE(array->getDimensions()->first()->value_, "8");
 }
 
 //-----------------------------------------------------------------------------
@@ -74,14 +74,14 @@ void tst_MemoryArrayReader::readMultipleDimension()
     QDomDocument document;
     document.setContent(documentContent);
 
-    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), false);
+    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), Document::Revision::Std22, false);
 
     auto dimensions = array->getDimensions();
 
     QCOMPARE(dimensions->size(), 2);
-    QCOMPARE(dimensions->first()->dimension_, "8");
+    QCOMPARE(dimensions->first()->value_, "8");
     QCOMPARE(dimensions->first()->indexVar_, "first");
-    QCOMPARE(dimensions->last()->dimension_, "16");
+    QCOMPARE(dimensions->last()->value_, "16");
     QCOMPARE(dimensions->last()->indexVar_, "second");
 }
 
@@ -100,10 +100,10 @@ void tst_MemoryArrayReader::readStride()
     QDomDocument document;
     document.setContent(documentContent);
 
-    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), false);
+    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), Document::Revision::Std22, false);
 
     QCOMPARE(array->getDimensions()->size(), 1);
-    QCOMPARE(array->getDimensions()->first()->dimension_, "8");
+    QCOMPARE(array->getDimensions()->first()->value_, "8");
     QCOMPARE(array->getStride(), "16");
 }
 
@@ -122,10 +122,10 @@ void tst_MemoryArrayReader::readBitStride()
     QDomDocument document;
     document.setContent(documentContent);
 
-    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), true);
+    auto array = MemoryArrayReader::createMemoryArrayFrom(document.firstChildElement("ipxact:array"), Document::Revision::Std22, true);
 
     QCOMPARE(array->getDimensions()->size(), 1);
-    QCOMPARE(array->getDimensions()->first()->dimension_, "8");
+    QCOMPARE(array->getDimensions()->first()->value_, "8");
     QCOMPARE(array->getStride(), "16");
 }
 

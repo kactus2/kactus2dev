@@ -144,8 +144,7 @@ void AddressSpaceWriter::Details::writeLocalMemoryMap(QXmlStreamWriter& writer,
     {
         writer.writeStartElement(QStringLiteral("ipxact:localMemoryMap"));
         
-        MemoryMapBaseWriter mmbw;
-        mmbw.writeMemoryMapBase(writer, addressSpace->getLocalMemoryMap(), docRevision);
+        MemoryMapBaseWriter::writeMemoryMapBase(writer, addressSpace->getLocalMemoryMap(), docRevision);
         
         writer.writeEndElement(); // ipxact:localMemoryMap
     }

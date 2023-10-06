@@ -16,6 +16,7 @@
 //-----------------------------------------------------------------------------
 MemoryMapBase::MemoryMapBase(QString const& name /* = QString() */):
 NameGroup(name),
+Extendable(),
 isPresent_(),
 memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ())
 {
@@ -27,6 +28,7 @@ memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ())
 //-----------------------------------------------------------------------------
 MemoryMapBase::MemoryMapBase(const MemoryMapBase& other):
 NameGroup(other),
+Extendable(other),
 isPresent_(other.isPresent_),
 memoryBlocks_(new QList<QSharedPointer<MemoryBlockBase> > ())
 {
@@ -41,6 +43,7 @@ MemoryMapBase& MemoryMapBase::operator=( const MemoryMapBase& other)
     if (this != &other)
     {
         NameGroup::operator=(other);
+        Extendable::operator=(other);
         isPresent_ = other.isPresent_;
 
         memoryBlocks_->clear();

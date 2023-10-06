@@ -6,10 +6,11 @@
 // Date: 01.10.2015
 //
 // Description:
-// Reader class for ipxact:memoryMap element.
+// Reader for ipxact:memoryMap element.
 //-----------------------------------------------------------------------------
 
 #include "MemoryMapReader.h"
+#include "MemoryMapBaseReader.h"
 #include "MemoryMap.h"
 #include "MemoryRemap.h"
 
@@ -20,67 +21,31 @@
 #include <IPXACTmodels/Component/AddressBlockReader.h>
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapReader::MemoryMapReader()
-//-----------------------------------------------------------------------------
-MemoryMapReader::MemoryMapReader(): MemoryMapBaseReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapReader::~MemoryMapReader()
-//-----------------------------------------------------------------------------
-MemoryMapReader::~MemoryMapReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapReader::createMemoryMapFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& memoryMapNode, Document::Revision docRevision) const
+QSharedPointer<MemoryMap> MemoryMapReader::createMemoryMapFrom(QDomNode const& memoryMapNode, Document::Revision docRevision)
 {
     QSharedPointer<MemoryMap> newMemoryMap(new MemoryMap());
 
-	readMemoryMapBase(memoryMapNode, newMemoryMap, docRevision);
+	MemoryMapBaseReader::readMemoryMapBase(memoryMapNode, newMemoryMap, docRevision);
 
-    parseMemoryRemaps(memoryMapNode, newMemoryMap, docRevision);
+    Details::parseDefinitionReference(memoryMapNode, newMemoryMap, docRevision);
 
-    parseAddressUnitBits(memoryMapNode, newMemoryMap);
+    Details::parseMemoryRemaps(memoryMapNode, newMemoryMap, docRevision);
 
-    parseShared(memoryMapNode, newMemoryMap);
+    Details::parseAddressUnitBits(memoryMapNode, newMemoryMap);
 
-    parseVendorExtensions(memoryMapNode, newMemoryMap);
+    Details::parseShared(memoryMapNode, newMemoryMap);
+
+    CommonItemsReader::parseVendorExtensions(memoryMapNode, newMemoryMap);
 
     return newMemoryMap;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseMemoryBlocks()
+// Function: MemoryMapReader::Details::parseMemoryRemaps()
 //-----------------------------------------------------------------------------
-void MemoryMapReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBase,
-    Document::Revision docRevision) const
-{
-    QDomNodeList childNodes = memoryMapBaseNode.childNodes();
-
-    for (int childIndex = 0; childIndex < childNodes.count(); ++childIndex)
-    {
-        QDomNode addressBlockNode = childNodes.at(childIndex);
-        if (addressBlockNode.nodeName() == QStringLiteral("ipxact:addressBlock"))
-        {
-            QSharedPointer<AddressBlock> newAddressBlock =
-                AddressBlockReader::createAddressBlockFrom(addressBlockNode, docRevision);
-
-            newMemoryMapBase->getMemoryBlocks()->append(newAddressBlock);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseMemoryRemaps()
-//-----------------------------------------------------------------------------
-void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap, Document::Revision docRevision) const
+void MemoryMapReader::Details::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap, Document::Revision docRevision)
 {
     QDomNodeList memoryRemapNodeList = memoryMapNode.toElement().elementsByTagName(QStringLiteral("ipxact:memoryRemap"));
 
@@ -95,29 +60,43 @@ void MemoryMapReader::parseMemoryRemaps(QDomNode const& memoryMapNode, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseSingleMemoryRemap()
+// Function: MemoryMapReader::Details::parseSingleMemoryRemap()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryRemap> MemoryMapReader::createSingleMemoryRemap(QDomElement const& memoryRemapElement, Document::Revision docRevision) const
+QSharedPointer<MemoryRemap> MemoryMapReader::Details::createSingleMemoryRemap(QDomElement const& memoryRemapElement, Document::Revision docRevision)
 {
     QSharedPointer<MemoryRemap> newMemoryRemap (new MemoryRemap());
 
-    QString remapState = memoryRemapElement.attribute(QStringLiteral("state"));
-    newMemoryRemap->setRemapState(remapState);
+    if (docRevision == Document::Revision::Std14)
+    {
+        QString remapState = memoryRemapElement.attribute(QStringLiteral("state"));
+        newMemoryRemap->setRemapState(remapState);
+        MemoryMapBaseReader::Details::parsePresence(memoryRemapElement, newMemoryRemap);
+    }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        newMemoryRemap->setModeReferences(CommonItemsReader::parseModeReferences(memoryRemapElement));
 
-    parseNameGroup(memoryRemapElement, newMemoryRemap);
+        auto definitionRefElement = memoryRemapElement.firstChildElement(
+            QStringLiteral("ipxact:remapDefinitionRef"));
 
-    parsePresence(memoryRemapElement, newMemoryRemap);
+        newMemoryRemap->setMemoryRemapDefinitionReference(definitionRefElement.firstChild().nodeValue());
 
-    parseMemoryBlocks(memoryRemapElement, newMemoryRemap, docRevision);
+        newMemoryRemap->setTypeDefinitionsReference(definitionRefElement.attribute(
+            QStringLiteral("typeDefinitions")));
+    }
+
+    NameGroupReader::parseNameGroup(memoryRemapElement, newMemoryRemap);
+
+    MemoryMapBaseReader::Details::parseMemoryBlocks(memoryRemapElement, newMemoryRemap, docRevision);
 
     return newMemoryRemap;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseAddressUnitBits()
+// Function: MemoryMapReader::Details::parseAddressUnitBits()
 //-----------------------------------------------------------------------------
-void MemoryMapReader::parseAddressUnitBits(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
-    const
+void MemoryMapReader::Details::parseAddressUnitBits(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
+   
 {
     QDomNode addressUnitBitsNode = memoryMapNode.firstChildElement(QStringLiteral("ipxact:addressUnitBits"));
     if (!addressUnitBitsNode.isNull())
@@ -128,9 +107,9 @@ void MemoryMapReader::parseAddressUnitBits(QDomNode const& memoryMapNode, QShare
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapReader::parseShared()
+// Function: MemoryMapReader::Details::parseShared()
 //-----------------------------------------------------------------------------
-void MemoryMapReader::parseShared(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap) const
+void MemoryMapReader::Details::parseShared(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap)
 {
     QDomNode sharedNode = memoryMapNode.firstChildElement(QStringLiteral("ipxact:shared"));
     if (!sharedNode.isNull())
@@ -144,5 +123,19 @@ void MemoryMapReader::parseShared(QDomNode const& memoryMapNode, QSharedPointer<
         {
             newMemoryMap->setShared(false);
         }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapReader::Details::parseDefinitionReference()
+//-----------------------------------------------------------------------------
+void MemoryMapReader::Details::parseDefinitionReference(QDomNode const& memoryMapNode, QSharedPointer<MemoryMap> newMemoryMap, Document::Revision docRevision)
+{
+    if (docRevision == Document::Revision::Std22)
+    {
+        auto definitionRefElement = memoryMapNode.firstChildElement(QStringLiteral("ipxact:memoryMapDefinitionRef"));
+
+        newMemoryMap->setMemoryMapDefinitionReference(definitionRefElement.firstChild().nodeValue());
+        newMemoryMap->setTypeDefinitionsReference(definitionRefElement.attribute(QStringLiteral("typeDefinitions")));
     }
 }

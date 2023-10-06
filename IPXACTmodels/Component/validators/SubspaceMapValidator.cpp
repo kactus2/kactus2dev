@@ -69,7 +69,7 @@ bool SubspaceMapValidator::validate(QSharedPointer<SubSpaceMap> subspace) const
 //-----------------------------------------------------------------------------
 bool SubspaceMapValidator::hasValidMasterReference(QSharedPointer<SubSpaceMap> subspace) const
 {
-    QString masterReference = subspace->getMasterReference();
+    QString masterReference = subspace->getInitiatorReference();
     if (masterReference.isEmpty() || !masterReferenceExists(masterReference) ||
         !referencedBusIsMaster(masterReference))
     {
@@ -130,7 +130,7 @@ bool SubspaceMapValidator::hasValidSegmentReference(QSharedPointer<SubSpaceMap> 
 {
     QString segmentReference = subspace->getSegmentReference();
     if (segmentReference.isEmpty() ||
-        spaceContainsSegmentReference(subspace->getMasterReference(), segmentReference))
+        spaceContainsSegmentReference(subspace->getInitiatorReference(), segmentReference))
     {
         return true;
     }
@@ -202,7 +202,7 @@ void SubspaceMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer
 void SubspaceMapValidator::findErrorsInMasterReference(QVector<QString>& errors,
     QSharedPointer<SubSpaceMap> subspace, QString const& context) const
 {
-    QString masterReference = subspace->getMasterReference();
+    QString masterReference = subspace->getInitiatorReference();
     if (masterReference.isEmpty())
     {
         errors.append(
@@ -229,10 +229,10 @@ void SubspaceMapValidator::findErrorsInSegmentReference(QVector<QString>& errors
 {
     QString segmentReference = subspace->getSegmentReference();
     if (!segmentReference.isEmpty() &&
-        !spaceContainsSegmentReference(subspace->getMasterReference(), segmentReference))
+        !spaceContainsSegmentReference(subspace->getInitiatorReference(), segmentReference))
     {
         errors.append(QObject::tr(
             "Segment %1 does not exist in address space of bus interface %2 referenced in %3 within %4").
-            arg(segmentReference, subspace->getMasterReference(), subspace->name(), context));
+            arg(segmentReference, subspace->getInitiatorReference(), subspace->name(), context));
     }
 }

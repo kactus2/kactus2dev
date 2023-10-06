@@ -22,11 +22,14 @@ void SubSpaceMapWriter::writeSubSpaceMap(QXmlStreamWriter& writer, QSharedPointe
 {
     writer.writeStartElement(QStringLiteral("ipxact:subspaceMap"));
 
-    Details::writeAttributes(writer, subMap);
+    Details::writeAttributes(writer, subMap, docRevision);
 
     MemoryBlockBaseWriter::writeNameGroup(writer, subMap, docRevision);
 
-    CommonItemsWriter::writeIsPresent(writer, subMap->getIsPresent());
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, subMap->getIsPresent());
+    }
 
     MemoryBlockBaseWriter::writeBaseAddress(writer, subMap);
 
@@ -40,9 +43,13 @@ void SubSpaceMapWriter::writeSubSpaceMap(QXmlStreamWriter& writer, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: SubSpaceMapWriter::Details::writeAttributes()
 //-----------------------------------------------------------------------------
-void SubSpaceMapWriter::Details::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap)
+void SubSpaceMapWriter::Details::writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap, 
+    Document::Revision docRevision)
 {
-    writer.writeAttribute(QStringLiteral("masterRef"), subMap->getMasterReference());
+    QString initiatorAttrName = docRevision == Document::Revision::Std22
+        ? QStringLiteral("initiatorRef") : QStringLiteral("masterRef");
+
+    writer.writeAttribute(initiatorAttrName, subMap->getInitiatorReference());
 
     if (!subMap->getSegmentReference().isEmpty())
     {

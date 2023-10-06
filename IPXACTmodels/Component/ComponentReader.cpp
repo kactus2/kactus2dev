@@ -259,13 +259,11 @@ void ComponentReader::parseMemoryMaps(QDomNode const& componentNode, QSharedPoin
 
     if (!memoryMapsElement.isNull())
     {
-        MemoryMapReader memoryReader;
-
         QDomNodeList memoryMapNodeList = memoryMapsElement.elementsByTagName(QStringLiteral("ipxact:memoryMap"));
         for (int memoryIndex = 0; memoryIndex < memoryMapNodeList.count(); ++memoryIndex)
         {
             QDomNode memoryMapNode = memoryMapNodeList.at(memoryIndex);
-            QSharedPointer<MemoryMap> newMemoryMap = memoryReader.createMemoryMapFrom(memoryMapNode, newComponent->getRevision());
+            QSharedPointer<MemoryMap> newMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, newComponent->getRevision());
 
             newComponent->getMemoryMaps()->append(newMemoryMap);
         }
