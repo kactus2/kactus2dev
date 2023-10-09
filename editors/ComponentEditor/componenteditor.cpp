@@ -718,7 +718,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
                 new PowerDomainsItem(&navigationModel_, libHandler_, component, referenceCounter_, 
                     expressionsSupport, root)));
         }
-
+        
         root->addChildItem(QSharedPointer<ResetTypesItem>(
             new ResetTypesItem(&navigationModel_, libHandler_, component, validator_, root)));
     }

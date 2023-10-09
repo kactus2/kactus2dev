@@ -12,6 +12,8 @@
 #include "PowerDomainsItem.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <editors/ComponentEditor/powerDomains/PowerDomainsEditor.h>
 
@@ -20,21 +22,17 @@
 //-----------------------------------------------------------------------------
 PowerDomainsItem::PowerDomainsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> referenceCounter, 
-    ExpressionSet expressions, ComponentEditorItem* parent):
+    ExpressionSet expressions, ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
-expressions_(expressions)
+    validator_(new PowerDomainValidator(component->getPowerDomains(), expressions.parser,
+        QSharedPointer<ParameterValidator>(new ParameterValidator(expressions.parser, component->getChoices(),
+            component->getRevision())))),
+    expressions_(expressions)
 {
 
     setReferenceCounter(referenceCounter);
 }
 
-//-----------------------------------------------------------------------------
-// Function: PowerDomainsItem::~PowerDomainsItem()
-//-----------------------------------------------------------------------------
-PowerDomainsItem::~PowerDomainsItem()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: PowerDomainsItem::getFont()
@@ -61,7 +59,7 @@ ItemEditor* PowerDomainsItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new PowerDomainsEditor(component_, libHandler_, expressions_);
+        editor_ = new PowerDomainsEditor(component_, libHandler_, validator_, expressions_);
         editor_->setProtection(locked_);
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
@@ -85,5 +83,17 @@ QString PowerDomainsItem::getTooltip() const
 //-----------------------------------------------------------------------------
 bool PowerDomainsItem::isValid() const
 {
-    return true;
+    QVector<QString> domainNames;
+
+    return std::all_of(component_->getPowerDomains()->cbegin(), component_->getPowerDomains()->cend(),
+        [this, &domainNames](auto const& domain)
+        { 
+            if (domainNames.contains(domain->name()) || !validator_->validate(domain))
+            {
+                return false;
+            }
+
+            domainNames.append(domain->name());
+            return true;
+        });
 }

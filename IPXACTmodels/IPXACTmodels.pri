@@ -299,7 +299,8 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
     ./Component/PowerDomain.h \
     ./Component/PowerDomainReader.h \
-    ./Component/PowerDomainWriter.h
+    ./Component/PowerDomainWriter.h \
+    ./Component/validators/PowerDomainValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -593,4 +594,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
     ./Component/PowerDomain.cpp \
     ./Component/PowerDomainReader.cpp \
-    ./Component/PowerDomainWriter.cpp
+    ./Component/PowerDomainWriter.cpp \
+    ./Component/validators/PowerDomainValidator.cpp

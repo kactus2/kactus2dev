@@ -36,13 +36,13 @@ public:
      *  The constructor
 	 *
 	 *      @param [in] component       The component being edited.
-     *      @param [in] clockValidator  Validator used for other clock drivers.
+     *      @param [in] validator		The validator used for power domains.
      *      @param [in] expressions		The collection of objects for expression handling.
 	 *      @param [in] parent          The owner of this model
 	 */
 	PowerDomainsModel(QSharedPointer<Component> component, 
+		QSharedPointer<PowerDomainValidator > validator, 
 		ExpressionSet expressions,
-  //      QSharedPointer<PowerDomainValidator> clockValidator, 
 		QObject *parent);
 	
 	//! The destructor.
@@ -207,10 +207,11 @@ private:
 	//! Contains the current items in the editor.
 	QSharedPointer<QList<QSharedPointer<PowerDomain> > > table_;
 
-    //! The validator used for other clock drivers.
-    //QSharedPointer<PowerDomainValidator> clockValidator_;
-
+	//! Formatter for expressions.
 	QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! The validator used for power domains.
+	QSharedPointer<PowerDomainValidator > validator_;
 
 };
 

@@ -16,7 +16,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
 
-//#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
+#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 
 #include <common/KactusColors.h>
 
@@ -24,15 +24,15 @@
 // Function: PowerDomainsModel::PowerDomainsModel()
 //-----------------------------------------------------------------------------
 PowerDomainsModel::PowerDomainsModel(QSharedPointer<Component> component,
-//    QSharedPointer<PowerDomainValidator> clockValidator,
-ExpressionSet expressions,
-QObject* parent) : 
-    ReferencingTableModel(expressions.finder, parent),
+    QSharedPointer<PowerDomainValidator > validator,
+    ExpressionSet expressions,
+    QObject* parent) : 
+ReferencingTableModel(expressions.finder, parent),
     ParameterizableTable(expressions.finder),
 component_(component), 
 table_(component->getPowerDomains()),
-expressionFormatter_(expressions.formatter)
-//clockValidator_(clockValidator)
+expressionFormatter_(expressions.formatter),
+validator_(validator)
 {
     setExpressionParser(expressions.parser);
 }
@@ -116,7 +116,7 @@ QVariant PowerDomainsModel::data(QModelIndex const&  index, int role) const
 
     else if (role == Qt::ForegroundRole)
     {
-        blackForValidOrRedForInvalidIndex(index);
+        return blackForValidOrRedForInvalidIndex(index);
     }
 
     return QVariant();
@@ -296,28 +296,20 @@ void PowerDomainsModel::onAddItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 bool PowerDomainsModel::validateIndex(QModelIndex const& index) const
 {
-    QSharedPointer<PowerDomain> currentClockDriver = table_->at(index.row());
+    QSharedPointer<PowerDomain> domain = table_->at(index.row());
 
-//     if (index.column() == PowerDomainColumns::NAME)
-//     {
-//         return clockValidator_->hasValidName(currentClockDriver->getClockName());
-//     }
-//     else if (index.column() == PowerDomainColumns::CLOCK_PERIOD)
-//     {
-//         return clockValidator_->hasValidClockValue(currentClockDriver->getClockPeriod());
-//     }
-//     else if (index.column() == PowerDomainColumns::PULSE_OFFSET)
-//     {
-//         return clockValidator_->hasValidClockValue(currentClockDriver->getClockPulseOffset());
-//     }
-//     else if (index.column() == PowerDomainColumns::PULSE_VALUE)
-//     {
-//         return clockValidator_->hasValidClockPulseValue(currentClockDriver);
-//     }
-//     else if (index.column() == PowerDomainColumns::PULSE_DURATION)
-//     {
-//         return clockValidator_->hasValidClockValue(currentClockDriver->getClockPulseDuration());
-//     }
+    if (index.column() == PowerDomainColumns::NAME)
+    {
+        return validator_->hasValidName(domain->name());
+    }
+    else if (index.column() == PowerDomainColumns::ALWAYS_ON)
+    {
+        return validator_->hasValidAlwaysOn(domain);
+    }
+    else if (index.column() == PowerDomainColumns::SUBDOMAIN)
+    {
+        return validator_->hasValidSubDomainOf(domain);
+    }
 
     return true;
 }

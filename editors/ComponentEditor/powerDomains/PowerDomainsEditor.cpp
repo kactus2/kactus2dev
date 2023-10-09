@@ -27,12 +27,12 @@
 // Function: PowerDomainsEditor::PowerDomainsEditor()
 //-----------------------------------------------------------------------------
 PowerDomainsEditor::PowerDomainsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    //QSharedPointer<OtherClockDriverValidator> clockValidator, 
+    QSharedPointer<PowerDomainValidator > validator,
 	ExpressionSet expressions,
 	QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(this),
-model_(component, expressions, this)
+model_(component, validator, expressions, this)
 {
     connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),

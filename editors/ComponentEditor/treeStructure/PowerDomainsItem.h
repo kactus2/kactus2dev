@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
+
 #include <editors/common/ExpressionSet.h>
 
 //-----------------------------------------------------------------------------
@@ -28,13 +30,15 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] model       The model that owns the items.
-	 *      @param [in] libHandler  The instance that manages the library.
-     *      @param [in] component   The component being edited.
-     *      @param [in] expressions	The collection of objects for expression handling.
-     *      @param [in] parent      The parent item.
+	 *      @param [in] model				The model that owns the items.
+	 *      @param [in] libHandler			The instance that manages the library.
+     *      @param [in] component			The component being edited.
+	 *      @param [in] referenceCounter	The counter for tracking parameter references.
+     *      @param [in] expressions			The collection of objects for expression handling.
+     *      @param [in] parent				The parent item.
      */
-    PowerDomainsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+    PowerDomainsItem(ComponentEditorTreeModel* model, 
+		LibraryInterface* libHandler,
         QSharedPointer<Component> component, 
 		QSharedPointer<ReferenceCounter> referenceCounter,
 		ExpressionSet expressions, 
@@ -43,7 +47,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~PowerDomainsItem();
+    virtual ~PowerDomainsItem() = default;
 
     //! No copying.
     PowerDomainsItem(const PowerDomainsItem& other) =  delete;
@@ -86,9 +90,10 @@ public:
 
 private:
 
-    //! Validator for component items.
-    //ComponentValidator& componentValidator_;
+    //! Validator for power domain items.
+    QSharedPointer<PowerDomainValidator> validator_;
 	
+	//! The collection of objects for expression handling.
 	ExpressionSet expressions_;
 };
 

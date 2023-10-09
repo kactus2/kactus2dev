@@ -40,15 +40,15 @@ public:
 	 *
 	 *      @param [in] component       The component being edited.
 	 *      @param [in] handler         The instance managing the library.
-     *      @param [in] clockValidator  Validator used for other clock drivers.
+     *      @param [in] validator		The validator used for power domains.
      *      @param [in] expressions		The collection of objects for expression handling.
 	 *      @param [in] parent          The owner of this widget.
 	 *
 	 */
 	PowerDomainsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-        //QSharedPointer<OtherClockDriverValidator> clockValidator, 
+		QSharedPointer<PowerDomainValidator > validator,
 		ExpressionSet expressions,
-		QWidget *parent = 0);
+		QWidget *parent = nullptr);
 	
 	//! The destructor.
 	virtual ~PowerDomainsEditor() = default;

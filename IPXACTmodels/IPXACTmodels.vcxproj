@@ -333,6 +333,7 @@
     <ClCompile Include="Component\validators\PortSliceValidator.cpp" />
     <ClCompile Include="Component\validators\PortTypeValidator.cpp" />
     <ClCompile Include="Component\validators\PortValidator.cpp" />
+    <ClCompile Include="Component\validators\PowerDomainValidator.cpp" />
     <ClCompile Include="Component\validators\RegionValidator.cpp" />
     <ClCompile Include="Component\validators\RegisterBaseValidator.cpp" />
     <ClCompile Include="Component\validators\RegisterFileValidator.cpp" />
@@ -463,6 +464,7 @@
     <ClInclude Include="Component\validators\MemoryBlockValidator.h" />
     <ClInclude Include="Component\validators\ModeValidator.h" />
     <ClInclude Include="Component\validators\PortSliceValidator.h" />
+    <ClInclude Include="Component\validators\PowerDomainValidator.h" />
     <ClInclude Include="Component\validators\RegionValidator.h" />
     <ClInclude Include="Component\validators\RegisterBaseValidator.h" />
     <ClInclude Include="Component\validators\RegisterFileValidator.h" />

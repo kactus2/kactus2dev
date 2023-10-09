@@ -1022,6 +1022,9 @@
     <ClCompile Include="Component\PowerDomainWriter.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\PowerDomainValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1740,6 +1743,9 @@
     </ClInclude>
     <ClInclude Include="Component\PowerDomainWriter.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\PowerDomainValidator.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
