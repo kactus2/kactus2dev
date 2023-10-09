@@ -39,7 +39,7 @@ void AddressBlockWriter::writeAddressBlock(QXmlStreamWriter& writer, QSharedPoin
     }
     else if (docRevision == Document::Revision::Std22)
     {
-        MemoryArrayWriter::writeMemoryArray(writer, addressBlock->getMemoryArray(), false);
+        MemoryArrayWriter::writeMemoryArray(writer, addressBlock->getMemoryArray(), docRevision, false);
     }
 
     MemoryBlockBaseWriter::writeBaseAddress(writer, addressBlock);

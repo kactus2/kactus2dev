@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -90,7 +92,7 @@ public:
      *
      *      @return True, if the dimension is valid, otherwise false.
      */
-    bool hasValidDimension(QSharedPointer<RegisterBase> selectedRegisterBase) const;
+    bool hasValidDimensions(QSharedPointer<RegisterBase> selectedRegisterBase) const;
 
     /*!
      *  Check if the register contains a valid address offset.
@@ -120,15 +122,13 @@ public:
     bool hasValidAccessPolicies(QSharedPointer<RegisterBase> registerBase) const;
 
     /*!
-     *  Locate errors within a register.
+     *	Validate the memory array of a selected register.
      *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegisterBase    The selected register.
-     *      @param [in] context             Context to help locate the error.
+     *      @param [in] registerBase     The register base to check.
+     *
+     * 	    @return True, if valid, otherwise false.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<RegisterBase> selectedRegisterBase, 
-        QString const& context) const;
-
+    bool hasValidMemoryArray(QSharedPointer<RegisterBase> registerBase) const;
 
 protected:
     /*!
@@ -190,6 +190,16 @@ protected:
     void findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<RegisterBase> registerBase,
         QString const& context) const;
 
+    /*!
+     *  Find errors within memory array.
+     *
+     *      @param [in] errors              List of found errors.
+     *      @param [in] registerBase        The selected register base.
+     *      @param [in] context             Context to help locate the error.
+     */
+    void findErrorsInMemoryArray(QStringList& errors, QSharedPointer<RegisterBase> registerBase,
+        QString const& context) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -202,6 +212,9 @@ protected:
 
     //! The IP-XACT standard revision in use.
     Document::Revision docRevision_;
+
+    //! The memory array validator.
+    MemoryArrayValidator memArrayValidator_;
 };
 
 #endif // RegisterBaseValidator_H

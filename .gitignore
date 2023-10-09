@@ -3,4 +3,16 @@ tests/**/*.vcxproj
 tests/**/*.vcxproj.filters
 tests/**/*.vcxproj.user
 
+tests/**/debug/
+tests/**/.vs
+tests/**/release
 
+Plugins/**/Debug
+Plugins/**/*.vcxproj.user
+KactusAPI/x64/Debug
+IPXACTmodels/x64/Debug
+IPXACTmodels/GeneratedFiles
+GeneratedFiles/
+.vs
+x64/Debug
+PythonAPI/x64/Debug

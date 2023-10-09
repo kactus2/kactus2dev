@@ -251,7 +251,7 @@ private:
      *
      *      @return The register size in LAU.
      */
-    qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits) const;
+    qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const;
 
     /*!
      *  Find errors within the address block range.

@@ -17,6 +17,7 @@
 #include "RegisterFile.h"
 #include "FieldReader.h"
 #include "MemoryArrayReader.h"
+#include "MemoryArray.h"
 #include "AccessPolicyReader.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
@@ -147,10 +148,11 @@ void RegisterReader::Details::parseRegisterSize(QDomNode const& registerNode, QS
 void RegisterReader::Details::parseRegisterDimension(QDomNode const& registerNode,
     QSharedPointer<Register> selectedRegister)
 {
-    QDomElement dimensionElement = registerNode.firstChildElement(QStringLiteral("ipxact:dim"));
-    if (!dimensionElement.isNull())
+    auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(registerNode, Document::Revision::Std14, false);
+
+    if (!newMemoryArray->getDimensions()->isEmpty())
     {
-        selectedRegister->setDimension(dimensionElement.firstChild().nodeValue());
+        selectedRegister->setMemoryArray(newMemoryArray);
     }
 }
 
@@ -400,7 +402,7 @@ void RegisterReader::Details::parseRegisterMemoryArray(QDomNode const& registerN
 
     if (!memArrayElement.isNull())
     {
-        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, Document::Revision::Std22, false);
 
         newRegister->setMemoryArray(newMemoryArray);
     }
@@ -415,7 +417,7 @@ void RegisterReader::Details::parseRegisterFileMemoryArray(QDomNode const& regis
 
     if (!memArrayElement.isNull())
     {
-        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, false);
+        auto newMemoryArray = MemoryArrayReader::createMemoryArrayFrom(memArrayElement, Document::Revision::Std22, false);
 
         newRegisterFile->setMemoryArray(newMemoryArray);
     }

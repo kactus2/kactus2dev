@@ -62,6 +62,9 @@ private slots:
 
     void testRegisterDataIsValid();
 
+    void testRegisterDataUniqueNames();
+    void testRegisterDataUniqueNames_data();
+
 private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QStringList const& errorList);
@@ -87,7 +90,7 @@ void tst_RegisterFileValidator::testNameIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -99,7 +102,7 @@ void tst_RegisterFileValidator::testNameIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
         QString expectedError = QObject::tr("Invalid name specified for register file '%1' within %2").
             arg(testRegisterFile->name(), "test");
@@ -137,7 +140,7 @@ void tst_RegisterFileValidator::testIsPresentIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -147,7 +150,7 @@ void tst_RegisterFileValidator::testIsPresentIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
         QString expectedError = QObject::tr("Invalid isPresent set for register file '%1' within %2").
             arg(testRegisterFile->name(), "test");
@@ -188,21 +191,21 @@ void tst_RegisterFileValidator::testDimensionIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
 
     RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std14);
 
-    QCOMPARE(validator.hasValidDimension(testRegisterFile), isValid);
+    QCOMPARE(validator.hasValidDimensions(testRegisterFile), isValid);
 
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
-        QString expectedError = QObject::tr("Invalid dimension set for register file '%1' within %2").
+        QString expectedError = QObject::tr("Invalid dimensions set for register file '%1' within %2").
             arg(testRegisterFile->name(), "test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -222,7 +225,7 @@ void tst_RegisterFileValidator::testDimensionIsValid_data()
 
     QTest::newRow("Dimension 3 is valid") << "3" << true;
     QTest::newRow("Dimension -8 is invalid") << "-8" << false;
-    QTest::newRow("Dimension 4*4/2-8 is valid") << "0" << true;
+    QTest::newRow("Dimension 4*4/2-8 is invalid") << "0" << false;
     QTest::newRow("Text value is invalid for dimension") << "text" << false;
     QTest::newRow("String value is invalid for dimension") << "\"text\"" << false;
 
@@ -241,7 +244,7 @@ void tst_RegisterFileValidator::testAddressOffsetIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -253,7 +256,7 @@ void tst_RegisterFileValidator::testAddressOffsetIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
         QString expectedError = QObject::tr("Invalid address offset set for register file '%1' within %2").
             arg(testRegisterFile->name()).arg("test");
@@ -295,7 +298,7 @@ void tst_RegisterFileValidator::testRangeIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -307,7 +310,7 @@ void tst_RegisterFileValidator::testRangeIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
         QString expectedError = QObject::tr("Invalid range specified for register file %1 within %2").
             arg(testRegisterFile->name()).arg("test");
@@ -365,7 +368,7 @@ void tst_RegisterFileValidator::testMemoryArrayIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -377,7 +380,7 @@ void tst_RegisterFileValidator::testMemoryArrayIsValid()
     if (!(validDim && validStride))
     {
         QStringList foundErrors;
-        validator.findErrorsIn(foundErrors, testRegisterFile, "test");
+        validator.findErrorsIn(foundErrors, testRegisterFile, "test", "8", "32");
 
         QString expectedError;
 
@@ -453,7 +456,7 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -463,13 +466,13 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references of access policies in register test within test contain duplicate priority values."
-        << "One or more mode references of access policies in register test within test contain duplicate mode reference values."
+        << "One or more mode references in access policies of register test within test contain duplicate priority values."
+        << "One or more mode references in access policies of register test within test contain duplicate mode reference values."
         << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
     // Test duplicate mode reference priority.
-    validator.findErrorsIn(errors, testRegisterFile, "test");
+    validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
     QVERIFY(errors.contains(possibleErrors.first()));
     QVERIFY(validator.hasValidAccessPolicies(testRegisterFile) == false);
 
@@ -479,7 +482,7 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
     modeRef2->setPriority("1");
     modeRef2->setReference("ref");
 
-    validator.findErrorsIn(errors, testRegisterFile, "test");
+    validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
     QVERIFY(errors.contains(possibleErrors.at(1)));
     QVERIFY(validator.hasValidAccessPolicies(testRegisterFile) == false);
 
@@ -488,7 +491,7 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
 
     modeRef2->setReference("ref2");
 
-    validator.findErrorsIn(errors, testRegisterFile, "test");
+    validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
     QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)
         {
             return errors.contains(str);
@@ -515,7 +518,7 @@ void tst_RegisterFileValidator::testRegisterDataIsValid()
     // Test no field error in child register.
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
@@ -524,9 +527,9 @@ void tst_RegisterFileValidator::testRegisterDataIsValid()
 
     QStringList errors;
 
-    validator.findErrorsIn(errors, parentRegisterFile, "test");
+    validator.findErrorsIn(errors, parentRegisterFile, "test", "8", "32");
     QVERIFY(errors.contains(QString("Register childRegister must contain at least one field")));
-    QVERIFY(validator.hasValidRegisterData(parentRegisterFile) == false);
+    QVERIFY(validator.hasValidRegisterData(parentRegisterFile, "8", "32") == false);
 
     // Test erroneous child register file.
     QSharedPointer<RegisterFile> childRegisterFile(new RegisterFile("name with whitespace", "0", "8"));
@@ -535,9 +538,9 @@ void tst_RegisterFileValidator::testRegisterDataIsValid()
     parentRegisterFile->getRegisterData()->append(childRegisterFile);
 
     errors.clear();
-    validator.findErrorsIn(errors, parentRegisterFile, "test");
+    validator.findErrorsIn(errors, parentRegisterFile, "test", "8", "32");
     QVERIFY(errors.contains(QString("Invalid name specified for register file 'name with whitespace' within register file 'parent' within test")));
-    QVERIFY(validator.hasValidRegisterData(parentRegisterFile) == false);
+    QVERIFY(validator.hasValidRegisterData(parentRegisterFile, "8", "32") == false);
 
     // Test valid child register and register file.
     errors.clear();
@@ -546,9 +549,101 @@ void tst_RegisterFileValidator::testRegisterDataIsValid()
 
     parentRegisterFile->getRegisterData()->append(childRegister);
 
-    validator.findErrorsIn(errors, parentRegisterFile, "test");
+    validator.findErrorsIn(errors, parentRegisterFile, "test", "8", "32");
     QCOMPARE(errors.size(), 0);
-    QVERIFY(validator.hasValidRegisterData(parentRegisterFile));
+    QVERIFY(validator.hasValidRegisterData(parentRegisterFile, "8", "32"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testRegisterDataUniqueNames()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testRegisterDataUniqueNames()
+{
+    // Register and register file names must be unique in an address block or register file.
+    QFETCH(QString, registerOneName);
+    QFETCH(QString, registerTwoName);
+    QFETCH(QString, registerFileOneName);
+    QFETCH(QString, registerFileTwoName);
+    QFETCH(bool, isValid);
+
+    QString addressUnitBits("8");
+
+    // Test no field error in child register.
+    QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
+    QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
+    QSharedPointer<EnumeratedValueValidator> enumValidator(new EnumeratedValueValidator(parser));
+    QSharedPointer<FieldValidator> fieldValidator(new FieldValidator(parser, enumValidator, parameterValidator));
+    QSharedPointer<RegisterValidator> registerValidator(new RegisterValidator(parser, fieldValidator, parameterValidator));
+
+    RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std22);
+
+    QSharedPointer<Field> testfield(new Field("testField"));
+    testfield->setBitOffset("0");
+    testfield->setBitWidth("8");
+
+    QSharedPointer<Register> registerOne(new Register(registerOneName, "0", "8"));
+    QSharedPointer<Register> registerTwo(new Register(registerTwoName, "1", "8"));
+
+    registerOne->getFields()->append(testfield);
+    registerTwo->getFields()->append(testfield);
+
+    QSharedPointer<RegisterFile> registerFileOne(new RegisterFile(registerFileOneName, "2", "1"));
+    QSharedPointer<RegisterFile> registerFileTwo(new RegisterFile(registerFileTwoName, "3", "1"));
+
+    QSharedPointer<RegisterFile> parentRegisterFile(new RegisterFile("parent", "0", "50"));
+
+    parentRegisterFile->getRegisterData()->append(registerOne);
+    parentRegisterFile->getRegisterData()->append(registerTwo);
+    parentRegisterFile->getRegisterData()->append(registerFileOne);
+    parentRegisterFile->getRegisterData()->append(registerFileTwo);
+
+    QCOMPARE(validator.hasValidRegisterData(parentRegisterFile, "8", "32"), isValid);
+
+    if (!isValid)
+    {
+        QStringList foundErrors;
+        validator.findErrorsIn(foundErrors, parentRegisterFile, "test", addressUnitBits, "32");
+        QStringList expectedErrors;
+
+        if (registerOneName == registerTwoName)
+        {
+            expectedErrors.append(QObject::tr("Name %1 of registers in register file '%2' within test is not unique.")
+                .arg(registerOneName).arg(parentRegisterFile->name()));
+        }
+
+        if (registerFileOneName == registerFileTwoName)
+        {
+            expectedErrors.append(QObject::tr("Name %1 of register files in register file '%2' within test is not unique.")
+                .arg(registerFileOneName).arg(parentRegisterFile->name()));
+        }
+
+        for (auto const& error : expectedErrors)
+        {
+            if (errorIsNotFoundInErrorList(error, foundErrors))
+            {
+                QFAIL("No error message found");
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_RegisterFileValidator::testRegisterDataUniqueNames_data()
+//-----------------------------------------------------------------------------
+void tst_RegisterFileValidator::testRegisterDataUniqueNames_data()
+{
+    QTest::addColumn<QString>("registerOneName");
+    QTest::addColumn<QString>("registerTwoName");
+    QTest::addColumn<QString>("registerFileOneName");
+    QTest::addColumn<QString>("registerFileTwoName");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::addRow("Unique register and register file names is valid") << "reg1" << "reg2" << "regFile1" << "regFile2" << true;
+    QTest::addRow("Non-unique register and unique register file names is invalid") << "reg" << "reg" << "regFile1" << "regFile2" << false;
+    QTest::addRow("Unique register and non-unique register file names is invalid") << "reg1" << "reg2" << "regFile" << "regFile" << false;
+    QTest::addRow("Non-unique register and non-unique register file names is invalid") << "reg" << "reg" << "regFile" << "regFile" << false;
+
 }
 
 //-----------------------------------------------------------------------------

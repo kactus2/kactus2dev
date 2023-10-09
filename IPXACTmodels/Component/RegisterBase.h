@@ -22,6 +22,7 @@
 
 class Parameter;
 class AccessPolicy;
+class MemoryArray;
 
 //-----------------------------------------------------------------------------
 //! Describes the base class for ipxact:register, ipxact:registerFile and ipxact:alternateRegister.
@@ -71,16 +72,30 @@ public:
     /*!
      *  Get the dimension of the register.
      *
-     *      @return The value of the dim-element.
+     *      @return The first dimension defined for the register.
      */
     QString getDimension() const;
 
     /*!
-     *  Set the dimension of the registerFile.
+     *  Set the first dimension of the register base.
      *
-     *      @param [in] newDimension    The new value for dim-element.
+     *      @param [in] newDimension    The new value for the first dim-element.
      */
     void setDimension(QString const& newDimension);
+
+    /*!
+     *	Get the register's memory array.
+     *
+     * 	    @return Pointer to the memory array of the register.
+     */
+    QSharedPointer<MemoryArray> getMemoryArray() const;
+
+    /*!
+     *	Set the memory array of the register.
+     *
+     *      @param [in] newMemArray     Pointer to the memory array to set.
+     */
+    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
 
     /*!
      *  Get the address offset of the registerFile.
@@ -139,8 +154,6 @@ public:
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > newAccessPolicies);
 
 protected:
-    //! Contains dimensions of a register array.
-    QString dimension_;
 
     //! Offset from the base address.
     QString addressOffset_;
@@ -171,6 +184,8 @@ private:
     //! The type identifier.
     QString typeIdentifier_;
 
+    //! The memory array.
+    QSharedPointer<MemoryArray> memoryArray_;
 
 	//! Contains the parameters.
     QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = 

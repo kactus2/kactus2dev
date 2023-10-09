@@ -49,12 +49,12 @@ namespace RegisterWriter
         void writeRegister(QXmlStreamWriter& writer, QSharedPointer<Register> targetRegister, Document::Revision docRevision);
 
         /*!
-         *  Write the dimension.
+         *  Write the dimensions of the register (for std14 registers).
          *
-         *      @param [in] writer      Used XML writer.
-         *      @param [in] dimension   The dimension to be written.
+         *      @param [in] writer         Used XML writer.
+         *      @param [in] registerData   The register whose dimensions are to be written.
          */
-        void writeDimension(QXmlStreamWriter& writer, QString const& dimension);
+        void writeDimensions(QXmlStreamWriter& writer, QSharedPointer<RegisterBase> registerData);
 
         /*!
          *  Write the address offset.

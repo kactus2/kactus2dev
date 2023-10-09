@@ -535,7 +535,7 @@ bool RegisterInterface::hasValidDimension(std::string const& registerName) const
         return false;
     }
 
-    return validator_->hasValidDimension(selectedRegister);
+    return validator_->hasValidDimensions(selectedRegister);
 }
 
 //-----------------------------------------------------------------------------

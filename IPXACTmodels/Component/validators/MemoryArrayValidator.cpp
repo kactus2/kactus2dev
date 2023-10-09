@@ -111,7 +111,7 @@ bool MemoryArrayValidator::hasValidElementValue(QString const& value, bool canBe
             return false;
         }
 
-        auto castedValue = solvedValue.toULong(&validValue);
+        auto castedValue = solvedValue.toULongLong(&validValue);
         if (!validValue || castedValue == 0)
         {
             return false;

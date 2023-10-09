@@ -87,20 +87,6 @@ public:
     void setSize(QString const& newSize);
 
     /*!
-     *	Get the register's memory array.
-     *  
-     * 	    @return Pointer to the memory array of the register.
-     */
-    QSharedPointer<MemoryArray> getMemoryArray() const;
-
-    /*!
-     *	Set the memory array of the register.
-     *  
-     *      @param [in] newMemArray     Pointer to the memory array to set.
-     */
-    void setMemoryArray(QSharedPointer<MemoryArray> newMemArray);
-
-    /*!
      *	Get the register definition reference.
      *	    
      * 	    @return The reference to a register definition.
@@ -146,9 +132,6 @@ private:
 
 	//! Contains the alternateRegisters for this register.
     QSharedPointer<QList<QSharedPointer<AlternateRegister> > > alternateRegisters_;
-
-    //! The memory array of the register.
-    QSharedPointer<MemoryArray> memoryArray_;
 
     //! The name of the referenced register definition.
     QString registerDefinitionReference_;

@@ -119,15 +119,6 @@ public:
     bool hasValidAlternateGroups(QSharedPointer<AlternateRegister> selectedRegister) const;
 
     /*!
-     *	Validate the memory array of a selected register.
-     *  
-     *      @param [in] selectedRegister     The register to check.
-     *	    
-     * 	    @return True, if valid, otherwise false.
-     */
-    bool hasValidMemoryArray(QSharedPointer<Register> selectedRegister) const;
-
-    /*!
      *	Check if a 2022 std register has a valid structure, valid combination of subelements.
      *  
      *      @param [in] selectedRegister     The register to check.
@@ -205,16 +196,6 @@ private:
      *      @param [in] context             Context to help locate the error.
      */
     void findErrorsInAlternateGroups(QVector<QString>& errors, QSharedPointer<AlternateRegister> selectedRegister,
-        QString const& context) const;
-    
-    /*!
-     *  Find errors within memory array.
-     *
-     *      @param [in] errors              List of found errors.
-     *      @param [in] selectedRegister    The selected register.
-     *      @param [in] context             Context to help locate the error.
-     */
-    void findErrorsInMemoryArray(QStringList& errors, QSharedPointer<Register> selectedRegister,
         QString const& context) const;
 
     /*!

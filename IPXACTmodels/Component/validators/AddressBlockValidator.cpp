@@ -24,7 +24,9 @@
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
+#include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <QRegularExpression>
@@ -108,6 +110,7 @@ bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, 
         return MemoryBlockValidator::validate(addressBlock) &&
             hasValidRegisterAlignment(addressBlock) && hasValidMemoryArray(addressBlock) &&
             hasValidUsage(addressBlock) && hasValidAccessPolicies(addressBlock) &&
+            hasValidRegisterData(addressBlock, addressUnitBits) &&
             hasValidStructure(addressBlock);
     }
 
@@ -142,75 +145,103 @@ bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBl
 bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock,
     QString const& addressUnitBits) const
 {
-    if (!addressBlock->getRegisterData()->isEmpty())
+    if (addressBlock->getRegisterData()->isEmpty())
     {
-        QStringList registerNames;
+        return true;
+    }
 
-        QStringList typeIdentifiers;
-        MemoryReserve reservedArea;
+    QStringList registerNames;
+    QStringList registerFileNames;
 
-        bool aubChangeOk = true;
-        qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-        qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+    QStringList typeIdentifiers;
+    MemoryReserve reservedArea;
 
-        for (QSharedPointer<RegisterBase> registerData : *addressBlock->getRegisterData())
+    bool aubChangeOk = true;
+    qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+    qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+
+    for (QSharedPointer<RegisterBase> registerData : *addressBlock->getRegisterData())
+    {
+        QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
+        if (targetRegister)
         {
-            QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
-            if (targetRegister)
+            if (registerNames.contains(targetRegister->name()) ||
+                !registerValidator_->validate(targetRegister) ||
+                registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock) ||
+                !hasValidVolatileForRegister(addressBlock, targetRegister) ||
+                !hasValidAccessWithRegister(addressBlock, targetRegister))
             {
-                if (registerNames.contains(targetRegister->name()) ||
-                    !registerValidator_->validate(targetRegister) ||
-                    registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock) ||
-                    !hasValidVolatileForRegister(addressBlock, targetRegister) ||
-                    !hasValidAccessWithRegister(addressBlock, targetRegister))
+                return false;
+            }
+            
+            if (!targetRegister->getTypeIdentifier().isEmpty() &&
+                typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
+            {
+                int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
+                if (!registersHaveSimilarDefinitionGroups(targetRegister, addressBlock,
+                    typeIdentifierIndex))
                 {
                     return false;
                 }
-                else
+            }
+
+            if (aubChangeOk && aubInt != 0)
+            {
+                qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+
+                qint64 registerBegin = getExpressionParser()->parseExpression(
+                    targetRegister->getAddressOffset()).toLongLong();
+
+                qint64 registerEnd = registerBegin + registerSize - 1;
+
+                if (registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                 {
-                    if (!targetRegister->getTypeIdentifier().isEmpty() &&
-                        typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
-                    {
-                        int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
-                        if (!registersHaveSimilarDefinitionGroups(targetRegister, addressBlock,
-                            typeIdentifierIndex))
-                        {
-                            return false;
-                        }
-                    }
-
-                    if (aubChangeOk && aubInt != 0)
-                    {
-                        qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
-
-                        qint64 registerBegin = getExpressionParser()->parseExpression(
-                            targetRegister->getAddressOffset()).toLongLong();
-
-                        qint64 registerEnd = registerBegin + registerSize - 1;
-
-                        if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
-                        {
-                            return false;
-                        }
+                    return false;
+                }
 
 
-                        if(targetRegister->getIsPresent().isEmpty() || 
-                            getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
-                        {
-                          reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
-                        }
-                    }
-
-                    registerNames.append(targetRegister->name());
-                    typeIdentifiers.append(targetRegister->getTypeIdentifier());
+                if (targetRegister->getIsPresent().isEmpty() ||
+                    getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
+                {
+                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
                 }
             }
-        }
 
-        return !reservedArea.hasOverlap();
+            registerNames.append(targetRegister->name());
+            typeIdentifiers.append(targetRegister->getTypeIdentifier());
+        }
+        else if (QSharedPointer<RegisterFile> targetRegisterFile = registerData.dynamicCast<RegisterFile>())
+        {
+            if (!registerFileValidator_->validate(targetRegisterFile, addressUnitBits, addressBlock->getWidth()) || 
+                registerFileNames.contains(targetRegisterFile->name()))
+            {
+                return false;
+            }
+
+            qint64 registerFileBegin = getExpressionParser()->parseExpression(
+                targetRegisterFile->getAddressOffset()).toLongLong();
+
+            qint64 registerFileRangeInt = getExpressionParser()->parseExpression(
+                targetRegisterFile->getRange()).toLongLong();
+
+            qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
+
+            if (targetRegisterFile->getIsPresent().isEmpty() ||
+                getExpressionParser()->parseExpression(targetRegisterFile->getIsPresent()).toInt())
+            {
+                reservedArea.addArea(targetRegisterFile->name(), registerFileBegin, registerFileEnd);
+            }
+
+            if (registerFileBegin < 0 || registerFileBegin + registerFileRangeInt > addressBlockRange)
+            {
+                return false;
+            }
+
+            registerFileNames.append(targetRegisterFile->name());
+        }
     }
 
-    return true;
+    return !reservedArea.hasOverlap();
 }
 
 //-----------------------------------------------------------------------------
@@ -520,97 +551,138 @@ void AddressBlockValidator::findErrorsInUsage(QVector<QString>& errors, QSharedP
 void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
     QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits, QString const& context) const
 {
-    if (!addressBlock->getRegisterData()->isEmpty())
+    if (addressBlock->getRegisterData()->isEmpty())
     {
-        QStringList registerNames;
-        QStringList duplicateNames;
-        QStringList typeIdentifiers;
+        return;
+    }
 
-        MemoryReserve reservedArea;
-        bool aubChangeOk = true;
-        qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
-        qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+    QStringList registerNames;
+    QStringList registerFileNames;
+    QStringList duplicateRegisterNames;
+    QStringList duplicateRegisterFileNames;
+    QStringList typeIdentifiers;
 
-        for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
+    MemoryReserve reservedArea;
+    bool aubChangeOk = true;
+    qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
+    qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
+
+    for (QSharedPointer<RegisterBase> const& registerData : *addressBlock->getRegisterData())
+    {
+        QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
+        if (targetRegister)
         {
-            QSharedPointer<Register> targetRegister = registerData.dynamicCast<Register>();
-            if (targetRegister)
+            if (registerNames.contains(targetRegister->name()) &&
+                !duplicateRegisterNames.contains(targetRegister->name()))
             {
-                if (registerNames.contains(targetRegister->name()) &&
-                    !duplicateNames.contains(targetRegister->name()))
-                {
-                    errors.append(QObject::tr("Name %1 of registers in addressBlock %2 is not unique.")
-                        .arg(targetRegister->name()).arg(addressBlock->name()));
-                    duplicateNames.append(targetRegister->name());
-                }
-                else
-                {
-                    registerNames.append(targetRegister->name());
-                }
+                errors.append(QObject::tr("Name %1 of registers in addressBlock %2 is not unique.")
+                    .arg(targetRegister->name()).arg(addressBlock->name()));
+                duplicateRegisterNames.append(targetRegister->name());
+            }
+            else
+            {
+                registerNames.append(targetRegister->name());
+            }
 
-                registerValidator_->findErrorsIn(errors, targetRegister, context);
+            registerValidator_->findErrorsIn(errors, targetRegister, context);
 
-                if (registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock))
-                {
-                    errors.append(QObject::tr("Register %1 size must not be greater than the containing "
-                        "addressBlock %2 width.").arg(targetRegister->name()).arg(addressBlock->name()));
-                }
+            if (registerSizeIsNotWithinBlockWidth(targetRegister, addressBlock))
+            {
+                errors.append(QObject::tr("Register %1 size must not be greater than the containing "
+                    "addressBlock %2 width.").arg(targetRegister->name()).arg(addressBlock->name()));
+            }
                 
-                if (!hasValidVolatileForRegister(addressBlock, targetRegister))
+            if (!hasValidVolatileForRegister(addressBlock, targetRegister))
+            {
+                errors.append(QObject::tr("Volatile value cannot be set to false for addressBlock %1 "
+                    "containing a register or register field with volatile true").arg(addressBlock->name()));
+            }
+
+            if (!targetRegister->getTypeIdentifier().isEmpty() &&
+                typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
+            {
+                int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
+
+                if (!registersHaveSimilarDefinitionGroups(targetRegister, addressBlock, typeIdentifierIndex))
                 {
-                    errors.append(QObject::tr("Volatile value cannot be set to false for addressBlock %1 "
-                        "containing a register or register field with volatile true").arg(addressBlock->name()));
+                    errors.append(QObject::tr("Registers containing the same type identifiers must contain "
+                        "similar register definitions within %1").arg(context));
+                }
+            }
+            typeIdentifiers.append(targetRegister->getTypeIdentifier());
+
+            if (docRevision_ == Document::Revision::Std14 && !hasValidAccessWithRegister(addressBlock, targetRegister))
+            {
+                errors.append(QObject::tr(
+                    "Access cannot be set to %1 in register %2, where containing address block %3 has access %4")
+                    .arg(AccessTypes::access2Str(targetRegister->getAccess()))
+                    .arg(targetRegister->name())
+                    .arg(addressBlock->name())
+                    .arg(AccessTypes::access2Str(addressBlock->getAccess())));
+            }
+
+            if (aubChangeOk && aubInt != 0)
+            {
+                qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
+
+                qint64 registerBegin =
+                    getExpressionParser()->parseExpression(targetRegister->getAddressOffset()).toLongLong();
+
+                qint64 registerEnd = registerBegin + registerSize - 1;
+
+                if(targetRegister->getIsPresent().isEmpty() ||
+                    getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
+                {
+                    reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
                 }
 
-                if (!targetRegister->getTypeIdentifier().isEmpty() &&
-                    typeIdentifiers.contains(targetRegister->getTypeIdentifier()))
+                if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
                 {
-                    int typeIdentifierIndex = typeIdentifiers.indexOf(targetRegister->getTypeIdentifier());
-
-                    if (!registersHaveSimilarDefinitionGroups(targetRegister, addressBlock, typeIdentifierIndex))
-                    {
-                        errors.append(QObject::tr("Registers containing the same type identifiers must contain "
-                            "similar register definitions within %1").arg(context));
-                    }
-                }
-                typeIdentifiers.append(targetRegister->getTypeIdentifier());
-
-                if (!hasValidAccessWithRegister(addressBlock, targetRegister))
-                {
-                    errors.append(QObject::tr(
-                        "Access cannot be set to %1 in register %2, where containing address block %3 has access %4")
-                        .arg(AccessTypes::access2Str(targetRegister->getAccess()))
-                        .arg(targetRegister->name())
-                        .arg(addressBlock->name())
-                        .arg(AccessTypes::access2Str(addressBlock->getAccess())));
-                }
-
-                if (aubChangeOk && aubInt != 0)
-                {
-                    qint64 registerSize = getRegisterSizeInLAU(targetRegister, aubInt);
-
-                    qint64 registerBegin =
-                        getExpressionParser()->parseExpression(targetRegister->getAddressOffset()).toLongLong();
-
-                    qint64 registerEnd = registerBegin + registerSize - 1;
-
-                    if(targetRegister->getIsPresent().isEmpty() ||
-                        getExpressionParser()->parseExpression(targetRegister->getIsPresent()).toInt())
-                    {
-                      reservedArea.addArea(targetRegister->name(), registerBegin, registerEnd);
-                    }
-
-                    if ( registerBegin < 0 || registerBegin + registerSize > addressBlockRange)
-                    {
-                        errors.append(QObject::tr("Register %1 is not contained within %2")
-                            .arg(targetRegister->name()).arg(context));
-                    }
+                    errors.append(QObject::tr("Register %1 is not contained within %2")
+                        .arg(targetRegister->name()).arg(context));
                 }
             }
         }
+        else if (QSharedPointer<RegisterFile> targetRegisterFile = registerData.dynamicCast<RegisterFile>())
+        {
+            if (registerFileNames.contains(targetRegisterFile->name()) &&
+                !duplicateRegisterFileNames.contains(targetRegisterFile->name()))
+            {
+                errors.append(QObject::tr("Name %1 of register files in addressBlock %2 is not unique.")
+                    .arg(targetRegisterFile->name()).arg(addressBlock->name()));
+                duplicateRegisterFileNames.append(targetRegisterFile->name());
+            }
+            else
+            {
+                registerFileNames.append(targetRegisterFile->name());
+            }
 
-        reservedArea.findErrorsInOverlap(errors, QLatin1String("Registers"), context);
+            registerFileValidator_->findErrorsIn(errors, targetRegisterFile, context, addressUnitBits, addressBlock->getWidth());
+
+            qint64 registerFileBegin = getExpressionParser()->parseExpression(
+                targetRegisterFile->getAddressOffset()).toLongLong();
+
+            qint64 registerFileRangeInt = getExpressionParser()->parseExpression(
+                targetRegisterFile->getRange()).toLongLong();
+
+            qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
+
+            if (targetRegisterFile->getIsPresent().isEmpty() ||
+                getExpressionParser()->parseExpression(targetRegisterFile->getIsPresent()).toInt())
+            {
+                reservedArea.addArea(targetRegisterFile->name(), registerFileBegin, registerFileEnd);
+            }
+
+            if (registerFileBegin < 0 || registerFileBegin + registerFileRangeInt > addressBlockRange)
+            {
+                errors.append(QObject::tr("Register file %1 is not contained within %2")
+                    .arg(targetRegisterFile->name()).arg(context));
+            }
+        }
     }
+
+    reservedArea.findErrorsInOverlap(errors, QLatin1String("Register data"), context);
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -690,21 +762,23 @@ void AddressBlockValidator::findErrorsInStructure(QStringList& errors, QSharedPo
 //-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::getRegisterSizeInLAU()
 //-----------------------------------------------------------------------------
-qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, int addressUnitBits)
-    const
+qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const
 {
     qint64 size = getExpressionParser()->parseExpression(targetRegister->getSize()).toLongLong();
-    qint64 registerDimension = getExpressionParser()->parseExpression(targetRegister->getDimension()).toLongLong();
+    qint64 dimensionsProduct = 1;
 
-    if (registerDimension == 0)
+    if (auto memArray = targetRegister->getMemoryArray())
     {
-        registerDimension = 1;
+        for (auto const& dimension : *memArray->getDimensions())
+        {
+            dimensionsProduct *= getExpressionParser()->parseExpression(dimension->value_).toLongLong();
+        }
     }
 
-    qint64 topPart = size + addressUnitBits -1;
+    qint64 topPart = size + addressUnitBits - 1;
     qint64 dimensionlessSize = topPart / addressUnitBits;
 
-    qint64 trueSize = dimensionlessSize * registerDimension;
+    qint64 trueSize = dimensionlessSize * dimensionsProduct;
 
     return trueSize;
 }

@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/AccessPolicy.h>
+#include <IPXACTmodels/Component/MemoryArray.h>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterBase::RegisterBase()
@@ -36,13 +37,17 @@ addressOffset_(addressOffset)
 RegisterBase::RegisterBase (const RegisterBase& other):
 NameGroup(other),
 Extendable(other),
-dimension_(other.dimension_),
 addressOffset_(other.addressOffset_),
 isPresent_(other.isPresent_),
 typeIdentifier_(other.typeIdentifier_)
 {
     copyParameters(other);
     copyAccessPolicies(other);
+
+    if (other.memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -54,7 +59,6 @@ RegisterBase& RegisterBase::operator=(const RegisterBase& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
-        dimension_ = other.dimension_;
         addressOffset_ = other.addressOffset_;
         isPresent_ = other.isPresent_;
         typeIdentifier_ = other.typeIdentifier_;
@@ -63,6 +67,11 @@ RegisterBase& RegisterBase::operator=(const RegisterBase& other)
         copyParameters(other);
         accessPolicies_->clear();
         copyAccessPolicies(other);
+
+        if (other.memoryArray_)
+        {
+            memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray(*other.memoryArray_));
+        }
     }
 
     return *this;
@@ -111,8 +120,13 @@ void RegisterBase::setTypeIdentifier(QString const& newTypeIdentifier)
 // Function: RegisterBase::()
 //-----------------------------------------------------------------------------
 QString RegisterBase::getDimension() const
-{
-    return dimension_;
+{   
+    if (memoryArray_)
+    {
+        return memoryArray_->getDimensions()->first()->value_;
+    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +134,44 @@ QString RegisterBase::getDimension() const
 //-----------------------------------------------------------------------------
 void RegisterBase::setDimension(QString const& newDimension)
 {
-    dimension_ = newDimension;
+    if (!memoryArray_)
+    {
+        memoryArray_ = QSharedPointer<MemoryArray>(new MemoryArray());
+    }
+    
+    if (newDimension.isEmpty())
+    {
+        memoryArray_.clear();
+        return;
+    }
+
+    // Create dimension if missing, otherwise set the new value to the first dim.
+    if (memoryArray_->getDimensions()->isEmpty())
+    {
+        QSharedPointer<MemoryArray::Dimension> newDim(new MemoryArray::Dimension());
+        newDim->value_ = newDimension;
+        memoryArray_->getDimensions()->append(newDim);
+    }
+    else
+    {
+        memoryArray_->getDimensions()->first()->value_ = newDimension;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::getMemoryArray()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryArray> RegisterBase::getMemoryArray() const
+{
+    return memoryArray_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterBase::setMemoryArray()
+//-----------------------------------------------------------------------------
+void RegisterBase::setMemoryArray(QSharedPointer<MemoryArray> newMemArray)
+{
+    memoryArray_ = newMemArray;
 }
 
 //-----------------------------------------------------------------------------

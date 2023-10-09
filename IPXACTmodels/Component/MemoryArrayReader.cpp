@@ -6,7 +6,7 @@
 // Date: 21.7.2023
 //
 // Description:
-// Reader for ixpact:array memory array elements.
+// Reader for ixpact:array memory array elements and 2014 standard dim elements.
 //-----------------------------------------------------------------------------
 
 #include "MemoryArrayReader.h"
@@ -15,13 +15,17 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryArrayReader::createMemoryArrayFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryArray> MemoryArrayReader::createMemoryArrayFrom(QDomNode const& arrayNode, bool isField)
+QSharedPointer<MemoryArray> MemoryArrayReader::createMemoryArrayFrom(QDomNode const& arrayNode,
+    Document::Revision docRevision, bool isField)
 {
     QSharedPointer<MemoryArray> newArray(new MemoryArray());
 
-    Details::parseDimensions(arrayNode, newArray);
+    Details::parseDimensions(arrayNode, newArray, docRevision);
 
-    Details::parseStride(arrayNode, newArray, isField);
+    if (docRevision == Document::Revision::Std22)
+    {
+        Details::parseStride(arrayNode, newArray, isField);
+    }
 
     return newArray;
 }
@@ -29,7 +33,7 @@ QSharedPointer<MemoryArray> MemoryArrayReader::createMemoryArrayFrom(QDomNode co
 //-----------------------------------------------------------------------------
 // Function: MemoryArrayReader::Details::parseDimensions()
 //-----------------------------------------------------------------------------
-void MemoryArrayReader::Details::parseDimensions(QDomNode const& arrayNode, QSharedPointer<MemoryArray> newArray)
+void MemoryArrayReader::Details::parseDimensions(QDomNode const& arrayNode, QSharedPointer<MemoryArray> newArray, Document::Revision docRevision)
 {
     auto dimensionNodes = arrayNode.childNodes();
 
@@ -41,7 +45,11 @@ void MemoryArrayReader::Details::parseDimensions(QDomNode const& arrayNode, QSha
         if (dimensionNode.nodeName() == QStringLiteral("ipxact:dim"))
         {
             newDimension->value_ = dimensionNode.firstChild().nodeValue();
-            newDimension->indexVar_ = dimensionNode.attributes().namedItem(QStringLiteral("indexVar")).nodeValue();
+
+            if (docRevision == Document::Revision::Std22)
+            {
+                newDimension->indexVar_ = dimensionNode.attributes().namedItem(QStringLiteral("indexVar")).nodeValue();
+            }
 
             newArray->getDimensions()->append(newDimension);
         }
