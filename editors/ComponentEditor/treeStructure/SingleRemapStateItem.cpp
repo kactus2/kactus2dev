@@ -36,14 +36,6 @@ validator_(validator)
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRemapStateItem::~SingleRemapStateItem()
-//-----------------------------------------------------------------------------
-SingleRemapStateItem::~SingleRemapStateItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRemapStateItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString SingleRemapStateItem::getTooltip() const

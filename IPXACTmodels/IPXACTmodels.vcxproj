@@ -1271,10 +1271,8 @@
     </CustomBuild>
     <ClInclude Include="Component\RemapPort.h" />
     <ClInclude Include="Component\RemapState.h" />
-    <QtMoc Include="Component\RemapStateReader.h">
-    </QtMoc>
-    <QtMoc Include="Component\RemapStateWriter.h">
-    </QtMoc>
+    <ClInclude Include="Component\RemapStateReader.h" />
+    <ClInclude Include="Component\RemapStateWriter.h" />
     <ClInclude Include="Component\Segment.h" />
     <ClInclude Include="Component\Transactional.h" />
     <ClInclude Include="Component\TransparentBridge.h" />

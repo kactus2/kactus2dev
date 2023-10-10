@@ -15,41 +15,25 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 
-//-----------------------------------------------------------------------------
-// Function: RemapStateWriter::RemapStateWriter()
-//-----------------------------------------------------------------------------
-RemapStateWriter::RemapStateWriter(QObject* parent /* = 0 */):
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapStateWriter::~RemapStateWriter()
-//-----------------------------------------------------------------------------
-RemapStateWriter::~RemapStateWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: RemapStateWriter::writeRemapState()
 //-----------------------------------------------------------------------------
-void RemapStateWriter::writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const
+void RemapStateWriter::writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState)
 {
     writer.writeStartElement(QStringLiteral("ipxact:remapState"));
 
-    writeNameGroup(writer, remapState);
+    Details::writeNameGroup(writer, remapState);
 
-    writeRemapPorts(writer, remapState);
+    Details::writeRemapPorts(writer, remapState);
 
     writer.writeEndElement(); // ipxact:remapState
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateWriter::writeNameGroup()
+// Function: RemapStateWriter::Details::writeNameGroup()
 //-----------------------------------------------------------------------------
-void RemapStateWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const
+void RemapStateWriter::Details::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState)
 {
     NameGroupWriter::writeNameGroup(writer, remapState);
 }
@@ -57,7 +41,7 @@ void RemapStateWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<R
 //-----------------------------------------------------------------------------
 // Function: RemapStateWriter::writeRemapPorts()
 //-----------------------------------------------------------------------------
-void RemapStateWriter::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const
+void RemapStateWriter::Details::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState)
 {
     if (!remapState->getRemapPorts()->isEmpty())
     {
@@ -73,9 +57,9 @@ void RemapStateWriter::writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateWriter::writeSingleRemapPort()
+// Function: RemapStateWriter::Details::writeSingleRemapPort()
 //-----------------------------------------------------------------------------
-void RemapStateWriter::writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort) const
+void RemapStateWriter::Details::writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort)
 {
     writer.writeStartElement(QStringLiteral("ipxact:remapPort"));
 

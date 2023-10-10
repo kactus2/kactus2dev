@@ -51,7 +51,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~RemapStatesItem();
+    virtual ~RemapStatesItem() = default;
 
     /*!
 	 *  Get the font to be used for text of this item.

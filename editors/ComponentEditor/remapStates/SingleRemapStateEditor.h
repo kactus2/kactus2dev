@@ -45,7 +45,13 @@ public:
         QWidget* parent = 0);
 
 	//! The destructor
-    virtual ~SingleRemapStateEditor();
+    virtual ~SingleRemapStateEditor() = default;
+
+    //! No copying
+    SingleRemapStateEditor(const SingleRemapStateEditor& other) = delete;
+
+    //! No assignment
+    SingleRemapStateEditor& operator=(const SingleRemapStateEditor& other) = delete;
 
 	/*!
 	 *  Reload the information from the model to the editor.
@@ -62,12 +68,6 @@ protected:
     virtual void showEvent(QShowEvent * event);
 
 private:
-
-	//! No copying
-    SingleRemapStateEditor(const SingleRemapStateEditor& other);
-
-	//! No assignment
-    SingleRemapStateEditor& operator=(const SingleRemapStateEditor& other);
 
 	/*!
 	 *  Set up the layout for the editor.

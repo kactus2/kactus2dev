@@ -1747,6 +1747,12 @@
     <ClInclude Include="Component\validators\PowerDomainValidator.h">
       <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
+    <ClInclude Include="Component\RemapStateReader.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\RemapStateWriter.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1878,12 +1884,6 @@
     <CustomBuild Include="Component\RegisterWriter.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
-    <QtMoc Include="Component\RemapStateReader.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
-    <QtMoc Include="Component\RemapStateWriter.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
     <CustomBuild Include="common\CommonItemsReader.h">
       <Filter>Header Files\common</Filter>
     </CustomBuild>

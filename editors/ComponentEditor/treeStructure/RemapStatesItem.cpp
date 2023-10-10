@@ -35,21 +35,13 @@ validator_(new RemapStateValidator(expressionParser, component->getPorts()))
     setExpressionFormatter(expressionFormatter);
     setReferenceCounter(referenceCounter);
 
-    foreach(QSharedPointer<RemapState> remapState, *remapStates_)
+    for (QSharedPointer<RemapState> remapState : *remapStates_)
     {
         QSharedPointer<SingleRemapStateItem> singleRemapItem(new SingleRemapStateItem(remapState, model,
             libHandler, component, referenceCounter, parameterFinder, expressionFormatter, validator_, this));
 
         childItems_.append(singleRemapItem);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapStatesItem::~RemapStatesItem()
-//-----------------------------------------------------------------------------
-RemapStatesItem::~RemapStatesItem()
-{
-
 }
 
 //-----------------------------------------------------------------------------

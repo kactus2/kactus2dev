@@ -114,7 +114,7 @@ void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Co
 //-----------------------------------------------------------------------------
 void ComponentWriter::writePowerDomains(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
 {
-    if (component->getPowerDomains()->isEmpty())
+    if (component->getRevision() != Document::Revision::Std22 || component->getPowerDomains()->isEmpty())
     {
         return;
     }
@@ -190,13 +190,11 @@ void ComponentWriter::writeRemapStates(QXmlStreamWriter& writer, QSharedPointer<
 {
     if (component->getRevision() == Document::Revision::Std14 && !component->getRemapStates()->isEmpty())
     {
-        RemapStateWriter remapStateWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:remapStates"));
 
-        foreach (QSharedPointer<RemapState> remapState, *component->getRemapStates())
+        for (QSharedPointer<RemapState> remapState : *component->getRemapStates())
         {
-            remapStateWriter.writeRemapState(writer, remapState);
+            RemapStateWriter::writeRemapState(writer, remapState);
         }
 
         writer.writeEndElement(); // ipxact:remapStates

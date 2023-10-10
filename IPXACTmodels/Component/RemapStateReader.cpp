@@ -15,51 +15,35 @@
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 
-//-----------------------------------------------------------------------------
-// Function: RemapStateReader::RemapStateReader()
-//-----------------------------------------------------------------------------
-RemapStateReader::RemapStateReader(QObject* parent /* = 0 */) :
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: RemapStateReader::~RemapStateReader()
-//-----------------------------------------------------------------------------
-RemapStateReader::~RemapStateReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: RemapStateReader::createRemapStateFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<RemapState> RemapStateReader::createRemapStateFrom(QDomNode const& remapStateNode) const
+QSharedPointer<RemapState> RemapStateReader::createRemapStateFrom(QDomNode const& remapStateNode)
 {
     QSharedPointer<RemapState> newRemapState (new RemapState());
 
-    parseNameGroup(remapStateNode, newRemapState);
+    Details::parseNameGroup(remapStateNode, newRemapState);
 
-    parseRemapPorts(remapStateNode, newRemapState);
+    Details::parseRemapPorts(remapStateNode, newRemapState);
 
     return newRemapState;
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateReader::parseNameGroup()
+// Function: RemapStateReader::Details::parseNameGroup()
 //-----------------------------------------------------------------------------
-void RemapStateReader::parseNameGroup(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState)
-    const
+void RemapStateReader::Details::parseNameGroup(QDomNode const& remapStateNode, 
+    QSharedPointer<RemapState> newRemapState)
 {
     NameGroupReader::parseNameGroup(remapStateNode, newRemapState);
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateReader::parseRemapPorts()
+// Function: RemapStateReader::Details::parseRemapPorts()
 //-----------------------------------------------------------------------------
-void RemapStateReader::parseRemapPorts(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState)
-    const
+void RemapStateReader::Details::parseRemapPorts(QDomNode const& remapStateNode,
+    QSharedPointer<RemapState> newRemapState)
 {
     QDomElement remapPortsElement = remapStateNode.firstChildElement(QStringLiteral("ipxact:remapPorts"));
     if (!remapPortsElement.isNull())
@@ -83,10 +67,10 @@ void RemapStateReader::parseRemapPorts(QDomNode const& remapStateNode, QSharedPo
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateReader::parseRemapPortIndex()
+// Function: RemapStateReader::Details::parseRemapPortIndex()
 //-----------------------------------------------------------------------------
-void RemapStateReader::parseRemapPortIndex(QDomElement const& remapPortElement,
-    QSharedPointer<RemapPort> newRemapPort) const
+void RemapStateReader::Details::parseRemapPortIndex(QDomElement const& remapPortElement,
+    QSharedPointer<RemapPort> newRemapPort)
 {
     QDomElement portIndexElement = remapPortElement.firstChildElement(QStringLiteral("ipxact:portIndex"));
     if (!portIndexElement.isNull())
@@ -97,10 +81,10 @@ void RemapStateReader::parseRemapPortIndex(QDomElement const& remapPortElement,
 }
 
 //-----------------------------------------------------------------------------
-// Function: RemapStateReader::parseRemapPortValue()
+// Function: RemapStateReader::Details::parseRemapPortValue()
 //-----------------------------------------------------------------------------
-void RemapStateReader::parseRemapPortValue(QDomElement const& remapPortElement,
-    QSharedPointer<RemapPort> newRemapPort) const
+void RemapStateReader::Details::parseRemapPortValue(QDomElement const& remapPortElement,
+    QSharedPointer<RemapPort> newRemapPort)
 {
     QString value = remapPortElement.firstChildElement(QStringLiteral("ipxact:value")).firstChild().nodeValue();
     newRemapPort->setValue(value);

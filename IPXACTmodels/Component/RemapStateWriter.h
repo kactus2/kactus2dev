@@ -24,23 +24,8 @@ class RemapPort;
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT remapState element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT RemapStateWriter : public QObject
+namespace  RemapStateWriter 
 {
-    Q_OBJECT
-
-public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
-     */
-    RemapStateWriter(QObject* parent = 0);
-
-    /*!
-     *  The destructor.
-     */
-    ~RemapStateWriter();
 
     /*!
      *  Write a remap state to an XML file.
@@ -48,37 +33,34 @@ public:
      *      @param [in] writer  The used xml writer.
      *      @param [in] view    The remap state to be written.
      */
-    void writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const;
+    IPXACTMODELS_EXPORT void writeRemapState(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
-private:
+    namespace Details
+    {
+        /*!
+         *  Write the name group.
+         *
+         *      @param [in] writer      Used XML writer.
+         *      @param [in] remapState  The selected remap state.
+         */
+        void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
-    //! No copying allowed.
-    RemapStateWriter(RemapStateWriter const& rhs);
-    RemapStateWriter& operator=(RemapStateWriter const& rhs);
+        /*!
+         *  Write the remap ports.
+         *
+         *      @param [in] writer      Used XML writer.
+         *      @param [in] remapState  The selected remap state.
+         */
+        void writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState);
 
-    /*!
-     *  Write the name group.
-     *
-     *      @param [in] writer      Used XML writer.
-     *      @param [in] remapState  The selected remap state.
-     */
-    void writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const;
-
-    /*!
-     *  Write the remap ports.
-     *
-     *      @param [in] writer      Used XML writer.
-     *      @param [in] remapState  The selected remap state.
-     */
-    void writeRemapPorts(QXmlStreamWriter& writer, QSharedPointer<RemapState> remapState) const;
-
-    /*!
-     *  Write a single remap port.
-     *
-     *      @param [in] writer      Used XML writer.
-     *      @param [in] remapPort   The selected remap port.
-     */
-    void writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort) const;
+        /*!
+         *  Write a single remap port.
+         *
+         *      @param [in] writer      Used XML writer.
+         *      @param [in] remapPort   The selected remap port.
+         */
+        void writeSingleRemapPort(QXmlStreamWriter& writer, QSharedPointer<RemapPort> remapPort);
+    };
 };
 
 #endif // REMAPSTATEWRITER_H
