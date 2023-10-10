@@ -201,10 +201,10 @@ private:
 	QString addressSpaceWidth_;
 
 	//! Conflicted state. Item is conflicted if it overlaps with other items.
-    bool conflicted_;
+    bool conflicted_ = false;
 
     //! Tells if the item is completely overlapped by other items.
-    bool overlapped_;
+    bool overlapped_ = false;
 };
 
 #endif // ADDRESSSPACEVISUALIZATIONITEM_H

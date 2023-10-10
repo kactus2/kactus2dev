@@ -25,7 +25,7 @@ public:
 
 	//! The minimum and maximum bounds for visualizer items.
 	enum Bounds {
-		DEFAULT_HEIGHT = 40,    //! The height of a single item
+		DEFAULT_HEIGHT = 44,    //! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
 		DEFAULT_WIDTH = 200,	//! The default width of a single item
 		NAME_INDENTATION = 15,  //! How much space the name leaves for left corners

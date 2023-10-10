@@ -100,6 +100,10 @@ void VisualizerItem::repositionLabels()
     {
         setRightTopPosition(&topTextItem_);
         setRightBottomPosition(&bottomTextItem_);
+
+        int xCoordinate = VisualizerItem::NAME_INDENTATION;
+        int yCoordinate = (rect().height() - nameItem_.boundingRect().height()) / 2;
+        nameItem_.setPos(xCoordinate, yCoordinate);
     }
     else // TOP
     {
@@ -260,7 +264,7 @@ void VisualizerItem::setLeftTopPosition(QGraphicsSimpleTextItem* label)
 void VisualizerItem::setLeftBottomPosition(QGraphicsSimpleTextItem* label)
 {
     label->setPos(VisualizerItem::CORNER_INDENTATION,
-        VisualizerItem::DEFAULT_HEIGHT - VisualizerItem::NAME_INDENTATION - VisualizerItem::CORNER_INDENTATION);
+        rect().bottomRight().y() - label->boundingRect().height() - VisualizerItem::CORNER_INDENTATION);
 }
 
 //-----------------------------------------------------------------------------
