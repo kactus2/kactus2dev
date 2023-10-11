@@ -43,7 +43,7 @@ int AddressSpaceVisualizationItem::getBitWidth() const
 //-----------------------------------------------------------------------------
 void AddressSpaceVisualizationItem::setTopLabelText(quint64 address)
 {
-	QString padded = addr2Str(address, getBitWidth());
+	QString padded = addr2Str(address);
 	VisualizerItem::setTopLabelText(padded);
 }
 
@@ -52,7 +52,7 @@ void AddressSpaceVisualizationItem::setTopLabelText(quint64 address)
 //-----------------------------------------------------------------------------
 void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
 {
-	QString padded = addr2Str(address, getBitWidth());
+	QString padded = addr2Str(address);
 	VisualizerItem::setTopLabelText(padded);
 }
 
@@ -61,7 +61,7 @@ void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
 //-----------------------------------------------------------------------------
 void AddressSpaceVisualizationItem::setBottomLabelText(quint64 address)
 {
-	QString padded = addr2Str(address, getBitWidth());
+	QString padded = addr2Str(address);
 	VisualizerItem::setBottomLabelText(padded);
 }	
 
@@ -70,7 +70,7 @@ void AddressSpaceVisualizationItem::setBottomLabelText(quint64 address)
 //-----------------------------------------------------------------------------
 void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
 {
-	QString padded = addr2Str(address, getBitWidth());
+	QString padded = addr2Str(address);
 	VisualizerItem::setBottomLabelText(padded);
 }
 
@@ -186,15 +186,17 @@ bool AddressSpaceVisualizationItem::isConflicted() const
 //-----------------------------------------------------------------------------
 // Function: addr2Str()
 //-----------------------------------------------------------------------------
-QString AddressSpaceVisualizationItem::addr2Str(quint64 const address, int const bitWidth)
+QString AddressSpaceVisualizationItem::addr2Str(quint64 const address) const
 {
 	// convert the number into hexadecimal form
 	QString str = QString::number(address, 16);
 	str = str.toUpper();
 
+    int bitWidth = getBitWidth();
+
 	// one hexadecimal number accounts for four bits
 	int fieldSize = bitWidth / 4;
-	QString padded = QString("%1").arg(str, fieldSize, QChar('0'));
+	QString padded = QString("%1").arg(str, fieldSize, QLatin1Char('0'));
 
 	// group the string to groups of four characters
 	int size = padded.size();

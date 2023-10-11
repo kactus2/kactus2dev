@@ -47,8 +47,8 @@ void SegmentGraphItem::refresh()
     setOverlappingBottom(lastAddr);
 
     setToolTip("<b>Name: </b>" + segment_->name() + "<br>" +
-        "<b>Offset: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth())  + "<br>" +
+        "<b>Offset: </b>" + addr2Str(offset) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(lastAddr)  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
 
     repositionLabels(); 

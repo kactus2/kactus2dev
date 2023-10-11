@@ -398,7 +398,7 @@ void MemoryVisualizationItem::setTopLabelText(quint64 address)
 //-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::toHexString()
 //-----------------------------------------------------------------------------
-QString MemoryVisualizationItem::toHexString(quint64 address)
+QString MemoryVisualizationItem::toHexString(quint64 address) const
 {
     QString str = QString::number(address, 16);
     str = str.toUpper();
@@ -447,10 +447,11 @@ bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem cons
 QMultiMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::createMemoryGap(quint64 startAddress,
     quint64 endAddress)
 {
-    MemoryGapItem* gap = new MemoryGapItem(expressionParser_, this);
+    auto gap = new MemoryGapItem(expressionParser_, this);
     gap->setWidth(childWidth_);
     gap->setDisplayOffset(startAddress);
     gap->setDisplayLastAddress(endAddress);    
+    gap->repositionLabels();
 
     return childItems_.insert(gap->getOffset(), gap);
 }

@@ -227,7 +227,7 @@ protected:
      *
      *      @return The hexadecimal representation.
      */
-    QString toHexString(quint64 address);
+    QString toHexString(quint64 address) const;
 
 	/*!
      *  Set text to the bottom left corner.

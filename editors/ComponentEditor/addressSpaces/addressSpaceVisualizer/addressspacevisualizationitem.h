@@ -147,11 +147,10 @@ public:
      *  Convert the address to string presented in hexadecimal form.
 	 *
 	 *      @param [in] address  The address to be converted.
-	 *      @param [in] bitWidth The bit width of the item.
 	 *
 	 *      @return QString containing the address in hexadecimal form.
 	 */
-    QString addr2Str(quint64 const address, int const bitWidth);
+    QString addr2Str(quint64 const address) const;
 
 protected:
 

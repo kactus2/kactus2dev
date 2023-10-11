@@ -49,8 +49,8 @@ void LocalAddrBlockGraphItem::refresh()
 	
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
-        "<b>Base address: </b>" + addr2Str(offset, getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(lastAddr, getBitWidth()) + "<br>" +
+        "<b>Base address: </b>" + addr2Str(offset) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(lastAddr) + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(addrBlock_->getRange()));
 
 	repositionLabels();

@@ -32,6 +32,6 @@ void AddressSpaceConflictedItem::refresh()
     AddressSpaceGapItem::refresh();
 
     setToolTip("<b>Two or more memory blocks are mapped to these addresses.<br>First address: </b>" + 
-        addr2Str(getOffset(), getBitWidth()) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(getLastAddress(),getBitWidth()));
+        addr2Str(getOffset()) + "<br>" +
+        "<b>Last address: </b>" + addr2Str(getLastAddress()));
 }

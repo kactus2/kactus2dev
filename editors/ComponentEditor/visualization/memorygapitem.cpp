@@ -25,9 +25,8 @@ MemoryVisualizationItem(expressionParser, parent)
 	setExpansionBrush(QBrush(QColor(Qt::white)));
 
     setShowExpandableItem(false);
-    setLayoutType(LABELS_LEFT);
 
-	setName("Reserved");	
+	setName(QStringLiteral("Reserved"));
     setToolTip("This memory block is reserved for future use.");
 }
 

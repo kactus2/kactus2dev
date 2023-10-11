@@ -25,13 +25,6 @@ class AddressSpaceGapItem : public AddressSpaceVisualizationItem
 
 public:
 
-	//! Define where the address limits of the gap are being drawn.
-	enum AddressPosition
-    {
-		ALIGN_LEFT = 0,		// Align the address on the left side
-		ALIGN_RIGHT			// Align the address on the right side
-	};
-
 	/*!
 	 *  The constructor.
 	 *
@@ -103,14 +96,13 @@ public:
 	 */
     virtual void setOverlappingBottom(quint64 const& address) override final;
 
-
 private:
 		
 	//! The start address of the gap.
-	quint64 start_;
+	quint64 start_{ 0 };
 
 	//! The end address of the gap.
-	quint64 end_;
+	quint64 end_{ 0 };
 
 	//! Defines where the address limits are aligned.
     VisualizerItem::LabelLayout addrPosition_;
