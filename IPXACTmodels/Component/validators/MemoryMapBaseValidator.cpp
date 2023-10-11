@@ -56,6 +56,7 @@ void MemoryMapBaseValidator::componentChange(QSharedPointer<Component> newCompon
     {
         availableBusInterfaces_ = newComponent->getBusInterfaces();
         availableSpaces_ = newComponent->getAddressSpaces();
+        docRevision_ = newComponent->getRevision();
     }
 }
 
@@ -282,7 +283,7 @@ QSharedPointer<AddressSpace> MemoryMapBaseValidator::getReferencedAddressSpace(
 {
     for (auto bus : *availableBusInterfaces_)
     {
-        if (subspace->getMasterReference() == bus->name())
+        if (subspace->getInitiatorReference() == bus->name())
         {
             for (auto space : *availableSpaces_)
             {
@@ -348,7 +349,7 @@ void MemoryMapBaseValidator::findErrorsInName(QVector<QString>& errors,
 void MemoryMapBaseValidator::findErrorsInIsPresent(QVector<QString>& errors,
     QSharedPointer<MemoryMapBase> memoryMapBase, QString const& context) const
 {
-    if (!hasValidIsPresent(memoryMapBase))
+    if (docRevision_ == Document::Revision::Std14 && !hasValidIsPresent(memoryMapBase))
     {
         errors.append(QObject::tr("Invalid isPresent set for %1 %2 within %3").arg(memoryMapBase->elementName())
             .arg(memoryMapBase->name()).arg(context));

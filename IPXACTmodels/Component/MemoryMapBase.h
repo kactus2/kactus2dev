@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 //! Contains common memory-map elements.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMapBase : public NameGroup
+class IPXACTMODELS_EXPORT MemoryMapBase : public NameGroup, public Extendable
 {
 
 public:

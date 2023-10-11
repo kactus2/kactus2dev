@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 SubSpaceMap::SubSpaceMap(QString const& name, QString const& baseAddress):
 MemoryBlockBase(name, baseAddress),
-masterReference_(),
+initiatorReference_(),
 segmentRef_()
 {
 
@@ -27,7 +27,7 @@ segmentRef_()
 //-----------------------------------------------------------------------------
 SubSpaceMap::SubSpaceMap(const SubSpaceMap& other):
 MemoryBlockBase(other),
-masterReference_(other.masterReference_),
+initiatorReference_(other.initiatorReference_),
 segmentRef_(other.segmentRef_)
 {
 
@@ -41,7 +41,7 @@ SubSpaceMap& SubSpaceMap::operator=( const SubSpaceMap& other)
     if (this != &other)
     {
         MemoryBlockBase::operator=(other);
-        masterReference_ = other.masterReference_;
+        initiatorReference_ = other.initiatorReference_;
         segmentRef_ = other.segmentRef_;
     }
 
@@ -59,17 +59,17 @@ QSharedPointer<MemoryBlockBase> SubSpaceMap::clone() const
 //-----------------------------------------------------------------------------
 // Function: SubSpaceMap::getMasterReference()
 //-----------------------------------------------------------------------------
-QString SubSpaceMap::getMasterReference() const
+QString SubSpaceMap::getInitiatorReference() const
 {
-    return masterReference_;
+    return initiatorReference_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: SubSpaceMap::setMasterReference()
 //-----------------------------------------------------------------------------
-void SubSpaceMap::setMasterReference(QString const& newMasterReference)
+void SubSpaceMap::setInitiatorReference(QString const& newInitiatorReference)
 {
-    masterReference_ = newMasterReference;
+    initiatorReference_ = newInitiatorReference;
 }
 
 //-----------------------------------------------------------------------------

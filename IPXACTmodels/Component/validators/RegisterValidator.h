@@ -221,6 +221,15 @@ private:
      */
     bool alternateRegisterIsValid(QSharedPointer<AlternateRegister> alternateRegister, QSharedPointer<Register> selectedRegister) const;
 
+    /*!
+     *	Get the bit width of the field taking into account the dimensions of it if std22 is in use.
+     *  
+     *      @param [in] field     The field whose width to get.
+     *	    
+     * 	    @return The true bit width of the field.
+     */
+    quint64 getTrueFieldBitWidth(QSharedPointer<Field> field) const;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

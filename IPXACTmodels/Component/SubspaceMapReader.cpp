@@ -21,11 +21,14 @@ IPXACTMODELS_EXPORT QSharedPointer<SubSpaceMap> SubspaceMapReader::createSubspac
 {
     QSharedPointer<SubSpaceMap> newSubspaceMap(new SubSpaceMap());
 
-    Details::parseAttributes(subspaceMapNode, newSubspaceMap);
+    Details::parseAttributes(subspaceMapNode, newSubspaceMap, docRevision);
 
     MemoryBlockBaseReader::parseNameGroup(subspaceMapNode, newSubspaceMap);
 
-    MemoryBlockBaseReader::parsePresence(subspaceMapNode, newSubspaceMap);
+    if (docRevision == Document::Revision::Std14)
+    {
+        MemoryBlockBaseReader::parsePresence(subspaceMapNode, newSubspaceMap);
+    }
 
     MemoryBlockBaseReader::parseBaseAddress(subspaceMapNode, newSubspaceMap);
 
@@ -40,17 +43,22 @@ IPXACTMODELS_EXPORT QSharedPointer<SubSpaceMap> SubspaceMapReader::createSubspac
 // Function: SubspaceMapReader::Details::parseAttributes()
 //-----------------------------------------------------------------------------
 void SubspaceMapReader::Details::parseAttributes(QDomNode const& subspaceMapNode,
-    QSharedPointer<SubSpaceMap> newSubspaceMap)
+    QSharedPointer<SubSpaceMap> newSubspaceMap,
+    Document::Revision docRevision)
 {
+    QString initiatorAttrName = docRevision == Document::Revision::Std22
+        ? QStringLiteral("initiatorRef")
+        : QStringLiteral("masterRef");
+
     QDomNamedNodeMap attributes = subspaceMapNode.attributes();
     for (int j = 0; j < attributes.size(); ++j)
     {
         QString attributeName = attributes.item(j).nodeName();
         QString attributeValue = attributes.item(j).nodeValue();
 
-        if (attributeName == QStringLiteral("masterRef"))
+        if (attributeName == initiatorAttrName)
         {
-            newSubspaceMap->setMasterReference(attributeValue);
+            newSubspaceMap->setInitiatorReference(attributeValue);
         }
         else if (attributeName == QStringLiteral("segmentRef"))
         {

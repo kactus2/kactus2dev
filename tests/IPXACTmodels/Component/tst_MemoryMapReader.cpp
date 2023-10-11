@@ -32,11 +32,17 @@ public:
 private slots:
 
     void readSimpleMemoryMap();
+    void readSimpleMemoryMap2022();
+
     void readIsPresent();
     void readAddressBlocks();
+    void readSubspaceMap();
 
     void readSimpleMemoryRemap();
     void readMemoryRemapAddressBlocks();
+
+    void readMemoryRemap2022();
+    void readMemoryRemapWithSubspaceMap();
 
     void readAddressUnitBits();
     void readSharedValue();
@@ -70,12 +76,41 @@ void tst_MemoryMapReader::readSimpleMemoryMap()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->displayName(), QString("displayed"));
     QCOMPARE(testMemoryMap->description(), QString("described"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapReader::readSimpleMemoryMap2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapReader::readSimpleMemoryMap2022()
+{
+    QString documentContent(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:displayName>displayed</ipxact:displayName>"
+            "<ipxact:description>described</ipxact:description>"
+            "<ipxact:memoryMapDefinitionRef typeDefinitions=\"testDefinitions\">testMemMapDef</ipxact:memoryMapDefinitionRef>"
+        "</ipxact:memoryMap>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std22);
+
+    QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
+    QCOMPARE(testMemoryMap->displayName(), QString("displayed"));
+    QCOMPARE(testMemoryMap->description(), QString("described"));
+
+    QCOMPARE(testMemoryMap->getMemoryMapDefinitionReference(), QString("testMemMapDef"));
+    QCOMPARE(testMemoryMap->getTypeDefinitionsReference(), QString("testDefinitions"));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -95,8 +130,7 @@ void tst_MemoryMapReader::readIsPresent()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->getIsPresent(), QString("8/8-1"));
@@ -141,8 +175,7 @@ void tst_MemoryMapReader::readAddressBlocks()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
 
@@ -180,6 +213,38 @@ void tst_MemoryMapReader::readAddressBlocks()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryMapReader::readSubspaceMap()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapReader::readSubspaceMap()
+{
+    QString documentContent(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:subspaceMap initiatorRef=\"testInitiator\">"
+                "<ipxact:name>testSubspaceMap</ipxact:name>"
+                "<ipxact:baseAddress>'h01</ipxact:baseAddress>"
+            "</ipxact:subspaceMap>"
+        "</ipxact:memoryMap>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, 
+        Document::Revision::Std22);
+
+    QSharedPointer<SubSpaceMap> parsedSubSpace;
+
+    QCOMPARE(testMemoryMap->getMemoryBlocks()->size(), 1);
+    QVERIFY(parsedSubSpace = testMemoryMap->getMemoryBlocks()->first().dynamicCast<SubSpaceMap>());
+
+    QCOMPARE(parsedSubSpace->getInitiatorReference(), QString("testInitiator"));
+    QCOMPARE(parsedSubSpace->getBaseAddress(), QString("'h01"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapReader::readSimpleMemoryMap()
 //-----------------------------------------------------------------------------
 void tst_MemoryMapReader::readSimpleMemoryRemap()
@@ -201,8 +266,7 @@ void tst_MemoryMapReader::readSimpleMemoryRemap()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
 
@@ -258,8 +322,7 @@ void tst_MemoryMapReader::readMemoryRemapAddressBlocks()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
 
@@ -303,6 +366,98 @@ void tst_MemoryMapReader::readMemoryRemapAddressBlocks()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryMapReader::readMemoryRemap2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapReader::readMemoryRemap2022()
+{
+    // Test with definition std22 reference.
+    QString documentContent(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:memoryRemap>"
+                "<ipxact:name>memoryRemap</ipxact:name>"
+                "<ipxact:displayName>displayedRemap</ipxact:displayName>"
+                "<ipxact:description>describedRemap</ipxact:description>"
+                "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                "<ipxact:modeRef priority=\"1\">mode2</ipxact:modeRef>"
+                "<ipxact:remapDefinitionRef typeDefinitions=\"testDefinitions\">testRemapDef</ipxact:remapDefinitionRef>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:memoryRemap>"
+        "</ipxact:memoryMap>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std22);
+
+    QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
+
+    QCOMPARE(testMemoryMap->getMemoryRemaps()->size(), 1);
+    QCOMPARE(testMemoryMap->getMemoryBlocks()->size(), 0);
+
+    QSharedPointer<MemoryRemap> testMemoryRemap = testMemoryMap->getMemoryRemaps()->first();
+    QCOMPARE(testMemoryRemap->name(), QString("memoryRemap"));
+    QCOMPARE(testMemoryRemap->displayName(), QString("displayedRemap"));
+    QCOMPARE(testMemoryRemap->description(), QString("describedRemap"));
+    QCOMPARE(testMemoryRemap->getModeReferences()->size(), 2);
+    QCOMPARE(testMemoryRemap->getModeReferences()->first()->getReference(), QString("testMode"));
+    QCOMPARE(testMemoryRemap->getModeReferences()->back()->getPriority(), QString("1"));
+
+    QCOMPARE(testMemoryRemap->getMemoryRemapDefinitionReference(), QString("testRemapDef"));
+    QCOMPARE(testMemoryRemap->getTypeDefinitionsReference(), QString("testDefinitions"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapReader::readMemoryRemapWithSubspaceMap()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapReader::readMemoryRemapWithSubspaceMap()
+{
+    QString documentContent(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:memoryRemap>"
+                "<ipxact:name>memoryRemap</ipxact:name>"
+                "<ipxact:displayName>displayedRemap</ipxact:displayName>"
+                "<ipxact:description>describedRemap</ipxact:description>"
+                "<ipxact:subspaceMap initiatorRef=\"testInitiator\">"
+                    "<ipxact:name>testSubspaceMap</ipxact:name>"
+                    "<ipxact:baseAddress>'h01</ipxact:baseAddress>"
+                "</ipxact:subspaceMap>"
+                "<ipxact:vendorExtensions>"
+                    "<testExtension testExtensionAttribute=\"extension\">testValue</testExtension>"
+                "</ipxact:vendorExtensions>"
+            "</ipxact:memoryRemap>"
+        "</ipxact:memoryMap>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
+
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, 
+        Document::Revision::Std22);
+
+    QSharedPointer<MemoryRemap> parsedRemap;
+    QSharedPointer<SubSpaceMap> parsedSubSpace;
+
+    QCOMPARE(testMemoryMap->getMemoryBlocks()->size(), 0);
+    QCOMPARE(testMemoryMap->getMemoryRemaps()->size(), 1);
+
+    parsedRemap = testMemoryMap->getMemoryRemaps()->first();
+    
+    QVERIFY(parsedSubSpace = parsedRemap->getMemoryBlocks()->first().dynamicCast<SubSpaceMap>());
+
+    QCOMPARE(parsedSubSpace->getInitiatorReference(), QString("testInitiator"));
+    QCOMPARE(parsedSubSpace->getBaseAddress(), QString("'h01"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapReader::readAddressUnitBits()
 //-----------------------------------------------------------------------------
 void tst_MemoryMapReader::readAddressUnitBits()
@@ -319,8 +474,7 @@ void tst_MemoryMapReader::readAddressUnitBits()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->getAddressUnitBits(), QString("8"));
@@ -343,8 +497,7 @@ void tst_MemoryMapReader::readSharedValue()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->getShared(), QString("true"));
@@ -369,8 +522,7 @@ void tst_MemoryMapReader::readVendorExtensions()
 
     QDomNode memoryMapNode = document.firstChildElement("ipxact:memoryMap");
 
-    MemoryMapReader memoryMapReader;
-    QSharedPointer<MemoryMap> testMemoryMap = memoryMapReader.createMemoryMapFrom(memoryMapNode);
+    QSharedPointer<MemoryMap> testMemoryMap = MemoryMapReader::createMemoryMapFrom(memoryMapNode, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMap->name(), QString("testMemoryMap"));
     QCOMPARE(testMemoryMap->getVendorExtensions()->size(), 1);

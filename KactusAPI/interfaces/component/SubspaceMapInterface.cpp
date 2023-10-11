@@ -102,7 +102,7 @@ std::string SubspaceMapInterface::getMasterReference(std::string const& itemName
     QSharedPointer<SubSpaceMap> editedItem = getSubspaceMap(itemName);
     if (editedItem)
     {
-        return editedItem->getMasterReference().toStdString();
+        return editedItem->getInitiatorReference().toStdString();
     }
 
     return string("");
@@ -119,7 +119,7 @@ bool SubspaceMapInterface::setMasterReference(std::string const& itemName, std::
         return false;
     }
 
-    editedItem->setMasterReference(QString::fromStdString(newMasterReference));
+    editedItem->setInitiatorReference(QString::fromStdString(newMasterReference));
     return true;
 }
 

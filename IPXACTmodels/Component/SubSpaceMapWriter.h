@@ -41,10 +41,11 @@ namespace SubSpaceMapWriter
         /*!
          *  Writes the attributes of a given subspace map into xml.
          *
-         *      @param [in] writer  The xml writer to use.
-         *      @param [in] subMap  The subspace map whose attributes to write.
+         *      @param [in] writer          The xml writer to use.
+         *      @param [in] subMap          The subspace map whose attributes to write.
+         *      @param [in] docRevision     The IP-XACT standard revision to comply to.
          */
-        void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap);
+        void writeAttributes(QXmlStreamWriter& writer, QSharedPointer<SubSpaceMap> subMap, Document::Revision docRevision);
     }
 };
 

@@ -22,16 +22,20 @@ void MemoryArrayWriter::writeMemoryArray(QXmlStreamWriter& writer, QSharedPointe
         return;
     }
 
-    writer.writeStartElement(QStringLiteral("ipxact:array"));
-
-    Details::writeDimensions(writer, memoryArray, docRevision);
-
-    if (docRevision == Document::Revision::Std22)
+    if (docRevision == Document::Revision::Std14)
     {
-        Details::writeStride(writer, memoryArray, isField);
+        Details::writeDimensions(writer, memoryArray, docRevision);
     }
+    else if (docRevision == Document::Revision::Std22)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:array"));
 
-    writer.writeEndElement(); // ipxact:array
+        Details::writeDimensions(writer, memoryArray, docRevision);
+
+        Details::writeStride(writer, memoryArray, isField);
+
+        writer.writeEndElement(); // ipxact:array
+    }
 }
 
 //-----------------------------------------------------------------------------

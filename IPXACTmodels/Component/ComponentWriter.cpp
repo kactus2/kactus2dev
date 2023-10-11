@@ -244,13 +244,11 @@ void ComponentWriter::writeMemoryMaps(QXmlStreamWriter& writer, QSharedPointer<C
 {
     if (!component->getMemoryMaps()->isEmpty())
     {
-        MemoryMapWriter mapWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:memoryMaps"));
 
         for (auto const& memoryMap : *component->getMemoryMaps())
         {
-            mapWriter.writeMemoryMap(writer, memoryMap, component->getRevision());
+            MemoryMapWriter::writeMemoryMap(writer, memoryMap, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:memoryMaps

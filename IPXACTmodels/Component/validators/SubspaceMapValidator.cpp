@@ -69,7 +69,7 @@ bool SubspaceMapValidator::validate(QSharedPointer<SubSpaceMap> subspace) const
 //-----------------------------------------------------------------------------
 bool SubspaceMapValidator::hasValidMasterReference(QSharedPointer<SubSpaceMap> subspace) const
 {
-    QString masterReference = subspace->getMasterReference();
+    QString masterReference = subspace->getInitiatorReference();
     if (masterReference.isEmpty() || !masterReferenceExists(masterReference) ||
         !referencedBusIsMaster(masterReference))
     {
@@ -130,7 +130,7 @@ bool SubspaceMapValidator::hasValidSegmentReference(QSharedPointer<SubSpaceMap> 
 {
     QString segmentReference = subspace->getSegmentReference();
     if (segmentReference.isEmpty() ||
-        spaceContainsSegmentReference(subspace->getMasterReference(), segmentReference))
+        spaceContainsSegmentReference(subspace->getInitiatorReference(), segmentReference))
     {
         return true;
     }
@@ -202,12 +202,23 @@ void SubspaceMapValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer
 void SubspaceMapValidator::findErrorsInMasterReference(QVector<QString>& errors,
     QSharedPointer<SubSpaceMap> subspace, QString const& context) const
 {
-    QString masterReference = subspace->getMasterReference();
+    
+
+    QString masterReference = subspace->getInitiatorReference();
     if (masterReference.isEmpty())
     {
-        errors.append(
-            QObject::tr("A master bus interface reference is not specified in subspace map %1 within %2").
-            arg(subspace->name(), context));
+        if (docRevision_ == Document::Revision::Std14)
+        {
+            errors.append(
+                QObject::tr("A master bus interface reference is not specified in subspace map %1 within %2").
+                arg(subspace->name(), context));
+        }
+        else if (docRevision_ == Document::Revision::Std22)
+        {
+            errors.append(
+                QObject::tr("An initiator bus interface reference is not specified in subspace map %1 within %2").
+                arg(subspace->name(), context));
+        }
     }
     else if (!masterReferenceExists(masterReference))
     {
@@ -216,8 +227,16 @@ void SubspaceMapValidator::findErrorsInMasterReference(QVector<QString>& errors,
     }
     else if (!referencedBusIsMaster(masterReference))
     {
-        errors.append(QObject::tr("Bus interface %1 referenced in %2 within %3 is not a master").
-            arg(masterReference, subspace->name(), context));
+        if (docRevision_ == Document::Revision::Std14)
+        {
+            errors.append(QObject::tr("Bus interface %1 referenced in %2 within %3 is not a master").
+                arg(masterReference, subspace->name(), context));
+        }
+        else if (docRevision_ == Document::Revision::Std22)
+        {
+            errors.append(QObject::tr("Bus interface %1 referenced in %2 within %3 is not an initiator").
+                arg(masterReference, subspace->name(), context));
+        }
     }
 }
 
@@ -229,10 +248,10 @@ void SubspaceMapValidator::findErrorsInSegmentReference(QVector<QString>& errors
 {
     QString segmentReference = subspace->getSegmentReference();
     if (!segmentReference.isEmpty() &&
-        !spaceContainsSegmentReference(subspace->getMasterReference(), segmentReference))
+        !spaceContainsSegmentReference(subspace->getInitiatorReference(), segmentReference))
     {
         errors.append(QObject::tr(
             "Segment %1 does not exist in address space of bus interface %2 referenced in %3 within %4").
-            arg(segmentReference, subspace->getMasterReference(), subspace->name(), context));
+            arg(segmentReference, subspace->getInitiatorReference(), subspace->name(), context));
     }
 }

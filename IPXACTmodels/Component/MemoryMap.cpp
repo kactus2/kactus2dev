@@ -18,7 +18,6 @@
 //-----------------------------------------------------------------------------
 MemoryMap::MemoryMap(QString const& name):
 MemoryMapBase(name),
-    Extendable(),
     memoryRemaps_(new QList<QSharedPointer<MemoryRemap> > ()),
     addressUnitBits_(),
     shared_()
@@ -31,10 +30,12 @@ MemoryMapBase(name),
 //-----------------------------------------------------------------------------
 MemoryMap::MemoryMap(const MemoryMap& other):
 MemoryMapBase(other),
-Extendable(other),
 memoryRemaps_(new QList<QSharedPointer<MemoryRemap> > ()),
 addressUnitBits_(other.addressUnitBits_),
-shared_(other.shared_)
+shared_(other.shared_),
+memoryMapDefinitionReference_(other.memoryMapDefinitionReference_),
+typeDefinitionsReference_(other.typeDefinitionsReference_)
+
 {
     copyMemoryRemaps(other);
 }
@@ -47,13 +48,15 @@ MemoryMap& MemoryMap::operator=(const MemoryMap& other)
     if (this != &other)
     {
         MemoryMapBase::operator=(other);
-        Extendable::operator=(other);
 
         memoryRemaps_->clear();
         copyMemoryRemaps(other);
         
         addressUnitBits_ = other.addressUnitBits_;
         shared_ = other.shared_;
+        memoryMapDefinitionReference_ = other.memoryMapDefinitionReference_;
+        typeDefinitionsReference_ = other.typeDefinitionsReference_;
+
     }
 
     return *this;
@@ -124,15 +127,47 @@ void MemoryMap::clearShared()
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMap::getMemoryMapDefinitionReference()
+//-----------------------------------------------------------------------------
+QString MemoryMap::getMemoryMapDefinitionReference() const
+{
+    return memoryMapDefinitionReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMap::setMemoryMapDefinitionReference()
+//-----------------------------------------------------------------------------
+void MemoryMap::setMemoryMapDefinitionReference(QString const& newDefinitionRef)
+{
+    memoryMapDefinitionReference_ = newDefinitionRef;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMap::getTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+QString MemoryMap::getTypeDefinitionsReference() const
+{
+    return typeDefinitionsReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMap::setTypeDefinitionsReference()
+//-----------------------------------------------------------------------------
+void MemoryMap::setTypeDefinitionsReference(QString const& newTypeDefinitionsRef)
+{
+    typeDefinitionsReference_ = newTypeDefinitionsRef;
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMap::copyMemoryRemaps()
 //-----------------------------------------------------------------------------
 void MemoryMap::copyMemoryRemaps(const MemoryMap& other)
 {
-    foreach (QSharedPointer<MemoryRemap> memoryRemap, *other.memoryRemaps_)
+    for (auto memoryRemap : *other.memoryRemaps_)
     {
         if (memoryRemap)
         {
-            QSharedPointer<MemoryRemap> copy = QSharedPointer<MemoryRemap>(new MemoryRemap(*memoryRemap.data()));
+            auto copy = QSharedPointer<MemoryRemap>(new MemoryRemap(*memoryRemap));
             memoryRemaps_->append(copy);
         }
     }

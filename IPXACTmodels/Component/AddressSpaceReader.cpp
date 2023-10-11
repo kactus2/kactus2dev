@@ -175,8 +175,7 @@ void AddressSpaceReader::Details::parseLocalMemoryMap(QDomNode const& addressSpa
     {
         QSharedPointer<MemoryMapBase> newLocalMemoryMap(new MemoryMapBase());
 
-        MemoryMapBaseReader localReader;
-        localReader.readMemoryMapBase(localMemoryMapNode, newLocalMemoryMap, docRevision);
+        MemoryMapBaseReader::readMemoryMapBase(localMemoryMapNode, newLocalMemoryMap, docRevision);
         newAddressSpace->setLocalMemoryMap(newLocalMemoryMap);
     }
 }

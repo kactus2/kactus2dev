@@ -6,52 +6,37 @@
 // Date: 01.10.2015
 //
 // Description:
-// Writer class for ipxact:MemoryMapBase element.
+// Writer for ipxact:MemoryMapBase element.
 //-----------------------------------------------------------------------------
 
 #include "MemoryMapBaseWriter.h"
 #include "MemoryMapBase.h"
 #include "AddressBlock.h"
 
+#include <IPXACTmodels/common/CommonItemsWriter.h>
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/SubSpaceMap.h>
 #include <IPXACTmodels/Component/AddressBlockWriter.h>
 #include <IPXACTmodels/Component/SubSpaceMapWriter.h>
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseWriter::MemoryMapBaseWriter()
-//-----------------------------------------------------------------------------
-MemoryMapBaseWriter::MemoryMapBaseWriter(): CommonItemsWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBaseWriter::~MemoryMapBaseWriter()
-//-----------------------------------------------------------------------------
-MemoryMapBaseWriter::~MemoryMapBaseWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeMemoryMapBase()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseWriter::writeMemoryMapBase(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     NameGroupWriter::writeNameGroup(writer, MemoryMapBase, docRevision);
 
-    writeIsPresent(writer, MemoryMapBase->getIsPresent());
+    CommonItemsWriter::writeIsPresent(writer, MemoryMapBase->getIsPresent());
 
-    writeMemoryBlocks(writer, MemoryMapBase, docRevision);
+    Details::writeMemoryBlocks(writer, MemoryMapBase, docRevision);
 }
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeNameGroup()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
-    Document::Revision docRevision) const
+void MemoryMapBaseWriter::Details::writeNameGroup(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase,
+    Document::Revision docRevision)
 {
     NameGroupWriter::writeNameGroup(writer, MemoryMapBase, docRevision);
 }
@@ -59,7 +44,7 @@ void MemoryMapBaseWriter::writeNameGroup(QXmlStreamWriter& writer, QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseWriter::writeMemoryBlocks()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, Document::Revision docRevision) const
+void MemoryMapBaseWriter::Details::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPointer<MemoryMapBase> MemoryMapBase, Document::Revision docRevision)
 {
     if (!MemoryMapBase->getMemoryBlocks()->isEmpty())
     {
@@ -71,8 +56,7 @@ void MemoryMapBaseWriter::writeMemoryBlocks(QXmlStreamWriter& writer, QSharedPoi
                 AddressBlockWriter::writeAddressBlock(writer, addressBlock, docRevision);
             }
 
-            QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();
-            if (subspaceMap)
+            else if (QSharedPointer<SubSpaceMap> subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>())
             {
                 SubSpaceMapWriter::writeSubSpaceMap(writer, subspaceMap, docRevision);
             }

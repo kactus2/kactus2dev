@@ -16,53 +16,41 @@
 #include "MemoryBlockBase.h"
 
 #include <IPXACTmodels/common/NameGroupReader.h>
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/Component/AddressBlockReader.h>
 #include <IPXACTmodels/Component/SubspaceMapReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBaseReader::MemoryMapBaseReader()
-//-----------------------------------------------------------------------------
-MemoryMapBaseReader::MemoryMapBaseReader(): CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBaseReader::~MemoryMapBaseReader()
-//-----------------------------------------------------------------------------
-MemoryMapBaseReader::~MemoryMapBaseReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapBaseReader::createMemoryMapBaseFrom()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseReader::readMemoryMapBase(QDomNode const& MemoryMapBaseNode,
 	QSharedPointer<MemoryMapBase> newMemoryMapBase,
-	Document::Revision docRevision) const
+	Document::Revision docRevision)
 {
-    parseNameGroup(MemoryMapBaseNode, newMemoryMapBase);
+    NameGroupReader::parseNameGroup(MemoryMapBaseNode, newMemoryMapBase);
 
-    parsePresence(MemoryMapBaseNode, newMemoryMapBase);
+    if (docRevision == Document::Revision::Std14)
+    {
+        Details::parsePresence(MemoryMapBaseNode, newMemoryMapBase);
+    }
 
-    parseMemoryBlocks(MemoryMapBaseNode, newMemoryMapBase, docRevision);
+    Details::parseMemoryBlocks(MemoryMapBaseNode, newMemoryMapBase, docRevision);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseReader::parseNameGroup()
+// Function: MemoryMapBaseReader::Details::parseNameGroup()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseReader::parseNameGroup(QDomNode const& MemoryMapBaseBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBaseBase) const
+void MemoryMapBaseReader::Details::parseNameGroup(QDomNode const& MemoryMapBaseBaseNode,
+    QSharedPointer<MemoryMapBase> newMemoryMapBaseBase)
 {
     NameGroupReader::parseNameGroup(MemoryMapBaseBaseNode, newMemoryMapBaseBase);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseReader::parsePresence()
+// Function: MemoryMapBaseReader::Details::parsePresence()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseReader::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
-    QSharedPointer<MemoryMapBase> newMemoryMapBaseBase) const
+void MemoryMapBaseReader::Details::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
+    QSharedPointer<MemoryMapBase> newMemoryMapBaseBase)
 {
     QDomNode isPresentNode = MemoryMapBaseBaseNode.firstChildElement(QStringLiteral("ipxact:isPresent"));
     if (!isPresentNode.isNull())
@@ -73,11 +61,11 @@ void MemoryMapBaseReader::parsePresence(QDomNode const& MemoryMapBaseBaseNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseReader::parseMemoryBlocks()
+// Function: MemoryMapBaseReader::Details::parseMemoryBlocks()
 //-----------------------------------------------------------------------------
-void MemoryMapBaseReader::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
+void MemoryMapBaseReader::Details::parseMemoryBlocks(QDomNode const& memoryMapBaseNode,
     QSharedPointer<MemoryMapBase> newMemoryMapBase,
-    Document::Revision docRevision) const
+    Document::Revision docRevision)
 {
     QDomNodeList childNodes = memoryMapBaseNode.childNodes();
 

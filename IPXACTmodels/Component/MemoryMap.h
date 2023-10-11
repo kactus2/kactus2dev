@@ -16,7 +16,6 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/BooleanValue.h>
 
 #include <QDomNode>
@@ -28,7 +27,7 @@ class MemoryRemap;
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:memoryMap element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMap : public MemoryMapBase, public Extendable
+class IPXACTMODELS_EXPORT MemoryMap : public MemoryMapBase
 {
 
 public:
@@ -104,6 +103,35 @@ public:
      */
     void clearShared();
 
+    /*!
+     *	Get the memory map definition reference.
+     *
+     * 	    @return The memory map definition reference.
+     */
+    QString getMemoryMapDefinitionReference() const;
+    
+    /*!
+     *	Set the memory map definition reference.
+     *
+     *      @param [in] newDefinitionRef     The new definition reference.
+     */
+    void setMemoryMapDefinitionReference(QString const& newDefinitionRef);
+
+    /*!
+     *	Get the type definitions reference of this memory remap.
+     *
+     *
+     * 	    @return The type definitions reference.
+     */
+    QString getTypeDefinitionsReference() const;
+
+    /*!
+     *	Set the type definitions reference for this memory remap
+     *
+     *      @param [in] newTypeDefinitionsRef     The type definitions reference to set.
+     */
+    void setTypeDefinitionsReference(QString const& newTypeDefinitionsRef);
+
 private:
 
     /*!
@@ -125,6 +153,12 @@ private:
 
     //! Defines the shared status.
     BooleanValue shared_;
+
+    //! The referenced memory map definition.
+    QString memoryMapDefinitionReference_;
+
+    //! The referenced type definitions.
+    QString typeDefinitionsReference_;
 };
 
 #endif // MEMORYMAP_H

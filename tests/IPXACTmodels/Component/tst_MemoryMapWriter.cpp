@@ -17,8 +17,10 @@
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
+#include <IPXACTmodels/Component/ModeReference.h>
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QtTest>
 
@@ -40,8 +42,12 @@ private slots:
     void writeIsPresent();
     void writeAddressBlocks();
 
+    void write2022MemoryMap();
+
     void writeSimpleMemoryRemap();
     void writeMemoryRemapAddressBlocks();
+
+    void writeMemoryRemap2022();
 
     void writeAddressUnitBits();
     void writeShared();
@@ -113,8 +119,7 @@ void tst_MemoryMapWriter::writeSimpleMemoryMap()
         "</ipxact:memoryMap>"
         );
 
-    MemoryMapWriter memoryMapWriter;
-    memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -135,8 +140,7 @@ void tst_MemoryMapWriter::writeIsPresent()
         "</ipxact:memoryMap>"
         );
 
-    MemoryMapWriter memoryMapWriter;
-    memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -198,8 +202,34 @@ void tst_MemoryMapWriter::writeAddressBlocks()
         "</ipxact:memoryMap>"
         );
 
-    MemoryMapWriter memoryMapWriter;
-    memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapWriter::write2022MemoryMap()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapWriter::write2022MemoryMap()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    testMemoryMap_->setDisplayName("displayed");
+    testMemoryMap_->setDescription("described");
+    testMemoryMap_->setIsPresent("false"); // don't write presence
+    testMemoryMap_->setMemoryMapDefinitionReference("memMapDefinition");
+    testMemoryMap_->setTypeDefinitionsReference("testTypeDefs");
+
+    QString expectedOutput(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:displayName>displayed</ipxact:displayName>"
+            "<ipxact:description>described</ipxact:description>"
+            "<ipxact:memoryMapDefinitionRef typeDefinitions=\"testTypeDefs\">memMapDefinition</ipxact:memoryMapDefinitionRef>"
+        "</ipxact:memoryMap>"
+        );
+
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -230,8 +260,7 @@ void tst_MemoryMapWriter::writeSimpleMemoryRemap()
         "</ipxact:memoryMap>"
         );
 
-    MemoryMapWriter memoryMapWriter;
-    memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -299,8 +328,54 @@ void tst_MemoryMapWriter::writeMemoryRemapAddressBlocks()
         "</ipxact:memoryMap>"
         );
 
-    MemoryMapWriter memoryMapWriter;
-    memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapWriter::writeMemoryRemap2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapWriter::writeMemoryRemap2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<MemoryRemap> testMemoryRemap (new MemoryRemap("memoryRemap", QString("remappedState"))); // don't write state
+    testMemoryRemap->setDisplayName("displayedRemap");
+    testMemoryRemap->setDescription("describedRemap");
+    testMemoryRemap->setIsPresent("1"); // don't write presence
+
+    testMemoryRemap->setMemoryRemapDefinitionReference("remapDef");
+    testMemoryRemap->setTypeDefinitionsReference("testTypeDefs");
+
+    QSharedPointer<ModeReference> modeRef1(new ModeReference());
+    modeRef1->setPriority("0");
+    modeRef1->setReference("testMode");
+
+    QSharedPointer<ModeReference> modeRef2(new ModeReference());
+    modeRef2->setPriority("1");
+    modeRef2->setReference("testMode2");
+
+    testMemoryRemap->getModeReferences()->append(modeRef1);
+    testMemoryRemap->getModeReferences()->append(modeRef2);
+
+    testMemoryMap_->getMemoryRemaps()->append(testMemoryRemap);
+
+    QString expectedOutput(
+        "<ipxact:memoryMap>"
+            "<ipxact:name>testMemoryMap</ipxact:name>"
+            "<ipxact:memoryRemap>"
+                "<ipxact:name>memoryRemap</ipxact:name>"
+                "<ipxact:displayName>displayedRemap</ipxact:displayName>"
+                "<ipxact:description>describedRemap</ipxact:description>"
+                "<ipxact:modeRef priority=\"0\">testMode</ipxact:modeRef>"
+                "<ipxact:modeRef priority=\"1\">testMode2</ipxact:modeRef>"
+                "<ipxact:remapDefinitionRef typeDefinitions=\"testTypeDefs\">remapDef</ipxact:remapDefinitionRef>"
+            "</ipxact:memoryRemap>"
+        "</ipxact:memoryMap>"
+        );
+
+    MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -321,8 +396,7 @@ void tst_MemoryMapWriter::writeMemoryRemapAddressBlocks()
          "</ipxact:memoryMap>"
          );
 
-     MemoryMapWriter memoryMapWriter;
-     memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+      MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
      QCOMPARE(output, expectedOutput);
  }
 
@@ -343,8 +417,7 @@ void tst_MemoryMapWriter::writeMemoryRemapAddressBlocks()
          "</ipxact:memoryMap>"
          );
 
-     MemoryMapWriter memoryMapWriter;
-     memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+      MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
      QCOMPARE(output, expectedOutput);
  }
 
@@ -374,8 +447,7 @@ void tst_MemoryMapWriter::writeMemoryRemapAddressBlocks()
          "</ipxact:memoryMap>"
          );
 
-     MemoryMapWriter memoryMapWriter;
-     memoryMapWriter.writeMemoryMap(xmlStreamWriter, testMemoryMap_);
+      MemoryMapWriter::writeMemoryMap(xmlStreamWriter, testMemoryMap_, Document::Revision::Std14);
      QCOMPARE(output, expectedOutput);
  }
 

@@ -308,7 +308,7 @@ std::string MemoryBlockInterface::getRangeValue(std::string const& blockName, in
             quint64 memoryRange = 1;
 
             QSharedPointer<AddressSpace> referencedSpace =
-                getReferencedAddressSpace(subspace->getMasterReference());
+                getReferencedAddressSpace(subspace->getInitiatorReference());
             if (referencedSpace)
             {
                 QSharedPointer<Segment> referencedSegment =

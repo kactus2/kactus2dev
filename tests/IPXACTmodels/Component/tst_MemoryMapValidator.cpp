@@ -9,7 +9,7 @@
 // Unit test for class MemoryMapValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
@@ -17,9 +17,12 @@
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
@@ -53,13 +56,18 @@ private slots:
     void testMemoryRemapsHaveUniqueRemapStates();
     void testMemoryRemapsHaveUniqueRemapStates_data();
 
+    void testHasValidMemoryRemapModeRefs2022();
+    void testHasValidMemoryRemapModeRefs2022_data();
+
+    void testMemoryMapStructureIsValid2022();
+    void testRemapStructureIsValid2022();
+
 private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
 
     QSharedPointer<MemoryMapValidator> createValidator(
-        QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates = 
-        QSharedPointer<QList<QSharedPointer<RemapState> > >());
+        Document::Revision docRevision, QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates = QSharedPointer<QList<QSharedPointer<RemapState> > >());
 };
 
 //-----------------------------------------------------------------------------
@@ -79,7 +87,7 @@ void tst_MemoryMapValidator::testNameIsValid()
 
     QSharedPointer<MemoryMap> testMap (new MemoryMap(name));
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator();
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidName(testMap), isValid);
 
@@ -129,7 +137,7 @@ void tst_MemoryMapValidator::testAddressUnitBitsIsValid()
         testMap->getMemoryBlocks()->append(testBlock);
     }
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator();
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidAddressUnitBits(testMap), isValid);
 
     if (!isValid)
@@ -184,7 +192,7 @@ void tst_MemoryMapValidator::testAddressBlockWidthIsMultipleOfAddressUnitBits()
     testMap->setAddressUnitBits(addressUnitBits);
     testMap->getMemoryBlocks()->append(testBlock);
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator();
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidMemoryBlocks(testMap, addressUnitBits), isValid);
 
@@ -245,7 +253,7 @@ void tst_MemoryMapValidator::testHasValidMemoryRemaps()
     QSharedPointer<MemoryMap> testMap (new MemoryMap("testMap"));
     testMap->getMemoryRemaps()->append(testRemap);
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14,remapStates);
 
     QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
@@ -299,7 +307,7 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidName()
     testMap->getMemoryRemaps()->append(testRemap);
     testMap->getMemoryRemaps()->append(otherRemap);
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14, remapStates);
 
     QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
@@ -364,7 +372,7 @@ void tst_MemoryMapValidator::testMemoryRemapHasValidIsPresent()
     QSharedPointer<MemoryMap> testMap (new MemoryMap("TestAddressBlock"));
     testMap->getMemoryRemaps()->append(testRemap);
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14,remapStates);
 
     QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
@@ -427,7 +435,7 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates()
     testMap->getMemoryRemaps()->append(remapTwo);
     testMap->getMemoryRemaps()->append(remapThree);
 
-    QSharedPointer<MemoryMapValidator> validator = createValidator(remapStates);
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14,remapStates);
     QCOMPARE(validator->hasValidMemoryRemaps(testMap), isValid);
 
     if (!isValid)
@@ -460,13 +468,212 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022()
+{
+    QFETCH(QString, modeRef1);
+    QFETCH(QString, priority1);
+    QFETCH(QString, modeRef2);
+    QFETCH(QString, priority2);
+    QFETCH(QString, modeRef3);
+    QFETCH(QString, priority3);
+    QFETCH(QString, invalidRemapName);
+    QFETCH(bool, refsAreValid);
+    QFETCH(bool, prioritiesAreValid);
+
+
+    QSharedPointer<ModeReference> testModeRef1(new ModeReference());
+    QSharedPointer<ModeReference> testModeRef2(new ModeReference());
+    QSharedPointer<ModeReference> testModeRef3(new ModeReference());
+    
+    testModeRef1->setReference(modeRef1);
+    testModeRef2->setReference(modeRef2);
+    testModeRef3->setReference(modeRef3);
+    
+    testModeRef1->setPriority(priority1);
+    testModeRef2->setPriority(priority2);
+    testModeRef3->setPriority(priority3);
+
+    QSharedPointer<MemoryRemap> remap1(new MemoryRemap("testRemap1"));
+    QSharedPointer<MemoryRemap> remap2(new MemoryRemap("testRemap2"));
+
+    remap1->getModeReferences()->append(testModeRef1);
+
+    remap2->getModeReferences()->append(testModeRef2);
+    remap2->getModeReferences()->append(testModeRef3);
+
+    QSharedPointer<MemoryMap> testMap(new MemoryMap("testMap"));
+    testMap->getMemoryRemaps()->append(remap1);
+    testMap->getMemoryRemaps()->append(remap2);
+
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std22);
+
+    QCOMPARE(validator->hasValidMemoryRemaps(testMap), refsAreValid && prioritiesAreValid);
+
+    if (!(refsAreValid && prioritiesAreValid))
+    {
+        auto invalidRemapIt = std::find_if(testMap->getMemoryRemaps()->begin(), testMap->getMemoryRemaps()->end(),
+            [&invalidRemapName](QSharedPointer<MemoryRemap> remap)
+            {
+                return remap->name() == invalidRemapName;
+            });
+
+        if (invalidRemapIt == testMap->getMemoryRemaps()->end())
+        {
+            QFAIL("Unknown remap name.");
+        }
+
+        QStringList foundErrors;
+        validator->findErrorsIn(foundErrors, testMap, "memory map testMap");
+
+        QString expectedError;
+        
+        if (!refsAreValid)
+        {
+            if (auto ref = (*invalidRemapIt)->getModeReferences()->first()->getReference(); ref.isEmpty())
+            {
+                expectedError = QObject::tr("Empty mode reference value set for memory remap %1 in memory map testMap").arg(invalidRemapName);
+            }
+            else
+            {
+                expectedError = QObject::tr("Duplicate mode reference value %1 set for memory remap %2 in memory map testMap").arg(ref).arg(invalidRemapName);
+            }
+        }
+        else if (!prioritiesAreValid)
+        {
+            if ((*invalidRemapIt)->getModeReferences()->first()->getPriority().isEmpty())
+            {
+                expectedError = QObject::tr("Empty mode reference priority set for memory remap %1 in memory map testMap").arg(invalidRemapName);
+            }
+            else
+            {
+                expectedError = QObject::tr("Duplicate mode reference priority set for memory remap %1 in memory map testMap").arg(invalidRemapName);
+            }
+        }
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022_data()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022_data()
+{
+    QTest::addColumn<QString>("modeRef1");
+    QTest::addColumn<QString>("priority1");
+    QTest::addColumn<QString>("modeRef2");
+    QTest::addColumn<QString>("priority2");
+    QTest::addColumn<QString>("modeRef3");
+    QTest::addColumn<QString>("priority3");
+    QTest::addColumn<QString>("invalidRemapName");
+    QTest::addColumn<bool>("refsAreValid");
+    QTest::addColumn<bool>("prioritiesAreValid");
+
+    QTest::addRow("Missing mode ref is invalid") << "" << "" << "testmode2" << "2" << "testmode3" << "3" << "testRemap1" << false << true;
+    QTest::addRow("Duplicate mode ref is invalid") << "testmode" << "0" << "testmode" << "1" << "testmode3" << "3" << "testRemap2" << false << true;
+    QTest::addRow("Duplicate mode ref priority in same remap is invalid") << "testmode1" << "0" << "testmode2" << "1" << "testmode3" << "1" << "testRemap2" << true << false;
+    QTest::addRow("Duplicate mode ref priority in different remaps is valid") << "testmode1" << "1" << "testmode2" << "1" << "testmode3" << "3" << "" << true << true;
+    QTest::addRow("Unique mode refs is valid") << "testmode1" << "0" << "testmode2" << "1" << "testmode3" << "2" << "" << true << true;
+    QTest::addRow("Empty priority is invalid") << "testmode1" << "" << "testmode2" << "1" << "testmode3" << "2" << "testRemap1" << true << false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapValidator::testMemoryMapStructureIsValid2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapValidator::testMemoryMapStructureIsValid2022()
+{
+    QSharedPointer<MemoryMap> testMap(new MemoryMap("testMap"));
+    testMap->setMemoryMapDefinitionReference("memMapDef");
+    testMap->setTypeDefinitionsReference("testTypeDefinitions");
+
+    QSharedPointer<AddressBlock> testBlock(new AddressBlock("testblock", "0"));
+    testMap->getMemoryBlocks()->append(testBlock);
+
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std22);
+
+    QStringList errors;
+
+    QString expectedError = QObject::tr("Memory map %1 in %2 cannot contain both a definition reference"
+        " and memory blocks, remaps or definitions for address unit bits or shared values.").arg(testMap->name())
+        .arg("memory map testMap");
+
+    validator->findErrorsIn(errors, testMap, "test");
+    QCOMPARE(validator->hasValidStructure(testMap), false); // definition ref and address block
+    QVERIFY(errors.contains(expectedError));
+
+    errors.clear();
+    testMap->getMemoryBlocks()->clear();
+
+    validator->findErrorsIn(errors, testMap, "test");
+    QCOMPARE(validator->hasValidStructure(testMap), true);
+    QVERIFY(errors.contains(expectedError) == false);
+
+    errors.clear();
+    testMap->setAddressUnitBits("8");
+
+    validator->findErrorsIn(errors, testMap, "test"); // definition ref and address unit bits
+    QCOMPARE(validator->hasValidStructure(testMap), false);
+    QVERIFY(errors.contains(expectedError));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_MemoryMapValidator::testRemapStructureIsValid2022()
+//-----------------------------------------------------------------------------
+void tst_MemoryMapValidator::testRemapStructureIsValid2022()
+{
+    QSharedPointer<MemoryMap> testMap(new MemoryMap("testMap"));
+
+    QSharedPointer<MemoryRemap> testRemap(new MemoryRemap("remap"));
+    testRemap->setMemoryRemapDefinitionReference("remapDef");
+    testRemap->setTypeDefinitionsReference("testTypeDefinitions");
+
+    QSharedPointer<AddressBlock> testBlock(new AddressBlock("testblock", "0"));
+    testRemap->getMemoryBlocks()->append(testBlock);
+
+    testMap->getMemoryRemaps()->append(testRemap);
+
+    QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std22);
+
+    QStringList errors;
+
+    QString expectedError = QObject::tr("Memory remap %1 in %2 cannot contain both a definition reference"
+        " and address blocks / subspace maps.").arg(testRemap->name()).arg("memory map testMap");
+
+    validator->findErrorsIn(errors, testMap, "test");
+    QCOMPARE(validator->remapHasValidStructure(testRemap), false); // definition ref and address block
+    QVERIFY(errors.contains(expectedError));
+
+    errors.clear();
+    testRemap->getMemoryBlocks()->clear();
+
+    validator->findErrorsIn(errors, testMap, "test");
+    QCOMPARE(validator->remapHasValidStructure(testRemap), true);
+    QVERIFY(!errors.contains(expectedError));
+
+    errors.clear();
+    testRemap->setMemoryRemapDefinitionReference("");
+    testRemap->setTypeDefinitionsReference("");
+
+    testRemap->getMemoryBlocks()->append(testBlock);
+
+    validator->findErrorsIn(errors, testMap, "test");
+    QCOMPARE(validator->remapHasValidStructure(testRemap), true);
+    QVERIFY(!errors.contains(expectedError));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MemoryMapValidator::errorIsNotFoundInErrorList()
 //-----------------------------------------------------------------------------
 bool tst_MemoryMapValidator::errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList)
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
         foreach(QString error, errorList)
         {
             qDebug() << error;
@@ -481,21 +688,28 @@ bool tst_MemoryMapValidator::errorIsNotFoundInErrorList(QString const& expectedE
 // Function: tst_MemoryMapValidator::errorIsNotFoundInErrorList()
 //-----------------------------------------------------------------------------
 QSharedPointer<MemoryMapValidator> tst_MemoryMapValidator::createValidator(
-    QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates)
+    Document::Revision docRevision, QSharedPointer<QList<QSharedPointer<RemapState> > > remapStates /*= QSharedPointer<QList<QSharedPointer<RemapState> > >()*/)
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), docRevision));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, docRevision));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    QSharedPointer<MemoryMapValidator> validator(new MemoryMapValidator(parser, addressBlockValidator,
-       remapStates));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, docRevision));
+
+    QSharedPointer<SubspaceMapValidator> subSpaceValidator(new SubspaceMapValidator(parser, parameterValidator, docRevision));
+
+    VLNV componentVlnv(QString("ipxact:component"), QString("testvendor"), QString("testlib"), QString("testname"), QString("v1"));
+
+    QSharedPointer<Component> testComponent(new Component(componentVlnv, docRevision));
+    testComponent->setRemapStates(remapStates);
+
+    QSharedPointer<MemoryMapValidator> validator(new MemoryMapValidator(parser, addressBlockValidator, subSpaceValidator, testComponent));
 
     return validator;
 }
