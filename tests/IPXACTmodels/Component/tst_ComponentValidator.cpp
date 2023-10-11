@@ -9,7 +9,7 @@
 // Unit test for class ComponentValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -26,6 +26,7 @@
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
@@ -44,7 +45,7 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
@@ -54,6 +55,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -132,6 +134,9 @@ private slots:
     void testHasValidOtherClockDrivers();
     void testHasValidOtherClockDrivers_data();
 
+    void testHasValidPowerDomains();
+    void testHasValidPowerDomains_data();
+
     void testHasValidResetTypes();
     void testHasValidResetTypes_data();
 
@@ -167,7 +172,7 @@ void tst_ComponentValidator::testHasValidVLNV()
     QFETCH(bool, isValid);
 
     VLNV componentVLNV(VLNV::COMPONENT, vendor, library, name, version);
-    QSharedPointer<Component> testComponent (new Component(componentVLNV));
+    QSharedPointer<Component> testComponent (new Component(componentVLNV, Document::Revision::Std14));
 
     QSharedPointer<ComponentValidator> validator = createComponentValidator(0);
     QCOMPARE(validator->hasValidVLNV(testComponent), isValid);
@@ -251,13 +256,13 @@ void tst_ComponentValidator::testHasValidBusInterfaces()
 
     if (hasInterfaceMode)
     {
-        QSharedPointer<MasterInterface> testMaster (new MasterInterface());
+        QSharedPointer<InitiatorInterface> testMaster (new InitiatorInterface());
         testBus->setMaster(testMaster);
         testBus->setInterfaceMode(General::MASTER);
     }
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getBusInterfaces()->append(testBus);
 
     if (copyInterface)
@@ -331,7 +336,7 @@ void tst_ComponentValidator::testHasValidIndirectInterfaces()
     QFETCH(QStringList, interfaceNames);
     QFETCH(bool, isValid);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
 
     QSharedPointer<MemoryMap> targetMap(new MemoryMap("targetMap"));
     testComponent->getMemoryMaps()->append(targetMap);
@@ -409,7 +414,7 @@ void tst_ComponentValidator::testHasValidChannels()
     testChannel->setInterfaces(busReferences);
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getChannels()->append(testChannel);
 
     if (copyChannel)
@@ -422,14 +427,14 @@ void tst_ComponentValidator::testHasValidChannels()
     {
         QSharedPointer<BusInterface> testBus (new BusInterface());
         testBus->setName(firstBus);
-        testBus->setInterfaceMode(General::MIRROREDMASTER);
+        testBus->setInterfaceMode(General::MIRRORED_MASTER);
         testComponent->getBusInterfaces()->append(testBus);
     }
     if (!secondBus.isEmpty())
     {
         QSharedPointer<BusInterface> testBus (new BusInterface());
         testBus->setName(secondBus);
-        testBus->setInterfaceMode(General::MIRROREDSLAVE);
+        testBus->setInterfaceMode(General::MIRRORED_SLAVE);
         testComponent->getBusInterfaces()->append(testBus);
     }
 
@@ -494,7 +499,7 @@ void tst_ComponentValidator::testHasValidRemapStates()
     QSharedPointer<RemapState> testState (new RemapState(stateName));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getRemapStates()->append(testState);
 
     if (copyState)
@@ -556,7 +561,7 @@ void tst_ComponentValidator::testHasValidAddressSpaces()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace(spaceName, range, width));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getAddressSpaces()->append(testSpace);
 
     if (copySpace)
@@ -629,7 +634,7 @@ void tst_ComponentValidator::testHasValidMemoryMaps()
     QSharedPointer<MemoryMap> testMap (new MemoryMap(mapName));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getMemoryMaps()->append(testMap);
 
     if (copyMap)
@@ -688,7 +693,7 @@ void tst_ComponentValidator::testHasValidViews()
     QSharedPointer<View> testView (new View(viewName));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getViews()->append(testView);
 
     if (copyView)
@@ -747,7 +752,7 @@ void tst_ComponentValidator::testHasValidComponentInstantiations()
     QSharedPointer<ComponentInstantiation> testInstantiation (new ComponentInstantiation(instantiationName));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getComponentInstantiations()->append(testInstantiation);
 
     if (copyInstantiation)
@@ -814,7 +819,7 @@ void tst_ComponentValidator::testHasValidDesignInstantiations()
         QSharedPointer<ConfigurableVLNVReference> designReference( new
             ConfigurableVLNVReference( VLNV::DESIGN, "Shiki", "No", "Uta", "0.3") );
 
-        QSharedPointer<Design> testDesign (new Design(*designReference.data()));
+        QSharedPointer<Design> testDesign (new Design(*designReference.data(), Document::Revision::Std14));
         mockLibrary->addComponent(testDesign);
 
         testInstantiation->setDesignReference(designReference);
@@ -822,7 +827,7 @@ void tst_ComponentValidator::testHasValidDesignInstantiations()
 
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getDesignInstantiations()->append(testInstantiation);
 
     if (copyInstantiation)
@@ -900,7 +905,7 @@ void tst_ComponentValidator::testHasValidDesignConfigurationInstantiations()
             ConfigurableVLNVReference( VLNV::DESIGNCONFIGURATION, "Shiki", "No", "Uta", "0.3") );
 
         QSharedPointer<DesignConfiguration> testDesignConfiguration (
-            new DesignConfiguration(*designConfigurationReference.data()));
+            new DesignConfiguration(*designConfigurationReference.data(), Document::Revision::Std14));
         mockLibrary->addComponent(testDesignConfiguration);
 
         testInstantiation->setDesignConfigurationReference(designConfigurationReference);
@@ -908,7 +913,7 @@ void tst_ComponentValidator::testHasValidDesignConfigurationInstantiations()
 
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getDesignConfigurationInstantiations()->append(testInstantiation);
 
     if (copyInstantiation)
@@ -980,7 +985,7 @@ void tst_ComponentValidator::testHasValidPorts()
     QSharedPointer<Port> testPort (new Port(portName));
     testPort->setDirection(DirectionTypes::str2Direction(wireDirection, DirectionTypes::DIRECTION_INVALID));
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getPorts()->append(testPort);
 
     if (copyPort)
@@ -1049,7 +1054,7 @@ void tst_ComponentValidator::testHasValidComponentGenerators()
     testGenerator->setGeneratorExe(generatorExe);
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getComponentGenerators()->append(testGenerator);
 
     if (copyGenerator)
@@ -1126,7 +1131,7 @@ void tst_ComponentValidator::testHasValidChoices()
     }
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getChoices()->append(testChoice);
 
     if (copyChoice)
@@ -1201,7 +1206,7 @@ void tst_ComponentValidator::testHasValidFileSets()
     QSharedPointer<FileSet> testFileSet (new FileSet(fileSetName));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getFileSets()->append(testFileSet);
 
     if (copyFileSet)
@@ -1261,7 +1266,7 @@ void tst_ComponentValidator::testHasValidCPUs()
     QSharedPointer<Cpu> testCPU (new Cpu(name));
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getCpus()->append(testCPU);
 
     if (!referencedAddressSpace.isEmpty())
@@ -1349,7 +1354,7 @@ void tst_ComponentValidator::testHasValidOtherClockDrivers()
     }
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getOtherClockDrivers()->append(testDriver);
 
     if (copyClock)
@@ -1406,6 +1411,56 @@ void tst_ComponentValidator::testHasValidOtherClockDrivers_data()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidPowerDomains()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidPowerDomains()
+{
+    QFETCH(QString, domainName);
+    QFETCH(bool, isValid);
+
+    QSharedPointer<PowerDomain> testDomain(new PowerDomain());
+    testDomain->setName(domainName);
+
+    QSharedPointer<PowerDomain> duplicateDomain(new PowerDomain());
+    duplicateDomain->setName("reservedName");
+
+    QSharedPointer<Component> testComponent(new Component(
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std22));
+    testComponent->getPowerDomains()->append(testDomain);
+    testComponent->getPowerDomains()->append(duplicateDomain);
+
+    QSharedPointer<ComponentValidator> validator = createComponentValidator(nullptr);
+    QCOMPARE(validator->hasValidPowerDomains(testComponent), isValid);
+
+    if (!isValid)
+    {
+        QVector<QString> foundErrors;
+        validator->findErrorsIn(foundErrors, testComponent);
+
+        QString expectedError = QObject::tr(
+            "Invalid name '%1' set for power domain within component Samurai:Champloo:MugenJinFuu:3.0").arg(
+                domainName);
+
+        if (errorIsNotFoundInErrorList(expectedError, foundErrors))
+        {
+            QFAIL("No error message found");
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentValidator::testHasValidPowerDomains_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentValidator::testHasValidPowerDomains_data()
+{
+    QTest::addColumn<QString>("domainName");
+    QTest::addColumn<bool>("isValid");
+
+    QTest::newRow("Named domain is valid") << "testDomain" << true;
+    QTest::newRow("Domain with duplicate name is not valid") << "reservedName" << false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentValidator::testHasValidResetTypes()
 //-----------------------------------------------------------------------------
 void tst_ComponentValidator::testHasValidResetTypes()
@@ -1418,7 +1473,7 @@ void tst_ComponentValidator::testHasValidResetTypes()
     testReset->setName(name);
 
     QSharedPointer<Component> testComponent(new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getResetTypes()->append(testReset);
 
     if (!name2.isEmpty())
@@ -1488,7 +1543,7 @@ void tst_ComponentValidator::testHasValidParameters()
     testParameter->setValue(value);
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getParameters()->append(testParameter);
 
     if (copyParameter)
@@ -1557,7 +1612,7 @@ void tst_ComponentValidator::testHasValidAssertions()
     testAssertion->setAssert(assertValue);
 
     QSharedPointer<Component> testComponent (new Component(
-        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0")));
+        VLNV(VLNV::COMPONENT, "Samurai", "Champloo", "MugenJinFuu", "3.0"), Document::Revision::Std14));
     testComponent->getAssertions()->append(testAssertion);
 
     if (copyAssertion)
@@ -1625,8 +1680,8 @@ bool tst_ComponentValidator::errorIsNotFoundInErrorList(QString const& expectedE
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (auto const& error : errorList)
         {
             qDebug() << error;
         }
@@ -1642,7 +1697,7 @@ bool tst_ComponentValidator::errorIsNotFoundInErrorList(QString const& expectedE
 QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValidator(LibraryMock* mockLibrary)
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, mockLibrary));
+    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, mockLibrary, Document::Revision::Std14));
 
     return componentValidator;
 }

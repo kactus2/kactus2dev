@@ -26,6 +26,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
@@ -64,6 +65,8 @@ private slots:
 
     void writeXMLProcessingInstructions();
     void writeXMLNameSpaces();
+
+    void writePowerDomains2022();
 
     void writeBusInterfaces();
 
@@ -253,6 +256,53 @@ void tst_ComponentWriter::writeXMLNameSpaces()
         "\t<ipxact:library>TestLibrary</ipxact:library>\n"
         "\t<ipxact:name>TestComponent</ipxact:name>\n"
         "\t<ipxact:version>0.11</ipxact:version>\n"
+        "</ipxact:component>\n"
+        );
+
+    ComponentWriter componentWriter;
+    componentWriter.writeComponent(xmlStreamWriter, testComponent_);
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentWriter::writePowerDomains2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentWriter::writePowerDomains2022()
+{
+    VLNV componentVLNV(VLNV::COMPONENT, "tuni.fi", "TestLibrary", "TestComponent", "0.11");
+    testComponent_ = QSharedPointer<Component>(new Component(componentVLNV, Document::Revision::Std22));
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    xmlStreamWriter.setAutoFormatting(true);
+    xmlStreamWriter.setAutoFormattingIndent(-1);
+
+    auto testDomain = QSharedPointer<PowerDomain>(new PowerDomain());
+    testDomain->setName("testDomain");
+    testDomain->setAlwaysOn("1");
+
+    testComponent_->getPowerDomains()->append(testDomain);
+
+    QString expectedOutput(
+        "<?xml version=\"1.0\"?>\n"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022 "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "\t<ipxact:vendor>tuni.fi</ipxact:vendor>\n"
+            "\t<ipxact:library>TestLibrary</ipxact:library>\n"
+            "\t<ipxact:name>TestComponent</ipxact:name>\n"
+            "\t<ipxact:version>0.11</ipxact:version>\n"
+            "\t<ipxact:powerDomains>\n"
+                "\t\t<ipxact:powerDomain>\n"
+                    "\t\t\t<ipxact:name>testDomain</ipxact:name>\n"
+                    "\t\t\t<ipxact:alwaysOn>1</ipxact:alwaysOn>\n"                     
+                "\t\t</ipxact:powerDomain>\n"
+            "\t</ipxact:powerDomains>\n"
         "</ipxact:component>\n"
         );
 

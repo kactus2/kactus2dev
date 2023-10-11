@@ -1001,6 +1001,12 @@
     <Filter Include="Header Files\common\widgets\TreeItemSelector">
       <UniqueIdentifier>{c43541ee-dc36-4e8b-b40d-ddd33b0768f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\editors\ComponentEditor\powerDomains">
+      <UniqueIdentifier>{49cb35f3-ce1d-4f50-ab6f-ca1303e609b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\editors\ComponentEditor\powerDomains">
+      <UniqueIdentifier>{45dc464a-4192-4641-8242-c0b1f055534f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3304,6 +3310,27 @@
     <ClCompile Include="library\VLNVDialer\ValidityGroup.cpp">
       <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\MemoryAlignScene.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\RegionScene.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\cpus\CpuVisualizer.cpp">
+      <Filter>Source Files\editors\ComponentEditor\cpus</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -4456,9 +4483,6 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\ComponentEditorIndirectInterfacesItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\indirectInterfaces\SingleIndirectInterfaceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\indirectInterfaces</Filter>
@@ -5737,6 +5761,9 @@
     <ClInclude Include="editors\ComponentEditor\common\MemoryTreeFactory.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5941,6 +5968,30 @@
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\ValidityGroup.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\MemoryAlignScene.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\RegionScene.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\cpus\CpuVisualizer.h">
+      <Filter>Header Files\editors\ComponentEditor\cpus</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\SingleIndirectInterfaceItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.h">
+      <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

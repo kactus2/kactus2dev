@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 
-
 HEADERS += ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
@@ -142,9 +141,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/FieldReferenceReader.h \
     ./Component/FieldReferenceWriter.h \
     ./Component/FieldReset.h \
-    ./Component/FileSetRef.h \
     ./Component/FieldSlice.h \
     ./Component/InitiatorInterface.h \
+    ./Component/FileSetRef.h \
     ./Component/LanguageTools.h \
     ./Component/MemoryArray.h \
     ./Component/MemoryArrayReader.h \
@@ -246,6 +245,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/RemapStateWriter.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
     ./Component/validators/FieldReferenceValidator.h \
+    ./Component/validators/FieldSliceValidator.h \
     ./Component/validators/MemoryArrayValidator.h \
     ./Component/validators/MemoryBlockValidator.h \
     ./Component/validators/ModeValidator.h \
@@ -296,7 +296,11 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./Component/PowerDomain.h \
+    ./Component/PowerDomainReader.h \
+    ./Component/PowerDomainWriter.h \
+    ./Component/validators/PowerDomainValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -471,6 +475,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/FileReader.cpp \
     ./Component/FileSet.cpp \
     ./Component/FileSetReader.cpp \
+    ./Component/FileSetRef.cpp \
     ./Component/FileSetWriter.cpp \
     ./Component/FileWriter.cpp \
     ./Component/Function.cpp \
@@ -545,6 +550,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/EnumeratedValueValidator.cpp \
     ./Component/validators/FieldAccessPolicyValidator.cpp \
     ./Component/validators/FieldReferenceValidator.cpp \
+    ./Component/validators/FieldSliceValidator.cpp \
     ./Component/validators/FieldValidator.cpp \
     ./Component/validators/FileSetValidator.cpp \
     ./Component/validators/FileValidator.cpp \
@@ -586,4 +592,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/FileSetRef.cpp
+    ./Component/PowerDomain.cpp \
+    ./Component/PowerDomainReader.cpp \
+    ./Component/PowerDomainWriter.cpp \
+    ./Component/validators/PowerDomainValidator.cpp

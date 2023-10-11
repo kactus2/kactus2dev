@@ -24,6 +24,7 @@
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
@@ -51,6 +52,7 @@
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
+#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
 #include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
@@ -152,6 +154,9 @@ assertionValidator_()
 
     otherClockDriverValidator_ = QSharedPointer<OtherClockDriverValidator>(new OtherClockDriverValidator(parser));
 
+    powerDomainValidator_ = QSharedPointer<PowerDomainValidator>(new PowerDomainValidator(nullptr,
+        parser, parameterValidator_));
+
     assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
 }
 
@@ -170,6 +175,7 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
         hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
         hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
         hasValidFileSets(component) && hasValidCPUs(component) && hasValidOtherClockDrivers(component) &&
+        hasValidPowerDomains(component) &&
         hasValidResetTypes(component) && hasValidParameters(component) && hasValidAssertions(component);
 }
 
@@ -623,6 +629,30 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidPowerDomains()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidPowerDomains(QSharedPointer<Component> component)
+{
+    changeComponent(component);
+
+    QVector<QString> domainNames;
+    for (QSharedPointer<PowerDomain> domain : *component->getPowerDomains())
+    {
+        if (domainNames.contains(domain->name()) ||
+            !powerDomainValidator_->validate(domain))
+        {
+            return false;
+        }
+        else
+        {
+            domainNames.append(domain->name());
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidResetTypes()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidResetTypes(QSharedPointer<Component> component)
@@ -742,6 +772,7 @@ void ComponentValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<C
     findErrorsInFileSets(errors, component, context);
     findErrorsInCPUs(errors, component, context);
     findErrorsInOtherClockDrivers(errors, component, context);
+    findErrorsInPowerDomains(errors, component, context);
     findErrorsInResetTypes(errors, component, context);
     findErrorsInParameters(errors, component, context);
     findErrorsInAssertions(errors, component, context);
@@ -1192,9 +1223,30 @@ void ComponentValidator::findErrorsInOtherClockDrivers(QVector<QString>& errors,
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::findErrorsInPowerDomains()
+//-----------------------------------------------------------------------------
+void ComponentValidator::findErrorsInPowerDomains(QVector<QString>& errors,
+    QSharedPointer<Component> component, QString const& context) const
+{
+    QVector<QString> domainNames;
+    QVector<QString> duplicateNames;
+    for (QSharedPointer<PowerDomain> domain : *component->getPowerDomains())
+    {
+        if (domainNames.contains(domain->name()) && !duplicateNames.contains(domain->name()))
+        {
+            errors.append(QObject::tr("Power domain name %1 within %2 is not unique.").arg(domain->name(), context));
+            duplicateNames.append(domain->name());
+        }
+
+        domainNames.append(domain->name());
+        powerDomainValidator_->findErrorsIn(errors, domain, context);
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::findErrorsInResetTypes()
 //-----------------------------------------------------------------------------
-void ComponentValidator::findErrorsInResetTypes(QVector<QString>& errors, QSharedPointer<Component> component,
+void ComponentValidator::findErrorsInResetTypes(QVector<QString>&errors, QSharedPointer<Component> component,
     QString const& context) const
 {
     if (!component->getResetTypes()->isEmpty())
@@ -1300,6 +1352,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         portValidator_->componentChange(newComponent->getViews());
         cpuValidator_->componentChange(newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
             newComponent->getRevision());
+        powerDomainValidator_->componentChange(newComponent->getPowerDomains());
 
         component_ = newComponent;
     }

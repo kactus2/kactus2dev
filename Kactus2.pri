@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 
-
 HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
@@ -227,6 +226,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./library/VLNVDialer/typegroup.h \
     ./library/VLNVDialer/vlnvdialer.h \
     ./library/VLNVDialer/FilterGroup.h \
+    ./library/VLNVDialer/ValidityGroup.h \
     ./library/HierarchyView/hierarchywidget.h \
     ./library/HierarchyView/hierarchyview.h \
     ./library/HierarchyView/hierarchyfilter.h \
@@ -423,6 +423,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencyModel.h \
     ./editors/ComponentEditor/fileSet/dependencyAnalysis/FileDependencySourceEditor.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.h \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.h \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.h \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.h \
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.h \
@@ -604,18 +607,18 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/resetTypes/ResetTypesEditor.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesModel.h \
     ./editors/ComponentEditor/resetTypes/ResetTypesDelegate.h \
+    ./editors/ComponentEditor/modes/FieldSliceColumns.h \
     ./editors/ComponentEditor/modes/ModeColumns.h \
     ./editors/ComponentEditor/modes/PortSliceColumns.h \
+    ./editors/ComponentEditor/modes/FieldSliceEditor.h \
+    ./editors/ComponentEditor/modes/FieldSliceModel.h \
+    ./editors/ComponentEditor/modes/FieldSliceDelegate.h \
     ./editors/ComponentEditor/modes/ModesEditor.h \
     ./editors/ComponentEditor/modes/ModesModel.h \
     ./editors/ComponentEditor/modes/SingleModeEditor.h \
     ./editors/ComponentEditor/modes/PortSliceEditor.h \
     ./editors/ComponentEditor/modes/PortSliceModel.h \
     ./editors/ComponentEditor/modes/PortSliceDelegate.h \
-    ./editors/ComponentEditor/modes/FieldSliceColumns.h \
-    ./editors/ComponentEditor/modes/FieldSliceEditor.h \
-    ./editors/ComponentEditor/modes/FieldSliceModel.h \
-    ./editors/ComponentEditor/modes/FieldSliceDelegate.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -863,11 +866,14 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/modes/PortSliceDelegate.h \
-    ./library/VLNVDialer/ValidityGroup.h \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.h \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.h \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.h
+    ./editors/ComponentEditor/common/MemoryAlignScene.h \
+    ./editors/ComponentEditor/cpus/RegionScene.h \
+    ./editors/ComponentEditor/cpus/CpuVisualizer.h \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainColumns.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1064,6 +1070,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./library/VLNVDialer/hierarchygroup.cpp \
     ./library/VLNVDialer/implementationgroup.cpp \
     ./library/VLNVDialer/typegroup.cpp \
+    ./library/VLNVDialer/ValidityGroup.cpp \
     ./library/VLNVDialer/vlnvdialer.cpp \
     ./library/HierarchyView/hierarchyfilter.cpp \
     ./library/HierarchyView/hierarchyview.cpp \
@@ -1228,6 +1235,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/cpus/RegionsEditor.cpp \
     ./editors/ComponentEditor/cpus/RegionsModel.cpp \
     ./editors/ComponentEditor/cpus/SingleCpuEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.cpp \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesDelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPoliciesModel.cpp \
@@ -1349,10 +1359,10 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
+    ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.cpp \
     ./editors/ComponentEditor/common/ModeReferenceEditor.cpp \
     ./editors/ComponentEditor/common/ModeReferenceModel.cpp \
-    ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ./editors/ComponentEditor/common/ParameterizableTable.cpp \
     ./editors/ComponentEditor/common/ReferencingTableModel.cpp \
@@ -1631,8 +1641,11 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesModel.cpp \
-    ./editors/ComponentEditor/memoryMaps/AccessPoliciesDelegate.cpp \
-    ./library/VLNVDialer/ValidityGroup.cpp
+    ./editors/ComponentEditor/common/MemoryAlignScene.cpp \
+    ./editors/ComponentEditor/cpus/RegionScene.cpp \
+    ./editors/ComponentEditor/cpus/CpuVisualizer.cpp \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.cpp
 RESOURCES += kactus.qrc

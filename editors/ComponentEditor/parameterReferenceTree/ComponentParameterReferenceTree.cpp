@@ -27,6 +27,7 @@
 #include <IPXACTmodels/Component/DesignConfigurationInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
@@ -127,6 +128,11 @@ void ComponentParameterReferenceTree::setupTree()
         if (referenceCounter_->countReferencesInCpus(getTargetID()) > 0)
         {
             createReferencesForCpus();
+        }
+
+        if (referenceCounter_->countReferencesInPowerDomains(getTargetID()) > 0)
+        {
+            createReferencesForPowerDomains();
         }
 
         if (topLevelItemCount() == 0)
@@ -886,6 +892,25 @@ void ComponentParameterReferenceTree::createItemsForRegion(QSharedPointer<Region
     if (region->getRange().contains(targetID))
     {
         createItem("Range", region->getRange(), regionItem);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createReferencesForPowerDomains()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createReferencesForPowerDomains()
+{
+    auto topPowerDomainsItem = createTopItem("Power domains");
+    auto targetID = getTargetID();
+
+    for (auto domain : *component_->getPowerDomains())
+    {
+        if (referenceCounter_->countReferencesInSinglePowerDomain(targetID, domain) > 0)
+        {
+            QTreeWidgetItem* domainItem = createMiddleItem(domain->name(), topPowerDomainsItem);
+
+            createItem("Always on", domain->getAlwaysOn(), domainItem);
+        }
     }
 }
 

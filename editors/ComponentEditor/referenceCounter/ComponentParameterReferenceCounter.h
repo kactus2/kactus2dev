@@ -38,6 +38,7 @@ class DesignConfigurationInstantiation;
 class InitiatorInterface;
 class ModuleParameter;
 class Port;
+class PowerDomain;
 class AddressSpace;
 class RegisterBase;
 class BusInterface;
@@ -640,7 +641,8 @@ public:
      *
      *      @return The amount of references made to the selected parameter in the CPU regions.
      */
-    int countReferencesInRegions(QString const& parameterID, QSharedPointer<QList<QSharedPointer<Region> > > regions) const;
+    int countReferencesInRegions(QString const& parameterID, 
+        QSharedPointer<QList<QSharedPointer<Region> > > regions) const;
     
     /*!
      *  Count the references made to the selected parameter in the selected CPU region.
@@ -651,6 +653,27 @@ public:
      *      @return The amount of references made to the selected parameter in the selected CPU region.
      */
     int countReferencesInSingleRegion(QString const& parameterID, QSharedPointer<Region> region) const;
+
+
+    /*!
+     *  Count the references made to the selected parameter in power domains.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *
+     *      @return The amount of references made to the selected parameter in the power domains.
+     */
+    int countReferencesInPowerDomains(QString const& parameterID) const;
+        
+    /*!
+     *  Count the references made to the selected parameter in the selected power domain.
+     *
+     *      @param [in] parameterID         ID of the selected parameter.
+     *      @param [in] powerDomain         The selected power domain.
+     *
+     *      @return The amount of references made to the selected parameter in the selected power domain.
+     */
+    int countReferencesInSinglePowerDomain(QString const& parameterID, 
+        QSharedPointer<PowerDomain> powerDomain) const;
 
 
 public slots:

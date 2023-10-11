@@ -145,7 +145,14 @@ void SingleIndirectInterfaceEditor::refresh()
 void SingleIndirectInterfaceEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/singleIndirectInterface.html");
+    if (component_->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/indirectInterface2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/indirectInterface.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

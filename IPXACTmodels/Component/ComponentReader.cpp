@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/ViewReader.h>
 #include <IPXACTmodels/Component/InstantiationsReader.h>
 #include <IPXACTmodels/Component/PortReader.h>
+#include <IPXACTmodels/Component/PowerDomainReader.h>
 #include <IPXACTmodels/Component/ComponentGeneratorReader.h>
 #include <IPXACTmodels/Component/ChoiceReader.h>
 #include <IPXACTmodels/Component/FileSetReader.h>
@@ -73,8 +74,11 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseXMLProcessingInstructions(componentDocument, newComponent);
 
     parseNamespaceDeclarations(componentNode, newComponent);
-
-   // parseVLNVElements(componentNode, newComponent, VLNV::COMPONENT);
+    
+    if (revision == Document::Revision::Std22)
+    {
+        parsePowerDomains(componentNode, newComponent);
+    }
 
     parseBusInterfaces(componentNode, newComponent);
 
@@ -119,6 +123,24 @@ QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument cons
     parseComponentExtensions(componentNode, newComponent);
 
     return newComponent;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentReader::parsePowerDomains()
+//-----------------------------------------------------------------------------
+void ComponentReader::parsePowerDomains(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
+{
+    QDomElement powerDomainsElement = componentNode.firstChildElement(QStringLiteral("ipxact:powerDomains"));
+
+    if (!powerDomainsElement.isNull())
+    {
+        QDomNodeList domainList = powerDomainsElement.elementsByTagName(QStringLiteral("ipxact:powerDomain"));
+        for (int i = 0; i < domainList.count(); ++i)
+        {
+            QSharedPointer<PowerDomain> newDomain = PowerDomainReader::createFrom(domainList.at(i));
+            newComponent->getPowerDomains()->append(newDomain);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

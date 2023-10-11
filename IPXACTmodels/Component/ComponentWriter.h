@@ -188,6 +188,7 @@ private:
      *      @param [in] component   The component being written.
      */
     void writeComponentExtensions(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
+    void writePowerDomains(QXmlStreamWriter& writer, QSharedPointer<Component> component) const;
 };
 
 #endif // COMPONENTWRITER_H

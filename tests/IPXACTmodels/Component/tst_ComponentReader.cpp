@@ -26,6 +26,7 @@
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
@@ -55,6 +56,8 @@ private slots:
     
     void readXMLProcessingInstructions();
     void readXMLNameSpaces();
+
+    void readPowerDomains2022();
 
     void readBusInterfaces();
     void readIndirectInterfaces();
@@ -113,7 +116,7 @@ void tst_ComponentReader::readSimpleComponent()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>8.14</ipxact:version>"
@@ -128,7 +131,7 @@ void tst_ComponentReader::readSimpleComponent()
 
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
-    QCOMPARE(testComponent->getVlnv().getVendor(), QString("TUT"));
+    QCOMPARE(testComponent->getVlnv().getVendor(), QString("tuni.fi"));
     QCOMPARE(testComponent->getVlnv().getLibrary(), QString("TestLibrary"));
     QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
     QCOMPARE(testComponent->getVlnv().getVersion(), QString("8.14"));
@@ -152,7 +155,7 @@ void tst_ComponentReader::readXMLProcessingInstructions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>1.0</ipxact:version>"
@@ -191,7 +194,7 @@ void tst_ComponentReader::readXMLNameSpaces()
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\" "
         "xmlns:bogusvendor=\"http://bogus.tld/info.txt\">"
-        "<ipxact:vendor>TUT</ipxact:vendor>"
+        "<ipxact:vendor>tuni.fi</ipxact:vendor>"
         "<ipxact:library>TestLibrary</ipxact:library>"
         "<ipxact:name>TestComponent</ipxact:name>"
         "<ipxact:version>1.0</ipxact:version>"
@@ -225,6 +228,47 @@ void tst_ComponentReader::readXMLNameSpaces()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_ComponentReader::readPowerDomains2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentReader::readPowerDomains2022()
+{
+     QString documentContent(
+        "<?xml version=\"1.0\"?>"
+        "<ipxact:component "
+        "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " 
+        "xmlns:ipxact=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022\" "
+        "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
+        "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
+        "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">\n"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
+            "<ipxact:library>TestLibrary</ipxact:library>"
+            "<ipxact:name>TestComponent</ipxact:name>"
+            "<ipxact:version>0.11</ipxact:version>"
+            "<ipxact:powerDomains>"
+                "<ipxact:powerDomain>"
+                    "<ipxact:name>testDomain</ipxact:name>"
+                    "<ipxact:alwaysOn>1</ipxact:alwaysOn>"
+                "</ipxact:powerDomain>"
+            "</ipxact:powerDomains>"
+        "</ipxact:component>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    ComponentReader componentReader;
+
+    QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
+
+    QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
+    QCOMPARE(testComponent->getPowerDomains()->size(), 1);
+
+    QSharedPointer<PowerDomain> domain = testComponent->getPowerDomains()->first();
+    QCOMPARE(domain->name(), QString("testDomain"));
+    QCOMPARE(domain->getAlwaysOn(), QString("1"));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_ComponentReader::readBusInterfaces()
 //-----------------------------------------------------------------------------
 void tst_ComponentReader::readBusInterfaces()
@@ -237,14 +281,14 @@ void tst_ComponentReader::readBusInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
             "<ipxact:busInterfaces>"
                 "<ipxact:busInterface>"
                     "<ipxact:name>testInterface</ipxact:name>"
-                    "<ipxact:busType vendor=\"TUT\" library=\"TestLibrary\" name=\"busDefinition\""
+                    "<ipxact:busType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"busDefinition\""
                         " version=\"0.2\"/>"
                     "<ipxact:master/>"
                 "</ipxact:busInterface>"
@@ -264,7 +308,7 @@ void tst_ComponentReader::readBusInterfaces()
 
     QSharedPointer<BusInterface> busInterface = testComponent->getBusInterfaces()->first();
     QCOMPARE(busInterface->name(), QString("testInterface"));
-    QCOMPARE(busInterface->getBusType().getVendor(), QString("TUT"));
+    QCOMPARE(busInterface->getBusType().getVendor(), QString("tuni.fi"));
     QCOMPARE(busInterface->getBusType().getLibrary(), QString("TestLibrary"));
     QCOMPARE(busInterface->getBusType().getName(), QString("busDefinition"));
     QCOMPARE(busInterface->getBusType().getVersion(), QString("0.2"));
@@ -283,7 +327,7 @@ void tst_ComponentReader::readIndirectInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">\n"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>1.0</ipxact:version>"
@@ -328,7 +372,7 @@ void tst_ComponentReader::readChannels()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -377,7 +421,7 @@ void tst_ComponentReader::readRemapStates()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -417,7 +461,7 @@ void tst_ComponentReader::readModes2022()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -456,7 +500,7 @@ void tst_ComponentReader::readAddressSpaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -500,7 +544,7 @@ void tst_ComponentReader::readMemoryMaps()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -540,7 +584,7 @@ void tst_ComponentReader::readViews()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -582,7 +626,7 @@ void tst_ComponentReader::readInstantiations()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -593,12 +637,12 @@ void tst_ComponentReader::readInstantiations()
                     "</ipxact:componentInstantiation>"
                     "<ipxact:designInstantiation>"
                         "<ipxact:name>design</ipxact:name>"
-                        "<ipxact:designRef vendor=\"TUT\" library=\"TestLibrary\" name=\"designReference\" "
+                        "<ipxact:designRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"designReference\" "
                             "version=\"1.0\"/>"
                     "</ipxact:designInstantiation>"
                     "<ipxact:designConfigurationInstantiation>"
                         "<ipxact:name>designConfiguration</ipxact:name>"
-                        "<ipxact:designConfigurationRef vendor=\"TUT\" library=\"TestLibrary\""
+                        "<ipxact:designConfigurationRef vendor=\"tuni.fi\" library=\"TestLibrary\""
                             " name=\"configuration\" version=\"8.1\"/>"
                     "</ipxact:designConfigurationInstantiation>"
                 "</ipxact:instantiations>"
@@ -625,7 +669,7 @@ void tst_ComponentReader::readInstantiations()
 
     QSharedPointer<DesignInstantiation> designInstantiation = testComponent->getDesignInstantiations()->first();
     QCOMPARE(designInstantiation->name(), QString("design"));
-    QCOMPARE(designInstantiation->getDesignReference()->getVendor(), QString("TUT"));
+    QCOMPARE(designInstantiation->getDesignReference()->getVendor(), QString("tuni.fi"));
     QCOMPARE(designInstantiation->getDesignReference()->getLibrary(), QString("TestLibrary"));
     QCOMPARE(designInstantiation->getDesignReference()->getName(), QString("designReference"));
     QCOMPARE(designInstantiation->getDesignReference()->getVersion(), QString("1.0"));
@@ -633,7 +677,7 @@ void tst_ComponentReader::readInstantiations()
     QSharedPointer<DesignConfigurationInstantiation> configurationInstantiation =
         testComponent->getDesignConfigurationInstantiations()->first();
     QCOMPARE(configurationInstantiation->name(), QString("designConfiguration"));
-    QCOMPARE(configurationInstantiation->getDesignConfigurationReference()->getVendor(), QString("TUT"));
+    QCOMPARE(configurationInstantiation->getDesignConfigurationReference()->getVendor(), QString("tuni.fi"));
     QCOMPARE(configurationInstantiation->getDesignConfigurationReference()->getLibrary(), QString("TestLibrary"));
     QCOMPARE(configurationInstantiation->getDesignConfigurationReference()->getName(), QString("configuration"));
     QCOMPARE(configurationInstantiation->getDesignConfigurationReference()->getVersion(), QString("8.1"));
@@ -652,7 +696,7 @@ void tst_ComponentReader::readPorts()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -701,7 +745,7 @@ void tst_ComponentReader::readComponentGenerators()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -743,7 +787,7 @@ void tst_ComponentReader::readChoices()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -786,7 +830,7 @@ void tst_ComponentReader::readFileSets()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -826,7 +870,7 @@ void tst_ComponentReader::readCPUs()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -869,7 +913,7 @@ void tst_ComponentReader::readOtherClockDrivers()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -918,7 +962,7 @@ void tst_ComponentReader::readResetTypes()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -939,7 +983,7 @@ void tst_ComponentReader::readResetTypes()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -977,7 +1021,7 @@ void tst_ComponentReader::readResetTypes2022()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2022/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2022/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1017,7 +1061,7 @@ void tst_ComponentReader::readParameters()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1060,7 +1104,7 @@ void tst_ComponentReader::readAssertions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1106,7 +1150,7 @@ void tst_ComponentReader::readVendorExtensions()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1144,7 +1188,7 @@ void tst_ComponentReader::readKactusAttributes()
             "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
             "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
             "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-                "<ipxact:vendor>TUT</ipxact:vendor>"
+                "<ipxact:vendor>tuni.fi</ipxact:vendor>"
                 "<ipxact:library>TestLibrary</ipxact:library>"
                 "<ipxact:name>TestComponent</ipxact:name>"
                 "<ipxact:version>0.11</ipxact:version>"
@@ -1183,7 +1227,7 @@ void tst_ComponentReader::readSwComProperties()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1228,7 +1272,7 @@ void tst_ComponentReader::readSystemViews()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1239,7 +1283,7 @@ void tst_ComponentReader::readSystemViews()
                         "<ipxact:name>system</ipxact:name>"
                         "<ipxact:displayName>crash</ipxact:displayName>"
                         "<ipxact:description>BSOD</ipxact:description>"
-                        "<kactus2:hierarchyRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "<kactus2:hierarchyRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>"
                         "<kactus2:hwViewRef>malfunction</kactus2:hwViewRef>"
                         "<kactus2:fileSetRef>burn</kactus2:fileSetRef>"
@@ -1264,7 +1308,7 @@ void tst_ComponentReader::readSystemViews()
     QCOMPARE(systemView->name(), QString("system"));
     QCOMPARE(systemView->displayName(), QString("crash"));
     QCOMPARE(systemView->description(), QString("BSOD"));
-    QCOMPARE(systemView->getHierarchyRef().getVendor(), QString("TUT"));
+    QCOMPARE(systemView->getHierarchyRef().getVendor(), QString("tuni.fi"));
     QCOMPARE(systemView->getHierarchyRef().getLibrary(), QString("TestLibrary"));
     QCOMPARE(systemView->getHierarchyRef().getName(), QString("hierarchy"));
     QCOMPARE(systemView->getHierarchyRef().getVersion(), QString("0.3"));
@@ -1286,7 +1330,7 @@ void tst_ComponentReader::readComInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1297,14 +1341,14 @@ void tst_ComponentReader::readComInterfaces()
                         "<ipxact:name>coms</ipxact:name>"
                         "<ipxact:displayName>spec</ipxact:displayName>"
                         "<ipxact:description>ops</ipxact:description>"
-                        "<kactus2:comType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "<kactus2:comType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>"
                         "<kactus2:transferType>Transfer</kactus2:transferType>"
                         "<kactus2:comDirection>in</kactus2:comDirection>"
                         "<kactus2:propertyValues>"
                             "<kactus2:propertyValue name=\"spathi\" value=\"eluder\"/>"
                         "</kactus2:propertyValues>"
-                        "<kactus2:comImplementationRef vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "<kactus2:comImplementationRef vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>"
                     "</kactus2:comInterface>"
                 "</kactus2:comInterfaces>"
@@ -1327,7 +1371,7 @@ void tst_ComponentReader::readComInterfaces()
     QCOMPARE(comInterface->name(), QString("coms"));
     QCOMPARE(comInterface->displayName(), QString("spec"));
     QCOMPARE(comInterface->description(), QString("ops"));
-    QCOMPARE(comInterface->getComType().getVendor(), QString("TUT"));
+    QCOMPARE(comInterface->getComType().getVendor(), QString("tuni.fi"));
     QCOMPARE(comInterface->getComType().getLibrary(), QString("TestLibrary"));
     QCOMPARE(comInterface->getComType().getName(), QString("hierarchy"));
     QCOMPARE(comInterface->getComType().getVersion(), QString("0.3"));
@@ -1336,7 +1380,7 @@ void tst_ComponentReader::readComInterfaces()
     QCOMPARE(comInterface->getPropertyValues().size(), 1);
     QCOMPARE(comInterface->getPropertyValues().firstKey(), QString("spathi"));
     QCOMPARE(comInterface->getPropertyValues().first(), QString("eluder"));
-    QCOMPARE(comInterface->getComImplementation().getVendor(), QString("TUT"));
+    QCOMPARE(comInterface->getComImplementation().getVendor(), QString("tuni.fi"));
     QCOMPARE(comInterface->getComImplementation().getLibrary(), QString("TestLibrary"));
     QCOMPARE(comInterface->getComImplementation().getName(), QString("hierarchy"));
     QCOMPARE(comInterface->getComImplementation().getVersion(), QString("0.3"));
@@ -1355,7 +1399,7 @@ void tst_ComponentReader::readApiInterfaces()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1364,7 +1408,7 @@ void tst_ComponentReader::readApiInterfaces()
                 "<kactus2:apiInterfaces>"
                     "<kactus2:apiInterface>"
                         "<ipxact:name>api</ipxact:name>"
-                        "<kactus2:apiType vendor=\"TUT\" library=\"TestLibrary\" name=\"hierarchy\" "
+                        "<kactus2:apiType vendor=\"tuni.fi\" library=\"TestLibrary\" name=\"hierarchy\" "
                             "version=\"0.3\"/>"
                         "<kactus2:dependencyDirection>provider</kactus2:dependencyDirection>"
                     "</kactus2:apiInterface>"
@@ -1386,7 +1430,7 @@ void tst_ComponentReader::readApiInterfaces()
 
     QSharedPointer<ApiInterface> apiInterface = testComponent->getApiInterfaces().first();
     QCOMPARE(apiInterface->name(), QString("api"));
-    QCOMPARE(apiInterface->getApiType().getVendor(), QString("TUT"));
+    QCOMPARE(apiInterface->getApiType().getVendor(), QString("tuni.fi"));
     QCOMPARE(apiInterface->getApiType().getLibrary(), QString("TestLibrary"));
     QCOMPARE(apiInterface->getApiType().getName(), QString("hierarchy"));
     QCOMPARE(apiInterface->getApiType().getVersion(), QString("0.3"));
@@ -1406,7 +1450,7 @@ void tst_ComponentReader::readFileDependencies()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1456,7 +1500,7 @@ void tst_ComponentReader::readAuthorAndLicense()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"
@@ -1491,7 +1535,7 @@ void tst_ComponentReader::readTags()
         "xmlns:kactus2=\"http://kactus2.cs.tut.fi\" "
         "xsi:schemaLocation=\"http://www.accellera.org/XMLSchema/IPXACT/1685-2014/ "
         "http://www.accellera.org/XMLSchema/IPXACT/1685-2014/index.xsd\">"
-            "<ipxact:vendor>TUT</ipxact:vendor>"
+            "<ipxact:vendor>tuni.fi</ipxact:vendor>"
             "<ipxact:library>TestLibrary</ipxact:library>"
             "<ipxact:name>TestComponent</ipxact:name>"
             "<ipxact:version>0.11</ipxact:version>"

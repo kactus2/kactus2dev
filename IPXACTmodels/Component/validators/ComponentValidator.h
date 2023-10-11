@@ -33,6 +33,7 @@ class MemoryMapValidator;
 class ViewValidator;
 class InstantiationsValidator;
 class PortValidator;
+class PowerDomainValidator;
 class ComponentGeneratorValidator;
 class ChoiceValidator;
 class FileSetValidator;
@@ -61,7 +62,11 @@ public:
 
 	//! The destructor.
 	~ComponentValidator() = default;
-    
+
+    // Disable copying.
+    ComponentValidator(ComponentValidator const& rhs) = delete;
+    ComponentValidator& operator=(ComponentValidator const& rhs) = delete;
+
     /*!
      *  Validates the given component.
      *
@@ -234,6 +239,15 @@ public:
     bool hasValidOtherClockDrivers(QSharedPointer<Component> component);
 
     /*!
+     *  Check if the contained power domains are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the power domains are valid, otherwise false.
+     */
+    bool hasValidPowerDomains(QSharedPointer<Component> component);
+
+    /*!
      *  Check if the reset types of the selected component are valid.
      *
      *      @param [in] component   The selected component.
@@ -280,10 +294,6 @@ public:
     void findErrorsIn(QVector<QString>& errors, QSharedPointer<Component> component);
 
 private:
-
-	// Disable copying.
-	ComponentValidator(ComponentValidator const& rhs);
-	ComponentValidator& operator=(ComponentValidator const& rhs);
 
     /*!
      *  Find errors in component VLNV.
@@ -463,6 +473,15 @@ private:
         QString const& context) const;
 
     /*!
+     *  Find errors in power domains.
+     *
+     *      @param [in] errors      List of found errors.
+     *      @param [in] component   The selected component.
+     *      @param [in] context     Context to help locate the error.
+     */
+    void findErrorsInPowerDomains(QVector<QString>& errors, QSharedPointer<Component> component,
+        QString const& context) const;
+    /*!
      *  Find errors in reset types.
      *
      *      @param [in] errors      List of found errors.
@@ -550,6 +569,9 @@ private:
 
     //! The used other clock driver validator.
     QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator_;
+
+    //! The used power domain validator.
+    QSharedPointer<PowerDomainValidator> powerDomainValidator_;
 
     //! The used parameter validator.
     QSharedPointer<ParameterValidator> parameterValidator_;

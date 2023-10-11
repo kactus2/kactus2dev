@@ -72,19 +72,19 @@ bool BusInterfaceUtilities::busDefinitionVLNVsMatch(VLNV const& firstDefinitionV
 QString BusInterfaceUtilities::getIconPath(General::InterfaceMode busMode)
 {
     QString iconPath("");
-    if (busMode == General::MASTER)
+    if (busMode == General::MASTER || busMode == General::INITIATOR)
     {
         iconPath = ":icons/common/graphics/busInterfaceMaster.png";
     }
-    else if (busMode == General::MIRRORED_MASTER)
+    else if (busMode == General::MIRRORED_MASTER || busMode == General::MIRRORED_INITIATOR)
     {
         iconPath = ":icons/common/graphics/busInterfaceMirroredMaster.png";
     }
-    else if (busMode == General::SLAVE)
+    else if (busMode == General::SLAVE || busMode == General::TARGET)
     {
         iconPath = ":icons/common/graphics/busInterfaceSlave.png";
     }
-    else if (busMode == General::MIRRORED_SLAVE)
+    else if (busMode == General::MIRRORED_SLAVE || busMode == General::MIRRORED_TARGET)
     {
         iconPath = ":icons/common/graphics/busInterfaceMirroredSlave.png";
     }

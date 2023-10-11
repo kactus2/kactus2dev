@@ -52,6 +52,8 @@ private:
     ComponentReader(ComponentReader const& rhs);
     ComponentReader& operator=(ComponentReader const& rhs);
 
+    void parsePowerDomains(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const;
+
     /*!
      *  Reads the bus interfaces.
      *

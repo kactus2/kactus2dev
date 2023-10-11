@@ -94,6 +94,7 @@
               <section title="CPU" ref="componenteditor/cpu2022.html" />
             </section>
             <section title="Other clock drivers" ref="componenteditor/otherclockdrivers.html" />
+            <section title="Power domains" ref="componenteditor/powerdomains2022.html"/>
             <section title="Reset types" ref="componenteditor/resetTypes2022.html"/>
             <section title="COM interfaces" ref="componenteditor/cominterfaces.html">
               <section title="COM interface" ref="componenteditor/cominterface.html" />

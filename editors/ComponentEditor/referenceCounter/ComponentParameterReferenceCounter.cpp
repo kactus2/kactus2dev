@@ -23,6 +23,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/Region.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
@@ -83,6 +84,7 @@ void ComponentParameterReferenceCounter::recalculateReferencesToParameters(QVect
             referenceCount += countReferencesInModes(parameterID);
             referenceCount += countReferencesInIndirectInterfaces(parameterID);
             referenceCount += countReferencesInCpus(parameterID);
+            referenceCount += countReferencesInPowerDomains(parameterID);
 
             parameterInterface->setUsageCount(parameterName.toStdString(), referenceCount);
         }
@@ -962,3 +964,27 @@ int ComponentParameterReferenceCounter::countReferencesInSingleRegion(QString co
     return referenceCounter;
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInPowerDomains()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInPowerDomains(QString const& parameterID) const
+{
+    int referenceCount = 0;
+
+    for (auto domain : *component_->getPowerDomains())
+    {
+        referenceCount += countReferencesInSinglePowerDomain(parameterID, domain);
+    }
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSinglePowerDomain()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSinglePowerDomain(QString const& parameterID,
+    QSharedPointer<PowerDomain> powerDomain) const
+{
+    return countReferencesInExpression(parameterID, powerDomain->getAlwaysOn());
+}
