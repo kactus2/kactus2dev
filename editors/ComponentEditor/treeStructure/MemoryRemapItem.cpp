@@ -286,7 +286,6 @@ void MemoryRemapItem::setVisualizer( MemoryMapsVisualizer* visualizer )
 	// update the visualizers of address block items
 	for (auto item : childItems_)
     {
-// 		auto addrItem = item.staticCast<ComponentEditorAddrBlockItem>();
         auto addrItem = item.dynamicCast<ComponentEditorAddrBlockItem>();
         if (addrItem)
         {
