@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -51,6 +53,10 @@ public:
      *  The destructor.
      */
 	virtual ~MemoryMapBaseValidator() = default;
+
+    // Disable copying.
+    MemoryMapBaseValidator(MemoryMapBaseValidator const& rhs) = delete;
+    MemoryMapBaseValidator& operator=(MemoryMapBaseValidator const& rhs) = delete;
     
     /*!
      *  Change the containing component.
@@ -131,11 +137,10 @@ protected:
      */
     QSharedPointer<ExpressionParser> getExpressionParser() const;
 
-private:
+    //! The IP-XACT standard revision to comply to.
+    Document::Revision docRevision_;
 
-	// Disable copying.
-	MemoryMapBaseValidator(MemoryMapBaseValidator const& rhs);
-	MemoryMapBaseValidator& operator=(MemoryMapBaseValidator const& rhs);
+private:
 
     /*!
      *  Check if the memory block overlaps with another memory block.

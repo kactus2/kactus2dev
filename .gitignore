@@ -3,4 +3,14 @@ tests/**/*.vcxproj
 tests/**/*.vcxproj.filters
 tests/**/*.vcxproj.user
 
+tests/**/release
 
+.vs/
+**/.vs/
+GeneratedFiles/
+**/generatedFiles
+**/Debug
+**/debug
+
+executable/Plugins
+Plugins/**/*.vcxproj.user
