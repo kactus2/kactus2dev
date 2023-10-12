@@ -117,43 +117,6 @@ public:
 	 */
 	virtual QRectF boundingRect() const;
 
-	/*!
-     *  Sets the first non-overlapping address to display.
-	 *
-	 *       @param [in] The first address to set.
-	 */
-    virtual void setDisplayOffset(quint64 const& address);
-
-	/*!
-     *  Get the first non-overlapping address of the item.
-	 *
-	 *      @return The first non-overlapping address.
-	 */
-    virtual quint64 getDisplayOffset();
-
-	/*!
-     *  Sets the last non-overlapping address to display.
-	 *
-	 *       @param [in] The last address to set.
-	 */
-    virtual void setDisplayLastAddress(quint64 const& address);
-
-    /*!
-     *  Get the last non-overlapping address of the item.
-     *
-     *      @return The last non-overlapping address.
-     */
-    virtual quint64 getDisplayLastAddress();
-
-    //! Set the item into conflicted (overlapping memory) state.
-    virtual void setConflicted(bool conflicted);
-
-    /*!
-     *  Checks if the item is conflicted (overlapping with others).
-     *
-     *      @return True, if the item is conflicted, otherwise false.
-     */
-    bool isConflicted() const;
 
 signals:
 
@@ -204,55 +167,8 @@ protected:
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
-	/*!
-     *  Set text to the top left corner.
-	 *
-	 * The function groups the hexadecimal digit into groups of 4 digits.
-	 *
-	 *       @param [in] text The text to display in the corner.
-	 */
-	virtual void setTopLabelText(QString const& text);
-
-	/*!
-     *  Set the address to be shown on the top left corner.
-	 *
-	 *       @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setTopLabelText(quint64 address);
-
-    /*!
-     *  Converts an address to hexadecimal string.
-     *
-     *      @param [in] address   The address to convert.
-     *
-     *      @return The hexadecimal representation.
-     */
-    QString toHexString(quint64 address) const;
-
-	/*!
-     *  Set text to the bottom left corner.
-	 *
-	 *  The function groups the hexadecimal digit into groups of 4 digits.
-	 *
-	 *       @param [in] text The text to display in the corner.
-	 */
-	virtual void setBottomLabelText(QString const& text);
-
-	/*!
-     *  Set the address to be shown on the bottom left corner.
-	 *
-	 *       @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setBottomLabelText(quint64 address);
-
 	//! Contains the child memory items. The offset of the child is the key.
 	QMultiMap<quint64, MemoryVisualizationItem*> childItems_;
-
-    //! The first address of the item.
-    quint64 firstAddress_ = 0;
-
-    //! The last address of the item.
-    quint64 lastAddress_ = 0;
 
 private:
     
@@ -276,24 +192,9 @@ private:
      */
     QMultiMap<quint64, MemoryVisualizationItem*>::iterator createMemoryGap(quint64 offset, quint64 lastAddress);
 
-    /*!
-     *  Groups a given address text to groups of four digits.
-     *
-     *      @param [in] text   The address to group.
-     *
-     *      @return The grouped address text.
-     */
-    QString groupByFourDigits(QString const& text) const;
-
-    //! comparison function for two equal offsets.
-    static bool compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! Conflicted state. Item is conflicted if it overlaps with other items.
-    bool conflicted_ = false;
 
     //! Width for child items.
     qreal childWidth_ = VisualizerItem::DEFAULT_WIDTH;

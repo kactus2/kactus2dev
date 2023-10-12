@@ -30,7 +30,7 @@ field_(field)
 
     setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
 	
-	setDefaultBrush(QBrush(KactusColors::FIELD_COLOR));
+	VisualizerItem::setDefaultBrush(QBrush(KactusColors::FIELD_COLOR));
 
     setLayoutType(VisualizerItem::LABELS_TOP);
     setClipText(true);

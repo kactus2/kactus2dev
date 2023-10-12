@@ -23,7 +23,7 @@
 AddressSpaceVisualizationItem::AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
                                                              QSharedPointer<ExpressionParser> expressionParser,
 															 QGraphicsItem* parent):
-VisualizerItem(parent),
+AddressableItem(parent),
 expressionParser_(expressionParser),
 addressSpaceWidth_(addressSpaceWidth)
 {
@@ -36,42 +36,6 @@ addressSpaceWidth_(addressSpaceWidth)
 int AddressSpaceVisualizationItem::getBitWidth() const
 {
 	return expressionParser_->parseExpression(addressSpaceWidth_).toInt();
-}
-
-//-----------------------------------------------------------------------------
-// Function: setLeftTopCorner()
-//-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setTopLabelText(quint64 address)
-{
-	QString padded = addr2Str(address);
-	VisualizerItem::setTopLabelText(padded);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setRightTopCorner()
-//-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setRightTopCorner(quint64 address)
-{
-	QString padded = addr2Str(address);
-	VisualizerItem::setTopLabelText(padded);
-}
-
-//-----------------------------------------------------------------------------
-// Function: setLeftBottomCorner()
-//-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setBottomLabelText(quint64 address)
-{
-	QString padded = addr2Str(address);
-	VisualizerItem::setBottomLabelText(padded);
-}	
-
-//-----------------------------------------------------------------------------
-// Function: setRightBottomCorner()
-//-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setRightBottomCorner(quint64 address)
-{
-	QString padded = addr2Str(address);
-	VisualizerItem::setBottomLabelText(padded);
 }
 
 //-----------------------------------------------------------------------------
@@ -156,56 +120,6 @@ void AddressSpaceVisualizationItem::setCompleteOverlap()
 bool AddressSpaceVisualizationItem::isCompletelyOverlapped() const
 {
     return overlapped_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: setConflicted()
-//-----------------------------------------------------------------------------
-void AddressSpaceVisualizationItem::setConflicted(bool conflicted)
-{
-    conflicted_ = conflicted;
-
-    if (conflicted)
-    {
-        setBrush(KactusColors::MISSING_COMPONENT);
-    }
-    else
-    {
-        setBrush(defaultBrush());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: isConflicted()
-//-----------------------------------------------------------------------------
-bool AddressSpaceVisualizationItem::isConflicted() const
-{
-    return conflicted_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: addr2Str()
-//-----------------------------------------------------------------------------
-QString AddressSpaceVisualizationItem::addr2Str(quint64 const address) const
-{
-	// convert the number into hexadecimal form
-	QString str = QString::number(address, 16);
-	str = str.toUpper();
-
-    int bitWidth = getBitWidth();
-
-	// one hexadecimal number accounts for four bits
-	int fieldSize = bitWidth / 4;
-	QString padded = QString("%1").arg(str, fieldSize, QLatin1Char('0'));
-
-	// group the string to groups of four characters
-	int size = padded.size();
-	for (int i = size; i > 0; i -= 4)
-    {
-		padded.insert(i, " ");
-	}
-
-	return padded;
 }
 
 //-----------------------------------------------------------------------------

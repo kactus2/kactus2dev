@@ -30,7 +30,7 @@ segment_(segment)
 	Q_ASSERT(segment_);
 
 	QBrush brush(KactusColors::ADDRESS_SEGMENT);
-	setDefaultBrush(brush);
+	VisualizerItem::setDefaultBrush(brush);
     setLayoutType(LABELS_RIGHT);
 }
 
@@ -46,9 +46,10 @@ void SegmentGraphItem::refresh()
     setOverlappingTop(offset);
     setOverlappingBottom(lastAddr);
 
+    const int BIT_WIDTH = getBitWidth();
     setToolTip("<b>Name: </b>" + segment_->name() + "<br>" +
-        "<b>Offset: </b>" + addr2Str(offset) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(lastAddr)  + "<br>" +
+        "<b>Offset: </b>" + toHexString(offset, BIT_WIDTH) + "<br>" +
+        "<b>Last address: </b>" + toHexString(lastAddr, BIT_WIDTH)  + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(segment_->getRange()));
 
     repositionLabels(); 
@@ -95,7 +96,7 @@ quint64 SegmentGraphItem::getLastAddress() const
 void SegmentGraphItem::setOverlappingTop(quint64 const& address)
 {
     firstFreeAddress_ = address;
-    setRightTopCorner(firstFreeAddress_);
+    setTopLabelText(firstFreeAddress_);
 
     if (firstFreeAddress_ == lastFreeAddress_)
     {
@@ -103,7 +104,7 @@ void SegmentGraphItem::setOverlappingTop(quint64 const& address)
     }
     else
     {
-        setRightBottomCorner(lastFreeAddress_);
+        setBottomLabelText(lastFreeAddress_);
     }
 }
 
@@ -120,6 +121,6 @@ void SegmentGraphItem::setOverlappingBottom(quint64 const& address)
     }
     else
     {
-        setRightBottomCorner(lastFreeAddress_);
+        setBottomLabelText(lastFreeAddress_);
     }
 }

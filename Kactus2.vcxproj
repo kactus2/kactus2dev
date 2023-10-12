@@ -776,6 +776,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\views\ViewsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\viewseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\viewsmodel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\visualization\AddressableItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\visualization\fieldgapitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\visualization\memorygapitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\visualization\memoryvisualizationitem.cpp" />
@@ -1956,6 +1957,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\views\ViewsDelegate.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\views\ViewColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\visualization\AddressableItem.h" />
     <ClInclude Include="editors\ConfigurationTools\ViewConfigurerColumns.h" />
     <ClInclude Include="editors\CSourceEditor\CSourceHighlight.h" />
     <QtMoc Include="mainwindow\NewPages\NewCatalogPage.h">

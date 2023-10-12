@@ -12,7 +12,7 @@
 #ifndef ADDRESSSPACEVISUALIZATIONITEM_H
 #define ADDRESSSPACEVISUALIZATIONITEM_H
 
-#include <common/graphicsItems/visualizeritem.h>
+#include <editors/ComponentEditor/visualization/AddressableItem.h>
 
 #include <QSharedPointer>
 
@@ -21,7 +21,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! The base class to visualize objects in address space editor.
 //-----------------------------------------------------------------------------
-class AddressSpaceVisualizationItem : public VisualizerItem
+class AddressSpaceVisualizationItem : public AddressableItem
 {
 	Q_OBJECT
 
@@ -44,7 +44,7 @@ public:
 	 */
 	AddressSpaceVisualizationItem(QString const& addressSpaceWidth,
         QSharedPointer<ExpressionParser> expressionParser,
-		QGraphicsItem* parent = 0);
+		QGraphicsItem* parent = nullptr);
 	
 	//! The destructor.
 	virtual ~AddressSpaceVisualizationItem() = default;
@@ -52,23 +52,6 @@ public:
     //! No copying. No assignment.
     AddressSpaceVisualizationItem(const AddressSpaceVisualizationItem& other) = delete;
     AddressSpaceVisualizationItem& operator=(const AddressSpaceVisualizationItem& other) = delete;
-
-	//! Refresh the item.
-	virtual void refresh() = 0;
-
-	/*!
-     *  Get the offset of the item. 
-	 *
-	 *      @return int The offset of the item.
-	 */
-	virtual quint64 getOffset() const = 0;
-
-	/*!
-     *  Get the last address contained in the item.
-	 *
-	 *      @return The last address.
-	 */
-	virtual quint64 getLastAddress() const = 0;
 
 	/*!
      *  Get the bit width of the address space.
@@ -129,67 +112,16 @@ public:
      */
     virtual bool isCompletelyOverlapped() const;
 
-    /*!
-     *  Sets the item to conflicted (overlaps with other memory blocks) or not-conflicted state.
-     *
-     *      @param [in] conflicted   Conflicted state to set.
-     */
-    virtual void setConflicted(bool conflicted);
-
-    /*!
-     *  Sets the item to conflicted or not-conflicted state.
-     *
-     *      @return True, if item is conflicted, otherwise false.
-     */
-    virtual bool isConflicted() const;
-
-	/*!
-     *  Convert the address to string presented in hexadecimal form.
-	 *
-	 *      @param [in] address  The address to be converted.
-	 *
-	 *      @return QString containing the address in hexadecimal form.
-	 */
-    QString addr2Str(quint64 const address) const;
-
 protected:
-
-	/*!
-     *  Set the address to be shown on the top left corner.
-	 *
-	 *      @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setTopLabelText(quint64 address);
-
-	/*!
-     *  Set the address to be shown on the top left corner.
-	 *
-	 *      @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setRightTopCorner(quint64 address);
-
-	/*!
-     *  Set the address to be shown on the top left corner.
-	 *
-	 *      @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setBottomLabelText(quint64 address);
-
-	/*!
-     *  Set the address to be shown on the top left corner.
-	 *
-	 *      @param [in] address The address to be shown in hexadecimal form.
-	 */
-	virtual void setRightBottomCorner(quint64 address);
 
     //! Get the expression parser for solving expression values.
     QSharedPointer<ExpressionParser> getExpressionParser() const;
 
     //! The first non-overlapping address.
-    quint64 firstFreeAddress_;
+    quint64 firstFreeAddress_ = 0;
 
     //! The last non-overlapping address.
-    quint64 lastFreeAddress_;
+    quint64 lastFreeAddress_ = 0;
 
 private:
 
@@ -198,9 +130,6 @@ private:
 
     //! The bit width of the address space.
 	QString addressSpaceWidth_;
-
-	//! Conflicted state. Item is conflicted if it overlaps with other items.
-    bool conflicted_ = false;
 
     //! Tells if the item is completely overlapped by other items.
     bool overlapped_ = false;

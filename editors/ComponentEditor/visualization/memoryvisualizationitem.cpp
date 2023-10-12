@@ -25,7 +25,6 @@
 MemoryVisualizationItem::MemoryVisualizationItem(QSharedPointer<ExpressionParser> expressionParser,
     QGraphicsItem* parent):
 ExpandableItem(parent),
-    childItems_(),
     expressionParser_(expressionParser)
 {
     QPen pen(Qt::gray);
@@ -41,7 +40,7 @@ QRectF MemoryVisualizationItem::itemTotalRect() const
     QRectF totalRect(rect());
 
     // The rectangle must contain this item and also the child item.
-    for (auto child : childItems_)
+    for (auto const& child : childItems_)
     {   
         if (child->isVisible())
         {
@@ -103,7 +102,7 @@ void MemoryVisualizationItem::setWidth(qreal width)
 
         VisualizerItem::setWidth(width);
         
-        for (auto child : childItems_)
+        for (auto& child : childItems_)
         {
             child->setWidth(childWidth_);
         }
@@ -116,73 +115,6 @@ void MemoryVisualizationItem::setWidth(qreal width)
 QRectF MemoryVisualizationItem::boundingRect() const
 {
     return itemTotalRect();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setDisplayOffset()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setDisplayOffset(quint64 const& address)
-{
-    firstAddress_ = address;
-    setTopLabelText(firstAddress_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::getDisplayOffset()
-//-----------------------------------------------------------------------------
-quint64 MemoryVisualizationItem::getDisplayOffset()
-{
-    return firstAddress_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setDisplayLastAddress()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setDisplayLastAddress(quint64 const& address)
-{
-    lastAddress_ = address;
-
-    if (firstAddress_ != lastAddress_)
-    {
-        setBottomLabelText(lastAddress_);
-    }
-    else
-    {
-        setBottomLabelText(QString());
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::getDisplayLastAddress()
-//-----------------------------------------------------------------------------
-quint64 MemoryVisualizationItem::getDisplayLastAddress()
-{
-    return lastAddress_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setConflicted()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setConflicted(bool conflicted)
-{
-    conflicted_ = conflicted;
-
-    QBrush colorBrush = defaultBrush();
-    if (conflicted)
-    {
-        colorBrush = KactusColors::MISSING_COMPONENT;
-    }
-
-    QAbstractGraphicsShapeItem::setBrush(colorBrush);
-    setExpansionBrush(colorBrush);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::isConflicted()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::isConflicted() const
-{
-    return conflicted_;
 }
 
 //-----------------------------------------------------------------------------
@@ -242,8 +174,7 @@ void MemoryVisualizationItem::removeGapsAndSortChildren()
 
     for (auto item = childItems_.cbegin(); item != childItems_.cend(); ++item)
     {
-        MemoryGapItem* gap = dynamic_cast<MemoryGapItem*>(*item);
-        if (gap)
+        if (auto gap = dynamic_cast<MemoryGapItem*>(*item); gap)
         {
             delete gap;
         }
@@ -254,11 +185,11 @@ void MemoryVisualizationItem::removeGapsAndSortChildren()
     }
 
     // Sort childs with same offset for stable order.
-    for (quint64 const& offset : updatedMap.uniqueKeys())
+    for (auto const& offset : updatedMap.uniqueKeys())
     {
         if (updatedMap.count(offset) != 1)
         {
-            QList<MemoryVisualizationItem*> childs = updatedMap.values(offset);
+            auto childs = updatedMap.values(offset);
             updatedMap.remove(offset);
 
             std::stable_sort(childs.begin(), childs.end(), compareItems);
@@ -281,12 +212,10 @@ void MemoryVisualizationItem::fillGapsBetweenChildren()
 
     for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
     {
-        auto current = i.value();
-        if (current->isPresent())
+        if (auto current = i.value(); current->isPresent())
         {
-            quint64 currentOffset = childItems_.key(current);
-
-            if (lastAddressInUse == 0 && currentOffset > 0 && i == childItems_.begin())
+            if (quint64 currentOffset = childItems_.key(current); 
+                lastAddressInUse == 0 && currentOffset > 0 && i == childItems_.begin())
             {
                 i = createMemoryGap(0, currentOffset - 1);
                 lastAddressInUse = currentOffset - 1;
@@ -319,11 +248,9 @@ void MemoryVisualizationItem::markConflictingChildren()
 
     for (auto child = childItems_.begin(); child != childItems_.end(); ++child)
     {
-        MemoryVisualizationItem* current = child.value();
-
-        if (current->isPresent())
+        if (auto& current = child.value(); current->isPresent())
         {
-            quint64 currentOffset = childItems_.key(current);
+            auto const& currentOffset = child.key();
 
             bool overlaps = currentOffset > offset && currentOffset <= highestAddressInUse;
             bool isOutsideBounds = currentOffset < offset || current->getLastAddress() > lastAddress;
@@ -332,12 +259,12 @@ void MemoryVisualizationItem::markConflictingChildren()
 
             if (overlaps)
             {
-                // Walk backwards and mark any overlapping items conflicted.
-                for (auto previous = child - 1; previous != childItems_.begin() - 1; --previous)
+                // Mark any overlapping items conflicted.
+                for (auto preceding = childItems_.begin(); preceding != child; ++preceding)
                 {
-                    if ((*previous)->getLastAddress() >= currentOffset)
+                    if ((*preceding)->getLastAddress() >= currentOffset)
                     {
-                        (*previous)->setConflicted(true);
+                        (*preceding)->setConflicted(true);
                     }
                 }
             }
@@ -355,7 +282,7 @@ void MemoryVisualizationItem::repositionChildren()
     qreal yCoordinate = rect().bottom();
     
     bool parentExpanded = isExpanded();
-    for (MemoryVisualizationItem* current : childItems_)
+    for (auto& current : childItems_)
     {
         bool present = current->isPresent();
         current->setVisible(present && parentExpanded);
@@ -380,59 +307,6 @@ void MemoryVisualizationItem::mousePressEvent(QGraphicsSceneMouseEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setLeftTopCorner()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setTopLabelText(QString const& text) 
-{
-    VisualizerItem::setTopLabelText(groupByFourDigits(text));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setLeftTopCorner()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setTopLabelText(quint64 address)
-{
-    VisualizerItem::setTopLabelText(toHexString(address));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::toHexString()
-//-----------------------------------------------------------------------------
-QString MemoryVisualizationItem::toHexString(quint64 address) const
-{
-    QString str = QString::number(address, 16);
-    str = str.toUpper();
-
-    int bitWidth = getBitWidth();
-
-    // one hexadecimal number accounts for four bits
-    int fieldSize = bitWidth / 4;
-    if (fieldSize*4 < bitWidth)
-    {
-        fieldSize++; //Round upwards, e.g. 7 bits needs 4 hex digits
-    }
-
-    QString padded = QString("%1").arg(str, fieldSize, QLatin1Char('0'));
-    return groupByFourDigits(padded);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setLeftBottomCorner()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setBottomLabelText(QString const& text)
-{
-    VisualizerItem::setBottomLabelText(groupByFourDigits(text));
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::setLeftBottomCorner()
-//-----------------------------------------------------------------------------
-void MemoryVisualizationItem::setBottomLabelText(quint64 address)
-{
-    VisualizerItem::setBottomLabelText(toHexString(address));
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryVisualizationItem::emptySpaceBeforeChild()
 //-----------------------------------------------------------------------------
 bool MemoryVisualizationItem::emptySpaceBeforeChild(MemoryVisualizationItem const* current,
@@ -454,29 +328,4 @@ QMultiMap<quint64, MemoryVisualizationItem*>::iterator MemoryVisualizationItem::
     gap->repositionLabels();
 
     return childItems_.insert(gap->getOffset(), gap);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::groupByFourDigits()
-//-----------------------------------------------------------------------------
-QString MemoryVisualizationItem::groupByFourDigits(QString const& text) const
-{
-    QString groupedText(text);
-
-    int size = text.size();
-    for (int i = size; i > 0; i -= 4) 
-    {
-        groupedText.insert(i, QLatin1Char(' '));
-    }
-
-    return groupedText;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryVisualizationItem::compareItems()
-//-----------------------------------------------------------------------------
-bool MemoryVisualizationItem::compareItems(const MemoryVisualizationItem* s1, const MemoryVisualizationItem* s2)
-{
-    // Item with bigger last address precedes the other.
-    return s1->getLastAddress() > s2->getLastAddress();
 }

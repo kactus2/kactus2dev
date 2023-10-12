@@ -22,7 +22,6 @@ MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, 
 MemoryVisualizationItem(expressionParser, parent)
 {
 	setDefaultBrush(QBrush(QColor(Qt::white)));
-	setExpansionBrush(QBrush(QColor(Qt::white)));
 
     setShowExpandableItem(false);
 

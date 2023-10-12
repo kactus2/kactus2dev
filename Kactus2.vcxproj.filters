@@ -3331,6 +3331,9 @@
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\visualization\AddressableItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\visualization</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5992,6 +5995,9 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\visualization\AddressableItem.h">
+      <Filter>Header Files\editors\ComponentEditor\visualization</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

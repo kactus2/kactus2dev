@@ -25,7 +25,7 @@ AddressSpaceGapItem::AddressSpaceGapItem(VisualizerItem::LabelLayout addrPos,
 AddressSpaceVisualizationItem(addressSpaceWidth, expressionParser, parent),
 addrPosition_(addrPos) 
 {
-    setDefaultBrush(QBrush(Qt::white));
+    VisualizerItem::setDefaultBrush(QBrush(Qt::white));
 
     setLayoutType(addrPos);
 	setName("...");
@@ -52,10 +52,10 @@ void AddressSpaceGapItem::refresh()
 
     else
     {
-        setRightTopCorner(start_);
+        setTopLabelText(start_);
         if (end_ != start_)
         {
-            setRightBottomCorner(end_);
+            setBottomLabelText(end_);
         }
         else
         {
@@ -140,7 +140,7 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
 
     else //if (addrPosition == LabelLayout::LABELS_RIGHT)
     {
-        setRightTopCorner(firstFreeAddress_);
+        setTopLabelText(firstFreeAddress_);
 
         if (firstFreeAddress_ == lastFreeAddress_)
         {        
@@ -148,7 +148,7 @@ void AddressSpaceGapItem::setOverlappingTop(quint64 const& address)
         }
         else
         {
-            setRightBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 }
@@ -180,7 +180,7 @@ void AddressSpaceGapItem::setOverlappingBottom(quint64 const& address)
         }
         else
         {
-            setRightBottomCorner(lastFreeAddress_);
+            setBottomLabelText(lastFreeAddress_);
         }
     }
 }

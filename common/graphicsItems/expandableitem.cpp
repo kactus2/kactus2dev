@@ -12,9 +12,7 @@
 // Function: ExpandableItem::ExpandableItem()
 //-----------------------------------------------------------------------------
 ExpandableItem::ExpandableItem(QGraphicsItem* parent):
-VisualizerItem(parent),
-expandCollapseItem_(new GraphicsExpandCollapseItem(this)),
-expansionArrow_(new QGraphicsPixmapItem(this))
+AddressableItem(parent)
 {
 	connect(expandCollapseItem_, SIGNAL(stateChanged(bool)),
         this, SLOT(onExpandStateChange(bool)), Qt::UniqueConnection);
@@ -49,6 +47,15 @@ void ExpandableItem::resizeToContent()
 {
     updateRectangle();
 	repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ExpandableItem::setConflicted()
+//-----------------------------------------------------------------------------
+void ExpandableItem::setConflicted(bool conflicted)
+{
+    AddressableItem::setConflicted(conflicted);
+    expandCollapseItem_->setBrush(brush());
 }
 
 //-----------------------------------------------------------------------------
@@ -90,14 +97,6 @@ void ExpandableItem::setShowExpandableItem(bool show)
 void ExpandableItem::setDefaultBrush(QBrush brush)
 {
     VisualizerItem::setDefaultBrush(brush);
-    setExpansionBrush(brush);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ExpandableItem::setExpansionBrush()
-//-----------------------------------------------------------------------------
-void ExpandableItem::setExpansionBrush(QBrush const& brush)
-{
     expandCollapseItem_->setBrush(brush);
 }
 

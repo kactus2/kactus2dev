@@ -32,7 +32,7 @@ addrBlock_(block)
 	Q_ASSERT(addrBlock_);
 
 	QBrush brush(KactusColors::ADDR_BLOCK_COLOR);
-	setDefaultBrush(brush);
+	VisualizerItem::setDefaultBrush(brush);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,9 +48,10 @@ void LocalAddrBlockGraphItem::refresh()
     setOverlappingBottom(lastAddr);
 	
     // Set tooltip to show addresses in hexadecimals.
+    const int BIT_WIDTH = getBitWidth();
     setToolTip("<b>Name: </b>" + addrBlock_->name() + "<br>" +
-        "<b>Base address: </b>" + addr2Str(offset) + "<br>" +
-        "<b>Last address: </b>" + addr2Str(lastAddr) + "<br>" +
+        "<b>Base address: </b>" + toHexString(offset, BIT_WIDTH) + "<br>" +
+        "<b>Last address: </b>" + toHexString(lastAddr, BIT_WIDTH) + "<br>" +
         "<b>Size [AUB]: </b>" + getExpressionParser()->parseExpression(addrBlock_->getRange()));
 
 	repositionLabels();
