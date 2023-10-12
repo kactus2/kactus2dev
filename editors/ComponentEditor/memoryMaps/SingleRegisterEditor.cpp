@@ -111,11 +111,11 @@ void SingleRegisterEditor::setupLayout()
     QFormLayout* registerDefinitionLayout = new QFormLayout(registerDefinitionGroup);
     registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
     registerDefinitionLayout->addRow(tr("Size [bits], f(x):"), sizeEditor_);
+    registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
 
     QLayout* topOfPageLayout;
     if (component()->getRevision() == Document::Revision::Std14)
     {
-        registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
         registerDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
         registerDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
         registerDefinitionLayout->addRow(tr("Access:"), accessEditor_);
