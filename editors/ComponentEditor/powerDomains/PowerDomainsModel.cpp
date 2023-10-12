@@ -37,12 +37,6 @@ validator_(validator)
     setExpressionParser(expressions.parser);
 }
 
-//-----------------------------------------------------------------------------
-// Function: PowerDomainsModel::~PowerDomainsModel()
-//-----------------------------------------------------------------------------
-PowerDomainsModel::~PowerDomainsModel()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: PowerDomainsModel::rowCount()

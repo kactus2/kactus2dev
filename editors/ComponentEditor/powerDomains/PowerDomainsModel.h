@@ -46,7 +46,7 @@ public:
 		QObject *parent);
 	
 	//! The destructor.
-	virtual ~PowerDomainsModel();
+	virtual ~PowerDomainsModel() = default;
 
     //! No copying.
     PowerDomainsModel(const PowerDomainsModel& other) = delete;

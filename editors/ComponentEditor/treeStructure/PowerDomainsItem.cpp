@@ -40,7 +40,7 @@ ComponentEditorItem(model, libHandler, component, parent),
 QFont PowerDomainsItem::getFont() const
 {
     QFont font(ComponentEditorItem::getFont());
-    font.setBold(!component_->getPowerDomains()->isEmpty());
+    font.setBold(!childItems_.isEmpty());
     return font;
 }
 

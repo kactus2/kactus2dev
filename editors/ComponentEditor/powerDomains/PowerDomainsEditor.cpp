@@ -111,9 +111,9 @@ void PowerDomainsEditor::showEvent(QShowEvent* event)
 void PowerDomainsEditor::setupLayout()
 {
     // Display a label on top the table.
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("Power domains"), this);
+    auto summaryLabel = new SummaryLabel(tr("Power domains"), this);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
     layout->addWidget(&view_);
     layout->setContentsMargins(0, 0, 0, 0);

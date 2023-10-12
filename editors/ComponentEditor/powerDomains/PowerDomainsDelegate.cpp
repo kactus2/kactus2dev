@@ -26,8 +26,7 @@
 //-----------------------------------------------------------------------------
 PowerDomainsDelegate::PowerDomainsDelegate(QSharedPointer<QList<QSharedPointer<PowerDomain> > > powerDomains,
     QAbstractItemModel* completionModel,
-    QSharedPointer<ParameterFinder> parameterFinder, 
-    //QSharedPointer<PortTypeValidator> typeValidator,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QObject* parent):
 ExpressionDelegate(completionModel, parameterFinder, parent),
 powerDomains_(powerDomains)
@@ -46,7 +45,7 @@ QWidget* PowerDomainsDelegate::createEditor(QWidget * parent, QStyleOptionViewIt
         auto editor = new ReferenceSelector(parent);
 
         QStringList domainNames;
-        for (auto domain : *powerDomains_)
+        for (auto const& domain : *powerDomains_)
         {
             domainNames.append(domain->name());
         }
