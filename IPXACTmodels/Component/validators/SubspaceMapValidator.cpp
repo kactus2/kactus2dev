@@ -115,7 +115,11 @@ QSharedPointer<BusInterface> SubspaceMapValidator::getReferencedBusInterface(QSt
 bool SubspaceMapValidator::referencedBusIsMaster(QString const& masterReference) const
 {
     QSharedPointer<BusInterface> bus = getReferencedBusInterface(masterReference);
-    if (bus && bus->getInterfaceMode() == General::MASTER)
+    if (bus && bus->getInterfaceMode() == General::MASTER && docRevision_ == Document::Revision::Std14)
+    {
+        return true;
+    }
+    else if (bus && bus->getInterfaceMode() == General::INITIATOR && docRevision_ == Document::Revision::Std22)
     {
         return true;
     }
