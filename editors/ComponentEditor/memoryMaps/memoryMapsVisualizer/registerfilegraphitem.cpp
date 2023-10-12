@@ -42,7 +42,7 @@ void RegisterFileGraphItem::updateDisplay()
     QString name = regFile_->name();
     
     int dimension = parseExpression(regFile_->getDimension());
-    if (dimension > 0)
+    if (dimension > 1)
     {
         name.append("[" % QString::number(dimension - 1) % ":0]");
     }
