@@ -443,7 +443,7 @@ bool RegisterTableModel::setData(QModelIndex const& index, QVariant const& value
         }
         else if (isStd14Column(index))
         {
-            if (!setDataForFirstFieldAccessPolicy(index, value, fieldName))
+            if (!setStd14ColumnData(index, value, fieldName))
             {
                 return false;
             }
@@ -675,7 +675,7 @@ QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index
 {
     if (isStd14Column(index) && docRevision_ == Document::Revision::Std22)
     {
-        // If more than one field access policies.
+        // Item is not editable, if there is more than one field access policy.
         if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
         {
             // Indicate multiple access policies.
@@ -687,6 +687,7 @@ QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index
             return QVariant();
         }
 
+        // Return the index value of the first and only field access policy.
         return valueForIndex(index);
     }
     else
@@ -694,6 +695,12 @@ QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index
         if (isValidExpressionColumn(index))
         {
             return formattedExpressionForIndex(index);
+        }
+        else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN &&
+            index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
+        {
+            // Unset test constraint, if testable is false or not set.
+            return QVariant();
         }
         else if (index.column() == RegisterColumns::DESCRIPTION_COLUMN)
         {
@@ -710,31 +717,43 @@ QVariant RegisterTableModel::getIndexValueByStdRevision(QModelIndex const& index
 }
 
 //-----------------------------------------------------------------------------
-// Function: RegisterTableModel::setDataForFieldAccessPolicy()
+// Function: RegisterTableModel::setStd14ColumnData()
 //-----------------------------------------------------------------------------
-bool RegisterTableModel::setDataForFirstFieldAccessPolicy(QModelIndex const& index, QVariant const& value, std::string const& fieldName)
+bool RegisterTableModel::setStd14ColumnData(QModelIndex const& index, QVariant const& value, std::string const& fieldName)
 {
-    // Add a new field access policy, if there are none AND if the new index value is not empty.
-    if (fieldInterface_->getAccessPolicyCount(fieldName) == 0 && value.toString().isEmpty() == false)
+    // Set either directly the field's values, or the values of the first field access policy, depending on
+    // std revision.
+
+    // Modify field values directly.
+    int fieldAccessPolicyIndex = -1;
+
+    if (docRevision_ == Document::Revision::Std22)
     {
-        fieldInterface_->addFieldAccessPolicy(fieldName);
+        // Add a new field access policy, if there are none AND if the new index value is not empty.
+        if (fieldInterface_->getAccessPolicyCount(fieldName) == 0 && value.toString().isEmpty() == false)
+        {
+            fieldInterface_->addFieldAccessPolicy(fieldName);
+        }
+
+        // Modify first field access policy.
+        fieldAccessPolicyIndex = 0;
     }
 
     if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
-        fieldInterface_->setAccess(fieldName, value.toString().toStdString(), 0);
+        fieldInterface_->setAccess(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {
-        fieldInterface_->setModifiedWrite(fieldName, value.toString().toStdString(), 0);
+        fieldInterface_->setModifiedWrite(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
     }
     else if (index.column() == RegisterColumns::READ_ACTION_COLUMN)
     {
-        fieldInterface_->setReadAction(fieldName, value.toString().toStdString(), 0);
+        fieldInterface_->setReadAction(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
     }
     else if (index.column() == RegisterColumns::TESTABLE_COLUMN)
     {
-        fieldInterface_->setTestable(fieldName, value.toString().toStdString(), 0);
+        fieldInterface_->setTestable(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
         if (value.toString() == QLatin1String("false"))
         {
             QModelIndex constrIndex = createIndex(index.row(), index.column() + 1, index.internalPointer());
@@ -743,7 +762,7 @@ bool RegisterTableModel::setDataForFirstFieldAccessPolicy(QModelIndex const& ind
     }
     else if (index.column() == RegisterColumns::TEST_CONSTR_COLUMN)
     {
-        fieldInterface_->setTestConstraint(fieldName, value.toString().toStdString(), 0);
+        fieldInterface_->setTestConstraint(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
     }
     else
     {

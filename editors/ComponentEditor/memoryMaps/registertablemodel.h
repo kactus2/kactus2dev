@@ -297,7 +297,9 @@ private:
     QVariant getIndexValueByStdRevision(QModelIndex const& index) const;
 
     /*!
-     *	Set the index data for the first field access policy of the field.
+     *	Set the index data for columns where the data is stored directly in the field when using std 2014, and in 
+     *  field access policies when using std 2022. Set the data for either the first field access policy of the 
+     *  if using std22 or the field itself if using std14.
      *  
      *      @param [in] index       The model index of the item that's data is to be saved.
      *      @param [in] value       The data that is to be saved.
@@ -305,7 +307,7 @@ private:
      *	    
      * 	    @return True, if the setting the data succeeded, otherwise false.
      */
-    bool setDataForFirstFieldAccessPolicy(QModelIndex const& index, QVariant const& value, std::string const& fieldName);
+    bool setStd14ColumnData(QModelIndex const& index, QVariant const& value, std::string const& fieldName);
 
     //-----------------------------------------------------------------------------
     // Data.
