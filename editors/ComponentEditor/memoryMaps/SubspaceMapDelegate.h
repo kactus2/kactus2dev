@@ -14,6 +14,8 @@
 
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 class SubspaceMapInterface;
 class BusInterfaceInterface;
 class AddressSpace;
@@ -35,18 +37,21 @@ public:
      *      @param [in] completionModel         Model containing the completions used in expression editor.
 	 *      @param [in] parameterFinder         The parameter finder for expression editor.
      *      @param [in] subspaceInterface       Interface for accessing subspace maps.
+     *      @param [in] docRevision             The IP-XACT standard revision to comply to.
 	 *      @param [in] parent                  Pointer to the owner of the delegate.
 	 */
-	SubspaceMapDelegate(QAbstractItemModel* completionModel,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        SubspaceMapInterface* subspaceInterface,
-        QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
-        QObject *parent);
+	SubspaceMapDelegate(QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder, 
+        SubspaceMapInterface* subspaceInterface, QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces,
+        Document::Revision docRevision, QObject *parent);
 	
 	/*!
      *  The destructor.
      */
     virtual ~SubspaceMapDelegate() = default;
+
+    //! No copying.	No assignment.
+    SubspaceMapDelegate(const SubspaceMapDelegate& other) = delete;
+    SubspaceMapDelegate& operator=(const SubspaceMapDelegate& other) = delete;
 
 	/*!
      *  Create a new editor for the given item
@@ -85,17 +90,13 @@ protected:
     virtual int descriptionColumn() const;
 
 private:
-	
-    //! No copying.	No assignment.
-	SubspaceMapDelegate(const SubspaceMapDelegate& other);
-    SubspaceMapDelegate& operator=(const SubspaceMapDelegate& other);
 
     /*!
-     *  Get the available master bus interface names.
+     *  Get the available initiator/master bus interface names.
      *
-     *      @return List of master bus interface names.
+     *      @return List of initiator/master bus interface names.
      */
-    QStringList getMasterInterfaceNames() const;
+    QStringList getInitiatorInterfaceNames() const;
 
     /*!
      *  Get the list of available segments.
@@ -148,6 +149,9 @@ private:
 
     //! List of available address spaces.
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces_;
+
+    //! The IP-XACT standard revision to comply to.
+    Document::Revision docRevision_;
 };
 
 #endif // SUBSPACEMAPDELEGATE_H

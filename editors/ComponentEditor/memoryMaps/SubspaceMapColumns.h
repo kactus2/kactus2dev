@@ -19,7 +19,7 @@ namespace SubspaceMapColumns
     {
         NAME = 0,
         BASE,
-        MASTERREFERENCE,
+        INITIATORREFERENCE,
         SEGMENTREFERENCE,
         IS_PRESENT,
         DESCRIPTION_COLUMN,

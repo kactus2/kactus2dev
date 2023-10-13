@@ -34,7 +34,7 @@ SubspaceMapsEditor::SubspaceMapsEditor(QSharedPointer<Component> component,
     QWidget* parent):
 QGroupBox(tr("Subspace maps summary"), parent),
 view_(new EditableTableView(this)),
-model_(new SubspaceMapModel(subspaceMapInterface, expressionParser, parameterFinder, this)),
+model_(new SubspaceMapModel(subspaceMapInterface, expressionParser, parameterFinder, component->getRevision(), this)),
 interface_(subspaceMapInterface),
 blocks_(blocks),
 component_(component)
@@ -59,8 +59,13 @@ component_(component)
 	view_->setSortingEnabled(true);
 
     view_->setItemDelegate(new SubspaceMapDelegate(componentParameterModel, parameterFinder, interface_,
-        component->getAddressSpaces(), this));
+        component->getAddressSpaces(), component->getRevision(), this));
     view_->sortByColumn(SubspaceMapColumns::BASE, Qt::AscendingOrder);
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(SubspaceMapColumns::IS_PRESENT);
+    }
 
 	connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(graphicsChanged(int)), this, SIGNAL(graphicsChanged(int)), Qt::UniqueConnection);

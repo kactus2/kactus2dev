@@ -27,11 +27,12 @@
 //-----------------------------------------------------------------------------
 SubspaceMapDelegate::SubspaceMapDelegate(QAbstractItemModel* completionModel,
     QSharedPointer<ParameterFinder> parameterFinder, SubspaceMapInterface* subspaceInterface,
-    QSharedPointer<QList<QSharedPointer<AddressSpace>>> addressSpaces, QObject *parent):
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces, Document::Revision docRevision, QObject *parent) :
 MemoryBlockDelegate(completionModel, parameterFinder, parent),
 subspaceInterface_(subspaceInterface),
 busInterface_(subspaceInterface_->getBusInterface()),
-addressSpaces_(addressSpaces)
+addressSpaces_(addressSpaces),
+docRevision_(docRevision)
 {
 
 }
@@ -42,15 +43,15 @@ addressSpaces_(addressSpaces)
 QWidget* SubspaceMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     QModelIndex const& index) const 
 {
-    if (index.column() == SubspaceMapColumns::MASTERREFERENCE ||
+    if (index.column() == SubspaceMapColumns::INITIATORREFERENCE ||
         index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
     {
         QComboBox* comboBox = new QComboBox(parent);
         comboBox->addItem("");
 
-        if (index.column() == SubspaceMapColumns::MASTERREFERENCE)
+        if (index.column() == SubspaceMapColumns::INITIATORREFERENCE)
         {
-            comboBox->addItems(getMasterInterfaceNames());
+            comboBox->addItems(getInitiatorInterfaceNames());
         }
         else if (index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
         {
@@ -66,15 +67,17 @@ QWidget* SubspaceMapDelegate::createEditor(QWidget* parent, QStyleOptionViewItem
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubspaceMapDelegate::getMasterInterfaceNames()
+// Function: SubspaceMapDelegate::getInitiatorInterfaceNames()
 //-----------------------------------------------------------------------------
-QStringList SubspaceMapDelegate::getMasterInterfaceNames() const
+QStringList SubspaceMapDelegate::getInitiatorInterfaceNames() const
 {
     QStringList interfaceNames;
 
+    auto initiatorMode = docRevision_ == Document::Revision::Std22 ? General::INITIATOR : General::MASTER;
+
     for (auto interfaceName : busInterface_->getItemNames())
     {
-        if (busInterface_->getMode(interfaceName) == General::MASTER)
+        if (busInterface_->getMode(interfaceName) == initiatorMode)
         {
             interfaceNames.append(QString::fromStdString(interfaceName));
         }
@@ -90,11 +93,11 @@ QStringList SubspaceMapDelegate::getSegmentNames(QModelIndex const& index) const
 {
     QStringList segmentNames;
 
-    QModelIndex masterIndex = index.sibling(index.row(), SubspaceMapColumns::MASTERREFERENCE);
-    QString masterReference = masterIndex.data().toString();
-    if (!masterReference.isEmpty())
+    QModelIndex masterIndex = index.sibling(index.row(), SubspaceMapColumns::INITIATORREFERENCE);
+    QString initiatorReference = masterIndex.data().toString();
+    if (!initiatorReference.isEmpty())
     {
-        QSharedPointer<AddressSpace> space = getAddressSpace(masterReference);
+        QSharedPointer<AddressSpace> space = getAddressSpace(initiatorReference);
         if (space)
         {
             for (auto segment : *space->getSegments())
@@ -133,7 +136,7 @@ QSharedPointer<AddressSpace> SubspaceMapDelegate::getAddressSpace(QString const&
 //-----------------------------------------------------------------------------
 void SubspaceMapDelegate::setEditorData(QWidget* editor, QModelIndex const& index) const
 {
-    if (index.column() == SubspaceMapColumns::MASTERREFERENCE ||
+    if (index.column() == SubspaceMapColumns::INITIATORREFERENCE ||
         index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
     {
         QString currentValue = index.model()->data(index).toString();

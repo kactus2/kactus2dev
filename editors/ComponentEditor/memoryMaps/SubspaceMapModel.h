@@ -15,6 +15,8 @@
 #include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockModel.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
@@ -36,11 +38,13 @@ public:
      *      @param [in] subspaceInterface   Interface for accessing subspace maps;
      *      @param [in] expressionParser    Pointer to the expression parser.
      *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] docRevision         The IP-XACT standard revision in use.
      *      @param [in] parent              Pointer to the owner of this model.
      */
     SubspaceMapModel(SubspaceMapInterface* subspaceInterface,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
+        Document::Revision docRevision,
         QObject *parent);
 
     /*!
@@ -165,6 +169,9 @@ private:
 
     //! Interface for accessing subspace maps.
     SubspaceMapInterface* subspaceInterface_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
 };
 
 #endif // SUBSPACEMAPMODEL_H
