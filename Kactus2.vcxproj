@@ -770,6 +770,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleModeItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleRemapStateItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\envidentifiereditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\envidentifiersmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\vieweditor.cpp" />
@@ -1949,6 +1950,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\treeStructure\ModesItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>

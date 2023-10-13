@@ -36,6 +36,7 @@
 #include <editors/ComponentEditor/treeStructure/PowerDomainsItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
+#include <editors/ComponentEditor/treeStructure/TypeDefinitionsItem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
@@ -609,6 +610,13 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
 
     root->addChildItem(createParametersItem(root));
 
+    auto docRevision = component_->getRevision();
+    if (docRevision == Document::Revision::Std22)
+    {
+        root->addChildItem(QSharedPointer<TypeDefinitionsItem>(new TypeDefinitionsItem(&navigationModel_,
+            libHandler_, component_, root)));
+    }
+
     root->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(new ComponentEditorFileSetsItem(
         &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_,
         expressionParser_, expressionFormatter_, root)));
@@ -648,7 +656,6 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
         new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component_, expressionParser_, root)));
 
-    auto docRevision = component_->getRevision();
     if (docRevision == Document::Revision::Std14)
     {
         root->addChildItem(QSharedPointer<RemapStatesItem>(
