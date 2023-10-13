@@ -229,6 +229,8 @@ QVariant LibraryTreeModel::data(QModelIndex const& index, int role) const
 
             QSharedPointer<Document const> document = handler_->getModelReadOnly(vlnv);
 
+            text += "<br><b>Compatibility:</b> " + Document::toString(document->getRevision());
+
             if (document != 0 && !document->getDescription().isEmpty())
             {
                 text += "<br><b>Description:</b><br>" + document->getDescription();
