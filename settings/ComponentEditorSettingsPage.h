@@ -80,14 +80,14 @@ private:
 	 *
 	 *      @param [in] workspaceIndex   The current workspace index.
 	 */
-	void applyHwSettings(int workspaceIndex);
+	void applyHwSettings(int workspaceIndex) const;
 
     /*!
      *  Apply the software settings.
      *
      *      @param [in] workspaceIndex   The current workspace index.
      */
-    void applySwSettings(int workspaceIndex);
+    void applySwSettings(int workspaceIndex) const;
 
 	/*!
 	 *  Setup the layout.
@@ -102,14 +102,14 @@ private:
 	/*!
 	 *  Get the names of the hierarchies.
 	 */
-	QStringList getHierarchyNames();
+	QStringList getHierarchyNames() const;
 
 	/*!
 	 *  Set the check box names to correct format.
 	 *
-	 *      @param [in] checkBoxNames   List of names to be changed.
+	 *      @param [in/out] checkBoxNames   List of names to be changed.
 	 */
-	QStringList changeNameSeparators(QStringList checkBoxNames);
+	void changeNameSeparators(QStringList& checkBoxNames);
 
     /*!
 	 *  Set the hardware table.
@@ -159,7 +159,7 @@ private:
 	QList <QList <QCheckBox*> > workspaceSwCheckBoxes_;
 
 	//! The current workspace index.
-	int currentWorkspaceIndex_;
+	int currentWorkspaceIndex_ = 0;
 };
 
 #endif // COMPONENTEDITORSETTINGSPAGE_H

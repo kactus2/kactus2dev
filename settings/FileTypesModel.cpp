@@ -23,7 +23,7 @@ FileTypesModel::FileTypesModel(QSettings& settings, QObject *parent): QAbstractT
     beginResetModel();
     settings.beginGroup("FileTypes");
 
-    foreach (QString const& typeName, settings.childGroups())
+    for (QString const& typeName : settings.childGroups())
     {
         settings.beginGroup(typeName);
         FileTypeEntry entry;
@@ -106,7 +106,7 @@ QVariant FileTypesModel::data(QModelIndex const& index, int role) const
 	else if (role == Qt::UserRole)
     {
         QStringList specifiedFileTypes;
-        foreach (FileTypeEntry const& entry, entries_) 
+        for (FileTypeEntry const& entry : entries_) 
         {
             specifiedFileTypes.append(entry.name);
         }
@@ -167,7 +167,7 @@ bool FileTypesModel::setData(const QModelIndex& index, const QVariant& value, in
             QString name = value.toString();
 
             // if the file type has already been defined
-            foreach (const FileTypesModel::FileTypeEntry& entry, entries_)
+            for (const FileTypesModel::FileTypeEntry& entry : entries_)
             {
                 if (entry.name.compare(name, Qt::CaseInsensitive) == 0)
                 {
@@ -291,7 +291,7 @@ void FileTypesModel::apply(QSettings& settings)
 	settings.remove("FileTypes");
 
     settings.beginGroup("FileTypes");
-    foreach (FileTypeEntry const& entry, entries_)
+    for (FileTypeEntry const& entry : entries_)
     {
 		settings.beginGroup(entry.name);
 		settings.setValue("EditInKactus", entry.editInKactus);

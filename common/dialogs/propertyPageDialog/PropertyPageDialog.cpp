@@ -90,7 +90,11 @@ void PropertyPageDialog::addPage(QIcon const& icon, QString const& text, Propert
 
     // Add the page to the stacked pages.
     pages_->addWidget(view);
-    contentsList_->setCurrentRow(0);
+
+    if (pages_->count() == 1)
+    {
+        contentsList_->setCurrentRow(0);
+    }
 
     // Connect the contentChanged() signal.
     connect(view, SIGNAL(contentChanged()), this, SLOT(onContentChanged()));
@@ -101,7 +105,7 @@ void PropertyPageDialog::addPage(QIcon const& icon, QString const& text, Propert
 //-----------------------------------------------------------------------------
 void PropertyPageDialog::changePage(QListWidgetItem* current, QListWidgetItem* previous)
 {
-    if (current == 0)
+    if (current == nullptr)
     {
         current = previous;
     }
