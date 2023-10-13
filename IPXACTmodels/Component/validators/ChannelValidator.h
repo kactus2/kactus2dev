@@ -39,7 +39,11 @@ public:
 
 	//! The destructor.
 	~ChannelValidator() = default;
-    
+
+    // Disable copying.
+    ChannelValidator(ChannelValidator const& rhs) = delete;
+    ChannelValidator& operator=(ChannelValidator const& rhs) = delete;
+
     /*!
      *  Change the available bus interfaces.
      *
@@ -78,10 +82,6 @@ private:
      *      @return True, if the name is valid, otherwise false.
      */
     bool hasValidName(QString const& name) const;
-
-	// Disable copying.
-	ChannelValidator(ChannelValidator const& rhs);
-	ChannelValidator& operator=(ChannelValidator const& rhs);
     
     /*!
      *  Checks if the given name for referencing a bus interface is valid.

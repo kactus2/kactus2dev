@@ -54,17 +54,17 @@ void tst_ChannelValidator::baseCase()
 
     QSharedPointer<BusInterface> firstInterface(new BusInterface());
     firstInterface->setName("first");
-    firstInterface->setInterfaceMode(General::MIRROREDMASTER);
+    firstInterface->setInterfaceMode(General::MIRRORED_MASTER);
     availableInterfaces->append(firstInterface);
 
     QSharedPointer<BusInterface> secondInterface(new BusInterface());
     secondInterface->setName("second");
-    secondInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    secondInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     availableInterfaces->append(secondInterface);
 
     QSharedPointer<BusInterface> systemInterface(new BusInterface());
     systemInterface->setName("system");
-    systemInterface->setInterfaceMode(General::MIRROREDSYSTEM);
+    systemInterface->setInterfaceMode(General::MIRRORED_SYSTEM);
     availableInterfaces->append(systemInterface);
 
 	QSharedPointer<Channel> channel(new Channel);
