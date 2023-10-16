@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 
 using namespace std;
@@ -213,12 +214,22 @@ bool AddressBlockInterface::setUsage(std::string const& blockName, std::string c
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getAccessString()
 //-----------------------------------------------------------------------------
-std::string AddressBlockInterface::getAccessString(std::string const& blockName) const
+std::string AddressBlockInterface::getAccessString(std::string const& blockName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<AddressBlock> selectedBlock = getAddressBlock(blockName);
-    if (selectedBlock)
+    if (auto selectedBlock = getAddressBlock(blockName))
     {
-        return AccessTypes::access2Str(selectedBlock->getAccess()).toStdString();
+        if (accessPolicyIndex == -1)
+        {
+            return AccessTypes::access2Str(selectedBlock->getAccess()).toStdString();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = selectedBlock->getAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return AccessTypes::access2Str(accessPolicies->at(accessPolicyIndex)->getAccess()).toStdString();
+            }
+        }
     }
 
     return std::string("");
@@ -227,12 +238,22 @@ std::string AddressBlockInterface::getAccessString(std::string const& blockName)
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getAccess()
 //-----------------------------------------------------------------------------
-AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockName) const
+AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockName, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<AddressBlock> selectedBlock = getAddressBlock(blockName);
-    if (selectedBlock)
+    if (auto selectedBlock = getAddressBlock(blockName))
     {
-        return selectedBlock->getAccess();
+        if (accessPolicyIndex == -1)
+        {
+            return selectedBlock->getAccess();
+        }
+        else if (accessPolicyIndex >= 0)
+        {
+            if (auto accessPolicies = selectedBlock->getAccessPolicies();
+                accessPolicyIndex <= accessPolicies->size() - 1)
+            {
+                return accessPolicies->at(accessPolicyIndex)->getAccess();
+            }
+        }
     }
 
     return AccessTypes::ACCESS_COUNT;
@@ -241,16 +262,41 @@ AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockNam
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::setAccess()
 //-----------------------------------------------------------------------------
-bool AddressBlockInterface::setAccess(std::string const& blockName, std::string const& newAccess) const
+bool AddressBlockInterface::setAccess(std::string const& blockName, std::string const& newAccess, int accessPolicyIndex /*= -1*/) const
 {
-    QSharedPointer<AddressBlock> selectedBlock = getAddressBlock(blockName);
+    auto selectedBlock = getAddressBlock(blockName);
     if (!selectedBlock)
     {
         return false;
     }
 
-    selectedBlock->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT));
-    return true;
+    if (accessPolicyIndex == -1)
+    {
+        selectedBlock->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT));
+        return true;
+    }
+    else if (accessPolicyIndex >= 0)
+    {
+        if (auto accessPolicies = selectedBlock->getAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1)
+        {
+            auto accessPolicy = accessPolicies->at(accessPolicyIndex);
+
+            // Remove if empty.
+            if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
+                accessPolicy->getVendorExtensions()->isEmpty())
+            {
+                selectedBlock->getAccessPolicies()->removeAt(accessPolicyIndex);
+                return true;
+            }
+
+            accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), 
+                AccessTypes::ACCESS_COUNT));
+            return true;
+        }
+    }
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -528,6 +574,34 @@ bool AddressBlockInterface::hasRegisters(std::string const& blockName) const
     QSharedPointer<AddressBlock> block = getAddressBlock(blockName);
     if (block && block->getRegisterData() && !block->getRegisterData()->isEmpty())
     {
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::getAccessPolicyCount()
+//-----------------------------------------------------------------------------
+int AddressBlockInterface::getAccessPolicyCount(std::string const& blockName) const
+{
+    if (auto block = getAddressBlock(blockName))
+    {
+        return block->getAccessPolicies()->size();
+    }
+
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockInterface::addAccessPolicy()
+//-----------------------------------------------------------------------------
+bool AddressBlockInterface::addAccessPolicy(std::string const& blockName) const
+{
+    if (auto block = getAddressBlock(blockName))
+    {
+        QSharedPointer<AccessPolicy> newAccessPolicy(new AccessPolicy());
+        block->getAccessPolicies()->append(newAccessPolicy);
         return true;
     }
 

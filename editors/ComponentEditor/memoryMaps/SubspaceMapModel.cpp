@@ -27,9 +27,8 @@
 SubspaceMapModel::SubspaceMapModel(SubspaceMapInterface* subspaceInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
     Document::Revision docRevision, QObject *parent):
-MemoryBlockModel(subspaceInterface, expressionParser, parameterFinder, parent),
-subspaceInterface_(subspaceInterface),
-docRevision_(docRevision)
+MemoryBlockModel(subspaceInterface, expressionParser, parameterFinder, docRevision, parent),
+subspaceInterface_(subspaceInterface)
 {
 
 }

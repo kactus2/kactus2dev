@@ -36,12 +36,11 @@ public:
      *      @param [in] blockInterface      Interface for address blocks;
 	 *      @param [in] expressionParser    Pointer to the expression parser.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] docRevision         The IP-XACT standard revision in use.
 	 *      @param [in] parent              Pointer to the owner of this model.
 	 */
-    MemoryMapModel(AddressBlockInterface* blockInterface,
-        QSharedPointer <ExpressionParser> expressionParser,
-        QSharedPointer <ParameterFinder> parameterFinder,
-        QObject *parent);
+    MemoryMapModel(AddressBlockInterface* blockInterface, QSharedPointer <ExpressionParser> expressionParser,
+        QSharedPointer <ParameterFinder> parameterFinder, Document::Revision docRevision, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -56,6 +55,15 @@ public:
 	 *      @return The number of columns to be displayed.
 	 */
 	virtual int columnCount(QModelIndex const& parent = QModelIndex()) const;
+
+    /*!
+     *  Get the item flags that defines the possible operations for the item.
+     *
+     *      @param [in] index   Model index that identifies the item.
+     *
+     *      @return Qt::ItemFlags specify the possible operations for the item.
+     */
+    virtual Qt::ItemFlags flags(QModelIndex const& index) const override;
 
 	/*!
      *  Get the header data for specified header.

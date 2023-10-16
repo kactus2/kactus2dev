@@ -38,7 +38,7 @@ MemoryMapEditor::MemoryMapEditor(QSharedPointer<Component> component, LibraryInt
     QWidget* parent):
 QGroupBox(tr("Address blocks summary"), parent),
 view_(new EditableTableView(this)),
-model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this)),
+model_(new MemoryMapModel(blockInterface, expressionParser, parameterFinder, component->getRevision(), this)),
 interface_(blockInterface),
 blocks_(blocks),
 component_(component),
@@ -61,6 +61,11 @@ proxy_()
 
 	proxy_->setSourceModel(model_);
 	view_->setModel(proxy_);
+
+    if (component_->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(MemoryMapColumns::IS_PRESENT);
+    }
 
 	//! Enable import/export csv file
     const QString compPath = handler->getDirectoryPath(component->getVlnv());

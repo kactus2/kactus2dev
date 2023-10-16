@@ -15,8 +15,6 @@
 #include <KactusAPI/include/ParameterFinder.h>
 #include <editors/ComponentEditor/memoryMaps/MemoryBlockModel.h>
 
-#include <IPXACTmodels/common/Document.h>
-
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
@@ -51,6 +49,10 @@ public:
      *  The destructor.
      */
     virtual ~SubspaceMapModel() = default;
+
+    //! No copying.	No assignment.
+    SubspaceMapModel(const SubspaceMapModel& other) = delete;
+    SubspaceMapModel& operator=(const SubspaceMapModel& other) = delete;
 
     /*!
      *  Get the number of columns the item has to be displayed.
@@ -131,10 +133,6 @@ protected:
 
 private:
 
-    //! No copying.	No assignment.
-    SubspaceMapModel(const SubspaceMapModel& other);
-    SubspaceMapModel& operator=(const SubspaceMapModel& other);
-
     /*!
      *  Get the index of the name column.
      *
@@ -169,9 +167,6 @@ private:
 
     //! Interface for accessing subspace maps.
     SubspaceMapInterface* subspaceInterface_;
-
-    //! The IP-XACT standard revision in use.
-    Document::Revision docRevision_;
 };
 
 #endif // SUBSPACEMAPMODEL_H
