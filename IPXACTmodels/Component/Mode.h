@@ -24,6 +24,7 @@
 #include <QString>
 #include <QMap>
 
+
 //-----------------------------------------------------------------------------
 //! Mode describes the location and size of an area in memory.
 //-----------------------------------------------------------------------------
@@ -31,6 +32,8 @@ class IPXACTMODELS_EXPORT Mode : public NameGroup, public Extendable
 {
 
 public:
+
+	using List = QSharedPointer<QList<QSharedPointer<Mode> > >;
 
 	/*!
 	 *  The default constructor.
@@ -67,7 +70,7 @@ public:
 	 *
 	 *      @return The port slices.
 	 */
-	QSharedPointer<QList<QSharedPointer<PortSlice> > > getPortSlices() const;
+	PortSlice::List getPortSlices() const;
 
 
 	QSharedPointer<QList<QSharedPointer<FieldSlice> > > getFieldSlices() const;
@@ -78,13 +81,10 @@ private:
 	QString condition_;
 
 	//! The port slices available in the condition.
-	QSharedPointer<QList<QSharedPointer<PortSlice> > > portSlices_ =
-		QSharedPointer<QList<QSharedPointer<PortSlice> > >(new QList<QSharedPointer<PortSlice> >());
-
+	PortSlice::List portSlices_ = PortSlice::List(new QList<QSharedPointer<PortSlice> >());
 
     //! The field slices available in the condition.
-    QSharedPointer<QList<QSharedPointer<FieldSlice> > > fieldSlices_ =
-        QSharedPointer<QList<QSharedPointer<FieldSlice> > >(new QList<QSharedPointer<FieldSlice> >());
+	FieldSlice::List fieldSlices_ = FieldSlice::List(new QList<QSharedPointer<FieldSlice> >());
 
 };
 

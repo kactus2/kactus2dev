@@ -32,8 +32,10 @@ class IPXACTMODELS_EXPORT FieldSlice : public NameGroup, public FieldReference, 
 
 public:
 
+	using List = QSharedPointer<QList<QSharedPointer<FieldSlice> > >;
+
 	//! The default constructor.
-	FieldSlice(QString const& name = QString());
+	explicit FieldSlice(QString const& name = QString());
 
 	//! Copy constructor
 	FieldSlice(const FieldSlice& other);

@@ -44,7 +44,7 @@ public:
      *
      *      @return The decimal value of the evaluated expression.
      */
-    virtual QString parseExpression(QString const& expression, bool* validExpression = nullptr) const override;
+    QString parseExpression(QString const& expression, bool* validExpression = nullptr) const override;
 
     /*!
      *  Check if the given expression is an array.
@@ -62,7 +62,7 @@ public:
      *
      *      @return True, if the expression is a plain value, otherwise false.
      */
-    virtual bool isPlainValue(QString const& expression) const override;
+    bool isPlainValue(QString const& expression) const override;
 
     /*!
      *  Finds the common base in the expression.
@@ -71,7 +71,7 @@ public:
      *
      *      @return The common base for the expression.
      */
-    virtual int baseForExpression(QString const& expression) const override;
+    int baseForExpression(QString const& expression) const override;
 
 protected:
      
@@ -82,7 +82,7 @@ protected:
      *
      *      @return The decimal value of the constant or the given string.
      */
-    QString parseConstant(QString token) const;
+    QString parseConstant(QString const& token) const;
 
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
@@ -118,7 +118,26 @@ protected:
     *
     *      @return The precedence value where bigger value has higher precedence.
     */
-    unsigned int operatorPrecedence(QString const& oper) const;
+    static unsigned int operatorPrecedence(QString const& oper);
+
+    /*!
+     *  Checks if the given token is a unary operator.
+     *
+     *      @param [in] expression   The token to check.
+     *
+     *      @return True, if the token is a unary operator, otherwise false.
+     */
+    virtual bool isUnaryOperator(QString const& token) const;
+
+    /*!
+     *  Solves a binary operation.
+     *
+     *      @param [in] operation    The operation to solve.
+     *      @param [in] term         The term for the operation.
+     *
+     *      @return The result of the operation.
+     */
+    virtual QString solveUnary(QString const& operation, QString const& term) const;
 
 private:
 
@@ -130,7 +149,7 @@ private:
      *
      *      @return The conversion result.
      */
-    QVector<QString> convertToRPN(QString const& expression) const;
+    static QVector<QString> convertToRPN(QString const& expression);
 
     /*!
      *  Solves the given RPN expression.
@@ -159,15 +178,6 @@ private:
      *      @return True, if the expression is a literal, otherwise false.
      */
     bool isLiteral(QString const& expression) const;
-
-    /*!
-     *  Checks if the given token is a unary operator.
-     *
-     *      @param [in] expression   The token to check.
-     *
-     *      @return True, if the token is a unary operator, otherwise false.
-     */
-    bool isUnaryOperator(QString const& token) const;
 
     /*!
      *  Checks if the given token is a binary operator.
@@ -210,16 +220,6 @@ private:
     QString solveBinary(QString const& operation, QString const& leftTerm, QString const& rightTerm) const;
 
     /*!
-     *  Solves a binary operation.
-     *
-     *      @param [in] operation    The operation to solve.
-     *      @param [in] term         The term for the operation.
-     *
-     *      @return The result of the operation.
-     */
-    QString solveUnary(QString const& operation, QString const& term) const;
-
-    /*!
      *  Solves the SystemVerilog $clog2 function.
      *
      *      @param [in] value   The value for which the function is called.
@@ -244,7 +244,7 @@ private:
      *
      *      @return The precision of the decimal used in the given term.
      */
-    int precisionOf(QString const& term) const;
+    static int precisionOf(QString const& term);
 
     /*!
      *  Get the base for a given number.
@@ -253,7 +253,7 @@ private:
      *
      *      @return The base for the selected number. Either 2, 8, 10 or 16.
      */
-    int baseOf(QString const& constantNumber) const;
+    static int baseOf(QString const& constantNumber);
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

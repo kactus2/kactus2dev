@@ -91,7 +91,7 @@ void Mode::setCondition(QString const& conditionExpression)
 //-----------------------------------------------------------------------------
 // Function: Mode::getPortSlices()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<PortSlice> > > Mode::getPortSlices() const
+PortSlice::List Mode::getPortSlices() const
 {
 	return portSlices_;
 }

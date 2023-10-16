@@ -28,6 +28,8 @@ class IPXACTMODELS_EXPORT PortSlice : public NameGroup
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<PortSlice> > >;
+
     /*!
      *  The default constructor.
      */
