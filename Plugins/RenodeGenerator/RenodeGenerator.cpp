@@ -119,7 +119,8 @@ int RenodeGenerator::getFileNumberExtension(QStringList const& fileNames, QStrin
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeCPU()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> cpuContainer, QString const& fileName)
+void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> cpuContainer,
+    QString const& fileName)
 {
     QString cpuFilePath = filePath + fileName + "." + RenodeConstants::RENODEFILETYPE;
 
@@ -131,7 +132,7 @@ void RenodeGenerator::writeCPU(QString const& filePath, QSharedPointer<RenodeCpu
 
     QTextStream stream(&outputFile);
 
-    QString tab = "\t";
+    const QString tab = "    ";
     stream << "cpu: CPU." << cpuContainer->getClassName() << " @ sysbus" << Qt::endl;
     stream << tab << "cpuType: \"" << cpuContainer->getCpuType() << "\"" << Qt::endl;
     stream << tab << "timeProvider: " << cpuContainer->getTimeProvider() << Qt::endl;
@@ -160,7 +161,7 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& p
 
     QTextStream stream(&outputFile);
 
-    QString tab = "\t";
+    const QString tab = "    ";
     for (auto peripheral : renodeCollection->getPeripherals())
     {
         writePeripheral(stream, peripheral, tab, peripheralPath);
@@ -177,9 +178,11 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& p
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writePeripheral()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripheral> peripheral, QString const& tab, QString const& renodeFilePath)
+void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<RenodeStructs::cpuPeripheral> peripheral,
+    QString const& tab, QString const& renodeFilePath)
 {
-    stream << peripheral->peripheralName_ << ": " << peripheral->className_ << " @ sysbus " << peripheral->baseAddress_ << Qt::endl;
+    stream << peripheral->peripheralName_ << ": " << peripheral->className_ << " @ sysbus " <<
+        peripheral->baseAddress_ << Qt::endl;
     stream << tab << "size: " << peripheral->size_ << Qt::endl;
 
     if (peripheral->className_ == RenodeConstants::PYTHONPERIPHERAL)
@@ -193,11 +196,11 @@ void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<Renode
         QString fileName = filePath + peripheral->peripheralName_ + "." + RenodeConstants::PYTHONFILETYPE;
 
         stream << tab << "initable: " << QVariant(peripheral->initable_).toString() << Qt::endl;
-        stream << tab << "filename: " << fileName << Qt::endl;
+        stream << tab << "filename: \"" << fileName << "\"" << Qt::endl;
 
         QString directoryPath = renodeFilePath + "/" + peripheral->filePath_;
-        QDir pathDirectory(directoryPath);
-        if (!pathDirectory.exists())
+        
+        if (QDir pathDirectory(directoryPath); !pathDirectory.exists())
         {
             QDir currentDirectory(renodeFilePath);
             currentDirectory.mkdir(peripheral->filePath_);
@@ -230,7 +233,8 @@ void RenodeGenerator::writePeripheral(QTextStream& stream, QSharedPointer<Renode
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeMemories()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeMemories(QString const& filePath, QSharedPointer<RenodeCpuRoutesContainer> renodeCollection, QString const& fileName)
+void RenodeGenerator::writeMemories(QString const& filePath,
+    QSharedPointer<RenodeCpuRoutesContainer> renodeCollection, QString const& fileName)
 {
     if (renodeCollection->getMemories().isEmpty())
     {
@@ -246,8 +250,8 @@ void RenodeGenerator::writeMemories(QString const& filePath, QSharedPointer<Reno
 
     QTextStream stream(&outputFile);
 
-    QString tab = "\t";
-    for (auto memory : renodeCollection->getMemories())
+    const QString tab = "    ";
+    for (auto const& memory : renodeCollection->getMemories())
     {
         writeMemory(stream, memory, tab);
 
@@ -263,7 +267,8 @@ void RenodeGenerator::writeMemories(QString const& filePath, QSharedPointer<Reno
 //-----------------------------------------------------------------------------
 // Function: RenodeGenerator::writeMemory()
 //-----------------------------------------------------------------------------
-void RenodeGenerator::writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory, QString const& tab)
+void RenodeGenerator::writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory,
+    QString const& tab) const
 {
     stream << memory->memoryName_ << ": " << memory->className_ << " @ sysbus " << memory->baseAddress_ << Qt::endl;
     stream << tab << "size: " << memory->size_ << Qt::endl;

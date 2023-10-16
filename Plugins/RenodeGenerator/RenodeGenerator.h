@@ -177,7 +177,8 @@ private:
      *      @param [in] memory      The selected memory item.
      *      @param [in] tab         Current tab.
      */
-    void writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory, QString const& tab);
+    void writeMemory(QTextStream& stream, QSharedPointer<RenodeStructs::cpuMemories> memory, 
+        QString const& tab) const;
 
     //-----------------------------------------------------------------------------
     // Data.
