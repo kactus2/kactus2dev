@@ -26,15 +26,21 @@ class ExpressionEditor : public QTextEdit, public MasterExpressionEditor
     Q_OBJECT
 public:
 
+    static constexpr auto DEFAULT_HEIGHT = 20;
+
 	/*!
      *  The constructor.
      */
-    ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = 0);
+    ExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent = nullptr);
 
 	/*!
      *  The destructor.
      */
 	virtual ~ExpressionEditor() = default;
+
+    // Disable copying.
+    ExpressionEditor(ExpressionEditor const& rhs) = delete;
+    ExpressionEditor& operator=(ExpressionEditor const& rhs) = delete;
 
     /*!
      *  Sets a completer whose selection will be appended to the text.
@@ -140,9 +146,6 @@ private slots:
 
 private:
 
-    // Disable copying.
-    ExpressionEditor(ExpressionEditor const& rhs);
-    ExpressionEditor& operator=(ExpressionEditor const& rhs);
 
     /*!
      *  Inserts a given word into the text using the given cursor.

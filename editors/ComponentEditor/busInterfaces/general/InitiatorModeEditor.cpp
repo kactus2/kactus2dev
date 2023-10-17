@@ -37,7 +37,7 @@ baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 parameterFinder_(parameterFinder),
 component_(component)
 {
-    baseAddressEditor_->setFixedHeight(20);
+    baseAddressEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);

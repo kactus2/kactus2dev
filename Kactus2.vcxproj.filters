@@ -2059,9 +2059,6 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\InstantiationsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
@@ -3336,6 +3333,9 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

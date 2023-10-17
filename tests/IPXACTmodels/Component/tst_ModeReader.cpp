@@ -26,6 +26,8 @@ private slots:
 
     void testReadNameGroup();
     
+    void testReadCondition();
+
     void testReadPortSlices();
 
     void testReadFieldSlices();
@@ -65,6 +67,28 @@ void tst_ModeReader::testReadNameGroup()
     QCOMPARE(testMode->displayName(), QString("testDisplay"));
     QCOMPARE(testMode->shortDescription(), QString("testShortDescription"));
     QCOMPARE(testMode->description(), QString("testDescription"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModeReader::testReadCondition()
+//-----------------------------------------------------------------------------
+void tst_ModeReader::testReadCondition()
+{
+    QString documentContent(
+        "<ipxact:mode>"
+            "<ipxact:name>testMode</ipxact:name>"
+            "<ipxact:condition>1</ipxact:condition>"
+        "</ipxact:mode>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode modeNode = document.firstChildElement("ipxact:mode");
+
+    QSharedPointer<Mode> testMode = ModeReader::createModeFrom(modeNode);
+
+    QCOMPARE(testMode->getCondition(), QStringLiteral("1"));
 }
 
 //-----------------------------------------------------------------------------

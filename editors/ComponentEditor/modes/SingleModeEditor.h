@@ -17,6 +17,7 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <editors/common/ExpressionSet.h>
+#include <editors/ComponentEditor/common/ExpressionEditor.h>
 
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
 
@@ -75,6 +76,10 @@ protected:
      */
     void showEvent(QShowEvent * event) final;
 
+private slots:
+
+    void onConditionChanged(); 
+
 private:
 
 	/*!
@@ -92,7 +97,7 @@ private:
 	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
 
-    QLineEdit conditionEditor_;
+    ExpressionEditor conditionEditor_;
 
     PortSliceEditor portSliceEditor_;
 

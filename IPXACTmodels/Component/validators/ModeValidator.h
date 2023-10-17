@@ -71,6 +71,8 @@ public:
      */
     bool hasValidName(QString const& name) const;
 
+    bool hasValidCondition(QSharedPointer<Mode> mode) const;
+
     /*!
      *  Check if the port slices are valid.
      *

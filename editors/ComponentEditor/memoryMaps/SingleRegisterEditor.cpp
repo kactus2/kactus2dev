@@ -60,10 +60,10 @@ accessPoliciesEditor_(new AccessPoliciesEditor(selectedRegister->getAccessPolici
 {
     registerInterface_->setRegisters(containingRegisterData_);
 
-    offsetEditor_->setFixedHeight(20);
-    sizeEditor_->setFixedHeight(20);
-    dimensionEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
+    offsetEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    sizeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    dimensionEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);

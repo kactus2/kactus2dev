@@ -50,9 +50,9 @@ masterInterfaceBindingLabel_(new QLabel(this))
     addrUnitEditor_.setValidator(new QIntValidator(this));
     addrUnitEditor_.setPlaceholderText("8");
 
-    rangeEditor_->setFixedHeight(20);
-    widthEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
+    rangeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    widthEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
 	// Set the back ground colors for mandatory fields.
 	widthEditor_->setProperty("mandatoryField", true);

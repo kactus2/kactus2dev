@@ -27,6 +27,8 @@ QSharedPointer<Mode> ModeReader::createModeFrom(QDomNode const& modeNode)
 
     NameGroupReader::parseNameGroup(modeNode, newMode);
 
+    Details::parseCondition(modeNode, newMode);
+
     Details::parsePortSlices(modeNode, newMode);
 
     Details::parseFieldSlices(modeNode, newMode);
@@ -35,11 +37,20 @@ QSharedPointer<Mode> ModeReader::createModeFrom(QDomNode const& modeNode)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModeReader::Details::parseCondition()
+//-----------------------------------------------------------------------------
+void ModeReader::Details::parseCondition(QDomNode const& modeNode, QSharedPointer<Mode> newMode)
+{
+    auto conditionElement = modeNode.firstChildElement(QStringLiteral("ipxact:condition"));
+    newMode->setCondition(conditionElement.firstChild().nodeValue());
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModeReader::parsePortSlices()
 //-----------------------------------------------------------------------------
 void ModeReader::Details::parsePortSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode)
 {
-    QDomNodeList sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:portSlice"));
+    auto sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:portSlice"));
 
     const int SLICE_COUNT = sliceNodeList.count();
     for (int i = 0; i < SLICE_COUNT; ++i)
@@ -54,8 +65,9 @@ void ModeReader::Details::parsePortSlices(QDomNode const& modeNode, QSharedPoint
         auto portRef = portRefElement.attribute(QStringLiteral("portRef"));
         newSlice->setPortRef(portRef);
 
-        QDomNode partSelectNode = portSliceElement.firstChildElement(QStringLiteral("ipxact:partSelect"));
-        if (!partSelectNode.isNull())
+        
+        if (QDomNode partSelectNode = portSliceElement.firstChildElement(QStringLiteral("ipxact:partSelect")); 
+            !partSelectNode.isNull())
         {
             QSharedPointer<PartSelect> newPartSelect = CommonItemsReader::parsePartSelect(partSelectNode);
             newSlice->setPartSelect(newPartSelect);
@@ -70,7 +82,7 @@ void ModeReader::Details::parsePortSlices(QDomNode const& modeNode, QSharedPoint
 //-----------------------------------------------------------------------------
 void ModeReader::Details::parseFieldSlices(QDomNode const& modeNode, QSharedPointer<Mode> newMode)
 {
-    QDomNodeList sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:fieldSlice"));
+    auto sliceNodeList = modeNode.toElement().elementsByTagName(QStringLiteral("ipxact:fieldSlice"));
 
     const int SLICE_COUNT = sliceNodeList.count();
     for (int i = 0; i < SLICE_COUNT; ++i)
@@ -95,11 +107,11 @@ void ModeReader::Details::parseFieldSlices(QDomNode const& modeNode, QSharedPoin
 //-----------------------------------------------------------------------------
 void ModeReader::Details::parseRange(QDomElement const& element, QSharedPointer<Range> range)
 {
-    QDomElement rangeElement = element.firstChildElement(QStringLiteral("ipxact:range"));
+    auto rangeElement = element.firstChildElement(QStringLiteral("ipxact:range"));
     if (!rangeElement.isNull())
     {
-        QString leftRange = rangeElement.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
-        QString rightRange = rangeElement.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
+        auto leftRange = rangeElement.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+        auto rightRange = rangeElement.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
         range->setLeft(leftRange);
         range->setRight(rightRange);

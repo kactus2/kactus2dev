@@ -38,6 +38,10 @@ public:
      */
 	virtual ~MasterExpressionEditor() = default;
 
+    // Disable copying.
+    MasterExpressionEditor(MasterExpressionEditor const& rhs) = delete;
+    MasterExpressionEditor& operator=(MasterExpressionEditor const& rhs) = delete;
+
     /*!
      *  Sets a completer whose selection will be appended to the text.
      *
@@ -193,9 +197,6 @@ protected:
 
 private:
 
-    // Disable copying.
-    MasterExpressionEditor(MasterExpressionEditor const& rhs);
-    MasterExpressionEditor& operator=(MasterExpressionEditor const& rhs);
 
     /*!
      *  Check if a selection exists.

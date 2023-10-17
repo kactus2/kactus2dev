@@ -51,7 +51,7 @@ expressionParser_(expressionParser)
     Q_ASSERT_X(
         fileInterface_, "FileBuildCommand constructor", "Null File interface-pointer given to the constructor");
 
-    replaceDefaultEditor_->setFixedHeight(20);
+    replaceDefaultEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);

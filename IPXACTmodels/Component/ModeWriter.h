@@ -35,7 +35,28 @@ namespace ModeWriter
 
     namespace Details
     {
+        /*!
+         *  Write the mode condition to an XML file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] view    The mode whose condition to write.
+         */
+        void writeCondition(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
+
+        /*!
+         *  Write the mode port slices to an XML file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] view    The mode whose port slices to write.
+         */
         void writePortSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
+       
+        /*!
+         *  Write the mode field slices to an XML file.
+         *
+         *      @param [in] writer  The used xml writer.
+         *      @param [in] view    The mode whose field slices to write.
+         */
         void writeFieldSlices(QXmlStreamWriter& writer, QSharedPointer<Mode> mode);
     }
 };

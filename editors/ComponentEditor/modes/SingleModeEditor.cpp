@@ -37,12 +37,24 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     ItemEditor(component, libHandler, parent),
     mode_(mode),
     nameEditor_(mode, component->getRevision(), this, tr("Mode name and description")),
-    conditionEditor_(this),
+    conditionEditor_(expressions.finder, this),
     portSliceEditor_(component, mode, validator->getPortSliceValidator(), libHandler, expressions, this),
     fieldSliceEditor_(component, mode, validator->getFieldSliceValidator(), expressions, libHandler, this)
 {
+    auto parameterModel = new ComponentParameterModel(expressions.finder, this);
+    parameterModel->setExpressionParser(expressions.parser);
+
+    auto parameterCompleter = new QCompleter(this);
+    parameterCompleter->setModel(parameterModel);
+
+    conditionEditor_.setAppendingCompleter(parameterCompleter);
+    conditionEditor_.setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&conditionEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&conditionEditor_, SIGNAL(editingFinished()), this, SLOT(onConditionChanged()), Qt::UniqueConnection);
 
     connect(&portSliceEditor_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
@@ -58,6 +70,7 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
 void SingleModeEditor::refresh()
 {
     nameEditor_.refresh();
+    conditionEditor_.setExpression(mode_->getCondition());
     portSliceEditor_.refresh();
     fieldSliceEditor_.refresh();
 }
@@ -114,4 +127,13 @@ void SingleModeEditor::showEvent(QShowEvent * event)
     QWidget::showEvent(event);
 
     emit helpUrlRequested("componenteditor/mode2022.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleModeEditor::onConditionChanged()
+//-----------------------------------------------------------------------------
+void SingleModeEditor::onConditionChanged()
+{
+    conditionEditor_.finishEditingCurrentWord();
+    mode_->setCondition(conditionEditor_.getExpression());
 }

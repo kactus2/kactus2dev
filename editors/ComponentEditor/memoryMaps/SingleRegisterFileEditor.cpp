@@ -48,10 +48,10 @@ isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 expressionParser_(expressionParser),
 registerFileValidator_(registerFileValidator)
 {
-    offsetEditor_->setFixedHeight(20);
-    rangeEditor_->setFixedHeight(20);
-    dimensionEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
+    offsetEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    rangeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    dimensionEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
