@@ -21,10 +21,6 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
-namespace
-{
-}
-
 //-----------------------------------------------------------------------------
 // Function: ExpressionLineEditor::ExpressionLineEditor()
 //-----------------------------------------------------------------------------

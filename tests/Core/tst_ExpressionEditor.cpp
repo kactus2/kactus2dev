@@ -330,6 +330,9 @@ void tst_ExpressionEditor::testExpressionInitialization_data()
 
     QTest::newRow("Parameter id is not replaced if part of other word") << "testParameter" << "id" 
         << "pid + 1" << "pid + 1" << Qt::black;
+
+    QTest::newRow("Math function is shown in black") << "testParameter" << "id"
+        << "$pow" << "$pow" << Qt::black;
 }
 
 //-----------------------------------------------------------------------------

@@ -125,11 +125,6 @@ signals:
      */
     void decreaseReference(QString const& parameterId);
 
-    /*!
-     *  Informs that the editing of the expression has finished.
-     */
-   void editingFinished();
-
 private slots:
 
     /*!

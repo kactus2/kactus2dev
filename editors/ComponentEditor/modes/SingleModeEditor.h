@@ -17,12 +17,14 @@
 #include <common/widgets/nameGroupEditor/namegroupeditor.h>
 
 #include <editors/common/ExpressionSet.h>
-#include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/common/ExpressionLineEditor.h>
 
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
 
 #include "PortSliceEditor.h"
 #include "FieldSliceEditor.h"
+
+#include <QLabel>
 
 class Mode;
 class ExpressionParser;
@@ -78,6 +80,7 @@ protected:
 
 private slots:
 
+    //! Handler for changes in condition expression.
     void onConditionChanged(); 
 
 private:
@@ -94,13 +97,21 @@ private:
     //! The remap state being edited.
     QSharedPointer<Mode> mode_;
 
+    //! The validator for the mode.
+    QSharedPointer<ModeValidator> validator_;
+
 	//! Editor to set the name, display name and description of the view.
 	NameGroupEditor nameEditor_;
 
-    ExpressionEditor conditionEditor_;
+    //! Editor for condition expression.
+    ExpressionLineEditor conditionEditor_;
 
+    QLabel conditionStatus_;
+
+    //! Editor for port slices.
     PortSliceEditor portSliceEditor_;
 
+    //! Editor for field slices.
     FieldSliceEditor fieldSliceEditor_;
 };
 

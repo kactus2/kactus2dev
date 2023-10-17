@@ -209,7 +209,6 @@ QSharedPointer<PortSliceValidator> ModeValidator::getPortSliceValidator() const
 	return portValidator_;
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: ModeValidator::getFieldSliceValidator()
 //-----------------------------------------------------------------------------
