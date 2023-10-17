@@ -47,14 +47,14 @@ public:
      *
      *      @param [in] completer   The completer to set.
      */
-    virtual void setAppendingCompleter(QCompleter* completer) override final;
+    void setAppendingCompleter(QCompleter* completer) final;
     
     /*!
      *  Sets the expression in the editor.
      *
      *      @param [in] expression   The expression to set.
      */
-    virtual void setExpression(QString const& expression) override final;
+    void setExpression(QString const& expression) final;
 
 protected:
 
@@ -63,49 +63,49 @@ protected:
      *
      *      @param [in] menuEvent   The event for context menu.
      */
-    virtual void contextMenuEvent(QContextMenuEvent* menuEvent);
+    void contextMenuEvent(QContextMenuEvent* menuEvent) override;
 
     /*!
      *  Captures the mouse press event and finishes editing the current word.
      *
      *      @param [in] mouseEvent  The event representing user input.
      */
-    virtual void mousePressEvent(QMouseEvent* mouseEvent);
+    void mousePressEvent(QMouseEvent* mouseEvent) override;
 
     /*!
      *  Captures the user input and edits the underlying expression accordingly.
      *
      *      @param [in] keyEvent   The event representing the user input.
      */
-    virtual void keyPressEvent(QKeyEvent* keyEvent);
+    void keyPressEvent(QKeyEvent* keyEvent) override;
 
     /*!
      *  Selects the text when the editor is opened.
      *
      *      @param [in] focusEvent   The event representing the focus change.
      */
-    virtual void focusInEvent(QFocusEvent* focusEvent);
+    void focusInEvent(QFocusEvent* focusEvent) override;
 
     /*!
      *  Captures the mouse move and sets/clears notSelectingText flag according to mouse press.
      *
      *      @param [in] mouseEvent   The mouse event representing the mouse movement and button press.
      */
-    virtual void mouseMoveEvent(QMouseEvent* mouseEvent);
+    void mouseMoveEvent(QMouseEvent* mouseEvent) override;
 
     /*!
      *  Clears notSelectingText flag when the mouse button is released.
      *
      *      @param [in] mouseEvent   The event representing the mouse button release.
      */
-    virtual void mouseReleaseEvent(QMouseEvent* mouseEvent);
+    void mouseReleaseEvent(QMouseEvent* mouseEvent) override;
 
     /*!
      *  Emits a signal informing of the ending of editing the expression.
      *
      *      @param [in] event   The event representing the changing of focus.
      */
-    virtual void focusOutEvent(QFocusEvent *event);
+    void focusOutEvent(QFocusEvent *event) override;
 
 signals:
 
@@ -158,82 +158,82 @@ private:
     /*!
      *  Changes the color of the font for the current word to red.
      */
-    virtual void colorCurrentWordRed() override final;
+    void colorCurrentWordRed() final;
 
     /*!
      *  Changes the color of the font for the current word to black.
      */
-    virtual void colorCurrentWordBlack() override final;
+    void colorCurrentWordBlack() final;
 
     /*!
      *  Check if a selection exists.
      *
      *      @return True, if a selection exists, false otherwise.
      */
-    virtual bool hasSelection() override final;
+    bool hasSelection() final;
 
     /*!
      *  Let the parent widget handle the key press event.
      *
      *      @param [in] keyEvent    The selected key press event.
      */
-    virtual void handleParentKeyPressEvent(QKeyEvent* keyEvent) override final;
+    void handleParentKeyPressEvent(QKeyEvent* keyEvent) final;
 
     /*!
      *  Decrease references made to the selected ID.
      *
      *      @param [in] referenceItem   ID of the selected item.
      */
-    virtual void handleReferenceDecrease(QString const& referenceItem) override final;
+    void handleReferenceDecrease(QString const& referenceItem) final;
 
     /*!
      *  Increase references made to the selected ID.
      *
      *      @param [in] referenceItem   ID of the selected item.
      */
-    virtual void handleReferenceIncrease(QString const& referenceItem) override final;
+    void handleReferenceIncrease(QString const& referenceItem) final;
 
     /*!
      *  Set the completed parameter name for the editor.
      *
      *      @param [in] parameterName   The completed parameter name.
      */
-    virtual void setCompletedParameterName(QString const& parameterName) override final;
+    void setCompletedParameterName(QString const& parameterName) final;
 
     /*!
      *  Get the current cursor position.
      *
      *      @return The position of the cursor.
      */
-    virtual int getCursorPosition() const override final;
+    int getCursorPosition() const final;
 
     /*!
      *  Get the current text of the editor.
      *
      *      @return The current text.
      */
-    virtual QString getCurrentText() const override final;
+    QString getCurrentText() const final;
 
     /*!
      *  Get the selected text.
      *
      *      @return The selected text.
      */
-    virtual QString getSelectedText() const override final;
+    QString getSelectedText() const final;
 
     /*!
      *  Count the length of the first word in the current selection.
      *
      *      @return Length of the first word in the selection.
      */
-    virtual int getSelectionFirstWord() const override final;
+    int getSelectionFirstWord() const final;
 
     /*!
      *  Count the length of the last word in the current selection.
      *
      *      @return Length of the last word in the selection.
      */
-    virtual int getSelectionLastWord() const override final;
+    int getSelectionLastWord() const final;
 };
 
 #endif // EXPRESSIONEDITOR_H

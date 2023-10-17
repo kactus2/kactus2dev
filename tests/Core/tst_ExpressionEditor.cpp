@@ -272,7 +272,7 @@ void tst_ExpressionEditor::testExpressionInitialization()
     QFETCH(QString, parameterId);
     QFETCH(QString, expression);
     QFETCH(QString, expectedDisplayText);
-    QFETCH(QString, expectedColor);
+    QFETCH(Qt::GlobalColor, expectedColor);
 
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName(parameterName);
@@ -291,7 +291,7 @@ void tst_ExpressionEditor::testExpressionInitialization()
 
     QCOMPARE(editor->toPlainText(), expectedDisplayText);
     QCOMPARE(editor->getExpression(), expression);
-    QCOMPARE(editor->textColor(), QColor(expectedColor));
+    QCOMPARE(editor->textColor(), expectedColor);
 
     delete editor;
 }
@@ -305,31 +305,31 @@ void tst_ExpressionEditor::testExpressionInitialization_data()
     QTest::addColumn<QString>("parameterId");
     QTest::addColumn<QString>("expression");
     QTest::addColumn<QString>("expectedDisplayText");
-    QTest::addColumn<QString>("expectedColor");
+    QTest::addColumn<Qt::GlobalColor>("expectedColor");
 
     QTest::newRow("Parameter id is replaced with name and shown in darkGreen") << "testParameter" << "id" 
-        << "id" << "testParameter" << "darkGreen";
+        << "id" << "testParameter" << Qt::darkGreen;
 
     QTest::newRow("Parameter id can be uuid") << "testParameter" << "uuid_12345678_90ab_cdef_ffff_abcdef000000" 
-        << "uuid_12345678_90ab_cdef_ffff_abcdef000000" << "testParameter" << "darkGreen";
+        << "uuid_12345678_90ab_cdef_ffff_abcdef000000" << "testParameter" << Qt::darkGreen;
 
     QTest::newRow("Constant is written in black") << "testParameter" << "id" 
-        << "1" << "1" << "black";
+        << "1" << "1" << Qt::black;
 
     QTest::newRow("Constant with size and base is written in black") << "testParameter" << "id" 
-        << "8'hFF" << "8'hFF" << "black";
+        << "8'hFF" << "8'hFF" << Qt::black;
 
     QTest::newRow("String is written in black") << "testParameter" << "id" 
-        << "\"testParameter\"" << "\"testParameter\"" << "black";
+        << "\"testParameter\"" << "\"testParameter\"" << Qt::black;
 
     QTest::newRow("Operator is shown in black") << "testParameter" << "id" 
-        << "+" << "+" << "black";
+        << "+" << "+" << Qt::black;
 
     QTest::newRow("Non-referencing word is shown in red") << "testParameter" << "id" 
-        << "nonReferencing" << "nonReferencing" << "red";
+        << "nonReferencing" << "nonReferencing" << Qt::red;
 
     QTest::newRow("Parameter id is not replaced if part of other word") << "testParameter" << "id" 
-        << "pid + 1" << "pid + 1" << "black";
+        << "pid + 1" << "pid + 1" << Qt::black;
 }
 
 //-----------------------------------------------------------------------------
@@ -625,7 +625,7 @@ void tst_ExpressionEditor::testAutomaticCompletionForSingleOption()
 
     QTextCursor cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor("darkGreen"));
+    QCOMPARE(cursor.charFormat().foreground().color(), Qt::darkGreen);
 
     editor->setExpression("");
 
@@ -635,7 +635,7 @@ void tst_ExpressionEditor::testAutomaticCompletionForSingleOption()
 
     cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
+    QCOMPARE(cursor.charFormat().foreground().color(), Qt::red);
 
     delete editor;
 }
@@ -664,23 +664,23 @@ void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
     QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
 
     QCOMPARE(editor->getExpression(), QString("id"));
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("darkGreen"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::darkGreen);
 
     QTest::keyClicks(editor, "+");
 
     QCOMPARE(editor->getExpression(), QString("id+"));
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::black);
 
     QTest::keyClicks(editor, "8");
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::black);
 
     QTest::keyClicks(editor, "'hff");
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::black);
 
     QTest::keyClicks(editor, "-testParameter");
 
     QCOMPARE(editor->getExpression(), QString("id+8'hff-"));
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::black);
 
     QTest::keyClicks(editor, " ");
 
@@ -688,14 +688,14 @@ void tst_ExpressionEditor::testColorsAreSetWhenWritingText()
 
     QTextCursor cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::PreviousCharacter);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor("darkGreen"));
+    QCOMPARE(cursor.charFormat().foreground().color(), Qt::darkGreen);
 
     QTest::keyClicks(editor, "+ \"text\"");
 
     editor->finishEditingCurrentWord();
 
     QCOMPARE(editor->getExpression(), QString("id+8'hff-id + \"text\""));
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("black"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::black);
 
     delete editor;
 }
@@ -726,7 +726,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
     QTest::keyClick(editor->completer()->popup(), Qt::Key_Return);
 
     QCOMPARE(editor->getExpression(), QString("id"));
-    QCOMPARE(editor->textCursor().charFormat().foreground().color(), QColor("darkGreen"));
+    QCOMPARE(editor->textCursor().charFormat().foreground().color(), Qt::darkGreen);
 
     QTest::keyClick(editor, Qt::Key_Backspace);
 
@@ -739,7 +739,7 @@ void tst_ExpressionEditor::testColorsAreSetWhenRemovingText()
 
     QTextCursor cursor = editor->textCursor();
     cursor.movePosition(QTextCursor::PreviousWord);
-    QCOMPARE(cursor.charFormat().foreground().color(), QColor("red"));
+    QCOMPARE(cursor.charFormat().foreground().color(), Qt::red);
 
     delete editor;
 }
