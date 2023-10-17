@@ -935,7 +935,7 @@ int ComponentParameterReferenceCounter::countReferencesInIndirectInterfaces(QStr
 {
     int referenceCounter = 0;
 
-    for (auto singleInterface : *component_->getIndirectInterfaces())
+    for (auto const& singleInterface : *component_->getIndirectInterfaces())
     {
         referenceCounter += countRefrencesInSingleIndirectInterface(parameterID, singleInterface);
     }
@@ -959,7 +959,7 @@ int ComponentParameterReferenceCounter::countReferencesInCpus(QString const& par
 {
     int referenceCounter = 0;
 
-    for (auto singleCpu : *component_->getCpus())
+    for (auto const& singleCpu : *component_->getCpus())
     {
         referenceCounter += countReferencesInSingleCpu(parameterID, singleCpu);
     }
@@ -993,7 +993,7 @@ int ComponentParameterReferenceCounter::countReferencesInRegions(QString const& 
 {
     int referenceCounter = 0;
 
-    for (auto region : *regions)
+    for (auto const& region : *regions)
     {
         referenceCounter += countReferencesInSingleRegion(parameterID, region);
     }
