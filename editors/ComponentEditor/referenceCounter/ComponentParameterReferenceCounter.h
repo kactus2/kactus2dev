@@ -29,6 +29,7 @@ class Register;
 class RegisterFile;
 class Field;
 class FieldAccessPolicy;
+class FieldSlice;
 class FieldReset;
 class WriteValueConstraint;
 class Segment;
@@ -585,14 +586,54 @@ public:
     int countReferencesInSingleMode(QString const& parameterID, QSharedPointer<Mode> mode) const;
 
     /*!
+     *  Count the references made to the selected parameter in the selected mode condition.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] condition       The selected condition expression.
+     *
+     *      @return The amount of references made to the selected parameter in the selected expression.
+     */
+    int countReferencesInModeCondition(QString const& parameterID, QString const& condition) const;
+
+    /*!
+     *  Count the references made to the selected parameter in the port slices of the selected mode.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] mode            The selected mode.
+     *
+     *      @return The amount of references made to the selected parameter in the port slices.
+     */
+    int countReferencesInPortSlices(QString const& parameterID, QSharedPointer<Mode> mode) const;
+
+     /*!
+      *  Count the references made to the selected parameter in the field slices of the selected mode.
+      *
+      *      @param [in] parameterID    ID of the selected parameter.
+      *      @param [in] mode           The selected mode.
+      *
+      *      @return The amount of references made to the selected parameter in the selected field slice.
+      */
+    int countReferencesInFieldSlices(QString const& parameterID, QSharedPointer<Mode> mode) const;
+
+    /*!
      *  Count the references made to the selected parameter in the selected port slice.
      *
      *      @param [in] parameterID     ID of the selected parameter.
-     *      @param [in] pportSliceort   The selected port slice.
+     *      @param [in] portSlice       The selected port slice.
      *
-     *      @return The amount of references made to the selected parameter in the selected port slice.
+     *      @return The amount of references made to the selected parameter in the port slice.
      */
     int countReferencesInSinglePortSlice(QString const& targetID, QSharedPointer<PortSlice> portSlice) const;
+        
+    /*!
+     *  Count the references made to the selected parameter in the selected field slice.
+     *
+     *      @param [in] parameterID     ID of the selected parameter.
+     *      @param [in] fieldSlice      The selected field slice.
+     *
+     *      @return The amount of references made to the selected parameter in the field slice.
+     */
+    int countReferencesInSingleFieldSlice(QString const& parameterID, QSharedPointer<FieldSlice> fieldSlice) const;
 
     /*!
      *  Count the references made to the selected parameter in indirect interfaces.
@@ -675,7 +716,6 @@ public:
     int countReferencesInSinglePowerDomain(QString const& parameterID, 
         QSharedPointer<PowerDomain> powerDomain) const;
 
-
 public slots:
 
     /*!
@@ -706,6 +746,7 @@ private:
 
     //! The containing component.
     QSharedPointer<Component> component_;
+
 };
 
 #endif // COMPONENTPARAMETERREFERENCECOUNTER_H

@@ -62,6 +62,20 @@ public:
 	void refresh();
 
 signals:
+	
+	/*!
+	 *  Increase the amount of references to a parameter corresponding to the id.
+	 *
+	 *      @param [in] parameterId     The id of the parameter being referenced.
+	 */
+	void increaseReferences(QString const& parameterId);
+
+	/*!
+	 *  Decrease the amount of references to a parameter corresponding to the id.
+	 *
+	 *      @param [in] parameterId     The id of the parameter being referenced.
+	 */
+	void decreaseReferences(QString const& parameterId);
 
 	/*!
 	 *  Emitted when the contents of the model change.

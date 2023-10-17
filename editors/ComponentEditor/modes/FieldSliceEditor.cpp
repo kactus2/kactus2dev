@@ -50,14 +50,12 @@ QWidget(parent),
 	proxy_.setSourceModel(&model_);
 	view_.setModel(&proxy_);
 
-// 	const QString compPath = handler->getDirectoryPath(component->getVlnv());
-// 	QString defPath = QString("%1/FieldSliceListing.csv").arg(compPath);
-// 	view_.setDefaultImFieldExFieldPath(defPath);
-// 	view_.setAllowImFieldExField(true);
-// 	view_.setItemsDraggable(false);
-// 	view_.setSortingEnabled(true);
-
-
+	const QString compPath = handler->getDirectoryPath(component->getVlnv());
+	QString defPath = QString("%1/FieldSliceListing.csv").arg(compPath);
+	view_.setDefaultImportExportPath(defPath);
+	view_.setAllowImportExport(true);
+	view_.setItemsDraggable(false);
+	view_.setSortingEnabled(true);
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
     parameterModel->setExpressionParser(expressions.parser);
@@ -74,7 +72,10 @@ QWidget(parent),
 	connect(&view_, SIGNAL(removeItem(const QModelIndex&)),
 		&model_, SLOT(onRemoveItem(const QModelIndex&)), Qt::UniqueConnection);
 
-   
+    connect(delegate, SIGNAL(increaseReferences(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(delegate, SIGNAL(decreaseReferences(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
