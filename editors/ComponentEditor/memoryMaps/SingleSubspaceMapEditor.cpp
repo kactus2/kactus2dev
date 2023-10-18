@@ -54,8 +54,8 @@ expressionParser_(expressionParser)
 
     constructComboBoxes();
 
-    baseAddressEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
+    baseAddressEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);

@@ -40,9 +40,10 @@ void MemoryBlockGraphItem::updateDisplay()
     setDisplayOffset(offset);
     setDisplayLastAddress(lastAddress);
 
+    const int BIT_WIDTH = getBitWidth();
     setToolTip("<b>Name: </b>" % getName() % "<br>" %
-        "<b>Offset: </b>" % toHexString(offset) % "<br>" %
-        "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
+        "<b>Offset: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH) % "<br>" %
         "<b>Size [AUB]: </b>" % QString::number(getRange()));
 }
 

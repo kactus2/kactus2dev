@@ -148,7 +148,7 @@ void PluginSettingsPage::onTreeItemChanged(QTreeWidgetItem* current, QTreeWidget
 {
     int index = 0;
 
-    if (current != 0)
+    if (current != nullptr)
     {
         index = current->data(0, PLUGIN_STACK_INDEX_ROLE).toInt();
     }
@@ -235,7 +235,7 @@ void PluginSettingsPage::refreshPluginsTree(bool displayChanges)
     QList<IPlugin*> plugins = PluginManager::findPluginsInPaths(pluginDirSelector_.getDirectories());
 
     settings_.beginGroup("PluginSettings");
-    foreach (IPlugin* plugin, plugins)
+    for (IPlugin* plugin : plugins)
     {
         settings_.beginGroup(XmlUtils::removeWhiteSpace(plugin->getName()));
 

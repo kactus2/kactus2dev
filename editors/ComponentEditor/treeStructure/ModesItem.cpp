@@ -19,7 +19,9 @@
 #include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/validators/ModeValidator.h>
 #include <IPXACTmodels/Component/validators/PortSliceValidator.h>
- 
+
+#include <KactusAPI/include/ModeConditionParser.h>
+
 //-----------------------------------------------------------------------------
 // Function: ModesItem::ModesItem()
 //-----------------------------------------------------------------------------
@@ -30,19 +32,16 @@ ModesItem::ModesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandl
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 modes_(component->getModes()),
-expressions_(expressions),
-validator_(new ModeValidator(component, expressions.parser))
+expressions_(expressions)
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
 
-    for (QSharedPointer<Mode> mode : *modes_)
+    const auto MODE_COUNT = modes_->count();
+    for (int i = 0; i < MODE_COUNT; ++i)
     {
-        QSharedPointer<SingleModeItem> singleRemapItem(new SingleModeItem(mode, model,
-            libHandler, component, referenceCounter, expressions, validator_, this));
-
-        childItems_.append(singleRemapItem);
+        ModesItem::createChild(i);
     }
 }
 
@@ -99,8 +98,15 @@ QString ModesItem::getTooltip() const
 //-----------------------------------------------------------------------------
 void ModesItem::createChild(int index)
 {
-    QSharedPointer<SingleModeItem> modeItem(new SingleModeItem(modes_->at(index), model_,
-        libHandler_, component_, referenceCounter_, expressions_, validator_, this));
+    auto mode = modes_->at(index);
+
+    QSharedPointer<ModeConditionParser> parser(new ModeConditionParser(expressions_.finder,
+        mode->getPortSlices(), mode->getFieldSlices(), component_->getModes()));
+
+    QSharedPointer<ModeValidator> validator(new ModeValidator(component_, parser));
+
+    QSharedPointer<SingleModeItem> modeItem(new SingleModeItem(mode, model_,
+        libHandler_, component_, referenceCounter_, expressions_, validator, this));
 
     modeItem->setLocked(locked_);
 

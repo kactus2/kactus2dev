@@ -50,33 +50,13 @@ blockInterface_(blockInterface)
     setExpressionFormatter(expressionFormatter);
 
 	setObjectName(tr("ComponentEditorAddrSpaceItem"));
-
-    QSharedPointer<MemoryMapBase> localMap = addrSpace->getLocalMemoryMap();
-    if (localMap)
+    
+    if (QSharedPointer<MemoryMapBase> localMap = addrSpace->getLocalMemoryMap(); localMap)
     {
-        graphItem_ = new LocalMemoryMapGraphItem(addrSpace_, localMap, expressionParser_);
-        localMemMapVisualizer_->addMemoryMapItem(graphItem_);
-        graphItem_->updateDisplay();
-
-        for (QSharedPointer<MemoryBlockBase> block : *localMap->getMemoryBlocks())
+        const auto BLOCK_COUNT = localMap->getMemoryBlocks()->count();
+        for (int i = 0; i < BLOCK_COUNT; ++i)
         {
-            // if the item is for address block then create child for it
-            QSharedPointer<AddressBlock> addrBlock = block.dynamicCast<AddressBlock>();
-            if (addrBlock)
-            {
-                QSharedPointer<ComponentEditorAddrBlockItem> addrBlockItem(new ComponentEditorAddrBlockItem(
-                    localMap, addrBlock, model, libHandler, component, referenceCounter_, parameterFinder_,
-                    expressionFormatter_, expressionParser_,
-                    spaceValidator_->getLocalMemoryMapValidator()->getAddressBlockValidator(), blockInterface_,
-                    this));
-
-                int addressUnitBits =
-                    expressionParser_->parseExpression(addrSpace_->getAddressUnitBits()).toInt();
-                addrBlockItem->addressUnitBitsChanged(addressUnitBits);
-
-                addrBlockItem->setVisualizer(localMemMapVisualizer_);
-                childItems_.append(addrBlockItem);
-            }
+            ComponentEditorAddrSpaceItem::createChild(i);
         }
     }
 }
@@ -86,16 +66,11 @@ blockInterface_(blockInterface)
 //-----------------------------------------------------------------------------
 ComponentEditorAddrSpaceItem::~ComponentEditorAddrSpaceItem()
 {
-	if (localMemMapVisualizer_)
-    {
-		delete localMemMapVisualizer_;
-		localMemMapVisualizer_ = 0;
-	}
-	if (addrSpaceVisualizer_)
-    {
-		delete addrSpaceVisualizer_;
-		addrSpaceVisualizer_ = 0;
-	}
+    delete localMemMapVisualizer_;
+    localMemMapVisualizer_ = nullptr;
+
+    delete addrSpaceVisualizer_;
+    addrSpaceVisualizer_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -195,6 +170,15 @@ void ComponentEditorAddrSpaceItem::createChild(int index)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpaceItem::removeChild()
+//-----------------------------------------------------------------------------
+void ComponentEditorAddrSpaceItem::removeChild(int index)
+{
+    ComponentEditorItem::removeChild(index);
+    onAddressingChanged();
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::getGraphicsItem()
 //-----------------------------------------------------------------------------
 QGraphicsItem* ComponentEditorAddrSpaceItem::getGraphicsItem()
@@ -267,6 +251,7 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
 {
     if (graphItem_ != nullptr)
     {
+        graphItem_->updateDisplay();
         graphItem_->redoChildLayout();
     }
 }
@@ -274,8 +259,20 @@ void ComponentEditorAddrSpaceItem::onAddressingChanged()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorAddrSpaceItem::onChildAddressingChanged()
 //-----------------------------------------------------------------------------
-void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int /*index*/)
+void ComponentEditorAddrSpaceItem::onChildAddressingChanged(int index)
 {
+    if (graphItem_ != nullptr)
+    {
+        if (auto childBlock = childItems_.at(index).dynamicCast<ComponentEditorAddrBlockItem>();
+            childBlock)
+        {
+            childBlock->updateGraphics();
+            childBlock->onAddressingChanged();
+        }
+
+        graphItem_->redoChildLayout();
+    }
+
     addrSpaceVisualizer_->refresh();
 }
 

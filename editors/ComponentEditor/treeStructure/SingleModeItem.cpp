@@ -22,7 +22,8 @@
 //-----------------------------------------------------------------------------
 SingleModeItem::SingleModeItem(QSharedPointer<Mode> mode, ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions,
+    QSharedPointer<ReferenceCounter> referenceCounter, 
+    ExpressionSet expressions,
     QSharedPointer<ModeValidator> validator,
     ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),

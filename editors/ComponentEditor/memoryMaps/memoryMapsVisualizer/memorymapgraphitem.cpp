@@ -62,10 +62,11 @@ void MemoryMapGraphItem::updateDisplay()
     }
 
     // Set tooltip to show addresses in hexadecimals.
+    const int BIT_WIDTH = getBitWidth();
     setToolTip("<b>Name: </b>" % memoryMap_->name() % "<br>" %
         "<b>AUB: </b>" % QString::number(getAddressUnitSize()) % "<br>" %
-        "<b>First address: </b>" % toHexString(offset) % "<br>" %
-        "<b>Last address: </b>" % toHexString(lastAddress));
+        "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH));
 }
 
 //-----------------------------------------------------------------------------
@@ -79,9 +80,9 @@ quint64 MemoryMapGraphItem::getOffset() const
     }
 
     quint64 offset = childItems_.last()->getOffset();
-    for (MemoryVisualizationItem const* child : childItems_)
+    for (auto const& child : childItems_)
     {
-        if (dynamic_cast<MemoryGapItem const*>(child) == 0)
+        if (dynamic_cast<MemoryGapItem const*>(child) == nullptr)
         {
             offset = qMin(child->getOffset(), offset);  
         }
@@ -96,9 +97,9 @@ quint64 MemoryMapGraphItem::getOffset() const
 int MemoryMapGraphItem::getBitWidth() const 
 {
     int width = 0;
-    for (MemoryVisualizationItem const* child : childItems_)
+    for (auto const& child : childItems_)
     {
-        if (dynamic_cast<MemoryGapItem const*>(child) == 0)
+        if (dynamic_cast<MemoryGapItem const*>(child) == nullptr)
         {
             width = qMax(child->getBitWidth(), width);  
         }
@@ -120,7 +121,7 @@ unsigned int MemoryMapGraphItem::getAddressUnitSize() const
 quint64 MemoryMapGraphItem::getLastAddress() const 
 {
     quint64 lastAddress = 0;
-    for (MemoryVisualizationItem const* child : childItems_)
+    for (auto const& child : childItems_)
     {
         if (dynamic_cast<MemoryGapItem const*>(child) == 0)
         {

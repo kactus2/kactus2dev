@@ -42,6 +42,7 @@ class FieldReset;
 class BusInterface;
 class MirroredSlaveInterface;
 class MasterInterface;
+class Mode;
 class RemapState;
 class RemapPort;
 class ComponentParameterReferenceCounter;
@@ -266,6 +267,17 @@ private:
      *  Create references for modes.
      */
     void createReferencesForModes();
+
+    /*!
+     *  Create references for mode port slices.
+     */
+    void createPortSliceItems(QString const& targetID, QSharedPointer<Mode> mode, QTreeWidgetItem* parentItem);
+
+    /*!
+     *  Create references for mode field slices.
+     */
+    void createFieldSliceItems(QString const& targetID, QSharedPointer<Mode> mode,
+        QTreeWidgetItem* parentItem);
 
     /*!
      *  Create references for indirect interfaces.

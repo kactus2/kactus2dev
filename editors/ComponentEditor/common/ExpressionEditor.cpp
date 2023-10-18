@@ -51,7 +51,8 @@ void ExpressionEditor::setAppendingCompleter(QCompleter* completer)
     MasterExpressionEditor::setAppendingCompleter(completer);
     completer->setWidget(this);
 
-    connect(completer, SIGNAL(activated(QModelIndex const&)), this, SLOT(complete(QModelIndex const&)), Qt::UniqueConnection);
+    connect(completer, SIGNAL(activated(QModelIndex const&)), 
+        this, SLOT(complete(QModelIndex const&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -63,7 +64,7 @@ void ExpressionEditor::setExpression(QString const& expression)
     QTextCursor cursor = textCursor();
     cursor.setPosition(0);
 
-    QRegularExpression delimiter = wordDelimiter();
+    auto const& delimiter = WORD_DELIMITER;
     int delimiterIndex = expression.indexOf(delimiter, 0);
 
     QString word = expression.mid(0, delimiterIndex);
@@ -78,7 +79,7 @@ void ExpressionEditor::setExpression(QString const& expression)
         insertWord(term, cursor);
 
         QString operation = delimiter.match(expression, delimiterIndex).captured();
-        cursor.insertText(operation, colorFormat("black"));
+        cursor.insertText(operation, colorFormat(Qt::black));
 
         delimiterIndex = wordEndIndex + operation.length();
     }
@@ -155,15 +156,15 @@ void ExpressionEditor::insertWord(QString const& word, QTextCursor& cursor)
 {
     if (isReference(word))
     {
-        cursor.insertText(getNameForParameterID(word), colorFormat("darkGreen"));
+        cursor.insertText(getNameForParameterID(word), colorFormat(Qt::darkGreen));
     }
     else if (wordIsConstant(word) || getReservedWords().contains(word, Qt::CaseInsensitive))
     {
-        cursor.insertText(word, colorFormat("black"));
+        cursor.insertText(word, colorFormat(Qt::black));
     }
     else
     {
-        cursor.insertText(word, colorFormat("red"));
+        cursor.insertText(word, colorFormat(Qt::red));
     }
 }
 
@@ -175,7 +176,7 @@ void ExpressionEditor::colorCurrentWordRed()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat("red"));
+    cursor.setCharFormat(colorFormat(Qt::red));
 }
 
 //-----------------------------------------------------------------------------
@@ -186,7 +187,7 @@ void ExpressionEditor::colorCurrentWordBlack()
     QTextCursor cursor = textCursor();
     cursor.movePosition(QTextCursor::StartOfWord, QTextCursor::MoveAnchor);
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.setCharFormat(colorFormat("black"));
+    cursor.setCharFormat(colorFormat(Qt::black));
 }
 
 //-----------------------------------------------------------------------------
@@ -235,7 +236,7 @@ void ExpressionEditor::handleParentKeyPressEvent(QKeyEvent* keyEvent)
     if (keyEvent->text().isEmpty() == false)
     {
         auto cursor = textCursor();
-        cursor.setCharFormat(colorFormat("black"));
+        cursor.setCharFormat(colorFormat(Qt::black));
         setTextCursor(cursor);
     }
 
@@ -266,7 +267,7 @@ void ExpressionEditor::setCompletedParameterName(QString const& parameterName)
     QTextCursor cursor = textCursor();
     cursor.setPosition(startOfCurrentWord());
     cursor.movePosition(QTextCursor::EndOfWord, QTextCursor::KeepAnchor);
-    cursor.insertText(parameterName, colorFormat("darkGreen"));
+    cursor.insertText(parameterName, colorFormat(Qt::darkGreen));
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +299,7 @@ QString ExpressionEditor::getSelectedText() const
 //-----------------------------------------------------------------------------
 int ExpressionEditor::getSelectionFirstWord() const
 {
-    return toPlainText().left(textCursor().selectionStart()).count(wordDelimiter());
+    return toPlainText().left(textCursor().selectionStart()).count(WORD_DELIMITER);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,5 +307,5 @@ int ExpressionEditor::getSelectionFirstWord() const
 //-----------------------------------------------------------------------------
 int ExpressionEditor::getSelectionLastWord() const
 {
-    return toPlainText().left(textCursor().selectionEnd()).count(wordDelimiter());
+    return toPlainText().left(textCursor().selectionEnd()).count(WORD_DELIMITER);
 }

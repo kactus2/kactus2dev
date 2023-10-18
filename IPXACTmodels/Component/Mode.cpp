@@ -26,7 +26,8 @@ Extendable()
 //-----------------------------------------------------------------------------
 Mode::Mode( const Mode& other ):
 NameGroup(other),
-    Extendable(other)
+    Extendable(other),
+    condition_(other.condition_)
 {
     for (auto portSlice : *other.portSlices_)
     {
@@ -56,6 +57,8 @@ Mode& Mode::operator=( const Mode& other )
     {
 		NameGroup::operator=(other);
         Extendable::operator=(other);
+        
+        condition_ = other.condition_;
 
 		portSlices_->clear();
 		for (auto portSlice : *other.portSlices_)
@@ -91,7 +94,7 @@ void Mode::setCondition(QString const& conditionExpression)
 //-----------------------------------------------------------------------------
 // Function: Mode::getPortSlices()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<PortSlice> > > Mode::getPortSlices() const
+PortSlice::List Mode::getPortSlices() const
 {
 	return portSlices_;
 }

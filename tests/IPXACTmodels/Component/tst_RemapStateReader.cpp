@@ -54,8 +54,7 @@ void tst_RemapStateReader::readSimpleRemapState()
 
     QDomNode remapStateNode = document.firstChildElement("ipxact:remapState");
 
-    RemapStateReader remapStateReader;
-    QSharedPointer<RemapState> testRemapState = remapStateReader.createRemapStateFrom(remapStateNode);
+    QSharedPointer<RemapState> testRemapState = RemapStateReader::createRemapStateFrom(remapStateNode);
 
     QCOMPARE(testRemapState->name(), QString("testRemapState"));
     QCOMPARE(testRemapState->displayName(), QString("testDisplay"));
@@ -87,8 +86,7 @@ void tst_RemapStateReader::readRemapPorts()
 
     QDomNode remapStateNode = document.firstChildElement("ipxact:remapState");
 
-    RemapStateReader remapStateReader;
-    QSharedPointer<RemapState> testRemapState = remapStateReader.createRemapStateFrom(remapStateNode);
+    QSharedPointer<RemapState> testRemapState = RemapStateReader::createRemapStateFrom(remapStateNode);
 
     QCOMPARE(testRemapState->name(), QString("testRemapState"));
 

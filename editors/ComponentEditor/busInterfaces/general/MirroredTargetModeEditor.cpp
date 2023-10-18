@@ -43,8 +43,8 @@ parameterFinder_(parameterFinder)
 	QLabel* remapLabel = new QLabel(tr("Remap address, f(x)"), this);
 	QLabel* rangeLabel = new QLabel(tr("Range, f(x):"), this);
 
-    remapEditor_->setFixedHeight(20);
-    rangeEditor_->setFixedHeight(20);
+    remapEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    rangeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);

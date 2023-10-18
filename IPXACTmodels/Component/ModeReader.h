@@ -42,6 +42,15 @@ namespace ModeReader
     {
 
         /*!
+         *   Parses the mode condition.
+         *
+         *      @param [in] modeNode   XML description of the nodet.
+         *      @param [in] newMode    The selected mode item.
+         *
+         */
+        void parseCondition(QDomNode const& modeNode, QSharedPointer<Mode> newMode);
+
+        /*!
          *  Read the remap ports.
          *
          *      @param [in] ModeNode  XML description of the mode.
@@ -66,11 +75,7 @@ namespace ModeReader
          *
          */
         void parseRange(QDomElement const& element, QSharedPointer<Range> range);
-
-
     }
-
-
 };
 
 #endif // VIEWREADER_H

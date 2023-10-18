@@ -28,14 +28,7 @@ ItemEditor(component, handler, parent),
 view_(this),
 model_(component->getRemapStates(), parameterFinder, this)
 {
-    SummaryLabel* summaryLabel = new SummaryLabel(tr("Remap states summary"), this);
-
-    QVBoxLayout* layout = new QVBoxLayout(this);
-    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
-    layout->addWidget(&view_);
-    layout->setContentsMargins(0,0,0,0);
-
-    QSortFilterProxyModel* proxy(new QSortFilterProxyModel(this));
+    auto proxy(new QSortFilterProxyModel(this));
     proxy->setSourceModel(&model_);
     proxy->setDynamicSortFilter(true);
 
@@ -58,13 +51,8 @@ model_(component->getRemapStates(), parameterFinder, this)
 
     connect(&model_, SIGNAL(decreaseReferences(QString)), this,
         SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
-}
 
-//-----------------------------------------------------------------------------
-// Function: RemapStatesEditor::~RemapStatesEditor()
-//-----------------------------------------------------------------------------
-RemapStatesEditor::~RemapStatesEditor()
-{
+    setupLayout();
 
 }
 
@@ -93,4 +81,17 @@ void RemapStatesEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/remapStates.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: RemapStatesEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void RemapStatesEditor::setupLayout()
+{
+    auto summaryLabel = new SummaryLabel(tr("Remap states summary"), this);
+
+    auto layout = new QVBoxLayout(this);
+    layout->addWidget(summaryLabel, 0, Qt::AlignCenter);
+    layout->addWidget(&view_);
+    layout->setContentsMargins(0, 0, 0, 0);
 }

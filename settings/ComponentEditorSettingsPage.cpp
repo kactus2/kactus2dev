@@ -23,10 +23,7 @@
 // Function: ComponentEditorSettingsPage::ComponentEditorSettingsPage()
 //-----------------------------------------------------------------------------
 ComponentEditorSettingsPage::ComponentEditorSettingsPage(QSettings &settings) : 
-SettingsPage(settings),
-workspaceHwCheckBoxes_(),
-workspaceSwCheckBoxes_(),
-currentWorkspaceIndex_(0)
+SettingsPage(settings)
 {
 	loadSettings();
 	setupLayout();
@@ -58,13 +55,13 @@ void ComponentEditorSettingsPage::apply()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::applyHwSettings()
 //-----------------------------------------------------------------------------
-void ComponentEditorSettingsPage::applyHwSettings(int workspaceIndex)
+void ComponentEditorSettingsPage::applyHwSettings(int workspaceIndex) const
 {
 	SettingsPage::settings().beginGroup("HW");
 
 	for (unsigned int hierarchyIndex = 0; hierarchyIndex < KactusAttribute::KTS_PRODHIER_COUNT; ++hierarchyIndex)
 	{
-    	KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
+    	auto val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
 	    SettingsPage::settings().beginGroup(KactusAttribute::hierarchyToString(val));
 
     	QStringList hwCheckboxNames = SettingsPage::settings().childKeys();
@@ -88,7 +85,7 @@ void ComponentEditorSettingsPage::applyHwSettings(int workspaceIndex)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::applySwSettings()
 //-----------------------------------------------------------------------------
-void ComponentEditorSettingsPage::applySwSettings(int workspaceIndex)
+void ComponentEditorSettingsPage::applySwSettings(int workspaceIndex) const
 {
 	SettingsPage::settings().beginGroup("SW");
 
@@ -247,16 +244,16 @@ QStackedWidget* ComponentEditorSettingsPage::createWorkspacePages(QString curren
 	SettingsPage::settings().endGroup(); // Workspaces
 	
 	QStringList hierarchyNames = getHierarchyNames();
-	hwCheckBoxNames = changeNameSeparators(hwCheckBoxNames);
-	swCheckBoxNames = changeNameSeparators(swCheckBoxNames);
+	changeNameSeparators(hwCheckBoxNames);
+	changeNameSeparators(swCheckBoxNames);
 	QStackedWidget* workspaces = new QStackedWidget;
 
 	for (int workspaceIndex = 0; workspaceIndex < workspaceNames.size(); ++workspaceIndex)
 	{
-	    QTableWidget* hwTable = new QTableWidget (hwCheckBoxNames.size(), hierarchyNames.size(), this);
+	    QTableWidget* hwTable = new QTableWidget (hwCheckBoxNames.size(), hierarchyNames.size());
 		setHwTable(hwTable, hierarchyNames, hwCheckBoxNames, workspaceIndex);
 
-		QTableWidget* swTable = new QTableWidget (swCheckBoxNames.size(), 1, this);
+		QTableWidget* swTable = new QTableWidget (swCheckBoxNames.size(), 1);
 		QStringList swHeader("Global");
 		setSwTable(swTable, swHeader, swCheckBoxNames, workspaceIndex);
 		
@@ -267,39 +264,31 @@ QStackedWidget* ComponentEditorSettingsPage::createWorkspacePages(QString curren
 		workspaces->addWidget(wareTab);
 	}
 
-	return (workspaces);
+	return workspaces;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::getHierarchyNames()
 //-----------------------------------------------------------------------------
-QStringList ComponentEditorSettingsPage::getHierarchyNames()
+QStringList ComponentEditorSettingsPage::getHierarchyNames() const
 {
 	QStringList hierarchyNames;
 
 	for (unsigned int hierarchyIndex = 0; hierarchyIndex < KactusAttribute::KTS_PRODHIER_COUNT; ++hierarchyIndex)
 	{
-		KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
+		auto val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
 		hierarchyNames.append(KactusAttribute::hierarchyToString(val));
 	}
-
+	
 	return hierarchyNames;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorSettingsPage::changeNameSeparators()
 //-----------------------------------------------------------------------------
-QStringList ComponentEditorSettingsPage::changeNameSeparators(QStringList checkBoxNames)
+void ComponentEditorSettingsPage::changeNameSeparators(QStringList& checkBoxNames)
 {
-	QStringList newNames;
-
-	foreach (QString name, checkBoxNames)
-	{
-		name.replace("_", " ");
-		newNames.append(name);
-	}
-
-	return newNames;
+	std::for_each(checkBoxNames.begin(), checkBoxNames.end(), [](auto& name) { name.replace("_", " "); });
 }
 
 //-----------------------------------------------------------------------------
@@ -313,12 +302,13 @@ void ComponentEditorSettingsPage::setHwTable(QTableWidget* table, QStringList ho
 
 	QList <QList <QCheckBox*> > hwCheckBoxes = workspaceHwCheckBoxes_.at(workspaceIndex);
 
-	for (int columnIndex = 0; columnIndex <hwCheckBoxes.size(); ++columnIndex)
-	{
-		for (int rowIndex = 0; rowIndex < hwCheckBoxes.at(columnIndex).size(); ++rowIndex)
+	auto const COLUMN_COUNT = hwCheckBoxes.size();
+	for (int column = 0; column < COLUMN_COUNT; ++column)
+    {
+        auto const ROW_COUNT = hwCheckBoxes.at(column).size();
+		for (int row = 0; row < ROW_COUNT; ++row)
 		{
-			table->setCellWidget(rowIndex, columnIndex, 
-				centeredCheckBox(hwCheckBoxes.at(columnIndex).at(rowIndex)));
+			table->setCellWidget(row, column, centeredCheckBox(hwCheckBoxes.at(column).at(row)));
 		}
 	}
 
@@ -345,7 +335,8 @@ void ComponentEditorSettingsPage::setSwTable(QTableWidget* table, QStringList ho
 
 	QList <QCheckBox*> swCheckBoxes = workspaceSwCheckBoxes_.at(workspaceIndex);
 
-	for (int rowIndex = 0; rowIndex < swCheckBoxes.size(); ++rowIndex)
+    auto const ROW_COUNT = swCheckBoxes.size();
+	for (int rowIndex = 0; rowIndex < ROW_COUNT; ++rowIndex)
 	{
 		table->setCellWidget(rowIndex, 0, centeredCheckBox(swCheckBoxes.at(rowIndex)));
 	}
@@ -366,11 +357,11 @@ void ComponentEditorSettingsPage::setSwTable(QTableWidget* table, QStringList ho
 //-----------------------------------------------------------------------------
 QWidget* ComponentEditorSettingsPage::centeredCheckBox(QCheckBox* checkBox)
 {
-	QWidget* checkboxWidget = new QWidget;
-	QHBoxLayout* cellLayout = new QHBoxLayout(checkboxWidget);
+	auto checkboxWidget = new QWidget;
+	auto cellLayout = new QHBoxLayout(checkboxWidget);
 	cellLayout->addWidget(checkBox);
-	cellLayout->setAlignment(Qt::AlignCenter);
-	cellLayout->setContentsMargins(0,0,0,0);
+    cellLayout->setAlignment(Qt::AlignCenter);
+    cellLayout->setContentsMargins(0, 0, 0, 0);
 	checkboxWidget->setLayout(cellLayout);
 
 	return checkboxWidget;
@@ -392,7 +383,7 @@ void ComponentEditorSettingsPage::loadSettings()
 	SettingsPage::settings().beginGroup("Workspaces");
 	QStringList workspaceNames = SettingsPage::settings().childGroups();
 
-	foreach (QString workspaceName, workspaceNames)
+	for (auto const& workspaceName : workspaceNames)
 	{
 		QList <QList <QCheckBox*> > hardwareCheckBoxes;
 
@@ -402,7 +393,7 @@ void ComponentEditorSettingsPage::loadSettings()
 		for (unsigned int hierarchyIndex = 0; hierarchyIndex < KactusAttribute::KTS_PRODHIER_COUNT;
 			 ++hierarchyIndex)
 		{
-			KactusAttribute::ProductHierarchy val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
+			auto val = static_cast<KactusAttribute::ProductHierarchy>(hierarchyIndex);
 			SettingsPage::settings().beginGroup(KactusAttribute::hierarchyToString(val));
 
 			hardwareCheckBoxes.append(setCheckBoxes());
@@ -434,11 +425,9 @@ QList <QCheckBox*> ComponentEditorSettingsPage::setCheckBoxes()
     QString checkBoxStyle("QCheckBox::indicator:unchecked { image: none}"
         "QCheckBox::indicator:checked {image: url(:icons/common/graphics/checkMark.png);}");   
 
-	QStringList boxNames = SettingsPage::settings().childKeys();
-	foreach (QString name, boxNames)
+	for (QString const& name : SettingsPage::settings().childKeys())
 	{
-		QString checkBoxName = name;     
-		QCheckBox* checkBox = new QCheckBox(this);
+		auto checkBox = new QCheckBox(this);
         checkBox->setStyleSheet(checkBoxStyle);
 
 		checkBox->setChecked(settings().value(name, true).toBool());

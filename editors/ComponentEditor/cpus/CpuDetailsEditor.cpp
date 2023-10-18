@@ -195,7 +195,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
     if (component_->getRevision() == Document::Revision::Std14)
     {
         presenceEditor_ = new ExpressionEditor(finder, this);
-        presenceEditor_->setFixedHeight(24);
+        presenceEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
         auto presenceCompleter = new QCompleter(this);
         presenceCompleter->setModel(componentParametersModel);
@@ -222,7 +222,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
             this, SLOT(onMemoryMapRefChanged(QString const&)), Qt::UniqueConnection);
 
         rangeEditor_ = new ExpressionEditor(finder, this);
-        rangeEditor_->setFixedHeight(24);
+        rangeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
         rangeEditor_->setProperty("mandatoryField", true);
 
         auto rangeCompleter = new QCompleter(this);
@@ -236,7 +236,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         connect(rangeEditor_, SIGNAL(editingFinished()), this, SLOT(onRangeChanged()), Qt::UniqueConnection);
 
         widthEditor_ = new ExpressionEditor(finder, this);
-        widthEditor_->setFixedHeight(24);
+        widthEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
         widthEditor_->setProperty("mandatoryField", true);
 
         auto widthCompleter = new QCompleter(this);
@@ -250,7 +250,7 @@ void CpuDetailsEditor::createEditors(QSharedPointer<ParameterFinder> finder)
         connect(widthEditor_, SIGNAL(editingFinished()), this, SLOT(onWidthChanged()), Qt::UniqueConnection);
 
         aubEditor_ = new ExpressionEditor(finder, this);
-        aubEditor_->setFixedHeight(24);
+        aubEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
         auto aubCompleter = new QCompleter(this);
         aubCompleter->setModel(componentParametersModel);

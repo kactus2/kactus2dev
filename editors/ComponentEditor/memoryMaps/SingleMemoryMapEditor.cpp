@@ -61,7 +61,7 @@ isMemoryRemap_(isMemoryRemap)
     addressUnitBitsEditor_->setValidator
         (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
 
-    isPresentEditor_->setFixedHeight(20);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     if (isMemoryRemap_)
     {

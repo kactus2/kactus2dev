@@ -30,6 +30,7 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/FieldAccessPolicy.h>
+#include <IPXACTmodels/Component/FieldSlice.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -497,11 +498,49 @@ int ComponentParameterReferenceCounter::countReferencesInSingleMode(QString cons
 {
     int referenceCount = 0;
 
+    referenceCount += countReferencesInModeCondition(parameterID, mode->getCondition());
+    referenceCount += countReferencesInPortSlices(parameterID, mode);
+
+
+
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInModeCondition()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInModeCondition(QString const& parameterID,
+    QString const& condition) const
+{
+    return condition.count(parameterID);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInPortSlices()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInPortSlices(QString const& parameterID, 
+    QSharedPointer<Mode> mode) const
+{
+    int referenceCount = 0;
     for (auto const& slice : *mode->getPortSlices())
     {
         referenceCount += countReferencesInSinglePortSlice(parameterID, slice);
     }
 
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInFieldSlices()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInFieldSlices(QString const& parameterID, 
+    QSharedPointer<Mode> mode) const
+{
+    int referenceCount = 0;
+    for (auto const& slice : *mode->getFieldSlices())
+    {
+        referenceCount += countReferencesInSingleFieldSlice(parameterID, slice);
+    }
     return referenceCount;
 }
 
@@ -514,6 +553,18 @@ int ComponentParameterReferenceCounter::countReferencesInSinglePortSlice(QString
     int referenceCount = 0;
     referenceCount += portSlice->getLeftRange().count(parameterID);
     referenceCount += portSlice->getRightRange().count(parameterID);
+    return referenceCount;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceCounter::countReferencesInSingleFieldSlice()
+//-----------------------------------------------------------------------------
+int ComponentParameterReferenceCounter::countReferencesInSingleFieldSlice(QString const& parameterID,
+    QSharedPointer<FieldSlice> fieldSlice) const
+{
+    int referenceCount = 0;
+    referenceCount += fieldSlice->getLeft().count(parameterID);
+    referenceCount += fieldSlice->getRight().count(parameterID);
     return referenceCount;
 }
 
@@ -884,7 +935,7 @@ int ComponentParameterReferenceCounter::countReferencesInIndirectInterfaces(QStr
 {
     int referenceCounter = 0;
 
-    for (auto singleInterface : *component_->getIndirectInterfaces())
+    for (auto const& singleInterface : *component_->getIndirectInterfaces())
     {
         referenceCounter += countRefrencesInSingleIndirectInterface(parameterID, singleInterface);
     }
@@ -908,7 +959,7 @@ int ComponentParameterReferenceCounter::countReferencesInCpus(QString const& par
 {
     int referenceCounter = 0;
 
-    for (auto singleCpu : *component_->getCpus())
+    for (auto const& singleCpu : *component_->getCpus())
     {
         referenceCounter += countReferencesInSingleCpu(parameterID, singleCpu);
     }
@@ -942,7 +993,7 @@ int ComponentParameterReferenceCounter::countReferencesInRegions(QString const& 
 {
     int referenceCounter = 0;
 
-    for (auto region : *regions)
+    for (auto const& region : *regions)
     {
         referenceCounter += countReferencesInSingleRegion(parameterID, region);
     }

@@ -111,7 +111,7 @@ public:
 protected:
      
     //! Set the item into conflicted (overlapping memory) state.
-     virtual void setConflicted(bool conflicted) override final;
+     virtual void setConflicted(bool conflicted) final;
 
 private:
 

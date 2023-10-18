@@ -136,8 +136,8 @@ void RemapStateValidator::findErrorsInName(QVector<QString>& errors, QSharedPoin
 {
     if (!hasValidName(remapState))
     {
-        errors.append(QObject::tr("Invalid name specified for remap state %1 within %2")
-            .arg(remapState->name()).arg(context));
+        errors.append(QObject::tr("Invalid name specified for remap state %1 within %2") .arg(remapState->name(),
+            context));
     }
 }
 
@@ -153,8 +153,8 @@ void RemapStateValidator::findErrorsInRemapPorts(QVector<QString>& errors, QShar
 
         if (!remapPortHasValidValue(remapPort))
         {
-            errors.append(QObject::tr("Invalid value set for remap port %1 within %2")
-                .arg(remapPort->getPortNameRef()).arg(context));
+            errors.append(QObject::tr("Invalid value set for remap port %1 within %2").arg(
+                remapPort->getPortNameRef(), context));
         }
     }
 }
@@ -172,7 +172,7 @@ void RemapStateValidator::findErrorsInRemapPortPortReference(QVector<QString>& e
     }
     else if (!remapPortHasValidIndex(remapPort, port))
     {
-        errors.append(QObject::tr("Invalid port index set for remap port %1 within %2")
-            .arg(remapPort->getPortNameRef(), context));
+        errors.append(QObject::tr("Invalid port index set for remap port %1 within %2").arg(
+            remapPort->getPortNameRef(), context));
     }
 }

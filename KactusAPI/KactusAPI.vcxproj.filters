@@ -282,6 +282,9 @@
     <ClInclude Include="include\AccessPolicyInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ModeConditionParser.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -487,6 +490,9 @@
     </ClCompile>
     <ClCompile Include="include\AccessPolicyInterface.cpp">
       <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="expressions\ModeConditionParser.cpp">
+      <Filter>Source Files\expressions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

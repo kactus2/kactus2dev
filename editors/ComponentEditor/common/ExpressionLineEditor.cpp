@@ -27,7 +27,8 @@ ExpressionLineEditor::ExpressionLineEditor(QSharedPointer<ParameterFinder> param
 QLineEdit(parent),
 MasterExpressionEditor(parameterFinder, this)
 {
-    connect(this, SIGNAL(cursorPositionChanged(int, int)), this, SLOT(updateCompletions(int, int)), Qt::UniqueConnection);
+    connect(this, SIGNAL(cursorPositionChanged(int, int)), 
+        this, SLOT(updateCompletions(int, int)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -56,7 +57,6 @@ void ExpressionLineEditor::setExpression(QString const& expression)
 void ExpressionLineEditor::contextMenuEvent(QContextMenuEvent* menuEvent)
 {
     menuEvent->accept();
-    return;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ void ExpressionLineEditor::updateCompletions(int /*oldPosition*/, int /*newPosit
 //-----------------------------------------------------------------------------
 void ExpressionLineEditor::colorCurrentWordRed()
 {
-
+    // Empty by intent.
 }
 
 //-----------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void ExpressionLineEditor::colorCurrentWordRed()
 //-----------------------------------------------------------------------------
 void ExpressionLineEditor::colorCurrentWordBlack()
 {
-
+    // Empty by intent.
 }
 
 //-----------------------------------------------------------------------------
@@ -230,7 +230,7 @@ QString ExpressionLineEditor::getSelectedText() const
 //-----------------------------------------------------------------------------
 int ExpressionLineEditor::getSelectionFirstWord() const
 {
-    return text().left(selectionStart()).count(wordDelimiter());
+    return text().left(selectionStart()).count(WORD_DELIMITER);
 }
 
 //-----------------------------------------------------------------------------
@@ -238,5 +238,5 @@ int ExpressionLineEditor::getSelectionFirstWord() const
 //-----------------------------------------------------------------------------
 int ExpressionLineEditor::getSelectionLastWord() const
 {
-    return text().left(selectionEnd()).count(wordDelimiter());
+    return text().left(selectionEnd()).count(WORD_DELIMITER);
 }

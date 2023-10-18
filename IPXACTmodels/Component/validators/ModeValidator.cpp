@@ -51,6 +51,11 @@ bool ModeValidator::validate(QSharedPointer<Mode> mode) const
 		return false;
 	}
 	
+    if (hasValidCondition(mode) == false)
+    {
+        return false;
+    }
+
 	if (hasValidPortSlices(mode) == false)
 	{
 		return false;
@@ -70,6 +75,17 @@ bool ModeValidator::validate(QSharedPointer<Mode> mode) const
 bool ModeValidator::hasValidName(QString const& name) const
 {
 	return CommonItemsValidator::hasValidName(name);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::hasValidCondition()
+//-----------------------------------------------------------------------------
+bool ModeValidator::hasValidCondition(QSharedPointer<Mode> mode) const
+{
+    bool valid = false;
+    expressionParser_->parseExpression(mode->getCondition(), &valid);
+
+    return valid;
 }
 
 //-----------------------------------------------------------------------------
@@ -134,33 +150,42 @@ void ModeValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Mode> 
     }
 
 	QString modeContext(QStringLiteral("mode '%1'").arg(mode->name()));
-	QStringList sliceNames;
-	QStringList reportedNames;
+	QStringList portNames;
+	QStringList reportedPorts;
+
+    if (hasValidCondition(mode) == false)
+    {
+        errors.append(QObject::tr("Condition is not a valid expression within %1.").arg(
+             modeContext));
+    }
 
     for (auto const& portSlice : *mode->getPortSlices())
     {
-		if (sliceNames.contains(portSlice->name()) && reportedNames.contains(portSlice->name()) == false)
+		if (portNames.contains(portSlice->name()) && reportedPorts.contains(portSlice->name()) == false)
         {
             errors.append(QObject::tr("Port condition name '%1' is not unique within %2.").arg(
                 portSlice->name(), modeContext));
 
-			reportedNames.append(portSlice->name());
+            reportedPorts.append(portSlice->name());
 		}
-        sliceNames.append(portSlice->name());
+        portNames.append(portSlice->name());
 
 		portValidator_->findErrorsIn(errors, portSlice, modeContext);
     }
 
+    QStringList fieldNames;
+    QStringList reportedFields;
+
     for (auto const& fieldSlice : *mode->getFieldSlices())
     {
-        if (sliceNames.contains(fieldSlice->name()) && reportedNames.contains(fieldSlice->name()) == false)
+        if (fieldNames.contains(fieldSlice->name()) && reportedFields.contains(fieldSlice->name()) == false)
         {
             errors.append(QObject::tr("Field condition name '%1' is not unique within %2.").arg(
                 fieldSlice->name(), modeContext));
 
-            reportedNames.append(fieldSlice->name());
+            reportedFields.append(fieldSlice->name());
         }
-        sliceNames.append(fieldSlice->name());
+        fieldNames.append(fieldSlice->name());
 
         fieldValidator_->findErrorsIn(errors, fieldSlice, modeContext);
     }
@@ -183,7 +208,6 @@ QSharedPointer<PortSliceValidator> ModeValidator::getPortSliceValidator() const
 {
 	return portValidator_;
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: ModeValidator::getFieldSliceValidator()

@@ -776,36 +776,88 @@ void ComponentParameterReferenceTree::createReferencesForRemapStates()
 //-----------------------------------------------------------------------------
 void ComponentParameterReferenceTree::createReferencesForModes()
 {
-    QTreeWidgetItem* topRemapStatesItem = createTopItem("Modes");
+    QTreeWidgetItem* topModesItem = createTopItem("Modes");
     QString targetID = getTargetID();
 
     for (auto const& mode : *component_->getModes())
     {
         if (referenceCounter_->countReferencesInSingleMode(targetID, mode) > 0)
         {
-            QTreeWidgetItem* modeItem = createMiddleItem(mode->name(), topRemapStatesItem);
+            QTreeWidgetItem* modeItem = createMiddleItem(mode->name(), topModesItem);
 
-            QTreeWidgetItem* portsItem = createMiddleItem("Condition Ports", modeItem);
-            colourItemGrey(portsItem);
-
-            for (auto const& portSlice : *mode->getPortSlices())
+            if (referenceCounter_->countReferencesInModeCondition(targetID, mode->getCondition()) > 0)
             {
-                if (referenceCounter_->countReferencesInSinglePortSlice(targetID, portSlice) > 0)
-                {
-                    QTreeWidgetItem* sliceItem = createMiddleItem(portSlice->name(), portsItem);
-                    colourItemGrey(portsItem);
+                createItem(QStringLiteral("Condition"), mode->getCondition(), modeItem);
+            }
 
+            createPortSliceItems(targetID, mode, modeItem);
 
-                    if (portSlice->getLeftRange().contains(targetID))
-                    {
-                        createItem("Left bound", portSlice->getLeftRange(), sliceItem);
-                    }
+            createFieldSliceItems(targetID, mode, modeItem);
+        }
+    }
+}
 
-                    if (portSlice->getRightRange().contains(targetID))
-                    {
-                        createItem("Right bound", portSlice->getRightRange(), sliceItem);
-                    }
-                }
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createPortSliceItems()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createPortSliceItems(QString const& targetID,
+    QSharedPointer<Mode> mode, QTreeWidgetItem* parentItem)
+{
+    if (referenceCounter_->countReferencesInPortSlices(targetID, mode) == 0)
+    {
+        return;
+    }
+
+    QTreeWidgetItem* portsItem = createMiddleItem(QStringLiteral("Condition Ports"), parentItem);
+    colourItemGrey(portsItem);
+
+    for (auto const& portSlice : *mode->getPortSlices())
+    {
+        if (referenceCounter_->countReferencesInSinglePortSlice(targetID, portSlice) > 0)
+        {
+            QTreeWidgetItem* sliceItem = createMiddleItem(portSlice->name(), parentItem);
+
+            if (portSlice->getLeftRange().contains(targetID))
+            {
+                createItem(QStringLiteral("Left bound"), portSlice->getLeftRange(), sliceItem);
+            }
+
+            if (portSlice->getRightRange().contains(targetID))
+            {
+                createItem(QStringLiteral("Right bound"), portSlice->getRightRange(), sliceItem);
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentParameterReferenceTree::createFieldSliceItems()
+//-----------------------------------------------------------------------------
+void ComponentParameterReferenceTree::createFieldSliceItems(QString const& targetID,
+    QSharedPointer<Mode> mode, QTreeWidgetItem* parentItem)
+{
+    if (referenceCounter_->countReferencesInFieldSlices(targetID, mode) == 0)
+    {
+        return;
+    }
+
+    QTreeWidgetItem* fieldsItem = createMiddleItem(QStringLiteral("Condition Fields"), parentItem);
+    colourItemGrey(fieldsItem);
+
+    for (auto const& fieldSlice : *mode->getFieldSlices())
+    {
+        if (referenceCounter_->countReferencesInSingleFieldSlice(targetID, fieldSlice) > 0)
+        {
+            QTreeWidgetItem* sliceItem = createMiddleItem(fieldSlice->name(), parentItem);
+
+            if (fieldSlice->getLeft().contains(targetID))
+            {
+                createItem(QStringLiteral("Leftmost bit"), fieldSlice->getLeft(), sliceItem);
+            }
+
+            if (fieldSlice->getRight().contains(targetID))
+            {
+                createItem(QStringLiteral("Rightmost bit"), fieldSlice->getRight(), sliceItem);
             }
         }
     }

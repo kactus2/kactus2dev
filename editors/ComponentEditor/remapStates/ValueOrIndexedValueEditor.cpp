@@ -67,7 +67,7 @@ ValueOrIndexedValueEditor::~ValueOrIndexedValueEditor()
 //-----------------------------------------------------------------------------
 void ValueOrIndexedValueEditor::setupSingleValueEditor()
 {
-    singleValueEditor_->setFixedHeight(20);
+    singleValueEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     QCompleter* singleCompleter = createParameterNameCompleter(singleValueEditor_);
     singleValueEditor_->setAppendingCompleter(singleCompleter);

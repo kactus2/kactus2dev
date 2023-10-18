@@ -215,13 +215,11 @@ void ComponentReader::parseRemapStates(QDomNode const& componentNode, QSharedPoi
 
     if (!remapStateElement.isNull())
     {
-        RemapStateReader remapStateReader;
-
         QDomNodeList remapNodeList = remapStateElement.elementsByTagName(QStringLiteral("ipxact:remapState"));
         for (int remapStateIndex = 0; remapStateIndex < remapNodeList.count(); ++remapStateIndex)
         {
             QDomNode remapStateNode = remapNodeList.at(remapStateIndex);
-            QSharedPointer<RemapState> newRemapState = remapStateReader.createRemapStateFrom(remapStateNode);
+            QSharedPointer<RemapState> newRemapState = RemapStateReader::createRemapStateFrom(remapStateNode);
 
             newComponent->getRemapStates()->append(newRemapState);
         }

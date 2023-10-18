@@ -51,7 +51,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~SingleRemapStateItem();
+    virtual ~SingleRemapStateItem() = default;
 
 	/*!
 	 *  Get the tool tip for the item.

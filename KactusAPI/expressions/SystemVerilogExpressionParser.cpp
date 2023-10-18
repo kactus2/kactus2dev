@@ -31,14 +31,15 @@ namespace
 
     const QRegularExpression BINARY_OPERATOR(QStringLiteral("[/%^+-]|<<|>>|<=?|>=?|!==?|===?|[&|*]{1,2}|[$]pow"));
 
-    const QRegularExpression UNARY_OPERATOR(QStringLiteral("[$]clog2|[$]exp|[$]sqrt|~"));
+    const QRegularExpression UNARY_OPERATOR(QStringLiteral(
+        "[$]clog2|[$]exp|[$]sqrt|[$]ipxact_mode_condition|[$]ipxact_port_value|[$]ipxact_field_value|~"));
 
     const QRegularExpression TERNARY_OPERATOR(QStringLiteral("[?:]"));
 
-    const QChar OPEN_PARENTHESIS(QLatin1Char('('));
-    const QChar CLOSE_PARENTHESIS(QLatin1Char(')'));
-    const QChar OPEN_ARRAY(QLatin1Char('{'));
-    const QChar CLOSE_ARRAY(QLatin1Char('}'));
+    const QLatin1Char OPEN_PARENTHESIS('(');
+    const QLatin1Char CLOSE_PARENTHESIS(')');
+    const QLatin1Char OPEN_ARRAY('{');
+    const QLatin1Char CLOSE_ARRAY('}');
 
     const QString OPEN_PARENTHESIS_STRING(QStringLiteral("("));
     const QString OPEN_ARRAY_STRING(QStringLiteral("{"));
@@ -102,7 +103,7 @@ int SystemVerilogExpressionParser::baseForExpression(QString const& expression) 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::convertToRPN()
 //-----------------------------------------------------------------------------
-QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expression) const
+QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expression)
 {
     // Convert expression to Reverse Polish Notation (RPN) using the Shunting Yard algorithm.
     QVector<QString> output;
@@ -120,19 +121,18 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
             continue;
         }
 
-        QRegularExpressionMatch operatorMatch = ANY_OPERATOR.match(expression, index,
-            QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
-        QRegularExpressionMatch literalMatch = PRIMARY_LITERAL.match(expression, index,
-            QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption);
-
-        if (nextMayBeLiteral && literalMatch.hasMatch())
+        if (QRegularExpressionMatch literalMatch = PRIMARY_LITERAL.match(expression, index,
+            QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption); 
+            nextMayBeLiteral && literalMatch.hasMatch())
         {
             output.append(literalMatch.captured());
 
             index = literalMatch.capturedEnd();
             nextMayBeLiteral = false;
         }
-        else if (operatorMatch.hasMatch())
+        else if (QRegularExpressionMatch operatorMatch = ANY_OPERATOR.match(expression, index,
+                 QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption); 
+            operatorMatch.hasMatch())
         {
             QString operation = operatorMatch.captured();
             while (stack.isEmpty() == false &&
@@ -343,7 +343,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
 
     if (validExpression != nullptr)
     {
-        *validExpression = (isWellFormed && result.contains(QStringLiteral("x")) == false && ternaryCount == 0);
+        *validExpression = (isWellFormed && result.contains(QLatin1String("x")) == false && ternaryCount == 0);
     }
 
     return result.join(QString());
@@ -634,7 +634,7 @@ QString SystemVerilogExpressionParser::solveSqrt(QString const& value) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseConstant()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::parseConstant(QString token) const
+QString SystemVerilogExpressionParser::parseConstant(QString const& token) const
 {
     if (token.contains(QLatin1Char('.')))
     {
@@ -644,12 +644,13 @@ QString SystemVerilogExpressionParser::parseConstant(QString token) const
     int base = baseOf(token);
 
     // Remove formating of the number.
+    auto formattedToken = token;
     static QRegularExpression prefix(QStringLiteral("^([1-9][0-9_]*)?'[sS]?[dDbBoOhH]?"));
-    token.remove(0, prefix.match(token).capturedLength());
-    token.remove(QLatin1Char('_'));
+    formattedToken.remove(0, prefix.match(token).capturedLength());
+    formattedToken.remove(QLatin1Char('_'));
 
     bool valid = false;
-    qlonglong value = token.toLongLong(&valid, base);
+    qlonglong value = formattedToken.toLongLong(&valid, base);
     if (valid == false)
     {
         return QStringLiteral("x");
@@ -685,7 +686,7 @@ int SystemVerilogExpressionParser::getBaseForSymbol(QString const& symbol) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::operatorPrecedence()
 //-----------------------------------------------------------------------------
-unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& oper) const
+unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& oper)
 {
     // Higher value means higher precedence.
     const static QMap<QString, int> operator_precedence =
@@ -714,6 +715,11 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& op
         {QStringLiteral("~")      , 14},
         {QStringLiteral("$clog2") , 14},
         {QStringLiteral("$pow")   , 14},
+        {QStringLiteral("$sqrt")  , 14},
+        {QStringLiteral("$exp")   , 14},
+        {QStringLiteral("$ipxact_port_value"), 14},
+        {QStringLiteral("$ipxact_field_value"), 14},
+        {QStringLiteral("$ipxact_mode_condition"), 14},
         {QStringLiteral("(")      , 15},
         {QStringLiteral(")")      , 15},
         {QStringLiteral("{")      , 15},
@@ -726,7 +732,7 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& op
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getBaseForNumber()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::baseOf(QString const& constantNumber) const
+int SystemVerilogExpressionParser::baseOf(QString const& constantNumber)
 {
     const static QMap<QString, int> base_formats =
     {
@@ -751,11 +757,11 @@ int SystemVerilogExpressionParser::baseOf(QString const& constantNumber) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getDecimalPrecision()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::precisionOf(QString const& term) const
+int SystemVerilogExpressionParser::precisionOf(QString const& term)
 {
     int decimalLength = 0;
-    int commaPosition = term.indexOf(QLatin1Char('.'));
-    if  (commaPosition != -1)
+    
+    if  (int commaPosition = term.indexOf(QLatin1Char('.')); commaPosition != -1)
     {
         decimalLength = term.length() - commaPosition - 1;
     }

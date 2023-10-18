@@ -100,7 +100,6 @@ private:
 
     ExpressionSet expressions_;
 
-    QSharedPointer<ModeValidator> validator_;
 };
 
 #endif // MODESITEM_H

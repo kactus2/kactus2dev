@@ -14,7 +14,6 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
@@ -24,24 +23,8 @@ class RemapPort;
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT remap state element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT RemapStateReader : public QObject
+namespace RemapStateReader
 {
-    Q_OBJECT
-
-public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    RemapStateReader(QObject* parent = 0);
-
-    /*!
-     *  The destructor.
-     */
-    ~RemapStateReader();
-
     /*!
      *  Creates a new remap state from a given view node.
      *
@@ -49,45 +32,42 @@ public:
      *
      *      @return The created remap state.
      */
-    QSharedPointer<RemapState> createRemapStateFrom(QDomNode const& remapStateNode) const;
+    IPXACTMODELS_EXPORT QSharedPointer<RemapState> createRemapStateFrom(QDomNode const& remapStateNode);
 
-private:
+    namespace Details
+    {
+        /*!
+         *  Read the remap state name group.
+         *
+         *      @param [in] remapStateNode  XML description of the remap state.
+         *      @param [in] newRemapState   The selected remap state item.
+         */
+        void parseNameGroup(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState);
 
-    //! No copying allowed.
-    RemapStateReader(RemapStateReader const& rhs);
-    RemapStateReader& operator=(RemapStateReader const& rhs);
+        /*!
+         *  Read the remap ports.
+         *
+         *      @param [in] remapStateNode  XML description of the remap state.
+         *      @param [in] newRemapState   The selected remap state item.
+         */
+        void parseRemapPorts(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState);
 
-    /*!
-     *  Read the remap state name group.
-     *
-     *      @param [in] remapStateNode  XML description of the remap state.
-     *      @param [in] newRemapState   The selected remap state item.
-     */
-    void parseNameGroup(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState) const;
+        /*!
+         *  Read the remap port index.
+         *
+         *      @param [in] remapPortElement    XML description of the remap port.
+         *      @param [in] newRemapPort        The selected remap port item.
+         */
+        void parseRemapPortIndex(QDomElement const& remapPortElement, QSharedPointer<RemapPort> newRemapPort);
 
-    /*!
-     *  Read the remap ports.
-     *
-     *      @param [in] remapStateNode  XML description of the remap state.
-     *      @param [in] newRemapState   The selected remap state item.
-     */
-    void parseRemapPorts(QDomNode const& remapStateNode, QSharedPointer<RemapState> newRemapState) const;
-
-    /*!
-     *  Read the remap port index.
-     *
-     *      @param [in] remapPortElement    XML description of the remap port.
-     *      @param [in] newRemapPort        The selected remap port item.
-     */
-    void parseRemapPortIndex(QDomElement const& remapPortElement, QSharedPointer<RemapPort> newRemapPort) const;
-
-    /*!
-     *  Read the remap port value.
-     *
-     *      @param [in] remapPortElement    XML description of the remap port.
-     *      @param [in] newRemapPort        The selected remap port item.
-     */
-    void parseRemapPortValue(QDomElement const& remapPortElement, QSharedPointer<RemapPort> newRemapPort) const;
+        /*!
+         *  Read the remap port value.
+         *
+         *      @param [in] remapPortElement    XML description of the remap port.
+         *      @param [in] newRemapPort        The selected remap port item.
+         */
+        void parseRemapPortValue(QDomElement const& remapPortElement, QSharedPointer<RemapPort> newRemapPort);
+    };
 };
 
 #endif // VIEWREADER_H

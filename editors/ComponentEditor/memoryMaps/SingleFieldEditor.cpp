@@ -82,12 +82,12 @@ containingRegister_(containingRegister)
 {
     fieldInterface_->setFields(containingRegister_->getFields());
 
-    offsetEditor_->setFixedHeight(20);
-    widthEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
-    reservedEditor_->setFixedHeight(20);
-    writeConstraintMinLimit_->setFixedHeight(20);
-    writeConstraintMaxLimit_->setFixedHeight(20);
+    offsetEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    widthEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    reservedEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    writeConstraintMinLimit_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    writeConstraintMaxLimit_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);

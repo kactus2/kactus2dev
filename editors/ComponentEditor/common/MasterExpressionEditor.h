@@ -17,6 +17,7 @@
 #include <QKeyEvent>
 #include <QFocusEvent>
 #include <QTextCursor>
+#include <QRegularExpression>
 
 class ParameterFinder;
 
@@ -37,6 +38,10 @@ public:
      *  The destructor.
      */
 	virtual ~MasterExpressionEditor() = default;
+
+    // Disable copying.
+    MasterExpressionEditor(MasterExpressionEditor const& rhs) = delete;
+    MasterExpressionEditor& operator=(MasterExpressionEditor const& rhs) = delete;
 
     /*!
      *  Sets a completer whose selection will be appended to the text.
@@ -123,7 +128,7 @@ protected:
      *
      *      @return The format for the given color.
      */
-    QTextCharFormat colorFormat(QString const& textColor) const;
+    QTextCharFormat colorFormat(Qt::GlobalColor textColor) const;
 
     /*!
      *  Replaces a word in a given index with another.
@@ -142,13 +147,6 @@ protected:
      *      @return The index of the word.
      */
     int currentWordIndex() const;
-
-    /*!
-     *  Gets the delimiter for words.
-     *
-     *      @return The delimiter for words.
-     */
-    QRegularExpression wordDelimiter() const;
 
     /*!
      *  Checks if a given text is a reference to a parameter.
@@ -182,7 +180,7 @@ protected:
      *
      *      @return True, if the word is a constant, otherwise false.
      */
-    bool wordIsConstant(QString const& word) const;
+    static bool wordIsConstant(QString const& word);
 
     /*!
      *  Finds the index for the start of the current word.
@@ -191,11 +189,11 @@ protected:
      */
     int startOfCurrentWord() const;
 
+    inline static const QRegularExpression WORD_DELIMITER =
+        QRegularExpression(QStringLiteral("[-+/*() ,{}~^]|[<>]=?|[!=]=?|[|&]{1,2}"));
+
 private:
 
-    // Disable copying.
-    MasterExpressionEditor(MasterExpressionEditor const& rhs);
-    MasterExpressionEditor& operator=(MasterExpressionEditor const& rhs);
 
     /*!
      *  Check if a selection exists.
@@ -281,7 +279,7 @@ private:
      *
      *      @return True, if the event will remove the last character, otherwise false.
      */
-    bool removesLastCharacterOfWord(QKeyEvent* keyEvent);
+    bool removesLastCharacterOfWord(QKeyEvent* keyEvent) const;
     
     /*!
      *  Removes the term currently under cursor.
@@ -295,7 +293,7 @@ private:
      *
      *      @return True, if the event will remove an operator, otherwise false.
      */
-    bool removesOperatorBeforeWord(QKeyEvent* keyEvent);
+    bool removesOperatorBeforeWord(QKeyEvent* keyEvent) const;
 
     /*!
      *  Removes an operator in the expression in front of the cursor.
@@ -309,7 +307,7 @@ private:
      *
      *      @return True, if the event will remove an operator, otherwise false.
      */
-    bool removesOperatorAfterCursor(QKeyEvent* keyEvent);
+    bool removesOperatorAfterCursor(QKeyEvent* keyEvent) const;
         
     /*!
      *  Removes an operator in the expression after the cursor.
@@ -362,7 +360,7 @@ private:
      *
      *      @return True, if the word is unambiguous parameter name, otherwise false.
      */
-    bool currentWordIsUniqueParameterName();
+    bool currentWordIsUniqueParameterName() const;
 
     /*!
      *  Changes the color of the font for the current word to red.
@@ -399,7 +397,7 @@ private:
      *
      *      @return True, if the event will copy, cut or paste text, otherwise false.
      */
-    bool keysequenceCopyCutPaste(QKeyEvent* keyEvent);
+    bool keysequenceCopyCutPaste(QKeyEvent* keyEvent) const;
 
     /*!
      *  Checks if the given event will move the cursor.
@@ -408,7 +406,7 @@ private:
      *
      *      @return True, if the event will move the cursor, otherwise false.
      */
-    bool keyMovesCursor(QKeyEvent* keyEvent);
+    bool keyMovesCursor(QKeyEvent* keyEvent) const;
 
     /*!
      *  Removes the current selection in the underlying expression.
@@ -437,11 +435,12 @@ private:
      *
      *      @return True, if the key event requests showing completions, otherwise false.
      */
-    bool showCompletionsRequested(QKeyEvent* keyEvent);
+    bool showCompletionsRequested(QKeyEvent* keyEvent) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
 
     //! The completer whose selection is used in the text.
     QCompleter* nameCompleter_;
@@ -453,10 +452,10 @@ private:
     QString expression_;
     
     //! Flag for indicating that the user is not selecting text with the mouse.
-    bool notSelectingText_;
+    bool notSelectingText_ = true;
 
     //! The list of the reserved words for this editor.
-    QStringList reservedWords_;
+    QStringList reservedWords_{ "true" , "false" };
 
 };
 

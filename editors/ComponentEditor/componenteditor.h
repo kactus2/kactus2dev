@@ -14,13 +14,40 @@
 
 #include <common/widgets/tabDocument/TabDocument.h>
 
+#include <editors/common/ExpressionSet.h>
+#include <editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h>
 #include <editors/ComponentEditor/treeStructure/componenttreeview.h>
 #include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/componenteditorgroupslot.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
-#include <editors/ComponentEditor/referenceCounter/ComponentParameterReferenceCounter.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorrootitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorgeneralitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorfilesetsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorparametersitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditormemmapsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditoraddrspacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorviewsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorportsitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorbusinterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorchannelsitem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorChoicesItem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorcpusitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorotherclocksitem.h>
+#include <editors/ComponentEditor/treeStructure/ResetTypesItem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorcominterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorapiinterfacesitem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorSystemViewsItem.h>
+#include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
+#include <editors/ComponentEditor/treeStructure/ModesItem.h>
+#include <editors/ComponentEditor/treeStructure/PowerDomainsItem.h>
+#include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
+#include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
+#include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
+
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/BusInterfaceInterface.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 
@@ -67,28 +94,34 @@ public:
 		QWidget *parent);
 
 	//! The destructor
-	~ComponentEditor();
+	virtual ~ComponentEditor() = default;
+
+    //! No copying
+    ComponentEditor(const ComponentEditor& other) = delete;
+
+    //! No assignment
+    ComponentEditor& operator=(const ComponentEditor& other) = delete;
 
 	/*! Get the VLNV that can be used to identify the component.
 	 *
 	 *      @return The VLNV of the component.
 	*/
-	virtual VLNV getIdentifyingVLNV() const;
+	VLNV getIdentifyingVLNV() const final;
 
 	/*! Get the vlnv of the current component.
 	 *
 	 *      @return VLNV of the component being edited.
 	*/
-	virtual VLNV getDocumentVLNV() const;
+	VLNV getDocumentVLNV() const final;
 
 	/*! Check if the editor is editing a hardware implementation or not.
 	 *
 	 *      @return True if the component is a hardware component.
 	*/
-	virtual bool isHWImplementation() const;
+	bool isHWImplementation() const;
 
 	//! Refreshes the editor to display the changes made.
-    virtual void refresh();
+    void refresh() final;
 
 	/*!
 	 *  Applies the current settings into use.
@@ -118,6 +151,7 @@ public:
      */
     void openItemEditor(QVector<QString> itemIdentifierChain);
 
+	//! Get the edited component.
     QSharedPointer<Component> getComponent() const;
 
 public slots:
@@ -194,11 +228,6 @@ signals:
 
 private:
 
-	//! No copying
-	ComponentEditor(const ComponentEditor& other);
-
-	//! No assignment
-	ComponentEditor& operator=(const ComponentEditor& other);
 
     /*!
      *  Creates the root item for the navigation model for the given component.
@@ -207,9 +236,95 @@ private:
      *
      *      @return The root item for the navigation model for the component.
      */
-    QSharedPointer<ComponentEditorRootItem> createNavigationRootForComponent(QSharedPointer<Component> component);
+    QSharedPointer<ComponentEditorRootItem> createNavigationRootForComponent();
+	    
+	/*!
+     *  Creates child items for the navigation model for a SW component.
+     *
+     *      @param [in] root   The root item in the navigation model.
+     */
+    void addSWItems(ComponentEditorRootItem* root);
 
-    //! Setups the editor layout.
+	/*!
+	 *  Creates child items for the navigation model for a HW component.
+	 *
+	 *      @param [in] root				The root item in the navigation model.
+	 *		@param [in] expressionSupport	Collection of classes for handling expressions.
+	 * 
+	 */
+	void addHWItems(ComponentEditorRootItem* root, ExpressionSet const& expressionsSupport);
+	
+	/*!
+	 *  Create the General item in the navigation tree.
+	 *
+	 *      @param [in] root	The root item in the navigation model.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorGeneralItem> createGeneralItem(ComponentEditorRootItem* root);
+
+	/*!
+	 *  Create the Parameters item in the navigation tree.
+	 *
+	 *      @param [in] root	The root item in the navigation model.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorParametersItem> createParametersItem(ComponentEditorRootItem* root);
+
+	/*!
+	 *  Create the Instantiations item in the navigation tree.
+	 *
+	 *      @param [in] root	The root item in the navigation model.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<InstantiationsItem> createInstantiationsItem(ComponentEditorRootItem* root);
+
+	/*!
+	 *  Create the Views item in the navigation tree.
+	 *
+	 *      @param [in] root	The root item in the navigation model.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorViewsItem> createViewsItem(ComponentEditorRootItem* root);
+
+	/*!
+	 *  Create the Ports item in the navigation tree.
+	 *
+     *      @param [in] root				The root item in the navigation model.
+     *      @param [in] busInterface		The interface for accessing bus interface data.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorPortsItem> createPortsItem(ComponentEditorRootItem* root, 
+		BusInterfaceInterface* busInterface);
+
+	/*!
+	 *  Create the Bus Interfaces item in the navigation tree.
+	 *
+     *      @param [in] root				The root item in the navigation model.
+     *      @param [in] busInterface		The interface for accessing bus interface data.
+     *      @param [in] portMapInterface	The interface for accessing port map data.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorBusInterfacesItem> createBusInterfacesItem(ComponentEditorRootItem* root,
+		BusInterfaceInterface* busInterface, PortMapInterface* portMapInterface);
+
+	/*!
+	 *  Create the Indirect Interfaces item in the navigation tree.
+	 *
+     *      @param [in] root				The root item in the navigation model.
+     *      @param [in] busInterface		The interface for accessing bus interface data.
+	 *
+	 *      @return The created item.
+	 */
+	QSharedPointer<ComponentEditorIndirectInterfacesItem> createIndirectInterfacesItem(
+		ComponentEditorRootItem* root, BusInterfaceInterface* busInterface);
+
+	//! Setups the editor layout.
     void setupLayout();
 
     /*!
@@ -221,7 +336,7 @@ private:
      *      @param [in] targetPath          Target path.
      */
     void updateComponentFiles(QSharedPointer<Component> targetComponent, QSharedPointer<Component> otherComponent,
-        QString const& sourcePath, QString const& targetPath);
+        QString const& sourcePath, QString const& targetPath) const;
 
     /*!
      *  Get a list of the file names of a component.
@@ -291,7 +406,7 @@ private:
     ComponentValidator validator_;
 
     //! Parameter reference tree.
-    ComponentParameterReferenceTree* parameterReferenceTree_;
+    ComponentParameterReferenceTree* parameterReferenceTree_ = nullptr;
 
     //! Window for the parameter reference tree.
     ParameterReferenceTreeWindow* parameterReferenceWindow_;

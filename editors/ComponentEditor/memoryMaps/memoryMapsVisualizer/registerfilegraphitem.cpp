@@ -54,11 +54,13 @@ void RegisterFileGraphItem::updateDisplay()
     setDisplayOffset(offset);
     setDisplayLastAddress(lastAddress);
 
+
+    const int BIT_WIDTH = getBitWidth();
     // Set tooltip to show addresses in hexadecimals.
     setToolTip("<b>Name: </b>" % regFile_->name() % "<br>" %
         "<b>AUB: </b>" % QString::number(getAddressUnitSize()) % "<br>" %
-        "<b>First address: </b>" % toHexString(offset) % "<br>" %
-        "<b>Last address: </b>" % toHexString(lastAddress));
+        "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH));
 }
 
 //-----------------------------------------------------------------------------

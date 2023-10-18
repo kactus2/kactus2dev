@@ -25,6 +25,7 @@ public:
 private slots:
 
     void testWriteNameGroup();
+    void testWriteCondition();
     void testWritePortSlices();
     void testWriteFieldSlices();
 };
@@ -59,6 +60,29 @@ void tst_ModeWriter::testWriteNameGroup()
             "<ipxact:displayName>testDisplay</ipxact:displayName>"
             "<ipxact:shortDescription>testShortDescription</ipxact:shortDescription>"
             "<ipxact:description>testDescription</ipxact:description>"
+        "</ipxact:mode>"
+    );
+
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ModeWriter::testWriteCondition()
+//-----------------------------------------------------------------------------
+void tst_ModeWriter::testWriteCondition()
+{
+     QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Mode> testMode(new Mode("testMode"));
+    testMode->setCondition(QStringLiteral("1"));
+
+    ModeWriter::writeMode(xmlStreamWriter, testMode);
+
+    QString expectedOutput(
+        "<ipxact:mode>"
+            "<ipxact:name>testMode</ipxact:name>"
+            "<ipxact:condition>1</ipxact:condition>"
         "</ipxact:mode>"
     );
 

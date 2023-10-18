@@ -43,7 +43,12 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	virtual ~RemapStatesEditor();
+	virtual ~RemapStatesEditor() = default;
+
+    //! No copying
+    RemapStatesEditor(const RemapStatesEditor& other) = delete;
+    //! No assignment
+    RemapStatesEditor& operator=(const RemapStatesEditor& other) = delete;
 
     /*!
 	 *  Reload the information from the model to the editor.
@@ -67,11 +72,9 @@ protected:
 	virtual void showEvent(QShowEvent* event);
 
 private:
-	//! No copying
-    RemapStatesEditor(const RemapStatesEditor& other);
 
-	//! No assignment
-    RemapStatesEditor& operator=(const RemapStatesEditor& other);
+    //! Setup the widget layout.
+    void setupLayout();
 
 	//! The view to display the remap states.
 	EditableTableView view_;

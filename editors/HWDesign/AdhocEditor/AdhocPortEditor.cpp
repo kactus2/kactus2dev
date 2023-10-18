@@ -54,10 +54,10 @@ AdhocPortEditor::AdhocPortEditor(QSharedPointer<ParameterFinder> designParameter
     tiedValueRightBoundEditor_(new ExpressionEditor(designParameterFinder, this)),
     designParameterFinder_(designParameterFinder)
 {
-    tiedValueEditor_->setFixedHeight(20);
+    tiedValueEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
-    tiedValueLeftBoundEditor_->setFixedHeight(20);
-    tiedValueRightBoundEditor_->setFixedHeight(20);
+    tiedValueLeftBoundEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    tiedValueRightBoundEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(designParameterFinder, this);
     parameterModel->setExpressionParser(expressionParser_);

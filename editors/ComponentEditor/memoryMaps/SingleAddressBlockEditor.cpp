@@ -65,10 +65,10 @@ accessPoliciesEditor_(new AccessPoliciesEditor(addressBlock->getAccessPolicies()
 {
     blockInterface_->setMemoryBlocks(containingMap_->getMemoryBlocks());
 
-    baseAddressEditor_->setFixedHeight(20);
-    rangeEditor_->setFixedHeight(20);
-    widthEditor_->setFixedHeight(20);
-    isPresentEditor_->setFixedHeight(20);
+    baseAddressEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    rangeEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    widthEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);

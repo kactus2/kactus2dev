@@ -1,4 +1,5 @@
-//-----------------------------------------------------------------------------
+//---------
+// --------------------------------------------------------------------
 // File: MasterExpressionEditor.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
@@ -20,18 +21,13 @@
 
 #include <editors/ComponentEditor/parameters/ComponentParameterColumns.h>
 
-
 //-----------------------------------------------------------------------------
 // Function: ExpressionLineEditor::ExpressionLineEditor()
 //-----------------------------------------------------------------------------
 MasterExpressionEditor::MasterExpressionEditor(QSharedPointer<ParameterFinder> parameterFinder, QWidget* parentWidget):
 nameCompleter_(new QCompleter(parentWidget)),
-parameterFinder_(parameterFinder),
-notSelectingText_(true),
-reservedWords_()
+parameterFinder_(parameterFinder)
 {
-    reservedWords_ << "true" << "false";
-
     nameCompleter_->setWidget(parentWidget);
 }
 
@@ -166,19 +162,19 @@ void MasterExpressionEditor::complete(QModelIndex const& index)
 {
     int selectedRow = index.row();
 
-    QModelIndex nameIndex = nameCompleter_->completionModel()->index(selectedRow, ComponentParameterColumns::NAME);
-    QString parameterName = nameIndex.data().toString();
+    auto const nameIndex = nameCompleter_->completionModel()->index(selectedRow, ComponentParameterColumns::NAME);
+    auto const parameterName = nameIndex.data().toString();
 
-    QModelIndex idIndex = nameCompleter_->completionModel()->index(selectedRow, ComponentParameterColumns::ID);
-    QString parameterId = idIndex.data().toString();
+    auto const idIndex = nameIndex.siblingAtColumn(ComponentParameterColumns::ID);
+    auto parameterId = idIndex.data().toString();
    
     if (parameterId.isEmpty())
     {
         parameterId = parameterName;
     }
 
-    QString previousTerm = nthWordIn(currentWordIndex(), expression_);
-    if (isReference(previousTerm))
+    if (auto previousTerm = nthWordIn(currentWordIndex(), expression_); 
+        isReference(previousTerm))
     {
         handleReferenceDecrease(previousTerm);
     }
@@ -209,14 +205,6 @@ void MasterExpressionEditor::updateCompleteWords()
 }
 
 //-----------------------------------------------------------------------------
-// Function: MasterExpressionEditor::wordDelimiter()
-//-----------------------------------------------------------------------------
-QRegularExpression MasterExpressionEditor::wordDelimiter() const
-{
-    return QRegularExpression("[-+/*() ,{}~^]|[<>]=?|[!=]=?|[|&]{1,2}");
-}
-
-//-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::isReference()
 //-----------------------------------------------------------------------------
 bool MasterExpressionEditor::isReference(QString const& text) const
@@ -232,19 +220,20 @@ bool MasterExpressionEditor::isReference(QString const& text) const
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::wordIsConstant()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::wordIsConstant(QString const& word) const
+bool MasterExpressionEditor::wordIsConstant(QString const& word) 
 {
-    QRegularExpression constant("^" + SystemVerilogSyntax::INTEGRAL_NUMBER + "|" + SystemVerilogSyntax::STRING_LITERAL + "$");
+    static QRegularExpression constant("^" + SystemVerilogSyntax::INTEGRAL_NUMBER + "|" +
+        SystemVerilogSyntax::STRING_LITERAL + "$");
     return constant.match(word).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::colorFormat()
 //-----------------------------------------------------------------------------
-QTextCharFormat MasterExpressionEditor::colorFormat(QString const& textColor) const
+QTextCharFormat MasterExpressionEditor::colorFormat(Qt::GlobalColor textColor) const
 {
     QTextCharFormat format;
-    format.setForeground(QColor(textColor));
+    format.setForeground(textColor);
     return format;
 }
 
@@ -255,17 +244,21 @@ bool MasterExpressionEditor::editingMiddleOfReference() const
 {
     int newCursorPosition = getCursorPosition();
 
-    return isReference(nthWordIn( currentWordIndex(), expression_)) && newCursorPosition != startOfCurrentWord() && newCursorPosition != endOfCurrentWord();
+    return isReference(nthWordIn( currentWordIndex(), expression_)) && 
+        newCursorPosition != startOfCurrentWord() &&
+        newCursorPosition != endOfCurrentWord();
 }
 
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::removesLastCharacterOfWord()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::removesLastCharacterOfWord(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::removesLastCharacterOfWord(QKeyEvent* keyEvent) const
 {
     int newCursorPosition = getCursorPosition();
 
-    return ((keyEvent->key() == Qt::Key_Delete && newCursorPosition == startOfCurrentWord()) || (keyEvent->key() == Qt::Key_Backspace && newCursorPosition == endOfCurrentWord())) && currentWordLength() == 1;
+    return ((keyEvent->key() == Qt::Key_Delete && newCursorPosition == startOfCurrentWord()) ||
+        (keyEvent->key() == Qt::Key_Backspace && newCursorPosition == endOfCurrentWord())) &&
+        currentWordLength() == 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -273,7 +266,7 @@ bool MasterExpressionEditor::removesLastCharacterOfWord(QKeyEvent* keyEvent)
 //-----------------------------------------------------------------------------
 void MasterExpressionEditor::removeTermUnderCursor()
 {
-    QString removedReference = nthWordIn(currentWordIndex(), expression_);
+    auto const removedReference = nthWordIn(currentWordIndex(), expression_);
     expression_ = replaceNthWordWith(currentWordIndex(), expression_, "");
 
     if (isReference(removedReference))
@@ -285,7 +278,7 @@ void MasterExpressionEditor::removeTermUnderCursor()
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::removesOperatorBeforeWord()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::removesOperatorBeforeWord(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::removesOperatorBeforeWord(QKeyEvent* keyEvent) const
 {
     return keyEvent->key() == Qt::Key_Backspace && getCursorPosition() == startOfCurrentWord();
 }
@@ -302,7 +295,7 @@ void MasterExpressionEditor::removeOperatorBeforeCursorInExpression()
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::removesOperatorAfterCursor()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::removesOperatorAfterCursor(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::removesOperatorAfterCursor(QKeyEvent* keyEvent) const
 {
     return keyEvent->key() == Qt::Key_Delete && getCursorPosition() == endOfCurrentWord();
 }
@@ -329,18 +322,16 @@ QString MasterExpressionEditor::currentWord() const
 //-----------------------------------------------------------------------------
 int MasterExpressionEditor::startOfCurrentWord() const
 {
-    QString plainText = getCurrentText();
-    QString leftSide = plainText.left(getCursorPosition());
+    auto plainText = getCurrentText();
+    auto leftSide = plainText.left(getCursorPosition());
 
-    int operandIndex = leftSide.lastIndexOf(wordDelimiter());
+    int operandIndex = leftSide.lastIndexOf(WORD_DELIMITER);
 
     int operatorSize = 1;
 
-    if (operandIndex > 0 && operandIndex < leftSide.size())
+    if (0 < operandIndex && operandIndex < leftSide.size())
     {
-        QString operatorAtPosition = leftSide.at(operandIndex);
-
-        operatorSize = wordDelimiter().match(leftSide, operandIndex).capturedLength();
+        operatorSize = WORD_DELIMITER.match(leftSide, operandIndex).capturedLength();
     }
 
     return operandIndex + operatorSize;
@@ -351,7 +342,7 @@ int MasterExpressionEditor::startOfCurrentWord() const
 //-----------------------------------------------------------------------------
 int MasterExpressionEditor::endOfCurrentWord() const
 {
-    int endPos = getCurrentText().indexOf(wordDelimiter(), getCursorPosition());
+    int endPos = getCurrentText().indexOf(WORD_DELIMITER, getCursorPosition());
 
     if (endPos == -1)
     {
@@ -374,7 +365,7 @@ int MasterExpressionEditor::currentWordLength() const
 //-----------------------------------------------------------------------------
 int MasterExpressionEditor::currentWordIndex() const
 {
-    return getCurrentText().left(getCursorPosition()).count(wordDelimiter());
+    return getCurrentText().left(getCursorPosition()).count(WORD_DELIMITER);
 }
 
 //-----------------------------------------------------------------------------
@@ -394,7 +385,7 @@ QString MasterExpressionEditor::nthWordIn(int n, QString const& text) const
 {
     int startIndex = indexOfNthWord(n, text);
 
-    int endIndex = text.indexOf(wordDelimiter(), startIndex);
+    int endIndex = text.indexOf(WORD_DELIMITER, startIndex);
     if (endIndex == -1)
     {
         endIndex = text.length();
@@ -412,7 +403,7 @@ int MasterExpressionEditor::indexOfNthWord(int n, QString const& text) const
     int startIndex = 0;
     for (int i = 0; i < n; i++)
     {
-        startIndex = text.indexOf(wordDelimiter(), startIndex) + 1;
+        startIndex = text.indexOf(WORD_DELIMITER, startIndex) + 1;
     }
 
     return startIndex;
@@ -421,7 +412,7 @@ int MasterExpressionEditor::indexOfNthWord(int n, QString const& text) const
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::currentWordIsUniqueParameterName()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::currentWordIsUniqueParameterName()
+bool MasterExpressionEditor::currentWordIsUniqueParameterName() const
 {
     return nameCompleter_->completionCount() == 1 && currentWord() == nameCompleter_->currentCompletion();
 }
@@ -431,7 +422,7 @@ bool MasterExpressionEditor::currentWordIsUniqueParameterName()
 //-----------------------------------------------------------------------------
 bool MasterExpressionEditor::isWordDelimiter(QString const& text) const
 {
-    return wordDelimiter().match(text).hasMatch();
+    return WORD_DELIMITER.match(text).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
@@ -455,13 +446,14 @@ void MasterExpressionEditor::handleMouseReleaseEvent()
 //-----------------------------------------------------------------------------
 bool MasterExpressionEditor::removesOrReplacesText(QKeyEvent* keyEvent)
 {
-    return keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace || (hasSelection() && !keyEvent->text().isEmpty());
+    return keyEvent->key() == Qt::Key_Delete || keyEvent->key() == Qt::Key_Backspace ||
+        (hasSelection() && !keyEvent->text().isEmpty());
 }
 
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::keysequenceCopyCutPaste()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::keysequenceCopyCutPaste(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::keysequenceCopyCutPaste(QKeyEvent* keyEvent) const
 {
     return keyEvent == QKeySequence::Copy || keyEvent == QKeySequence::Cut || keyEvent == QKeySequence::Paste;
 }
@@ -469,7 +461,7 @@ bool MasterExpressionEditor::keysequenceCopyCutPaste(QKeyEvent* keyEvent)
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::movesCursor()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::keyMovesCursor(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::keyMovesCursor(QKeyEvent* keyEvent) const
 {
     return keyEvent->key() == Qt::Key_Home || keyEvent->key() == Qt::Key_End || keyEvent->key() == Qt::Key_Left ||
         keyEvent->key() == Qt::Key_Right;
@@ -486,7 +478,6 @@ void MasterExpressionEditor::removeSelectionInExpression()
     int lastWord = getSelectionLastWord();
 
     replaceReferencesInExpressionWithNames(firstWord, lastWord);
-
 
     int firstTermPos = indexOfNthWord(firstWord, expression_);
     expression_.remove(expression_.indexOf(selectedText, firstTermPos), selectedText.length());
@@ -541,7 +532,7 @@ void MasterExpressionEditor::finishEditingCurrentTerm(QString const& delimiter)
 //-----------------------------------------------------------------------------
 // Function: MasterExpressionEditor::showCompletionsReguested()
 //-----------------------------------------------------------------------------
-bool MasterExpressionEditor::showCompletionsRequested(QKeyEvent* keyEvent)
+bool MasterExpressionEditor::showCompletionsRequested(QKeyEvent* keyEvent) const
 {
     return keyEvent->key() == Qt::Key_Space && (keyEvent->modifiers() & Qt::ControlModifier);
 }

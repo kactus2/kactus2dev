@@ -97,6 +97,7 @@ private:
     QSharedPointer<ModeValidator> validator_;
 
     ExpressionSet expressions_;
+
 };
 
 #endif // SINGLE_MODE_ITEM_H

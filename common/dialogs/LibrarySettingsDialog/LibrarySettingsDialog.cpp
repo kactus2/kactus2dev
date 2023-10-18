@@ -160,9 +160,7 @@ void LibrarySettingsDialog::addLocation()
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::removeLocation()
 {
-    int row = libLocationsTable_->currentRow();
-
-    if (row >= 0)
+    if (int row = libLocationsTable_->currentRow(); row >= 0)
     {
         QTableWidgetItem* defItem = libLocationsTable_->takeItem(row, LibrarySettingsColumns::DEFAULT);
         delete defItem;
@@ -184,7 +182,7 @@ void LibrarySettingsDialog::removeLocation()
 //-----------------------------------------------------------------------------
 void LibrarySettingsDialog::onSelectLocation(QTableWidgetItem* cur, QTableWidgetItem*)
 {
-    removeLocationButton_->setEnabled(cur != 0);
+    removeLocationButton_->setEnabled(cur != nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -313,7 +311,7 @@ void LibrarySettingsDialog::loadSettings()
     QStringList activeLocations = settings_.value(QStringLiteral("Library/ActiveLocations")).toStringList();
     QStringList locations = settings_.value(QStringLiteral("Library/Locations")).toStringList();
 
-    foreach (QString const& location, locations)
+    for (QString const& location : locations)
     {
         QString fullLocation = location;
 
@@ -365,8 +363,7 @@ void LibrarySettingsDialog::createRowForDirectory(QString const& directory, bool
     QTableWidgetItem* pathItem = new QTableWidgetItem(directory);
     pathItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 
-    QFileInfo directoryInfo(directory);
-    if (directoryInfo.exists())
+    if (QFileInfo directoryInfo(directory); directoryInfo.exists())
     {
          pathItem->setIcon(iconProvider_.icon(directoryInfo));
     }

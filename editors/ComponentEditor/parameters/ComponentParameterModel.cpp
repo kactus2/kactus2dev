@@ -102,7 +102,7 @@ QVariant ComponentParameterModel::data(QModelIndex const& index, int role) const
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterModel::isValidExpressionColumn()
 //-----------------------------------------------------------------------------
-bool ComponentParameterModel::isValidExpressionColumn(QModelIndex const& index) const
+bool ComponentParameterModel::isValidExpressionColumn(QModelIndex const& /*index*/) const
 {
     return false;
 }

@@ -12,10 +12,11 @@
 #include "ChannelValidator.h"
 
 #include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+#include <IPXACTmodels/utilities/Search.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <QRegularExpression>
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -47,9 +48,7 @@ bool ChannelValidator::validate(QSharedPointer<Channel> channel) const
 		return false;
 	}
 	
-    bool isValidPresence = false;
-    expressionParser_->parseExpression(channel->getIsPresent(), &isValidPresence);
-    if (isValidPresence == false)
+    if (CommonItemsValidator::hasValidIsPresent(channel->getIsPresent(), expressionParser_) == false)
 	{
 		return false;
 	}
@@ -72,15 +71,8 @@ bool ChannelValidator::hasValidBusInterfaceReferences(QSharedPointer<Channel> ch
         return false;
     }
 
-    for (auto const& currentRef : *channel->getInterfaces())
-    {
-        if (!isReferenceToMirroredInterface(currentRef->localName_))
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return std::all_of(channel->getInterfaces()->cbegin(), channel->getInterfaces()->cend(),
+        [this](auto const& currentRef) { return isReferenceToMirroredInterface(currentRef->localName_); });
 }
 
 //-----------------------------------------------------------------------------
@@ -95,9 +87,7 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
             .arg(channel->name()).arg(context));
 	}
 
-    bool isValidPresence = false;
-    expressionParser_->parseExpression(channel->getIsPresent(), &isValidPresence);
-	if (isValidPresence == false)
+	if (CommonItemsValidator::hasValidIsPresent(channel->getIsPresent(), expressionParser_) == false)
 	{
         errors.append(QObject::tr("Is present expression '%1' in channel %2 is invalid.").arg(
             channel->getIsPresent(), channel->name()));
@@ -128,14 +118,7 @@ void ChannelValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Cha
 //-----------------------------------------------------------------------------
 bool ChannelValidator::hasValidName(QString const& name) const
 {
-	QRegularExpression whiteSpaceExpression(QStringLiteral("^\\s*$"));
-
-	if (name.isEmpty() || whiteSpaceExpression.match(name).hasMatch())
-	{
-		return false;
-	}
-
-	return true;
+	return CommonItemsValidator::hasValidName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -143,18 +126,13 @@ bool ChannelValidator::hasValidName(QString const& name) const
 //-----------------------------------------------------------------------------
 bool ChannelValidator::isValidBusIntefaceReference(QString const& interfaceName) const
 {
-    if (busInterfaces_)
+    if (busInterfaces_ == nullptr)
     {
-        for (QSharedPointer<BusInterface> const& busInterface : *busInterfaces_)
-        {
-            if (busInterface->name() == interfaceName)
-            {
-                return true;
-            }
-        }
+        return false;
     }
 
-    return false;
+    auto const& busInterface = Search::findByName(interfaceName, *busInterfaces_);
+    return busInterface.isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -162,19 +140,22 @@ bool ChannelValidator::isValidBusIntefaceReference(QString const& interfaceName)
 //-----------------------------------------------------------------------------
 bool ChannelValidator::isReferenceToMirroredInterface(QString const& interfaceName) const
 {
-    if (busInterfaces_)
+    if (busInterfaces_ == nullptr)
     {
-        for (QSharedPointer<BusInterface> const& busInterface : *busInterfaces_)
-        {
-            if (busInterface->name() == interfaceName)
-            {
-                return busInterface->getInterfaceMode() == General::MIRRORED_MASTER ||
-                    busInterface->getInterfaceMode() == General::MIRRORED_SLAVE ||
-                    busInterface->getInterfaceMode() == General::MIRRORED_SYSTEM;
-            }
-        }
+        return false;
     }
 
-    return false;
+    auto const& busInterface = Search::findByName(interfaceName, *busInterfaces_);
+    if (busInterface == nullptr)
+    {
+        return false;
+    }
+
+    auto const& mode = busInterface->getInterfaceMode();
+    return mode == General::MIRRORED_MASTER ||
+        mode == General::MIRRORED_SLAVE ||
+        mode == General::MIRRORED_INITIATOR ||
+        mode == General::MIRRORED_TARGET ||
+        mode == General::MIRRORED_SYSTEM;
 }
     

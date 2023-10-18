@@ -42,14 +42,6 @@ expressionFormatter, this))
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRemapStateEditor::~SingleRemapStateEditor()
-//-----------------------------------------------------------------------------
-SingleRemapStateEditor::~SingleRemapStateEditor()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRemapStateEditor::refresh()
 //-----------------------------------------------------------------------------
 void SingleRemapStateEditor::refresh()
@@ -59,39 +51,39 @@ void SingleRemapStateEditor::refresh()
 }
 
 //-----------------------------------------------------------------------------
-// Function: SingleRemapStateEditor::setupLayout()
-//-----------------------------------------------------------------------------
-void SingleRemapStateEditor::setupLayout()
-{
-    QScrollArea* scrollArea = new QScrollArea(this);
-    scrollArea->setWidgetResizable(true);
-    scrollArea->setFrameShape(QFrame::NoFrame);
-
-    QHBoxLayout* scrollLayout = new QHBoxLayout(this);
-    scrollLayout->addWidget(scrollArea);
-    scrollLayout->setContentsMargins(0, 0, 0, 0);
-
-    QVBoxLayout* nameLayout = new QVBoxLayout();
-    nameLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
-
-    QVBoxLayout* remapConditionLayout = new QVBoxLayout();
-    remapConditionLayout->addWidget(remapConditionEditor_, 0);
-
-    QWidget* topWidget = new QWidget(scrollArea);
-    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    scrollArea->setWidget(topWidget);
-
-    QVBoxLayout* topLayout = new QVBoxLayout(topWidget);
-    topLayout->addLayout(nameLayout);
-    topLayout->addLayout(remapConditionLayout);
-    topLayout->setContentsMargins(0,0,0,0);
-}
-
-//-----------------------------------------------------------------------------
 // Function: SingleRemapStateEditor::showEvent()
 //-----------------------------------------------------------------------------
 void SingleRemapStateEditor::showEvent(QShowEvent * event)
 {
     QWidget::showEvent(event);
     emit helpUrlRequested("componenteditor/singleRemapState.html");
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleRemapStateEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void SingleRemapStateEditor::setupLayout()
+{
+    auto scrollArea = new QScrollArea(this);
+    scrollArea->setWidgetResizable(true);
+    scrollArea->setFrameShape(QFrame::NoFrame);
+
+    auto scrollLayout = new QHBoxLayout(this);
+    scrollLayout->addWidget(scrollArea);
+    scrollLayout->setContentsMargins(0, 0, 0, 0);
+
+    auto nameLayout = new QVBoxLayout();
+    nameLayout->addWidget(&nameEditor_, 0, Qt::AlignTop);
+
+    auto remapConditionLayout = new QVBoxLayout();
+    remapConditionLayout->addWidget(remapConditionEditor_, 0);
+
+    auto topWidget = new QWidget(scrollArea);
+    topWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    scrollArea->setWidget(topWidget);
+
+    auto topLayout = new QVBoxLayout(topWidget);
+    topLayout->addLayout(nameLayout);
+    topLayout->addLayout(remapConditionLayout);
+    topLayout->setContentsMargins(0,0,0,0);
 }

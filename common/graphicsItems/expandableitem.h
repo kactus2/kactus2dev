@@ -8,17 +8,18 @@
 #ifndef EXPANDABLEITEM_H
 #define EXPANDABLEITEM_H
 
-#include "visualizeritem.h"
+#include <editors/ComponentEditor/visualization/AddressableItem.h>
+
+#include "graphicsexpandcollapseitem.h"
 
 #include <QGraphicsRectItem>
 #include <QBrush>
 
-class GraphicsExpandCollapseItem;
 
 /*! The base class to visualize IP-Xact models that contain child items.
  *
  */
-class ExpandableItem : public VisualizerItem {
+class ExpandableItem : public AddressableItem {
 	Q_OBJECT
 
 public:
@@ -43,7 +44,7 @@ public:
 	 *
 	 * \return True if children are visible.
 	*/
-	virtual bool isExpanded() const;
+	bool isExpanded() const;
 
     void resizeToContent();
 
@@ -53,7 +54,10 @@ public:
     */
     virtual QRectF itemTotalRect() const = 0;
 
-signals: 
+
+	void setConflicted(bool conflicted) override;
+
+signals:
     //! Emitted when the item is expanded or collapsed.
     void expandStateChanged();
 
@@ -73,23 +77,14 @@ protected slots:
 	*/
 	void setShowExpandableItem(bool show);
 
-
 protected:
-
-	/*! Set the brush used to color the expansion column.
-	 *
-	 * \param brush The brush to use.
-	 *
-	*/
-    void setExpansionBrush(QBrush const& brush);
 
     /*!
      *  Sets the default coloring brush for the item.
      *
      *      @param [in] brush   The brush to set.
      */
-    virtual void setDefaultBrush(QBrush brush) override final;
-
+    void setDefaultBrush(QBrush brush) final;
 
     void setExpansionPen(QPen const& pen);
 
@@ -113,10 +108,10 @@ private:
     void updateRectangle();
 
 	//! The item to show/hide the child items
-	GraphicsExpandCollapseItem* expandCollapseItem_;
+	GraphicsExpandCollapseItem* expandCollapseItem_ = new GraphicsExpandCollapseItem(this);
 
 	//! Pointer to the image used to denote the expandability of the item.
-    QGraphicsPixmapItem* expansionArrow_;
+    QGraphicsPixmapItem* expansionArrow_ = new QGraphicsPixmapItem(this);
 
 };
 

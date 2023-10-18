@@ -2059,9 +2059,6 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\InstantiationsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
@@ -3330,6 +3327,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\visualization\AddressableItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\visualization</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
@@ -6004,6 +6010,12 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\visualization\AddressableItem.h">
+      <Filter>Header Files\editors\ComponentEditor\visualization</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\common</Filter>

@@ -66,6 +66,12 @@ public:
 	//! The destructor.
 	virtual ~ComponentEditorAddrSpaceItem();
 
+    //! No copying.
+    ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other) = delete;
+
+    //! No assignment.
+    ComponentEditorAddrSpaceItem& operator=(const ComponentEditorAddrSpaceItem& other) = delete;
+
 	/*!
      *  Get the tool tip for the item.
 	 * 
@@ -100,7 +106,14 @@ public:
 	 *      @param [in] index The index to add the child into.
 	 */
 	virtual void createChild(int index);
-	
+
+	/*!
+	 *  Remove the child from the given index.
+	 *
+	 *      @param [in] index Identifies the child to remove.
+	 */
+    void removeChild(int index) final;
+
 	/*!
      *  Get the visualizer graphics item for the memory map.
 	 *
@@ -157,12 +170,6 @@ signals:
     void addressingChanged();
 
 private:
-
-	//! No copying.
-	ComponentEditorAddrSpaceItem(const ComponentEditorAddrSpaceItem& other);
-
-	//! No assignment.
-	ComponentEditorAddrSpaceItem& operator=(const ComponentEditorAddrSpaceItem& other);
 
 	//! The address space being edited.
 	QSharedPointer<AddressSpace> addrSpace_;

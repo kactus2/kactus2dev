@@ -17,7 +17,6 @@
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/Component/FieldReferenceWriter.h>
 
-
 //-----------------------------------------------------------------------------
 // Function: ModeWriter::writeMode()
 //-----------------------------------------------------------------------------
@@ -27,11 +26,21 @@ void ModeWriter::writeMode(QXmlStreamWriter& writer, QSharedPointer<Mode> mode)
 
     NameGroupWriter::writeNameGroup(writer, mode, Document::Revision::Std22);
 
+    Details::writeCondition(writer, mode);
+
     Details::writePortSlices(writer, mode);
 
     Details::writeFieldSlices(writer, mode);
 
     writer.writeEndElement(); // ipxact:mode
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeWriter::Details::writeCondition()
+//-----------------------------------------------------------------------------
+void ModeWriter::Details::writeCondition(QXmlStreamWriter& writer, QSharedPointer<Mode> mode)
+{
+    CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:condition"), mode->getCondition());
 }
 
 //-----------------------------------------------------------------------------

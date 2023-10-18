@@ -18,14 +18,15 @@
 /*! VisualizerItem is base class that provides interface to visualize IP-Xact models.
  *
  */
-class VisualizerItem : public QObject, public QGraphicsRectItem {
+class VisualizerItem : public QObject, public QGraphicsRectItem
+{
 	Q_OBJECT
 
 public:
 
 	//! The minimum and maximum bounds for visualizer items.
 	enum Bounds {
-		DEFAULT_HEIGHT = 40,    //! The height of a single item
+		DEFAULT_HEIGHT = 44,    //! The height of a single item
 		MIN_WIDTH = 90,			//! The minimum width of an item
 		DEFAULT_WIDTH = 200,	//! The default width of a single item
 		NAME_INDENTATION = 15,  //! How much space the name leaves for left corners
@@ -52,7 +53,7 @@ public:
 	 *      @param parent Pointer to the owner of this graphics item.
 	 *
 	*/
-	explicit VisualizerItem(QGraphicsItem* parent = 0);
+	explicit VisualizerItem(QGraphicsItem* parent = nullptr);
 	
 	//! The destructor
 	virtual ~VisualizerItem() = default;
@@ -97,7 +98,7 @@ protected slots:
 	 * 
 	 * The base class implementation only updates the position of the name and corner texts.
 	*/
-	virtual void repositionLabels();
+	void repositionLabels();
 
 protected:
 
@@ -106,7 +107,7 @@ protected:
 	 *      @param name The name to display.
 	 *
 	*/
-	virtual void setName(QString const& name);
+	void setName(QString const& name);
 
 	/*! Set text to the top left corner.
 	 *
@@ -155,7 +156,7 @@ protected:
      *
      *      @return [in] brush   The default brush.
      */
-    QBrush defaultBrush();
+    QBrush defaultBrush() const;
 
 private:
     void setLabelPositions();
@@ -205,7 +206,7 @@ private:
     QBrush defaultBrush_;
 
     //! The layout style for labels.
-    LabelLayout labelPositioning_;
+    LabelLayout labelPositioning_{ VisualizerItem::UNDEFINED };
 
 	//! The label to display the name of the memory map.
     QGraphicsSimpleTextItem nameItem_;

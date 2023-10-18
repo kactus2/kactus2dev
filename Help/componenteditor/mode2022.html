@@ -27,7 +27,16 @@
     <p>
       The condition defines when the mode is active. If the condition expression evaluates
       to true, the component is operating in the defined mode. The condition may depend
-      on run-time value of a port, register field and other modes.
+      on run-time value of a port, register field and other modes. The expression accepts
+      the following special functions:
+      <ul>
+        <li><b>$ipxact_port_value</b>( [port slice name] )</li>
+        <li><b>$ipxact_field_value</b>( [field slice name] )</li>
+        <li><b>$ipxact_mode_condition</b>( [mode name] )</li>
+      </ul>
+      The functions refer to a port input value, a value stored in a bitfield or
+      another mode condition value, respectively. The port slices and field slices
+      are defined below.
     </p>
 
     <h3>Condition ports</h3>
@@ -73,5 +82,13 @@
       <b>Description</b> is an optional field for textual description of the <i>port</i>.		
     </p>
 
+    <hr>
+    <p>
+    EXAMPLE. The mode named reset is active when the value of the bit 0 in the physical port
+    button_in i.e. button_in[0:0] is equal to 1. 
+    <br>
+    <br>
+    <img src="../images/modeExample.png" alt="Example of a reset condition">
+  </p>
   </body>
 </html>

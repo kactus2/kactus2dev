@@ -60,9 +60,10 @@ void RegisterGraphItem::updateDisplay()
     setDisplayLastAddress(lastAddress);
 
     // Set tooltip to show addresses in hexadecimals.
+    const int BIT_WIDTH = getBitWidth();
     setToolTip("<b>Name: </b>" % register_->name() % "<br>" %
-        "<b>First address: </b>" % toHexString(offset) % "<br>" %
-        "<b>Last address: </b>" % toHexString(lastAddress) % "<br>" %
+        "<b>First address: </b>" % toHexString(offset, BIT_WIDTH) % "<br>" %
+        "<b>Last address: </b>" % toHexString(lastAddress, BIT_WIDTH) % "<br>" %
         "<b>Size [bits]: </b>" % QString::number(getBitWidth()));
 }
 

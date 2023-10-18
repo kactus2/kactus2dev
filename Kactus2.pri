@@ -876,8 +876,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/extensions/IOCatcher.h \
     ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/common/FloatingModeReferenceEditor.h \
-    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h
-SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h    ./editors/ComponentEditor/visualization/AddressableItem.h \
+    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.hSOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1653,5 +1653,5 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/extensions/IOCatcher.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
     ./editors/ComponentEditor/common/FloatingModeReferenceEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp
-RESOURCES += kactus.qrc
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp    ./editors/ComponentEditor/visualization/AddressableItem.cpp \
+    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.cppRESOURCES += kactus.qrc

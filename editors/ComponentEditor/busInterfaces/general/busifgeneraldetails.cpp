@@ -51,7 +51,7 @@ bitSteeringEditor_(finder, this)
     auto bitInLauCompleter = new QCompleter(this);
     bitInLauCompleter->setModel(componentParameterModel);
     bitsInLauEditor_.setAppendingCompleter(bitInLauCompleter);
-    bitsInLauEditor_.setFixedHeight(20);
+    bitsInLauEditor_.setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
     endiannessSelector_.addItem(QString("little"));
 	endiannessSelector_.addItem(QString("big"));
@@ -66,7 +66,7 @@ bitSteeringEditor_(finder, this)
     bitSteeringCompleter->setModel(componentParameterModel);
     bitSteeringEditor_.setAppendingCompleter(bitSteeringCompleter);
 
-    bitSteeringEditor_.setFixedHeight(20);
+    bitSteeringEditor_.setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
     bitSteeringEditor_.setVisible(docRevision == Document::Revision::Std22);
 
     connect(&modeSelector_, SIGNAL(modeSelected(General::InterfaceMode)),

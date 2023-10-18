@@ -22,12 +22,10 @@ MemoryGapItem::MemoryGapItem(QSharedPointer<ExpressionParser> expressionParser, 
 MemoryVisualizationItem(expressionParser, parent)
 {
 	setDefaultBrush(QBrush(QColor(Qt::white)));
-	setExpansionBrush(QBrush(QColor(Qt::white)));
 
     setShowExpandableItem(false);
-    setLayoutType(LABELS_LEFT);
 
-	setName("Reserved");	
+	setName(QStringLiteral("Reserved"));
     setToolTip("This memory block is reserved for future use.");
 }
 

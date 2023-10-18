@@ -50,7 +50,7 @@ public:
      *
      *      @return True, if the expression is a symbol, otherwise false.
      */
-    virtual bool isSymbol(QString const& expression) const override final;
+    bool isSymbol(QString const& expression) const override;
 
     /*!
      *  Finds the value for given symbol.
@@ -59,7 +59,7 @@ public:
      *
      *      @return The found symbol value.
      */
-    virtual QString findSymbolValue(QString const& symbol) const override final;
+    QString findSymbolValue(QString const& symbol) const override;
 
     /*!
      *  Finds the base in the symbol.
@@ -68,7 +68,7 @@ public:
      *
      *      @return The base for the symbol.
      */
-    virtual int getBaseForSymbol(QString const& symbol) const override final;
+    int getBaseForSymbol(QString const& symbol) const final;
 
 private:
 

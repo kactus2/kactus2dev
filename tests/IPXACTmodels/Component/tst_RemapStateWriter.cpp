@@ -93,8 +93,7 @@ void tst_RemapStateWriter::writeSimpleRemapState()
         "</ipxact:remapState>"
         );
 
-    RemapStateWriter remapStateWriter;
-    remapStateWriter.writeRemapState(xmlStreamWriter, testRemapState_);
+    RemapStateWriter::writeRemapState(xmlStreamWriter, testRemapState_);
     QCOMPARE(output, expectedOutput);
 
     expectedOutput.clear();
@@ -110,7 +109,7 @@ void tst_RemapStateWriter::writeSimpleRemapState()
         "</ipxact:remapState>"
         ;
 
-    remapStateWriter.writeRemapState(xmlStreamWriter, testRemapState_);
+    RemapStateWriter::writeRemapState(xmlStreamWriter, testRemapState_);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -147,8 +146,7 @@ void tst_RemapStateWriter::writeRemapPorts()
         "</ipxact:remapState>"
         );
 
-    RemapStateWriter remapStateWriter;
-    remapStateWriter.writeRemapState(xmlStreamWriter, testRemapState_);
+    RemapStateWriter::writeRemapState(xmlStreamWriter, testRemapState_);
     QCOMPARE(output, expectedOutput);
 }
 

@@ -17,7 +17,7 @@
 // Function: IPXactSystemVerilogParser::IPXactSystemVerilogParser()
 //-----------------------------------------------------------------------------
 IPXactSystemVerilogParser::IPXactSystemVerilogParser(QSharedPointer<ParameterFinder> finder):
-SystemVerilogExpressionParser(), finder_(finder), symbolStack_()
+SystemVerilogExpressionParser(), finder_(finder)
 {
 
 }
@@ -48,7 +48,6 @@ QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) co
     {
         symbolStack_.removeLast();
     }
-    
 
     return value;
 }
