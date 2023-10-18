@@ -39,15 +39,13 @@ NameGroup(other),
 {
     for (auto const& interalReference : *other.internalPortReferences_)
     {
-        QSharedPointer<PortReference> copy =
-            QSharedPointer<PortReference>(new PortReference(*interalReference));
+        auto copy = QSharedPointer<PortReference>(new PortReference(*interalReference));
         internalPortReferences_->append(copy);
     }
 
     for (auto const& externalReference  :*other.externalPortReferences_)
     {
-        QSharedPointer<PortReference> copy =
-            QSharedPointer<PortReference>(new PortReference(*externalReference));
+        auto copy = QSharedPointer<PortReference>(new PortReference(*externalReference));
         externalPortReferences_->append(copy);
     }
 }
@@ -67,16 +65,14 @@ AdHocConnection& AdHocConnection::operator=( const AdHocConnection& other )
         internalPortReferences_->clear();
         for (auto const& interalReference : *other.internalPortReferences_)
         {
-            QSharedPointer<PortReference> copy =
-                QSharedPointer<PortReference>(new PortReference(*interalReference));
+            auto copy = QSharedPointer<PortReference>(new PortReference(*interalReference));
             internalPortReferences_->append(copy);
         }
 
         externalPortReferences_->clear();
         for (auto const& externalReference : *other.externalPortReferences_)
         {
-            QSharedPointer<PortReference> copy =
-                QSharedPointer<PortReference>(new PortReference(*externalReference));
+             auto copy = QSharedPointer<PortReference>(new PortReference(*externalReference));
             externalPortReferences_->append(copy);
         }
     }
@@ -123,7 +119,6 @@ void AdHocConnection::setRoute(QList<QPointF> const& route)
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
     getVendorExtensions()->removeAll(extension);
-
 
     if (!route.isEmpty())
     {

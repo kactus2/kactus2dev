@@ -29,15 +29,6 @@ Document(vlnv, revision)
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
 //-----------------------------------------------------------------------------
-Design::Design() :
-Document()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::Design()
-//-----------------------------------------------------------------------------
 Design::Design(Design const& other) :
 Document(other)
 {
@@ -69,6 +60,16 @@ Design& Design::operator=( const Design& other )
 QSharedPointer<Document> Design::clone() const
 {
 	return QSharedPointer<Document>(new Design(*this));
+}
+
+//-----------------------------------------------------------------------------
+// Function: Design::setVlnv()
+//-----------------------------------------------------------------------------
+void Design::setVlnv(VLNV const& vlnv)
+{
+    VLNV designVLNV(vlnv);
+    designVLNV.setType(VLNV::DESIGN);
+    Document::setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -205,8 +206,8 @@ QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
 {
     QList<QSharedPointer<ColumnDesc> > columnList;
 
-    QSharedPointer<Kactus2Group> columnExtensions = getLayoutExtension();
-    if (columnExtensions != nullptr)
+    if (QSharedPointer<Kactus2Group> columnExtensions = getLayoutExtension(); 
+        columnExtensions != nullptr)
     {  
         auto columnIdentifier = QStringLiteral("kactus2:column");
         for (auto const& extension : columnExtensions->getByType(columnIdentifier))
@@ -224,9 +225,9 @@ QList<QSharedPointer<ColumnDesc> > Design::getColumns() const
 QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
 {
     QList<QSharedPointer<ConnectionRoute> > routes;
-
-    QSharedPointer<Kactus2Group> routeExtensions = getRoutesExtension();
-    if (routeExtensions != nullptr)
+ 
+    if (QSharedPointer<Kactus2Group> routeExtensions = getRoutesExtension(); 
+        routeExtensions != nullptr)
     {  
         auto routeIdentifier = QStringLiteral("kactus2:route");
         for (auto const& extension : routeExtensions->getByType(routeIdentifier))
@@ -263,16 +264,6 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 
         getVendorExtensions()->append(portAdHocs);
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Design::setVlnv()
-//-----------------------------------------------------------------------------
-void Design::setVlnv(VLNV const& vlnv)
-{
-    VLNV designVLNV(vlnv);
-    designVLNV.setType(VLNV::DESIGN);
-    Document::setVlnv(vlnv);
 }
 
 //-----------------------------------------------------------------------------

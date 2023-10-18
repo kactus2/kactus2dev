@@ -11,6 +11,8 @@
 
 #include "AdHocConnectionValidator.h"
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/AdHocConnection.h>
@@ -19,8 +21,6 @@
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
-
-#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionValidator::AdHocConnectionValidator()
@@ -64,16 +64,7 @@ bool AdHocConnectionValidator::validate(QSharedPointer<AdHocConnection> connecti
 //-----------------------------------------------------------------------------
 bool AdHocConnectionValidator::hasValidName(QSharedPointer<AdHocConnection> connection) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(connection->name());
-
-    if (connection->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(connection->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -81,20 +72,7 @@ bool AdHocConnectionValidator::hasValidName(QSharedPointer<AdHocConnection> conn
 //-----------------------------------------------------------------------------
 bool AdHocConnectionValidator::hasValidIsPresent(QString const& isPresent) const
 {
-    if (!isPresent.isEmpty())
-    {
-        QString solvedValue = parser_->parseExpression(isPresent);
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(isPresent, parser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -125,9 +103,8 @@ bool AdHocConnectionValidator::hasValidPortReferences(QSharedPointer<AdHocConnec
         return false;
     }
 
-    auto const& tiedValue = connection->getTiedValue();
     if (std::any_of(connection->getInternalPortReferences()->cbegin(), connection->getInternalPortReferences()->cend(),
-        [this, &tiedValue](auto const& internalReference)
+        [this, tiedValue = connection->getTiedValue()](auto const& internalReference)
         {return internalPortReferenceIsValid(internalReference, tiedValue) == false; }))
     {
         return false;
@@ -154,9 +131,8 @@ bool AdHocConnectionValidator::internalPortReferenceIsValid(QSharedPointer<PortR
         return false;
     }
 
-    auto referencedInstance = getReferencedComponentInstance(portReference->getComponentRef());
-
-    if (referencedInstance)
+    if (auto referencedInstance = getReferencedComponentInstance(portReference->getComponentRef()); 
+        referencedInstance)
     {
         auto referencedComponent = getReferencedComponent(referencedInstance);
         if (referencedComponent)
@@ -323,8 +299,8 @@ void AdHocConnectionValidator::findErrorsInName(QVector<QString>& errors,
 {
     if (!hasValidName(connection))
     {
-        errors.append(QObject::tr("Invalid name '%1' set for ad hoc connection within %3")
-            .arg(connection->name()).arg(context));
+        errors.append(QObject::tr("Invalid name '%1' set for ad hoc connection within %2")
+            .arg(connection->name(), context));
     }
 }
 
@@ -336,7 +312,7 @@ void AdHocConnectionValidator::findErrorsInIsPresent(QVector<QString>& errors, Q
 {
     if (!hasValidIsPresent(isPresent))
     {
-        errors.append(QObject::tr("Invalid isPresent set for %1 within %2").arg(innerContext).arg(context));
+        errors.append(QObject::tr("Invalid isPresent set for %1 within %2").arg(innerContext, context));
     }
 }
 
@@ -349,7 +325,7 @@ void AdHocConnectionValidator::findErrorsInTiedValue(QVector<QString>& errors,
     if (!hasValidTiedValue(connection))
     {
         errors.append(QObject::tr("Invalid tied value set for ad hoc connection %1 within %2")
-            .arg(connection->name()).arg(context));
+            .arg(connection->name(), context));
     }
 }
 
@@ -393,13 +369,13 @@ void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString
     if (internalPort->getComponentRef().isEmpty())
     {
         errors.append(QObject::tr("No component reference set for internal port reference in %1 within %2")
-            .arg(innerContext).arg(context));
+            .arg(innerContext, context));
     }
     else if (!referencedInstance)
     {
         errors.append(QObject::tr("Component instance %1 referenced by internal port reference in %2 within %3 "
             "was not found")
-            .arg(internalPort->getComponentRef()).arg(innerContext).arg(context));
+            .arg(internalPort->getComponentRef(), innerContext, context));
     }
 
     QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
@@ -407,7 +383,7 @@ void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString
     if (internalPort->getPortRef().isEmpty())
     {
         errors.append(QObject::tr("No port reference set for internal port reference in %1 within %2")
-            .arg(innerContext).arg(context));
+            .arg(innerContext, context));
     }
     else if (referencedComponent)
     {
@@ -418,14 +394,14 @@ void AdHocConnectionValidator::findErrorsInInternalPortReference(QVector<QString
             {
                 errors.append(QObject::tr("No default value found for port '%1' referenced by internal port "
                     "reference in %2 within %3")
-                    .arg(internalPort->getPortRef()).arg(innerContext).arg(context));
+                    .arg(internalPort->getPortRef(), innerContext, context));
             }
         }
         else
         {
             errors.append(QObject::tr("Port '%1' referenced by the internal port reference  in %2 within %3 was "
                 "not found")
-                .arg(internalPort->getPortRef()).arg(innerContext).arg(context));
+                .arg(internalPort->getPortRef(), innerContext, context));
         }
     }
 
@@ -443,7 +419,7 @@ void AdHocConnectionValidator::findErrorsInExternalPortReference(QVector<QString
     if (externalPort->getPortRef().isEmpty())
     {
         errors.append(QObject::tr("No port reference set for external port reference in %1 within %2")
-            .arg(innerContext).arg(context));
+            .arg(innerContext, context));
     }
 
     findErrorsInIsPresent(errors, externalPort->getIsPresent(), elementName, innerContext);
@@ -466,7 +442,7 @@ void AdHocConnectionValidator::findErrorsInPortReferencePartSelect(QVector<QStri
         (!partSelect->getIndices() || partSelect->getIndices()->isEmpty()))
     {
         errors.append(QObject::tr("No range or index set for part select in %1 in %2 within %3")
-            .arg(elementName).arg(innerContext).arg(context));
+            .arg(elementName, innerContext, context));
     }
     else
     {
@@ -475,12 +451,12 @@ void AdHocConnectionValidator::findErrorsInPortReferencePartSelect(QVector<QStri
             if (!unsignedIntExpressionIsValid(partSelect->getLeftRange()))
             {
                 errors.append(QObject::tr("Invalid left value '%1' set for %2 part select in %3 within %4")
-                    .arg(partSelect->getLeftRange()).arg(elementName).arg(innerContext).arg(context));
+                    .arg(partSelect->getLeftRange(), elementName, innerContext, context));
             }
             if (!unsignedIntExpressionIsValid(partSelect->getRightRange()))
             {
                 errors.append(QObject::tr("Invalid right value '%1' set for %2 part select in %3 within %4")
-                    .arg(partSelect->getRightRange()).arg(elementName).arg(innerContext).arg(context));
+                    .arg(partSelect->getRightRange(), elementName, innerContext, context));
             }
         }
         if (!partSelect->getIndices()->isEmpty())
@@ -490,7 +466,7 @@ void AdHocConnectionValidator::findErrorsInPortReferencePartSelect(QVector<QStri
                 if (!unsignedIntExpressionIsValid(index))
                 {
                     errors.append(QObject::tr("Invalid index value '%1' set for %2 part select in %3 within %4")
-                        .arg(index).arg(elementName).arg(innerContext).arg(context));
+                        .arg(index).arg(elementName, innerContext, context));
                 }
             }
         }

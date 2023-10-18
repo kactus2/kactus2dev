@@ -66,8 +66,7 @@ MonitorInterconnection& MonitorInterconnection::operator=(const MonitorInterconn
         monitorInterfaces_->clear();
         for (auto const& singleInterface : *other.monitorInterfaces_)
         {
-            QSharedPointer<MonitorInterface> copy =
-                QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
+            auto copy = QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
             monitorInterfaces_->append(copy);
         }
     }

@@ -80,8 +80,8 @@ void ComponentInstanceReader::Details::parseExtensions(const QDomNode& component
     QDomElement extensionsNode = componentInstanceNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
     QDomNodeList extensionNodeList = extensionsNode.childNodes();
 
-    QDomElement uuidElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:uuid"));
-    if (!uuidElement.isNull())
+    if (QDomElement uuidElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:uuid")); 
+        !uuidElement.isNull())
     {
         instance->setUuid(uuidElement.firstChild().nodeValue());
     }
@@ -125,10 +125,7 @@ void ComponentInstanceReader::Details::parseExtensions(const QDomNode& component
 void ComponentInstanceReader::Details::parseDraft(QDomElement const& draftNode,
     QSharedPointer<ComponentInstance> instance)
 {
-    if (!draftNode.isNull())
-    {
-        instance->setDraft(true);
-    }
+    instance->setDraft(!draftNode.isNull());
 }
 
 //-----------------------------------------------------------------------------
@@ -259,20 +256,20 @@ QMap<QString, QPointF> ComponentInstanceReader::Details::createMappedPositions(Q
     QMap<QString, QPointF> positionMap;
 
     QDomNodeList positionNodeList = positionElement.elementsByTagName(itemIdentifier);
-    for (int positionIndex = 0; positionIndex < positionNodeList.count(); ++positionIndex)
+    const int NODE_COUNT = positionNodeList.count();
+    for (int positionIndex = 0; positionIndex < NODE_COUNT; ++positionIndex)
     {
-        QDomNode singlePositionNode = positionNodeList.at(positionIndex);
-        QDomElement positionElement = singlePositionNode.toElement();
+        QDomElement currentPosition = positionNodeList.at(positionIndex).toElement();
 
-        QString interfaceReference = positionElement.attribute(referenceIdentifier);
+        QString interfaceReference = currentPosition.attribute(referenceIdentifier);
 
-        if (!positionElement.hasAttribute(QStringLiteral("x")))
+        if (!currentPosition.hasAttribute(QStringLiteral("x")))
         {
-            positionElement = positionElement.firstChildElement(QStringLiteral("kactus2:position"));
+            currentPosition = currentPosition.firstChildElement(QStringLiteral("kactus2:position"));
         }
 
-        int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
-        int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
+        int positionX = currentPosition.attribute(QStringLiteral("x")).toInt();
+        int positionY = currentPosition.attribute(QStringLiteral("y")).toInt();
 
         positionMap.insert(interfaceReference, QPointF(positionX, positionY));
     }

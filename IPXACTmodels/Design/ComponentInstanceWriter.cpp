@@ -29,7 +29,10 @@ void ComponentInstanceWriter::writeComponentInstance(QXmlStreamWriter& writer,
 
     CommonItemsWriter::writeDescription(writer, instance->description());
 
-    CommonItemsWriter::writeIsPresent(writer, instance->getIsPresent());
+    if (docRevision == Document::Revision::Std14)
+    {
+        CommonItemsWriter::writeIsPresent(writer, instance->getIsPresent());
+    }
 
     Details::writeConfigurableVLNVReference(writer, instance->getComponentRef(), QStringLiteral("ipxact:componentRef"));
 
@@ -57,8 +60,7 @@ void ComponentInstanceWriter::Details::writeConfigurableVLNVReference(QXmlStream
     {
         writer.writeStartElement(QStringLiteral("ipxact:configurableElementValues"));
 
-        for (QSharedPointer<ConfigurableElementValue> configurableElement :
-            *VLNVreference->getConfigurableElementValues())
+        for (auto const& configurableElement : *VLNVreference->getConfigurableElementValues())
         {
             writer.writeStartElement(QStringLiteral("ipxact:configurableElementValue"));
             writer.writeAttribute(QStringLiteral("referenceId"), configurableElement->getReferenceId());

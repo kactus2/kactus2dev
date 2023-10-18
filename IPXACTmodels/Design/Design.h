@@ -57,11 +57,6 @@ public:
 	 */
 	Design(VLNV const& vlnv, Document::Revision revision);
 
-    /*!
-     *  The constructor.
-     */
-    Design();
-
 	/*!
 	 *  Copy constructor.
 	 */
@@ -82,14 +77,14 @@ public:
 	 *
      *      @return A pointer to the cloned copy.
 	 */
-	virtual QSharedPointer<Document> clone()  const;
+	QSharedPointer<Document> clone()  const final;
 
 	/*!
 	 *  Set the VLNV.
 	 *
 	 *      @param [in] vlnv    The new VLNV.
 	 */
-	virtual void setVlnv(VLNV const& vlnv);
+	void setVlnv(VLNV const& vlnv) final;
 
 	/*
 	*  Get the component instance by name.

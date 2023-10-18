@@ -59,14 +59,14 @@ public:
     /*!
      *  The != operator.
      */
-    bool operator!=(const ActiveInterface& other);
+    bool operator!=(const ActiveInterface& other) const;
 
     /*!
      *  The operator <.
      *
      *      @return The operator uses QString to compare instance names and bus interface names.
      */
-    bool operator<(const ActiveInterface& other);
+    bool operator<(const ActiveInterface& other) const;
 
     /*!
      *  Checks if the interface referenced a given instance and a bus interface.
@@ -76,7 +76,7 @@ public:
      *
      *      @return True, if the given instance and bus interface are reference by the interface.
      */
-    bool references(QString const& instanceName, QString const& busInterfaceName);
+    bool references(QString const& instanceName, QString const& busInterfaceName) const;
 
     /*!
      *  Get the referenced component.

@@ -11,15 +11,15 @@
 
 #include "ComponentInstanceValidator.h"
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <KactusAPI/include/ExpressionParser.h>
-
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceValidator::ComponentInstanceValidator()
@@ -53,16 +53,7 @@ bool ComponentInstanceValidator::validate(QSharedPointer<ComponentInstance> inst
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidName(QSharedPointer<ComponentInstance> instance) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(instance->getInstanceName());
-
-    if (instance->getInstanceName().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(instance->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -70,20 +61,7 @@ bool ComponentInstanceValidator::hasValidName(QSharedPointer<ComponentInstance> 
 //-----------------------------------------------------------------------------
 bool ComponentInstanceValidator::hasValidIsPresent(QSharedPointer<ComponentInstance> instance) const
 {
-    if (!instance->getIsPresent().isEmpty())
-    {
-        QString solvedValue = parser_->parseExpression(instance->getIsPresent());
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(instance->getIsPresent(), parser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -115,7 +93,7 @@ void ComponentInstanceValidator::findErrorsInName(QVector<QString>& errors,
     if (!hasValidName(instance))
     {
         errors.append(QObject::tr("Invalid instance name '%1' set for component instance within %2")
-            .arg(instance->getInstanceName()).arg(context));
+            .arg(instance->getInstanceName(), context));
     }
 }
 
@@ -128,7 +106,7 @@ void ComponentInstanceValidator::findErrorsInIsPresent(QVector<QString>& errors,
     if (!hasValidIsPresent(instance))
     {
         errors.append(QObject::tr("Invalid isPresent set for component instance %1 within %2")
-            .arg(instance->getInstanceName()).arg(context));
+            .arg(instance->getInstanceName(), context));
     }
 }
 
@@ -144,7 +122,7 @@ void ComponentInstanceValidator::findErrorsInComponentReference(QVector<QString>
         {
             errors.append(QObject::tr("Component reference %1 in component instance %2 within %3 was not found "
                 "in the library")
-                .arg(instance->getComponentRef()->toString()).arg(instance->getInstanceName()).arg(context));
+                .arg(instance->getComponentRef()->toString(), instance->getInstanceName(), context));
         }
 
         QString instanceContext =
@@ -155,6 +133,6 @@ void ComponentInstanceValidator::findErrorsInComponentReference(QVector<QString>
     else
     {
         errors.append(QObject::tr("No component reference given in component instance %1 within %2")
-            .arg(instance->getInstanceName()).arg(context));
+            .arg(instance->getInstanceName(), context));
     }
 }

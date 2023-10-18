@@ -270,8 +270,8 @@ void tst_DesignWriter::testWriteComponentInstances()
                         "\t\t\t\t</ipxact:configurableElementValues>\n"
                     "\t\t\t</ipxact:componentRef>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
-                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                         "\t\t\t\t<kactus2:uuid>testUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:componentInstance>\n"
             "\t</ipxact:componentInstances>\n"
@@ -355,8 +355,8 @@ void tst_DesignWriter::testWrite2022ComponentInstances()
                         "\t\t\t\t</ipxact:powerDomainLink>\n"
                     "\t\t\t</ipxact:powerDomainLinks>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
-                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                         "\t\t\t\t<kactus2:uuid>testUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:componentInstance>\n"
             "\t</ipxact:componentInstances>\n"
@@ -439,8 +439,8 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
                         "\t\t\t\t</ipxact:configurableElementValues>\n"
                     "\t\t\t</ipxact:componentRef>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
-                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                         "\t\t\t\t<kactus2:uuid>testUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:position x=\"10\" y=\"10\"/>\n"
                         "\t\t\t\t<kactus2:imported importRef=\"importSource\"/>\n"
                         "\t\t\t\t<kactus2:portPositions>\n"
                             "\t\t\t\t\t<kactus2:portPosition busRef=\"testInterface\" x=\"4\" y=\"4\"/>\n"
@@ -471,8 +471,8 @@ void tst_DesignWriter::testWriteComponentInstanceExtensions()
                         "\t\t\t\t</ipxact:configurableElementValues>\n"
                     "\t\t\t</ipxact:componentRef>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"
-                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
                         "\t\t\t\t<kactus2:uuid>otherUUID</kactus2:uuid>\n"
+                        "\t\t\t\t<kactus2:position x=\"1\" y=\"1\"/>\n"
                         "\t\t\t\t<kactus2:imported/>\n"
                     "\t\t\t</ipxact:vendorExtensions>\n"
                 "\t\t</ipxact:componentInstance>\n"
@@ -1498,13 +1498,13 @@ void tst_DesignWriter::testWriteColumns()
 
     output.clear();
 
-    QSharedPointer<Design> otherDesign (new Design(*testDesign.data()));
+    QSharedPointer<Design> otherDesign (new Design(*testDesign));
 
     DesignWriter::writeDesign(xmlStreamWriter, otherDesign);
     compareOutputToExpected(output, expectedOutput);
 
     output.clear();
-    QSharedPointer<Design> newDesign (new Design());
+    QSharedPointer<Design> newDesign (new Design(VLNV(), Document::Revision::Std14));
     newDesign = otherDesign;
 
     DesignWriter::writeDesign(xmlStreamWriter, otherDesign);

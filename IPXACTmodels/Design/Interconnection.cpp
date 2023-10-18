@@ -42,21 +42,17 @@ Interconnection::Interconnection(const Interconnection& other) :
 NameGroup(other),
 Extendable(other),
 startInterface_(new ActiveInterface(*other.startInterface_)),
-activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
-hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 isPresent_(other.isPresent_)
 {
     for (auto const& singleInterface: *other.activeInterfaces_)
     {
-        QSharedPointer<ActiveInterface> copy =
-            QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
+        auto copy = QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
         activeInterfaces_->append(copy);
     }
 
     for (auto const& singleInterface : *other.hierInterfaces_)
     {
-        QSharedPointer<HierInterface> copy =
-            QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
+        auto copy = QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
         hierInterfaces_->append(copy);
     }
 }
@@ -79,16 +75,14 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
         activeInterfaces_->clear();
         for (auto const& singleInterface : *other.activeInterfaces_)
         {
-            QSharedPointer<ActiveInterface> copy =
-                QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
+            auto copy = QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
             activeInterfaces_->append(copy);
         }
 
         hierInterfaces_->clear();
         for (auto const& singleInterface : *other.hierInterfaces_)
         {
-            QSharedPointer<HierInterface> copy =
-                QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
+            auto copy = QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
             hierInterfaces_->append(copy);
         }
     }

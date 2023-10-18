@@ -26,8 +26,7 @@ componentRef_(componentRef)
 //-----------------------------------------------------------------------------
 ActiveInterface::ActiveInterface(const ActiveInterface& other) :
 HierInterface(other),
-componentRef_(other.componentRef_),
-excludePorts_(new QStringList())
+componentRef_(other.componentRef_)
 {
     for (QString const& portName : *other.excludePorts_)
     {
@@ -45,6 +44,7 @@ ActiveInterface& ActiveInterface::operator=(const ActiveInterface& other)
         HierInterface::operator=(other);
         componentRef_ = other.componentRef_;
 
+        excludePorts_->clear();
         for (QString const& portName : *other.excludePorts_)
         {
             excludePorts_->append(portName);
@@ -66,7 +66,7 @@ bool ActiveInterface::operator==(const ActiveInterface& other) const
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::operator!=()
 //-----------------------------------------------------------------------------
-bool ActiveInterface::operator!=(const ActiveInterface& other)
+bool ActiveInterface::operator!=(const ActiveInterface& other) const
 {
     return !operator==(other);
 }
@@ -74,7 +74,7 @@ bool ActiveInterface::operator!=(const ActiveInterface& other)
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::operator<()
 //-----------------------------------------------------------------------------
-bool ActiveInterface::operator<(const ActiveInterface& other)
+bool ActiveInterface::operator<(const ActiveInterface& other) const
 {
     int busRefeferencecomparison = HierInterface::operator<(other);
     if (busRefeferencecomparison == 0)
@@ -90,7 +90,7 @@ bool ActiveInterface::operator<(const ActiveInterface& other)
 //-----------------------------------------------------------------------------
 // Function: ActiveInterface::references()
 //-----------------------------------------------------------------------------
-bool ActiveInterface::references(QString const& instanceName, QString const& busInterfaceName)
+bool ActiveInterface::references(QString const& instanceName, QString const& busInterfaceName) const
 {
     return instanceName == componentRef_ && busInterfaceName == getBusReference();
 }

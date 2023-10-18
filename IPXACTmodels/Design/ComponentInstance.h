@@ -312,6 +312,8 @@ public:
 
 private:
 
+    void setupUuid();
+
     /*!
      *  Update a positions map extension (Kactus2 extension).
      *

@@ -416,7 +416,8 @@ QSharedPointer<PortReference> DesignReader::Details::createPortReference(QDomNod
 
             QSharedPointer<PortReference> subPortItem(new PortReference(subPortReference));
             
-            subPortItem->setPartSelect(CommonItemsReader::parsePartSelect(subPortNode));
+            auto partSelectNode = subPortNode.firstChildElement(QStringLiteral("ipxact:partSelect"));
+            subPortItem->setPartSelect(CommonItemsReader::parsePartSelect(partSelectNode));
 
             newPortReference->getSubPortReferences()->append(subPortItem);
         }
