@@ -761,7 +761,7 @@ public:
 	 *
 	 *      @return QStringList containing names of the slave interfaces.
 	 */
-	QStringList getSlaveInterfaces(const QString& memoryMap) const;
+	QStringList getTargetInterfaces(const QString& memoryMap) const;
 
 	/*!
      *  Get list of the master and mirrored master interfaces that refer to given address space.

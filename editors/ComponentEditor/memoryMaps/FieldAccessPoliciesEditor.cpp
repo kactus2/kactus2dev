@@ -47,6 +47,7 @@ view_(new EditableTableView(this))
     view_->setItemDelegate(delegate);
     view_->horizontalHeader()->setStretchLastSection(false);
     view_->setAllowElementCopying(true);
+    view_->setItemsDraggable(false);
 
     connect(view_, SIGNAL(addItem(QModelIndex const&)),
         model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);

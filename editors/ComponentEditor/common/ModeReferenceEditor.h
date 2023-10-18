@@ -15,11 +15,9 @@
 #include "ModeReferenceDelegate.h"
 #include "ModeReferenceModel.h"
 
-#include <common/views/EditableTableView/editabletableview.h>
+class EditableTableView;
 
-#include <QFrame>
-
-class ModeReferenceEditor : public QFrame
+class ModeReferenceEditor : public QWidget
 {
     Q_OBJECT
 
@@ -28,10 +26,10 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] modeRefs     The mode references to edit.
+     *      @param [in] model        The mode reference model to use.
      *      @param [in] parent       The parent widget.
      */
-    ModeReferenceEditor(QList<QPair<QString, int> > modeRefs, QWidget* parent);
+    ModeReferenceEditor(ModeReferenceModel* model, QWidget* parent);
 
     virtual ~ModeReferenceEditor() = default;
 
@@ -54,15 +52,7 @@ public:
 
 signals:
 
-    /*!
-     *	Signal emitted when the user has pressed the accept button.
-     */
-    void finishEditing();
-
-    /*!
-     *	Signal emitted when user cancels editing by pressing the cross.
-     */
-    void cancelEditing();
+    void contentChanged();
 
 private:
 

@@ -55,6 +55,10 @@ public:
      */
     virtual void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const override;
 
+signals:
+
+    void finishedEditing();
+
 private slots:
 
     /*!

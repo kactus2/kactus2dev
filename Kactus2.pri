@@ -3,8 +3,7 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
-    ./common/NameGenerationPolicy.h \
+HEADERS += ./common/NameGenerationPolicy.h \
     ./common/KactusColors.h \
     ./common/TextEditProvider.h \
     ./common/IEditProvider.h \
@@ -379,8 +378,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/cpus/SingleCpuEditor.h \
     ./editors/ComponentEditor/cpus/CpuDetailsEditor.h \
     ./editors/ComponentEditor/cpus/RegionsModel.h \
+    ./editors/ComponentEditor/cpus/CpuVisualizer.h \
     ./editors/ComponentEditor/cpus/RegionsEditor.h \
     ./editors/ComponentEditor/cpus/RegionsDelegate.h \
+    ./editors/ComponentEditor/cpus/RegionScene.h \
     ./editors/ComponentEditor/cpus/cpusdelegate.h \
     ./editors/ComponentEditor/cpus/cpuseditor.h \
     ./editors/ComponentEditor/cpus/cpusmodel.h \
@@ -437,6 +438,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/SingleDesignConfigurationInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/SingleDesignInstantiationItem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h \
+    ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorregisterfileitem.h \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.h \
@@ -445,6 +447,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/treeStructure/SingleCpuItem.h \
     ./editors/ComponentEditor/treeStructure/ModesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleModeItem.h \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -502,6 +505,7 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/common/ModeReferenceEditor.h \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.h \
     ./editors/ComponentEditor/common/ModeReferenceModel.h \
+    ./editors/ComponentEditor/common/MemoryAlignScene.h \
     ./editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h \
     ./editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h \
     ./editors/ComponentEditor/referenceCounter/ReferenceCounter.h \
@@ -619,6 +623,10 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./editors/ComponentEditor/modes/PortSliceEditor.h \
     ./editors/ComponentEditor/modes/PortSliceModel.h \
     ./editors/ComponentEditor/modes/PortSliceDelegate.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainColumns.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.h \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.h \
     ./editors/CSourceEditor/CSourceHighlight.h \
     ./editors/CSourceEditor/CSourceContentMatcher.h \
     ./editors/CSourceEditor/CSourceHighlighter.h \
@@ -866,14 +874,9 @@ HEADERS += ./editors/ComponentEditor/treeStructure/SingleIndirectInterfaceItem.h
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
     ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/common/MemoryAlignScene.h \
-    ./editors/ComponentEditor/cpus/RegionScene.h \
-    ./editors/ComponentEditor/cpus/CpuVisualizer.h \
-    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.h \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.h \
-    ./editors/ComponentEditor/powerDomains/PowerDomainColumns.h \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.h
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.h \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1231,6 +1234,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/cpus/cpusdelegate.cpp \
     ./editors/ComponentEditor/cpus/cpuseditor.cpp \
     ./editors/ComponentEditor/cpus/cpusmodel.cpp \
+    ./editors/ComponentEditor/cpus/CpuVisualizer.cpp \
+    ./editors/ComponentEditor/cpus/RegionScene.cpp \
     ./editors/ComponentEditor/cpus/RegionsDelegate.cpp \
     ./editors/ComponentEditor/cpus/RegionsEditor.cpp \
     ./editors/ComponentEditor/cpus/RegionsModel.cpp \
@@ -1334,6 +1339,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/treeStructure/MemoryRemapItem.cpp \
     ./editors/ComponentEditor/treeStructure/ModesItem.cpp \
     ./editors/ComponentEditor/treeStructure/ParameterizableItem.cpp \
+    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.cpp \
     ./editors/ComponentEditor/treeStructure/RemapStatesItem.cpp \
     ./editors/ComponentEditor/treeStructure/ResetTypesItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleComponentInstantiationItem.cpp \
@@ -1359,6 +1365,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
+    ./editors/ComponentEditor/common/MemoryAlignScene.cpp \
     ./editors/ComponentEditor/common/MemoryTreeFactory.cpp \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.cpp \
     ./editors/ComponentEditor/common/ModeReferenceEditor.cpp \
@@ -1415,6 +1422,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/modes/PortSliceEditor.cpp \
     ./editors/ComponentEditor/modes/PortSliceModel.cpp \
     ./editors/ComponentEditor/modes/SingleModeEditor.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.cpp \
+    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.cpp \
     ./editors/CSourceEditor/CSourceContentMatcher.cpp \
     ./editors/CSourceEditor/CSourceHighlight.cpp \
     ./editors/CSourceEditor/CSourceHighlighter.cpp \
@@ -1641,11 +1651,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
     ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/common/MemoryAlignScene.cpp \
-    ./editors/ComponentEditor/cpus/RegionScene.cpp \
-    ./editors/ComponentEditor/cpus/CpuVisualizer.cpp \
-    ./editors/ComponentEditor/treeStructure/PowerDomainsItem.cpp \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsEditor.cpp \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsModel.cpp \
-    ./editors/ComponentEditor/powerDomains/PowerDomainsDelegate.cpp
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.cpp \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp
 RESOURCES += kactus.qrc

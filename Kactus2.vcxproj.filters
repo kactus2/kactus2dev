@@ -3331,6 +3331,15 @@
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\powerDomains</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\common</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -5764,6 +5773,9 @@
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
     </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5992,6 +6004,12 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\common</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

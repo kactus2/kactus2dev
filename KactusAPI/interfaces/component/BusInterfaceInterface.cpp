@@ -98,6 +98,7 @@ void BusInterfaceInterface::setParameterInterface(ParametersInterface* newParame
 void BusInterfaceInterface::setBusInterfaces(QSharedPointer<Component> newComponent)
 {
     busInterfaces_ = newComponent->getBusInterfaces();
+    docRevision_ = newComponent->getRevision();
 
     if (fileSetInterface_ != NULL)
     {
@@ -194,73 +195,88 @@ QSharedPointer<NameGroup> BusInterfaceInterface::getItem(std::string const& busN
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::getMasterInterface()
+// Function: BusInterfaceInterface::getInitiatorInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<InitiatorInterface> BusInterfaceInterface::getMasterInterface(std::string const& busName) const
+QSharedPointer<InitiatorInterface> BusInterfaceInterface::getInitiatorInterface(std::string const& busName) const
 {
-    QSharedPointer<InitiatorInterface> selectedMaster;
+    QSharedPointer<InitiatorInterface> selectedInitiator;
 
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
     if (selectedBus)
     {
-        selectedMaster = selectedBus->getMaster();
+        selectedInitiator = selectedBus->getInitiator();
     }
 
-    return selectedMaster;
+    return selectedInitiator;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::createMasterForBusInterface()
+// Function: BusInterfaceInterface::createInitiatorForBusInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<InitiatorInterface> BusInterfaceInterface::createMasterForBusInterface(std::string const& busName)
+QSharedPointer<InitiatorInterface> BusInterfaceInterface::createInitiatorForBusInterface(std::string const& busName)
 {
-    QSharedPointer<InitiatorInterface> selectedMaster = getMasterInterface(busName);
-    if (!selectedMaster)
+    QSharedPointer<InitiatorInterface> selectedInitiator = getInitiatorInterface(busName);
+    if (!selectedInitiator)
     {
         QSharedPointer<BusInterface> containingBus = getBusInterface(busName);
         if (containingBus)
         {
-            selectedMaster = QSharedPointer<InitiatorInterface>(new InitiatorInterface());
-            containingBus->setMaster(selectedMaster);
+            selectedInitiator = QSharedPointer<InitiatorInterface>(new InitiatorInterface());
+
+            if (docRevision_ == Document::Revision::Std22)
+            {
+                containingBus->setInitiator(selectedInitiator);
+            }
+            else
+            {
+                containingBus->setMaster(selectedInitiator);
+            }
         }
     }
 
-    return selectedMaster;
+    return selectedInitiator;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::getSlaveInterface()
+// Function: BusInterfaceInterface::getTargetInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<TargetInterface> BusInterfaceInterface::getSlaveInterface(std::string const& busName) const
+QSharedPointer<TargetInterface> BusInterfaceInterface::getTargetInterface(std::string const& busName) const
 {
-    QSharedPointer<TargetInterface> selectedSlave;
+    QSharedPointer<TargetInterface> selectedTarget;
 
     QSharedPointer<BusInterface> selectedBus = getBusInterface(busName);
     if (selectedBus)
     {
-        selectedSlave = selectedBus->getSlave();
+        selectedTarget = selectedBus->getTarget();
     }
 
-    return selectedSlave;
+    return selectedTarget;
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterfaceInterface::createSlaveForBusInterface()
+// Function: BusInterfaceInterface::createTargetForBusInterface()
 //-----------------------------------------------------------------------------
-QSharedPointer<TargetInterface> BusInterfaceInterface::createSlaveForBusInterface(std::string const& busName)
+QSharedPointer<TargetInterface> BusInterfaceInterface::createTargetForBusInterface(std::string const& busName)
 {
-    QSharedPointer<TargetInterface> selectedSlave = getSlaveInterface(busName);
-    if (!selectedSlave)
+    QSharedPointer<TargetInterface> selectedTarget = getTargetInterface(busName);
+    if (!selectedTarget)
     {
         QSharedPointer<BusInterface> containingBus = getBusInterface(busName);
         if (containingBus)
         {
-            selectedSlave = QSharedPointer<TargetInterface>(new TargetInterface());
-            containingBus->setSlave(selectedSlave);
+            selectedTarget = QSharedPointer<TargetInterface>(new TargetInterface());
+            if (docRevision_ == Document::Revision::Std22)
+            {
+                containingBus->setTarget(selectedTarget);
+            }
+            else
+            {
+                containingBus->setSlave(selectedTarget);
+            }
         }
     }
 
-    return selectedSlave;
+    return selectedTarget;
 }
 
 //-----------------------------------------------------------------------------
@@ -795,7 +811,7 @@ std::string BusInterfaceInterface::getAddressSpaceReference(std::string const& b
 //-----------------------------------------------------------------------------
 bool BusInterfaceInterface::setAddressSpaceReference(std::string const& busName, std::string const& newSpace)
 {
-    QSharedPointer<InitiatorInterface> master = createMasterForBusInterface(busName);
+    QSharedPointer<InitiatorInterface> master = createInitiatorForBusInterface(busName);
     if (!master)
     {
         return false;
@@ -810,7 +826,7 @@ bool BusInterfaceInterface::setAddressSpaceReference(std::string const& busName,
 //-----------------------------------------------------------------------------
 std::string BusInterfaceInterface::getBaseAddressValue(std::string const& busName, int const& baseNumber) const
 {
-    QSharedPointer<InitiatorInterface> selectedMaster = getMasterInterface(busName);
+    QSharedPointer<InitiatorInterface> selectedMaster = getInitiatorInterface(busName);
     if (selectedMaster)
     {
         QString baseAddress = selectedMaster->getBaseAddress();
@@ -825,7 +841,7 @@ std::string BusInterfaceInterface::getBaseAddressValue(std::string const& busNam
 //-----------------------------------------------------------------------------
 std::string BusInterfaceInterface::getBaseAddressFormattedExpression(std::string const& busName) const
 {
-    QSharedPointer<InitiatorInterface> selectedMaster = getMasterInterface(busName);
+    QSharedPointer<InitiatorInterface> selectedMaster = getInitiatorInterface(busName);
     if (selectedMaster)
     {
         QString baseAddress = selectedMaster->getBaseAddress();
@@ -840,7 +856,7 @@ std::string BusInterfaceInterface::getBaseAddressFormattedExpression(std::string
 //-----------------------------------------------------------------------------
 std::string BusInterfaceInterface::getBaseAddressExpression(std::string const& busName) const
 {
-    QSharedPointer<InitiatorInterface> selectedMaster = getMasterInterface(busName);
+    QSharedPointer<InitiatorInterface> selectedMaster = getInitiatorInterface(busName);
     if (selectedMaster)
     {
         return selectedMaster->getBaseAddress().toStdString();
@@ -854,7 +870,7 @@ std::string BusInterfaceInterface::getBaseAddressExpression(std::string const& b
 //-----------------------------------------------------------------------------
 bool BusInterfaceInterface::setBaseAddress(std::string const& busName, std::string const& newBaseAddress)
 {
-    QSharedPointer<InitiatorInterface> master = createMasterForBusInterface(busName);
+    QSharedPointer<InitiatorInterface> master = createInitiatorForBusInterface(busName);
     if (!master)
     {
         return false;
@@ -869,7 +885,7 @@ bool BusInterfaceInterface::setBaseAddress(std::string const& busName, std::stri
 //-----------------------------------------------------------------------------
 std::string BusInterfaceInterface::getMemoryMapReference(std::string const& busName) const
 {
-    QSharedPointer<TargetInterface> slave = getSlaveInterface(busName);
+    QSharedPointer<TargetInterface> slave = getTargetInterface(busName);
     if (slave)
     {
         return slave->getMemoryMapRef().toStdString();
@@ -883,7 +899,7 @@ std::string BusInterfaceInterface::getMemoryMapReference(std::string const& busN
 //-----------------------------------------------------------------------------
 bool BusInterfaceInterface::setMemoryMapReference(std::string const& busName, std::string const& newMapReference)
 {
-    QSharedPointer<TargetInterface> slave = createSlaveForBusInterface(busName);
+    QSharedPointer<TargetInterface> slave = createTargetForBusInterface(busName);
     if (!slave)
     {
         return false;
@@ -900,7 +916,7 @@ std::vector<std::string> BusInterfaceInterface::getFileSetReferences(std::string
 {
     std::vector<std::string> newFileSetItems;
 
-    QSharedPointer<TargetInterface> slave = getSlaveInterface(busName);
+    QSharedPointer<TargetInterface> slave = getTargetInterface(busName);
     if (slave && slave->getFileSetRefGroup())
     {
         for (auto fileGroup : *slave->getFileSetRefGroup())
@@ -924,7 +940,7 @@ std::vector<std::string> BusInterfaceInterface::getFileSetReferences(std::string
 bool BusInterfaceInterface::setFileSetReferences(std::string const& busName,
     std::vector<std::string>  const& newFileSetReferences)
 {
-    QSharedPointer<TargetInterface> slave = createSlaveForBusInterface(busName);
+    QSharedPointer<TargetInterface> slave = createTargetForBusInterface(busName);
     if (!slave)
     {
         return false;
@@ -1392,7 +1408,7 @@ QSharedPointer<BusInterfaceValidator> BusInterfaceInterface::getValidator() cons
 QSharedPointer<QList<QSharedPointer<TransparentBridge> > > BusInterfaceInterface::getBridges(
     std::string const& busName) const
 {
-    QSharedPointer<TargetInterface> slave = getSlaveInterface(busName);
+    QSharedPointer<TargetInterface> slave = getTargetInterface(busName);
     if (slave)
     {
         return slave->getBridges();
@@ -1407,7 +1423,7 @@ QSharedPointer<QList<QSharedPointer<TransparentBridge> > > BusInterfaceInterface
 QSharedPointer<QList<QSharedPointer<TransparentBridge> > > BusInterfaceInterface::createBridges(
     std::string const& busName)
 {
-    QSharedPointer<TargetInterface> slave = createSlaveForBusInterface(busName);
+    QSharedPointer<TargetInterface> slave = createTargetForBusInterface(busName);
     if (slave)
     {
         return slave->getBridges();
@@ -1428,14 +1444,14 @@ int BusInterfaceInterface::getAllReferencesToIdInItem(const std::string& itemNam
     {
         QString idString = QString::fromStdString(valueID);
 
-        QSharedPointer<InitiatorInterface> master = getMasterInterface(itemName);
+        QSharedPointer<InitiatorInterface> master = getInitiatorInterface(itemName);
         if (master)
         {
             totalReferencesToParameter += QString::fromStdString(getBaseAddressExpression(itemName)).count(idString);
         }
 
 
-        QSharedPointer<TargetInterface> slave = getSlaveInterface(itemName);
+        QSharedPointer<TargetInterface> slave = getTargetInterface(itemName);
         if (slave)
         {
             totalReferencesToParameter += QString::fromStdString(getRangeExpression(itemName)).count(idString);
@@ -1480,7 +1496,7 @@ std::vector<std::string> BusInterfaceInterface::getAllExpressions(std::string co
             expressionList.push_back(baseAddress.toStdString());
         }
 
-        QSharedPointer<TargetInterface> slave = getSlaveInterface(busName);
+        QSharedPointer<TargetInterface> slave = getTargetInterface(busName);
         if (slave)
         {
             QString range = QString::fromStdString(getRangeExpression(busName));

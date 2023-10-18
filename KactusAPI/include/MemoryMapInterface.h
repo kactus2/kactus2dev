@@ -464,6 +464,83 @@ public:
      */
     MemoryRemap* getRemapPointer(std::string const& mapName, std::string const& remapName) const;
 
+    /*!
+     *	Get the number of mode references for a selected remap.
+     *  
+     *      @param [in] mapName       Memory map containing the remap.
+     *      @param [in] remapName     The name of the remap.
+     *	    
+     * 	    @return The number of mode references within the remap.
+     */
+    int getRemapModeReferenceCount(std::string const& mapName, std::string const& remapName) const;
+
+    /*!
+     *	Get the mode reference value for a mode reference of a selected remap.
+     *  
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap.
+     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to get.
+     *	    
+     * 	    @return The mode reference value.
+     */
+    std::string getRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
+
+    /*!
+     *	Get the mode reference priority for a mode reference of a selected remap.
+     *
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap.
+     *      @param [in] modeReferenceIndex  The index of the mode reference whose priority to get.
+     *
+     * 	    @return The mode reference priority.
+     */
+    int getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
+    
+    /*!
+     *	Set the mode reference value for a mode reference of a selected remap.
+     *
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap.
+     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to set.
+     *      @param [in] newValue            The new reference to set.
+     *
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool setRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, std::string const& newValue);
+
+    /*!
+     *	Set the mode reference priority for a mode reference of a selected remap.
+     *
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap.
+     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference priority to set.
+     *      @param [in] newPriority         The new priority value to set.
+     *
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, int newPriority);
+
+    /*!
+     *	Add a new mode reference to a selected remap.
+     *  
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap to add a mode reference to.
+     *
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool addRemapModeReference(std::string const& mapName, std::string const& remapName);
+
+    /*!
+     *	Remove a selected mode reference of a given remap.
+     *  
+     *      @param [in] mapName                 The containing memory map.
+     *      @param [in] remapName               The name of the remap to remove a mode reference of.
+     *      @param [in] modeReferenceIndex      The index of the mode reference to be removed.
+     *	    
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool removeRemapModeReference(std::string const& mapName, std::string const& remapName, int modeReferenceIndex);
+
 private:
 
     /*!

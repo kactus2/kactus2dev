@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 
 #include <QSharedPointer>
@@ -783,7 +784,7 @@ private:
      *
      *      @return The selected master bus interface.
      */
-    QSharedPointer<InitiatorInterface> getMasterInterface(std::string const& busName) const;
+    QSharedPointer<InitiatorInterface> getInitiatorInterface(std::string const& busName) const;
 
     /*!
      *  Create or get an existing master for the selected bus interface.
@@ -792,7 +793,7 @@ private:
      *
      *      @return The selected master bus interface.
      */
-    QSharedPointer<InitiatorInterface> createMasterForBusInterface(std::string const& busName);
+    QSharedPointer<InitiatorInterface> createInitiatorForBusInterface(std::string const& busName);
 
     /*!
      *  Get the selected slave bus interface.
@@ -801,7 +802,7 @@ private:
      *
      *      @return The selected slave bus interface.
      */
-    QSharedPointer<TargetInterface> getSlaveInterface(std::string const& busName) const;
+    QSharedPointer<TargetInterface> getTargetInterface(std::string const& busName) const;
 
     /*!
      *  Create or get an existing slave for the selected bus interface.
@@ -810,7 +811,7 @@ private:
      *
      *      @return The selected slave bus interface.
      */
-    QSharedPointer<TargetInterface> createSlaveForBusInterface(std::string const& busName);
+    QSharedPointer<TargetInterface> createTargetForBusInterface(std::string const& busName);
 
     /*!
      *  Get the selected mirrored slave bus interface.
@@ -872,6 +873,9 @@ private:
 
     //! Interface for accessing parameters.
     ParametersInterface* parameterInterface_;
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_ = Document::Revision::Unknown;
 };
 
 #endif // BUSINTERFACEINTERFACE_H

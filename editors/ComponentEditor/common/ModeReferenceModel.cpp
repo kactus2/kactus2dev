@@ -106,7 +106,7 @@ QVariant ModeReferenceModel::headerData(int section, Qt::Orientation orientation
 //-----------------------------------------------------------------------------
 QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         if (index.column() == 0)
         {
@@ -144,6 +144,9 @@ bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value
         modeRefs_[index.row()].first = value.toString();
     }
 
+    emit dataChanged(index, index);
+    emit contentChanged();
+
     return true;
 }
 
@@ -179,6 +182,5 @@ void ModeReferenceModel::onRemoveItem(QModelIndex const& index)
     modeRefs_.removeAt(rowToRemove);
     endRemoveRows();
 
-    emit invalidateFilter();
     emit contentChanged();
 }

@@ -345,7 +345,6 @@ void FieldAccessPoliciesModel::onRemoveItem(QModelIndex const& index)
     fieldInterface_->removeFieldAccessPolicy(fieldName_, index.row());
     endRemoveRows();
 
-    emit invalidateFilter();
     emit contentChanged();
 }
 
