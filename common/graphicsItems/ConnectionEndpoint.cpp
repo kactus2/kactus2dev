@@ -225,7 +225,7 @@ void ConnectionEndpoint::updateInterface()
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isDirectionFixed() const
+bool ConnectionEndpoint::isDirectionFixed() const noexcept
 {
     // The endpoint direction is not fixed by default.
     return false;
@@ -266,7 +266,7 @@ QSharedPointer<Port> ConnectionEndpoint::getPort() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isBus()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isBus() const
+bool ConnectionEndpoint::isBus() const noexcept
 {
     return false;
 }
@@ -274,7 +274,7 @@ bool ConnectionEndpoint::isBus() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isAdHoc()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isAdHoc() const
+bool ConnectionEndpoint::isAdHoc() const noexcept
 {
     return false;
 }
@@ -282,7 +282,7 @@ bool ConnectionEndpoint::isAdHoc() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isCom()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isCom() const
+bool ConnectionEndpoint::isCom() const noexcept
 {
     return false;
 }
@@ -290,7 +290,7 @@ bool ConnectionEndpoint::isCom() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isApi()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isApi() const
+bool ConnectionEndpoint::isApi() const noexcept
 {
     return false;
 }
@@ -298,7 +298,7 @@ bool ConnectionEndpoint::isApi() const
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getType()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const
+ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const noexcept
 {
     return ConnectionEndpoint::ENDPOINT_TYPE_UNDEFINED;
 }
@@ -322,7 +322,7 @@ void ConnectionEndpoint::setTemporary(bool temp)
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::isTemporary()
 //-----------------------------------------------------------------------------
-bool ConnectionEndpoint::isTemporary() const
+bool ConnectionEndpoint::isTemporary() const noexcept
 {
     return temporary_;
 }

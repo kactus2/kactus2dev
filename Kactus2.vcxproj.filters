@@ -821,17 +821,11 @@
     <Filter Include="Header Files\editors\HWDesign\columnview">
       <UniqueIdentifier>{fbc7bdf7-d3b5-4030-b470-178ac88791da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\HWDesign\views">
-      <UniqueIdentifier>{cc9095e4-21a6-4581-ac27-c5ea327a9e5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\HWDesign">
       <UniqueIdentifier>{0c7dffdc-2062-4560-8709-d0d093ac7c1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\HWDesign\columnview">
       <UniqueIdentifier>{af62a80d-ef25-4e59-be26-578debf59af6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\HWDesign\views">
-      <UniqueIdentifier>{5a2d5566-85aa-4691-b84d-04b2657b950e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\HWDesign\AdhocEditor">
       <UniqueIdentifier>{4d4e6c3c-1f87-43df-b058-2eef2e1f8998}</UniqueIdentifier>
@@ -2511,9 +2505,6 @@
     </ClCompile>
     <ClCompile Include="editors\HWDesign\undoCommands\ConnectionDeleteCommand.cpp">
       <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\HWDesign\views\CellEditTableView.cpp">
-      <Filter>Source Files\editors\HWDesign\views</Filter>
     </ClCompile>
     <ClCompile Include="editors\HWDesign\HWDesignDiagram.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
@@ -4648,9 +4639,6 @@
     </QtMoc>
     <QtMoc Include="editors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\HWDesign\views\CellEditTableView.h">
-      <Filter>Header Files\editors\HWDesign\views</Filter>
     </QtMoc>
     <QtMoc Include="editors\HWDesign\SelectItemTypeDialog.h">
       <Filter>Header Files\editors\HWDesign</Filter>

@@ -19,9 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: AdHocEnabled::AdHocEnabled()
 //-----------------------------------------------------------------------------
-AdHocEnabled::AdHocEnabled() :
-component_(),
-portAdHocVisibilities_()
+AdHocEnabled::AdHocEnabled()
 {
 }
 
@@ -36,7 +34,7 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
     // Parse port ad-hoc visibilities.
     if (component->hasPorts())
     {
-        foreach (QSharedPointer<Port> adhocPort, *component->getPorts())
+        for (QSharedPointer<Port> adhocPort : *component->getPorts())
         {
             bool visible = adhocPort->isAdHocVisible();
 
@@ -49,7 +47,7 @@ void AdHocEnabled::setAdHocData(QSharedPointer<Component> component, QMap<QStrin
         }
     }
 
-    QMapIterator<QString, bool> visibilityIterator(portAdHocVisibilities);
+    QMapIterator visibilityIterator(portAdHocVisibilities);
     while (visibilityIterator.hasNext())
     {
         visibilityIterator.next();
@@ -104,7 +102,7 @@ QMap<QString, bool> AdHocEnabled::getPortAdHocVisibilities() const
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Port> > > AdHocEnabled::getPorts() const
 {
-    Q_ASSERT(component_ != 0);
+    Q_ASSERT(component_ != nullptr);
     return component_->getPorts();
 }
 
@@ -154,7 +152,7 @@ void AdHocEnabled::changeAdhocVisibility(AdHocItem* portItem, bool newVisibility
 //-----------------------------------------------------------------------------
 void AdHocEnabled::showAdhocPort(AdHocItem*)
 {
-
+    // Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
@@ -162,5 +160,5 @@ void AdHocEnabled::showAdhocPort(AdHocItem*)
 //-----------------------------------------------------------------------------
 void AdHocEnabled::hideAdhocPort(AdHocItem*)
 {
-
+    // Intentionally empty.
 }

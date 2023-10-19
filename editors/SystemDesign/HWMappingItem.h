@@ -137,12 +137,12 @@ protected:
     /*!
      *  Returns the height for the component box.
      */
-    qreal getHeight();
+    qreal getHeight() final;
 
     /*!
      *  Return the width for the component box.
      */
-    qreal getWidth();
+    qreal getWidth() noexcept final;
 
     /*!
      *  Returns the height of the component stack.
@@ -156,10 +156,10 @@ private:
     //-----------------------------------------------------------------------------
 
     // Constants.
-    const int MIN_HEIGHT = 100;
-    const int TOP_MARGIN = 40;
+    static constexpr int MIN_HEIGHT = 100;
+    static constexpr int TOP_MARGIN = 40;
 
-    const int WIDTH = COMPONENTWIDTH + 20;
+    static constexpr int WIDTH = COMPONENTWIDTH + 20;
 
     //! The old column from where the mouse drag event began.
     IGraphicsItemStack* oldStack_= nullptr;

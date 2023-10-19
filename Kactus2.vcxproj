@@ -839,7 +839,6 @@ CreateHelp
     <ClCompile Include="editors\HWDesign\undoCommands\PortPasteCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.cpp" />
     <ClCompile Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.cpp" />
-    <ClCompile Include="editors\HWDesign\views\CellEditTableView.cpp" />
     <ClCompile Include="editors\HWDesign\WarningSymbol.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressBlockGraphicsItem.cpp" />
     <ClCompile Include="editors\MemoryDesigner\AddressSegmentGraphicsItem.cpp" />
@@ -2076,8 +2075,6 @@ CreateHelp
     <QtMoc Include="editors\HWDesign\undoCommands\ReplaceComponentCommand.h">
     </QtMoc>
     <ClInclude Include="editors\HWDesign\undoCommands\TopAdHocVisibilityChangeCommand.h" />
-    <QtMoc Include="editors\HWDesign\views\CellEditTableView.h">
-    </QtMoc>
     <CustomBuild Include="editors\HWDesign\WarningSymbol.h">
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
       </Message>

@@ -54,7 +54,11 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~HWDesignWidget();
+	virtual ~HWDesignWidget() = default;
+
+    //! No mutants allowed.
+    HWDesignWidget(const HWDesignWidget&) = delete;
+    HWDesignWidget& operator=(const HWDesignWidget&) = delete;
 
 	/*!
      *  Set the design to be displayed in the block diagram
@@ -62,22 +66,22 @@ public:
 	 *      @param [in] vlnv        VLNV of the design to open
 	 *      @param [in] viewName    Name of the view to open within component.
 	 */
-	virtual bool setDesign(VLNV const& vlnv, QString const& viewName);
+	bool setDesign(VLNV const& vlnv, QString const& viewName) final;
     
     /*!
      *  Called when a new column is requested to be added to the design.
      */
-    virtual void addColumn();
+    void addColumn() final;
 
     /*!
      *  Returns the supported draw modes.
      */
-    virtual unsigned int getSupportedDrawModes() const;
+    unsigned int getSupportedDrawModes() const final;
 
     /*!
      *  Returns the implementation attribute.
      */
-    virtual KactusAttribute::Implementation getImplementation() const;
+    KactusAttribute::Implementation getImplementation() const final;
 
 signals:
     
@@ -91,12 +95,12 @@ signals:
 public slots:
     
     //! Saves the design as new object.
-	virtual bool saveAs();
+	bool saveAs() final;
 
     /*!
      *  Handler for item deletion in the design diagram.
      */
-    virtual void onDeleteSelectedItems();
+    void onDeleteSelectedItems() final;
 
 protected:
     
@@ -109,9 +113,6 @@ protected:
 
 private:
 
-    //! No mutants allowed.
-    HWDesignWidget(const HWDesignWidget &);
-    HWDesignWidget &operator=(const HWDesignWidget &);
 
     /*!
      *  Delete the selected component items.
@@ -209,7 +210,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The expression parser for the top component.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_ = nullptr;
 };
 
 #endif // HWDESIGNWIDGET_H

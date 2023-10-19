@@ -64,7 +64,7 @@ public:
     /*! 
      *  Returns true if the port represents a hierarchical connection.
      */
-    virtual bool isHierarchical() const;
+    bool isHierarchical() const noexcept final;
 
     /*!
      *  Set the direction for this ad hoc interface item.
@@ -76,12 +76,12 @@ public:
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
-    virtual bool isDirectionFixed() const;
+    bool isDirectionFixed() const noexcept final;
 
 	/*!
 	 *  Set the position of the name label.
 	 */
-	virtual void setLabelPosition();
+	void setLabelPosition();
     
     /*!
      *  Get the visibility data group of the item.
@@ -105,14 +105,14 @@ protected:
      *      @param [in] change  The change.
      *      @param [in] value   The new value.
      */
-    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+    QVariant itemChange(GraphicsItemChange change, QVariant const& value) final;
 
     /*!
      *  Event for mouse button release.
      *
      *      @param [in] event   The release event.
      */
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) final;
 
 private:
 
@@ -121,17 +121,17 @@ private:
      *
      *      @return True, if the label should be drawn to the left side.
      */
-    virtual bool labelShouldBeDrawnLeft() const;
+    bool labelShouldBeDrawnLeft() const final;
 
     /*!
      *  Move the ad hoc item by dragging with the mouse.
      */
-    virtual void moveItemByMouse();
+    void moveItemByMouse() final;
 
     /*!
      *  Save the positions of the other associated ports.
      */
-    virtual void saveOldPortPositions();
+    void saveOldPortPositions() final;
 
     //-----------------------------------------------------------------------------
     // Data.

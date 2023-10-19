@@ -50,7 +50,7 @@ public:
      *      @param [in] dir                     The initial direction for the endpoint.
      */
     HWConnectionEndpoint(QString const& name, QSharedPointer<Component> containingComponent,
-        QGraphicsItem* parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+        QGraphicsItem* parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
     /*!
      *  Destructor.
@@ -61,7 +61,7 @@ public:
     HWConnectionEndpoint(HWConnectionEndpoint const& rhs) = delete;
     HWConnectionEndpoint& operator=(HWConnectionEndpoint const& rhs) = delete;
 
-    virtual void updateInterface();
+    void updateInterface() override;
 
 	/*!
 	 *  Gives the length of the text in the name label.
@@ -85,14 +85,14 @@ public:
      *
      *      @param [in] name    The selected name.
      */
-    virtual void setName(QString const& name);
+    void setName(QString const& name) override;
 
     /*!
      *  Get the off page connector item.
      *
      *      @return the off page connector item.
      */
-    virtual ConnectionEndpoint* getOffPageConnector();
+    ConnectionEndpoint* getOffPageConnector() override;
 
     /*!
      *  Check if the scene is locked.
@@ -106,7 +106,7 @@ public:
      *
      *      @return The component item containing this end point item.
      */
-    virtual ComponentItem* encompassingComp() const;
+    ComponentItem* encompassingComp() const override;
 
 protected:
 
@@ -122,7 +122,7 @@ protected:
      *
      *      @param [in] event   The mouse move event.
      */
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
 
 private:

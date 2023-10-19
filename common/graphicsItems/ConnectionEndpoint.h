@@ -186,7 +186,7 @@ public:
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
-    virtual bool isDirectionFixed() const;
+    virtual bool isDirectionFixed() const noexcept;
 
     /*! 
      *  Returns the name of the endpoint.
@@ -269,32 +269,32 @@ public:
     /*!
      *  Returns true if the endpoint represents a hierarchical connection.
      */
-    virtual bool isHierarchical() const = 0;
+    virtual bool isHierarchical() const noexcept = 0;
 
     /*!
      *  Returns true if the endpoint is a bus interface endpoint.
      */
-    virtual bool isBus() const;
+    virtual bool isBus() const noexcept;
 
     /*!
      *  Returns true if the endpoint is an ad-hoc port.
      */
-    virtual bool isAdHoc() const;
+    virtual bool isAdHoc() const noexcept;
 
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
-    virtual bool isCom() const;
+    virtual bool isCom() const noexcept;
 
     /*!
      *  Returns true if the endpoint is an API interface endpoint.
      */
-    virtual bool isApi() const;
+    virtual bool isApi() const noexcept;
 
     /*!
      *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
      */
-    virtual EndpointType getType() const;
+    virtual EndpointType getType() const noexcept;
 
     /*!
      *  Sets the endpoint temporary or not temporary. Temporary endpoints can be deleted.
@@ -306,7 +306,7 @@ public:
     /*!
      *  Returns true if the endpoint is temporary.
      */
-    bool isTemporary() const;
+    bool isTemporary() const noexcept;
 
     /*!
      *  Returns true if the endpoint is invalid (i.e. a removed one).

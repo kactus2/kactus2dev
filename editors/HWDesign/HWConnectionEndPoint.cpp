@@ -61,15 +61,6 @@ HWConnectionEndpoint::HWConnectionEndpoint(QString const& name, QSharedPointer<C
     }
 }
 
-
-//-----------------------------------------------------------------------------
-// Function: HWConnectionEndPoint::HWConnectionEndpoint()
-//-----------------------------------------------------------------------------
-ComponentItem* HWConnectionEndpoint::encompassingComp() const
-{
-    return parentComponentItem_;
-}
-
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndpoint::updateInterface()
 //-----------------------------------------------------------------------------
@@ -79,38 +70,22 @@ void HWConnectionEndpoint::updateInterface()
 
     General::InterfaceMode mode = getInterfaceMode();
 
-    if (mode == General::MASTER || mode == General::INITIATOR)
-    {
-        setBrush(QBrush(KactusColors::MASTER_INTERFACE));
-    }
-    else if (mode == General::SLAVE || mode == General::TARGET)
-    {
-        setBrush(QBrush(KactusColors::SLAVE_INTERFACE));
-    }
-    else if (mode == General::MIRRORED_MASTER || mode == General::MIRRORED_INITIATOR)
-    {
-        setBrush(QBrush(KactusColors::MIRROREDMASTER_INTERFACE));
-    }
-    else if (mode == General::MIRRORED_SLAVE || mode == General::MIRRORED_TARGET)
-    {
-        setBrush(QBrush(KactusColors::MIRROREDSLAVE_INTERFACE));
-    }
-    else if (mode == General::SYSTEM)
-    {
-        setBrush(QBrush(KactusColors::SYSTEM_INTERFACE));
-    }
-    else if (mode == General::MIRRORED_SYSTEM)
-    {
-        setBrush(QBrush(KactusColors::MIRROREDSYSTEM_INTERFACE));
-    }
-    else if (mode == General::MONITOR)
-    {
-        setBrush(QBrush(KactusColors::MONITOR_INTERFACE));
-    }
-    else // if undefined
-    {
-        setBrush(QBrush(KactusColors::INVALID_INTERFACE));
-    }
+    static const QMap<General::InterfaceMode, QColor> interfaceColors({
+        {General::MASTER, KactusColors::MASTER_INTERFACE},
+        {General::INITIATOR, KactusColors::MASTER_INTERFACE},
+        {General::SLAVE, KactusColors::SLAVE_INTERFACE},
+        {General::TARGET, KactusColors::SLAVE_INTERFACE},
+        {General::MIRRORED_MASTER, KactusColors::MIRROREDMASTER_INTERFACE},
+        {General::MIRRORED_INITIATOR, KactusColors::MIRROREDSLAVE_INTERFACE},
+        {General::MIRRORED_SLAVE, KactusColors::MIRROREDSLAVE_INTERFACE},
+        {General::MIRRORED_TARGET, KactusColors::MIRROREDSLAVE_INTERFACE},
+        {General::SYSTEM, KactusColors::SYSTEM_INTERFACE},
+        {General::MIRRORED_SYSTEM, KactusColors::MIRROREDSYSTEM_INTERFACE},
+        {General::MONITOR, KactusColors::MONITOR_INTERFACE}
+    });
+
+    auto const brushColor = interfaceColors.value(mode, KactusColors::INVALID_INTERFACE);
+    setBrush(QBrush(brushColor));
 
     updateEndPointGraphics();
 
@@ -119,6 +94,22 @@ void HWConnectionEndpoint::updateInterface()
     setLabelPosition();
 
     offPageConnector_->updateInterface();
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::getOwnerComponent()
+//-----------------------------------------------------------------------------
+QSharedPointer<Component> HWConnectionEndpoint::getOwnerComponent() const
+{
+    return containingComponent_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::setName()
+//-----------------------------------------------------------------------------
+void HWConnectionEndpoint::setName(QString const& /*name*/)
+{
+    // Intentionally empty.
 }
 
 //-----------------------------------------------------------------------------
@@ -138,14 +129,6 @@ GraphicsItemLabel* HWConnectionEndpoint::getNameLabel() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: HWConnectionEndPoint::getOwnerComponent()
-//-----------------------------------------------------------------------------
-QSharedPointer<Component> HWConnectionEndpoint::getOwnerComponent() const
-{
-    return containingComponent_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector()
@@ -154,17 +137,20 @@ ConnectionEndpoint* HWConnectionEndpoint::getOffPageConnector()
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWConnectionEndPoint::HWConnectionEndpoint()
+//-----------------------------------------------------------------------------
+ComponentItem* HWConnectionEndpoint::encompassingComp() const
+{
+    return parentComponentItem_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::sceneIsLocked()
 //-----------------------------------------------------------------------------
 bool HWConnectionEndpoint::sceneIsLocked() const
 {
     auto diagram = dynamic_cast<DesignDiagram*>(scene());
-    if (diagram != nullptr && diagram->isProtected())
-    {
-        return true;
-    }
-
-    return false;
+    return diagram != nullptr && diagram->isProtected();
 }
 
 //-----------------------------------------------------------------------------
@@ -178,12 +164,4 @@ void HWConnectionEndpoint::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
         moveItemByMouse();
     }
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWConnectionEndPoint::setName()
-//-----------------------------------------------------------------------------
-void HWConnectionEndpoint::setName(QString const& /*name*/)
-{
-    // Intentionally empty.
 }

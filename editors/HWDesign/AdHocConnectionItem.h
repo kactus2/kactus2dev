@@ -50,7 +50,7 @@ public:
      *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
      *  connection).
      */
-    bool isBus() const;
+    bool isBus() const noexcept;
 
     /*!
      *  Get the type of this connection item.

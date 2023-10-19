@@ -240,7 +240,7 @@ void SWInterfaceItem::updateInterface()
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::isHierachical()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::isHierarchical() const
+bool SWInterfaceItem::isHierarchical() const noexcept
 {
     return true;
 }
@@ -429,7 +429,7 @@ QVariant SWInterfaceItem::itemChange(GraphicsItemChange change, QVariant const& 
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::isDirectionFixed() const
+bool SWInterfaceItem::isDirectionFixed() const noexcept
 {
     return false;
 }
@@ -810,7 +810,7 @@ void SWInterfaceItem::setLabelPosition()
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::isCom()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::isCom() const
+bool SWInterfaceItem::isCom() const noexcept
 {
     return comInterface_ != nullptr;
 }
@@ -818,7 +818,7 @@ bool SWInterfaceItem::isCom() const
 //-----------------------------------------------------------------------------
 // Function: SWInterfaceItem::isApi()
 //-----------------------------------------------------------------------------
-bool SWInterfaceItem::isApi() const
+bool SWInterfaceItem::isApi() const noexcept
 {
     return apiInterface_ != nullptr;
 }

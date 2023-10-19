@@ -92,14 +92,14 @@ public:
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
-    bool isCom() const;
+    bool isCom() const noexcept override;
 
     /*!
      *  Returns true if the endpoint is an API interface endpoint.
      */
-    bool isApi() const;
+    bool isApi() const noexcept override;
 
-    virtual ConnectionEndpoint::EndpointType getType() const;
+    ConnectionEndpoint::EndpointType getType() const noexcept override;
 
     virtual ConnectionEndpoint* getOffPageConnector();
     

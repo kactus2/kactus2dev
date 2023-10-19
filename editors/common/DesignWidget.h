@@ -15,6 +15,8 @@
 #include <common/widgets/tabDocument/TabDocument.h>
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
+#include <common/GenericEditProvider.h>
+
 #include <QGraphicsView>
 #include <QWheelEvent>
 
@@ -39,7 +41,7 @@ public:
     /*!
      *  Constructor.
      */
-    DesignWidget(LibraryInterface* lh, QWidget* parent = 0);
+    DesignWidget(LibraryInterface* lh, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
@@ -261,19 +263,20 @@ private:
     LibraryInterface* library_;
 
     //! The graphics view for showing the diagram.
-    QGraphicsView* view_;
+    QGraphicsView* view_ = new QGraphicsView(this);
 
     //! The component being edited.
-    QSharedPointer<Component> editedComponent_;
+    QSharedPointer<Component> editedComponent_ = nullptr;
 
     //! The name of the hierarchical view being edited.
     QString viewName_;
 
     //! The edit provider.
-    QSharedPointer<GenericEditProvider> editProvider_;
+    QSharedPointer<GenericEditProvider> editProvider_ = 
+        QSharedPointer<GenericEditProvider>(new GenericEditProvider(EDIT_HISTORY_SIZE));
 
     //! The design diagram.
-    DesignDiagram* diagram_;
+    DesignDiagram* diagram_ = nullptr;
 };
 
 //-----------------------------------------------------------------------------

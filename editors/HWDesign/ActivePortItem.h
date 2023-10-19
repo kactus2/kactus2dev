@@ -56,7 +56,7 @@ public:
 	 *
      *      @return AdHoc interface item type.
 	 */
-	int type() const { return Type; }
+	int type() const final { return Type; }
 
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
@@ -65,7 +65,7 @@ public:
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
-    virtual bool isDirectionFixed() const;
+    bool isDirectionFixed() const noexcept final;
 
     /*!
      *  Returns true if a connection is valid between the two endpoints.
@@ -76,19 +76,19 @@ public:
      *               validates whether a connection between the endpoints would be valid
      *               in a general case.
      */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+    bool isConnectionValid(ConnectionEndpoint const* other) const final;
 
     /*!
      *  Check if the port is hierarchical.
      *
      *      @return False, port items are always instance items and thus non-hierarchical.
      */
-    virtual bool isHierarchical() const;
+    bool isHierarchical() const noexcept final;
 
 	/*!
 	 *  Set the position of the name label.
 	 */
-	virtual void setLabelPosition();
+	void setLabelPosition() final;
 
 	/*!
 	 *  Check the direction of the port and change it if necessary.
@@ -115,14 +115,14 @@ protected:
      *      @param [in] change  The change.
      *      @param [in] value   The new value.
      */
-    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+    QVariant itemChange(GraphicsItemChange change, const QVariant &value) final;
 
     /*!
      *  Event for mouse button release.
      *
      *      @param [in] event   The release event.
      */
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event)  final;
 
 private:
 
@@ -131,17 +131,17 @@ private:
      *
      *      @return True, if the label should be drawn to the left side.
      */
-    virtual bool labelShouldBeDrawnLeft() const;
+    bool labelShouldBeDrawnLeft() const final;
 
     /*!
      *  Move the ad hoc item by dragging with the mouse.
      */
-    virtual void moveItemByMouse();
+    void moveItemByMouse() final;
 
     /*!
      *  Save the positions of the other associated ports.
      */
-    virtual void saveOldPortPositions();
+    void saveOldPortPositions() final;
 
     //-----------------------------------------------------------------------------
     // Data.

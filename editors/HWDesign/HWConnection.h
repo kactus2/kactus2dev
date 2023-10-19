@@ -43,7 +43,7 @@ public:
      *      @param [in] dir2            Direction of the second end point.
      *      @param [in] parent          Owner of the connection item.
      */
-    explicit HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
+    HWConnection(QPointF const& p1, QVector2D const& dir1, QPointF const& p2, QVector2D const& dir2,
          DesignDiagram* parent);
 
     /*!
@@ -71,9 +71,12 @@ public:
      */
     int type() const final { return Type; }
 
+    /*!
+     *  Returns true if the connection is a bus connection. Returns false if it isn't (i.e. it is an ad-hoc
+     *  connection).
+     */
     bool isBus() const;
 
-    QSharedPointer<ConnectionRoute> route_;
 };
 
 #endif // HWCONNECTION_H

@@ -53,7 +53,7 @@ AdHocConnectionItem::AdHocConnectionItem(QPointF const& p1, QVector2D const& dir
 //-----------------------------------------------------------------------------
 // Function: AdHocConnectionItem::isBus()
 //-----------------------------------------------------------------------------
-bool AdHocConnectionItem::isBus() const
+bool AdHocConnectionItem::isBus() const noexcept
 {
     return false;
 }

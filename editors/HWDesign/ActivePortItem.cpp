@@ -45,7 +45,7 @@ AdHocItem(port, parent->componentModel(), parent)
 //-----------------------------------------------------------------------------
 // Function: ActivePortItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool ActivePortItem::isHierarchical() const
+bool ActivePortItem::isHierarchical() const noexcept
 {
     return false;
 }
@@ -128,7 +128,7 @@ QVariant ActivePortItem::itemChange(GraphicsItemChange change, QVariant const& v
 //-----------------------------------------------------------------------------
 // Function: ActivePortItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool ActivePortItem::isDirectionFixed() const
+bool ActivePortItem::isDirectionFixed() const noexcept
 {
     return true;
 }
@@ -223,7 +223,6 @@ void ActivePortItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 //-----------------------------------------------------------------------------
 void ActivePortItem::setLabelPosition()
 {
-    qreal nameWidth = getNameLabel()->boundingRect().width();
     qreal nameHeight = getNameLabel()->boundingRect().height();
 
 	// Check if the port is directed to the left.
@@ -233,7 +232,8 @@ void ActivePortItem::setLabelPosition()
 	}
 	// Otherwise the port is directed to the right.
 	else
-	{
+    {
+        qreal nameWidth = getNameLabel()->boundingRect().width();
         getNameLabel()->setPos( -nameHeight / 2, GridSize / 2 + nameWidth);
 	}
 }

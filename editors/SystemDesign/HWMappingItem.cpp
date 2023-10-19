@@ -190,7 +190,7 @@ qreal HWMappingItem::getHeight()
 //-----------------------------------------------------------------------------
 // Function: HWMappingItem::getWidth()
 //-----------------------------------------------------------------------------
-qreal HWMappingItem::getWidth()
+qreal HWMappingItem::getWidth() noexcept
 {	
 	return WIDTH;
 }

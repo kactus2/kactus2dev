@@ -67,7 +67,7 @@ public:
     /*! 
      *  Returns the name of the parent bus interface.
      */
-    virtual QString name() const;
+    QString name() const override;
 
 	/*!
 	 *  Set the name of the parent bus interface.
@@ -75,35 +75,35 @@ public:
      *      @param [in] name The name to set for the port.
 	 *
 	*/
-	virtual void setName(QString const& name);
+	void setName(QString const& name) override;
 
 	/*! 
      *  Get the description of the port.
 	 *
      *      @return QString containing the description.
 	 */
-	virtual QString description() const;
+	QString description() const override;
 
 	/*!
 	 *  Set the description for the port.
      *
 	 *      @param [in] description The description to set.
 	 */
-	virtual void setDescription(QString const& description);
+	void setDescription(QString const& description) override;
 
     /*!
      *  Attaches the endpoint to a connection.
      *
      *      @param [in] connection The connection.
      */
-    virtual void addConnection(GraphicsConnection* connection);
+    void addConnection(GraphicsConnection* connection) override;
 
     /*!
      *  Unattaches the endpoint from a connection.
      *
      *      @param [in] connection The connection.
      */
-    virtual void removeConnection(GraphicsConnection* connection);
+    void removeConnection(GraphicsConnection* connection) override;
 
     /*!
      *  Called when a connection between this and another endpoint is done.
@@ -112,12 +112,12 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(ConnectionEndpoint const* other);
+    bool onConnect(ConnectionEndpoint const* other) override;
 
     /*!
      *  Called when a connection has been removed from between this and another endpoint.
      */
-    virtual void onDisconnect() override final;
+    void onDisconnect() final;
 
     /*!
      *  Returns true if a connection is valid between the two endpoints.
@@ -128,12 +128,12 @@ public:
      *               validates whether a connection between the endpoints would be valid
      *               in a general case.
      */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+    bool isConnectionValid(ConnectionEndpoint const* other) const override;
 
     /*!
      *  Returns true if the endpoint is exclusive, i.e. can only have one connection.
      */
-    virtual bool isExclusive() const;
+    bool isExclusive() const override;
 
     /*!
      *  Sets the draw direction of the endpoint.
@@ -142,7 +142,7 @@ public:
      *
      *      @remarks The direction can be changed only if isDirectionFixed() returns false.
      */
-    virtual void setDirection(QVector2D const& dir);
+    void setDirection(QVector2D const& dir) override;
 
     /*!
 	 *	Returns the draw direction of the endpoint.
@@ -152,7 +152,7 @@ public:
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
-    virtual bool isDirectionFixed() const;
+    bool isDirectionFixed() const noexcept override;
 
     /*! 
      *  Returns the encompassing component, if it represents a bus interface on a component.
@@ -198,7 +198,7 @@ public:
     /*!
      *  Returns true if the port represents a hierarchical connection.
      */
-    virtual bool isHierarchical() const;
+    bool isHierarchical() const noexcept override;
 
     /*!
      *  Get the bus interface mode of the end point item.
@@ -212,35 +212,35 @@ public:
      *
      *      @return The type of the end point item.
      */
-    virtual ConnectionEndpoint::EndpointType getType() const;
+    ConnectionEndpoint::EndpointType getType() const noexcept override;
     
     /*!
      *  Check if the end point is a bus interface.
      *
      *      @return True, if the end point is a bus interface end point, otherwise false.
      */
-    virtual bool isBus() const;
+    bool isBus() const noexcept override;
 
     /*!
      *  Check if the end point is an ad hoc.
      *
      *      @return True if the endpoint is an ad-hoc port, otherwise false.
      */
-    virtual bool isAdHoc() const;
+    bool isAdHoc() const noexcept override;
 
     /*!
      *  Check if the end point is a com interface.
      *
      *      @return True if the endpoint is a COM interface endpoint, otherwise false.
      */
-    bool isCom() const;
+    bool isCom() const noexcept override;
 
     /*!
      *  Check if the end point is an api interface.
      *
      *      @return True if the endpoint is an API interface endpoint, otherwise false.
      */
-    bool isApi() const;
+    bool isApi() const noexcept override;
 
 protected:
 
@@ -252,7 +252,7 @@ protected:
      *
      *      @return The item change.
      */
-    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+    QVariant itemChange(GraphicsItemChange change, QVariant const& value) override;
 
 private:
 

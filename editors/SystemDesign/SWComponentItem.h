@@ -91,10 +91,6 @@ public:
      */
     bool isDraft() const;
 
-    /*!
-	 *  Return the width of the component.
-	 */
-    qreal getWidth();
 
 public slots:
     void openCSource();

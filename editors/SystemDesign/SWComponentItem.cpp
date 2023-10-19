@@ -332,10 +332,3 @@ bool SWComponentItem::isDraft() const
     return isDraft_;
 }
 
-//-----------------------------------------------------------------------------
-// Function: SWComponentItem::getWidth()
-//-----------------------------------------------------------------------------
-qreal SWComponentItem::getWidth()
-{
-	return COMPONENTWIDTH;
-}

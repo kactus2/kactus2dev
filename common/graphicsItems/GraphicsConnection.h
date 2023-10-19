@@ -507,7 +507,7 @@ private:
      *
      *      @return The lines connecting the given points.
      */
-    QList<QLineF> pointsToLines(QList<QPointF> points) const;
+    QList<QLineF> pointsToLines(QList<QPointF> const& points) const;
 
     //-----------------------------------------------------------------------------
     // Data.

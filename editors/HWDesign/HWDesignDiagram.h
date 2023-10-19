@@ -898,13 +898,13 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The type of the item being dragged.
-    ColumnTypes::ColumnItemType dragCompType_;
+    ColumnTypes::ColumnItemType dragCompType_ = ColumnTypes::NONE;
 
     //! Flag for indicating that the item being dragged is a bus.
-    bool dragBus_;
+    bool dragBus_ = false;
 
     //! The possible end point under cursor while performing drag.
-    HWConnectionEndpoint* dragEndPoint_;
+    HWConnectionEndpoint* dragEndPoint_ = nullptr;
 
     //! Handler for design diagram calculation.
     QSharedPointer<DesignDiagramResolver> diagramResolver_;

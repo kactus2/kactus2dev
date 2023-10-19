@@ -74,10 +74,10 @@ bool HWColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) con
 //-----------------------------------------------------------------------------
 void HWColumn::prepareColumnMove()
 {
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item : scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
         {
             conn->beginUpdatePosition();
         }
@@ -91,10 +91,10 @@ QSharedPointer<QUndoCommand> HWColumn::createMoveUndoCommand()
 {
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item : scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
         {
             conn->endUpdatePosition(cmd.data());
         }

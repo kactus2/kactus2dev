@@ -64,6 +64,7 @@
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
+#include <IPXACTmodels/utilities/Search.h>
 
 #include <QMessageBox>
 #include <QFileDialog>
@@ -76,8 +77,7 @@
 HWDesignWidget::HWDesignWidget(LibraryInterface *lh,
     QSharedPointer<MultipleParameterFinder> designAndIsntancesParameterFinder,
     QSharedPointer<ListParameterFinder> designParameterFinder, QWidget *parent):
-DesignWidget(lh, parent),
-expressionParser_()
+DesignWidget(lh, parent)
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW | CONNECTIONWINDOW | INTERFACEWINDOW |
@@ -90,13 +90,6 @@ expressionParser_()
     
     QSharedPointer<ComponentParameterFinder> parameterFinder (new ComponentParameterFinder(getEditedComponent()));
     expressionParser_ = QSharedPointer<IPXactSystemVerilogParser>(new IPXactSystemVerilogParser(parameterFinder));
-}
-
-//-----------------------------------------------------------------------------
-// Function: HWDesignWidget::~HWDesignWidget()
-//-----------------------------------------------------------------------------
-HWDesignWidget::~HWDesignWidget()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -113,10 +106,9 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-			QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(vlnv);
-            QSharedPointer<Component> comp = libComponent.staticCast<Component>();
+			QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
 
-			if (comp == 0 || !setDesign(comp, viewName))
+			if (comp == nullptr|| !setDesign(comp, viewName))
             {
 				return false;
             }
@@ -128,8 +120,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		Q_ASSERT(getLibraryInterface()->contains(vlnv));
 		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(vlnv);
-		QSharedPointer<Component> comp = libComp.staticCast<Component>();
+		QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
 
 		// get the directory path where the component's xml file is located
 		const QString xmlPath = getLibraryInterface()->getPath(vlnv);
@@ -153,7 +144,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 
 	setModified(false);
 	
-	setDocumentType("HW Design");
+	setDocumentType(QStringLiteral("HW Design"));
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();
@@ -166,15 +157,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString const& viewName)
 {
-    QSharedPointer<View> openView(0);
-    foreach (QSharedPointer<View> view, *component->getViews())
-    {
-        if (view->name() == viewName)
-        {
-            openView = view;
-            break;
-        }
-    }
+    QSharedPointer<View> openView = Search::findByName(viewName, *component->getViews());
 
     if (!openView || !openView->isHierarchical())
     {
@@ -188,7 +171,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
     {
         VLNV configurationVLNV;
 
-        foreach (QSharedPointer<DesignConfigurationInstantiation> configuration, 
+        for (QSharedPointer<DesignConfigurationInstantiation> configuration : 
             *component->getDesignConfigurationInstantiations())
         {
             if (configuration->name() == openView->getDesignConfigurationInstantiationRef())
@@ -213,7 +196,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
     {
         VLNV designVLNV;
 
-        foreach (QSharedPointer<DesignInstantiation> designInstantiation, *component->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> designInstantiation : *component->getDesignInstantiations())
         {
             if (designInstantiation->name() == openView->getDesignInstantiationRef())
             {
@@ -255,8 +238,8 @@ bool HWDesignWidget::saveAs()
     VLNV vlnv;
 
     QString directory;
-    if (!NewObjectDialog::saveAsDialog(
-        this, getLibraryInterface(), oldVLNV, prodHier, firmness, tags, vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, prodHier, firmness, tags, vlnv,
+        directory))
     {
         return false;
     }
@@ -278,15 +261,7 @@ bool HWDesignWidget::saveAs()
 	// set the new vlnv for the component
 	topComponent->setVlnv(vlnv);
 
-    QSharedPointer<View> openView(0);
-    foreach (QSharedPointer<View> view, *topComponent->getViews())
-    {
-        if (view->name() == getOpenViewName())
-        {
-            openView = view;
-            break;
-        }
-    }
+    QSharedPointer<View> openView = Search::findByName(getOpenViewName(), *topComponent->getViews());
 
 	QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
 
@@ -298,7 +273,7 @@ bool HWDesignWidget::saveAs()
 		designConf->setVlnv(desConfVLNV);
 		designConf->setDesignRef(designVLNV);
 
-        foreach (QSharedPointer<DesignConfigurationInstantiation> configuration, 
+        for (QSharedPointer<DesignConfigurationInstantiation> configuration : 
             *topComponent->getDesignConfigurationInstantiations())
         {
             if (configuration->name() == openView->getDesignConfigurationInstantiationRef())
@@ -313,7 +288,7 @@ bool HWDesignWidget::saveAs()
 	// if component does not use design configuration then it references directly to design
 	else
     {
-        foreach (QSharedPointer<DesignInstantiation> designInstantiation, *topComponent->getDesignInstantiations())
+        for (QSharedPointer<DesignInstantiation> designInstantiation : *topComponent->getDesignInstantiations())
         {
             if (designInstantiation->name() == openView->getDesignInstantiationRef())
             {
@@ -325,7 +300,7 @@ bool HWDesignWidget::saveAs()
 		design = getDiagram()->getDesign();
 	}
 
-	if (design == 0)
+	if (design == nullptr)
 	{
 		return false;
 	}
@@ -369,8 +344,7 @@ bool HWDesignWidget::saveAs()
 
 	if (writeSucceeded)
     {
-		setDocumentName(getEditedComponent()->getVlnv().getName() + " (" + 
-            getEditedComponent()->getVlnv().getVersion() + ")");
+		setDocumentName(getEditedComponent()->getVlnv().getName() + " (" + getEditedComponent()->getVlnv().getVersion() + ")");
 		return TabDocument::saveAs();
 	}
 	else
@@ -408,7 +382,7 @@ void HWDesignWidget::onDeleteSelectedItems()
         return;
     }
 
-    int type = getDiagram()->getCommonItemType(selectedItems);
+    int type = DesignDiagram::getCommonItemType(selectedItems);
     if (type == HWComponentItem::Type)
     {
         deleteSelectedComponentItems(selectedItems);
@@ -460,12 +434,12 @@ void HWDesignWidget::deleteSelectedComponentItems(QList<QGraphicsItem*> selected
 
     QSharedPointer<QUndoCommand> deleteCommand(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        HWComponentItem* component = static_cast<HWComponentItem*>(selected);
+        auto component = static_cast<HWComponentItem*>(selected);
         getDiagram()->clearSelection();
 
-        ComponentDeleteCommand* componentDeleteCommand = new ComponentDeleteCommand(
+        auto componentDeleteCommand = new ComponentDeleteCommand(
             getDiagram(), getDiagram()->getLayout()->findColumnAt(component->scenePos()),
             component, deleteCommand.data());
 
@@ -476,7 +450,7 @@ void HWDesignWidget::deleteSelectedComponentItems(QList<QGraphicsItem*> selected
 
         componentDeleteCommand->redo();
 
-        foreach(Association* association, component->getAssociations())
+        for(Association* association : component->getAssociations())
         {
             QUndoCommand* associationDeleteCommand = new AssociationRemoveCommand(association,
                 getDiagram(), componentDeleteCommand);
@@ -495,11 +469,11 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
     // Enumerate all ports that are part of the selected bus interfaces.
     QStringList ports;
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (auto const& selected : selectedItems)
     {
-        HierarchicalBusInterfaceItem* diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
+        auto diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
 
-        foreach (QString portName, diagIf->getBusInterface()->getAllMappedPhysicalPorts())
+        for (auto const& portName : diagIf->getBusInterface()->getAllMappedPhysicalPorts())
         {
             if (!ports.contains(portName))
             {
@@ -519,7 +493,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
 
         QStringList textList("Interface ports:");
 
-        foreach(QString port, ports)
+        for(QString const& port : ports)
         {
             textList.append("* " + port);
         }
@@ -532,11 +506,11 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        HierarchicalBusInterfaceItem* diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
+        auto diagIf = static_cast<HierarchicalBusInterfaceItem*>(selected);
 
-        InterfaceDeleteCommand* childCmd =
+        auto childCmd =
             new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
         connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
 
@@ -554,9 +528,9 @@ void HWDesignWidget::deleteSelectedBusPortItems(QList<QGraphicsItem*> selectedIt
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        ActiveBusInterfaceItem* port = static_cast<ActiveBusInterfaceItem*>(selected);
+        auto port = static_cast<ActiveBusInterfaceItem*>(selected);
 
         // Ports can be removed only if they are temporary.
         if (port->isTemporary())
@@ -578,12 +552,12 @@ void HWDesignWidget::deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selec
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         // Delete the interconnection.
-        HWConnection* conn = static_cast<HWConnection*>(selected);
-        HWConnectionEndpoint* endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
-        HWConnectionEndpoint* endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
+        auto conn = static_cast<HWConnection*>(selected);
+        auto endpoint1 = static_cast<HWConnectionEndpoint*>(conn->endpoint1());
+        auto endpoint2 = static_cast<HWConnectionEndpoint*>(conn->endpoint2());
 
         QUndoCommand* childCmd = new ConnectionDeleteCommand(getDiagram(), conn, cmd.data());
         childCmd->redo();
@@ -591,36 +565,36 @@ void HWDesignWidget::deleteSelectedHWConnectionItems(QList<QGraphicsItem*> selec
         // If the bus ports are invalid, delete them too.
         if (endpoint1->isInvalid())
         {
-            QUndoCommand* childCmd = 0;
+            QUndoCommand* rmCmd = 0;
 
             if (endpoint1->type() == ActiveBusInterfaceItem::Type)
             {
-                childCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
+                rmCmd = new PortDeleteCommand(getDiagram(), endpoint1, cmd.data());
             }
             else
             {
-                childCmd = new InterfaceDeleteCommand(
+                rmCmd = new InterfaceDeleteCommand(
                     getDiagram(), static_cast<HierarchicalBusInterfaceItem*>(endpoint1), false, cmd.data());
             }
 
-            childCmd->redo();
+            rmCmd->redo();
         }
 
         if (endpoint2->isInvalid())
         {
-            QUndoCommand* childCmd = 0;
+            QUndoCommand* rmCmd = 0;
 
             if (endpoint2->type() == ActiveBusInterfaceItem::Type)
             {
-                childCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
+                rmCmd = new PortDeleteCommand(getDiagram(), endpoint2, cmd.data());
             }
             else
             {
-                childCmd = new InterfaceDeleteCommand(
+                rmCmd = new InterfaceDeleteCommand(
                     getDiagram(), static_cast<HierarchicalBusInterfaceItem*>(endpoint2), false, cmd.data());
             }
 
-            childCmd->redo();
+            rmCmd->redo();
         }
     }
 
@@ -635,9 +609,9 @@ void HWDesignWidget::deleteSelectedAdHocConnectionItems(QList<QGraphicsItem*> se
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> cmd(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        AdHocConnectionItem* conn = static_cast<AdHocConnectionItem*>(selected);
+        auto conn = static_cast<AdHocConnectionItem*>(selected);
 
         QUndoCommand* childCmd = new AdHocConnectionDeleteCommand(getDiagram(), conn, cmd.data());
         childCmd->redo();
@@ -652,9 +626,9 @@ void HWDesignWidget::deleteSelectedAdHocConnectionItems(QList<QGraphicsItem*> se
 void HWDesignWidget::deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems)
 {
     // Ask a confirmation if the user really wants to delete the entire column if it is not empty.
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        HWColumn* column = static_cast<HWColumn*>(selected);
+        auto column = static_cast<HWColumn*>(selected);
         if (!column->isEmpty())
         {
             QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
@@ -674,7 +648,7 @@ void HWDesignWidget::deleteSelectedHWColumns(QList<QGraphicsItem*> selectedItems
     getDiagram()->clearSelection();
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         HWColumn* column = static_cast<HWColumn*>(selected);
         QUndoCommand* columnRemoveCommand = new ColumnDeleteCommand(getDiagram(), 
@@ -692,7 +666,7 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
 {
     QList<HierarchicalPortItem*> adhocDeleteList;
 
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
         HierarchicalPortItem* adhocItem = static_cast<HierarchicalPortItem*>(selected);
         if (adhocItem && !adhocItem->adhocPortIsValid())
@@ -706,7 +680,7 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
         getDiagram()->clearSelection();
 
         QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
-        foreach (HierarchicalPortItem* interfaceItem, adhocDeleteList)
+        for (HierarchicalPortItem* interfaceItem : adhocDeleteList)
         {
             new AdHocVisibilityChangeCommand(getDiagram(), interfaceItem->name(), false, parentCommand.data());
         }
@@ -723,9 +697,9 @@ void HWDesignWidget::deleteSelectedAdhocInterfaces(QList<QGraphicsItem*> selecte
 void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItems)
 {
     QList<ActivePortItem*> adhocDeleteList;
-    foreach (QGraphicsItem* selected, selectedItems)
+    for (QGraphicsItem* selected : selectedItems)
     {
-        ActivePortItem* adHocItem = static_cast<ActivePortItem*>(selected);
+        auto adHocItem = static_cast<ActivePortItem*>(selected);
         if (adHocItem && !adHocItem->adhocPortIsValid())
         {
             adhocDeleteList.append(adHocItem);
@@ -734,13 +708,13 @@ void HWDesignWidget::deleteSelectedAdHocPorts(QList<QGraphicsItem*> selectedItem
 
     if (!adhocDeleteList.isEmpty())
     {
-        HWComponentItem* containingItem = dynamic_cast<HWComponentItem*>(adhocDeleteList.first()->parentItem());
+        auto containingItem = dynamic_cast<HWComponentItem*>(adhocDeleteList.first()->parentItem());
         if (containingItem)
         {
             getDiagram()->clearSelection();
 
             QSharedPointer<QUndoCommand> parentCommand (new QUndoCommand());
-            foreach (ActivePortItem* portItem, adhocDeleteList)
+            for (ActivePortItem* portItem : adhocDeleteList)
             {
                 new AdHocVisibilityChangeCommand(containingItem, portItem->name(), false, parentCommand.data());
             }
@@ -861,10 +835,10 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	model->getViews()->append(hierView);
 
 	// create the design configuration
-	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
+	auto designConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(desConfVLNV, component->getRevision()));
 	designConf->setDesignRef(designVLNV);
 
-	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
+	auto newDesign = QSharedPointer<Design>(new Design(designVLNV, component->getRevision()));
 
 	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
 	getLibraryInterface()->writeModelToFile(dirPath, designConf);
@@ -881,9 +855,9 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
 {
     QDir sourceDirectory(sourcePath);
 
-    foreach (QSharedPointer<FileSet> fileSet, *topComponent->getFileSets())
+    for (QSharedPointer<FileSet> fileSet : *topComponent->getFileSets())
     {
-        foreach (QSharedPointer<File> componentFile, *fileSet->getFiles())
+        for (QSharedPointer<File> componentFile : *fileSet->getFiles())
         {
             QString filePath = componentFile->name();            
             QString absoluteSource = sourceDirectory.absoluteFilePath(filePath);

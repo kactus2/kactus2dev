@@ -46,7 +46,7 @@ public:
      *      @param [in] dir         Direction for the end point graphics.
      */
     BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-        LibraryInterface* library, QGraphicsItem *parent = 0, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+        LibraryInterface* library, QGraphicsItem *parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
@@ -60,42 +60,42 @@ public:
     /*!
      *  Get the name of the bus interface.
      */
-    virtual QString name() const;
+    QString name() const override;
 
     /*!
      *  Set a new name for the bus interface.
      *
      *      @param [in] name    The new bus interface name.
      */
-    virtual void setName(QString const& name);
+    void setName(QString const& name) override;
     
     /*!
      *  Get the description of the bus interface.
 	 *
 	 *      @return The bus interface description.
      */
-	virtual QString description() const;
+	QString description() const override;
 
 	/*!
      *  Set a new description for the bus interface.
 	 *
 	 *      @param [in] description     The selected description to set.
      */
-	virtual void setDescription(QString const& description);
+	void setDescription(QString const& description) override;
 
     /*!
      *  Get the contained bus interface.
      *
      *      @return The contained bus interface.
      */
-    virtual QSharedPointer<BusInterface> getBusInterface() const;
+    QSharedPointer<BusInterface> getBusInterface() const override;
 
     /*!
      *  Check if the bus interface can only have one connection.
      *
      *      @return True, if the bus interface is exclusive, false otherwise.
      */
-    virtual bool isExclusive() const;
+    bool isExclusive() const override;
 
     /*!
      *  Sets the draw direction of the endpoint.
@@ -104,21 +104,21 @@ public:
      *
      *      @remarks The direction can be changed only if isDirectionFixed() returns false.
      */
-    virtual void setDirection(QVector2D const& dir);
+    void setDirection(QVector2D const& dir) override;
 
     /*!
      *  Check if the end point is a bus interface.
      *
      *      @return True.
      */
-    virtual bool isBus() const;
+    bool isBus() const noexcept override;
 
     /*!
      *  Get the type of the connection end point.
      *
      *      @return This end point is a bus interface.
      */
-    virtual ConnectionEndpoint::EndpointType getType() const;
+    ConnectionEndpoint::EndpointType getType() const noexcept override;
 
     /*!
      *  Set the interface mode for the end point.
@@ -141,7 +141,7 @@ public:
      *
      *      @return True, if the connection can be made, false otherwise.
      */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+    bool isConnectionValid(ConnectionEndpoint const* other) const override;
 
     /*!
      *  Handles the connecting of the connection end points.
@@ -150,7 +150,7 @@ public:
      *
      *      @return True, if the connection was made successfully, false otherwise.
      */
-    virtual bool onConnect(ConnectionEndpoint const* other);
+    bool onConnect(ConnectionEndpoint const* other) override;
 
     /*!
      *  Set a new bus interface.
@@ -199,50 +199,49 @@ protected:
      *
      *      @param [in] event   The mouse release event.
      */
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     /*!
      *  Get the shape of the bus interface with direction in.
      *
      *      @return The shape of the bus interface with direction in.
      */
-    virtual QPolygonF getDirectionInShape() const;
+    static QPolygonF getDirectionInShape();
 
     /*!
      *  Get the shape of the bus interface with direction out.
      *
      *      @return The shape of the bus interface with direction out.
      */
-    virtual QPolygonF getDirectionOutShape() const;
+    static QPolygonF getDirectionOutShape();
 
     /*!
      *  Get the shape of the bus interface with direction in/out.
      *
      *      @return The shape of the bus interface with direction in/out.
      */
-    virtual QPolygonF getDirectionInOutShape() const;
+    static QPolygonF getDirectionInOutShape();
 
     /*!
      *  Get the shape of the bus interface with initiative provides.
      *
      *      @return The shape of the bus interface with initiative provides.
      */
-    virtual QPolygonF getInitiativeProvidesShape() const;
+    static QPolygonF getInitiativeProvidesShape();
 
     /*!
      *  Get the shape of the bus interface with initiative requires.
      *
      *      @return The shape of the bus interface with initiative requires.
      */
-    virtual QPolygonF getInitiativeRequiresShape() const;
+    static QPolygonF getInitiativeRequiresShape();
 
     /*!
-     *  Get the shape of the bus interface with initiative requries / provides.
+     *  Get the shape of the bus interface with initiative requires / provides.
      *
      *      @return The shape of the bus interface with initiative requires / provides.
      */
-    virtual QPolygonF getInitiativeRequiresProvidesShape() const;
-
+    static QPolygonF getInitiativeRequiresProvidesShape();
 
     /*!
      *  Get access to the library.
@@ -252,7 +251,6 @@ protected:
     LibraryInterface* getLibraryAccess() const;
 
 private:
-
 
     /*!
      *  Get the graphical shape for the interface item.
@@ -312,7 +310,7 @@ private:
     /*!
      *  Update the end point item graphics.
      */
-    virtual void updateEndPointGraphics();
+    void updateEndPointGraphics() override;
 
     /*!
      *  Get the current position of the end point.

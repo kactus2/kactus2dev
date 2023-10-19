@@ -45,8 +45,7 @@
 HWComponentItem::HWComponentItem(LibraryInterface* libInterface,
 QSharedPointer<ComponentInstance> instance, QSharedPointer<Component> component,
 QGraphicsItem* parent) : 
-ComponentItem(QRectF(), libInterface, instance, component, parent),
-hierIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"), this))
+ComponentItem(QRectF(), libInterface, instance, component, parent)
 {
     setFlag(ItemIsMovable);
     setAdHocData(component, instance->getPortAdHocVisibilities());
@@ -54,7 +53,7 @@ hierIcon_(new QGraphicsPixmapItem(QPixmap(":icons/common/graphics/hierarchy.png"
     hierIcon_->setToolTip(tr("Hierarchical"));
     hierIcon_->setPos(COMPONENTWIDTH/2 - hierIcon_->pixmap().width() - SPACING, SPACING);
 
-    int portSpacing = 3*GridSize;
+    static constexpr int portSpacing = 3*GridSize;
     int portCountOnLeft = component->getBusInterfaces()->size() / 2.0 + .5;
     setRect(-COMPONENTWIDTH/ 2, 0, COMPONENTWIDTH, 6 * GridSize + portSpacing * qMax(portCountOnLeft - 1, 0));
 
@@ -76,7 +75,7 @@ HWComponentItem::~HWComponentItem()
     {
         if (item->type() == ActiveBusInterfaceItem::Type)
         {
-            ActiveBusInterfaceItem* diagramPort = qgraphicsitem_cast<ActiveBusInterfaceItem*>(item);
+            auto diagramPort = qgraphicsitem_cast<ActiveBusInterfaceItem*>(item);
             for (GraphicsConnection* interconnection : diagramPort->getConnections())
             {
                 delete interconnection;
@@ -119,6 +118,8 @@ void HWComponentItem::updateComponent()
 //-----------------------------------------------------------------------------
 void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool visible)
 {
+    ActivePortItem* port = getAdHocPort(portName);
+
     // Create/destroy the ad-hoc port graphics item.
     if (visible)
     {
@@ -128,7 +129,6 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
             adhocPort = QSharedPointer<Port>(new Port(portName));
         }
 
-        ActivePortItem* port = getAdHocPort(portName);
         if (!port)
         {
             port = new ActivePortItem(adhocPort, this);
@@ -143,13 +143,12 @@ void HWComponentItem::onAdHocVisibilityChanged(QString const& portName, bool vis
     else
     {
         // Search for the ad-hoc port from both sides.
-        HWConnectionEndpoint* found = getAdHocPort(portName);
-        Q_ASSERT(found != nullptr);
+        Q_ASSERT(port != nullptr);
 
         // Remove the port and delete it.
-        removePort(found);
-        delete found;
-        found = nullptr;
+        removePort(port);
+        delete port;
+        port = nullptr;
 
         getComponentInstance()->hideAdHocPort(portName);
     }
@@ -195,7 +194,7 @@ HWConnectionEndpoint* HWComponentItem::getDiagramAdHocPort(QString const& portNa
 ActiveBusInterfaceItem* HWComponentItem::addPort(QPointF const& pos)
 {
     // Determine a unique name for the bus interface.
-    QString name = "bus";
+    QString name = QStringLiteral("bus");
     unsigned int count = 0;
 
     QStringList knownNames = componentModel()->getBusInterfaceNames();
@@ -213,7 +212,7 @@ ActiveBusInterfaceItem* HWComponentItem::addPort(QPointF const& pos)
     componentModel()->getBusInterfaces()->append(busIf);
 
     // Create the visualization for the bus interface.
-    ActiveBusInterfaceItem* draftPort = new ActiveBusInterfaceItem(busIf, getLibraryInterface(), this);
+    auto draftPort = new ActiveBusInterfaceItem(busIf, getLibraryInterface(), this);
     draftPort->setTemporary(true);
     draftPort->setPos(mapFromScene(pos));
     
@@ -285,16 +284,19 @@ ActiveBusInterfaceItem* HWComponentItem::getBusPort(QString const& name) const
 //-----------------------------------------------------------------------------
 ActivePortItem* HWComponentItem::getAdHocPort(QString const& portName) const
 {
-    QList<ConnectionEndpoint*> allInterfaces;
-    allInterfaces.append(leftPorts_);
-    allInterfaces.append(rightPorts_);
+    auto matchName = [&portName](auto endpoint) {
+        return dynamic_cast<ActivePortItem*>(endpoint) != nullptr && endpoint->name() == portName; };
 
-    for (ConnectionEndpoint* endpoint : allInterfaces)
+    if (auto leftPort = std::find_if(leftPorts_.cbegin(), leftPorts_.cend(), matchName);
+        leftPort != leftPorts_.cend())
     {
-        if (dynamic_cast<ActivePortItem*>(endpoint) != nullptr && endpoint->name() == portName)
-        {
-            return static_cast<ActivePortItem*>(endpoint);
-        }
+        return static_cast<ActivePortItem*>(*leftPort);
+    }
+
+    if (auto rightPort = std::find_if(rightPorts_.cbegin(), rightPorts_.cend(), matchName); 
+        rightPort != rightPorts_.cend())
+    {
+        return static_cast<ActivePortItem*>(*rightPort);
     }
 
     return nullptr;
