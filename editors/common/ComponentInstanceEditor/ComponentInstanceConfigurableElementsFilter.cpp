@@ -17,16 +17,7 @@
 // Function: ComponentInstanceConfigurableElementsFilter::ComponentInstanceConfigurableElementsFilter()
 //-----------------------------------------------------------------------------
 ComponentInstanceConfigurableElementsFilter::ComponentInstanceConfigurableElementsFilter(QObject* parent):
-QSortFilterProxyModel(parent),
-showImmediateValues_(false)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstanceConfigurableElementsFilter::~ComponentInstanceConfigurableElementsFilter()
-//-----------------------------------------------------------------------------
-ComponentInstanceConfigurableElementsFilter::~ComponentInstanceConfigurableElementsFilter()
+QSortFilterProxyModel(parent)
 {
 
 }

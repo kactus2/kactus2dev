@@ -51,7 +51,7 @@ filterSelection_(new QCheckBox(tr("Show immediate values"), this))
     
     hideUnnecessaryColumns();
 
-	QVBoxLayout* topLayout = new QVBoxLayout(this);
+	auto topLayout = new QVBoxLayout(this);
 	topLayout->addWidget(&view_);
     topLayout->addWidget(filterSelection_);
 

@@ -35,14 +35,10 @@ ConfigurableElementsModel::ConfigurableElementsModel(QSharedPointer<ParameterFin
     QSharedPointer<ExpressionParser> defaultValueParser, QObject *parent):
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
-configurableElements_(),
-choices_(),
 configurableElementExpressionFormatter_(configurableElementExpressionFormatter),
 configurableElementExpressionParser_(configurableElementExpressionParser),
 defaultValueFormatter_(defaultValueFormatter),
-defaultValueParser_(defaultValueParser),
-validator_(0),
-itemConfigurableElementValues_(0)
+defaultValueParser_(defaultValueParser)
 {
     setExpressionParser(configurableElementExpressionParser);
 }

@@ -46,7 +46,7 @@ ComponentInstanceConfigurableElementsEditor::ComponentInstanceConfigurableElemen
     connect(&moduleParameterEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(&parameterEditor_);
     layout->addWidget(&moduleParameterEditor_);
     layout->setContentsMargins(0, 0, 0, 0);

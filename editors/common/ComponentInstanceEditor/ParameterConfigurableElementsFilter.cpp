@@ -23,14 +23,6 @@ ConfigurableElementsFilter(parent)
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterConfigurableElementsFilter::~ParameterConfigurableElementsFilter()
-//-----------------------------------------------------------------------------
-ParameterConfigurableElementsFilter::~ParameterConfigurableElementsFilter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterConfigurableElementsFilter::filterAcceptsRow()
 //-----------------------------------------------------------------------------
 bool ParameterConfigurableElementsFilter::filterAcceptsRow(int source_row, QModelIndex const& source_parent) const

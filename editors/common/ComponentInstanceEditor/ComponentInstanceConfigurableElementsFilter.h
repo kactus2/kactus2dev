@@ -34,7 +34,7 @@ public:
     /*!
      *  Destructor.
      */
-    ~ComponentInstanceConfigurableElementsFilter();
+    virtual ~ComponentInstanceConfigurableElementsFilter() = default;
 
 protected:
 
@@ -82,7 +82,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Flag for displaying configurable elements with immediate values.
-    bool showImmediateValues_;
+    bool showImmediateValues_ = false;
 };
 
 #endif // COMPONENTINSTANCECONFIGURABLESELEMENTFILTER_H

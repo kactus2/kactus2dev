@@ -51,7 +51,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~ConfigurableElementDelegate();
+	virtual ~ConfigurableElementDelegate() = default;
 
     /*!
      *  Set a new edit provider.
@@ -344,7 +344,7 @@ private:
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
     //! Edit provider for stacking undo commands.
-    QSharedPointer<IEditProvider> editProvider_;
+    QSharedPointer<IEditProvider> editProvider_ = nullptr;
 
     //! The IP-XACT standard revision in use.
     Document::Revision docRevision_ = Document::Revision::Std14;
