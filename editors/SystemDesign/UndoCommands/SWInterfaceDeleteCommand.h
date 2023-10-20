@@ -12,9 +12,10 @@
 #ifndef SWINTERFACEDELETECOMMAND_H
 #define SWINTERFACEDELETECOMMAND_H
 
-#include <QUndoCommand>
 #include <QGraphicsScene>
 #include <QObject>
+#include <QSharedPointer>
+#include <QUndoCommand>
 
 class IGraphicsItemStack;
 class SWInterfaceItem;

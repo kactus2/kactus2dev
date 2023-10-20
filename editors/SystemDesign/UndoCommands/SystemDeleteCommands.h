@@ -12,9 +12,10 @@
 #ifndef SYSTEMDELETECOMMANDS_H
 #define SYSTEMDELETECOMMANDS_H
 
-#include <QUndoCommand>
 #include <QGraphicsScene>
 #include <QObject>
+#include <QSharedPointer>
+#include <QUndoCommand>
 
 class GraphicsConnection;
 class GraphicsColumnLayout;

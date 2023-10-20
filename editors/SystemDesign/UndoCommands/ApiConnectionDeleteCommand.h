@@ -12,9 +12,10 @@
 #ifndef APICONNECTIONDELETECOMMAND_H
 #define APICONNECTIONDELETECOMMAND_H
 
-#include <QUndoCommand>
 #include <QGraphicsScene>
 #include <QObject>
+#include <QSharedPointer>
+#include <QUndoCommand>
 
 class ApiGraphicsConnection;
 
