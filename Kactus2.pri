@@ -448,6 +448,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/treeStructure/ModesItem.h \
     ./editors/ComponentEditor/treeStructure/SingleModeItem.h \
     ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
+    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -481,6 +482,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/treeStructure/componenteditorparametersitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorportsitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorregisteritem.h \
+    ./editors/ComponentEditor/visualization/AddressableItem.h \
     ./editors/ComponentEditor/visualization/fieldgapitem.h \
     ./editors/ComponentEditor/visualization/memorygapitem.h \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.h \
@@ -502,6 +504,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ExpressionLineEditor.h \
     ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.h \
     ./editors/ComponentEditor/common/ModeReferenceEditor.h \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.h \
     ./editors/ComponentEditor/common/ModeReferenceModel.h \
@@ -553,6 +556,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPolicyColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
     ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
@@ -576,6 +580,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.h \
     ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
     ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
@@ -873,11 +878,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
-    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.h \
-    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h    ./editors/ComponentEditor/visualization/AddressableItem.h \
-    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.hSOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
+    ./PythonAPI/extensions/IOCatcher.h
+SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
     ./common/TextEditProvider.cpp \
@@ -1263,12 +1265,14 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfileeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
@@ -1293,7 +1297,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/registergraphitem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/SubspaceMapGraphItem.cpp \
     ./editors/ComponentEditor/memoryMaps/memoryMapsExpressionCalculators/ReferenceCalculator.cpp \
-    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsModel.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrblockitem.cpp \
     ./editors/ComponentEditor/treeStructure/componenteditoraddrspaceitem.cpp \
@@ -1350,6 +1353,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/treeStructure/SingleModeItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
     ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
+    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.cpp \
+    ./editors/ComponentEditor/visualization/AddressableItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \
     ./editors/ComponentEditor/visualization/memoryvisualizationitem.cpp \
@@ -1363,6 +1368,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
     ./editors/ComponentEditor/common/MemoryAlignScene.cpp \
@@ -1395,6 +1401,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/instantiations/DesignConfigurationInstantiationsModel.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationEditor.cpp \
     ./editors/ComponentEditor/instantiations/DesignInstantiationsDelegate.cpp \
+    ./editors/ComponentEditor/instantiations/DesignInstantiationsEditor.cpp \
     ./editors/ComponentEditor/instantiations/filesetrefeditor.cpp \
     ./editors/ComponentEditor/instantiations/filesetrefeditordelegate.cpp \
     ./editors/ComponentEditor/instantiations/filesetrefmodel.cpp \
@@ -1650,8 +1657,5 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
-    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.cpp \
-    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp    ./editors/ComponentEditor/visualization/AddressableItem.cpp \
-    ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.cppRESOURCES += kactus.qrc
+    ./PythonAPI/extensions/IOCatcher.cpp
+RESOURCES += kactus.qrc

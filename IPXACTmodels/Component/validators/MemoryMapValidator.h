@@ -96,6 +96,8 @@ public:
      */
     bool remapStateIsNotValid(QSharedPointer<MemoryRemap> memoryRemap) const;
 
+    bool hasValidRemapStateOrModeReferences(QSharedPointer<MemoryMap> parentMap, QSharedPointer<MemoryRemap> memoryRemap) const;
+
     /*!
      *	Check if the memory remap has a valid structure. It cannot simultanously have a 
      *  definition reference and defined memory blocks (std 2022).
