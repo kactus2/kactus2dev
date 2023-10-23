@@ -1707,7 +1707,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.h">
     </QtMoc>
-    <ClInclude Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.h" />
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\SingleMemoryMapEditor.h">
     </QtMoc>

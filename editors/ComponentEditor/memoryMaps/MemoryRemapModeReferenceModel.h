@@ -18,6 +18,8 @@ class MemoryMapInterface;
 
 class MemoryRemapModeReferenceModel : public ModeReferenceModel
 {
+    Q_OBJECT
+
 public:
 
 	/*!
