@@ -32,6 +32,8 @@ class IPXACTMODELS_EXPORT ComponentInstantiation : public NameGroup, public Exte
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > >;
+
     /*!
      *  The constructor.
      *

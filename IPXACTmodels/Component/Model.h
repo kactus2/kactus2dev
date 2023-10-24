@@ -283,19 +283,22 @@ private:
     void copyPorts(const Model& other) const;
 
 	//! Contains the views for this model.
-    QSharedPointer<QList<QSharedPointer<View> > > views_;
+    View::List views_ = View::List(new QList<QSharedPointer<View> >());
 
     //! Contains the component instantiations.
-    QSharedPointer<QList<QSharedPointer<ComponentInstantiation> > > componentInstantiations_;
+    ComponentInstantiation::List componentInstantiations_ =
+        ComponentInstantiation::List(new QList<QSharedPointer<ComponentInstantiation> >());
 
     //! Contains the design instantiations.
-    QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > designInstantiations_;
+    DesignInstantiation::List designInstantiations_ = 
+        DesignInstantiation::List(new QList<QSharedPointer<DesignInstantiation> >());
 
     //! Contains the design configuration instantiations.
-    QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > designConfigurationInstantiations_;
+    DesignConfigurationInstantiation::List designConfigurationInstantiations_ = 
+        DesignConfigurationInstantiation::List(new QList<QSharedPointer<DesignConfigurationInstantiation> >());
 
 	//! Contains the ports for this model.
-    QSharedPointer<QList<QSharedPointer<Port> > > ports_;
+    Port::List ports_ = Port::List(new QList<QSharedPointer<Port> >());
 };
 
 #endif // MODEL_H

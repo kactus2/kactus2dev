@@ -20,6 +20,7 @@
 #include <QString>
 #include <QSharedPointer>
 #include <QStringList>
+#include <QList>
 
 //-----------------------------------------------------------------------------
 //! Represents the ipxact:view element.
@@ -27,6 +28,8 @@
 class IPXACTMODELS_EXPORT View : public NameGroup, public Extendable
 {
 public:
+
+    using List = QSharedPointer<QList<QSharedPointer<View> > >;
 
 	// Represents the ipxact:envIdentifier element, broken down to separate fields.
 	struct EnvironmentIdentifier

@@ -36,6 +36,8 @@ class IPXACTMODELS_EXPORT Port : public NameGroup, public Extendable
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<Port> > >;
+
 	/*!
 	 *  The constructor.
 	 *

@@ -35,13 +35,18 @@ class IPXACTMODELS_EXPORT ComponentInstance : public Extendable, public NameGrou
 {
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<ComponentInstance> > >;
+
     struct PowerDomainLink
     {
+        using List = QSharedPointer<QList<QSharedPointer<PowerDomainLink> > >;
+
         QString externalReference_;
         QString internalReference_;
 
         PowerDomainLink* clone() const { return new PowerDomainLink({ externalReference_, internalReference_ }); };
     };
+
 
     /*!
      *  The default constructor.
@@ -359,8 +364,7 @@ private:
     QSharedPointer<ConfigurableVLNVReference> componentRef_;
 
     //! The power domain links of the component instance.
-    QSharedPointer<QList<QSharedPointer<PowerDomainLink> > > powerDomainLinks_ =
-        QSharedPointer<QList<QSharedPointer<PowerDomainLink> > >(new QList<QSharedPointer<PowerDomainLink> >());
+    PowerDomainLink::List powerDomainLinks_ = PowerDomainLink::List(new QList<QSharedPointer<PowerDomainLink> >());
 };
 
 //-----------------------------------------------------------------------------

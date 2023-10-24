@@ -481,6 +481,7 @@
     <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h" />
     <ClInclude Include="DesignConfiguration\ViewConfiguration.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />
+    <ClInclude Include="utilities\Copy.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>

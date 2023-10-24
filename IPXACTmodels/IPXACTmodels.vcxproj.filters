@@ -1753,6 +1753,9 @@
     <ClInclude Include="Component\RemapStateWriter.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
+    <ClInclude Include="utilities\Copy.h">
+      <Filter>Header Files\utilities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">

@@ -44,6 +44,8 @@
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/utilities/Search.h>
+#include <IPXACTmodels/utilities/Copy.h>
 
 //-----------------------------------------------------------------------------
 // Function: Component::Component()
@@ -146,20 +148,7 @@ QSharedPointer<Document> Component::clone() const
 //-----------------------------------------------------------------------------
 bool Component::isBus() const
 {
-    if (!channels_->isEmpty())
-    {
-        return true;
-    }
-
-    for  (QSharedPointer<BusInterface> busif : *busInterfaces_)
-    {
-        if (busif->hasBridge())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return isChannel() || isBridge();
 }
 
 //-----------------------------------------------------------------------------
@@ -175,14 +164,8 @@ bool Component::isChannel() const
 //-----------------------------------------------------------------------------
 bool Component::isBridge() const
 {
-    for (QSharedPointer<BusInterface> busif : *busInterfaces_)
-    {
-        if (busif->hasBridge())
-        {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(busInterfaces_->cbegin(), busInterfaces_->cend(),
+        [](auto busif) { return busif->hasBridge(); });
 }
 
 //-----------------------------------------------------------------------------
@@ -230,17 +213,15 @@ void Component::setBusInterfaces(QSharedPointer<QList<QSharedPointer<BusInterfac
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> Component::getInterfaceForPort( const QString& portName ) const
 {
-	// Search all ports.
-	foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-	{
-		// If the interface contains the port.
-        if (busif->containsMappedPhysicalPort(portName))
-		{
-			return busif;
-		}
-	}
+    auto it = std::find_if(busInterfaces_->cbegin(), busInterfaces_->cend(),
+        [&portName](auto busif) { return busif->containsMappedPhysicalPort(portName); });
 
-	return QSharedPointer<BusInterface>();
+    if (it == busInterfaces_->cend())
+    {
+        return nullptr;
+    }
+
+    return *it;
 }
 
 //-----------------------------------------------------------------------------
@@ -251,7 +232,7 @@ QSharedPointer<QList<QSharedPointer<BusInterface> > > Component::getInterfacesUs
 {
     QSharedPointer<QList<QSharedPointer<BusInterface> > > interfaces (new QList<QSharedPointer<BusInterface> > ());
 
-    foreach (QSharedPointer<BusInterface> busInterface, *busInterfaces_)
+    for (QSharedPointer<BusInterface> busInterface : *busInterfaces_)
     {
         if (busInterface->containsMappedPhysicalPort(portName))
         {
@@ -555,7 +536,7 @@ QSharedPointer<QList<QSharedPointer<ComProperty> > > Component::getSWProperties(
         getGroupedExtensionsByType(QStringLiteral("kactus2:properties"), QStringLiteral("kactus2:property"));
 
     QSharedPointer<QList<QSharedPointer<ComProperty> > > swProperties( new QList<QSharedPointer<ComProperty> > );
-    foreach (QSharedPointer<VendorExtension> extension, swPropertiesExtensionList)
+    for (QSharedPointer<VendorExtension> extension : swPropertiesExtensionList)
     {
         swProperties->append(extension.dynamicCast<ComProperty>());
     }
@@ -568,7 +549,7 @@ QSharedPointer<QList<QSharedPointer<ComProperty> > > Component::getSWProperties(
 //-----------------------------------------------------------------------------
 void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newProperties)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:properties"))
         {
@@ -580,7 +561,7 @@ void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newPropertie
     if (!newProperties.isEmpty())
     {
         QSharedPointer<Kactus2Group> newPropertiesGroup (new Kactus2Group(QStringLiteral("kactus2:properties")));
-        foreach (QSharedPointer<ComProperty> swProperty, newProperties)
+        for (QSharedPointer<ComProperty> swProperty : newProperties)
         {
             newPropertiesGroup->addToGroup(swProperty);
         }
@@ -598,7 +579,7 @@ QList<QSharedPointer<SystemView> > Component::getSystemViews() const
         getGroupedExtensionsByType(QStringLiteral("kactus2:systemViews"), QStringLiteral("kactus2:systemView"));
 
     QList<QSharedPointer<SystemView> > systemViews;
-    foreach (QSharedPointer<VendorExtension> extension, systemViewExtensions)
+    for (QSharedPointer<VendorExtension> extension : systemViewExtensions)
     {
         systemViews.append(extension.dynamicCast<SystemView>());
     }
@@ -611,7 +592,7 @@ QList<QSharedPointer<SystemView> > Component::getSystemViews() const
 //-----------------------------------------------------------------------------
 void Component::setSystemViews(QList<QSharedPointer<SystemView> > newSystemViews)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:systemViews"))
         {
@@ -623,7 +604,7 @@ void Component::setSystemViews(QList<QSharedPointer<SystemView> > newSystemViews
     if (!newSystemViews.isEmpty())
     {
         QSharedPointer<Kactus2Group> newSystemViewGroup (new Kactus2Group(QStringLiteral("kactus2:systemViews")));
-        foreach (QSharedPointer<SystemView> systemView, newSystemViews)
+        for (QSharedPointer<SystemView> systemView : newSystemViews)
         {
             newSystemViewGroup->addToGroup(systemView);
         }
@@ -641,7 +622,7 @@ QList<QSharedPointer<ComInterface> > Component::getComInterfaces() const
         getGroupedExtensionsByType(QStringLiteral("kactus2:comInterfaces"), QStringLiteral("kactus2:comInterface"));
 
     QList<QSharedPointer<ComInterface> > comInterfaces;
-    foreach (QSharedPointer<VendorExtension> extension, comInterfaceExtensions)
+    for (QSharedPointer<VendorExtension> extension : comInterfaceExtensions)
     {
         comInterfaces.append(extension.dynamicCast<ComInterface>());
     }
@@ -654,7 +635,7 @@ QList<QSharedPointer<ComInterface> > Component::getComInterfaces() const
 //-----------------------------------------------------------------------------
 void Component::setComInterfaces(QList<QSharedPointer<ComInterface> > newComInterfaces)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:comInterfaces"))
         {
@@ -666,7 +647,7 @@ void Component::setComInterfaces(QList<QSharedPointer<ComInterface> > newComInte
     if (!newComInterfaces.isEmpty())
     {
         QSharedPointer<Kactus2Group> newComInterfaceGroup (new Kactus2Group(QStringLiteral("kactus2:comInterfaces")));
-        foreach (QSharedPointer<ComInterface> comInterface, newComInterfaces)
+        for (QSharedPointer<ComInterface> comInterface : newComInterfaces)
         {
             newComInterfaceGroup->addToGroup(comInterface);
         }
@@ -684,7 +665,7 @@ QList<QSharedPointer<ApiInterface> > Component::getApiInterfaces() const
         getGroupedExtensionsByType(QStringLiteral("kactus2:apiInterfaces"), QStringLiteral("kactus2:apiInterface"));
 
     QList<QSharedPointer<ApiInterface> > apiInterfaces;
-    foreach (QSharedPointer<VendorExtension> extension, apiInterfaceExtensions)
+    for (QSharedPointer<VendorExtension> extension : apiInterfaceExtensions)
     {
         apiInterfaces.append(extension.dynamicCast<ApiInterface>());
     }
@@ -697,7 +678,7 @@ QList<QSharedPointer<ApiInterface> > Component::getApiInterfaces() const
 //-----------------------------------------------------------------------------
 void Component::setApiInterfaces(QList<QSharedPointer<ApiInterface> > newApiInterfaces)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:apiInterfaces"))
         {
@@ -709,7 +690,7 @@ void Component::setApiInterfaces(QList<QSharedPointer<ApiInterface> > newApiInte
     if (!newApiInterfaces.isEmpty())
     {
         QSharedPointer<Kactus2Group> newApiInterfaceGroup (new Kactus2Group(QStringLiteral("kactus2:apiInterfaces")));
-        foreach (QSharedPointer<ApiInterface> apiInterface, newApiInterfaces)
+        for (QSharedPointer<ApiInterface> apiInterface : newApiInterfaces)
         {
             newApiInterfaceGroup->addToGroup(apiInterface);
         }
@@ -726,7 +707,7 @@ QList<QSharedPointer<FileDependency> > Component::getFileDependencies() const
         getGroupedExtensionsByType(QStringLiteral("kactus2:fileDependencies"), QStringLiteral("kactus2:fileDependency"));
 
     QList<QSharedPointer<FileDependency> > fileDependencies;
-    foreach (QSharedPointer<VendorExtension> extension, fileDependencyExtensions)
+    for (QSharedPointer<VendorExtension> extension : fileDependencyExtensions)
     {
         fileDependencies.append(extension.dynamicCast<FileDependency>());
     }
@@ -739,7 +720,7 @@ QList<QSharedPointer<FileDependency> > Component::getFileDependencies() const
 //-----------------------------------------------------------------------------
 void Component::setFileDependendencies(QList<QSharedPointer<FileDependency> > newFileDependencies)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:fileDependencies"))
         {
@@ -751,7 +732,7 @@ void Component::setFileDependendencies(QList<QSharedPointer<FileDependency> > ne
     if (!newFileDependencies.isEmpty())
     {
         QSharedPointer<Kactus2Group> newFileDependencyGroup (new Kactus2Group(QStringLiteral("kactus2:fileDependencies")));
-        foreach (QSharedPointer<FileDependency> fileDependency, newFileDependencies)
+        for (QSharedPointer<FileDependency> fileDependency : newFileDependencies)
         {
             newFileDependencyGroup->addToGroup(fileDependency);
         }
@@ -784,7 +765,7 @@ QStringList Component::getSourceDirectories() const
         getGroupedExtensionsByType(QStringLiteral("kactus2:sourceDirectories"), QStringLiteral("kactus2:sourceDirectory"));
 
     QStringList sourceDirections;
-    foreach (QSharedPointer<VendorExtension> extension, sourceDirectoryExtensions)
+    for (QSharedPointer<VendorExtension> extension : sourceDirectoryExtensions)
     {
         QSharedPointer<Kactus2Value> sourceDirectory = extension.dynamicCast<Kactus2Value>();
         sourceDirections.append(sourceDirectory->value());
@@ -798,7 +779,7 @@ QStringList Component::getSourceDirectories() const
 //-----------------------------------------------------------------------------
 void Component::setSourceDirectories(QStringList const& sourceDirs)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:sourceDirectories"))
         {
@@ -810,7 +791,7 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
     if (!sourceDirs.isEmpty())
     {
         QSharedPointer<Kactus2Group> newSourceDirectoryGroup (new Kactus2Group(QStringLiteral("kactus2:sourceDirectories")));
-        foreach (QString sourceDirectory, sourceDirs)
+        for (QString const& sourceDirectory : sourceDirs)
         {
             QSharedPointer<Kactus2Value> directoryExtension (
                 new Kactus2Value(QStringLiteral("kactus2:sourceDirectory"), sourceDirectory));
@@ -825,7 +806,7 @@ void Component::setSourceDirectories(QStringList const& sourceDirs)
 //-----------------------------------------------------------------------------
 QString Component::getAuthor() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:author"))
         {
@@ -842,7 +823,7 @@ QString Component::getAuthor() const
 //-----------------------------------------------------------------------------
 void Component::setAuthor(QString const& author)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    for (QSharedPointer<VendorExtension> extension : *getVendorExtensions())
     {
         if (extension->type() == QLatin1String("kactus2:author"))
         {
@@ -864,14 +845,12 @@ QStringList Component::getDependentFiles() const
 {
     QStringList files;
 
-    for (int i = 0; i < fileSets_->size(); ++i)
-    {
-        files += fileSets_->at(i)->getFilePaths();
-    }
-    for (int i = 0; i < componentGenerators_->size(); ++i)
-    {
-        files += componentGenerators_->at(i)->getGeneratorExe();
-    }
+    std::for_each(fileSets_->cbegin(), fileSets_->cend(), 
+        [&files](auto& item) { files.append(item->getFilePaths()); });
+
+    std::for_each(componentGenerators_->cbegin(), componentGenerators_->cend(), 
+        [&files](auto& item) { files.append(item->getGeneratorExe()); });
+
     return files;
 }
 
@@ -882,50 +861,53 @@ QList<VLNV> Component::getDependentVLNVs() const
 {
     QList<VLNV> vlnvList;
 
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-    {
-        if (busif->getBusType().isValid())
+    std::for_each(busInterfaces_->cbegin(), busInterfaces_->cend(),
+        [&vlnvList](auto const& busif)
         {
             vlnvList.append(busif->getBusType());
-        }
 
-        foreach (QSharedPointer<AbstractionType> abstractionType, *busif->getAbstractionTypes())
-        {
-            if (abstractionType->getAbstractionRef()->isValid())
-            {
-                vlnvList.append(*abstractionType->getAbstractionRef().data());
-            }
-        }
-
-    }
+            std::for_each(busif->getAbstractionTypes()->cbegin(), busif->getAbstractionTypes()->cend(),
+                [&vlnvList](auto const& abstractionType) {
+                    vlnvList.append(*abstractionType->getAbstractionRef());
+                });
+        });
 
     vlnvList.append(model_->getViewReferences());
 
-    foreach(QSharedPointer<SystemView> systemView, getSystemViews())
-    {
-        if (systemView->getHierarchyRef().isValid())
+    const auto systemViews = getSystemViews();
+    std::for_each(systemViews.cbegin(), systemViews.cend(), [&vlnvList](auto const& view)
         {
-            vlnvList.append(systemView->getHierarchyRef());
-        }
-    }
+            vlnvList.append(view->getHierarchyRef());
+        });
 
-    foreach (QSharedPointer<ComInterface> comIf, getComInterfaces())
-    {
-        if (comIf->getComType().isValid())
+
+    const auto comInterfaces = getComInterfaces();
+    std::for_each(comInterfaces.cbegin(), comInterfaces.cend(),
+        [&vlnvList](auto const& comIf)
         {
             vlnvList.append(comIf->getComType());
-        }
-    }
+        });
 
-    foreach (QSharedPointer<ApiInterface> apiIf, getApiInterfaces())
-    {
-        if (apiIf->getApiType().isValid())
+    const auto  apiInterfaces = getApiInterfaces();
+
+    std::for_each(apiInterfaces.cbegin(), apiInterfaces.cend(),
+        [&vlnvList](auto const& apiIf)
         {
             vlnvList.append(apiIf->getApiType());
-        }
-    }
+        });
+
+    auto it = std::remove_if(vlnvList.begin(), vlnvList.end(), [](auto& vlnv) { return vlnv.isValid() == false; });
+    vlnvList.erase(it, vlnvList.end());
 
     return vlnvList;
+}
+
+//-----------------------------------------------------------------------------
+// Function: component::getPowerDomainNames()
+//-----------------------------------------------------------------------------
+QStringList Component::getPowerDomainNames() const
+{
+    return Search::getNames(powerDomains_);
 }
 
 //-----------------------------------------------------------------------------
@@ -933,13 +915,7 @@ QList<VLNV> Component::getDependentVLNVs() const
 //-----------------------------------------------------------------------------
 QStringList Component::getRemapStateNames() const
 {
-    QStringList remapStateNames;
-    foreach (QSharedPointer<RemapState> singleRemapState, *remapStates_)
-    {
-        remapStateNames.append(singleRemapState->name());
-    }
-
-    return remapStateNames;
+    return Search::getNames(remapStates_);
 }
 
 //-----------------------------------------------------------------------------
@@ -947,13 +923,7 @@ QStringList Component::getRemapStateNames() const
 //-----------------------------------------------------------------------------
 QStringList Component::getMemoryMapNames() const
 {
-    QStringList memoryMapNames;
-    foreach (QSharedPointer<MemoryMap> memMap, *memoryMaps_)
-    {
-        Q_ASSERT(memMap);
-        memoryMapNames.append(memMap->name());
-    }
-    return memoryMapNames;
+    return Search::getNames(memoryMaps_);
 }
 
 //-----------------------------------------------------------------------------
@@ -969,15 +939,9 @@ bool Component::hasViews() const
 //-----------------------------------------------------------------------------
 bool Component::hasView( const QString& viewName ) const
 {
-    foreach (QSharedPointer<View> view, *getViews())
-    {
-        if (view->name() == viewName)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    const auto views = getViews();
+    return std::any_of(views->cbegin(), views->cend(), [&viewName](auto& view)
+        { return view->name() == viewName; });
 }
 
 //-----------------------------------------------------------------------------
@@ -993,16 +957,7 @@ QStringList Component::getViewNames() const
 //-----------------------------------------------------------------------------
 QStringList Component::getCpuNames() const
 {
-    QStringList cpuNames;
-    foreach (QSharedPointer<Cpu> cpu, *cpus_)
-    {
-        if (cpu)
-        {
-            cpuNames.append(cpu->name());
-        }
-    }
-
-    return cpuNames;
+    return Search::getNames(cpus_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1038,7 +993,7 @@ QList<VLNV> Component::getHierRefs() const
 
     QList<VLNV> list = model_->getHierarchyRefs();
 
-    foreach (QSharedPointer<SystemView> sysView, getSystemViews())
+    for (QSharedPointer<SystemView> sysView : getSystemViews())
     {
         if (sysView->getHierarchyRef().isValid())
         {
@@ -1061,7 +1016,7 @@ bool Component::hasSystemViews() const
 //-----------------------------------------------------------------------------
 bool Component::hasSystemView( const QString& viewName ) const
 {
-    return findSystemView(viewName) != 0;
+    return findSystemView(viewName) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1069,12 +1024,7 @@ bool Component::hasSystemView( const QString& viewName ) const
 //-----------------------------------------------------------------------------
 QStringList Component::getSystemViewNames() const
 {
-    QStringList list;
-    foreach (QSharedPointer<SystemView> view, getSystemViews())
-    {
-        list.append(view->name());
-    }
-    return list;
+    return Search::getNames(getSystemViews());
 }
 
 //-----------------------------------------------------------------------------
@@ -1082,15 +1032,7 @@ QStringList Component::getSystemViewNames() const
 //-----------------------------------------------------------------------------
 QSharedPointer<SystemView> Component::findSystemView(QString const& name) const
 {
-    foreach (QSharedPointer<SystemView> systemView, getSystemViews())
-    {
-        if (systemView->name() == name)
-        {
-            return systemView;
-        }
-    }
-
-    return QSharedPointer<SystemView> ();
+    return Search::findByName(name, getSystemViews());
 }
 
 //-----------------------------------------------------------------------------
@@ -1098,33 +1040,34 @@ QSharedPointer<SystemView> Component::findSystemView(QString const& name) const
 //-----------------------------------------------------------------------------
 QSharedPointer<SystemView> Component::findSystemView( const VLNV& hierRef ) const
 {
-    QSharedPointer<SystemView> sysView;
+    const auto systemViews = getSystemViews();
+    auto it = std::find_if(systemViews.cbegin(), systemViews.cend(),
+        [&hierRef](auto const& view) { return view->getHierarchyRef() == hierRef; });
 
-    foreach (QSharedPointer<SystemView> view, getSystemViews())
+    if (it == systemViews.cend())
     {
-        if (view->getHierarchyRef() == hierRef)
-        {
-            sysView = view;
-        }
+        return nullptr;
     }
 
-    return sysView;
+    return *it;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Component::getHierSystemRef()
 //-----------------------------------------------------------------------------
-VLNV Component::getHierSystemRef(const QString viewName) const
+VLNV Component::getHierSystemRef(QString const& viewName) const
 {
-    foreach (QSharedPointer<SystemView> view, getSystemViews())
+    const auto systemViews = getSystemViews();
+    auto it = std::find_if(systemViews.cbegin(), systemViews.cend(),
+        [&viewName](auto const& view)
+        { return view->name() == viewName || (viewName.isEmpty() && view->getHierarchyRef().isValid()); });
+
+    if (it == systemViews.cend())
     {
-        if (view->name() == viewName || (viewName.isEmpty() && view->getHierarchyRef().isValid()))
-        {
-            return view->getHierarchyRef();
-        }
+        return VLNV();
     }
 
-    return VLNV();
+    return (*it)->getHierarchyRef();
 }
 
 //-----------------------------------------------------------------------------
@@ -1134,7 +1077,7 @@ QList<VLNV> Component::getHierSystemRefs() const
 {
     QList<VLNV> refs;
 
-    foreach (QSharedPointer<SystemView> view, getSystemViews())
+    for (QSharedPointer<SystemView> view : getSystemViews())
     {
         if (view->getHierarchyRef().isValid())
         {
@@ -1149,13 +1092,7 @@ QList<VLNV> Component::getHierSystemRefs() const
 //-----------------------------------------------------------------------------
 QStringList Component::getFileSetNames() const
 {
-    QStringList fileSetNames;
-
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        fileSetNames.append(fileSet->name());
-    }
-    return fileSetNames;
+    return Search::getNames(fileSets_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1163,15 +1100,7 @@ QStringList Component::getFileSetNames() const
 //-----------------------------------------------------------------------------
 QSharedPointer<FileSet> Component::getFileSet( const QString& name ) const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        if (fileSet->name() == name)
-        {
-            return fileSet;
-        }
-    }
-
-    return QSharedPointer<FileSet>();
+    return Search::findByName(name, *fileSets_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1179,14 +1108,8 @@ QSharedPointer<FileSet> Component::getFileSet( const QString& name ) const
 //-----------------------------------------------------------------------------
 bool Component::hasFileSet( const QString& fileSetName ) const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        if (fileSet->name() == fileSetName)
-        {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(fileSets_->cbegin(), fileSets_->cend(),
+        [&fileSetName](auto const& fileset) { return fileset->name() == fileSetName; });
 }
 
 //-----------------------------------------------------------------------------
@@ -1204,9 +1127,9 @@ QList<QSharedPointer<File> > Component::getFiles(QString const& fileName) const
 {
     QList<QSharedPointer<File> > fileList;
 
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
+    for (QSharedPointer<FileSet> fileSet : *fileSets_)
     {
-        foreach (QSharedPointer<File> file, *fileSet->getFiles())
+        for (QSharedPointer<File> file : *fileSet->getFiles())
         {
             if (file->name() == fileName)
             {
@@ -1225,10 +1148,8 @@ QStringList Component::findFilesByFileType( const QString& fileType ) const
 {
     QStringList files;
 
-    foreach (QSharedPointer<const FileSet> fileSet, *fileSets_)
-    {
-        files.append(fileSet->findFilesByFileType(fileType));
-    }
+    std::for_each(fileSets_->cbegin(), fileSets_->cend(), 
+        [&fileType, &files](auto const& fileSet){ files.append(fileSet->findFilesByFileType(fileType));  });
 
     return files;
 }
@@ -1238,15 +1159,15 @@ QStringList Component::findFilesByFileType( const QString& fileType ) const
 //-----------------------------------------------------------------------------
 QSharedPointer<FileSet> Component::findFileSetById(QString const& id ) const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
+    auto it = std::find_if(fileSets_->cbegin(), fileSets_->cend(),
+        [&id](auto const& fileSet){ return fileSet->getFileSetId() == id; });
+
+    if (it == fileSets_->cend())
     {
-        if (fileSet->getFileSetId() == id)
-        {
-            return fileSet;
-        }
+        return nullptr;
     }
 
-    return QSharedPointer<FileSet>();
+    return *it;
 }
 
 //-----------------------------------------------------------------------------
@@ -1278,14 +1199,8 @@ QStringList Component::getFilesFromFileSets( const QStringList& fileSetNames, co
 //-----------------------------------------------------------------------------
 bool Component::hasFile( const QString& fileName ) const
 {
-    foreach (QSharedPointer<FileSet> fileSet, *fileSets_)
-    {
-        if (fileSet->contains(fileName))
-        {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(fileSets_->cbegin(), fileSets_->cend(),
+        [&fileName](auto const& fileSet) { return fileSet->contains(fileName); });
 }
 
 //-----------------------------------------------------------------------------
@@ -1293,12 +1208,7 @@ bool Component::hasFile( const QString& fileName ) const
 //-----------------------------------------------------------------------------
 QStringList Component::getBusInterfaceNames() const
 {
-    QStringList list;
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-    {
-        list.append(busif->name());
-    }
-    return list;
+    return Search::getNames(busInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1306,15 +1216,7 @@ QStringList Component::getBusInterfaceNames() const
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface> Component::getBusInterface(QString const& name ) const
 {
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-    {
-        if (busif->name() == name)
-        {
-            return busif;
-        }
-    }
-
-    return QSharedPointer<BusInterface>();
+    return Search::findByName(name, *busInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1324,16 +1226,14 @@ QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const
 {
     QStringList names;
 
-    foreach (const QSharedPointer<BusInterface> busif, *busInterfaces_)
+    for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::SLAVE)
+        if (busif->getInterfaceMode() == General::SLAVE && busif->getMemoryMapRef() == memoryMap)
         {
-            if (busif->getMemoryMapRef() == memoryMap)
-            {
-                names.append(busif->name());
-            }
+            names.append(busif->name());
         }
     }
+
     return names;
 }
 
@@ -1344,16 +1244,15 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const
 {
     QStringList names;
 
-    foreach (const QSharedPointer<BusInterface> busif, *busInterfaces_)
+    for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
+        if ((busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
+            && (busif->getAddressSpaceRef() == addressSpace))
         {
-            if (busif->getAddressSpaceRef() == addressSpace)
-            {
-                names.append(busif->name());
-            }
+            names.append(busif->name());
         }
     }
+
     return names;
 }
 
@@ -1363,7 +1262,7 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const
 QStringList Component::getMasterInterfaces() const
 {
     QStringList names;
-    foreach (QSharedPointer<const BusInterface> busif, *busInterfaces_)
+    for (QSharedPointer<const BusInterface> busif : *busInterfaces_)
     {
         if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
         {
@@ -1386,14 +1285,7 @@ bool Component::hasInterfaces() const
 //-----------------------------------------------------------------------------
 bool Component::hasInterface( const QString& interfaceName ) const
 {
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-    {
-        if (busif->name() == interfaceName)
-        {
-            return true;
-        }
-    }
-    return false;
+    return Search::findByName(interfaceName, *busInterfaces_).isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1401,15 +1293,7 @@ bool Component::hasInterface( const QString& interfaceName ) const
 //-----------------------------------------------------------------------------
 QSharedPointer<ComInterface> Component::getComInterface( QString const& name )
 {
-    foreach (QSharedPointer<ComInterface> comIf, getComInterfaces())
-    {
-        if (comIf->name() == name)
-        {
-            return comIf;
-        }
-    }
-
-    return QSharedPointer<ComInterface>();
+    return Search::findByName(name, getComInterfaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -1417,14 +1301,7 @@ QSharedPointer<ComInterface> Component::getComInterface( QString const& name )
 //-----------------------------------------------------------------------------
 QSharedPointer<ApiInterface> Component::getApiInterface( QString const& name )
 {
-    foreach (QSharedPointer<ApiInterface> apiIf, getApiInterfaces())
-    {
-        if (apiIf->name() == name)
-        {
-            return apiIf;
-        }
-    }
-    return QSharedPointer<ApiInterface>();
+    return Search::findByName(name, getApiInterfaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -1442,40 +1319,24 @@ QList<QSharedPointer<Port> > Component::getPortsMappedInInterface(const QString&
 {
     QList<QSharedPointer<Port> > ports;
 
-    QStringList portNames;
+    auto busif = getBusInterface(interfaceName);
 
-    bool found = false;
-    foreach (QSharedPointer<BusInterface> busif, *busInterfaces_)
-    {
-        if (busif->name() == interfaceName)
-        {
-            found = true;
-            portNames = busif->getAllMappedPhysicalPorts();
-            break;
-        }
-    }
-
-    if (!found)
+    if ( busif.isNull())
     {
         return ports;
     }
 
-    foreach (QSharedPointer<Port> port, *getPorts())
-    {
-        ports.append(port);
-    }
-
-    QList<QSharedPointer<Port> > portsToReturn;
-
-    foreach (QSharedPointer<Port> port, ports)
+    QStringList portNames = busif->getAllMappedPhysicalPorts();
+    
+    for (QSharedPointer<Port> port : *getPorts())
     {
         if (portNames.contains(port->name()))
         {
-            portsToReturn.append(port);
+            ports.append(port);
         }
     }
 
-    return portsToReturn;
+    return ports;
 }
 
 //-----------------------------------------------------------------------------
@@ -1507,13 +1368,7 @@ bool Component::hasPorts() const
 //-----------------------------------------------------------------------------
 QStringList Component::getAddressSpaceNames() const 
 {
-    QStringList list;
-
-    foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_)
-    {
-        list.append(addrSpace->name());
-    }
-    return list;
+    return Search::getNames(addressSpaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1521,15 +1376,8 @@ QStringList Component::getAddressSpaceNames() const
 //-----------------------------------------------------------------------------
 bool Component::hasLocalMemoryMaps() const
 {
-    foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_)
-    {
-        if (addrSpace->hasLocalMemoryMap())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(addressSpaces_->cbegin(), addressSpaces_->cend(),
+        [](auto const& addrSpace) { return addrSpace->hasLocalMemoryMap(); });
 }
 
 //-----------------------------------------------------------------------------
@@ -1552,11 +1400,7 @@ QStringList Component::getDependentDirs() const
 //-----------------------------------------------------------------------------
 void Component::copyPowerDomains(const Component& other) const
 {
-    for (QSharedPointer<PowerDomain> domain : *other.powerDomains_)
-    {
-        auto copy = QSharedPointer<PowerDomain>(new PowerDomain(*domain));
-        powerDomains_->append(copy);
-    }
+    Copy::copyList(other.powerDomains_, powerDomains_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1564,14 +1408,7 @@ void Component::copyPowerDomains(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyBusInterfaces(const Component& other) const
 {
-    for (QSharedPointer<BusInterface> busInterface : *other.busInterfaces_)
-    {
-        if (busInterface)
-        {
-            auto copy = QSharedPointer<BusInterface>(new BusInterface(*busInterface));
-            busInterfaces_->append(copy);
-        }
-    }
+    Copy::copyList(other.busInterfaces_, busInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1579,11 +1416,7 @@ void Component::copyBusInterfaces(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyIndirectInterfaces(Component const& other) const
 {
-    for (QSharedPointer<IndirectInterface> indirectInterface : *other.indirectInterfaces_)
-    {
-        auto copy = QSharedPointer<IndirectInterface>(new IndirectInterface(*indirectInterface));
-        indirectInterfaces_->append(copy);
-    }
+    Copy::copyList(other.indirectInterfaces_, indirectInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1591,14 +1424,7 @@ void Component::copyIndirectInterfaces(Component const& other) const
 //-----------------------------------------------------------------------------
 void Component::copyChannels(const Component& other) const
 {
-    for (QSharedPointer<Channel> channel : *other.channels_)
-    {
-        if (channel)
-        {
-            auto copy = QSharedPointer<Channel>(new Channel(*channel));
-            channels_->append(copy);
-        }
-    }
+    Copy::copyList(other.channels_, channels_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1606,14 +1432,7 @@ void Component::copyChannels(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyRemapStates(const Component& other) const
 {
-    for (QSharedPointer<RemapState> remapState : *other.remapStates_)
-    {
-        if (remapState)
-        {
-            auto copy = QSharedPointer<RemapState>(new RemapState(*remapState));
-            remapStates_->append(copy);
-        }
-    }
+    Copy::copyList(other.remapStates_, remapStates_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1621,11 +1440,7 @@ void Component::copyRemapStates(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyModes(const Component& other) const
 {
-    for (auto const& mode : *other.modes_)
-    {
-        auto copy = QSharedPointer<Mode>(new Mode(*mode));
-        modes_->append(copy);
-    }
+    Copy::copyList(other.modes_, modes_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1633,14 +1448,7 @@ void Component::copyModes(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyAddressSpaces(const Component& other) const
 {
-    for (QSharedPointer<AddressSpace> addressSpace : *other.addressSpaces_)
-    {
-        if (addressSpace)
-        {
-            auto copy = QSharedPointer<AddressSpace>(new AddressSpace(*addressSpace));
-            addressSpaces_->append(copy);
-        }
-    }
+    Copy::copyList(other.addressSpaces_, addressSpaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1648,14 +1456,7 @@ void Component::copyAddressSpaces(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyMemoryMaps(const Component& other) const
 {
-    for (QSharedPointer<MemoryMap> memoryMap : *other.memoryMaps_)
-    {
-        if (memoryMap)
-        {
-            auto copy = QSharedPointer<MemoryMap>(new MemoryMap(*memoryMap));
-            memoryMaps_->append(copy);
-        }
-    }
+    Copy::copyList(other.memoryMaps_, memoryMaps_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1674,14 +1475,7 @@ void Component::copyModel(const Component& other)
 //-----------------------------------------------------------------------------
 void Component::copyComponentGenerators(const Component& other) const
 {
-    for (QSharedPointer<ComponentGenerator> generator : *other.componentGenerators_)
-    {
-        if (generator)
-        {
-            auto copy = QSharedPointer<ComponentGenerator>(new ComponentGenerator(*generator));
-            componentGenerators_->append(copy);
-        }
-    }
+    Copy::copyList(other.componentGenerators_, componentGenerators_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1689,14 +1483,7 @@ void Component::copyComponentGenerators(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyChoices(const Component& other) const
 {
-    for (QSharedPointer<Choice> choice : *other.choices_)
-    {
-        if (choice)
-        {
-            auto copy = QSharedPointer<Choice>(new Choice(*choice));
-            choices_->append(copy);
-        }
-    }
+    Copy::copyList(other.choices_, choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1704,14 +1491,7 @@ void Component::copyChoices(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyFileSets(const Component& other) const
 {
-    for (QSharedPointer<FileSet> fileSet : *other.fileSets_)
-    {
-        if (fileSet)
-        {
-            auto copy = QSharedPointer<FileSet>(new FileSet(*fileSet));
-            fileSets_->append(copy);
-        }
-    }
+    Copy::copyList(other.fileSets_, fileSets_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1719,14 +1499,7 @@ void Component::copyFileSets(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyCpus(const Component& other) const
 {
-    for (QSharedPointer<Cpu> cpu : *other.cpus_)
-    {
-        if (cpu)
-        {
-            auto copy = QSharedPointer<Cpu>(new Cpu(*cpu));
-            cpus_->append(copy);
-        }
-    }
+    Copy::copyList(other.cpus_, cpus_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1734,14 +1507,7 @@ void Component::copyCpus(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyOtherClockDrivers(const Component& other) const
 {
-    for (QSharedPointer<OtherClockDriver> driver : *other.otherClockDrivers_)
-    {
-        if (driver)
-        {
-            auto copy = QSharedPointer<OtherClockDriver>(new OtherClockDriver(*driver));
-            otherClockDrivers_->append(copy);
-        }
-    }
+    Copy::copyList(other.otherClockDrivers_, otherClockDrivers_);
 }
 
 //-----------------------------------------------------------------------------
@@ -1749,12 +1515,5 @@ void Component::copyOtherClockDrivers(const Component& other) const
 //-----------------------------------------------------------------------------
 void Component::copyResetTypes(const Component& other) const
 {
-    for (QSharedPointer<ResetType> resetType : *other.resetTypes_)
-    {
-        if (resetType)
-        {
-            auto copy = QSharedPointer<ResetType>(new ResetType(*resetType));
-            resetTypes_->append(copy);
-        }
-    }
+    Copy::copyList(other.resetTypes_, resetTypes_);
 }
