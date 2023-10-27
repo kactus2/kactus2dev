@@ -110,7 +110,7 @@ bool LibraryTreeFilter::checkType(VLNV const& vlnv) const
         }
     }
 
-    else if (type().advanced_)
+    else if (documentType == VLNV::DESIGNCONFIGURATION && type().advanced_)
     {
         return true;
     }
