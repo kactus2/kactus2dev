@@ -38,19 +38,19 @@ namespace RenodeStructs
     struct cpuPeripheral
     {
         //! Name.
-        QString peripheralName_ = "";
+        QString peripheralName_;
 
         //! ID.
-        QString peripheralID_ = "";
+        QString peripheralID_;
 
         //! Type name.
         QString className_ = RenodeConstants::PYTHONPERIPHERAL;
 
         //! Base address.
-        QString baseAddress_ = "";
+        QString baseAddress_;
 
         //! Size.
-        QString size_ = "";
+        QString size_;
 
         //! Flag for if the peripheral can be initialized and executes code from the isInit section.
         bool initable_ = true;
@@ -66,19 +66,19 @@ namespace RenodeStructs
     struct cpuMemories
     {
         //! Name.
-        QString memoryName_ = "";
+        QString memoryName_;
 
         //! ID.
-        QString memoryID_ = "";
+        QString memoryID_;
 
         //! Class name.
         QString className_ = RenodeConstants::MAPPEDMEMORY;
 
         //! Base address.
-        QString baseAddress_ = "";
+        QString baseAddress_;
 
         //! Size.
-        QString size_ = "";
+        QString size_;
     };
 };
 

@@ -35,12 +35,11 @@ void RenodeGenerator::generate(QString const& componentPath, QSharedPointer<Reno
     bool createCpuFile, QString const& cpuFileName, bool createMemoryFile, QString const& memoryFileName,
     bool createPeripheralFile, QString const& peripheralFileName)
 {
-    QStringList fileNames;
     if (cpuContainer->getRoutes().empty() == false)
     {
         if (createCpuFile || createMemoryFile || createPeripheralFile)
         {
-            writeFiles(componentPath, cpuContainer, fileNames, createCpuFile, cpuFileName,
+            writeFiles(componentPath, cpuContainer, createCpuFile, cpuFileName,
                 createMemoryFile, memoryFileName, createPeripheralFile, peripheralFileName);
         }
     }
@@ -58,9 +57,10 @@ QStringList RenodeGenerator::getGeneratedFiles() const
 // Function: RenodeGenerator::writeFiles()
 //-----------------------------------------------------------------------------
 void RenodeGenerator::writeFiles(QString const& componentPath, QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
-    QStringList& fileNames, bool createCpuFile, QString const& cpuFileName, bool createMemoryFile,
+    bool createCpuFile, QString const& cpuFileName, bool createMemoryFile,
     QString const& memoryFileName, bool createPeripheralFile, QString const& peripheralFileName)
 {
+    QStringList fileNames;
     QSharedPointer<const ConnectivityInterface> cpuInterface = cpuRoute->getRoutes().first()->cpuInterface_;
     QSharedPointer<const ConnectivityComponent> routeComponent = cpuInterface->getInstance();
     QSharedPointer<const Component> interfaceComponent =
@@ -162,7 +162,7 @@ void RenodeGenerator::writePeripherals(QString const& filePath, QString const& p
     QTextStream stream(&outputFile);
 
     const QString tab = "    ";
-    for (auto peripheral : renodeCollection->getPeripherals())
+    for (auto const& peripheral : renodeCollection->getPeripherals())
     {
         writePeripheral(stream, peripheral, tab, peripheralPath);
 
