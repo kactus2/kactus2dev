@@ -35,10 +35,11 @@ public:
      */
     virtual ~TagEditorContainer() = default;
 
-private:
     // Disable copying.
-    TagEditorContainer(TagEditorContainer const& rhs);
-    TagEditorContainer& operator=(TagEditorContainer const& rhs);
+    TagEditorContainer(TagEditorContainer const& rhs) = delete;
+    TagEditorContainer& operator=(TagEditorContainer const& rhs) = delete;
+
+private:
 
     /*!
      *  Construct a tag editor for the selected tag label.

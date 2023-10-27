@@ -30,7 +30,7 @@ TagContainer(parent)
 //-----------------------------------------------------------------------------
 TagDisplay* TagEditorContainer::constructTagEditor(TagLabel* editedLabel)
 {
-    TagEditor* newTagEditor(new TagEditor(editedLabel, this));
+    auto newTagEditor(new TagEditor(editedLabel, this));
 
     connect(newTagEditor, SIGNAL(acceptChanges(TagLabel*, TagDisplay*)),
         this, SLOT(itemChangesAccepted(TagLabel*, TagDisplay*)), Qt::UniqueConnection);

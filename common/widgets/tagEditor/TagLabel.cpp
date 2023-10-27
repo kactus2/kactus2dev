@@ -17,13 +17,11 @@
 TagLabel::TagLabel(QString const& tagName, QWidget* parent, QString const& labelColor):
 QLabel(tagName, parent)
 {
-    QColor tagColor(labelColor);
-
     setContentsMargins(5, 3, 5, 3);
 
     setAutoFillBackground(true);
     QPalette labelPalette = palette();
-    labelPalette.setColor(QPalette::Window, tagColor);
+    labelPalette.setColor(QPalette::Window, QColor(labelColor));
     setPalette(labelPalette);
 
     setCursor(Qt::PointingHandCursor);

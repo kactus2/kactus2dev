@@ -33,14 +33,25 @@ public:
      *      @param [in] tagLabel    The tag label being edited.
      *      @param [in] parent      The parent widget.
      */
-    TagEditor(TagLabel* tagLabel, QWidget* parent = 0);
+    TagEditor(TagLabel* tagLabel, QWidget* parent = nullptr);
 
     /*!
      *  The destructor.
      */
     virtual ~TagEditor() = default;
 
+    // Disable copying.
+    TagEditor(TagEditor const& rhs) = delete;
+    TagEditor& operator=(TagEditor const& rhs) = delete;
+
 protected:
+
+    /*!
+     *  Check if color selection button should be shown.
+     *
+     *      @return True, if button should be shown, otherwise false.
+     */
+    bool showColorButton() const noexcept final;
 
     /*!
      *  Connect signals.
@@ -62,9 +73,6 @@ private slots:
     void changeColor();
 
 private:
-    // Disable copying.
-    TagEditor(TagEditor const& rhs);
-    TagEditor& operator=(TagEditor const& rhs);
 
     /*!
      *  Get the current name from the name editor.
@@ -78,7 +86,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Tag name editor.
-    QLineEdit* nameEdit_;
+    QLineEdit* nameEdit_ = new QLineEdit(this);
 };
 
 //-----------------------------------------------------------------------------

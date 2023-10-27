@@ -23,11 +23,18 @@
 //-----------------------------------------------------------------------------
 // Function: TagEditor::TagEditor()
 //-----------------------------------------------------------------------------
-TagEditor::TagEditor(TagLabel* tagLabel, QWidget* parent /* = 0 */):
-TagDisplay(tagLabel, parent),
-nameEdit_(new QLineEdit(this))
+TagEditor::TagEditor(TagLabel* tagLabel, QWidget* parent):
+TagDisplay(tagLabel, parent)
 {
-    setupEditors(nameEdit_);
+    TagEditor::setupEditors(nameEdit_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: TagEditor::showColorButton()
+//-----------------------------------------------------------------------------
+bool TagEditor::showColorButton() const noexcept
+{
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -50,15 +57,15 @@ void TagEditor::setupEditors(QWidget* nameEditor)
     setFocusProxy(nameEdit_);
     nameEdit_->installEventFilter(this);
 
-    QCompleter* completer = new QCompleter(this);
+    auto completer = new QCompleter(this);
 
-    TagCompleterModel* completerModel = new TagCompleterModel(TagManager::getInstance().getTags(), completer);
+    auto completerModel = new TagCompleterModel(TagManager::getInstance().getTags(), completer);
     completer->setModel(completerModel);
 
     completer->setCaseSensitivity(Qt::CaseInsensitive);
 
-    QAction* action = new QAction(this);
-    action->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Space));
+    auto action = new QAction(this);
+    action->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_Space));
     action->setShortcutContext(Qt::WidgetShortcut);
 
     connect(action, SIGNAL(triggered()), completer, SLOT(complete()), Qt::UniqueConnection);
@@ -78,7 +85,7 @@ void TagEditor::setupEditors(QWidget* nameEditor)
 //-----------------------------------------------------------------------------
 void TagEditor::changeColor()
 {
-    ColorBox* colorButton = getColorButton();
+    auto colorButton = getColorButton();
 
     QColorDialog dialog(this);
     dialog.setCurrentColor(colorButton->getColor());
