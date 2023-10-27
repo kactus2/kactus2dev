@@ -496,9 +496,9 @@ void DesignReader::Details::parseDesignExtensions(QDomNode const& documentNode, 
 //-----------------------------------------------------------------------------
 // Function: DesignReader::parseColumnLayout()
 //-----------------------------------------------------------------------------
-void DesignReader::Details::parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design)
+void DesignReader::Details::parseColumnLayout(QDomNode const& columnLayoutNode, QSharedPointer<Design> design)
 {
-    QDomNodeList columnNodeList = columnNode.childNodes();
+    QDomNodeList columnNodeList = columnLayoutNode.childNodes();
     int columnCount = columnNodeList.count();
     for (int columnIndex = 0; columnIndex < columnCount; ++columnIndex)
     {
@@ -507,7 +507,7 @@ void DesignReader::Details::parseColumnLayout(QDomNode const& columnNode, QShare
         {
             QDomNamedNodeMap attributes =  columnNode.attributes();
 
-            ColumnTypes::ColumnContentType contentType = static_cast<ColumnTypes::ColumnContentType>(
+            auto contentType = static_cast<ColumnTypes::ColumnContentType>(
                 attributes.namedItem(QStringLiteral("contentType")).nodeValue().toInt());
 
             QSharedPointer<ColumnDesc> newColumn (new ColumnDesc());
@@ -665,9 +665,9 @@ QSharedPointer<ComponentInstance> DesignReader::Details::parseSwInstance(QDomNod
         {
             QMap<QString, QString> newPropertyValues;
 
-            for (int i = 0; i < childNode.childNodes().count(); ++i)
+            for (int j = 0; j < childNode.childNodes().count(); ++j)
             {
-                QDomNode propNode = childNode.childNodes().at(i);
+                QDomNode propNode = childNode.childNodes().at(j);
 
                 if (propNode.nodeName() == QLatin1String("kactus2:propertyValue"))
                 {
@@ -801,7 +801,7 @@ void DesignReader::Details::parseNotes(QDomElement const& extensionNode, QShared
     {
         QSharedPointer<Kactus2Group> note(new Kactus2Group(QStringLiteral("kactus2:note")));
         
-        int childCount = notesExtensions.at(noteIndex).childNodes().count();
+        const int childCount = notesExtensions.at(noteIndex).childNodes().count();
         for (int childIndex = 0; childIndex < childCount; ++childIndex)
         {
             QDomNode childNode = notesExtensions.at(noteIndex).childNodes().at(childIndex);
@@ -816,7 +816,7 @@ void DesignReader::Details::parseNotes(QDomElement const& extensionNode, QShared
             {
                 QSharedPointer<Kactus2Group> associations(new Kactus2Group(QStringLiteral("kactus2:associations")));
 
-                int associationCount = childNode.childNodes().count();
+                const int associationCount = childNode.childNodes().count();
                 for (int associationIndex = 0; associationIndex < associationCount; ++associationIndex)
                 {
                     QPointF position = CommonItemsReader::parsePoint(childNode.childNodes().at(associationIndex));

@@ -91,8 +91,11 @@ void ComponentInstanceWriter::Details::writePowerDomainLinks(QXmlStreamWriter& w
 
         writer.writeTextElement(QStringLiteral("ipxact:externalPowerDomainReference"), 
             link->externalReference_);
-        writer.writeTextElement(QStringLiteral("ipxact:internalPowerDomainReference"), 
-            link->internalReference_);
+
+        for (const auto& internalReference : link->internalReferences_)
+        {
+            writer.writeTextElement(QStringLiteral("ipxact:internalPowerDomainReference"), internalReference);
+        }
 
         writer.writeEndElement(); // ipxact:powerDomainLink
     }

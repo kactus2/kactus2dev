@@ -67,12 +67,14 @@ QWidget(parent)
     nameGroup_->setFlat(true);
     swGroup_->setFlat(true);
     propertyValueEditor_->setFlat(true);
+    powerDomainEditor_->setFlat(true);
 
 	vlnvDisplayer_->hide();
 	nameGroup_->hide();
     swGroup_->hide();
 	configurableElements_->hide();
     propertyValueEditor_->hide();
+    powerDomainEditor_->hide();
 
 	vlnvDisplayer_->setTitle(tr("Component VLNV"));
 
@@ -84,6 +86,8 @@ QWidget(parent)
     connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
+
+    connect(powerDomainEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(configurableElements_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
@@ -179,6 +183,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 
         propertyValueEditor_->show();
         configurableElements_->hide();
+        powerDomainEditor_->hide();
 
         connect(swComponent, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                 propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
@@ -196,8 +201,16 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
             configurableElements_->setComponent(componentItem->componentModel(), componentItem->getComponentInstance(),
                 matchingViewConfiguration, editProvider);
         }
+        
+        if (design->getRevision() == Document::Revision::Std22)
+        {
+            powerDomainEditor_->setContent(componentItem->getComponentInstance()->getPowerDomainLinks(),
+                topComponent_, componentItem->componentModel());
+            powerDomainEditor_->show();
+        }
 
 	    configurableElements_->show();
+
     }
 
 	connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
@@ -235,6 +248,7 @@ void ComponentInstanceEditor::setProtection(bool locked)
     nameGroup_->setEnabled(!locked);
     fileSetRefCombo_->setEnabled(!locked);
     propertyValueEditor_->setEnabled(!locked);
+    powerDomainEditor_->setEnabled(!locked);
     configurableElements_->setEnabled(!locked);
 }
 
@@ -269,6 +283,7 @@ void ComponentInstanceEditor::clear()
     swGroup_->hide();
     fileSetRefCombo_->clear();
     propertyValueEditor_->hide();
+    powerDomainEditor_->hide();
 	configurableElements_->hide();
 	configurableElements_->clear();
     activeViewLabel_->parentWidget()->hide();
@@ -407,6 +422,7 @@ void ComponentInstanceEditor::setupLayout()
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(nameGroup_);
     layout->addWidget(configurationBox);
+    layout->addWidget(powerDomainEditor_);
     layout->addWidget(configurableElements_, 1);
     layout->addWidget(swGroup_);
     layout->addWidget(propertyValueEditor_);

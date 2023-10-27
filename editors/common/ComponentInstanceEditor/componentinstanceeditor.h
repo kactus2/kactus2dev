@@ -12,6 +12,8 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
+#include "PowerDomainLinkEditor.h"
+
 #include <common/IEditProvider.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
@@ -159,6 +161,9 @@ private:
 
 	//! The widget to set the configurable elements of a component instance.
     ComponentInstanceConfigurableElementsEditor* configurableElements_ = nullptr;
+
+    //! The widget for setting power domain links.
+    PowerDomainLinkEditor* powerDomainEditor_ = new PowerDomainLinkEditor(this);
 
     //! SW group.
     QGroupBox* swGroup_ = new QGroupBox(tr("Software"), this);

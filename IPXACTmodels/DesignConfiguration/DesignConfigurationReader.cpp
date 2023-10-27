@@ -303,10 +303,10 @@ void DesignConfigurationReader::Details::parseViewConfigurations(QDomDocument co
 
         QDomNodeList configurableElementNodes = multipleConfigurableElementsNode.childNodes();
 
-        for (int i = 0; i < configurableElementNodes.size(); ++i)
+        for (int j = 0; j < configurableElementNodes.size(); ++j)
         {
             QSharedPointer<ConfigurableElementValue> newConfigurableElementValue =
-                CommonItemsReader::parseConfigurableElementValue(configurableElementNodes.at(i));
+                CommonItemsReader::parseConfigurableElementValue(configurableElementNodes.at(j));
 
             newViewConfiguration->getViewConfigurableElements()->append(newConfigurableElementValue);
         }

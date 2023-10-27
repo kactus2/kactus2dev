@@ -312,8 +312,8 @@ void tst_DesignWriter::testWrite2022ComponentInstances()
     testComponentInstance->setPosition(QPointF(10, 10));
     testComponentInstance->setUuid("testUUID");
 
-    QSharedPointer<ComponentInstance::PowerDomainLink> firstLink(new ComponentInstance::PowerDomainLink({ "ext", "int" }));
-    QSharedPointer<ComponentInstance::PowerDomainLink> secondLink(new ComponentInstance::PowerDomainLink({ "outside", "inside" }));
+    QSharedPointer<ComponentInstance::PowerDomainLink> firstLink(new ComponentInstance::PowerDomainLink({ "ext", QStringList("int") }));
+    QSharedPointer<ComponentInstance::PowerDomainLink> secondLink(new ComponentInstance::PowerDomainLink({ "outside", QStringList{"inside", "in"}}));
     testComponentInstance->getPowerDomainLinks()->append(firstLink);
     testComponentInstance->getPowerDomainLinks()->append(secondLink);
 
@@ -352,6 +352,7 @@ void tst_DesignWriter::testWrite2022ComponentInstances()
                         "\t\t\t\t<ipxact:powerDomainLink>\n"
                             "\t\t\t\t\t<ipxact:externalPowerDomainReference>outside</ipxact:externalPowerDomainReference>\n"
                             "\t\t\t\t\t<ipxact:internalPowerDomainReference>inside</ipxact:internalPowerDomainReference>\n"
+                            "\t\t\t\t\t<ipxact:internalPowerDomainReference>in</ipxact:internalPowerDomainReference>\n"
                         "\t\t\t\t</ipxact:powerDomainLink>\n"
                     "\t\t\t</ipxact:powerDomainLinks>\n"
                     "\t\t\t<ipxact:vendorExtensions>\n"

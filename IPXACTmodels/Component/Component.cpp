@@ -990,17 +990,6 @@ VLNV Component::getHierRef(const QString viewName) const
 QList<VLNV> Component::getHierRefs() const
 {
     return model_->getHierarchyRefs();
-
-    QList<VLNV> list = model_->getHierarchyRefs();
-
-    for (QSharedPointer<SystemView> sysView : getSystemViews())
-    {
-        if (sysView->getHierarchyRef().isValid())
-        {
-            list.append(sysView->getHierarchyRef());
-        }
-    }
-    return list;
 }
 
 //-----------------------------------------------------------------------------

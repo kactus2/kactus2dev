@@ -146,12 +146,13 @@ void EnumerationEditorConstructorDelegate::updateEditorGeometry(QWidget* editor,
 //-----------------------------------------------------------------------------
 // Function: EnumerationEditorConstructorDelegate::repositionAndResizeEditor()
 //-----------------------------------------------------------------------------
-void EnumerationEditorConstructorDelegate::repositionAndResizeEditor(QWidget* editor, QStyleOptionViewItem const& option, QModelIndex const& /*index*/) const
+void EnumerationEditorConstructorDelegate::repositionAndResizeEditor(QWidget* editor,
+    QStyleOptionViewItem const& option, QModelIndex const& /*index*/) const
 {
     int enumerationCount = getAvailableItems().count();
     int editorMinimumSize = 25 * (enumerationCount + 2);
 
-    int editorWidth =  option.rect.right() - option.rect.left() + 24;
+    int editorWidth =  option.rect.right() - option.rect.left();
     if (editorWidth < 150)
     {
         editorWidth = 150;

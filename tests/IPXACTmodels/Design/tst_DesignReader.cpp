@@ -266,6 +266,7 @@ void tst_DesignReader::testRead2022ComponentInstances()
                         "<ipxact:powerDomainLink>"
                             "<ipxact:externalPowerDomainReference>external</ipxact:externalPowerDomainReference>"
                             "<ipxact:internalPowerDomainReference>internal</ipxact:internalPowerDomainReference>"
+                            "<ipxact:internalPowerDomainReference>second</ipxact:internalPowerDomainReference>"
                         "</ipxact:powerDomainLink>"
                     "</ipxact:powerDomainLinks>"
                     "<ipxact:vendorExtensions>"
@@ -308,7 +309,8 @@ void tst_DesignReader::testRead2022ComponentInstances()
 
     auto powerDomainLink = testInstance->getPowerDomainLinks()->first();
     QCOMPARE(powerDomainLink->externalReference_, QString("external"));
-    QCOMPARE(powerDomainLink->internalReference_, QString("internal"));
+    QCOMPARE(powerDomainLink->internalReferences_.size(), 2);
+    QCOMPARE(powerDomainLink->internalReferences_.at(0), QString("internal"));
 
 }
 

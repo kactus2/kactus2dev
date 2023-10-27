@@ -25,11 +25,6 @@ namespace
 // Function: GenericVendorExtension::GenericVendorExtension()
 //-----------------------------------------------------------------------------
 GenericVendorExtension::GenericVendorExtension(QDomNode const& extensionNode, GenericVendorExtension* parent):
-nameSpace_(),
-name_(),
-value_(),
-attributes_(),
-children_(),
 parent_(parent)
 {
     QStringList combiName = extensionNode.nodeName().split(QLatin1Char(':'));
@@ -86,20 +81,17 @@ GenericVendorExtension::~GenericVendorExtension()
 //-----------------------------------------------------------------------------
 // Function: GenericVendorExtension::GenericVendorExtension()
 //-----------------------------------------------------------------------------
-GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& other)
+GenericVendorExtension::GenericVendorExtension(GenericVendorExtension const& other) :
+    nameSpace_(other.nameSpace_),
+    name_(other.name_),
+    value_(other.value_),
+    attributes_(other.attributes_)
 {
-    nameSpace_ = other.nameSpace_;
-    name_ = other.name_;
-    value_ = other.value_;
-    attributes_ = other.attributes_;
-    children_.clear();
-    parent_ = nullptr;
-
     children_.clear();
 
-    for (auto otherChild : other.children_)
+    for (auto const& otherChild : other.children_)
     {
-        GenericVendorExtension* newChild = new GenericVendorExtension(*otherChild);
+        auto newChild = new GenericVendorExtension(*otherChild);
         newChild->setParent(this);
         children_.append(newChild);
     }
@@ -263,30 +255,25 @@ QString GenericVendorExtension::getDescription() const
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::setDescription(QString const& newDescription)
 {
-    for (int i = 0; i < children_.size(); ++i)
+    if (auto index = getDescriptionIndex(); index != -1)
     {
-        GenericVendorExtension* childItem = children_[i];
-        if (childItem->name().endsWith(DESCRIPTION))
-        {
-            if (newDescription.isEmpty())
-            {
-                delete childItem;
-                childItem = nullptr;
-                children_.remove(i);
-            }
-            else
-            {
-                childItem->setValue(newDescription);
-                childItem->setNameSpace(nameSpace());
-            }
+        GenericVendorExtension* childItem = children_[index];
 
-            return;
+        if (newDescription.isEmpty())
+        {
+            delete childItem;
+            childItem = nullptr;
+            children_.remove(index);
+        }
+        else
+        {
+            childItem->setValue(newDescription);
+            childItem->setNameSpace(nameSpace());
         }
     }
-
-    if (!newDescription.isEmpty())
+    else if (!newDescription.isEmpty())
     {
-        GenericVendorExtension* newDescriptionChild(new GenericVendorExtension());
+        auto newDescriptionChild(new GenericVendorExtension());
         newDescriptionChild->setNameSpace(nameSpace());
         newDescriptionChild->setName(DESCRIPTION);
         newDescriptionChild->setValue(newDescription);
@@ -301,15 +288,8 @@ void GenericVendorExtension::setDescription(QString const& newDescription)
 //-----------------------------------------------------------------------------
 bool GenericVendorExtension::hasDescription() const
 {
-    for (auto child : children_)
-    {
-        if (child->name().endsWith(DESCRIPTION))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(children_.cbegin(), children_.cend(),
+        [](auto const& child){ return child->name().endsWith(DESCRIPTION); });
 }
 
 //-----------------------------------------------------------------------------
@@ -319,7 +299,7 @@ int GenericVendorExtension::getDescriptionIndex() const
 {
     for (int i = 0; i < children_.count(); ++i)
     {
-        if (children_.at(i)->name().endsWith(DESCRIPTION))
+        if (children_.at(i))
         {
             return i;
         }
@@ -364,7 +344,7 @@ void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlS
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::writeAttributes(GenericVendorExtension const& node, QXmlStreamWriter& writer) const
 {
-    for (auto attribute : node.attributes_)
+    for (auto const& attribute : node.attributes_)
     {      
         writer.writeAttribute(attribute.first, attribute.second);
     }

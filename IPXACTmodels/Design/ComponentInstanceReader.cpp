@@ -58,15 +58,23 @@ void ComponentInstanceReader::Details::parsePowerDomainLinks(QDomNode const& ins
     QDomElement domainsNode = instanceNode.firstChildElement(QStringLiteral("ipxact:powerDomainLinks"));
     QDomNodeList domainNodeList = domainsNode.childNodes();
 
-    const int count = domainNodeList.count();
-    for (int index = 0; index < count; ++index)
+    const int DOMAIN_COUNT = domainNodeList.count();
+    for (int index = 0; index < DOMAIN_COUNT; ++index)
     {
         auto const& domainNode = domainNodeList.at(index);
         auto externalLink = domainNode.firstChildElement(QStringLiteral("ipxact:externalPowerDomainReference")).firstChild().nodeValue();
-        auto internalLink = domainNode.firstChildElement(QStringLiteral("ipxact:internalPowerDomainReference")).firstChild().nodeValue();
+
+        QStringList internalLinks;
+        auto linkNodes = domainNode.toElement().elementsByTagName(QStringLiteral("ipxact:internalPowerDomainReference"));
+        const auto LINK_COUNT = linkNodes.count();
+        for (int i = 0; i < LINK_COUNT; ++i)
+        {
+            auto linkNode = linkNodes.at(i);
+            internalLinks.append(linkNode.firstChild().nodeValue());
+        }
 
         auto link = QSharedPointer<ComponentInstance::PowerDomainLink>(
-            new ComponentInstance::PowerDomainLink({ externalLink, internalLink }));
+            new ComponentInstance::PowerDomainLink({ externalLink, internalLinks }));
         instance->getPowerDomainLinks()->append(link);
     }
 }

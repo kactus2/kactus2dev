@@ -42,9 +42,9 @@ public:
         using List = QSharedPointer<QList<QSharedPointer<PowerDomainLink> > >;
 
         QString externalReference_;
-        QString internalReference_;
+        QStringList internalReferences_;
 
-        PowerDomainLink* clone() const { return new PowerDomainLink({ externalReference_, internalReference_ }); };
+        PowerDomainLink* clone() const { return new PowerDomainLink({ externalReference_, internalReferences_ }); };
     };
 
 
