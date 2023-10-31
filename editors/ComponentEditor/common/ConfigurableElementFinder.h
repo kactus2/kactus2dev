@@ -37,7 +37,11 @@ public:
     /*!
      *  The Destructor.
      */
-    ~ConfigurableElementFinder();
+    ~ConfigurableElementFinder() override = default;
+
+    //! No copying. No assignment.
+    ConfigurableElementFinder(const ConfigurableElementFinder& other) = delete;
+    ConfigurableElementFinder& operator=(const ConfigurableElementFinder& other) = delete;
 
     /*!
      *  Get the parameter with the given id.
@@ -46,7 +50,7 @@ public:
      *
      *      @return The parameter with the selected ID.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const;
+    QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const final;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -55,7 +59,7 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const;
+    bool hasId(QStringView id) const final;
 
     /*!
      *  Finds the name of the parameter with the given id.
@@ -64,7 +68,7 @@ public:
      *
      *      @return The name of the parameter.
      */
-    virtual QString nameForId(QString const& id) const;
+    QString nameForId(QStringView id) const final;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -73,21 +77,21 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const;
+    QString valueForId(QStringView id) const final;
 
     /*!
      *  Gets all of the ids of parameters in the list.
      *
      *      @return A list containing all of the ids.
      */
-    virtual QStringList getAllParameterIds() const;
+    QStringList getAllParameterIds() const final;
 
     /*!
      *  Gets the number of parameters in the list.
      *
      *      @return The number of parameters in the list.
      */
-    virtual int getNumberOfParameters() const;
+    int getNumberOfParameters() const final;
 
     /*!
      *  Set the configurable element list.
@@ -101,13 +105,9 @@ public:
      *
      *      @param [in] model   The model to register.
      */
-    virtual void registerParameterModel(QAbstractItemModel const* model);
+    void registerParameterModel(QAbstractItemModel const* model) final;
 
 private:
-
-    //! No copying. No assignment.
-    ConfigurableElementFinder(const ConfigurableElementFinder& other);
-    ConfigurableElementFinder& operator=(const ConfigurableElementFinder& other);
 
     /*!
      *  Get the configurable element referenced the selected parameter ID.
@@ -116,7 +116,7 @@ private:
      *
      *      @return Configurable element containing the selected parameter reference.
      */
-    QSharedPointer<EditorConfigurableElement> getElementForID(QString const& id) const;
+    QSharedPointer<EditorConfigurableElement> getElementForID(QStringView id) const;
 
     //-----------------------------------------------------------------------------
     // Data.

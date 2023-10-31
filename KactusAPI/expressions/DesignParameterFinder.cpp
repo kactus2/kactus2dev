@@ -19,8 +19,7 @@
 // Function: ComponentInstanceParameterFinder::ComponentInstanceParameterFinder()
 //-----------------------------------------------------------------------------
 DesignParameterFinder::DesignParameterFinder(QSharedPointer<DesignInstantiation> designInstantiation):
-ListParameterFinder(),
-configurableElementValues_(0)
+ListParameterFinder()
 {
     if (designInstantiation && designInstantiation->getDesignReference())
     {
@@ -31,11 +30,11 @@ configurableElementValues_(0)
 //-----------------------------------------------------------------------------
 // Function: DesignParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString DesignParameterFinder::valueForId(QString const& id) const
+QString DesignParameterFinder::valueForId(QStringView id) const
 {
     if (configurableElementValues_)
     {
-        foreach(QSharedPointer<ConfigurableElementValue> element, *configurableElementValues_)
+        for (QSharedPointer<ConfigurableElementValue> element : *configurableElementValues_)
         {
             if (element->getReferenceId().compare(id) == 0)
             {

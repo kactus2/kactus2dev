@@ -52,12 +52,17 @@ namespace
         BINARY_OPERATOR.pattern() % QStringLiteral("|") %
         UNARY_OPERATOR.pattern() % QStringLiteral("|") %
         TERNARY_OPERATOR.pattern());
+
+    const QRegularExpression LITERAL_EXPRESSION(QStringLiteral("^\\s*(") % SystemVerilogSyntax::INTEGRAL_NUMBER%
+        QStringLiteral("|") % SystemVerilogSyntax::REAL_NUMBER% QStringLiteral(")\\s*$"));
+
+    const QRegularExpression BASE_FORMAT(QStringLiteral("'[sS]?([dDbBoOhH]?)"));
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseExpression()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::parseExpression(QString const& expression, bool* validExpression) const
+QString SystemVerilogExpressionParser::parseExpression(QStringView expression, bool* validExpression) const
 {
     return solveRPN(convertToRPN(expression), validExpression);
 }
@@ -65,7 +70,7 @@ QString SystemVerilogExpressionParser::parseExpression(QString const& expression
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isArrayExpression()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isArrayExpression(QString const& expression) const
+bool SystemVerilogExpressionParser::isArrayExpression(QStringView expression) const noexcept
 {
     return expression.contains(OPEN_ARRAY) && expression.contains(CLOSE_ARRAY);
 }
@@ -73,7 +78,7 @@ bool SystemVerilogExpressionParser::isArrayExpression(QString const& expression)
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isPlainValue()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) const
+bool SystemVerilogExpressionParser::isPlainValue(QStringView expression) const
 {
     return expression.isEmpty() || isLiteral(expression) || isStringLiteral(expression);
 }
@@ -81,11 +86,11 @@ bool SystemVerilogExpressionParser::isPlainValue(QString const& expression) cons
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::baseForExpression()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::baseForExpression(QString const& expression) const
+int SystemVerilogExpressionParser::baseForExpression(QStringView expression) const
 {
     int greatestBase = 0;
 
-    for (QString const& token : convertToRPN(expression))
+    for (auto const& token : convertToRPN(expression))
     {
         if (isLiteral(token))
         {
@@ -103,16 +108,17 @@ int SystemVerilogExpressionParser::baseForExpression(QString const& expression) 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::convertToRPN()
 //-----------------------------------------------------------------------------
-QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expression)
+QVector<QStringView> SystemVerilogExpressionParser::convertToRPN(QStringView expression)
 {
     // Convert expression to Reverse Polish Notation (RPN) using the Shunting Yard algorithm.
-    QVector<QString> output;
-    QVector<QString> stack;
+    QVector<QStringView> output;
+    QVector<QStringView> stack;
 
     int openParenthesis = 0;
     bool nextMayBeLiteral = true;
 
-    for (int index = 0; index < expression.size(); /*index incremented inside loop*/)
+    const auto SIZE = expression.size();
+    for (qsizetype index = 0; index < SIZE; /*index incremented inside loop*/)
     {
         const QChar current = expression.at(index);
         if (current.isSpace())
@@ -122,19 +128,19 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
         }
 
         if (QRegularExpressionMatch literalMatch = PRIMARY_LITERAL.match(expression, index,
-            QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption); 
+            QRegularExpression::NormalMatch, QRegularExpression::AnchorAtOffsetMatchOption);
             nextMayBeLiteral && literalMatch.hasMatch())
         {
-            output.append(literalMatch.captured());
+            output.append(literalMatch.capturedView());
 
-            index = literalMatch.capturedEnd();
+            index += literalMatch.capturedLength();
             nextMayBeLiteral = false;
         }
         else if (QRegularExpressionMatch operatorMatch = ANY_OPERATOR.match(expression, index,
-                 QRegularExpression::NormalMatch, QRegularExpression::AnchoredMatchOption); 
+                 QRegularExpression::NormalMatch, QRegularExpression::AnchorAtOffsetMatchOption); 
             operatorMatch.hasMatch())
         {
-            QString operation = operatorMatch.captured();
+            const auto operation = operatorMatch.capturedView();
             while (stack.isEmpty() == false &&
                 stack.last() != OPEN_PARENTHESIS_STRING &&
                 stack.last() != TERNARY_QUESTION_STRING &&
@@ -208,8 +214,8 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
         }
         else
         {
-            QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){},]"));
-            QString unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
+            static const QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){},]"));
+            const auto unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
 
             output.append(unknown.trimmed());
 
@@ -235,13 +241,13 @@ QVector<QString> SystemVerilogExpressionParser::convertToRPN(QString const& expr
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveRPN()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, bool* validExpression) const
+QString SystemVerilogExpressionParser::solveRPN(QVector<QStringView> rpn, bool* validExpression) const
 {
     QStringList result;
     bool isWellFormed = true;
     int ternaryCount = 0;
 
-    for (QString const& token : rpn)
+    for (auto const& token : rpn)
     {
         if (isUnaryOperator(token))
         {
@@ -287,7 +293,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
         }
         else if (token.compare(OPEN_ARRAY_STRING) == 0)
         {
-            result.append(token);
+            result.append(token.toString());
         }
         else if (token.compare(CLOSE_ARRAY_STRING) == 0)
         {
@@ -317,7 +323,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
         }
         else if (isStringLiteral(token))
         {
-            result.append(token);
+            result.append(token.toString());
         }
         else if (isSymbol(token))
         {
@@ -325,7 +331,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
         }
         else
         {
-            QString constant = parseConstant(token);
+            const auto constant = parseConstant(token);
 
             if (constant == QLatin1String("x"))
             {
@@ -352,7 +358,7 @@ QString SystemVerilogExpressionParser::solveRPN(QVector<QString> const& rpn, boo
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isStringLiteral()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isStringLiteral(QString const& expression) const
+bool SystemVerilogExpressionParser::isStringLiteral(QStringView expression) const noexcept
 {
     return expression.startsWith(QLatin1Char('"')) && expression.endsWith(QLatin1Char('"'));
 }
@@ -360,18 +366,15 @@ bool SystemVerilogExpressionParser::isStringLiteral(QString const& expression) c
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isLiteral()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isLiteral(QString const& expression) const
+bool SystemVerilogExpressionParser::isLiteral(QStringView expression) const
 {
-    static QRegularExpression literalExpression(QStringLiteral("^\\s*(") % SystemVerilogSyntax::INTEGRAL_NUMBER %
-        QStringLiteral("|") % SystemVerilogSyntax::REAL_NUMBER % QStringLiteral(")\\s*$"));
-
-    return literalExpression.match(expression).hasMatch();
+    return LITERAL_EXPRESSION.match(expression).hasMatch();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isUnaryOperator()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isUnaryOperator(QString const& token) const
+bool SystemVerilogExpressionParser::isUnaryOperator(QStringView token) const
 {
     return UNARY_OPERATOR.match(token).hasMatch();
 }
@@ -379,7 +382,7 @@ bool SystemVerilogExpressionParser::isUnaryOperator(QString const& token) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isBinaryOperator()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isBinaryOperator(QString const& token) const
+bool SystemVerilogExpressionParser::isBinaryOperator(QStringView token) const
 {
     //! Check for operator length so e.g. negative numbers are not interpret as operators.
     auto match = BINARY_OPERATOR.match(token);
@@ -389,7 +392,7 @@ bool SystemVerilogExpressionParser::isBinaryOperator(QString const& token) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isTernaryOperator()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isTernaryOperator(QString const& token) const
+bool SystemVerilogExpressionParser::isTernaryOperator(QStringView token) const
 {
     return TERNARY_OPERATOR.match(token).hasMatch();
 }
@@ -397,7 +400,7 @@ bool SystemVerilogExpressionParser::isTernaryOperator(QString const& token) cons
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveTernary()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveTernary(QString const& condition,
+QString SystemVerilogExpressionParser::solveTernary(QStringView condition,
     QString const& trueCase, QString const& falseCase) const
 {
     if (condition.toDouble() != 0)
@@ -413,13 +416,13 @@ QString SystemVerilogExpressionParser::solveTernary(QString const& condition,
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveBinary()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QString const& leftTerm,
+QString SystemVerilogExpressionParser::solveBinary(QStringView operation, QString const& leftTerm,
     QString const& rightTerm) const
 {
     if (isLiteral(leftTerm))
     {
-        qreal leftOperand = leftTerm.toDouble();
-        qreal rightOperand = rightTerm.toDouble();
+        const auto leftOperand = leftTerm.toDouble();
+        const auto rightOperand = rightTerm.toDouble();
 
         qreal result = 0;
 
@@ -435,7 +438,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 
         else if (operation.compare(QLatin1String("*")) == 0)
         {
-            result = leftOperand*rightOperand;
+            result = leftOperand * rightOperand;
         }
 
         else if (operation.compare(QLatin1String("/")) == 0)
@@ -445,7 +448,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
                 return QStringLiteral("x");
             }
 
-            result = leftOperand/rightOperand;
+            result = leftOperand / rightOperand;
         }
 
         else if (operation.compare(QLatin1String("%")) == 0)
@@ -528,21 +531,20 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
             result = leftTerm.toLongLong() ^ rightTerm.toLongLong();
         }
 
-        else if (operation.compare(QLatin1String("&"))==0)
+        else if (operation.compare(QLatin1String("&")) == 0)
         {
             if (leftTerm.contains(QLatin1Char('.')) || rightTerm.contains(QLatin1Char('.')))
             {
                 return QStringLiteral("x");
             }
 
-          result = leftTerm.toLongLong() & rightTerm.toLongLong();
+            result = leftTerm.toLongLong() & rightTerm.toLongLong();
         }
 
-        if (!leftTerm.contains(QLatin1Char('.')) &&  (operation.compare(QLatin1String("/")) == 0 ||
-           (operation.compare(QLatin1String("**")) == 0 && rightOperand < 0)))
+        if (!leftTerm.contains(QLatin1Char('.')) && (operation.compare(QLatin1String("/")) == 0 ||
+            (operation.compare(QLatin1String("**")) == 0 && rightOperand < 0)))
         {
-            int integerResult = result;
-            return QString::number(integerResult);
+            return QString::number(static_cast<int>(result));
         }
         else
         {
@@ -569,7 +571,7 @@ QString SystemVerilogExpressionParser::solveBinary(QString const& operation, QSt
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveUnary()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::solveUnary(QString const& operation, QString const& term) const
+QString SystemVerilogExpressionParser::solveUnary(QStringView operation, QString const& term) const
 {
     if (operation.compare(QLatin1String("$clog2")) == 0)
     {
@@ -602,16 +604,12 @@ QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
     {
         return QStringLiteral("x");
     }
-    else if (quotient == 1)
-    {
-        return QStringLiteral("0");
-    }
 
     int answer = 0;
     while (quotient > 1)
     {
         quotient /= 2;
-        answer++;
+        ++answer;
     }
 
     return QString::number(answer);
@@ -622,7 +620,7 @@ QString SystemVerilogExpressionParser::solveClog2(QString const& value) const
 //-----------------------------------------------------------------------------
 QString SystemVerilogExpressionParser::solveSqrt(QString const& value) const
 {
-    qreal radicand = value.toLongLong();
+    const qreal radicand = value.toLongLong();
     if (radicand < 0)
     {
         return QStringLiteral("x");
@@ -634,23 +632,23 @@ QString SystemVerilogExpressionParser::solveSqrt(QString const& value) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::parseConstant()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::parseConstant(QString const& token) const
+QString SystemVerilogExpressionParser::parseConstant(QStringView token) const
 {
     if (token.contains(QLatin1Char('.')))
     {
-        return token;
+        return token.toString();
     }
 
-    int base = baseOf(token);
+    const auto base = baseOf(token);
 
     // Remove formating of the number.
-    auto formattedToken = token;
+    auto formattedToken = token.toString();
     static QRegularExpression prefix(QStringLiteral("^([1-9][0-9_]*)?'[sS]?[dDbBoOhH]?"));
     formattedToken.remove(0, prefix.match(token).capturedLength());
     formattedToken.remove(QLatin1Char('_'));
 
     bool valid = false;
-    qlonglong value = formattedToken.toLongLong(&valid, base);
+    const qlonglong value = formattedToken.toLongLong(&valid, base);
     if (valid == false)
     {
         return QStringLiteral("x");
@@ -662,7 +660,7 @@ QString SystemVerilogExpressionParser::parseConstant(QString const& token) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::isSymbol()
 //-----------------------------------------------------------------------------
-bool SystemVerilogExpressionParser::isSymbol(QString const& /*expression*/) const
+bool SystemVerilogExpressionParser::isSymbol(QStringView /*expression*/) const
 {
     return false;
 }
@@ -670,15 +668,15 @@ bool SystemVerilogExpressionParser::isSymbol(QString const& /*expression*/) cons
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::findSymbolValue()
 //-----------------------------------------------------------------------------
-QString SystemVerilogExpressionParser::findSymbolValue(QString const& symbol) const
+QString SystemVerilogExpressionParser::findSymbolValue(QStringView symbol) const
 {
-    return symbol;
+    return symbol.toString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getBaseForSymbol()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::getBaseForSymbol(QString const& symbol) const
+int SystemVerilogExpressionParser::getBaseForSymbol(QStringView symbol) const
 {
     return baseOf(symbol);
 }
@@ -686,10 +684,10 @@ int SystemVerilogExpressionParser::getBaseForSymbol(QString const& symbol) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::operatorPrecedence()
 //-----------------------------------------------------------------------------
-unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& oper)
+unsigned int SystemVerilogExpressionParser::operatorPrecedence(QStringView oper)
 {
     // Higher value means higher precedence.
-    const static QMap<QString, int> operator_precedence =
+    const static QMap<QStringView, int> operator_precedence =
     {
         {QStringLiteral(":")      , 1},
         {QStringLiteral("?")      , 2},
@@ -732,9 +730,9 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QString const& op
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getBaseForNumber()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::baseOf(QString const& constantNumber)
+int SystemVerilogExpressionParser::baseOf(QStringView constantNumber)
 {
-    const static QMap<QString, int> base_formats =
+    const static QMap<QStringView, int> base_formats =
     {
         { QString(), 10 },
         { QStringLiteral("d"), 10 },
@@ -747,9 +745,7 @@ int SystemVerilogExpressionParser::baseOf(QString const& constantNumber)
         { QStringLiteral("B"), 2 },
     };
 
-    static QRegularExpression baseFormat(QStringLiteral("'[sS]?([dDbBoOhH]?)"));
-
-    QString format = baseFormat.match(constantNumber).captured(1);
+    const auto format = BASE_FORMAT.match(constantNumber).capturedView(1);
 
     return base_formats.value(format, 0);
 }
@@ -757,11 +753,11 @@ int SystemVerilogExpressionParser::baseOf(QString const& constantNumber)
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::getDecimalPrecision()
 //-----------------------------------------------------------------------------
-int SystemVerilogExpressionParser::precisionOf(QString const& term)
+int SystemVerilogExpressionParser::precisionOf(QStringView term) noexcept
 {
     int decimalLength = 0;
     
-    if  (int commaPosition = term.indexOf(QLatin1Char('.')); commaPosition != -1)
+    if  (const int commaPosition = term.indexOf(QLatin1Char('.')); commaPosition != -1)
     {
         decimalLength = term.length() - commaPosition - 1;
     }

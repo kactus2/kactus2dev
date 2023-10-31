@@ -35,7 +35,7 @@ public:
      *
      *      @param [in] parameterId     The id of the parameter being searched for.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const = 0;
+    virtual QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const = 0;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -44,7 +44,7 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const = 0;
+    virtual bool hasId(QStringView id) const = 0;
 
     /*!
      *  Finds the name of the parameter with the given id.
@@ -53,7 +53,7 @@ public:
      *
      *      @return The name of the parameter
      */
-    virtual QString nameForId(QString const& id) const = 0;
+    virtual QString nameForId(QStringView id) const = 0;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -62,7 +62,7 @@ public:
      *
      *      @return The value of the parameter
      */
-    virtual QString valueForId(QString const& id) const = 0;
+    virtual QString valueForId(QStringView id) const = 0;
 
     /*!
      *  Gets all of the ids of components parameters.

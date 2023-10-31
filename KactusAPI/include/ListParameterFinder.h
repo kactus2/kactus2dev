@@ -37,14 +37,19 @@ public:
     /*!
      *  The Destructor.
      */
-    ~ListParameterFinder();
+    ~ListParameterFinder() override = default;
+
+    //! No copying
+    ListParameterFinder(const ListParameterFinder& other) = delete;
+    //! No assignment
+    ListParameterFinder& operator=(const ListParameterFinder& other) = delete;
 
     /*!
      *  Get the parameter with the given id.
      *
      *      @param [in] parameterId     The id of the parameter being searched for.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const;
+    QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const override;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -53,7 +58,7 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const;
+    bool hasId(QStringView id) const override;
 
     /*!
      *  Finds the name of the parameter with the given id.
@@ -62,7 +67,7 @@ public:
      *
      *      @return The name of the parameter.
      */
-    virtual QString nameForId(QString const& id) const;
+    QString nameForId(QStringView id) const override;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -71,49 +76,46 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const;
+    QString valueForId(QStringView id) const override;
 
     /*!
      *  Gets all of the ids of parameters in the list.
      *
      *      @return A list containing all of the ids.
      */
-    virtual QStringList getAllParameterIds() const;
+    QStringList getAllParameterIds() const override;
 
     /*!
      *  Gets the number of parameters in the list.
      *
      *      @return The number of parameters in the list.
      */
-    virtual int getNumberOfParameters() const;
+    int getNumberOfParameters() const noexcept override;
 
     /*!
      *  Set the parameter list.
      *
      *      @param [in] parameterList   [Description].
      */
-    void setParameterList(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList);
+    void setParameterList(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) noexcept;
     
     /*!
      *  Registers a parameter model that can modify parameters for the finder.
      *
      *      @param [in] model   The model to register.
      */
-    virtual void registerParameterModel(QAbstractItemModel const* model);
+    void registerParameterModel(QAbstractItemModel const* model) final;
 
 private:
 
-	//! No copying
-    ListParameterFinder(const ListParameterFinder& other);
-	//! No assignment
-    ListParameterFinder& operator=(const ListParameterFinder& other);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The parameters are searched from this list.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList_ =
+        QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >());
 };
 
 #endif // LISTPARAMETERFINDER_H

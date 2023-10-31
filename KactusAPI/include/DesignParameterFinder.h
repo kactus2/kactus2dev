@@ -38,7 +38,12 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~DesignParameterFinder() = default;
+    ~DesignParameterFinder() final = default;
+
+
+    //! No copying. No assignment.
+    DesignParameterFinder(const DesignParameterFinder& other) = delete;
+    DesignParameterFinder& operator=(const DesignParameterFinder& other) = delete;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -47,16 +52,12 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const;
+    QString valueForId(QStringView id) const final;
 
 private:
 
-    //! No copying. No assignment.
-    DesignParameterFinder(const DesignParameterFinder& other);
-    DesignParameterFinder& operator=(const DesignParameterFinder& other);
-
     //! A list of configurable element values
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElementValues_;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > configurableElementValues_ = nullptr;
 };
 
 #endif // DESIGNPARAMETERFINDER_H

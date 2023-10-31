@@ -31,7 +31,7 @@ public:
      *
 	 *      @param [in] component		The component which parameters are being searched for.
      */
-    explicit ComponentAndInstantiationsParameterFinder(QSharedPointer<Component const> component);
+    explicit ComponentAndInstantiationsParameterFinder(QSharedPointer<Component const> component) noexcept;
 
     //! No copying. No assignment.
     ComponentAndInstantiationsParameterFinder(const ComponentAndInstantiationsParameterFinder& other) = delete;
@@ -41,21 +41,21 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComponentAndInstantiationsParameterFinder() = default;
+    ~ComponentAndInstantiationsParameterFinder() final = default;
 
     /*!
      *  Gets all of the ids of components parameters.
      *
      *      @return A list containing all of the ids.
      */
-    virtual QStringList getAllParameterIds() const override;
+    QStringList getAllParameterIds() const final;
 
     /*!
      *  Gets the number of parameters in the component.
      *
      *      @return The number of parameters in the component.
      */
-    virtual int getNumberOfParameters() const override;
+    int getNumberOfParameters() const final;
 
     /*!
      *  Get all the instantiation parameters.
@@ -73,7 +73,7 @@ private:
      *
      *      @return The selected parameter.
      */
-	virtual QSharedPointer<Parameter> searchParameter(QString const& parameterId) const override final;
+	QSharedPointer<Parameter> searchParameter(QStringView parameterId) const final;
 };
 
 #endif // COMPONENTPARAMETERFINDER_H

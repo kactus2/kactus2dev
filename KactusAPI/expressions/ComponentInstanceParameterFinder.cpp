@@ -28,19 +28,11 @@ ParameterCache(component),
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentInstanceParameterFinder::~ComponentInstanceParameterFinder()
-//-----------------------------------------------------------------------------
-ComponentInstanceParameterFinder::~ComponentInstanceParameterFinder()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentInstanceParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString ComponentInstanceParameterFinder::valueForId(QString const& id) const
+QString ComponentInstanceParameterFinder::valueForId(QStringView id) const
 {
-    foreach (QSharedPointer<ConfigurableElementValue> element, *componentInstance_->getConfigurableElementValues())
+    for (QSharedPointer<ConfigurableElementValue> element : *componentInstance_->getConfigurableElementValues())
     {
         if (element->getReferenceId().compare(id) == 0)
         {

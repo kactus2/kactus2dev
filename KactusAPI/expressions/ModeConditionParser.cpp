@@ -32,7 +32,7 @@ ModeConditionParser::ModeConditionParser(QSharedPointer<ParameterFinder> finder,
 //-----------------------------------------------------------------------------
 // Function: ModeConditionParser::isSymbol()
 //-----------------------------------------------------------------------------
-bool ModeConditionParser::isSymbol(QString const& expression) const
+bool ModeConditionParser::isSymbol(QStringView expression) const
 {
     return isModeReference(expression) || IPXactSystemVerilogParser::isSymbol(expression);
 }
@@ -40,11 +40,11 @@ bool ModeConditionParser::isSymbol(QString const& expression) const
 //-----------------------------------------------------------------------------
 // Function: ModeConditionParser::findSymbolValue()
 //-----------------------------------------------------------------------------
-QString ModeConditionParser::findSymbolValue(QString const& symbol) const
+QString ModeConditionParser::findSymbolValue(QStringView symbol) const
 {
     if (isModeReference(symbol))
     {
-        return symbol;
+        return symbol.toString();
     }
 
     return IPXactSystemVerilogParser::findSymbolValue(symbol);
@@ -53,7 +53,7 @@ QString ModeConditionParser::findSymbolValue(QString const& symbol) const
 //-----------------------------------------------------------------------------
 // Function: ModeConditionParser::isUnaryOperator()
 //-----------------------------------------------------------------------------
-bool ModeConditionParser::isUnaryOperator(QString const& token) const
+bool ModeConditionParser::isUnaryOperator(QStringView token) const
 {
     return token == QLatin1String("$ipxact_port_value") ||
         token == QLatin1String("$ipxact_field_value") || 
@@ -64,7 +64,7 @@ bool ModeConditionParser::isUnaryOperator(QString const& token) const
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::solveUnary()
 //-----------------------------------------------------------------------------
-QString ModeConditionParser::solveUnary(QString const& operation, QString const& term) const
+QString ModeConditionParser::solveUnary(QStringView operation, QString const& term) const
 {
     if (operation.compare(QLatin1String("$ipxact_port_value")) == 0)
     {
@@ -85,7 +85,7 @@ QString ModeConditionParser::solveUnary(QString const& operation, QString const&
 //-----------------------------------------------------------------------------
 // Function: ModeConditionParser::isModeReference()
 //-----------------------------------------------------------------------------
-bool ModeConditionParser::isModeReference(QString const& expression) const
+bool ModeConditionParser::isModeReference(QStringView expression) const
 {
     return Search::findByName(expression, *portSlices_) != nullptr ||
         Search::findByName(expression, *fieldSlices_) != nullptr ||

@@ -20,25 +20,17 @@ NullParser::NullParser() : ExpressionParser()
 }
 
 //-----------------------------------------------------------------------------
-// Function: NullParser::()
-//-----------------------------------------------------------------------------
-NullParser::~NullParser()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: NullParser::parseExpression()
 //-----------------------------------------------------------------------------
-QString NullParser::parseExpression(QString const& expression, bool* /*isValidExpression*/) const
+QString NullParser::parseExpression(QStringView expression, bool* /*isValidExpression*/) const
 {
-    return expression;
+    return expression.toString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: NullParser::isPlainValue()
 //-----------------------------------------------------------------------------
-bool NullParser::isPlainValue(QString const& /*expression*/) const
+bool NullParser::isPlainValue(QStringView /*expression*/) const
 {
     return true;
 }
@@ -46,7 +38,7 @@ bool NullParser::isPlainValue(QString const& /*expression*/) const
 //-----------------------------------------------------------------------------
 // Function: NullParser::baseForExpression()
 //-----------------------------------------------------------------------------
-int NullParser::baseForExpression(QString const& /*expression*/) const
+int NullParser::baseForExpression(QStringView /*expression*/) const
 {
     return 0;
 }

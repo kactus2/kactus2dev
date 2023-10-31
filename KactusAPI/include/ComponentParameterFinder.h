@@ -32,7 +32,7 @@ public:
      *
 	 *      @param [in] component		The component which parameters are being searched for.
      */
-    explicit ComponentParameterFinder(QSharedPointer<Component const> component);
+    explicit ComponentParameterFinder(QSharedPointer<Component const> component) noexcept;
 
     //! No copying
     ComponentParameterFinder(const ComponentParameterFinder& other) = delete;
@@ -43,14 +43,14 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComponentParameterFinder() = default;
+    ~ComponentParameterFinder() override = default;
 
     /*!
      *  Get the parameter with the given id.
      *
      *      @param [in] parameterId     The id of the parameter being searched for.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const override;
+    QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const override;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -59,7 +59,7 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const override;
+    bool hasId(QStringView id) const override;
 
     /*!
      *  Finds the name of the parameter with the given id.
@@ -68,7 +68,7 @@ public:
      *
      *      @return The name of the parameter.
      */
-    virtual QString nameForId(QString const& id) const override;
+    QString nameForId(QStringView id) const override;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -77,7 +77,7 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const override;
+    QString valueForId(QStringView id) const override;
 
     /*!
      *  Gets all of the ids of components parameters.
@@ -148,14 +148,14 @@ protected:
     /*!
      *  Returns a parameter corresponding given id, if any exists.
      */
-    virtual QSharedPointer<Parameter> searchParameter(QString const& parameterId) const;
+    virtual QSharedPointer<Parameter> searchParameter(QStringView parameterId) const;
 
     /*!
      *  Get the component.
      *
      *      @return The contained component.
      */
-    QSharedPointer<const Component> getComponent() const;
+    QSharedPointer<const Component> getComponent() const noexcept;
 
 private:
     

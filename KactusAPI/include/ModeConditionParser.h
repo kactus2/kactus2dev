@@ -52,7 +52,7 @@ protected:
      *
      *      @return True, if the expression is a symbol, otherwise false.
      */
-    bool isSymbol(QString const& expression) const final;
+    bool isSymbol(QStringView expression) const final;
 
     /*!
      *  Finds the value for given symbol.
@@ -61,7 +61,7 @@ protected:
      *
      *      @return The found symbol value.
      */
-    QString findSymbolValue(QString const& symbol) const override;
+    QString findSymbolValue(QStringView symbol) const override;
 
     /*!
      *  Checks if the given token is a unary operator.
@@ -70,7 +70,7 @@ protected:
      *
      *      @return True, if the token is a unary operator, otherwise false.
      */
-    bool isUnaryOperator(QString const& token) const final;
+    bool isUnaryOperator(QStringView token) const final;
 
     /*!
      *  Solves a binary operation.
@@ -80,7 +80,7 @@ protected:
      *
      *      @return The result of the operation.
      */
-    QString solveUnary(QString const& operation, QString const& term) const final;
+    QString solveUnary(QStringView operation, QString const& term) const final;
 
 private:
 
@@ -91,7 +91,7 @@ private:
      *
      *      @return True, if the expression is a valid reference, otherwise false.
      */
-    bool isModeReference(QString const& expression) const;
+    bool isModeReference(QStringView expression) const;
 
 
     /*!
@@ -103,7 +103,7 @@ private:
      *      @return 1, if the reference is to a valid item, otherwise x.
      */
     template <typename T> 
-    QString solveCondition(QString const& reference, QSharedPointer<QList<QSharedPointer<T> > > availableItems) const
+    QString solveCondition(QStringView reference, QSharedPointer<QList<QSharedPointer<T> > > availableItems) const
     {
         if (auto item = Search::findByName(reference, *availableItems); item.isNull())
         {
