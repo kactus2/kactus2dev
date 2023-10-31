@@ -606,7 +606,7 @@ void DesignReader::Details::parseSwInstances(QDomNode const& swInstancesNode, QS
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> DesignReader::Details::parseSwInstance(QDomNode const& node)
 {
-    QSharedPointer<ComponentInstance> newSWInstance = QSharedPointer<ComponentInstance>(new ComponentInstance);
+    auto newSWInstance = QSharedPointer<ComponentInstance>(new ComponentInstance);
 
     for (int i = 0; i < node.childNodes().count(); ++i)
     {

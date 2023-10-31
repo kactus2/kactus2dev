@@ -127,7 +127,7 @@ void HierInterface::setDescription(QString const& newDescription)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::setRoute()
 //-----------------------------------------------------------------------------
-void HierInterface::setRoute(QList<QPointF> newRoute)
+void HierInterface::setRoute(QList<QPointF> newRoute) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
     getVendorExtensions()->removeAll(extension);

@@ -344,9 +344,9 @@ void GenericVendorExtension::writeNode(GenericVendorExtension const& node, QXmlS
 //-----------------------------------------------------------------------------
 void GenericVendorExtension::writeAttributes(GenericVendorExtension const& node, QXmlStreamWriter& writer) const
 {
-    for (auto const& attribute : node.attributes_)
+    for (auto const& [name, value] : node.attributes_)
     {      
-        writer.writeAttribute(attribute.first, attribute.second);
+        writer.writeAttribute(name, value);
     }
 }
 

@@ -152,7 +152,7 @@ bool DesignConfigurationValidator::hasValidInterconnectionConfigurations(
             interconnectionValidator_->designChanged(referencedDesign);
 
             QVector<QString> interconnectionReferences;
-            foreach (QSharedPointer<InterconnectionConfiguration> configuration,
+            for (QSharedPointer<InterconnectionConfiguration> configuration :
                 *designConfiguration->getInterconnectionConfs())
             {
                 if (interconnectionReferences.contains(configuration->getInterconnectionReference()) ||
@@ -189,7 +189,7 @@ bool DesignConfigurationValidator::hasValidViewConfigurations(
             viewConfigurationValidator_->changeComponentInstances(referencedDesign->getComponentInstances());
 
             QVector<QString> instanceNames;
-            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
+            for (QSharedPointer<ViewConfiguration> viewConfiguration :
                 *designConfiguration->getViewConfigurations())
             {
                 if (instanceNames.contains(viewConfiguration->getInstanceName()) ||
@@ -359,7 +359,7 @@ void DesignConfigurationValidator::findErrorsInInterconnectionConfigurations(QVe
 
         QVector<QString> connectionReferences;
         QVector<QString> duplicateNames;
-        foreach (QSharedPointer<InterconnectionConfiguration> connectionConfiguration,
+        for (QSharedPointer<InterconnectionConfiguration> connectionConfiguration :
             *designConfiguration->getInterconnectionConfs())
         {
             if (connectionReferences.contains(connectionConfiguration->getInterconnectionReference()) &&
@@ -397,7 +397,7 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
 
             QVector<QString> instanceNames;
             QVector<QString> duplicateNames;
-            foreach (QSharedPointer<ViewConfiguration> viewConfiguration,
+            for (QSharedPointer<ViewConfiguration> viewConfiguration :
                 *designConfiguration->getViewConfigurations())
             {
                 if (instanceNames.contains(viewConfiguration->getInstanceName()) &&

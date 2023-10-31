@@ -11,6 +11,8 @@
 
 #include "PortReference.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: PortReference::PortReference()
 //-----------------------------------------------------------------------------
@@ -34,10 +36,7 @@ portRef_(other.portRef_),
         partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_));
     }
 
-    for (auto const& subPort : *other.subPortReferences_)
-    {
-        subPortReferences_->append(QSharedPointer<PortReference>(new PortReference(*subPort)));
-    }
+    Copy::copyList(other.subPortReferences_, subPortReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -54,10 +53,7 @@ PortReference& PortReference::operator=( const PortReference& other)
         partSelect_ = QSharedPointer<PartSelect>(new PartSelect(*other.partSelect_));
 
         subPortReferences_->clear();
-        for (auto const& subPort : *other.subPortReferences_)
-        {
-            subPortReferences_->append(QSharedPointer<PortReference>(new PortReference(*subPort)));
-        }
+        Copy::copyList(other.subPortReferences_, subPortReferences_);
     }
 
     return *this;

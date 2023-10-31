@@ -41,7 +41,7 @@ namespace Search
     };
 
     template <typename ContainerItem, template <typename> class Container>
-    QSharedPointer<ContainerItem> findByName(QString const& name,
+    QSharedPointer<ContainerItem> findByName(QStringView name,
         QSharedPointer<Container<QSharedPointer<ContainerItem> > > container)
     {
         auto item = std::find_if(container->constBegin(), container->constEnd(),
@@ -56,7 +56,7 @@ namespace Search
     }
 
     template <typename ContainerItem, template <typename> class Container>
-    QSharedPointer<ContainerItem> findByName(QString const& name, 
+    QSharedPointer<ContainerItem> findByName(QStringView name,
         Container<QSharedPointer<ContainerItem> > container)
     {
         auto item = std::find_if(container.constBegin(), container.constEnd(),

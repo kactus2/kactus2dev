@@ -1934,7 +1934,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 
     if (!instance->isDraft())
     {
-        component = getLibraryInterface()->getModel(*instance->getComponentRef()).dynamicCast<Component>();
+        component = getLibraryInterface()->getModel<Component>(*instance->getComponentRef());
 
         if (!component && instance->getComponentRef()->isValid())
         {
@@ -2257,8 +2257,6 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString const& busRef)
 {
-    
-
     // if the bus interface was not found
     if (QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(busRef); 
         busIf != nullptr)

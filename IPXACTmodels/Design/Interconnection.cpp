@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
@@ -44,17 +46,9 @@ Extendable(other),
 startInterface_(new ActiveInterface(*other.startInterface_)),
 isPresent_(other.isPresent_)
 {
-    for (auto const& singleInterface: *other.activeInterfaces_)
-    {
-        auto copy = QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
-        activeInterfaces_->append(copy);
-    }
+    Copy::copyList(other.activeInterfaces_, activeInterfaces_);
 
-    for (auto const& singleInterface : *other.hierInterfaces_)
-    {
-        auto copy = QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
-        hierInterfaces_->append(copy);
-    }
+    Copy::copyList(other.hierInterfaces_, hierInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -73,18 +67,11 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
         startInterface_ = QSharedPointer<ActiveInterface>(new ActiveInterface(*other.startInterface_));
 
         activeInterfaces_->clear();
-        for (auto const& singleInterface : *other.activeInterfaces_)
-        {
-            auto copy = QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
-            activeInterfaces_->append(copy);
-        }
+        Copy::copyList(other.activeInterfaces_, activeInterfaces_);
 
         hierInterfaces_->clear();
-        for (auto const& singleInterface : *other.hierInterfaces_)
-        {
-            auto copy = QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
-            hierInterfaces_->append(copy);
-        }
+
+        Copy::copyList(other.hierInterfaces_, hierInterfaces_);
     }
 
     return *this;

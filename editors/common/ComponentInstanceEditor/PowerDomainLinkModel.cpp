@@ -75,14 +75,7 @@ QVariant PowerDomainLinkModel::data(const QModelIndex& index, int role) const
         return domain->internalReferences_;
     }
 
-    //          else if (role == Qt::ForegroundRole)
-    //          {
-    //              return validator_->validate(indexedChoice);
-    //          }
-
-        return QVariant();
-    
-
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------

@@ -120,8 +120,8 @@ void ViewConfigurationValidator::changeAvailableViews(QSharedPointer<ViewConfigu
             {
                 if (instance->getComponentRef() && instance->getComponentRef()->isValid())
                 {
-                    QSharedPointer<Component> component =
-                        libraryHandler_->getModel<Component>(*instance->getComponentRef());
+                    auto component =
+                        libraryHandler_->getModelReadOnly<Component>(*instance->getComponentRef());
 
                     if (component)
                     {

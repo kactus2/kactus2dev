@@ -15,7 +15,11 @@
 #include <IPXACTmodels/kactusExtensions/ConnectionRoute.h>
 #include <IPXACTmodels/kactusExtensions/InterfaceGraphicsData.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <KactusAPI/include/LibraryInterface.h>
+
 
 //-----------------------------------------------------------------------------
 // Function: Design::Design()
@@ -77,15 +81,7 @@ void Design::setVlnv(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstance> Design::findComponentInstance(QString const& instanceName) const
 {
-    auto it = std::find_if(componentInstances_->cbegin(), componentInstances_->cend(),
-        [&instanceName](auto const& instance) {return instance->getInstanceName() == instanceName; });
-
-    if (it != componentInstances_->cend())
-    {
-        return *it;
-    }
-
-	return QSharedPointer<ComponentInstance>();
+    return Search::findByName(instanceName, componentInstances_);
 }
 
 //-----------------------------------------------------------------------------
@@ -242,7 +238,7 @@ QList<QSharedPointer<ConnectionRoute> > Design::getRoutes() const
 //-----------------------------------------------------------------------------
 // Function: Design::setAdHocPortPositions()
 //-----------------------------------------------------------------------------
-void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
+void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:adHocVisibilities"));
     getVendorExtensions()->removeAll(extension);
@@ -269,7 +265,7 @@ void Design::setAdHocPortPositions(QMap<QString, QPointF> const& val)
 //-----------------------------------------------------------------------------
 // Function: Design::setApiConnections()
 //-----------------------------------------------------------------------------
-void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections)
+void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:apiConnections"));
     getVendorExtensions()->removeAll(extension);
@@ -291,7 +287,7 @@ void Design::setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApi
 //-----------------------------------------------------------------------------
 // Function: Design::setComConnections()
 //-----------------------------------------------------------------------------
-void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections)
+void Design::setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:comConnections"));
     getVendorExtensions()->removeAll(extension);
@@ -353,7 +349,7 @@ bool Design::hasInterconnection(QString const& instanceName, QString const& inte
 {
     return std::any_of(interconnections_->cbegin(), interconnections_->cend(), 
         [&instanceName, &interfaceName](auto const& interconnection)
-    {return interconnection->hasInterfaceReferencingComponent(instanceName, interfaceName); });
+        { return interconnection->hasInterfaceReferencingComponent(instanceName, interfaceName); });
 }
 
 //-----------------------------------------------------------------------------
@@ -471,7 +467,7 @@ void Design::addColumn(QSharedPointer<ColumnDesc> column)
 //-----------------------------------------------------------------------------
 // Function: Design::removeColumn()
 //-----------------------------------------------------------------------------
-void Design::removeColumn(QSharedPointer<ColumnDesc> column)
+void Design::removeColumn(QSharedPointer<ColumnDesc> column) const
 {
     QSharedPointer<Kactus2Group> layoutGroup = getLayoutExtension();
     if (!layoutGroup.isNull())
@@ -483,7 +479,7 @@ void Design::removeColumn(QSharedPointer<ColumnDesc> column)
 //-----------------------------------------------------------------------------
 // Function: Design::addRoute()
 //-----------------------------------------------------------------------------
-void Design::addRoute(QSharedPointer<ConnectionRoute> route)
+void Design::addRoute(QSharedPointer<ConnectionRoute> route) const
 {
     QSharedPointer<Kactus2Group> routesGroup = getRoutesExtension();
 
@@ -499,7 +495,7 @@ void Design::addRoute(QSharedPointer<ConnectionRoute> route)
 //-----------------------------------------------------------------------------
 // Function: Design::removeRoute()
 //-----------------------------------------------------------------------------
-void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
+void Design::removeRoute(QSharedPointer<ConnectionRoute> route) const
 {
     QSharedPointer<Kactus2Group> routesGroup = getRoutesExtension();
 
@@ -519,41 +515,13 @@ void Design::removeRoute(QSharedPointer<ConnectionRoute> route)
 //-----------------------------------------------------------------------------
 void Design::copySharedLists(Design const& other)
 {
-    for (auto const& instance : *other.componentInstances_)
-    {
-        if (instance)
-        {
-            QSharedPointer<ComponentInstance> copy(new ComponentInstance(*instance));
-            componentInstances_->append(copy);
-        }
-    }
+    Copy::copyList(other.componentInstances_, componentInstances_);
 
-    for (auto const& monitorConnection : *other.interconnections_)
-    {
-        if (monitorConnection)
-        {
-            QSharedPointer<Interconnection> interconnectionCopy(new Interconnection(*monitorConnection));
-            interconnections_->append(interconnectionCopy);
-        }
-    }
+    Copy::copyList(other.interconnections_, interconnections_);
 
-    for (auto const& monitorConnection : *other.monitorInterconnections_)
-    {
-        if (monitorConnection)
-        {
-            QSharedPointer<MonitorInterconnection> monitorCopy(new MonitorInterconnection(*monitorConnection));
-            monitorInterconnections_->append(monitorCopy);
-        }
-    }
+    Copy::copyList(other.monitorInterconnections_, monitorInterconnections_);
 
-    for (auto const& adHocConnection : *other.adHocConnections_)
-    {
-        if (adHocConnection)
-        {
-            QSharedPointer<AdHocConnection> copy(new AdHocConnection(*adHocConnection));
-            adHocConnections_->append(copy);
-        }
-    }
+    Copy::copyList(other.adHocConnections_, adHocConnections_);
 }
 
 //-----------------------------------------------------------------------------
@@ -597,7 +565,7 @@ QList<QSharedPointer<InterfaceGraphicsData> > Design::getInterfaceGraphicsData()
 //-----------------------------------------------------------------------------
 // Function: Design::removeInterfacePosition()
 //-----------------------------------------------------------------------------
-void Design::removeInterfaceGraphicsData(QString const& name)
+void Design::removeInterfaceGraphicsData(QString const& name) const
 {
     for (auto const& containedInterface : getInterfaceGraphicsData())
     {

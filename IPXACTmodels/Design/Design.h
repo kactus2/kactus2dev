@@ -187,38 +187,33 @@ public:
      *
      *      @param [in] apiDependencies A list of API dependencies.
      */
-    void setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections);
+    void setApiConnections(QList<QSharedPointer<ApiInterconnection> > newApiConnections) const;
 
     /*!
      *  Sets the COM connections for the design.
      *
      *      @param [in] comConnections A list of COM connections.
      */
-    void setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections);
+    void setComConnections(QList<QSharedPointer<ComInterconnection> > newComConnections) const;
 
     /*!
      *  Sets the ad-hoc port positions.
      */
-    void setAdHocPortPositions(QMap<QString, QPointF> const& val);
-
-    /*!
-     *  Sets the columns of this design.
-     */
-    //void setColumns(QList<QSharedPointer<ColumnDesc> > newColumns);
+    void setAdHocPortPositions(QMap<QString, QPointF> const& val) const;
 
 	/*!
 	 *  Get the dependent files.
      *
      *      @return A list of the dependent file names.
 	 */
-	virtual QStringList getDependentFiles() const;
+	QStringList getDependentFiles() const final;
 
 	/*!
 	 *  Get dependend VLNVs.
 	 *
      *      @return A list of the dependend VLNVs.
 	 */
-	virtual QList<VLNV> getDependentVLNVs() const;
+	QList<VLNV> getDependentVLNVs() const final;
 
 	/*!
 	 *  Get the VLNV of the HW component instantiated with the given name.
@@ -299,11 +294,11 @@ public:
      *
      *      @param [in] column   The column to remove
      */
-    void removeColumn(QSharedPointer<ColumnDesc> column);    
+    void removeColumn(QSharedPointer<ColumnDesc> column) const;    
 
-    void addRoute(QSharedPointer<ConnectionRoute> route);
+    void addRoute(QSharedPointer<ConnectionRoute> route) const;
     
-    void removeRoute(QSharedPointer<ConnectionRoute> route);
+    void removeRoute(QSharedPointer<ConnectionRoute> route) const;
 
     /*!
      *  Get the interface graphics data.
@@ -317,7 +312,7 @@ public:
      *
      *      @param [in] name    Name of the selected graphics data.
      */
-    void removeInterfaceGraphicsData(QString const& name);
+    void removeInterfaceGraphicsData(QString const& name) const;
 
 private:
     /*!
@@ -346,8 +341,8 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The HW component instances.
-    QSharedPointer<QList<QSharedPointer<ComponentInstance> > > componentInstances_ =
-        QSharedPointer<QList<QSharedPointer<ComponentInstance> > >(new QList<QSharedPointer<ComponentInstance> >());
+    ComponentInstance::List componentInstances_ =
+        ComponentInstance::List(new QList<QSharedPointer<ComponentInstance> >());
 
     //! The interconnections.
     QSharedPointer<QList<QSharedPointer<Interconnection> > > interconnections_ =

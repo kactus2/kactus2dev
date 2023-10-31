@@ -11,6 +11,8 @@
 
 #include "InterconnectionConfiguration.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: InterconnectionConfiguration::InterconnectionConfiguration()
 //-----------------------------------------------------------------------------
@@ -26,18 +28,9 @@ InterconnectionConfiguration::InterconnectionConfiguration():
 InterconnectionConfiguration::InterconnectionConfiguration(const InterconnectionConfiguration& other):
     Extendable(other),
 isPresent_(other.isPresent_),
-interconnectionRef_(other.interconnectionRef_),
-abstractorInstances_(new QList<QSharedPointer<MultipleAbstractorInstances> > )
+interconnectionRef_(other.interconnectionRef_)
 {
-    for (QSharedPointer<MultipleAbstractorInstances> multipleAbstractor : *other.abstractorInstances_)
-    {
-        if (multipleAbstractor)
-        {
-            QSharedPointer<MultipleAbstractorInstances> copy = QSharedPointer<MultipleAbstractorInstances>(
-                new MultipleAbstractorInstances(*multipleAbstractor.data()));
-            abstractorInstances_->append(copy);
-        }
-    }
+    Copy::copyList(other.abstractorInstances_, abstractorInstances_);
 }
 
 //-----------------------------------------------------------------------------
