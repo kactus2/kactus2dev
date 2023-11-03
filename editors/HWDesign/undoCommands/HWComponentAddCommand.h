@@ -12,10 +12,11 @@
 #ifndef HWCOMPONENTADDCOMMAND_H
 #define HWCOMPONENTADDCOMMAND_H
 
-#include <QUndoCommand>
 #include <QGraphicsScene>
-#include <QString>
 #include <QObject>
+#include <QSharedPointer>
+#include <QString>
+#include <QUndoCommand>
 
 class IGraphicsItemStack;
 class ComponentItem;
