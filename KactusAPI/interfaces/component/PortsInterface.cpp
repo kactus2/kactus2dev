@@ -12,13 +12,14 @@
 #include <PortsInterface.h>
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
+#include <IPXACTmodels/common/Vector.h>
 
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Model.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
-using namespace std;
+#include <IPXACTmodels/utilities/Search.h>
+
+#include <KactusAPI/include/ListHelper.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::PortsInterface()
@@ -27,7 +28,6 @@ PortsInterface::PortsInterface(QSharedPointer<PortValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
 ParameterizableInterface(expressionParser, expressionFormatter),
 MasterPortInterface(),
-ports_(),
 portValidator_(validator)
 {
 
@@ -36,9 +36,9 @@ portValidator_(validator)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setPorts()
 //-----------------------------------------------------------------------------
-void PortsInterface::setPorts(QSharedPointer<Component> component)
+void PortsInterface::setPorts(Port::List ports)
 {
-    ports_ = component->getPorts();
+    ports_ = ports;
 }
 
 //-----------------------------------------------------------------------------
@@ -52,31 +52,22 @@ bool PortsInterface::hasPorts() const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getPortIndex()
 //-----------------------------------------------------------------------------
-int PortsInterface::getItemIndex(string const& itemName) const
+int PortsInterface::getItemIndex(std::string const& itemName) const
 {
-    for (int i = 0; i < ports_->size(); ++i)
-    {
-        if (ports_->at(i)->name().toStdString() == itemName)
-        {
-            return i;
-        }
-    }
-
-    return -1;
+    return ListHelper::itemIndex(itemName, ports_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getIndexedPortName()
 //-----------------------------------------------------------------------------
-string PortsInterface::getIndexedItemName(int const& itemIndex) const
+std::string PortsInterface::getIndexedItemName(int itemIndex) const
 {
-    string portName("");
     if (itemIndex >= 0 && itemIndex < ports_->size())
     {
-        portName = ports_->at(itemIndex)->name().toStdString();
+        return ports_->at(itemIndex)->name().toStdString();
     }
 
-    return portName;
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -90,34 +81,17 @@ int PortsInterface::itemCount() const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> PortsInterface::getItemNames() const
+std::vector<std::string> PortsInterface::getItemNames() const
 {
-    vector<string> portNames;
-    for (auto port : *ports_)
-    {
-        portNames.push_back(port->name().toStdString());
-    }
-
-    return portNames;
+    return ListHelper::listNames(ports_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getPort()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> PortsInterface::getPort(string const& portName) const
+QSharedPointer<Port> PortsInterface::getPort(std::string const& portName) const
 {
-    if (ports_)
-    {
-        for (auto const& port : *ports_)
-        {
-            if (port->name().toStdString() == portName)
-            {
-                return port;
-            }
-        }
-    }
-
-    return QSharedPointer<Port>();
+    return Search::findByName(QString::fromStdString(portName), ports_);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +105,7 @@ QSharedPointer<NameGroup> PortsInterface::getItem(std::string const& portName) c
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setName()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setName(string const& currentPortName, string const& newPortName)
+bool PortsInterface::setName(std::string const& currentPortName, std::string const& newPortName)
 {
     QSharedPointer<Port> editedPort = getPort(currentPortName);
     if (editedPort && nameHasChanged(newPortName, currentPortName))
@@ -150,7 +124,7 @@ bool PortsInterface::setName(string const& currentPortName, string const& newPor
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getTypeName()
 //-----------------------------------------------------------------------------
-string PortsInterface::getTypeName(string const& portName)
+std::string PortsInterface::getTypeName(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
 
@@ -166,7 +140,7 @@ string PortsInterface::getTypeName(string const& portName)
 
     if (!definitionList)
     {
-        return string("");
+        return std::string();
     }
 
     if (definitionList->count() == 1)
@@ -175,7 +149,7 @@ string PortsInterface::getTypeName(string const& portName)
     }
     else
     {
-        string combinedType("");
+        std::string combinedType;
         for (auto const& typeDefinition : *definitionList)
         {
             combinedType.append(typeDefinition->getTypeName().toStdString());
@@ -192,7 +166,7 @@ string PortsInterface::getTypeName(string const& portName)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setTypeName()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setTypeName(string const& portName, string const& newType)
+bool PortsInterface::setTypeName(std::string const& portName, std::string const& newType) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (newType.empty())
@@ -213,49 +187,49 @@ bool PortsInterface::setTypeName(string const& portName, string const& newType)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayLeftValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayLeftValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getArrayLeftValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return parseExpressionToBaseNumber(editedPort->getArrayLeft(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayLeftFormattedExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayLeftFormattedExpression(string const& portName) const
+std::string PortsInterface::getArrayLeftFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return formattedValueFor(editedPort->getArrayLeft()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayLeftExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayLeftExpression(string const& portName) const
+std::string PortsInterface::getArrayLeftExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return editedPort->getArrayLeft().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setArrayLeft()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setArrayLeft(string const& portName, string const& newArrayLeft)
+bool PortsInterface::setArrayLeft(std::string const& portName, std::string const& newArrayLeft) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (!editedPort)
@@ -270,49 +244,49 @@ bool PortsInterface::setArrayLeft(string const& portName, string const& newArray
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayRightValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayRightValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getArrayRightValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName);
+        editedPort)
     {
         return parseExpressionToBaseNumber(editedPort->getArrayRight(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayRight()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayRightFormattedExpression(string const& portName) const
+std::string PortsInterface::getArrayRightFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return formattedValueFor(editedPort->getArrayRight()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getArrayRightExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getArrayRightExpression(string const& portName) const
+std::string PortsInterface::getArrayRightExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return editedPort->getArrayRight().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setArrayRight()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setArrayRight(string const& portName, string const& newArrayRight)
+bool PortsInterface::setArrayRight(std::string const& portName, std::string const& newArrayRight) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (!editedPort)
@@ -327,21 +301,21 @@ bool PortsInterface::setArrayRight(string const& portName, string const& newArra
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getTags()
 //-----------------------------------------------------------------------------
-string PortsInterface::getTags(string const& portName) const
+std::string PortsInterface::getTags(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return editedPort->getPortTags().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setTags()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setTags(string const& portName, string const& tagList)
+bool PortsInterface::setTags(std::string const& portName, std::string const& tagList) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (!editedPort)
@@ -356,10 +330,10 @@ bool PortsInterface::setTags(string const& portName, string const& tagList)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::isAdHoc()
 //-----------------------------------------------------------------------------
-bool PortsInterface::isAdHoc(string const& portName) const
+bool PortsInterface::isAdHoc(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (editedPort)
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        editedPort)
     {
         return editedPort->isAdHocVisible();
     }
@@ -370,7 +344,7 @@ bool PortsInterface::isAdHoc(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setAdHoc()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setAdHoc(string const& portName, bool newAdHocVisibility)
+bool PortsInterface::setAdHoc(std::string const& portName, bool newAdHocVisibility) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (!editedPort)
@@ -385,11 +359,9 @@ bool PortsInterface::setAdHoc(string const& portName, bool newAdHocVisibility)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portIsWire()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portIsWire(string const& portName) const
+bool PortsInterface::portIsWire(std::string const& portName) const
 {
-    QSharedPointer<Port> port = getPort(portName);
-
-    return portIsWire(port);
+    return portIsWire(getPort(portName));
 }
 
 //-----------------------------------------------------------------------------
@@ -403,15 +375,15 @@ bool PortsInterface::portIsWire(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getDirection()
 //-----------------------------------------------------------------------------
-string PortsInterface::getDirection(string const& portName) const
+std::string PortsInterface::getDirection(std::string const& portName) const
 {
-    QSharedPointer<Port> selectedPort = getPort(portName);
-    if (portIsWire(selectedPort))
+    if (QSharedPointer<Port> selectedPort = getPort(portName); 
+        portIsWire(selectedPort))
     {
         return DirectionTypes::direction2Str(selectedPort->getDirection()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -419,8 +391,8 @@ string PortsInterface::getDirection(string const& portName) const
 //-----------------------------------------------------------------------------
 DirectionTypes::Direction PortsInterface::getDirectionType(std::string const& portName) const
 {
-    QSharedPointer<Port> selectedPort = getPort(portName);
-    if (portIsWire(selectedPort))
+    if (QSharedPointer<Port> selectedPort = getPort(portName); 
+        portIsWire(selectedPort))
     {
         return selectedPort->getDirection();
     }
@@ -431,28 +403,26 @@ DirectionTypes::Direction PortsInterface::getDirectionType(std::string const& po
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setDirection()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setDirection(string const& portName, string const& newDirection)
+bool PortsInterface::setDirection(std::string const& portName, std::string const& newDirection) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         editedPort->setDirection(DirectionTypes::str2Direction(
             QString::fromStdString(newDirection), DirectionTypes::DIRECTION_INVALID));
         return true;
     }
-    else
-    {
-        return false;
-    }
+    
+    return false;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getLeftBoundValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getLeftBoundValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getLeftBoundValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -461,16 +431,16 @@ string PortsInterface::getLeftBoundValue(string const& portName, int const& base
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getLeftBoundFormattedExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getLeftBoundFormattedExpression(string const& portName) const
+std::string PortsInterface::getLeftBoundFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -479,16 +449,16 @@ string PortsInterface::getLeftBoundFormattedExpression(string const& portName) c
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getLeftBoundExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getLeftBoundExpression(string const& portName) const
+std::string PortsInterface::getLeftBoundExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -497,16 +467,16 @@ string PortsInterface::getLeftBoundExpression(string const& portName) const
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setLeftBound()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setLeftBound(string const& portName, string const& newLeftBound)
+bool PortsInterface::setLeftBound(std::string const& portName, std::string const& newLeftBound) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         editedPort->setLeftBound(QString::fromStdString(newLeftBound));
         setTypeNameAndDefinition(editedPort);
@@ -520,10 +490,10 @@ bool PortsInterface::setLeftBound(string const& portName, string const& newLeftB
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getRightBoundValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getRightBoundValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getRightBoundValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -532,16 +502,16 @@ string PortsInterface::getRightBoundValue(string const& portName, int const& bas
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getRightBoundFormattedExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getRightBoundFormattedExpression(string const& portName) const
+std::string PortsInterface::getRightBoundFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -550,16 +520,16 @@ string PortsInterface::getRightBoundFormattedExpression(string const& portName) 
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getRightBoundExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getRightBoundExpression(string const& portName) const
+std::string PortsInterface::getRightBoundExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
         if (wireVector)
@@ -568,16 +538,16 @@ string PortsInterface::getRightBoundExpression(string const& portName) const
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setRightBound()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setRightBound(string const& portName, string const& newRightBound)
+bool PortsInterface::setRightBound(std::string const& portName, std::string const& newRightBound) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         editedPort->setRightBound(QString::fromStdString(newRightBound));
         setTypeNameAndDefinition(editedPort);
@@ -591,7 +561,7 @@ bool PortsInterface::setRightBound(string const& portName, string const& newRigh
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getWidth()
 //-----------------------------------------------------------------------------
-string PortsInterface::getWidth(string const& portName) const
+std::string PortsInterface::getWidth(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
 
@@ -605,7 +575,7 @@ string PortsInterface::getWidth(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setWidth()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setWidth(string const& portName, string const& newWidth)
+bool PortsInterface::setWidth(std::string const& portName, std::string const& newWidth) const
 {
     if (hasExpressionInLeftOrRightBound(portName))
     {
@@ -625,7 +595,7 @@ bool PortsInterface::setWidth(string const& portName, string const& newWidth)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::hasExpressionInLeftOrRightBound()
 //-----------------------------------------------------------------------------
-bool PortsInterface::hasExpressionInLeftOrRightBound(string const& portName) const
+bool PortsInterface::hasExpressionInLeftOrRightBound(std::string const& portName) const
 {
     QString left(QString::fromStdString(getLeftBoundValue(portName)));
     QString right(QString::fromStdString(getRightBoundValue(portName)));
@@ -647,12 +617,12 @@ bool PortsInterface::hasExpressionInLeftOrRightBound(string const& portName) con
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setTypeNameAndDefinition()
 //-----------------------------------------------------------------------------
-void PortsInterface::setTypeNameAndDefinition(QSharedPointer<Port> port)
+void PortsInterface::setTypeNameAndDefinition(QSharedPointer<Port> port) const
 {
     qint64 calculatedLeftBound = parseExpressionToDecimal(port->getLeftBound()).toLongLong();
     qint64 calculatedRightBound = parseExpressionToDecimal(port->getRightBound()).toLongLong();
 
-    int portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
+    auto portWidth = abs(calculatedLeftBound - calculatedRightBound) + 1;
     // if port is vectored and previous type was std_logic
     if (portWidth > 1 && port->getTypeName() == QString("std_logic"))
     {
@@ -671,53 +641,53 @@ void PortsInterface::setTypeNameAndDefinition(QSharedPointer<Port> port)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getDefaultValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getDefaultValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getDefaultValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         return parseExpressionToBaseNumber(
             editedPort->getWire()->getDefaultDriverValue(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getDefaultValueFormattedExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getDefaultValueFormattedExpression(string const& portName) const
+std::string PortsInterface::getDefaultValueFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         return formattedValueFor(editedPort->getWire()->getDefaultDriverValue()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getDefaultValueExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getDefaultValueExpression(string const& portName) const
+std::string PortsInterface::getDefaultValueExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         return editedPort->getWire()->getDefaultDriverValue().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setDefaultValue()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setDefaultValue(string const& portName, string const& newDefaultValue)
+bool PortsInterface::setDefaultValue(std::string const& portName, std::string const& newDefaultValue) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsWire(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsWire(editedPort))
     {
         editedPort->getWire()->setDefaultDriverValue(QString::fromStdString(newDefaultValue));
         return true;
@@ -729,11 +699,9 @@ bool PortsInterface::setDefaultValue(string const& portName, string const& newDe
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portIsTransactional()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portIsTransactional(string const& portName) const
+bool PortsInterface::portIsTransactional(std::string const& portName) const
 {
-    QSharedPointer<Port> port = getPort(portName);
-
-    return portIsTransactional(port);
+    return portIsTransactional(getPort(portName));
 }
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portIsTransactional()
@@ -746,7 +714,7 @@ bool PortsInterface::portIsTransactional(QSharedPointer<Port> port) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getBusWidthValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getBusWidthValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getBusWidthValue(std::string const& portName, unsigned int baseNumber) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (portIsTransactional(editedPort))
@@ -755,44 +723,44 @@ string PortsInterface::getBusWidthValue(string const& portName, int const& baseN
             parseExpressionToBaseNumber(editedPort->getTransactional()->getBusWidth(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getBusWidth()
 //-----------------------------------------------------------------------------
-string PortsInterface::getBusWidthFormattedExpression(string const& portName) const
+std::string PortsInterface::getBusWidthFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return formattedValueFor(editedPort->getTransactional()->getBusWidth()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getBusWidthExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getBusWidthExpression(string const& portName) const
+std::string PortsInterface::getBusWidthExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return editedPort->getTransactional()->getBusWidth().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setBusWidth()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setBusWidth(string const& portName, string const& newBusWidth)
+bool PortsInterface::setBusWidth(std::string const& portName, std::string const& newBusWidth) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         editedPort->getTransactional()->setBusWidth(QString::fromStdString(newBusWidth));
         return true;
@@ -804,24 +772,24 @@ bool PortsInterface::setBusWidth(string const& portName, string const& newBusWid
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getInitiative()
 //-----------------------------------------------------------------------------
-string PortsInterface::getInitiative(string const& portName) const
+std::string PortsInterface::getInitiative(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return editedPort->getTransactional()->getInitiative().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setInitiative()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setInitiative(string const& portName, string const& newInitiative)
+bool PortsInterface::setInitiative(std::string const& portName, std::string const& newInitiative) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         editedPort->getTransactional()->setInitiative(QString::fromStdString(newInitiative));
         return true;
@@ -833,24 +801,24 @@ bool PortsInterface::setInitiative(string const& portName, string const& newInit
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getKind()
 //-----------------------------------------------------------------------------
-string PortsInterface::getKind(string const& portName) const
+std::string PortsInterface::getKind(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return editedPort->getTransactional()->getKind().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setKind()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setKind(string const& portName, string const& newKind)
+bool PortsInterface::setKind(std::string const& portName, std::string const& newKind) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         editedPort->getTransactional()->setKind(QString::fromStdString(newKind));
         return true;
@@ -862,10 +830,10 @@ bool PortsInterface::setKind(string const& portName, string const& newKind)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getProtocolType()
 //-----------------------------------------------------------------------------
-string PortsInterface::getProtocolType(string const& portName) const
+std::string PortsInterface::getProtocolType(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         QSharedPointer<Protocol> portProtocol = editedPort->getTransactional()->getProtocol();
         if (portProtocol)
@@ -874,16 +842,16 @@ string PortsInterface::getProtocolType(string const& portName) const
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setProtocolType()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setProtocolType(string const& portName, string const& newProtocolType)
+bool PortsInterface::setProtocolType(std::string const& portName, std::string const& newProtocolType) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         QSharedPointer<Protocol> portProtocol = editedPort->getTransactional()->getProtocol();
         if (!portProtocol)
@@ -902,7 +870,7 @@ bool PortsInterface::setProtocolType(string const& portName, string const& newPr
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMaxConnectionsValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMaxConnectionsValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getMaxConnectionsValue(std::string const& portName, unsigned int baseNumber) const
 {
     QSharedPointer<Port> editedPort = getPort(portName);
     if (portIsTransactional(editedPort))
@@ -911,44 +879,44 @@ string PortsInterface::getMaxConnectionsValue(string const& portName, int const&
             editedPort->getTransactional()->getMaxConnections(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMaxConnections()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMaxConnectionsFormattedExpression(string const& portName) const
+std::string PortsInterface::getMaxConnectionsFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return formattedValueFor(editedPort->getTransactional()->getMaxConnections()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMaxConnectionsExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMaxConnectionsExpression(string const& portName) const
+std::string PortsInterface::getMaxConnectionsExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return editedPort->getTransactional()->getMaxConnections().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setMaxConnections()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setMaxConnections(string const& portName, string const& newMaxConnections) const
+bool PortsInterface::setMaxConnections(std::string const& portName, std::string const& newMaxConnections) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         editedPort->getTransactional()->setMaxConnections(QString::fromStdString(newMaxConnections));
         return true;
@@ -960,53 +928,53 @@ bool PortsInterface::setMaxConnections(string const& portName, string const& new
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMinConnectionsValue()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMinConnectionsValue(string const& portName, int const& baseNumber) const
+std::string PortsInterface::getMinConnectionsValue(std::string const& portName, unsigned int baseNumber) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return parseExpressionToBaseNumber(
             editedPort->getTransactional()->getMinConnections(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMinConnections()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMinConnectionsFormattedExpression(string const& portName) const
+std::string PortsInterface::getMinConnectionsFormattedExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName); 
+        portIsTransactional(editedPort))
     {
         return formattedValueFor(editedPort->getTransactional()->getMinConnections()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getMinConnectionsExpression()
 //-----------------------------------------------------------------------------
-string PortsInterface::getMinConnectionsExpression(string const& portName) const
+std::string PortsInterface::getMinConnectionsExpression(std::string const& portName) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+   if (QSharedPointer<Port> editedPort = getPort(portName); 
+       portIsTransactional(editedPort))
     {
         return editedPort->getTransactional()->getMinConnections().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::setMinConnections()
 //-----------------------------------------------------------------------------
-bool PortsInterface::setMinConnections(string const& portName, string const& newMinConnections) const
+bool PortsInterface::setMinConnections(std::string const& portName, std::string const& newMinConnections) const
 {
-    QSharedPointer<Port> editedPort = getPort(portName);
-    if (portIsTransactional(editedPort))
+    if (QSharedPointer<Port> editedPort = getPort(portName);
+        portIsTransactional(editedPort))
     {
         editedPort->getTransactional()->setMinConnections(QString::fromStdString(newMinConnections));
         return true;
@@ -1018,7 +986,7 @@ bool PortsInterface::setMinConnections(string const& portName, string const& new
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::getAllReferencesToIdInPort()
 //-----------------------------------------------------------------------------
-int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string const& valueID) const
+int PortsInterface::getAllReferencesToIdInItem(const std::string& itemName, std::string const& valueID) const
 {
     QSharedPointer<Port> port = getPort(itemName);
     if (!port)
@@ -1037,21 +1005,17 @@ int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string co
     {
         QSharedPointer<Wire> portWire = port->getWire();
 
-        int referencesInLeftBound = port->getWire()->getVectorLeftBound().count(idString);
-        int referencesInRightBound = port->getWire()->getVectorRightBound().count(idString);
-        int referencesInDefaultValue = port->getWire()->getDefaultDriverValue().count(idString);
-
-        totalReferences += referencesInLeftBound + referencesInRightBound + referencesInDefaultValue;
+        totalReferences += port->getWire()->getVectorLeftBound().count(idString);
+        totalReferences += port->getWire()->getVectorRightBound().count(idString);
+        totalReferences += port->getWire()->getDefaultDriverValue().count(idString);
     }
     else if (portIsTransactional(port))
     {
         QSharedPointer<Transactional> portTransactional = port->getTransactional();
 
-        int refrencesInWidth = portTransactional->getBusWidth().count(idString);
-        int referencesInMaxConnections = portTransactional->getMaxConnections().count(idString);
-        int referencesInMinConnections = portTransactional->getMinConnections().count(idString);
-
-        totalReferences += refrencesInWidth + referencesInMaxConnections + referencesInMinConnections;
+        totalReferences += portTransactional->getBusWidth().count(idString);
+        totalReferences += portTransactional->getMaxConnections().count(idString);
+        totalReferences += portTransactional->getMinConnections().count(idString);
     }
 
     return totalReferences;
@@ -1060,7 +1024,7 @@ int PortsInterface::getAllReferencesToIdInItem(const string& itemName, string co
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::addWirePort()
 //-----------------------------------------------------------------------------
-void PortsInterface::addWirePort(string const& newPortName)
+void PortsInterface::addWirePort(std::string const& newPortName)
 {
     QString portName(getUniqueName(newPortName, "port"));
 
@@ -1073,7 +1037,7 @@ void PortsInterface::addWirePort(string const& newPortName)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::addTransactionalPort()
 //-----------------------------------------------------------------------------
-void PortsInterface::addTransactionalPort(string const& newPortName)
+void PortsInterface::addTransactionalPort(std::string const& newPortName)
 {
     QString portName(getUniqueName(newPortName, "port"));
 
@@ -1086,7 +1050,7 @@ void PortsInterface::addTransactionalPort(string const& newPortName)
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::removePort()
 //-----------------------------------------------------------------------------
-bool PortsInterface::removePort(string const& portName)
+bool PortsInterface::removePort(std::string const& portName) const
 {
     QSharedPointer<Port> removedPort = getPort(portName);
     if (!removedPort)
@@ -1102,8 +1066,7 @@ bool PortsInterface::removePort(string const& portName)
 //-----------------------------------------------------------------------------
 bool PortsInterface::portExists(std::string const& portName) const
 {
-    return ports_.isNull() == false && std::any_of(ports_->cbegin(), ports_->cend(),
-        [portName](auto const& port) { return port->name().toStdString() == portName; });
+    return Search::findByName(QString::fromStdString(portName), ports_) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -1118,7 +1081,7 @@ bool PortsInterface::validateItems() const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::itemHasValidName()
 //-----------------------------------------------------------------------------
-bool PortsInterface::itemHasValidName(string const& portName) const
+bool PortsInterface::itemHasValidName(std::string const& portName) const
 {
     return portValidator_->hasValidName(QString::fromStdString(portName));
 }
@@ -1126,7 +1089,7 @@ bool PortsInterface::itemHasValidName(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portLeftArrayValueIsValid()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portLeftArrayValueIsValid(string const& portName) const
+bool PortsInterface::portLeftArrayValueIsValid(std::string const& portName) const
 {
     return portValidator_->arrayValueIsValid(getPort(portName)->getArrayLeft());
 }
@@ -1134,7 +1097,7 @@ bool PortsInterface::portLeftArrayValueIsValid(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portRightArrayValueIsValid()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portRightArrayValueIsValid(string const& portName) const
+bool PortsInterface::portRightArrayValueIsValid(std::string const& portName) const
 {
     return portValidator_->arrayValueIsValid(getPort(portName)->getArrayRight());
 }
@@ -1142,7 +1105,7 @@ bool PortsInterface::portRightArrayValueIsValid(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidTypes()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidTypes(string const& portName) const
+bool PortsInterface::portHasValidTypes(std::string const& portName) const
 {
     return portValidator_->hasValidTypes(getPort(portName));
 }
@@ -1150,7 +1113,7 @@ bool PortsInterface::portHasValidTypes(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidLeftBound()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidLeftBound(string const& portName) const
+bool PortsInterface::portHasValidLeftBound(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
@@ -1164,7 +1127,7 @@ bool PortsInterface::portHasValidLeftBound(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidRightBound()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidRightBound(string const& portName) const
+bool PortsInterface::portHasValidRightBound(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (port->getLeftBound().isEmpty() && port->getRightBound().isEmpty())
@@ -1178,7 +1141,7 @@ bool PortsInterface::portHasValidRightBound(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidDefaultValue()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidDefaultValue(string const& portName) const
+bool PortsInterface::portHasValidDefaultValue(std::string const& portName) const
 {
     return portValidator_->hasValidDefaultValue(getPort(portName));
 }
@@ -1186,7 +1149,7 @@ bool PortsInterface::portHasValidDefaultValue(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidBusWidth()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidBusWidth(string const& portName) const
+bool PortsInterface::portHasValidBusWidth(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1200,7 +1163,7 @@ bool PortsInterface::portHasValidBusWidth(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidInitiative()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidInitiative(string const& portName) const
+bool PortsInterface::portHasValidInitiative(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1214,7 +1177,7 @@ bool PortsInterface::portHasValidInitiative(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidKind()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidKind(string const& portName) const
+bool PortsInterface::portHasValidKind(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1228,7 +1191,7 @@ bool PortsInterface::portHasValidKind(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidProtocol()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidProtocol(string const& portName) const
+bool PortsInterface::portHasValidProtocol(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1242,7 +1205,7 @@ bool PortsInterface::portHasValidProtocol(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidMaxConnections()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidMaxConnections(string const& portName) const
+bool PortsInterface::portHasValidMaxConnections(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1256,7 +1219,7 @@ bool PortsInterface::portHasValidMaxConnections(string const& portName) const
 //-----------------------------------------------------------------------------
 // Function: PortsInterface::portHasValidMinConnections()
 //-----------------------------------------------------------------------------
-bool PortsInterface::portHasValidMinConnections(string const& portName) const
+bool PortsInterface::portHasValidMinConnections(std::string const& portName) const
 {
     QSharedPointer<Port> port = getPort(portName);
     if (!port->getTransactional())
@@ -1272,9 +1235,9 @@ bool PortsInterface::portHasValidMinConnections(string const& portName) const
 //-----------------------------------------------------------------------------
 std::string PortsInterface::getIconPathForPort(std::string const& portName) const
 {
-    std::string path("");
-    QSharedPointer<Port> selectedPort = getPort(portName);
-    if (!selectedPort)
+    std::string path;
+    if (QSharedPointer<Port> selectedPort = getPort(portName); 
+        !selectedPort)
     {
         path = getIconPathForMissingPort();
     }

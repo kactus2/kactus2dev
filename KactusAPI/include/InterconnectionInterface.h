@@ -59,7 +59,7 @@ public:
      *
      *      @return Name of the selected interconnection.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
 
     /*!
      *  Get the name of the selected interconnection.

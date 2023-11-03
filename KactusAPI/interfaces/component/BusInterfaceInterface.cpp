@@ -357,7 +357,7 @@ int BusInterfaceInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string BusInterfaceInterface::getIndexedItemName(int const& itemIndex) const
+std::string BusInterfaceInterface::getIndexedItemName(int itemIndex) const
 {
     std::string portName = "";
     if (itemIndex >= 0 && itemIndex < itemCount())

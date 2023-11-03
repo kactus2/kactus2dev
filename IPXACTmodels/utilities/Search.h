@@ -22,6 +22,11 @@ namespace Search
     template <typename Container>
     QStringList getNames(QSharedPointer<Container> items)
     {
+        if (items == nullptr)
+        {
+            return QStringList();
+        }
+
         QStringList names;
         if (items.isNull() == false)
         {
@@ -44,6 +49,11 @@ namespace Search
     QSharedPointer<ContainerItem> findByName(QStringView name,
         QSharedPointer<Container<QSharedPointer<ContainerItem> > > container)
     {
+        if (container == nullptr)
+        {
+            return nullptr;
+        }
+
         auto item = std::find_if(container->constBegin(), container->constEnd(),
             [&name](QSharedPointer<ContainerItem> const& item) { return item->name().compare(name) == 0; });
 

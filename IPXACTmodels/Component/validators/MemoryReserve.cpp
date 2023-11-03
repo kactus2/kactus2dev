@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryReserve::MemoryReserve()
 //-----------------------------------------------------------------------------
-MemoryReserve::MemoryReserve():
-reservedArea_()
+MemoryReserve::MemoryReserve()
 {
 
 }
@@ -69,7 +68,7 @@ bool MemoryReserve::hasOverlap()
 //-----------------------------------------------------------------------------
 bool MemoryReserve::hasIdDependantOverlap()
 {
-    if (reservedArea_.isEmpty())
+    if (reservedArea_.count() < 2)
     {
         return false;
     }

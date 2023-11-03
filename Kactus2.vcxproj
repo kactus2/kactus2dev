@@ -388,6 +388,9 @@ CreateHelp
     <ClCompile Include="editors\common\ComponentInstanceEditor\EditorConfigurableElement.cpp" />
     <ClCompile Include="editors\common\ComponentInstanceEditor\MissingConfigurableElementsFilter.cpp" />
     <ClCompile Include="editors\common\ComponentInstanceEditor\ParameterConfigurableElementsFilter.cpp" />
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.cpp" />
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.cpp" />
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.cpp" />
     <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnector.cpp" />
     <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionDelegate.cpp" />
     <ClCompile Include="editors\common\ComponentItemAutoConnector\AutoConnectorConnectionTable.cpp" />
@@ -1379,6 +1382,10 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\common\ComponentItemAutoConnector\AutoConnectorListFilter.h">
     </QtMoc>
+    <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h" />
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.h" />
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.h" />
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.h" />
     <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceItemMatcher.h" />
     <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceListFiller.h" />
     <ClInclude Include="editors\common\ComponentItemAutoConnector\BusInterfaceTableAutoConnector.h" />

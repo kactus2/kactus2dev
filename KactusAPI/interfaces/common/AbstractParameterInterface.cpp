@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/Component/Choice.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+
 namespace
 {
     QString const ARRAY_LEFT_ATTRIBTE = QLatin1String("kactus2:arrayLeft");
@@ -28,8 +30,7 @@ namespace
 AbstractParameterInterface::AbstractParameterInterface(QSharedPointer<ParameterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
 ParameterizableInterface(expressionParser, expressionFormatter),
-parameterValidator_(validator),
-choices_()
+parameterValidator_(validator)
 {
 
 }
@@ -72,7 +73,7 @@ std::string AbstractParameterInterface::getDisplayName(std::string const& parame
         return editedParameter->displayName().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -101,7 +102,7 @@ std::string AbstractParameterInterface::getType(std::string const& parameterName
         return editedParameter->getType().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +132,7 @@ std::string AbstractParameterInterface::getBitWidthLeftValue(std::string const& 
         return parseExpressionToBaseNumber(editedParameter->getVectorLeft(), baseNumber).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -145,7 +146,7 @@ std::string AbstractParameterInterface::getBitWidthLeftFormattedExpression(std::
         return formattedValueFor(editedParameter->getVectorLeft()).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -159,7 +160,7 @@ std::string AbstractParameterInterface::getBitWidthLeftExpression(std::string co
         return editedParameter->getVectorLeft().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +191,7 @@ std::string AbstractParameterInterface::getBitWidthRightValue(std::string const&
         return parseExpressionToBaseNumber(editedParameter->getVectorRight(), baseNumber).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -204,7 +205,7 @@ std::string AbstractParameterInterface::getBitWidthRightFormattedExpression(std:
         return formattedValueFor(editedParameter->getVectorRight()).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -218,7 +219,7 @@ std::string AbstractParameterInterface::getBitWidthRightExpression(std::string c
         return editedParameter->getVectorRight().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +249,7 @@ std::string AbstractParameterInterface::getMinimum(std::string const& parameterN
         return parameter->getMinimumValue().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -277,7 +278,7 @@ std::string AbstractParameterInterface::getMaximum(std::string const& parameterN
         return parameter->getMaximumValue().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -306,7 +307,7 @@ std::string AbstractParameterInterface::getChoice(std::string const& parameterNa
         return parameter->getChoiceRef().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -342,7 +343,7 @@ std::string AbstractParameterInterface::getValue(std::string const& parameterNam
         }
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -356,7 +357,7 @@ std::string AbstractParameterInterface::getValueFormattedExpression(std::string 
         return evaluateValue(parameter).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -391,16 +392,10 @@ QSharedPointer<Choice> AbstractParameterInterface::findChoice(QString const& cho
 {
     if (choices_)
     {
-        foreach(QSharedPointer<Choice> choice, *choices_)
-        {
-            if (choice->name() == choiceName)
-            {
-                return choice;
-            }
-        }
+        return Search::findByName(choiceName, choices_);
     }
 
-    return QSharedPointer<Choice>(new Choice());
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -415,7 +410,7 @@ QString AbstractParameterInterface::matchArrayValuesToSelectedChoice(QSharedPoin
 
     QStringList resultingArray;
 
-    foreach(QString value, parameterArray)
+    for (QString const& value : parameterArray)
     {
         resultingArray.append(findDisplayValueForEnumeration(choice, value));
     }
@@ -433,7 +428,7 @@ QString AbstractParameterInterface::findDisplayValueForEnumeration(QSharedPointe
     QString const& enumerationValue) const
 {
     QString formattedValue = formattedValueFor(enumerationValue);
-    foreach(QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    for (QSharedPointer<Enumeration> enumeration : *choice->enumerations())
     {
         QString enumerationFormattedValue = formattedValueFor(enumeration->getValue());
         if (enumerationFormattedValue == formattedValue && !enumeration->getText().isEmpty())
@@ -444,7 +439,7 @@ QString AbstractParameterInterface::findDisplayValueForEnumeration(QSharedPointe
 
     QString value = formattedValueFor(enumerationValue);
 
-    foreach(QSharedPointer<Enumeration> enumeration, *choice->enumerations())
+    for (QSharedPointer<Enumeration> enumeration : *choice->enumerations())
     {
         if (enumeration->getValue() == value && !enumeration->getText().isEmpty())
         {
@@ -466,7 +461,7 @@ std::string AbstractParameterInterface::getValueExpression(std::string const& pa
         return parameter->getValue().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -495,7 +490,7 @@ std::string AbstractParameterInterface::getResolve(std::string const& parameterN
         return parameter->getValueResolve().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -525,7 +520,7 @@ const
         return parseExpressionToBaseNumber(parameter->getAttribute(ARRAY_LEFT_ATTRIBTE), baseNumber).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -539,7 +534,7 @@ std::string AbstractParameterInterface::getArrayLeftFormattedExpression(std::str
         return formattedValueFor(parameter->getAttribute(ARRAY_LEFT_ATTRIBTE)).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -553,7 +548,7 @@ std::string AbstractParameterInterface::getArrayLeftExpression(std::string const
         return parameter->getAttribute(ARRAY_LEFT_ATTRIBTE).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -584,7 +579,7 @@ const
             parameter->getAttribute(ARRAY_RIGHT_ATTRIBUTE), baseNumber).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -598,7 +593,7 @@ std::string AbstractParameterInterface::getArrayRightFormattedExpression(std::st
         return formattedValueFor(parameter->getAttribute(ARRAY_RIGHT_ATTRIBUTE)).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -612,7 +607,7 @@ std::string AbstractParameterInterface::getArrayRightExpression(std::string cons
         return parameter->getAttribute(ARRAY_RIGHT_ATTRIBUTE).toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -641,7 +636,7 @@ std::string AbstractParameterInterface::getID(std::string const& parameterName) 
         return parameter->getValueId().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -748,7 +743,7 @@ std::vector<std::string> AbstractParameterInterface::getExpressionsInSelectedIte
 {
     std::vector<std::string> expressions;
 
-    for (auto name : parameterNames)
+    for (auto const& name : parameterNames)
     {
         QSharedPointer<Parameter> parameter = getParameter(name);
         if (parameter)
@@ -769,8 +764,7 @@ std::vector<std::string> AbstractParameterInterface::getExpressionsInSelectedIte
 //-----------------------------------------------------------------------------
 bool AbstractParameterInterface::validateItems() const
 {
-//     for (auto parameter : *parameters_)
-    for (auto parameterName : getItemNames())
+    for (auto const& parameterName : getItemNames())
     {
         QSharedPointer<Parameter> parameter = getParameter(parameterName);
         if (parameter && !parameterValidator_->validate(parameter))

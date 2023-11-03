@@ -61,7 +61,7 @@ int ModuleParameterInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string ModuleParameterInterface::getIndexedItemName(int const& itemIndex) const
+std::string ModuleParameterInterface::getIndexedItemName(int itemIndex) const
 {
     std::string parameterName = "";
     if (moduleParameters_ && (itemIndex >= 0 && itemIndex < moduleParameters_->size()))

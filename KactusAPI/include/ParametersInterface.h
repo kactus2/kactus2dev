@@ -64,7 +64,7 @@ public:
      *
      *      @return Name of the selected item.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
     
     /*!
      *  Get the number of available items.
@@ -111,7 +111,7 @@ private:
      *
      *      @return The selected parameter.
      */
-    virtual QSharedPointer<Parameter> getParameter(std::string const& parameterName) const override final;
+    QSharedPointer<Parameter> getParameter(std::string const& parameterName) const final;
 
     /*!
      *  Get the parameter with the selected name, sliced to a NameGroup.
@@ -127,7 +127,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of available parameters.
-    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+    QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = nullptr;
 };
 
 #endif // PARAMETERSINTERFACE_H

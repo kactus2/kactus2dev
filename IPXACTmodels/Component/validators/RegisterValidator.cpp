@@ -167,7 +167,6 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
 //-----------------------------------------------------------------------------
 bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> selectedRegister) const
 {
-    bool shouldResetCheckedModeReferences = true;
     QStringList alternateRegisterNames;
 
     QStringList checkedModeReferences;

@@ -18,9 +18,9 @@
 #include <MasterPortInterface.h>
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/Component/Port.h>
 
-class Component;
-class Port;
+
 class PortValidator;
 
 //-----------------------------------------------------------------------------
@@ -49,9 +49,9 @@ public:
     /*!
      *  Set available ports.
      *
-     *      @param [in] component   Component containing the selected ports.
+     *      @param [in] ports   The ports to set.
      */
-    void setPorts(QSharedPointer<Component> component);
+    void setPorts(Port::List ports);
 
     /*!
      *  Check if the there are any available ports.
@@ -63,11 +63,11 @@ public:
     /*!
      *  Get index of the selected port.
      *
-     *      @param [in] portName    Name of the selected port.
+     *      @param [in] itemName    Name of the selected port.
      *
      *      @return Index of the selected port.
      */
-    virtual int getItemIndex(std::string const& itemName) const override final;
+    int getItemIndex(std::string const& itemName) const final;
 
     /*!
      *  Get name of the indexed port.
@@ -76,21 +76,21 @@ public:
      *
      *      @return Name of the selected port.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
 
     /*!
      *  Get the number of available ports.
      *
      *      @return Number of available ports.
      */
-    virtual int itemCount() const override final;
+    int itemCount() const final;
 
     /*!
      *  Get the names of the available ports.
      *
      *      @return Names of the available ports.
      */
-    virtual std::vector<std::string> getItemNames() const override final;
+    std::vector<std::string> getItemNames() const final;
 
     /*!
      *  Set a new name for the selected port.
@@ -100,7 +100,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setName(std::string const& currentName, std::string const& newName) override final;
+    bool setName(std::string const& currentName, std::string const& newName) final;
 
     /*!
      *  Calculate all the references to the selected ID in the selected port.
@@ -110,7 +110,7 @@ public:
      *
      *      @return Number of references to the selected ID in the selected port.
      */
-    virtual int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const override final;
+    int getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const final;
 
     /*!
      *  Check if the selected port exists.
@@ -126,7 +126,7 @@ public:
      *
      *      @return True, if all the ports are valid, false otherwise.
      */
-    virtual bool validateItems() const override final;
+    bool validateItems() const final;
 
     /*!
      *  Check if the selected port has a valid name.
@@ -135,7 +135,7 @@ public:
      *
      *      @return True, if the name is valid, false otherwise.
      */
-    bool itemHasValidName(std::string const& itemName) const override final;
+    bool itemHasValidName(std::string const& itemName) const final;
 
     /*!
      *  Get the type name of the selected port.
@@ -144,7 +144,7 @@ public:
      *
      *      @return Type name of the selected port.
      */
-    std::string getTypeName(std::string const& portName);
+    std::string getTypeName(std::string const& portName) const;
 
     /*!
      *  Set a new type name for the selected port.
@@ -154,7 +154,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setTypeName(std::string const& portName, std::string const& newType);
+    bool setTypeName(std::string const& portName, std::string const& newType) const;
 
     /*!
      *  Get the calculated array left value of the selected port.
@@ -164,7 +164,7 @@ public:
      *
      *      @return Calculated array left value of the selected port.
      */
-    std::string getArrayLeftValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getArrayLeftValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted array left expression of the selected port.
@@ -192,7 +192,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setArrayLeft(std::string const& portName, std::string const& newArrayLeft);
+    bool setArrayLeft(std::string const& portName, std::string const& newArrayLeft) const;
 
     /*!
      *  Get the calculated array right value of the selected port.
@@ -202,7 +202,7 @@ public:
      *
      *      @return Calculated array right value of the selected port.
      */
-    std::string getArrayRightValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getArrayRightValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted array right expression of the selected port.
@@ -230,7 +230,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setArrayRight(std::string const& portName, std::string const& newArrayRight);
+    bool setArrayRight(std::string const& portName, std::string const& newArrayRight) const;
 
     /*!
      *  Get the tags of the selected port.
@@ -249,7 +249,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setTags(std::string const& portName, std::string const& tagList);
+    bool setTags(std::string const& portName, std::string const& tagList) const;
 
     /*!
      *  Check if the selected port is ad hoc.
@@ -268,7 +268,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAdHoc(std::string const& portName, bool newAdHocVisibility);
+    bool setAdHoc(std::string const& portName, bool newAdHocVisibility) const;
 
     /*!
      *  Get the direction of the selected port.
@@ -296,7 +296,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setDirection(std::string const& portName, std::string const& newDirection);
+    bool setDirection(std::string const& portName, std::string const& newDirection) const;
 
     /*!
      *  Get the calculated left bound value of the selected port.
@@ -306,7 +306,7 @@ public:
      *
      *      @return Calculated left bound value of the selected port.
      */
-    std::string getLeftBoundValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getLeftBoundValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted left bound expression of the selected port.
@@ -334,7 +334,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setLeftBound(std::string const& portName, std::string const& newLeftBound);
+    bool setLeftBound(std::string const& portName, std::string const& newLeftBound) const;
 
     /*!
      *  Get the calculated right bound value of the selected port.
@@ -344,7 +344,7 @@ public:
      *
      *      @return Calculated right bound value of the selected port.
      */
-    std::string getRightBoundValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getRightBoundValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted right bound expression of the selected port.
@@ -372,7 +372,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setRightBound(std::string const& portName, std::string const& newRightBound);
+    bool setRightBound(std::string const& portName, std::string const& newRightBound) const;
 
     /*!
      *  Check if the selected port has an expression in the left or right bound values.
@@ -400,7 +400,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setWidth(std::string const& portName, std::string const& newWidth);
+    bool setWidth(std::string const& portName, std::string const& newWidth) const;
 
     /*!
      *  Get the calculated default value of the selected port.
@@ -410,7 +410,7 @@ public:
      *
      *      @return Calculated default value of the selected port.
      */
-    std::string getDefaultValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getDefaultValue(std::string const& portName, unsigned int baseNumber = 10) const;
     
     /*!
      *  Get the formatted default value expression of the selected port.
@@ -438,7 +438,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setDefaultValue(std::string const& portName, std::string const& newDefaultValue);
+    bool setDefaultValue(std::string const& portName, std::string const& newDefaultValue) const;
 
     /*!
      *  Get the calculated bus width value of the selected port.
@@ -448,7 +448,7 @@ public:
      *
      *      @return Calculated bus width value of the selected port.
      */
-    std::string getBusWidthValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getBusWidthValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted bus width expression of the selected port.
@@ -476,7 +476,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setBusWidth(std::string const& portName, std::string const& newBusWidth);
+    bool setBusWidth(std::string const& portName, std::string const& newBusWidth) const;
 
     /*!
      *  Get the initiative of the selected port.
@@ -495,7 +495,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setInitiative(std::string const& portName, std::string const& newInitiative);
+    bool setInitiative(std::string const& portName, std::string const& newInitiative) const;
 
     /*!
      *  Get the kind of the selected port.
@@ -514,7 +514,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setKind(std::string const& portName, std::string const& newKind);
+    bool setKind(std::string const& portName, std::string const& newKind) const;
 
     /*!
      *  Get the protocol type of the selected port.
@@ -533,7 +533,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setProtocolType(std::string const& portName, std::string const& newProtocolType);
+    bool setProtocolType(std::string const& portName, std::string const& newProtocolType) const;
 
     /*!
      *  Get the calculated max connections value of the selected port.
@@ -543,7 +543,7 @@ public:
      *
      *      @return Calculated max connections value of the selected port.
      */
-    std::string getMaxConnectionsValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getMaxConnectionsValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted max connections expression of the selected port.
@@ -581,7 +581,7 @@ public:
      *
      *      @return Calculated min connections value of the selected port.
      */
-    std::string getMinConnectionsValue(std::string const& portName, int const& baseNumber = 0) const;
+    std::string getMinConnectionsValue(std::string const& portName, unsigned int baseNumber = 10) const;
 
     /*!
      *  Get the formatted min connections expression of the selected port.
@@ -616,21 +616,21 @@ public:
 	 *
 	 *      @param [in] newPortName     Name of the new port.
 	 */
-	virtual void addWirePort(std::string const& newPortName = std::string("")) override final;
+	void addWirePort(std::string const& newPortName = std::string()) final;
 
     /*!
      *  Add a transactional port.
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addTransactionalPort(std::string const& newPortName = std::string("")) override final;
+    void addTransactionalPort(std::string const& newPortName = std::string()) final;
 
     /*!
      *  Remove the selected port.
 	 *
 	 *      @param [in] portName    Name of the selected port.
      */
-    bool removePort(std::string const& portName);
+    bool removePort(std::string const& portName) const;
 
     /*!
      *  Check if the selected port has a valid left array value.
@@ -666,7 +666,7 @@ public:
      *
      *      @return True, if the selected port is a wire, false otherwise.
      */
-    virtual bool portIsWire(std::string const& portName) const override final;
+    bool portIsWire(std::string const& portName) const final;
 
     /*!
      *  Check if the selected port is a wire.
@@ -711,7 +711,7 @@ public:
      *
      *      @return True, if the selected port is transactional, false otherwise.
      */
-    virtual bool portIsTransactional(std::string const& portName) const override final;
+    bool portIsTransactional(std::string const& portName) const final;
 
     /*!
      *  Check if the selected port is transactional.
@@ -794,7 +794,7 @@ public:
      */
     QSharedPointer<Port> getPort(std::string const& portName) const;
 
-    QSharedPointer<NameGroup> getItem(std::string const& portName) const override;
+    QSharedPointer<NameGroup> getItem(std::string const& portName) const final;
 
     //! No copying. No assignment.
     PortsInterface(const PortsInterface& other) = delete;
@@ -807,14 +807,14 @@ private:
      *
      *      @param [in] port    The selected port.
      */
-    void setTypeNameAndDefinition(QSharedPointer<Port> port);
+    void setTypeNameAndDefinition(QSharedPointer<Port> port) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Pointer to the available ports.
-    QSharedPointer<QList<QSharedPointer<Port> > > ports_;
+    Port::List ports_ = nullptr;
 
     //! The validator used for ports.
     QSharedPointer<PortValidator> portValidator_;

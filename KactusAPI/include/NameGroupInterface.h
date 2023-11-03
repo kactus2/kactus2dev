@@ -53,7 +53,7 @@ public:
      *
      *      @return Name of the selected item.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const = 0;
+    virtual std::string getIndexedItemName(int itemIndex) const = 0;
 
     /*!
      *  Set a new name for the selected item.

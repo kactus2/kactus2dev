@@ -90,7 +90,7 @@ private:
      *
      *      @return True, if the selected name is unique, false otherwise.
      */
-    bool nameIsUnique(QString const& portName) const;
+    bool nameIsUnique(std::string_view name, std::vector<std::string> const& reservedNamed) const;
 };
 
 #endif // COMMONINTERFACE_H

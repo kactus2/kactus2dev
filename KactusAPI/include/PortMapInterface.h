@@ -17,6 +17,7 @@
 
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/Component/PortMap.h>
+#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include "KactusAPI/KactusAPIGlobal.h"
@@ -70,7 +71,7 @@ public:
      *
      *      @param [in] component   Component containing the selected ports.
      */
-    void setupPhysicalPorts(QSharedPointer<Component> component);
+    void setupPhysicalPorts(Port::List ports);
 
     /*!
      *  Setup the available port maps.

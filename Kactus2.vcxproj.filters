@@ -926,9 +926,6 @@
     <Filter Include="Source Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{a7c8e980-018f-4596-aad8-996bf453851a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\ports\interfaces">
-      <UniqueIdentifier>{635c99e6-325d-44e3-8df8-8811e54cc299}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\PythonAPI">
       <UniqueIdentifier>{c7179758-fd64-4532-9cc8-e0608bd5db93}</UniqueIdentifier>
     </Filter>
@@ -3327,6 +3324,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5758,6 +5764,12 @@
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
     </ClInclude>
+    <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortIcons.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -5992,6 +6004,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

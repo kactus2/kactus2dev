@@ -42,7 +42,6 @@ FieldInterface::FieldInterface(QSharedPointer<FieldValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     ResetInterface* subInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
-fields_(),
 validator_(validator),
 accessPolicyValidator_(expressionParser),
 subInterface_(subInterface)
@@ -80,7 +79,7 @@ int FieldInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string FieldInterface::getIndexedItemName(int const& itemIndex) const
+string FieldInterface::getIndexedItemName(int itemIndex) const
 {
     string fieldName = "";
     if (fields_&& (itemIndex >= 0 && itemIndex < fields_->size()))

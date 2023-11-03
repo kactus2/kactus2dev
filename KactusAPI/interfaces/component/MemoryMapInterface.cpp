@@ -157,7 +157,7 @@ int MemoryMapInterface::getMemoryRemapIndex(std::string const& mapName, std::str
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string MemoryMapInterface::getIndexedItemName(int const& itemIndex) const
+string MemoryMapInterface::getIndexedItemName(int itemIndex) const
 {
     string blockName = "";
     if (itemIndex >= 0 && itemIndex < mapData_->size())

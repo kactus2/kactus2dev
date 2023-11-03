@@ -69,9 +69,9 @@ void PortMapInterface::setupAbstractionDefinition(QSharedPointer<AbstractionDefi
 //-----------------------------------------------------------------------------
 // Function: PortMapInterface::setupPhysicalPorts()
 //-----------------------------------------------------------------------------
-void PortMapInterface::setupPhysicalPorts(QSharedPointer<Component> component)
+void PortMapInterface::setupPhysicalPorts(Port::List ports)
 {
-    physicalPortInterface_->setPorts(component);
+    physicalPortInterface_->setPorts(ports);
 }
 
 //-----------------------------------------------------------------------------
@@ -1349,17 +1349,15 @@ void PortMapInterface::createPortMapsWithPresence(PresenceTypes::Presence presen
         bool protMapDoesNotExist = !portMapExistsForLogicalSignal(signalName);
         PresenceTypes::Presence portPresence = logicalPortInterface_->getPresence(signalName, busMode, systemGroup_);
 
-        if (std::find(logicalSignals.cbegin(), logicalSignals.cend(), signalName) == logicalSignals.cend() &&
-            !portMapExistsForLogicalSignal(signalName) &&
-                (presence == PresenceTypes::ALL ||
-                presence == logicalPortInterface_->getPresence(signalName, busMode, systemGroup_)))
+        if (notFound && protMapDoesNotExist &&
+            (presence == PresenceTypes::ALL || presence == portPresence))
         {
             logicalSignals.push_back(signalName);
         }
     }
 
     int newPortMapIndex = itemCount();
-    for (auto signalName : logicalSignals)
+    for (auto const& signalName : logicalSignals)
     {
         addPortMap(newPortMapIndex);
         setLogicalPort(newPortMapIndex, signalName);

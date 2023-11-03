@@ -11,6 +11,8 @@
 
 #include "portsmodel.h"
 
+#include "PortIcons.h"
+
 #include <common/KactusColors.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>

@@ -593,9 +593,9 @@ void BusinterfaceReader::Details::parseMirroredTargetInterface(QDomElement const
 
         auto modeRefNodes = remapAddressesElement.elementsByTagName(QStringLiteral("ipxact:modeRef"));
         const int MODE_COUNT = modeRefNodes.count();
-        for (int i = 0; i < MODE_COUNT; ++i)
+        for (int j = 0; j < MODE_COUNT; ++j)
         {
-            auto modeNode = modeRefNodes.at(i);
+            auto modeNode = modeRefNodes.at(j);
             
             auto priority = modeNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
             if (priority.isEmpty() == false)
