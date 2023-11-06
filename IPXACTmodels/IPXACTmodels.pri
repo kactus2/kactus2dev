@@ -289,6 +289,7 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
+    ./utilities/Copy.h \
     ./utilities/XmlUtils.h \
     ./DesignConfiguration/AbstractorInstance.h \
     ./DesignConfiguration/DesignConfiguration.h \
@@ -300,8 +301,7 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./utilities/Copy.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -333,7 +333,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.cpp \
     ./common/AccessTypes.cpp \
-    ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
     ./common/BuildModel.cpp \

@@ -34,22 +34,8 @@ class IPXACTMODELS_EXPORT Wire
 
 public:
 
-	/*!
-	 *  The default constructor.
-	 */
-	Wire();
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] direction               Direction of the port.
-     *      @param [in] leftBound               Left bound of the port.
-     *      @param [in] rightBound              Right bound of the port.
-     *      @param [in] defaultValue            Default value of the port.
-     *      @param [in] allLogicalDirections    Specifies allowed logical directions.
-     */
-    Wire(DirectionTypes::Direction direction, int leftBound, int rightBound, const QString& defaultValue,
-        bool allLogicalDirections);
+	//! The default constructor.
+	Wire() = default;
 
     /*!
 	 * Copy constructor.
@@ -64,7 +50,7 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	~Wire();
+	~Wire() = default;
 	
 	/*!
 	 *  Get the value of all logical directions allowed element.
@@ -92,14 +78,14 @@ public:
      *
      *      @return Pointer to a list containing wire type definitions.
      */
-    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypeDefs();
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypeDefs() const;
 
 	/*!
 	 *  Allow / disallow all logical directions allowed value for this port.
 	 *
-	 *      @param [in] allLogicalDirectionsAllowed     The allowed status.
+	 *      @param [in] allow     The allowed status.
 	 */
-	void setAllLogicalDirectionsAllowed(bool allLogicalDirectionsAllowed);
+	void setAllLogicalDirectionsAllowed(bool allow);
 
 	/*!
 	 *  Set the direction of this port.
@@ -155,14 +141,14 @@ public:
      *
      *      @return     The expression.
      */
-    QString getVectorLeftBound();
+    QString getVectorLeftBound() const;
 
     /*!
      *  Get the right bound expression.
      *
      *      @return     The expression.
      */
-    QString getVectorRightBound();
+    QString getVectorRightBound() const;
 
 	/*!
 	 *  Get the type name of the port for a given view.
@@ -171,7 +157,7 @@ public:
      *
      *      @return The required type name.
 	 */
-	QString getTypeName(const QString& viewName = QLatin1String("")) const;
+	QString getTypeName(const QString& viewName = QString()) const;
 
 	/*!
 	 *  Check if the wire has a type name in given view.
@@ -195,7 +181,7 @@ public:
 	 *      @param [in] typeName    The name of the type.
 	 *      @param [in] viewName    The name of the view used for this type.
 	 */
-	void setTypeName(const QString& typeName, const QString& viewName = QLatin1String(""));
+	void setTypeName(const QString& typeName, const QString& viewName = QString());
 
 	/*!
 	 *  Get the type definition of the given type name.
@@ -204,7 +190,7 @@ public:
      *
      *      @return The required type definition.
 	 */
-	QString getTypeDefinition(const QString& typeName);
+	QString getTypeDefinition(const QString& typeName) const;
 
 	/*!
 	 *  Get the type definition.
@@ -224,16 +210,16 @@ public:
 private:
 
     //! The direction of the port.
-	DirectionTypes::Direction direction_;
+	DirectionTypes::Direction direction_{ DirectionTypes::DIRECTION_INVALID };
 
     //! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
-	bool allLogicalDirectionsAllowed_;
+	bool allLogicalDirectionsAllowed_{ false };
 
     //! Determines the vector qualities of the port.
-	QSharedPointer<Vector> vector_;
+	QSharedPointer<Vector> vector_{ nullptr };
 
     //! Describes the ports type as defined bu the implementation.
-	QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefs_;
+	QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
 
     //! Specifies a static logic value for this port.
 	QString defaultDriverValue_;

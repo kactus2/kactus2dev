@@ -309,9 +309,7 @@ void PortReader::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newP
         QString arrayLeft = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
         QString arrayRight = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-        QSharedPointer<Array> newArray (new Array(arrayLeft, arrayRight));
-
-        newPort->getArrays()->append(newArray);
+        newPort->getArrays()->append(QSharedPointer<Array>(new Array(arrayLeft, arrayRight)));
     }
 }
 

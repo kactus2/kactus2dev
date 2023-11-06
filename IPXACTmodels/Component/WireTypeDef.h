@@ -30,14 +30,18 @@ public:
      *  The constructor.
      *
      *      @param [in] typeName        The type name for the wire type definition.
-     *      @param [in] viewNameRef     The name of the referenced view.
      */
-    WireTypeDef(const QString& typeName = QString(), const QString& viewNameRef = QString());
+    explicit WireTypeDef(const QString& typeName = QString());
 
     /*!
      *  The copy constructor.
      */
     WireTypeDef(const WireTypeDef& other);
+       
+    /*!
+     *  The move constructor.
+     */
+    WireTypeDef(WireTypeDef&& other) = default;
 
     /*!
      *  Assignment operator.
@@ -45,9 +49,14 @@ public:
     WireTypeDef& operator=(const WireTypeDef& other);
 
     /*!
+     *  Move assignment operator.
+     */
+    WireTypeDef& operator=(WireTypeDef&& other) = default;
+
+    /*!
      *  The destructor.
      */
-    ~WireTypeDef();
+    ~WireTypeDef() = default;
 
     /*!
      *  Check if a wire type definition has been determined for a given view.
@@ -56,7 +65,7 @@ public:
      *
      *      @return True, if the view is found within a view name reference.
      */
-    bool hasView(QString const& viewName);
+    bool hasView(QString const& viewName) const;
 
     /*!
      *  Get the type name.
@@ -121,14 +130,14 @@ private:
      *
      *      @param [in] newTypeDefinitions  List of new type definitions.
      */
-    void copyTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions);
+    void copyTypeDefinitions(QStringList const& newTypeDefinitions);
 
     /*!
      *  Copy the view references.
      *
      *      @param [in] newViewReferences   List of new view references.
      */
-    void copyViewNameReferences(QSharedPointer<QStringList> newViewReferences);
+    void copyViewNameReferences(QStringList const& newViewReferences);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -138,13 +147,13 @@ private:
     QString typeName_;
 
     //! Indicates whether or not the number of bits in the type declaration is fixed or not.
-    bool constrained_;
+    bool constrained_{ false };
 
     //! Contains language specific reference to where given type is actually defined.
-    QSharedPointer<QStringList> typeDefinitions_;
+    QSharedPointer<QStringList> typeDefinitions_{ new QStringList() };
 
     //! Indicates the view or views in which this type definition applies.
-    QSharedPointer<QStringList> viewNameRefs_;
+    QSharedPointer<QStringList> viewNameRefs_{ new QStringList() };
 };
 
 #endif // WIRETYPEDEF_H

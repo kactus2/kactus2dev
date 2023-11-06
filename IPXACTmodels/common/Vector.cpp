@@ -14,39 +14,8 @@
 //-----------------------------------------------------------------------------
 // Function: Vector::Vector()
 //-----------------------------------------------------------------------------
-Vector::Vector(QString left, QString right):
+Vector::Vector(QString const& left, QString const& right):
 Range(left, right)
-{
-    
-}
-//-----------------------------------------------------------------------------
-// Function: Vector::Vector()
-//-----------------------------------------------------------------------------
-Vector::Vector(Vector const& other):
-Range(other.getLeft(), other.getRight()),
-vectorId_(other.vectorId_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::operator=()
-//-----------------------------------------------------------------------------
-Vector& Vector::operator=(Vector const& other)
-{
-    if (this != &other)
-    {
-        Range::operator=(other);
-        vectorId_ = other.vectorId_;
-    }
-
-    return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Vector::~Vector()
-//-----------------------------------------------------------------------------
-Vector::~Vector()
 {
     
 }

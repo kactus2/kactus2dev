@@ -27,11 +27,7 @@ public:
 	Range(QString const& left, QString const& right);
 
 	//! The destructor.
-	virtual ~Range();
-
-    Range(Range const& other);
-
-    Range& operator=(Range const& other);
+	virtual ~Range() = default;
 
     /*!
      *  Gets the left value of the range.

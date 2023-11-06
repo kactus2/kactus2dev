@@ -12,20 +12,6 @@
 #include "Protocol.h"
 
 //-----------------------------------------------------------------------------
-// Function: Protocol::Protocol()
-//-----------------------------------------------------------------------------
-Protocol::Protocol() : Extendable(),
-protocolType_(),
-    customProtocolType_(),
-    payloadName_(),
-    payloadType_(),
-    payloadExtension_(),
-    mandatoryPayloadExtension_(false)
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: Protocol::setType()
 //-----------------------------------------------------------------------------
 void Protocol::setProtocolType(QString const& type)
@@ -122,4 +108,3 @@ bool Protocol::hasMandatoryPayloadExtension() const
 {
     return mandatoryPayloadExtension_;
 }
-

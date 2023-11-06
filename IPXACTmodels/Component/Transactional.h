@@ -30,10 +30,8 @@ class IPXACTMODELS_EXPORT Transactional
 
 public:
 
-    /*!
-     *  The constructor.
-     */
-    Transactional();
+    //! The default constructor.
+    Transactional() = default;
 
 	/*!
 	 *  Copy constructor.
@@ -46,11 +44,6 @@ public:
 	Transactional &operator=(const Transactional &other);
 
 	/*!
-     *  The destructor.
-	 */
-	~Transactional();
-
-	/*!
 	 *  Get the all logical initiatives allowed settings.
 	 *
      *      @return True if the logical initiatives are allowed, false otherwise.
@@ -60,9 +53,9 @@ public:
 	/*!
 	 *  Set the all logical initiatives to allowed or disallowed.
 	 *
-	 *      @param [in] allLogicalInitiativesAllowed    The new value to be set.
+	 *      @param [in] allow    The new value to be set.
 	 */
-	void setAllLogicalInitiativesAllowed(bool allLogicalInitiativesAllowed);
+	void setAllLogicalInitiativesAllowed(bool allow);
 
     /*!
      *  Get the initiative.
@@ -221,19 +214,12 @@ public:
 
 private:
 
-    /*!
-     *  Copy the transactional type definitions.
-     *
-     *      @param [in] other   The target of the copying.
-     */
-    void copyTransactionalTypeDefinitions(const Transactional& other);
-
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Defines the allowed logical initiatives.
-	bool allLogicalInitiativesAllowed_;
+    bool allLogicalInitiativesAllowed_{ false };
 
 	//! Defines the type of access.
     QString initiative_;
@@ -245,10 +231,11 @@ private:
     QString busWidth_;
 
     //! Defines the used protocol
-    QSharedPointer<Protocol> protocol_;
+    QSharedPointer<Protocol> protocol_{ nullptr };
 
 	//! Defines the port type expressed in the default language for this port.
-    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > transTypeDefs_;
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > transTypeDefs_{ 
+        new QList<QSharedPointer<WireTypeDef> >() };
 
     //! Defines the maximum number of connections.
     QString maxConnections_;

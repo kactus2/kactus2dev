@@ -14,16 +14,10 @@
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::WireTypeDef()
 //-----------------------------------------------------------------------------
-WireTypeDef::WireTypeDef(const QString& typeName, const QString& viewNameRef) :
-typeName_(typeName),
-constrained_(false),
-typeDefinitions_(new QStringList()),
-viewNameRefs_(new QStringList())
+WireTypeDef::WireTypeDef(const QString& typeName) :
+typeName_(typeName)
 {
-    if (!viewNameRef.isEmpty())
-    {
-        viewNameRefs_->append(viewNameRef);
-    }
+
 }
 
 //-----------------------------------------------------------------------------
@@ -31,12 +25,10 @@ viewNameRefs_(new QStringList())
 //-----------------------------------------------------------------------------
 WireTypeDef::WireTypeDef(const WireTypeDef& other) :
 typeName_(other.typeName_),
-constrained_(other.constrained_),
-typeDefinitions_(new QStringList()),
-viewNameRefs_(new QStringList())
+constrained_(other.constrained_)
 {
-    copyTypeDefinitions(other.typeDefinitions_);
-    copyViewNameReferences(other.viewNameRefs_);
+    copyTypeDefinitions(*other.typeDefinitions_);
+    copyViewNameReferences(*other.viewNameRefs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,66 +40,23 @@ WireTypeDef& WireTypeDef::operator=(const WireTypeDef& other)
     {
         typeName_ = other.typeName_;
         constrained_ = other.constrained_;
-        typeDefinitions_ = other.typeDefinitions_;
 
         typeDefinitions_->clear();
+        copyTypeDefinitions(*other.typeDefinitions_);
+
         viewNameRefs_->clear();
-
-        copyTypeDefinitions(other.typeDefinitions_);
-        copyViewNameReferences(other.viewNameRefs_);
+        copyViewNameReferences(*other.viewNameRefs_);
     }
+
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: WireTypeDef::copyTypeDefinitions()
-//-----------------------------------------------------------------------------
-void WireTypeDef::copyTypeDefinitions(QSharedPointer<QStringList> newTypeDefinitions)
-{
-    foreach (QString definition, *newTypeDefinitions)
-    {
-        typeDefinitions_->append(definition);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: WireTypeDef::copyViewNameReferences()
-//-----------------------------------------------------------------------------
-void WireTypeDef::copyViewNameReferences(QSharedPointer<QStringList> newViewReferences)
-{
-    foreach (QString viewReference, *newViewReferences)
-    {
-        viewNameRefs_->append(viewReference);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: WireTypeDef::~WireTypeDef()
-//-----------------------------------------------------------------------------
-WireTypeDef::~WireTypeDef()
-{
-
 }
 
 //-----------------------------------------------------------------------------
 // Function: WireTypeDef::hasView()
 //-----------------------------------------------------------------------------
-bool WireTypeDef::hasView(QString const& viewName)
+bool WireTypeDef::hasView(QString const& viewName) const
 {
-    // Is this truly necessary?
-    if (viewName.isEmpty())
-    {
-        return true;
-    }
-
-    foreach (QString viewReference, *viewNameRefs_)
-    {
-        if (viewReference == viewName)
-        {
-            return true;
-        }
-    }
-    return false;
+    return (viewName.isEmpty() && viewNameRefs_->isEmpty()) || viewNameRefs_->contains(viewName);
 }
 
 //-----------------------------------------------------------------------------
@@ -172,4 +121,26 @@ QSharedPointer<QStringList> WireTypeDef::getViewRefs() const
 void WireTypeDef::setViewRefs(QSharedPointer<QStringList> newViewRefs)
 {
     viewNameRefs_ = newViewRefs;
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireTypeDef::copyTypeDefinitions()
+//-----------------------------------------------------------------------------
+void WireTypeDef::copyTypeDefinitions(QStringList const& newTypeDefinitions)
+{
+    for (auto const& definition : newTypeDefinitions)
+    {
+        typeDefinitions_->append(definition);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: WireTypeDef::copyViewNameReferences()
+//-----------------------------------------------------------------------------
+void WireTypeDef::copyViewNameReferences(QStringList const& newViewReferences)
+{
+    for (auto const& viewReference : newViewReferences)
+    {
+        viewNameRefs_->append(viewReference);
+    }
 }

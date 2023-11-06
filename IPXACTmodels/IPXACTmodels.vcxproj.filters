@@ -497,9 +497,6 @@
     <ClCompile Include="Component\WriteValueConstraint.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="common\Array.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\Assertion.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>

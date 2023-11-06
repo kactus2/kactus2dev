@@ -13,21 +13,8 @@
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
-//-----------------------------------------------------------------------------
-// Function: Transactional::Transactional()
-//-----------------------------------------------------------------------------
-Transactional::Transactional() :
-allLogicalInitiativesAllowed_(false),
-initiative_(),
-kind_(),
-busWidth_(),
-protocol_(),
-transTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-maxConnections_(),
-minConnections_()
-{
+#include <IPXACTmodels/utilities/Copy.h>
 
-}
 
 //-----------------------------------------------------------------------------
 // Function: Transactional::Transactional()
@@ -37,8 +24,6 @@ allLogicalInitiativesAllowed_(other.allLogicalInitiativesAllowed_),
 initiative_(other.initiative_),
 kind_(other.kind_),
 busWidth_(other.busWidth_),
-protocol_(),
-transTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
 maxConnections_(other.maxConnections_),
 minConnections_(other.minConnections_)
 {
@@ -47,7 +32,7 @@ minConnections_(other.minConnections_)
         protocol_ = QSharedPointer<Protocol>(new Protocol(*other.protocol_));
     }
 
-    copyTransactionalTypeDefinitions(other);
+    Copy::copyList(other.transTypeDefs_, transTypeDefs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,19 +56,10 @@ Transactional& Transactional::operator=( const Transactional& other)
         }
 
         transTypeDefs_->clear();
-        copyTransactionalTypeDefinitions(other);
+        Copy::copyList(other.transTypeDefs_, transTypeDefs_);
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Transactional::~Transactional()
-//-----------------------------------------------------------------------------
-Transactional::~Transactional()
-{
-    protocol_.clear();
-    transTypeDefs_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -97,9 +73,9 @@ bool Transactional::getAllLogicalInitiativesAllowed() const
 //-----------------------------------------------------------------------------
 // Function: Transactional::setAllLogicalInitiativesAllowed()
 //-----------------------------------------------------------------------------
-void Transactional::setAllLogicalInitiativesAllowed(bool allLogicalInitiativesAllowed)
+void Transactional::setAllLogicalInitiativesAllowed(bool allow)
 {
-    allLogicalInitiativesAllowed_ = allLogicalInitiativesAllowed;
+    allLogicalInitiativesAllowed_ = allow;
 }
 
 //-----------------------------------------------------------------------------
@@ -223,7 +199,7 @@ void Transactional::setMinConnections(QString const& newMinConnectionsExpression
 //-----------------------------------------------------------------------------
 QString Transactional::getTypeName(QString const& viewName) const
 {
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if (transactionalTypeDefinition->hasView(viewName))
         {
@@ -239,7 +215,7 @@ QString Transactional::getTypeName(QString const& viewName) const
 //-----------------------------------------------------------------------------
 void Transactional::setTypeName(QString const& typeName, QString const& viewName)
 {
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if (transactionalTypeDefinition->getViewRefs()->contains(viewName) || viewName.isEmpty())
         {
@@ -252,7 +228,8 @@ void Transactional::setTypeName(QString const& typeName, QString const& viewName
 
     if (!typeName.isEmpty())
     {
-        QSharedPointer<WireTypeDef> newTransactionalTypeDefinition(new WireTypeDef(typeName, viewName));
+        QSharedPointer<WireTypeDef> newTransactionalTypeDefinition(new WireTypeDef(typeName));
+        newTransactionalTypeDefinition->getViewRefs()->append(viewName);
         transTypeDefs_->append(newTransactionalTypeDefinition);
     }
 }
@@ -262,7 +239,7 @@ void Transactional::setTypeName(QString const& typeName, QString const& viewName
 //-----------------------------------------------------------------------------
 bool Transactional::hasType(QString const& viewName) const
 {
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if ((viewName.isEmpty() && !transactionalTypeDefinition->getTypeName().isEmpty()) ||
             (transactionalTypeDefinition->hasView(viewName) &&
@@ -279,7 +256,7 @@ bool Transactional::hasType(QString const& viewName) const
 //-----------------------------------------------------------------------------
 QString Transactional::getTypeDefinition(QString const& typeName) const
 {
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if (transactionalTypeDefinition->getTypeName() == typeName)
         {
@@ -296,9 +273,9 @@ QString Transactional::getTypeDefinition(QString const& typeName) const
 QStringList Transactional::getTypeDefinitions() const
 {
     QStringList typeDefs;
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
-        foreach (QString singleDefinition, *transactionalTypeDefinition->getTypeDefinitions())
+        for (QString singleDefinition : *transactionalTypeDefinition->getTypeDefinitions())
         {
             typeDefs.append(singleDefinition);
         }
@@ -311,7 +288,7 @@ QStringList Transactional::getTypeDefinitions() const
 //-----------------------------------------------------------------------------
 void Transactional::setTypeDefinition(const QString& typeName, const QString& typeDefinition)
 {
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if (transactionalTypeDefinition->getTypeName() == typeName)
         {
@@ -336,7 +313,7 @@ void Transactional::setTypeDefinition(const QString& typeName, const QString& ty
 //-----------------------------------------------------------------------------
 bool Transactional::hasTypeDefinitions() const
 {
-    foreach(QSharedPointer<WireTypeDef> transactionalTypeDefinition, *transTypeDefs_)
+    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
         if (!transactionalTypeDefinition->getTypeName().isEmpty() ||
             !transactionalTypeDefinition->getTypeDefinitions()->isEmpty())
@@ -346,20 +323,4 @@ bool Transactional::hasTypeDefinitions() const
     }
 
     return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Transactional::copyTransactionalTypeDefinitions()
-//-----------------------------------------------------------------------------
-void Transactional::copyTransactionalTypeDefinitions(const Transactional& other)
-{
-    foreach (QSharedPointer<WireTypeDef> transactionalTypeDefinition, *other.transTypeDefs_)
-    {
-        if (transactionalTypeDefinition)
-        {
-            QSharedPointer<WireTypeDef> copy =
-                QSharedPointer<WireTypeDef> (new WireTypeDef(*transactionalTypeDefinition.data()));
-            transTypeDefs_->append(copy);
-        }
-    }
 }

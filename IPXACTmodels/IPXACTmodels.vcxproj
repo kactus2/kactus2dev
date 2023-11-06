@@ -144,7 +144,6 @@
     <ClCompile Include="Catalog\IpxactFile.cpp" />
     <ClCompile Include="Catalog\validators\CatalogValidator.cpp" />
     <ClCompile Include="common\AccessTypes.cpp" />
-    <ClCompile Include="common\Array.cpp" />
     <ClCompile Include="common\Assertion.cpp" />
     <ClCompile Include="common\BooleanValue.cpp" />
     <ClCompile Include="common\BuildModel.cpp" />

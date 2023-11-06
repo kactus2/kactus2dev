@@ -13,39 +13,12 @@
 
 #include <IPXACTmodels/common/Vector.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QString>
 #include <QList>
 #include <QObject>
 #include <QSharedPointer>
-
-//-----------------------------------------------------------------------------
-// Function: Wire::Wire()
-//-----------------------------------------------------------------------------
-Wire::Wire():
-direction_(DirectionTypes::DIRECTION_INVALID),
-allLogicalDirectionsAllowed_(false),
-vector_(),
-wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-defaultDriverValue_(),
-defaultValueAttributes_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Wire::Wire()
-//-----------------------------------------------------------------------------
-Wire::Wire( DirectionTypes::Direction direction, int leftBound, int rightBound,QString const& defaultValue,
-    bool allLogicalDirections ):
-direction_(direction),
-allLogicalDirectionsAllowed_(allLogicalDirections),
-vector_(),
-wireTypeDefs_(new QList<QSharedPointer<WireTypeDef> > ()),
-defaultDriverValue_(defaultValue),
-defaultValueAttributes_()
-{
-    vector_ = QSharedPointer<Vector>(new Vector(QString::number(leftBound), QString::number(rightBound)));
-}
 
 //-----------------------------------------------------------------------------
 // Function: Wire()
@@ -53,8 +26,6 @@ defaultValueAttributes_()
 Wire::Wire(Wire const& other) : 
 direction_(other.direction_),
 allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_),
-vector_(),
-wireTypeDefs_(), 
 defaultDriverValue_(other.defaultDriverValue_),
 defaultValueAttributes_(other.defaultValueAttributes_)
 {
@@ -63,22 +34,13 @@ defaultValueAttributes_(other.defaultValueAttributes_)
         vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
 	}
 
-    if (other.wireTypeDefs_)
-    {	
-        wireTypeDefs_ = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >(
-            new QList<QSharedPointer<WireTypeDef> >());
-        foreach (QSharedPointer<WireTypeDef> typeDef, *other.wireTypeDefs_)
-        {
-            QSharedPointer<WireTypeDef> copy = QSharedPointer<WireTypeDef>(new WireTypeDef(*typeDef.data()));
-            wireTypeDefs_->append(copy);
-        }
-    }
+    Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: Wire::operator=()
 //-----------------------------------------------------------------------------
-Wire & Wire::operator=( const Wire &other )
+Wire& Wire::operator=( const Wire &other )
 {
 	if (this != &other)
     {
@@ -91,37 +53,11 @@ Wire & Wire::operator=( const Wire &other )
         {
             vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
 		}
-		else
-        {
-            vector_ = QSharedPointer<Vector>();
-        }
 
         wireTypeDefs_.clear();
-        if (other.wireTypeDefs_)
-        {	
-            foreach (QSharedPointer<WireTypeDef> typeDef, *other.wireTypeDefs_)
-            {
-                if (typeDef)
-                {
-                    QSharedPointer<WireTypeDef> copy = QSharedPointer<WireTypeDef>(new WireTypeDef(*typeDef.data()));
-                    wireTypeDefs_->append(copy);
-                }
-            }
-        }
+        Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Wire::~Wire()
-//-----------------------------------------------------------------------------
-Wire::~Wire()
-{
-    if(vector_)
-    {
-        vector_.clear();
-    }
-    wireTypeDefs_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -135,7 +71,7 @@ DirectionTypes::Direction Wire::getDirection() const
 //-----------------------------------------------------------------------------
 // Function: Wire::getWireTypeDefs()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Wire::getWireTypeDefs()
+QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Wire::getWireTypeDefs() const
 {
     return wireTypeDefs_;
 }
@@ -177,16 +113,15 @@ bool Wire::getAllLogicalDirectionsAllowed() const
 //-----------------------------------------------------------------------------
 void Wire::setWireTypeDefs(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > newWireTypeDefs)
 {
-	wireTypeDefs_.clear();
 	wireTypeDefs_ = newWireTypeDefs;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Wire::setAllLogicalDirectionsAllowed()
 //-----------------------------------------------------------------------------
-void Wire::setAllLogicalDirectionsAllowed(bool allLogicalDirectionsAllowed)
+void Wire::setAllLogicalDirectionsAllowed(bool allow)
 {
-    allLogicalDirectionsAllowed_ = allLogicalDirectionsAllowed;
+    allLogicalDirectionsAllowed_ = allow;
 }
 
 //-----------------------------------------------------------------------------
@@ -234,11 +169,11 @@ void Wire::setVectorRightBound(QString const& expression)
 //-----------------------------------------------------------------------------
 // Function: wire::getLeftBoundExpression()
 //-----------------------------------------------------------------------------
-QString Wire::getVectorLeftBound()
+QString Wire::getVectorLeftBound() const
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(QString(), QString()));
+        return QString();
     }
 
     return vector_->getLeft();
@@ -247,11 +182,11 @@ QString Wire::getVectorLeftBound()
 //-----------------------------------------------------------------------------
 // Function: wire::getRightBoundExpression()
 //-----------------------------------------------------------------------------
-QString Wire::getVectorRightBound()
+QString Wire::getVectorRightBound() const
 {
     if (!vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(QString(), QString()));
+        return QString();
     }
 
     return vector_->getRight();
@@ -264,7 +199,7 @@ QString Wire::getTypeName(QString const& viewName) const
 {
     if (wireTypeDefs_)
     {
-        foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+        for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
         {
             if (wireTypeDefinition->hasView(viewName))
             {
@@ -283,7 +218,7 @@ void Wire::setTypeName(QString const& typeName, QString const& viewName)
 {
     if (wireTypeDefs_)
     {
-        foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+        for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
         {
             if (wireTypeDefinition->getViewRefs()->contains(viewName) || viewName.isEmpty())
             {
@@ -302,7 +237,8 @@ void Wire::setTypeName(QString const& typeName, QString const& viewName)
 
     if (!typeName.isEmpty())
     {
-        QSharedPointer<WireTypeDef> newWireTypeDefinition(new WireTypeDef(typeName, viewName));
+        QSharedPointer<WireTypeDef> newWireTypeDefinition(new WireTypeDef(typeName));
+        newWireTypeDefinition->getViewRefs()->append(viewName);
         wireTypeDefs_->append(newWireTypeDefinition);
     }
 }
@@ -310,11 +246,11 @@ void Wire::setTypeName(QString const& typeName, QString const& viewName)
 //-----------------------------------------------------------------------------
 // Function: Wire::getTypeDefinition()
 //-----------------------------------------------------------------------------
-QString Wire::getTypeDefinition(QString const& typeName)
+QString Wire::getTypeDefinition(QString const& typeName) const
 {
     if (wireTypeDefs_)
     {  
-        foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+        for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
         {
             if (wireTypeDefinition->getTypeName() == typeName)
             {
@@ -334,9 +270,9 @@ QStringList Wire::getTypeDefinitions() const
     QStringList typeDefs;
     if (wireTypeDefs_)
     {
-        foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+        for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
         {
-            foreach (QString singleDefinition, *wireTypeDefinition->getTypeDefinitions())
+            for (QString singleDefinition : *wireTypeDefinition->getTypeDefinitions())
             {
                 typeDefs.append(singleDefinition);
             }
@@ -352,7 +288,7 @@ void Wire::setTypeDefinition(QString const& typeName, QString const& typeDefinit
 {
     if (wireTypeDefs_)
     {
-        foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+        for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
         {
             if (wireTypeDefinition->getTypeName() == typeName)
             {
@@ -388,10 +324,10 @@ bool Wire::hasType(QString const& viewName) const
         return false;
     }
 
-    foreach (QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
+    for (QSharedPointer<WireTypeDef> wireTypeDefinition : *wireTypeDefs_)
     {
-		if ((viewName.isEmpty() && !wireTypeDefinition->getTypeName().isEmpty()) ||
-            (wireTypeDefinition->hasView(viewName) && !wireTypeDefinition->getTypeName().isEmpty()))
+		if (!wireTypeDefinition->getTypeName().isEmpty() && 
+            (viewName.isEmpty() ||  wireTypeDefinition->hasView(viewName) ))
         {
             return true;
 		}
@@ -410,13 +346,8 @@ bool Wire::hasTypeDefinition() const
         return false;
     }
 
-	foreach(QSharedPointer<WireTypeDef> wireTypeDefinition, *wireTypeDefs_)
-    {
- 		if (!wireTypeDefinition->getTypeName().isEmpty() || !wireTypeDefinition->getTypeDefinitions()->isEmpty())
+    return std::any_of(wireTypeDefs_->cbegin(), wireTypeDefs_->cend(), [](auto const& typeDefinition)
         {
- 			return true;
- 		}
-	}
-
-	return false;
+            return !typeDefinition->getTypeName().isEmpty() || !typeDefinition->getTypeDefinitions()->isEmpty();
+        });
 }
