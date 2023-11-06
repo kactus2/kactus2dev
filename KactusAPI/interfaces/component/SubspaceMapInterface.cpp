@@ -97,7 +97,7 @@ QSharedPointer<SubSpaceMap> SubspaceMapInterface::getSubspaceMap(std::string con
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::getMasterReference()
 //-----------------------------------------------------------------------------
-std::string SubspaceMapInterface::getMasterReference(std::string const& itemName) const
+std::string SubspaceMapInterface::getInitiatorReference(std::string const& itemName) const
 {
     QSharedPointer<SubSpaceMap> editedItem = getSubspaceMap(itemName);
     if (editedItem)
@@ -158,7 +158,7 @@ bool SubspaceMapInterface::setSegmentReference(std::string const& itemName, std:
 std::string SubspaceMapInterface::getWidthValue(std::string const& subspaceName, int const& baseNumber) const
 {
     QSharedPointer<AddressSpace> space =
-        getReferencedAddressSpace(QString::fromStdString(getMasterReference(subspaceName)));
+        getReferencedAddressSpace(QString::fromStdString(getInitiatorReference(subspaceName)));
     if (space)
     {
         return parseExpressionToBaseNumber(space->getWidth(), baseNumber).toStdString();

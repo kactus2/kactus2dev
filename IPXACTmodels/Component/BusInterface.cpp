@@ -708,7 +708,7 @@ int BusInterface::getMCAPIPortID() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getMemoryMapRef() const
 {
-	if (interfaceMode_ != General::SLAVE || !target_)
+	if ((interfaceMode_ != General::SLAVE && interfaceMode_ != General::TARGET) || !target_)
     {
 		return QString();
 	}

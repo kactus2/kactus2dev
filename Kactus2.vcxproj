@@ -510,6 +510,7 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\common\ExpressionDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\ExpressionLineEditor.cpp" />
+    <ClCompile Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MasterExpressionEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\common\MemoryAlignScene.cpp" />
@@ -622,12 +623,14 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registergraphitem.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registerdelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registereditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfiledelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfileeditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registerfilemodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\registertablemodel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\memoryMaps\ResetsModel.cpp" />
@@ -1615,6 +1618,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\common\ExpressionLineEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\EnumerationEditorConstructorDelegate.h" />
+    <QtMoc Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.h" />
     <ClInclude Include="editors\ComponentEditor\common\MasterExpressionEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceEditor.h" />
     <QtMoc Include="editors\ComponentEditor\common\ModeReferenceDelegate.h" />
@@ -1709,6 +1713,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\registerfilegraphitem.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\memoryMapsVisualizer\SubspaceMapGraphItem.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\RegisterColumns.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\SingleMemoryMapEditor.h">
     </QtMoc>
@@ -1745,6 +1750,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\ResetsModel.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.h" />
     <ClInclude Include="editors\ComponentEditor\memoryMaps\ResetColumns.h" />
     <QtMoc Include="editors\ComponentEditor\memoryMaps\ResetsDelegate.h">
     </QtMoc>

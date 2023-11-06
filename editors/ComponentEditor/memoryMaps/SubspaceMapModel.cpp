@@ -26,8 +26,8 @@
 //-----------------------------------------------------------------------------
 SubspaceMapModel::SubspaceMapModel(SubspaceMapInterface* subspaceInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
-MemoryBlockModel(subspaceInterface, expressionParser, parameterFinder, parent),
+    Document::Revision docRevision, QObject *parent):
+MemoryBlockModel(subspaceInterface, expressionParser, parameterFinder, docRevision, parent),
 subspaceInterface_(subspaceInterface)
 {
 
@@ -60,7 +60,7 @@ Qt::ItemFlags SubspaceMapModel::flags(QModelIndex const& index) const
         std::string subspaceName = subspaceInterface_->getIndexedItemName(index.row());
         if (!subspaceName.empty())
         {
-            std::string masterReference = subspaceInterface_->getMasterReference(subspaceName);
+            std::string masterReference = subspaceInterface_->getInitiatorReference(subspaceName);
             std::string segmentReference = subspaceInterface_->getSegmentReference(subspaceName);
             if (masterReference.empty() && segmentReference.empty())
             {
@@ -84,10 +84,12 @@ QVariant SubspaceMapModel::headerData(int section, Qt::Orientation orientation, 
 
     if (Qt::DisplayRole == role)
     {
-        if (section == SubspaceMapColumns::MASTERREFERENCE)
+        if (section == SubspaceMapColumns::INITIATORREFERENCE)
         {
-            QString masterHeader = tr("Master\ninterface");
-            return masterHeader;
+            QString initiatorHeader = docRevision_ == Document::Revision::Std22 
+                ? tr("Initiator\ninterface") : tr("Master\ninterface");
+
+            return initiatorHeader;
         }
         else if (section == SubspaceMapColumns::SEGMENTREFERENCE)
         {
@@ -111,7 +113,7 @@ QVariant SubspaceMapModel::data(QModelIndex const& index, int role) const
 
     std::string blockName = subspaceInterface_->getIndexedItemName(index.row());
 
-    if (role == Qt::BackgroundRole && index.column() == SubspaceMapColumns::MASTERREFERENCE)
+    if (role == Qt::BackgroundRole && index.column() == SubspaceMapColumns::INITIATORREFERENCE)
     {
         return KactusColors::MANDATORY_FIELD;
     }
@@ -133,7 +135,7 @@ bool SubspaceMapModel::setData(QModelIndex const& index, QVariant const& value, 
     {
         std::string blockName = subspaceInterface_->getIndexedItemName(index.row());
 
-        if (index.column() == SubspaceMapColumns::MASTERREFERENCE)
+        if (index.column() == SubspaceMapColumns::INITIATORREFERENCE)
         {
             if (!subspaceInterface_->setMasterReference(blockName, value.toString().toStdString()))
             {
@@ -152,7 +154,7 @@ bool SubspaceMapModel::setData(QModelIndex const& index, QVariant const& value, 
             return MemoryBlockModel::setData(index, value, role);
         }
 
-        if (index.column() == SubspaceMapColumns::MASTERREFERENCE ||
+        if (index.column() == SubspaceMapColumns::INITIATORREFERENCE ||
             index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
         {
             emit childAddressingChanged(index.row());
@@ -174,7 +176,7 @@ bool SubspaceMapModel::setData(QModelIndex const& index, QVariant const& value, 
 bool SubspaceMapModel::validateIndex(QModelIndex const& index) const
 {
     std::string blockName = subspaceInterface_->getIndexedItemName(index.row());
-    if (index.column() == SubspaceMapColumns::MASTERREFERENCE)
+    if (index.column() == SubspaceMapColumns::INITIATORREFERENCE)
     {
         return subspaceInterface_->hasValidMasterReference(blockName);
     }
@@ -193,9 +195,9 @@ QVariant SubspaceMapModel::valueForIndex(QModelIndex const& index) const
 {
     std::string blockName = subspaceInterface_->getIndexedItemName(index.row());
 
-    if (index.column() == SubspaceMapColumns::MASTERREFERENCE)
+    if (index.column() == SubspaceMapColumns::INITIATORREFERENCE)
     {
-        return QString::fromStdString(subspaceInterface_->getMasterReference(blockName));
+        return QString::fromStdString(subspaceInterface_->getInitiatorReference(blockName));
     }
     else if (index.column() == SubspaceMapColumns::SEGMENTREFERENCE)
     {

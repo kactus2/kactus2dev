@@ -211,6 +211,7 @@ void SingleRegisterFileEditor::setupLayout()
     {
         registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
         registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);
+        registerDefinitionLayout->addRow(tr("Dimension, f(x):"), dimensionEditor_);
 
         auto spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);

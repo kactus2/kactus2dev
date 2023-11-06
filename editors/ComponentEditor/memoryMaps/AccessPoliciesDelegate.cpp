@@ -14,7 +14,8 @@
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 
-#include <editors/ComponentEditor/common/ModeReferenceEditor.h>
+#include <editors/ComponentEditor/common/ModeReferenceModel.h>
+#include <editors/ComponentEditor/common/FloatingModeReferenceEditor.h>
 
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesDelegate::AccessPoliciesDelegate()
@@ -34,7 +35,9 @@ QWidget* AccessPoliciesDelegate::createEditor(QWidget* parent, const QStyleOptio
     {
         auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
 
-        ModeReferenceEditor* modeRefEditor = new ModeReferenceEditor(modeRefs, parent);
+        ModeReferenceModel* model = new ModeReferenceModel(modeRefs, parent);
+        FloatingModeReferenceEditor* modeRefEditor = new FloatingModeReferenceEditor(model, parent);
+
         connect(modeRefEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         connect(modeRefEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
         return modeRefEditor;
@@ -48,7 +51,7 @@ QWidget* AccessPoliciesDelegate::createEditor(QWidget* parent, const QStyleOptio
     }
     else
     {
-        QStyledItemDelegate::createEditor(parent, option, index);
+        return QStyledItemDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -59,7 +62,7 @@ void AccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelIndex& i
 {
     if (index.column() == 0)
     {
-        auto modeEditor = qobject_cast<ModeReferenceEditor*>(editor);
+        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
         if (modeEditor)
         {
             auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
@@ -89,7 +92,7 @@ void AccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemModel* m
 {
     if (index.column() == 0)
     {
-        auto modeEditor = qobject_cast<ModeReferenceEditor*>(editor);
+        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
         if (modeEditor)
         {
             auto modeRefs = modeEditor->getModeRefs();
@@ -123,16 +126,26 @@ void AccessPoliciesDelegate::updateEditorGeometry(QWidget* editor, const QStyleO
 {
     if (index.column() == 0)
     {
-        const int editorMinimumHeight = editor->sizeHint().height();
+        auto modeRefEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
+        int editorMinimumHeight = modeRefEditor->sizeHint().height();
 
-        int editorWidth = editor->sizeHint().width();
-        if (editorWidth < 150)
-        {
-            editorWidth = 150;
-        }
-        else if (editorWidth > 250)
+        auto modeRefTableMargins = modeRefEditor->getTableMargins();
+
+        int editorWidth = modeRefEditor->getTableSizeHint().width() + modeRefTableMargins.left()
+            + modeRefTableMargins.right() + 2;
+
+        if (editorWidth < 250)
         {
             editorWidth = 250;
+        }
+        else if (editorWidth > 300)
+        {
+            editorWidth = 300;
+        }
+
+        if (editorMinimumHeight < 250)
+        {
+            editorMinimumHeight = 250;
         }
 
         editor->setFixedWidth(editorWidth);

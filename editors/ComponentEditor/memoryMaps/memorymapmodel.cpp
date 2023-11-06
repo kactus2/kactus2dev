@@ -27,9 +27,9 @@
 // Function: MemoryMapModel::MemoryMapModel()
 //-----------------------------------------------------------------------------
 MemoryMapModel::MemoryMapModel(AddressBlockInterface* blockInterface,
-    QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
-MemoryBlockModel(blockInterface, expressionParser, parameterFinder, parent),
+    QSharedPointer <ExpressionParser> expressionParser, QSharedPointer <ParameterFinder> parameterFinder, 
+    Document::Revision docRevision, QObject *parent) :
+MemoryBlockModel(blockInterface, expressionParser, parameterFinder, docRevision, parent),
 localBlockInterface_(blockInterface)
 {
 
@@ -45,6 +45,29 @@ int MemoryMapModel::columnCount(QModelIndex const& parent) const
 		return 0;
 	}
 	return MemoryMapColumns::COLUMN_COUNT;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapModel::flags()
+//-----------------------------------------------------------------------------
+Qt::ItemFlags MemoryMapModel::flags(QModelIndex const& index) const
+{
+    if (!index.isValid())
+    {
+        return Qt::NoItemFlags;
+    }
+
+    std::string addressBlockName = localBlockInterface_->getIndexedItemName(index.row());
+
+    if (index.column() == MemoryMapColumns::ACCESS_COLUMN && docRevision_ == Document::Revision::Std22)
+    {
+        if (localBlockInterface_->getAccessPolicyCount(addressBlockName) > 1)
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+    }
+
+    return MemoryBlockModel::flags(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -155,7 +178,23 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         }
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
         {
-            if (!localBlockInterface_->setAccess(blockName, value.toString().toStdString()))
+            // Modify the access of the address block by default.
+            int accessPolicyIndex = -1;
+
+            if (docRevision_ == Document::Revision::Std22)
+            {
+                // Create access policy first, if one doesn't exist.
+                if (localBlockInterface_->getAccessPolicyCount(blockName) == 0 &&
+                    value.toString().isEmpty() == false)
+                {
+                    localBlockInterface_->addAccessPolicy(blockName);
+                }
+
+                // Modify first access policy, if std22.
+                accessPolicyIndex = 0;
+            }
+
+            if (!localBlockInterface_->setAccess(blockName, value.toString().toStdString(), accessPolicyIndex))
             {
                 return false;
             }
@@ -280,6 +319,16 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
     {
+        if (docRevision_ == Document::Revision::Std22)
+        {
+            if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
+            {
+                return QStringLiteral("[multiple]");
+            }
+
+            return QString::fromStdString(localBlockInterface_->getAccessString(blockName, index.row()));
+        }
+
         return QString::fromStdString(localBlockInterface_->getAccessString(blockName));
     }
     else if (index.column() == MemoryMapColumns::VOLATILE_COLUMN)

@@ -33,14 +33,14 @@ public:
      *  
      * 	    @return The edited mode references as a list.
      */
-    QList<QPair<QString, int> > getModeRefs() const;
+    virtual QList<QPair<QString, int> > getModeRefs() const;
 
     /*!
      *	Set the mode references.
      *  
      *      @param [in] modeRefs     The mode references to set.
      */
-    void setModeRefs(QList<QPair<QString, int> > const& modeRefs);
+    virtual void setModeRefs(QList<QPair<QString, int> > const& modeRefs);
 
     /*!
      *  Get the number of modes the model contains.
@@ -99,7 +99,7 @@ public:
      *
      *      @return True if saving happened successfully.
      */
-    bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+    virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
 
 public slots:
     
@@ -108,14 +108,14 @@ public slots:
      *  
      *      @param [in] index     The model index that was selected.
      */
-    void onAddRow(QModelIndex const& index);
+    virtual void onAddRow(QModelIndex const& index);
 
     /*!
      *	Handler for removing a mode reference row.
      *  
      *      @param [in] index     The mode reference to be removed.
      */
-    void onRemoveItem(QModelIndex const& index);
+    virtual void onRemoveItem(QModelIndex const& index);
 
 signals:
 

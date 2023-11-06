@@ -45,8 +45,9 @@ void RegisterGraphItem::updateDisplay()
 {
     QString name = register_->name();
 
+    // Display dimension only when dim > 1 (don't display [0:0])
     int dimension = parseExpression(register_->getDimension());
-    if (dimension > 0)
+    if (dimension > 1)
     {
         name.append("[" % QString::number(dimension - 1) % ":0]");
     }

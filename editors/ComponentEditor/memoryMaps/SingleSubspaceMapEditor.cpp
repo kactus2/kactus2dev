@@ -42,7 +42,7 @@ ItemEditor(component, handler, parent),
 nameEditor_(subspaceMap, component->getRevision(), this, tr("Subspace map name and description")),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-masterSelector_(),
+initiatorSelector_(),
 segmentSelector_(),
 subspaceName_(subspaceMap->name().toStdString()),
 subspaceInterface_(subspaceInterface),
@@ -74,7 +74,7 @@ expressionParser_(expressionParser)
     connectSignals();
 
     baseAddressEditor_->setProperty("mandatoryField", true);
-    masterSelector_->setProperty("mandatoryField", true);
+    initiatorSelector_->setProperty("mandatoryField", true);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,18 +82,23 @@ expressionParser_(expressionParser)
 //-----------------------------------------------------------------------------
 void SingleSubspaceMapEditor::constructComboBoxes()
 {
-    QString masterReference = QString::fromStdString(subspaceInterface_->getMasterReference(subspaceName_));
+    QString initiatorReference = QString::fromStdString(subspaceInterface_->getInitiatorReference(subspaceName_));
 
-    masterSelector_ = new BusReferenceComboBox(subspaceInterface_->getBusInterface(), this);
-    masterSelector_->setupSelection(masterReference, General::MASTER);
+    initiatorSelector_ = new BusReferenceComboBox(subspaceInterface_->getBusInterface(), this);
+
+    General::InterfaceMode initiatorMode = component()->getRevision() == Document::Revision::Std22
+        ? General::INITIATOR
+        : General::MASTER;
+
+    initiatorSelector_->setupSelection(initiatorReference, initiatorMode);
 
     segmentSelector_ = new SegmentComboBox(this);
 
-    QSharedPointer<AddressSpace> space = getSpace(masterReference);
+    QSharedPointer<AddressSpace> space = getSpace(initiatorReference);
     if (space)
     {
         QString segmentReference = QString::fromStdString(subspaceInterface_->getSegmentReference(subspaceName_));
-        segmentSelector_->setupSelection(space, masterReference);
+        segmentSelector_->setupSelection(space, initiatorReference);
     }
 }
 
@@ -152,11 +157,15 @@ void SingleSubspaceMapEditor::refresh()
 
     changeExpressionEditorSignalBlockStatus(false);
 
-    QString busReference = QString::fromStdString(subspaceInterface_->getMasterReference(subspaceName_));
+    QString busReference = QString::fromStdString(subspaceInterface_->getInitiatorReference(subspaceName_));
     QString segmentReference = QString::fromStdString(subspaceInterface_->getSegmentReference(subspaceName_));
     QSharedPointer<AddressSpace> space = getSpace(busReference);
 
-    masterSelector_->setupSelection(busReference, General::MASTER);
+    General::InterfaceMode initiatorMode = component()->getRevision() == Document::Revision::Std22
+        ? General::INITIATOR
+        : General::MASTER;
+
+    initiatorSelector_->setupSelection(busReference, initiatorMode);
     segmentSelector_->setupSelection(space, segmentReference);
 }
 
@@ -203,11 +212,17 @@ void SingleSubspaceMapEditor::setupLayout()
     QFormLayout* subspaceDefinitionLayout = new QFormLayout(subspaceDefinitionGroup);
 
     subspaceDefinitionLayout->addRow(tr("Base Address [AUB], f(x):"), baseAddressEditor_);
-    
-    subspaceDefinitionLayout->addRow(tr("Master bus interface reference:"), masterSelector_);
-    subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
-    subspaceDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-
+    if (auto rev = component()->getRevision(); rev == Document::Revision::Std14)
+    {
+        subspaceDefinitionLayout->addRow(tr("Master bus interface reference:"), initiatorSelector_);
+        subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
+        subspaceDefinitionLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+    }
+    else if (rev == Document::Revision::Std22)
+    {
+        subspaceDefinitionLayout->addRow(tr("Initiator bus interface reference:"), initiatorSelector_);
+        subspaceDefinitionLayout->addRow(tr("Segment reference:"), segmentSelector_);
+    }
     QGridLayout* topOfPageLayout = new QGridLayout();
     topOfPageLayout->addWidget(&nameEditor_, 0, 0, 1, 1);
     topOfPageLayout->addWidget(subspaceDefinitionGroup, 0, 1, 1, 1);    
@@ -226,7 +241,7 @@ void SingleSubspaceMapEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void SingleSubspaceMapEditor::connectSignals() const
 {
-    connect(masterSelector_, SIGNAL(currentTextChanged(QString const&)),
+    connect(initiatorSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onMasterSelected(QString const&)), Qt::UniqueConnection);
     connect(segmentSelector_, SIGNAL(currentTextChanged(QString const&)),
         this, SLOT(onSegmentSelected(QString const&)), Qt::UniqueConnection);

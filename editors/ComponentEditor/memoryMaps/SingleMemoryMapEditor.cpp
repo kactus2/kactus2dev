@@ -15,6 +15,8 @@
 #include <QLabel>
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
+#include <editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h>
+#include <editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
 
@@ -42,7 +44,7 @@ subspaceMapEditor_(new SubspaceMapsEditor(component, parameterFinder, expression
     mapInterface->getSubspaceMapInterface() , memoryRemap->getMemoryBlocks(), this)),
 addressUnitBitsEditor_(new QLineEdit(parent)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-slaveInterfaceLabel_(new QLabel(this)),
+targetInterfaceLabel_(new QLabel(this)),
 remapStateSelector_(new ReferenceSelector(this)),
 remapName_(memoryRemap->name().toStdString()),
 parentMapName_(parentMapName.toStdString()),
@@ -67,6 +69,9 @@ isMemoryRemap_(isMemoryRemap)
     }
 
     remapStateSelector_->setProperty("mandatoryField", true);
+
+    MemoryRemapModeReferenceModel* modeRefModel = new MemoryRemapModeReferenceModel(mapInterface, parentMapName, memoryRemap->name(), this);
+    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefModel, this);
 
     connectSignals();
 
@@ -121,7 +126,7 @@ void SingleMemoryMapEditor::connectSignals()
     connect(addressBlockEditor_, SIGNAL(invalidateOtherFilter()),
         subspaceMapEditor_, SIGNAL(invalidateThisFilter()), Qt::UniqueConnection);
 
-    connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshSlaveBinding()), Qt::UniqueConnection);
+    connect(&nameEditor_, SIGNAL(contentChanged()), this, SLOT(refreshTargetBinding()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
@@ -138,6 +143,8 @@ void SingleMemoryMapEditor::connectSignals()
     connect(isPresentEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChange()), Qt::UniqueConnection);
+
+    connect(modeReferenceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +158,7 @@ void SingleMemoryMapEditor::refresh()
     addressBlockEditor_->refresh();
     subspaceMapEditor_->refresh();
 
-    refreshSlaveBinding();
+    refreshTargetBinding();
     addressUnitBitsEditor_->setText(QString::fromStdString(mapInterface_->getAddressUnitBits(parentMapName_)));
 
     if (!isMemoryRemap_)
@@ -189,17 +196,45 @@ void SingleMemoryMapEditor::setupLayout()
     QGroupBox* memoryMapDefinitionGroup = new QGroupBox(tr("Memory map definition"));
 
     QFormLayout* memoryMapDefinitionGroupLayout = new QFormLayout(memoryMapDefinitionGroup);
-    memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
-    memoryMapDefinitionGroupLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-    memoryMapDefinitionGroupLayout->addRow(tr("Remap state:"), remapStateSelector_);
-    memoryMapDefinitionGroupLayout->addRow(tr("Slave interface binding:"), slaveInterfaceLabel_);
 
-    connect(remapStateSelector_, SIGNAL(itemSelected(QString const&)),
-        this, SLOT(onRemapStateSelected(QString const&)), Qt::UniqueConnection);
+    QLayout* topOfPageLayout;
+    if (Document::Revision revision = component()->getRevision(); 
+        revision == Document::Revision::Std14)
+    {
+        memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Remap state:"), remapStateSelector_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Slave interface binding:"), targetInterfaceLabel_);
+        connect(remapStateSelector_, SIGNAL(itemSelected(QString const&)),
+            this, SLOT(onRemapStateSelected(QString const&)), Qt::UniqueConnection);
 
-    QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    topOfPageLayout->addWidget(&nameEditor_, 0);
-    topOfPageLayout->addWidget(memoryMapDefinitionGroup, 0);
+        QHBoxLayout* layout = new QHBoxLayout();
+        layout->addWidget(&nameEditor_, 0);
+        layout->addWidget(memoryMapDefinitionGroup, 0);
+        topOfPageLayout = layout;
+        modeReferenceEditor_->setVisible(false);
+    }
+    else if (revision == Document::Revision::Std22)
+    {
+        memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);
+
+        QGridLayout* layout = new QGridLayout();
+        layout->addWidget(&nameEditor_, 0, 0, 2, 1);
+        layout->addWidget(memoryMapDefinitionGroup, 0, 1, 1, 1);
+        layout->addWidget(modeReferenceEditor_, 1, 1, 1, 1);
+
+        if (!isMemoryRemap_)
+        {
+            modeReferenceEditor_->setEnabled(false);
+        }
+
+        topOfPageLayout = layout;
+    }
+
+    //QHBoxLayout* topOfPageLayout = new QHBoxLayout();
+    //topOfPageLayout->addWidget(&nameEditor_, 0);
+    //topOfPageLayout->addWidget(memoryMapDefinitionGroup, 0);
 
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizeIncrement(QSizePolicy::Expanding, QSizePolicy::Maximum);
@@ -247,16 +282,16 @@ void SingleMemoryMapEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::refreshSlaveBinding()
 //-----------------------------------------------------------------------------
-void SingleMemoryMapEditor::refreshSlaveBinding()
+void SingleMemoryMapEditor::refreshTargetBinding()
 {
-    QString slaveInterfaceText ("No binding");
+    QString targetInterfaceText ("No binding");
 
-    QStringList interfaceNames = component()->getSlaveInterfaces(QString::fromStdString(parentMapName_));
+    QStringList interfaceNames = component()->getTargetInterfaces(QString::fromStdString(parentMapName_));
     if (!interfaceNames.isEmpty())
     {
-        slaveInterfaceText = interfaceNames.join(", ");
+        targetInterfaceText = interfaceNames.join(", ");
     }
-    slaveInterfaceLabel_->setText(slaveInterfaceText);
+    targetInterfaceLabel_->setText(targetInterfaceText);
 }
 
 //-----------------------------------------------------------------------------

@@ -99,7 +99,7 @@ bool MemoryRemapItem::isValid() const
 
     if (transformedMemoryRemap)
     {
-        return baseIsValid && !memoryMapValidator_->remapStateIsNotValid(transformedMemoryRemap);
+        return baseIsValid && memoryMapValidator_->hasValidRemapStateOrModeReferences(parentMemoryMap_, transformedMemoryRemap);
     }
     else
     {

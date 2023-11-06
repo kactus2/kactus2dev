@@ -36,17 +36,23 @@ public:
      *      @param [in] subspaceInterface   Interface for accessing subspace maps;
      *      @param [in] expressionParser    Pointer to the expression parser.
      *      @param [in] parameterFinder     Pointer to the parameter finder.
+     *      @param [in] docRevision         The IP-XACT standard revision in use.
      *      @param [in] parent              Pointer to the owner of this model.
      */
     SubspaceMapModel(SubspaceMapInterface* subspaceInterface,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
+        Document::Revision docRevision,
         QObject *parent);
 
     /*!
      *  The destructor.
      */
     virtual ~SubspaceMapModel() = default;
+
+    //! No copying.	No assignment.
+    SubspaceMapModel(const SubspaceMapModel& other) = delete;
+    SubspaceMapModel& operator=(const SubspaceMapModel& other) = delete;
 
     /*!
      *  Get the number of columns the item has to be displayed.
@@ -126,10 +132,6 @@ protected:
     virtual QVariant valueForIndex(QModelIndex const& index) const override final;
 
 private:
-
-    //! No copying.	No assignment.
-    SubspaceMapModel(const SubspaceMapModel& other);
-    SubspaceMapModel& operator=(const SubspaceMapModel& other);
 
     /*!
      *  Get the index of the name column.

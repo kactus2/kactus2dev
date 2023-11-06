@@ -196,8 +196,8 @@ private:
     //! Editor for the is present of the address block-
     ExpressionEditor* isPresentEditor_;
 
-    //! Selector for master bus interface reference.
-    BusReferenceComboBox* masterSelector_;
+    //! Selector for initiator bus interface reference.
+    BusReferenceComboBox* initiatorSelector_;
 
     //! Selector for segment reference.
     SegmentComboBox* segmentSelector_;

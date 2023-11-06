@@ -16,6 +16,8 @@
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
 #include <KactusAPI/include/ParameterFinder.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 #include <QList>
@@ -37,17 +39,24 @@ public:
      *      @param [in] blockInterface      Interface for memory blocks;
 	 *      @param [in] expressionParser    Pointer to the expression parser.
 	 *      @param [in] parameterFinder     Pointer to the parameter finder.
+	 *      @param [in] docRevision         The IP-XACT standard revision in use.
 	 *      @param [in] parent              Pointer to the owner of this model.
 	 */
     MemoryBlockModel(MemoryBlockInterface* blockInterface,
         QSharedPointer <ExpressionParser> expressionParser,
         QSharedPointer <ParameterFinder> parameterFinder,
+        Document::Revision docRevision,
         QObject *parent);
 
 	/*!
      *  The destructor.
      */
     virtual ~MemoryBlockModel() = default;
+
+    //! No copying.	No assignment.
+    MemoryBlockModel(const MemoryBlockModel& other) = delete;
+    MemoryBlockModel& operator=(const MemoryBlockModel& other) = delete;
+
 
 	/*!
      *  Get the number of rows an item contains.
@@ -217,6 +226,13 @@ protected:
      */
     virtual QVariant valueForIndex(QModelIndex const& index) const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! The IP-XACT standard revision in use.
+    Document::Revision docRevision_;
+
 signals:
 
 	/*!
@@ -266,10 +282,6 @@ signals:
     void childAddressingChanged(int);
 
 private:
-	
-    //! No copying.	No assignment.
-    MemoryBlockModel(const MemoryBlockModel& other);
-    MemoryBlockModel& operator=(const MemoryBlockModel& other);
 
     /*!
      *  Get the index of the name column.
@@ -312,6 +324,7 @@ private:
 
     //! Interface for address blocks.
     MemoryBlockInterface* blockInterface_;
+
 };
 
 #endif // MEMORYBLOCKMODEL_H

@@ -69,7 +69,7 @@ public:
      *
      *      @return The master bus interface reference of the selected subspace map.
      */
-    std::string getMasterReference(std::string const& itemName) const;
+    std::string getInitiatorReference(std::string const& itemName) const;
 
     /*!
      *  Set the master bus interface reference of the selected subspace map.

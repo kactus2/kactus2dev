@@ -29,6 +29,7 @@ class ExpressionEditor;
 class ExpressionParser;
 class MemoryMapInterface;
 class SubspaceMapsEditor;
+class RemapModeReferenceEditor;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
@@ -108,9 +109,9 @@ protected:
 private slots:
 
     /*!
-     *  Updates the name of the current slave interface binding.
+     *  Updates the name of the current target interface binding.
      */
-    void refreshSlaveBinding();
+    void refreshTargetBinding();
 
     /*!
      *  Updates the address unit bits [AUB].
@@ -211,8 +212,8 @@ private:
     //! The editor for isPresent-property.
     ExpressionEditor* isPresentEditor_;
 
-    //! The label for the slave interface binding.
-    QLabel* slaveInterfaceLabel_;
+    //! The label for the target interface binding.
+    QLabel* targetInterfaceLabel_;
     
     //! The remap state selector.
     ReferenceSelector* remapStateSelector_;
@@ -228,6 +229,9 @@ private:
 
     //! Flag for identifying memory maps and remaps.
     bool isMemoryRemap_;
+
+    //! Editor for remap mode references.
+    RemapModeReferenceEditor* modeReferenceEditor_;
 };
 
 #endif // SINGLEMEMORYMAPEDITOR_H

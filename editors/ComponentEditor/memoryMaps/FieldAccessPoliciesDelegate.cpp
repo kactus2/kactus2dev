@@ -14,7 +14,8 @@
 
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 
-#include <editors/ComponentEditor/common/ModeReferenceEditor.h>
+#include <editors/ComponentEditor/common/FloatingModeReferenceEditor.h>
+#include <editors/ComponentEditor/common/ModeReferenceModel.h>
 
 #include <common/widgets/accessComboBox/accesscombobox.h>
 #include <common/widgets/modWriteComboBox/modwritecombobox.h>
@@ -45,7 +46,9 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
     {
         auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
 
-        ModeReferenceEditor* modeRefEditor = new ModeReferenceEditor(modeRefs, parent);
+        ModeReferenceModel* model = new ModeReferenceModel(modeRefs, parent);
+
+        FloatingModeReferenceEditor* modeRefEditor = new FloatingModeReferenceEditor(model, parent);
         connect(modeRefEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         connect(modeRefEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
         return modeRefEditor;
@@ -114,7 +117,7 @@ void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelInd
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        auto modeEditor = qobject_cast<ModeReferenceEditor*>(editor);
+        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
         if (modeEditor)
         {
             auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
@@ -197,7 +200,7 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        auto modeEditor = qobject_cast<ModeReferenceEditor*>(editor);
+        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
         if (modeEditor)
         {
             auto modeRefs = modeEditor->getModeRefs();
@@ -282,19 +285,29 @@ void FieldAccessPoliciesDelegate::updateEditorGeometry(QWidget* editor, const QS
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        const int editorMinimumHeight = editor->sizeHint().height();
+        auto modeRefEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
+        int editorMinimumHeight = modeRefEditor->sizeHint().height();
 
-        int editorWidth = editor->sizeHint().width();
-        if (editorWidth < 150)
-        {
-            editorWidth = 150;
-        }
-        else if (editorWidth > 250)
+        auto modeRefTableMargins = modeRefEditor->getTableMargins();
+
+        int editorWidth = modeRefEditor->getTableSizeHint().width() + modeRefTableMargins.left()
+            + modeRefTableMargins.right() + 2;
+
+        if (editorWidth < 250)
         {
             editorWidth = 250;
         }
+        else if (editorWidth > 300)
+        {
+            editorWidth = 300;
+        }
 
-        editor->setFixedWidth(editorWidth);
+        if (editorMinimumHeight < 250)
+        {
+            editorMinimumHeight = 250;
+        }
+
+        modeRefEditor->setFixedWidth(editorWidth);
 
         const int PARENT_HEIGHT = editor->parentWidget()->height();
         const int AVAILABLE_HEIGHT_BELOW = PARENT_HEIGHT - option.rect.top();

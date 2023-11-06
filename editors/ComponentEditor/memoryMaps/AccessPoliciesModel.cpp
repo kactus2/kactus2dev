@@ -95,7 +95,7 @@ QVariant AccessPoliciesModel::headerData(int section, Qt::Orientation orientatio
 //-----------------------------------------------------------------------------
 QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
-    if (role == Qt::DisplayRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole)
     {
         return valueForIndex(index);
     }
@@ -211,7 +211,6 @@ void AccessPoliciesModel::onRemoveItem(QModelIndex const& index)
     interface_->removeAccessPolicy(index.row());
     endRemoveRows();
 
-    emit invalidateFilter();
     emit contentChanged();
 }
 

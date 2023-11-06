@@ -162,22 +162,28 @@ public:
     bool setUsage(std::string const& blockName, std::string const& newUsage) const;
     
     /*!
-     *  Get the access string of the selected address block.
+     *  Get the access string of the selected address block or one of its access policies specified by the
+     *  accessPolicyIndex parameter. The default value of -1 returns the address block's access value. 0 and above
+     *  returns an indexed access policy's access value.
      *
-     *      @param [in] blockName   Name of the selected address block.
+     *      @param [in] blockName           Name of the selected address block.
+     *      @param [in] accessPolicyIndex   The access policy to get the access value of.
      *
-     *      @return Access string of the selected address block.
+     *      @return Access string of the selected address block or its access policy.
      */
-    std::string getAccessString(std::string const& blockName) const;
+    std::string getAccessString(std::string const& blockName, int accessPolicyIndex = -1) const;
 
     /*!
-     *  Get the access of the selected address block.
+     *  Get the access of the selected address block or one of its access policies specified by the
+     *  accessPolicyIndex parameter. The default value of -1 returns the address block's access value. 0 and above
+     *  returns an indexed access policy's access value.
      *
-     *      @param [in] blockName   Name of the selected address block.
+     *      @param [in] blockName           Name of the selected address block.
+     *      @param [in] accessPolicyIndex   The access policy to get the access value of.
      *
-     *      @return Access of the selected address block.
+     *      @return Access of the selected address block or its access policy.
      */
-    AccessTypes::Access getAccess(std::string const& blockName) const;
+    AccessTypes::Access getAccess(std::string const& blockName, int accessPolicyIndex = -1) const;
 
     /*!
      *  Set a new access for the selected address block.
@@ -187,7 +193,7 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAccess(std::string const& blockName, std::string const& newAccess) const;
+    bool setAccess(std::string const& blockName, std::string const& newAccess, int accessPolicyIndex = -1) const;
 
     /*!
      *  Get the volatile value of the selected address block.
@@ -296,6 +302,24 @@ public:
      *      @return True, if the address block contains registers, false otherwise.
      */
     bool hasRegisters(std::string const& blockName) const;
+
+    /*!
+     *	Get the number of access policies an address block has.
+     *  
+     *      @param [in] blockName     Name of the selected address block.
+     *	    
+     * 	    @return The number of access policies of the selected address block.
+     */
+    int getAccessPolicyCount(std::string const& blockName) const;
+
+    /*!
+     *	Add a new access policy to an address block.
+     *  
+     *      @param [in] blockName     Name of the selected address block.
+     * 
+     *      @return True, if the operation was successful, otherwise false.
+     */
+    bool addAccessPolicy(std::string const& blockName) const;
 
     /*!
      *  Get the address block with the selected name, sliced to a NameGroup.

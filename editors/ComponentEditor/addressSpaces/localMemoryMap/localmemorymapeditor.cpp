@@ -68,7 +68,7 @@ handler_(handler)
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new MemoryMapModel(blockInterface, expressionParser, parameterFinder, this);
+    model_ = new MemoryMapModel(blockInterface, expressionParser, parameterFinder, component->getRevision(), this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);

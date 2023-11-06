@@ -101,6 +101,12 @@ bool MemoryMapValidator::hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMa
     {
         QStringList remapNames;
         QStringList remapStates;
+
+        if (docRevision_ == Document::Revision::Std22 && !remapsHaveValidModeRefs(memoryMap))
+        {
+            return false;
+        }
+
         for (QSharedPointer<MemoryRemap> memoryRemap : *memoryMap->getMemoryRemaps())
         {
             if (docRevision_ == Document::Revision::Std14)
@@ -116,7 +122,6 @@ bool MemoryMapValidator::hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMa
             else if (docRevision_ == Document::Revision::Std22)
             {
                 if (remapNames.contains(memoryRemap->name()) ||
-                    !remapsHaveValidModeRefs(memoryMap) ||
                     !remapHasValidStructure(memoryRemap) ||
                     !MemoryMapBaseValidator::validate(memoryRemap, memoryMap->getAddressUnitBits()))
                 {
@@ -149,6 +154,19 @@ bool MemoryMapValidator::remapStateIsNotValid(QSharedPointer<MemoryRemap> memory
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapValidator::hasValidRemapStateOrModeReferences()
+//-----------------------------------------------------------------------------
+bool MemoryMapValidator::hasValidRemapStateOrModeReferences(QSharedPointer<MemoryMap> parentMap, QSharedPointer<MemoryRemap> memoryRemap) const
+{
+    if (docRevision_ == Document::Revision::Std22)
+    {
+        return remapsHaveValidModeRefs(parentMap);
+    }
+
+    return !remapStateIsNotValid(memoryRemap);
 }
 
 //-----------------------------------------------------------------------------
@@ -215,8 +233,10 @@ bool MemoryMapValidator::remapsHaveValidModeRefs(QSharedPointer<MemoryMap> memor
     for (auto const& remap : *memoryMap->getMemoryRemaps())
     {
         QStringList priorities; // Must be unique within remap.
+        
+        auto modeRefs = remap->getModeReferences();
 
-        for (auto const& ref : *remap->getModeReferences())
+        for (auto const& ref : *modeRefs)
         {
             if (references.contains(ref->getReference()) ||
                 priorities.contains(ref->getPriority()) ||
@@ -228,6 +248,12 @@ bool MemoryMapValidator::remapsHaveValidModeRefs(QSharedPointer<MemoryMap> memor
 
             references.append(ref->getReference());
             priorities.append(ref->getPriority());
+        }
+
+        // Remap must contain at least one mode reference.
+        if (modeRefs->isEmpty())
+        {
+            return false;
         }
     }
 
@@ -251,7 +277,9 @@ void MemoryMapValidator::findErrorsInRemapModeRefs(QStringList& errors, QSharedP
     {
         QStringList priorities; // Must be unique within remap.
 
-        for (auto const& ref : *remap->getModeReferences())
+        auto modeRefs = remap->getModeReferences();
+
+        for (auto const& ref : *modeRefs)
         {
             QString const& referenceValue = ref->getReference();
             QString const& referencePriority = ref->getPriority();
@@ -285,6 +313,12 @@ void MemoryMapValidator::findErrorsInRemapModeRefs(QStringList& errors, QSharedP
             {
                 priorities.append(referencePriority);
             }
+        }
+
+        if (modeRefs->isEmpty())
+        {
+            errors.append(QObject::tr("Memory remap %1 in %2 must contain at least one mode reference.")
+                .arg(remap->name()).arg(context));
         }
     }
 }

@@ -503,6 +503,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/common/ReferencingTableModel.h \
     ./editors/ComponentEditor/common/ExpressionLineEditor.h \
     ./editors/ComponentEditor/common/EnumerationEditorConstructorDelegate.h \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.h \
     ./editors/ComponentEditor/common/ModeReferenceEditor.h \
     ./editors/ComponentEditor/common/ModeReferenceDelegate.h \
     ./editors/ComponentEditor/common/ModeReferenceModel.h \
@@ -554,6 +555,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPolicyColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
     ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
@@ -577,6 +579,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.h \
     ./editors/ComponentEditor/memoryMaps/ResetsEditor.h \
     ./editors/ComponentEditor/memoryMaps/ResetsModel.h \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.h \
     ./editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleSubspaceMapEditor.h \
@@ -1260,12 +1263,14 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfileeditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfilemodel.cpp \
     ./editors/ComponentEditor/memoryMaps/registertablemodel.cpp \
+    ./editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsDelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsEditor.cpp \
     ./editors/ComponentEditor/memoryMaps/ResetsModel.cpp \
@@ -1361,6 +1366,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/common/ExpressionDelegate.cpp \
     ./editors/ComponentEditor/common/ExpressionEditor.cpp \
     ./editors/ComponentEditor/common/ExpressionLineEditor.cpp \
+    ./editors/ComponentEditor/common/FloatingModeReferenceEditor.cpp \
     ./editors/ComponentEditor/common/InstantiationConfigurableElementEditor.cpp \
     ./editors/ComponentEditor/common/MasterExpressionEditor.cpp \
     ./editors/ComponentEditor/common/MemoryAlignScene.cpp \

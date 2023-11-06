@@ -1211,9 +1211,12 @@ QSharedPointer<BusInterface> Component::getBusInterface(QString const& name ) co
 //-----------------------------------------------------------------------------
 // Function: Component::getSlaveInterfaces()
 //-----------------------------------------------------------------------------
-QStringList Component::getSlaveInterfaces( const QString& memoryMap ) const
+QStringList Component::getTargetInterfaces( const QString& memoryMap ) const
 {
     QStringList names;
+    
+    General::InterfaceMode interfaceModeName = getRevision() == Document::Revision::Std22 
+        ? General::TARGET : General::SLAVE;
 
     for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
     {

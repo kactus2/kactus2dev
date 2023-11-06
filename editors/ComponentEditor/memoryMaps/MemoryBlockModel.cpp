@@ -23,10 +23,11 @@
 //-----------------------------------------------------------------------------
 MemoryBlockModel::MemoryBlockModel(MemoryBlockInterface* blockInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
+    Document::Revision docRevision, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-blockInterface_(blockInterface)
+blockInterface_(blockInterface),
+docRevision_(docRevision)
 {
     setExpressionParser(expressionParser);
 }
@@ -140,6 +141,10 @@ QVariant MemoryBlockModel::data(QModelIndex const& index, int role) const
         if (index.column() == nameColumn() || index.column() == baseAddressColumn())
         {
             return KactusColors::MANDATORY_FIELD;
+        }
+        else if (index.flags() == (Qt::ItemIsSelectable | Qt::ItemIsEnabled))
+        {
+            return KactusColors::DISABLED_FIELD;
         }
         else 
         {
