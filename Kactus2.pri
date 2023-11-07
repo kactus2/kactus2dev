@@ -555,7 +555,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPolicyColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
     ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
@@ -568,6 +567,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.h \
     ./editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
+    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
@@ -675,6 +675,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/common/Association/AssociationRemoveCommand.h \
     ./editors/common/ComponentInstanceEditor/ConfigurableElementsColumns.h \
     ./editors/common/ComponentInstanceEditor/EditorConfigurableElement.h \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkColumns.h \
     ./editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h \
     ./editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsFilter.h \
     ./editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsModel.h \
@@ -686,6 +687,9 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/common/ComponentInstanceEditor/ConfigurableElementsView.h \
     ./editors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.h \
     ./editors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.h \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkModel.h \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkEditor.h \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkDelegate.h \
     ./editors/common/ConfigurationEditor/configurationeditor.h \
     ./editors/common/ConfigurationEditor/activeviewdelegate.h \
     ./editors/common/ConfigurationEditor/activevieweditor.h \
@@ -1475,6 +1479,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/common/ComponentInstanceEditor/EditorConfigurableElement.cpp \
     ./editors/common/ComponentInstanceEditor/MissingConfigurableElementsFilter.cpp \
     ./editors/common/ComponentInstanceEditor/ParameterConfigurableElementsFilter.cpp \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkDelegate.cpp \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkEditor.cpp \
+    ./editors/common/ComponentInstanceEditor/PowerDomainLinkModel.cpp \
     ./editors/common/ConfigurationEditor/activeviewdelegate.cpp \
     ./editors/common/ConfigurationEditor/activevieweditor.cpp \
     ./editors/common/ConfigurationEditor/activeviewmodel.cpp \
