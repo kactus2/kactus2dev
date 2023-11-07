@@ -864,7 +864,7 @@ void FieldValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<F
 void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
 {
     QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    QList<unsigned int> checkedModePriorities;
 
     bool duplicateRefErrorIssued = false;
     bool duplicatePriorityErrorIssued = false;
@@ -951,23 +951,29 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const
 {
-    QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
 
     bool hasAccessPolicyWithoutModeRef = false;
+    
+    auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
+        new QList<QSharedPointer<ModeReference> >());
 
     for (auto const& accessPolicy : *field->getFieldAccessPolicies())
     {
-        if (accessPolicy->getModeReferences()->isEmpty())
+        auto modeRefs = accessPolicy->getModeReferences();
+        if (modeRefs->isEmpty())
         {
             hasAccessPolicyWithoutModeRef = true;
         }
 
-        if (!CommonItemsValidator::hasValidModeRefs(accessPolicy->getModeReferences(),
-            checkedModeReferences, checkedModePriorities))
-        {
-            return false;
-        }
+        std::for_each(modeRefs->cbegin(), modeRefs->cend(), [&allModeRefs](auto modeRef)
+            {
+                allModeRefs->append(modeRef);
+            });
+    }
+
+    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs))
+    {
+        return false;
     }
     
     // Number of field access policies cannot be greater than one if a field access policy has no mode references.

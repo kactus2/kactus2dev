@@ -971,7 +971,7 @@ std::string MemoryMapInterface::getRemapModeReferenceValue(std::string const& ma
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getRemapModeReferencePriority()
 //-----------------------------------------------------------------------------
-int MemoryMapInterface::getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const
+unsigned int MemoryMapInterface::getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const
 {
     int priority = -1;
 
@@ -981,7 +981,7 @@ int MemoryMapInterface::getRemapModeReferencePriority(std::string const& mapName
         return priority;
     }
 
-    return remap->getModeReferences()->at(modeReferenceIndex)->getPriority().toInt();
+    return remap->getModeReferences()->at(modeReferenceIndex)->getPriority();
 }
 
 //-----------------------------------------------------------------------------
@@ -1003,7 +1003,7 @@ bool MemoryMapInterface::setRemapModeReferenceValue(std::string const& mapName, 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::setRemapModeReferencePriority()
 //-----------------------------------------------------------------------------
-bool MemoryMapInterface::setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, int newPriority)
+bool MemoryMapInterface::setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, unsigned int newPriority)
 {
     auto remap = getMemoryRemap(mapName, remapName);
     if (!remap || modeReferenceIndex < 0 || modeReferenceIndex >= getRemapModeReferenceCount(mapName, remapName))
@@ -1011,7 +1011,7 @@ bool MemoryMapInterface::setRemapModeReferencePriority(std::string const& mapNam
         return false;
     }
 
-    remap->getModeReferences()->at(modeReferenceIndex)->setPriority(QString::number(newPriority));
+    remap->getModeReferences()->at(modeReferenceIndex)->setPriority(newPriority);
 
     return true;
 }
@@ -1046,6 +1046,48 @@ bool MemoryMapInterface::removeRemapModeReference(std::string const& mapName, st
 
     remap->getModeReferences()->removeAt(modeReferenceIndex);
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getModeReferenceInterface()
+//-----------------------------------------------------------------------------
+ModeReferenceInterface* MemoryMapInterface::getModeReferenceInterface() const
+{
+    return modeReferenceInterface_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::setModeReferenceInterface()
+//-----------------------------------------------------------------------------
+void MemoryMapInterface::setModeReferenceInterface(ModeReferenceInterface* modeRefInterface)
+{
+    modeReferenceInterface_ = modeRefInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getRemapModeReferencesExcludingRemap()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > MemoryMapInterface::getRemapModeReferencesExcludingRemap(
+    std::string const& mapName, std::string const& remapName) const
+{
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > allModeRefs(new QList<QSharedPointer<ModeReference> >());
+
+    auto selectedMap = getMemoryMap(mapName);
+    if (!selectedMap)
+    {
+        return allModeRefs;
+    }
+
+    QString remapNameQ = QString::fromStdString(remapName);
+    for (auto const& remap : *selectedMap->getMemoryRemaps())
+    {
+        if (remap->name() != remapNameQ)
+        {
+            allModeRefs->append(*remap->getModeReferences());
+        }
+    }
+
+    return allModeRefs;
 }
 
 //-----------------------------------------------------------------------------

@@ -556,7 +556,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/FieldAccessPolicyColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapColumns.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsColumns.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/RegisterColumns.h \
     ./editors/ComponentEditor/memoryMaps/RegisterFileColumns.h \
     ./editors/ComponentEditor/memoryMaps/ResetColumns.h \
@@ -1265,7 +1264,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.cpp \

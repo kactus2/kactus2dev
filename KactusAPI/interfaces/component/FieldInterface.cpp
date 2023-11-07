@@ -390,7 +390,7 @@ string FieldInterface::getAccessString(string const& fieldName, int accessPolicy
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getModeRefs()
 //-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, int> > FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+std::vector<std::pair<std::string, unsigned int> > FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
 {
     if (auto field = getField(fieldName); field)
     {
@@ -399,57 +399,57 @@ std::vector<std::pair<std::string, int> > FieldInterface::getModeRefs(std::strin
         if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
         {
             auto modeRefs = fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
-            vector<pair<string, int> > modeRefList;
+            vector<pair<string, unsigned int> > modeRefList;
             std::transform(modeRefs->cbegin(), modeRefs->cend(), std::back_inserter(modeRefList), 
                 [](QSharedPointer<ModeReference> const& modeRef)
                 {
-                    return make_pair<string, int >(modeRef->getReference().toStdString(), 
-                        modeRef->getPriority().toInt());
+                    return make_pair<string, unsigned int >(modeRef->getReference().toStdString(), 
+                        modeRef->getPriority());
                 });
 
             return modeRefList;
         }
     }
 
-    return vector<pair<string, int> >();
+    return vector<pair<string, unsigned int> >();
 }
-
-//-----------------------------------------------------------------------------
-// Function: FieldInterface::setModeRefs()
-//-----------------------------------------------------------------------------
-bool FieldInterface::setModeRefs(std::string const& fieldName, int accessPolicyIndex,
-    std::vector<std::pair<std::string, int> > const& modeRefs) const
-{
-    auto field = getField(fieldName);
-
-    if (!field)
-    {
-        return false;
-    }
-
-    if (auto accessPolicies = field->getFieldAccessPolicies();
-        accessPolicyIndex <= accessPolicies->size() - 1)
-    {
-        auto accessPolicyModeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
-
-        // Clear old mode refs before setting new ones.
-        accessPolicyModeRefs->clear();
-
-        for (auto const& [reference, priority] : modeRefs)
-        {
-            QSharedPointer<ModeReference> newModeRef(new ModeReference());
-
-            newModeRef->setReference(QString::fromStdString(reference));
-            newModeRef->setPriority(QString::number(priority));
-
-            accessPolicyModeRefs->append(newModeRef);
-        }
-
-        return true;
-    }
-
-    return false;
-}
+//
+////-----------------------------------------------------------------------------
+//// Function: FieldInterface::setModeRefs()
+////-----------------------------------------------------------------------------
+//bool FieldInterface::setModeRefs(std::string const& fieldName, int accessPolicyIndex,
+//    std::vector<std::pair<std::string, int> > const& modeRefs) const
+//{
+//    auto field = getField(fieldName);
+//
+//    if (!field)
+//    {
+//        return false;
+//    }
+//
+//    if (auto accessPolicies = field->getFieldAccessPolicies();
+//        accessPolicyIndex <= accessPolicies->size() - 1)
+//    {
+//        auto accessPolicyModeRefs = accessPolicies->at(accessPolicyIndex)->getModeReferences();
+//
+//        // Clear old mode refs before setting new ones.
+//        accessPolicyModeRefs->clear();
+//
+//        for (auto const& [reference, priority] : modeRefs)
+//        {
+//            QSharedPointer<ModeReference> newModeRef(new ModeReference());
+//
+//            newModeRef->setReference(QString::fromStdString(reference));
+//            newModeRef->setPriority(QString::number(priority));
+//
+//            accessPolicyModeRefs->append(newModeRef);
+//        }
+//
+//        return true;
+//    }
+//
+//    return false;
+//}
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessPolicyCount()
@@ -659,6 +659,22 @@ int FieldInterface::pasteFieldaccessPolicies(std::string const& fieldName)
     }
 
     return numPasted;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setModeReferenceInterface()
+//-----------------------------------------------------------------------------
+void FieldInterface::setModeReferenceInterface(ModeReferenceInterface* modeRefInterface)
+{
+    modeReferenceInterface_ = modeRefInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getModeReferenceInterface()
+//-----------------------------------------------------------------------------
+ModeReferenceInterface* FieldInterface::getModeReferenceInterface() const
+{
+    return modeReferenceInterface_;
 }
 
 //-----------------------------------------------------------------------------
@@ -1832,6 +1848,75 @@ bool FieldInterface::removeFieldAccessPolicy(std::string const& fieldName, int a
 
     field->getFieldAccessPolicies()->removeAt(accessPolicyIndex);
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getModeReferencesInUse()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > FieldInterface::getModeReferencesInUse(std::string const& fieldName, int accessPolicyIndex) const
+{
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInUse(
+        new QList<QSharedPointer<ModeReference> >());
+    
+    auto field = getField(fieldName);
+    
+    if (!field)
+    {
+        return modeRefsInUse;
+    }
+
+    auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+    int currentIndex = 0;
+    for (auto const& accessPolicy : *fieldAccessPolicies)
+    {
+        if (currentIndex != accessPolicyIndex)
+        {
+            modeRefsInUse->append(*accessPolicy->getModeReferences());
+        }
+
+        ++currentIndex;
+    }
+    
+    return modeRefsInUse;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::getModeReferences()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<ModeReference> > > FieldInterface::getModeReferences(
+    std::string const& fieldName, int accessPolicyIndex) const
+{
+    if (auto field = getField(fieldName))
+    {
+        auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+        if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
+        {
+            return fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
+        }
+    }
+
+    return QSharedPointer<QList<QSharedPointer<ModeReference> > >();
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldInterface::setModeReferences()
+//-----------------------------------------------------------------------------
+bool FieldInterface::setModeReferences(std::string const& fieldName, int accessPolicyIndex, QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs)
+{
+    if (auto field = getField(fieldName))
+    {
+        auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+        if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
+        {
+            fieldAccessPolicies->at(accessPolicyIndex)->setModeReferences(newModeRefs);
+            return true;
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

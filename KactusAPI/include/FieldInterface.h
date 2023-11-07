@@ -22,13 +22,15 @@
 
 #include <IPXACTmodels/Component/validators/FieldAccessPolicyValidator.h>
 
+#include <QVector>
+#include <QMap>
+
 class Field;
 class FieldValidator;
 class ResetInterface;
 class WriteValueConstraint;
-
-#include <QVector>
-#include <QMap>
+class ModeReference;
+class ModeReferenceInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing fields.
@@ -788,18 +790,38 @@ public:
      *	    
      * 	    @return A vector containing the mode references as a string-int pair.
      */
-    std::vector<std::pair<std::string, int> > getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
+    std::vector<std::pair<std::string, unsigned int> > getModeRefs(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
-     *	Set the mode references of the given field access policy.
+     *	Get all mode references of field access policies except for the one given by index.
      *  
-     *      @param [in] fieldName             The name of the field.
-     *      @param [in] accessPolicyIndex     Index of the field access policy whose mode references are set.
-     *      @param [in] modeRefs              The mode references to set.
+     *      @param [in] fieldName               The field containing the field access policies.
+     *      @param [in] accessPolicyIndex       The index of the access policy whose mode references are not to get.
      *	    
-     * 	    @return True, if successful, otherwise false.
+     * 	    @return  All mode references, except for mode references of field access policy given by index.
      */
-    bool setModeRefs(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<std::string, int> > const& modeRefs) const;
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferencesInUse(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
+     *	Get mode references of given field access policy.
+     *  
+     *      @param [in] fieldName               The name of the field, which contains the field access policy.
+     *      @param [in] accessPolicyIndex       Index of the field access policy whose mode references to get.
+     *	    
+     * 	    @return  The mode references of the field access policy.
+     */
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferences(std::string const& fieldName, int accessPolicyIndex) const;
+
+    /*!
+     *	Set the mode references of a field access policy.
+     *  
+     *      @param [in] fieldName               The name of the field, which contains the field access policy.
+     *      @param [in] accessPolicyIndex       Index of the field access policy whose mode references to set.
+     *      @param [in] newModeRefs             The mode references to set.
+     *	    
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool setModeReferences(std::string const& fieldName, int accessPolicyIndex, QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs);
 
     /*!
      *	Get the access policy count of the given field.
@@ -890,6 +912,20 @@ public:
      */
     int pasteFieldaccessPolicies(std::string const& fieldName);
 
+    /*!
+     *	Set the mode reference interface to be used.
+     *  
+     *      @param [in] modeRefInterface     The mode reference interface to be used.
+     */
+    void setModeReferenceInterface(ModeReferenceInterface* modeRefInterface);
+
+    /*!
+     *	Get the mode reference interface in use.
+     *  
+     * 	    @return The mode reference interface.
+     */
+    ModeReferenceInterface* getModeReferenceInterface() const;
+
 private:
 
     /*!
@@ -934,6 +970,9 @@ private:
 
     //! Interface for accessing resets.
     ResetInterface* subInterface_;
+
+    //! Interface for accessing mode references.
+    ModeReferenceInterface* modeReferenceInterface_;
     
 };
 

@@ -24,12 +24,14 @@
 
 class Component;
 class MemoryMap;
+class MemoryRemap;
 class MemoryMapBase;
 class ExpressionEditor;
 class ExpressionParser;
 class MemoryMapInterface;
 class SubspaceMapsEditor;
 class RemapModeReferenceEditor;
+class ModeReferenceInterface;
 
 //-----------------------------------------------------------------------------
 //! Editor for editing the details of a single memory map.
@@ -232,6 +234,12 @@ private:
 
     //! Editor for remap mode references.
     RemapModeReferenceEditor* modeReferenceEditor_;
+
+    //! The current remap used by this instance of the editor. Set if the editor is used for a remap.
+    QSharedPointer<MemoryRemap> currentRemap_;
+
+    //! Interface for accessing remap mode references.
+    ModeReferenceInterface* modeRefInterface_;
 };
 
 #endif // SINGLEMEMORYMAPEDITOR_H

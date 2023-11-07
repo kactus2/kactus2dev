@@ -173,6 +173,9 @@ bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> sele
     QStringList checkedModeReferences;
     QStringList checkedModePriorities;
 
+    auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
+        new QList<QSharedPointer<ModeReference> >());
+
     for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
         if (alternateRegisterNames.contains(alternateRegister->name()))
@@ -184,16 +187,21 @@ bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> sele
             alternateRegisterNames.append(alternateRegister->name());
         }
 
+        auto modeRefs = alternateRegister->getModeReferences();
+        std::for_each(modeRefs->cbegin(), modeRefs->cend(), [&allModeRefs](auto modeRef)
+            {
+                allModeRefs->append(modeRef);
+            });
+
         if (!alternateRegisterIsValid(alternateRegister, selectedRegister))
         {
             return false;
         }
-
-        if (!CommonItemsValidator::hasValidModeRefs(alternateRegister->getModeReferences(), 
-            checkedModeReferences, checkedModePriorities))
-        {
-            return false;
-        }
+    }
+    
+    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs))
+    {
+        return false;
     }
 
     return true;
@@ -473,7 +481,7 @@ void RegisterValidator::findErrorsInAlternateRegisters(QVector<QString>& errors,
     bool duplicatePriorityErrorIssued = false;
 
     QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    QList<unsigned int> checkedModePriorities;
 
     for (QSharedPointer<AlternateRegister> alternateRegister : *selectedRegister->getAlternateRegisters())
     {
@@ -523,7 +531,7 @@ void RegisterValidator::findErrorsInAlternateGroups(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: RegisterValidator::findErrorsInAlternateRegisterModeRefs()
 //-----------------------------------------------------------------------------
-void RegisterValidator::findErrorsInAlternateRegisterModeRefs(QStringList& errors, QSharedPointer<AlternateRegister> selectedRegister, QString const& context, QStringList& checkedModeRefs, QStringList& checkedPriorities, bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued) const
+void RegisterValidator::findErrorsInAlternateRegisterModeRefs(QStringList& errors, QSharedPointer<AlternateRegister> selectedRegister, QString const& context, QStringList& checkedModeRefs, QList<unsigned int>& checkedPriorities, bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued) const
 {
     if (selectedRegister->getModeReferences()->isEmpty())
     {

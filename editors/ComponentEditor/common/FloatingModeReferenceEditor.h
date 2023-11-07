@@ -14,7 +14,7 @@
 
 #include <QFrame>
 
-class ModeReferenceModel;
+class ModeReferenceInterface;
 class ModeReferenceEditor;
 
 class FloatingModeReferenceEditor : public QFrame
@@ -25,10 +25,10 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] model      The mode reference model to use.
+     *      @param [in] model      The mode reference interface to use.
      *      @param [in] parent     The parent widget.
      */
-    FloatingModeReferenceEditor(ModeReferenceModel* model, QWidget* parent);
+    FloatingModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent);
 
     virtual ~FloatingModeReferenceEditor() = default;
 

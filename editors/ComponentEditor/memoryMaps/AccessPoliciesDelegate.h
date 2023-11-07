@@ -14,13 +14,15 @@
 
 #include <QStyledItemDelegate>
 
+class ModeReferenceInterface;
+
 class AccessPoliciesDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
 
-    AccessPoliciesDelegate(QWidget* parent);
+    AccessPoliciesDelegate(ModeReferenceInterface* modeReferenceInterface, QWidget* parent);
 
     AccessPoliciesDelegate(AccessPoliciesDelegate const& other) = delete;
     AccessPoliciesDelegate& operator=(AccessPoliciesDelegate const& other) = delete;
@@ -73,6 +75,12 @@ private slots:
      *  Handle canceling editing.
      */
     void onEditingCanceled();
+
+private:
+    
+    //! Mode reference interface to pass onto mode ref editor.
+    ModeReferenceInterface* modeRefInterface_;
+    
 };
 
 #endif // ACCESSPOLICIESDELEGATE_H

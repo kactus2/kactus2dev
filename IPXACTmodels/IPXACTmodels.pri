@@ -156,6 +156,9 @@ HEADERS += ./generaldeclarations.h \
     ./Component/ModeReader.h \
     ./Component/ModeWriter.h \
     ./Component/PortSlice.h \
+    ./Component/PowerDomain.h \
+    ./Component/PowerDomainReader.h \
+    ./Component/PowerDomainWriter.h \
     ./Component/Region.h \
     ./Component/SubSpaceMap.h \
     ./Component/SubspaceMapReader.h \
@@ -197,6 +200,8 @@ HEADERS += ./generaldeclarations.h \
     ./Component/RegisterFile.h \
     ./Component/RemapPort.h \
     ./Component/RemapState.h \
+    ./Component/RemapStateReader.h \
+    ./Component/RemapStateWriter.h \
     ./Component/Segment.h \
     ./Component/Transactional.h \
     ./Component/TransparentBridge.h \
@@ -241,8 +246,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/ChoiceReader.h \
     ./Component/OtherClockDriverReader.h \
     ./Component/OtherClockDriverWriter.h \
-    ./Component/RemapStateReader.h \
-    ./Component/RemapStateWriter.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
     ./Component/validators/FieldReferenceValidator.h \
     ./Component/validators/FieldSliceValidator.h \
@@ -250,6 +253,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/validators/MemoryBlockValidator.h \
     ./Component/validators/ModeValidator.h \
     ./Component/validators/PortSliceValidator.h \
+    ./Component/validators/PowerDomainValidator.h \
     ./Component/validators/RegionValidator.h \
     ./Component/validators/RegisterBaseValidator.h \
     ./Component/validators/RegisterFileValidator.h \
@@ -296,11 +300,7 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/PowerDomain.h \
-    ./Component/PowerDomainReader.h \
-    ./Component/PowerDomainWriter.h \
-    ./Component/validators/PowerDomainValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -514,6 +514,9 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/PortReader.cpp \
     ./Component/PortSlice.cpp \
     ./Component/PortWriter.cpp \
+    ./Component/PowerDomain.cpp \
+    ./Component/PowerDomainReader.cpp \
+    ./Component/PowerDomainWriter.cpp \
     ./Component/Region.cpp \
     ./Component/Register.cpp \
     ./Component/RegisterBase.cpp \
@@ -564,6 +567,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/PortSliceValidator.cpp \
     ./Component/validators/PortTypeValidator.cpp \
     ./Component/validators/PortValidator.cpp \
+    ./Component/validators/PowerDomainValidator.cpp \
     ./Component/validators/RegionValidator.cpp \
     ./Component/validators/RegisterBaseValidator.cpp \
     ./Component/validators/RegisterFileValidator.cpp \
@@ -591,8 +595,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/PowerDomain.cpp \
-    ./Component/PowerDomainReader.cpp \
-    ./Component/PowerDomainWriter.cpp \
-    ./Component/validators/PowerDomainValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp

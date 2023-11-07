@@ -24,9 +24,9 @@
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceEditor::ModeReferenceEditor()
 //-----------------------------------------------------------------------------
-ModeReferenceEditor::ModeReferenceEditor(ModeReferenceModel* model, QWidget* parent) :
+ModeReferenceEditor::ModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent) :
     QWidget(parent),
-    model_(model),
+    model_(new ModeReferenceModel(modeRefInterface, this)),
     view_(new EditableTableView(this))
 {
     setAttribute(Qt::WA_NoMousePropagation);
@@ -53,22 +53,6 @@ ModeReferenceEditor::ModeReferenceEditor(ModeReferenceModel* model, QWidget* par
     connect(model_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceEditor::setModeRefs()
-//-----------------------------------------------------------------------------
-void ModeReferenceEditor::setModeRefs(QList<QPair<QString, int> > modeRefs) const
-{
-    model_->setModeRefs(modeRefs);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceEditor::getModeRefs()
-//-----------------------------------------------------------------------------
-QList<QPair<QString, int> > ModeReferenceEditor::getModeRefs() const
-{
-    return model_->getModeRefs();
 }
 
 //-----------------------------------------------------------------------------

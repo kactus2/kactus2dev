@@ -14,6 +14,8 @@
 
 #include <QAbstractTableModel>
 
+class ModeReferenceInterface;
+
 class ModeReferenceModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -22,25 +24,11 @@ public:
 
     /*!
      *	The constructor.
-     *  
-     *      @param [in] modeRefs   The mode references to edit.
-     *      @param [in] parent     The parent object.
+     * 
+     *      @param [in] modeRefInterface    The mode reference interface to use.
+     *      @param [in] modeRefs            The mode references to edit.
      */
-    ModeReferenceModel(QList<QPair<QString, int> > const& modeRefs, QObject* parent);
-
-    /*!
-     *	Get the edited mode references.
-     *  
-     * 	    @return The edited mode references as a list.
-     */
-    virtual QList<QPair<QString, int> > getModeRefs() const;
-
-    /*!
-     *	Set the mode references.
-     *  
-     *      @param [in] modeRefs     The mode references to set.
-     */
-    virtual void setModeRefs(QList<QPair<QString, int> > const& modeRefs);
+    ModeReferenceModel(ModeReferenceInterface* modeRefInterface, QObject* parent);
 
     /*!
      *  Get the number of modes the model contains.
@@ -131,8 +119,8 @@ signals:
 
 private:
 
-    //! The mode references to be edited.
-    QList<QPair<QString, int> > modeRefs_;
+    //! The interface to access mode references.
+    ModeReferenceInterface* interface_;
 
 };
 

@@ -38,13 +38,14 @@ AccessPoliciesEditor::AccessPoliciesEditor(QSharedPointer<QList<QSharedPointer<A
     topLayout->addWidget(view_);
 
     auto model = new AccessPoliciesModel(accessPolicyInterface, this);
-    auto delegate = new AccessPoliciesDelegate(this);
+    auto delegate = new AccessPoliciesDelegate(accessPolicyInterface->getModeReferenceInterface(), this);
     auto proxy = new QSortFilterProxyModel(this);
 
     proxy->setSourceModel(model);
     view_->setModel(proxy);
     view_->setItemDelegate(delegate);
     view_->setSortingEnabled(true);
+    view_->setItemsDraggable(false);
 
     connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);

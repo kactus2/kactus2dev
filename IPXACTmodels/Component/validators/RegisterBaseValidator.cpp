@@ -248,7 +248,7 @@ void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
     bool duplicateModePriorityErrorIssued = false;
 
     QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    QList<unsigned int> checkedModePriorities;
 
     for (auto const& accessPolicy : *registerBase->getAccessPolicies())
     {

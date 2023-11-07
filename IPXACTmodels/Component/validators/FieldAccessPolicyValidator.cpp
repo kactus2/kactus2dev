@@ -174,14 +174,10 @@ bool FieldAccessPolicyValidator::hasValidAccessRestrictions(QSharedPointer<Field
 bool FieldAccessPolicyValidator::hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const
 {
     QStringList refs;
-    QStringList priorities;
+    QList<unsigned int> priorities;
 
     for (auto const& modeRef : *modeRefs)
     {
-        if (modeRef->getPriority().isEmpty())
-        {
-            return false;
-        }
 
         if (!refs.contains(modeRef->getReference()))
         {

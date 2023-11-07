@@ -50,13 +50,10 @@ namespace CommonItemsValidator
      *  previously checked references.
      *  
      *      @param [in] modeRefs              The mode references to check.
-     *      @param [in] checkedReferences     A list of already checked mode reference values.
-     *      @param [in] checkedPriorities     A list of already checked mode priority values.
      *	    
      * 	    @return True, if the given mode references are valid, otherwise false.
      */
-    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, 
-        QStringList& checkedReferences, QStringList& checkedPriorities);
+    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
 
     /*!
      *	Finds errors in mode references within in a parent element. Mode reference values and priorities must 
@@ -72,9 +69,47 @@ namespace CommonItemsValidator
      *      @param [in] duplicatePriorityErrorIssued    Flag indicating if an error for duplicate priorities has been issued.
      */
     void findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs,
-        QString const& context, QStringList& checkedRefs, QStringList& checkedPriorities, 
+        QString const& context, QStringList& checkedRefs, QList<unsigned int>& checkedPriorities, 
         bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued);
     
+    /*!
+     *	Check if a single mode reference is valid. Provide all mode references in containing element to check 
+     *  against for duplicates.
+     *  
+     *      @param [in] modeRefsInContainingElem     All other mode references in the containing element.
+     *      @param [in] modeReferenceToCheck         The mode reference to check.
+     *      @param [in] isRemap                      Flag indicating if given mode ref is within a remap or not.
+     *	    
+     * 	    @return True, if mode reference is valid, otherwise false.
+     */
+    IPXACTMODELS_EXPORT bool singleModeReferenceIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem,
+        QSharedPointer<ModeReference> modeReferenceToCheck, bool isRemap = false);
+    
+    /*!
+     *	Check if the priority of a single mode reference is valid. Provide all mode references in containing 
+     *  element to check against for duplicates (if not within memory remap).
+     *
+     *      @param [in] modeRefsInContainingElem     All other mode references in the containing element.
+     *      @param [in] modeReferenceToCheck         The mode reference whose priority to check.
+     *      @param [in] isRemap                      Flag indicating if given mode ref is within a remap or not.
+     *
+     * 	    @return True, if the mode reference priority is valid, otherwise false.
+     */
+    IPXACTMODELS_EXPORT bool modeReferencePriorityIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem,
+        QSharedPointer<ModeReference> modeReferenceToCheck, bool isRemap = false);
+
+    /*!
+     *	Check if the reference value of a single mode reference is valid. Provide all mode references in containing
+     *  element to check against for duplicates.
+     *
+     *      @param [in] modeRefsInContainingElem     All other mode references in the containing element.
+     *      @param [in] modeReferenceToCheck         The mode reference whose reference value to check.
+     *
+     * 	    @return True, if the mode reference value is valid, otherwise false.
+     */
+    IPXACTMODELS_EXPORT bool modeReferenceValueIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem,
+        QSharedPointer<ModeReference> modeReferenceToCheck, QStringList const& availableModes);
+
     /*!
      *	Validate given access policies.
      *  

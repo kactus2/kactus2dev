@@ -71,42 +71,37 @@ bool CommonItemsValidator::isValidExpression(QString const& expression, QSharedP
 //-----------------------------------------------------------------------------
 // Function: CommonItemsValidator::hasValidModeRefs()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QStringList& checkedReferences, QStringList& checkedPriorities)
+bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
 {
+    QStringList checkedReferences;
+    QList<uint> checkedPriorities;
+
     for (auto const& modeRef : *modeRefs)
     {
         auto reference = modeRef->getReference();
-        auto priorityStr = modeRef->getPriority();
+        auto priority = modeRef->getPriority();
 
-        bool priorityValidInt = false;
-        int priority = priorityStr.toUInt(&priorityValidInt);
-
-        if (!CommonItemsValidator::hasValidName(modeRef->getReference()))
+        if (!CommonItemsValidator::hasValidName(reference))
         {
             return false;
         }
 
-        if (!priorityValidInt || priority < 0)
-        {
-            return false;
-        }
-
-        if (checkedPriorities.contains(modeRef->getPriority()))
+        if (checkedPriorities.contains(priority))
         {
             return false;
         }
         else
         {
-            checkedPriorities.append(modeRef->getPriority());
+            checkedPriorities.append(priority);
         }
 
-        if (checkedReferences.contains(modeRef->getReference()))
+        if (checkedReferences.contains(reference))
         {
             return false;
         }
         else
         {
-            checkedReferences.append(modeRef->getReference());
+            checkedReferences.append(reference);
         }
     }
 
@@ -118,16 +113,13 @@ bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<
 //-----------------------------------------------------------------------------
 void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors, 
     QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QString const& context,
-    QStringList& checkedRefs, QStringList& checkedPriorities, bool* duplicateRefErrorIssued, 
+    QStringList& checkedRefs, QList<unsigned int>& checkedPriorities, bool* duplicateRefErrorIssued, 
     bool* duplicatePriorityErrorIssued)
 {
     for (auto const& modeRef : *modeRefs)
     {
         auto reference = modeRef->getReference();
-        auto priorityStr = modeRef->getPriority();
-
-        bool priorityValidInt = false;
-        int priority = priorityStr.toUInt(&priorityValidInt);
+        auto priority = modeRef->getPriority();
 
         if (!hasValidName(reference))
         {
@@ -135,13 +127,7 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
                 "Mode reference in %1 has invalid or empty reference value '%2'.").arg(context).arg(reference));
         }
 
-        if (!priorityValidInt || priority < 0)
-        {
-            errors.append(QObject::tr(
-                "Mode reference in %1 has invalid or empty priority '%2'.").arg(context).arg(priorityStr));
-        }
-
-        if (checkedPriorities.contains(modeRef->getPriority()) && *duplicatePriorityErrorIssued == false)
+        if (checkedPriorities.contains(priority) && *duplicatePriorityErrorIssued == false)
         {
             errors.append(QObject::tr(
                 "One or more mode references in %1 contain duplicate priority values.").arg(context));
@@ -149,10 +135,10 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
         }
         else
         {
-            checkedPriorities.append(modeRef->getPriority());
+            checkedPriorities.append(priority);
         }
 
-        if (checkedRefs.contains(modeRef->getReference()) && *duplicateRefErrorIssued == false)
+        if (checkedRefs.contains(reference) && *duplicateRefErrorIssued == false)
         {
             errors.append(QObject::tr(
                 "One or more mode references in %1 contain duplicate mode reference values.")
@@ -161,9 +147,82 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
         }
         else
         {
-            checkedRefs.append(modeRef->getReference());
+            checkedRefs.append(reference);
         }
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::singleModeReferenceIsValid()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::singleModeReferenceIsValid(
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem, 
+    QSharedPointer<ModeReference> modeReferenceToCheck, bool isRemap /*= false*/)
+{
+    if (!CommonItemsValidator::hasValidName(modeReferenceToCheck->getReference()))
+    {
+        return false;
+    }
+
+    for (auto const& modeRef : *modeRefsInContainingElem)
+    {
+        auto reference = modeRef->getReference();
+        auto priority = modeRef->getPriority();
+
+        if (reference == modeReferenceToCheck->getReference())
+        {
+            return false;
+        }
+
+        // Check priority only if mode ref is contained in other element than memory remap. In remaps, priority
+        // doesn't have to be unique.
+        if (!isRemap && priority == modeReferenceToCheck->getPriority())
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::modeReferencePriorityIsValid()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::modeReferencePriorityIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem, QSharedPointer<ModeReference> modeReferenceToCheck, bool isRemap /*= false*/)
+{
+    if (!isRemap)
+    {
+        for (auto const& modeRef : *modeRefsInContainingElem)
+        {  
+            // Check priority only if mode ref is contained in other element than memory remap. In remaps, priority
+            // doesn't have to be unique.
+            if (modeRef->getPriority() == modeReferenceToCheck->getPriority())
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::modeReferenceValueIsValid()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::modeReferenceValueIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem, QSharedPointer<ModeReference> modeReferenceToCheck, QStringList const& availableModes)
+{
+    auto refToCheck = modeReferenceToCheck->getReference();
+    
+    if (!CommonItemsValidator::hasValidName(refToCheck))
+    {
+        return false;
+    }
+
+    return std::none_of(modeRefsInContainingElem->cbegin(), modeRefsInContainingElem->cend(),
+        [&refToCheck, &availableModes](auto modeRef)
+        {
+            return modeRef->getReference() == refToCheck || !availableModes.contains(refToCheck);
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -173,23 +232,28 @@ bool CommonItemsValidator::hasValidAccessPolicies(QSharedPointer<QList<QSharedPo
 {
     bool hasAccessPolicyWithoutModeRef = false;
 
-    QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
+        new QList<QSharedPointer<ModeReference> >());
 
     for (auto const& accessPolicy : *accessPolicies)
     {
-        if (accessPolicy->getModeReferences()->isEmpty())
+        auto modeRefs = accessPolicy->getModeReferences();
+        if (modeRefs->isEmpty())
         {
             hasAccessPolicyWithoutModeRef = true;
         }
 
-        // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
-        // all address block access policies.
-        if (!hasValidModeRefs(accessPolicy->getModeReferences(),
-            checkedModeReferences, checkedModePriorities))
-        {
-            return false;
-        }
+        std::for_each(modeRefs->cbegin(), modeRefs->cend(), [&allModeRefs](auto modeRef)
+            {
+                allModeRefs->append(modeRef);
+            });
+    }
+
+    // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
+    // all address block access policies.
+    if (!hasValidModeRefs(allModeRefs))
+    {
+        return false;
     }
 
     // Number of access policies cannot be greater than one if an access policy has no mode references.

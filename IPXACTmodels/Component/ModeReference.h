@@ -31,14 +31,14 @@ public:
 
 	void setReference(QString const& val);
 
-	QString getPriority() const;
+	unsigned int getPriority() const;
 
-	void setPriority(QString const& val);
-
+	void setPriority(unsigned int val);
+	
 private:
 	QString reference_;
 
-	QString priority_;
+	unsigned int priority_ = 0;
 };
 
 #endif // MODEREFERENCE_

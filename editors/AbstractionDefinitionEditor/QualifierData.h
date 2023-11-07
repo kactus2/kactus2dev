@@ -47,4 +47,4 @@ struct QualifierData
 //! Declare metatype for use in QVariant
 Q_DECLARE_METATYPE(QualifierData);
 
-#endif QUALIFIERDATA_H
+#endif // QUALIFIERDATA_H

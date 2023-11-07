@@ -16,9 +16,9 @@
 
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h>
-#include <editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
+#include <KactusAPI/include/ModeReferenceInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
@@ -63,18 +63,35 @@ isMemoryRemap_(isMemoryRemap)
 
     isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
 
+    remapStateSelector_->setProperty("mandatoryField", true);
+
+    modeRefInterface_ = mapInterface_->getModeReferenceInterface();
+    modeRefInterface_->setContainingElementIsRemap(isMemoryRemap);
+
     if (isMemoryRemap_)
     {
         addressUnitBitsEditor_->setEnabled(false);
+
+        currentRemap_ = memoryRemap.dynamicCast<MemoryRemap>();
+        modeRefInterface_->setModeReferences(currentRemap_->getModeReferences());
+
+        auto containingModeRefs = mapInterface_->getRemapModeReferencesExcludingRemap(parentMapName_, remapName_);
+        modeRefInterface_->setContainingElementModeReferences(containingModeRefs);
+        modeRefInterface_->setContainingElementIsRemap(true);
+    }
+    else
+    {
+        // Clear the current mode refs, if first in remap, then in default remap editor. Otherwise
+        // ghost cells appear in the mode ref table.
+        if (auto currentModeRefs = modeRefInterface_->getModeReferences())
+        {
+            modeRefInterface_->setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > >());
+        }
     }
 
-    remapStateSelector_->setProperty("mandatoryField", true);
-
-    MemoryRemapModeReferenceModel* modeRefModel = new MemoryRemapModeReferenceModel(mapInterface, parentMapName, memoryRemap->name(), this);
-    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefModel, this);
+    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefInterface_, this);
 
     connectSignals();
-
     setupLayout();
 }
 
@@ -161,17 +178,39 @@ void SingleMemoryMapEditor::refresh()
     refreshTargetBinding();
     addressUnitBitsEditor_->setText(QString::fromStdString(mapInterface_->getAddressUnitBits(parentMapName_)));
 
-    if (!isMemoryRemap_)
+    if (component()->getRevision() != Document::Revision::Std22)
     {
-        remapStateSelector_->setEnabled(false);
-        QStringList defaultList;
-        defaultList.append("Default");
-        remapStateSelector_->refresh(defaultList);
-        remapStateSelector_->selectItem("Default");
+        if (!isMemoryRemap_)
+        {
+            remapStateSelector_->setEnabled(false);
+            QStringList defaultList;
+            defaultList.append("Default");
+            remapStateSelector_->refresh(defaultList);
+            remapStateSelector_->selectItem("Default");
+        }
+        else
+        {
+            refreshRemapStateSelector();
+        }
     }
     else
     {
-        refreshRemapStateSelector();
+        // Refresh mode references for use in current editor.
+        if (isMemoryRemap_)
+        {
+            modeRefInterface_->setModeReferences(currentRemap_->getModeReferences());
+
+            auto containingModeRefs = mapInterface_->getRemapModeReferencesExcludingRemap(parentMapName_, remapName_);
+            modeRefInterface_->setContainingElementModeReferences(containingModeRefs);
+        }
+        // Clear mode references from interface, 
+        else
+        {
+            if (auto currentModeRefs = modeRefInterface_->getModeReferences())
+            {
+                modeRefInterface_->setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > >());
+            }
+        }
     }
 
     isPresentEditor_->setExpression(

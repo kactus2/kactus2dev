@@ -53,8 +53,10 @@ HEADERS += ./KactusAPI.h \
     ./include/MemoryMapInterface.h \
     ./include/MemoryRemapExpressionGatherer.h \
     ./include/MessageMediator.h \
+    ./include/ModeConditionParser.h \
     ./include/ModelParameterSource.h \
     ./include/ModelParameterVisualizer.h \
+    ./include/ModeReferenceInterface.h \
     ./include/ModuleParameterInterface.h \
     ./include/MultipleParameterFinder.h \
     ./include/NameGroupInterface.h \
@@ -88,8 +90,7 @@ HEADERS += ./KactusAPI.h \
     ./include/LibraryItem.h \
     ./include/LibraryLoader.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h \
-    ./include/ModeConditionParser.h
+    ./include/ParameterCache.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -105,6 +106,7 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/ListParameterFinder.cpp \
     ./expressions/MemoryMapExpressionsGatherer.cpp \
     ./expressions/MemoryRemapExpressionGatherer.cpp \
+    ./expressions/ModeConditionParser.cpp \
     ./expressions/MultipleParameterFinder.cpp \
     ./expressions/NullParser.cpp \
     ./expressions/ParameterCache.cpp \
@@ -126,6 +128,7 @@ SOURCES += ./KactusAPI.cpp \
     ./interfaces/component/MasterPortInterface.cpp \
     ./interfaces/component/MemoryBlockInterface.cpp \
     ./interfaces/component/MemoryMapInterface.cpp \
+    ./interfaces/component/ModeReferenceInterface.cpp \
     ./interfaces/component/ModuleParameterInterface.cpp \
     ./interfaces/component/PortMapInterface.cpp \
     ./interfaces/component/PortsInterface.cpp \
@@ -157,5 +160,4 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp \
-    ./expressions/ModeConditionParser.cpp
+    ./library/TagManager.cpp

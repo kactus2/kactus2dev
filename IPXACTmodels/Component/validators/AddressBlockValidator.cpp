@@ -711,7 +711,7 @@ void AddressBlockValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
     bool duplicateModePriorityErrorIssued = false;
 
     QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    QList<unsigned int> checkedModePriorities;
 
     for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
     {

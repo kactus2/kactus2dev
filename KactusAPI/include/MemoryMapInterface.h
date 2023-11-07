@@ -24,6 +24,8 @@ class MemoryRemap;
 class MemoryMapValidator;
 class AddressBlockInterface;
 class SubspaceMapInterface;
+class ModeReferenceInterface;
+class ModeReference;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing memory maps and remaps.
@@ -494,7 +496,7 @@ public:
      *
      * 	    @return The mode reference priority.
      */
-    int getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
+    unsigned int getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
     
     /*!
      *	Set the mode reference value for a mode reference of a selected remap.
@@ -518,7 +520,7 @@ public:
      *
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, int newPriority);
+    bool setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, unsigned int newPriority);
 
     /*!
      *	Add a new mode reference to a selected remap.
@@ -540,6 +542,31 @@ public:
      * 	    @return True, if the operation was successful, otherwise false.
      */
     bool removeRemapModeReference(std::string const& mapName, std::string const& remapName, int modeReferenceIndex);
+
+    /*!
+     *	Get the mode reference interface used for accessing remap mode references.
+     *  
+     * 	    @return  The mode reference interface.
+     */
+    ModeReferenceInterface* getModeReferenceInterface() const;
+
+    /*!
+     *	Set the mode reference interface used for accessing remap mode references.
+     *  
+     *      @param [in] modeRefInterface     Description
+     */
+    void setModeReferenceInterface(ModeReferenceInterface* modeRefInterface);
+
+    
+    /*!
+     *	Get the mode references of all remaps in memory map excluding selected remap.
+     *  
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap to exclude from the mode ref list.
+     *
+     * 	    @return  The mode references of remaps in memory map, excluding selected remap.
+     */
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > getRemapModeReferencesExcludingRemap(std::string const& mapName, std::string const& remapName) const;
 
 private:
 
@@ -630,6 +657,9 @@ private:
 
     //! Interface for accessing subspace maps.
     SubspaceMapInterface* subspaceInterface_;
+
+    //! Interface for accessing remap mode references.
+    ModeReferenceInterface* modeReferenceInterface_;
 };
 
 #endif // MEMORYMAPINTERFACE_H

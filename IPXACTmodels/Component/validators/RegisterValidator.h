@@ -208,7 +208,7 @@ private:
      */
     void findErrorsInAlternateRegisterModeRefs(QStringList& errors,
         QSharedPointer<AlternateRegister> selectedRegister, QString const& context, 
-        QStringList& checkedModeRefs, QStringList& checkedPriorities, 
+        QStringList& checkedModeRefs, QList<unsigned int>& checkedPriorities, 
         bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued) const;
 
     /*!
