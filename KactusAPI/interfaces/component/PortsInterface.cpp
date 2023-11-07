@@ -171,7 +171,14 @@ bool PortsInterface::setTypeName(std::string const& portName, std::string const&
     QSharedPointer<Port> port = getPort(portName);
     if (newType.empty())
     {
-        port->getTypes()->clear();
+        if (port->getWire())
+        {
+            port->getWireTypes()->clear();
+        }
+        else
+        {
+            port->getTransactionalTypes()->clear();
+        }
     }
     else
     {

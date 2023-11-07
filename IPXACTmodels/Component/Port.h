@@ -309,20 +309,20 @@ public:
     QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
 
     /*!
-     *  Get the type definitions.
+     *  Get the wire type definitions.
      *
-     *      @return A list of pointers to the type definitions contained within the port.
+     *      @return The type definitions contained within the wire port.
      */
-    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTypes() const;
-
-private:
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypes() const;
 
     /*!
-     *  Copy the list of arrays.
+     *  Get the transactional type definitions.
      *
-     *      @param [in] other   The target of the copying.
+     *      @return The type definitions contained within the transactional port.
      */
-    void copyArrays(const Port& other);
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTransactionalTypes() const;
+
+private:
 
     //-----------------------------------------------------------------------------
     // Data.
