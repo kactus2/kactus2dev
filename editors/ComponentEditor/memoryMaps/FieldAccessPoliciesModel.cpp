@@ -14,6 +14,8 @@
 
 #include <common/KactusColors.h>
 
+using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesModel::FieldAccessPoliciesModel()
 //-----------------------------------------------------------------------------
@@ -201,8 +203,6 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         {
             QVariant modeRefsVariant;
 
-            using ModeRefList = QSharedPointer<QList<QSharedPointer<ModeReference> > >;
-            
             // Mode references for current index and all other mode refs.
             QPair<ModeRefList, ModeRefList> modeRefs;
 
@@ -235,8 +235,7 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        QSharedPointer<QList<QSharedPointer<ModeReference> > > updatedModeRefs =
-            value.value<QSharedPointer<QList<QSharedPointer<ModeReference> > > >();
+        ModeRefList updatedModeRefs = value.value<ModeRefList>();
 
         fieldInterface_->setModeReferences(fieldName_, index.row(), updatedModeRefs);
     }

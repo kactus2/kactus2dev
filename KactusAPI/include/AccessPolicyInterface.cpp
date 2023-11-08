@@ -66,53 +66,6 @@ bool AccessPolicyInterface::removeAccessPolicy(int accessPolicyIndex)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AccessPolicyInterface::setModeRefs()
-//-----------------------------------------------------------------------------
-bool AccessPolicyInterface::setModeRefs(std::vector<std::pair<std::string, unsigned int> > const& newModeRefs, int accessPolicyIndex)
-{
-    if (accessPolicyIndex <= accessPolicies_->size() - 1)
-    {
-        // Clear old access policy mode refs.
-        auto modeRefs = accessPolicies_->at(accessPolicyIndex)->getModeReferences();
-        modeRefs->clear();
-
-        // Create and add new mode refs.
-        for (auto const& [reference, priority] : newModeRefs)
-        {
-            QSharedPointer<ModeReference> newModeRef(new ModeReference());
-            newModeRef->setReference(QString::fromStdString(reference));
-            newModeRef->setPriority(priority);
-
-            modeRefs->append(newModeRef);
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AccessPolicyInterface::getModeRefs()
-//-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, unsigned int> > AccessPolicyInterface::getModeRefs(int accessPolicyIndex) const
-{
-    std::vector<std::pair<std::string, unsigned int> > modeRefsList;
-    
-    if (accessPolicyIndex <= accessPolicies_->size() - 1)
-    {
-        auto accessPolicyModeRefs = accessPolicies_->at(accessPolicyIndex)->getModeReferences();
-
-        for (auto const& modeRef : *accessPolicyModeRefs)
-        {
-            modeRefsList.emplace_back(modeRef->getReference().toStdString(), modeRef->getPriority());
-        }
-    }
-    
-    return modeRefsList;
-}
-
-//-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::hasValidAccessPolicies()
 //-----------------------------------------------------------------------------
 bool AccessPolicyInterface::hasValidAccessPolicies() const
@@ -173,25 +126,43 @@ ModeReferenceInterface* AccessPolicyInterface::getModeReferenceInterface() const
 //-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::getAccesPolicyModeReferences()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > AccessPolicyInterface::getAccesPolicyModeReferences(int accessPolicyIndex) const
+std::vector<std::pair<unsigned int, std::string> > AccessPolicyInterface::getAccesPolicyModeReferences(int accessPolicyIndex) const
 {
+    std::vector<std::pair<unsigned int, std::string> > modeRefs;
     if (accessPolicyIndex >= 0 && accessPolicyIndex < accessPolicies_->size())
     {
-        return accessPolicies_->at(accessPolicyIndex)->getModeReferences();
+        auto modeReferences = accessPolicies_->at(accessPolicyIndex)->getModeReferences();
+
+        std::transform(modeReferences->cbegin(), modeReferences->cend(), std::back_inserter(modeRefs),
+            [](auto modeReference)
+            {
+                return std::make_pair(modeReference->getPriority(), modeReference->getReference().toStdString());
+            });
     }
 
-    return nullptr;
+    return modeRefs;
 }
 
 //-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::setAccessPolicyModeReferences()
 //-----------------------------------------------------------------------------
-bool AccessPolicyInterface::setAccessPolicyModeReferences(int accessPolicyIndex, QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs)
+bool AccessPolicyInterface::setAccessPolicyModeReferences(int accessPolicyIndex, 
+    std::vector<std::pair<unsigned int, std::string> > const& newModeRefs)
 {
     if (accessPolicyIndex >= 0 && accessPolicyIndex < accessPolicies_->size())
     {
-        accessPolicies_->at(accessPolicyIndex)->setModeReferences(newModeRefs);
+        QSharedPointer<QList<QSharedPointer<ModeReference> > > createdModeRefs(
+            new QList<QSharedPointer<ModeReference> >());
 
+        for (auto const& [priority, reference] : newModeRefs)
+        {
+            QSharedPointer<ModeReference> createdModeRef(new ModeReference());
+            createdModeRef->setReference(QString::fromStdString(reference));
+            createdModeRef->setPriority(priority);
+            createdModeRefs->append(createdModeRef);
+        }
+
+        accessPolicies_->at(accessPolicyIndex)->setModeReferences(createdModeRefs);
         return true;
     }
 
@@ -201,19 +172,24 @@ bool AccessPolicyInterface::setAccessPolicyModeReferences(int accessPolicyIndex,
 //-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::getModeReferencesInUse()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > AccessPolicyInterface::getModeReferencesInUse(int accessPolicyIndex) const
+std::vector<std::pair<unsigned int, std::string> > AccessPolicyInterface::getModeReferencesInUse(int accessPolicyIndex) const
 {
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInUse(new QList<QSharedPointer<ModeReference> >());
+    std::vector<std::pair<unsigned int, std::string> > modeRefsInUse;
 
     int currentIndex = 0;
     for (auto const& accessPolicy : *accessPolicies_)
     {
+        // Get all mode references, excluding mode references in given access policy.
         if (currentIndex != accessPolicyIndex)
         {
-            modeRefsInUse->append(*accessPolicy->getModeReferences());
+            auto modeReferences = accessPolicy->getModeReferences();
+            std::transform(modeReferences->cbegin(), modeReferences->cend(), std::back_inserter(modeRefsInUse),
+                [](auto modeReference)
+                {
+                    return std::make_pair(modeReference->getPriority(), modeReference->getReference().toStdString());
+                });
         }
-
-        currentIndex++;
+        ++currentIndex;
     }
 
     return modeRefsInUse;

@@ -115,9 +115,9 @@ QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::Dis
         auto modes = interface_->getComponentModes();
 
         QStringList modeNames;
-        std::for_each(modes->begin(), modes->end(), [&modeNames](QSharedPointer<Mode> mode)
+        std::for_each(modes.begin(), modes.end(), [&modeNames](std::string const& mode)
             {
-                modeNames.append(mode->name());
+                modeNames.append(QString::fromStdString(mode));
             });
 
         return modeNames;

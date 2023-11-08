@@ -477,50 +477,25 @@ public:
     int getRemapModeReferenceCount(std::string const& mapName, std::string const& remapName) const;
 
     /*!
-     *	Get the mode reference value for a mode reference of a selected remap.
+     *	Get the mode references of a selected remap.
      *  
      *      @param [in] mapName             The containing memory map.
      *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to get.
      *	    
-     * 	    @return The mode reference value.
+     * 	    @return The mode references of selected remap.
      */
-    std::string getRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getRemapModeReferences(std::string const& mapName, std::string const& remapName) const;
 
     /*!
-     *	Get the mode reference priority for a mode reference of a selected remap.
-     *
+     *	Set the mode references of given remap.
+     *  
      *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose priority to get.
-     *
-     * 	    @return The mode reference priority.
-     */
-    unsigned int getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
-    
-    /*!
-     *	Set the mode reference value for a mode reference of a selected remap.
-     *
-     *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to set.
-     *      @param [in] newValue            The new reference to set.
-     *
+     *      @param [in] remapName           The name of the remap whose mode references are set.
+     *      @param [in] newModeRefs         The mode references to set.
+     *	    
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, std::string const& newValue);
-
-    /*!
-     *	Set the mode reference priority for a mode reference of a selected remap.
-     *
-     *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference priority to set.
-     *      @param [in] newPriority         The new priority value to set.
-     *
-     * 	    @return True, if the operation was successful, otherwise false.
-     */
-    bool setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, unsigned int newPriority);
+    bool setRemapModeReferences(std::string const& mapName, std::string const& remapName, std::vector<std::pair<unsigned int, std::string> > const& newModeRefs);
 
     /*!
      *	Add a new mode reference to a selected remap.
@@ -557,16 +532,17 @@ public:
      */
     void setModeReferenceInterface(ModeReferenceInterface* modeRefInterface);
 
-    
     /*!
-     *	Get the mode references of all remaps in memory map excluding selected remap.
+     *	Get the mode references of all remaps in memory map (excluding selected remap) as a list of priority, 
+     *  reference pairs.
      *  
      *      @param [in] mapName             The containing memory map.
      *      @param [in] remapName           The name of the remap to exclude from the mode ref list.
      *
      * 	    @return  The mode references of remaps in memory map, excluding selected remap.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getRemapModeReferencesExcludingRemap(std::string const& mapName, std::string const& remapName) const;
+    std::vector<std::pair<unsigned int, std::string> > getRemapModeReferencesExcludingRemap(
+        std::string const& mapName, std::string const& remapName) const;
 
 private:
 

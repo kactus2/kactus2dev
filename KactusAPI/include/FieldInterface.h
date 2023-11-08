@@ -800,7 +800,7 @@ public:
      *	    
      * 	    @return  All mode references, except for mode references of field access policy given by index.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferencesInUse(std::string const& fieldName, int accessPolicyIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getModeReferencesInUse(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
      *	Get mode references of given field access policy.
@@ -810,7 +810,7 @@ public:
      *	    
      * 	    @return  The mode references of the field access policy.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferences(std::string const& fieldName, int accessPolicyIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getModeReferences(std::string const& fieldName, int accessPolicyIndex) const;
 
     /*!
      *	Set the mode references of a field access policy.
@@ -821,7 +821,7 @@ public:
      *	    
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setModeReferences(std::string const& fieldName, int accessPolicyIndex, QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs);
+    bool setModeReferences(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<unsigned int, std::string> > newModeRefs);
 
     /*!
      *	Get the access policy count of the given field.

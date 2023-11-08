@@ -30,6 +30,8 @@
 #include <QLineEdit>
 #include <QSortFilterProxyModel>
 
+using ModeRefsList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
@@ -49,21 +51,14 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        using ModeRefsList = QSharedPointer<QList<QSharedPointer<ModeReference> > >;
-
         // Update the mode reference interface with the mode references of the current access policy
         // by copying mode references over to interface to be able to abort editing in floating mode ref editor.
         auto modeReferencesVariant = index.data(Qt::UserRole);
 
-        auto [currentModeRefs, otherModeRefsInUse] = 
-            modeReferencesVariant.value<QPair<ModeRefsList, ModeRefsList> >();
-
-        ModeRefsList copiedModeRefs(new QList<QSharedPointer<ModeReference> >());
-
-        Utilities::copyList(copiedModeRefs, currentModeRefs);
+        auto [currentModeRefs, otherModeRefsInUse] = modeReferencesVariant.value<QPair<ModeRefsList, ModeRefsList> >();
 
         // Set the mode references of the currently selected field access policy to the mode reference interface.
-        modeRefInterface_->setModeReferences(copiedModeRefs);
+        modeRefInterface_->setModeReferences(currentModeRefs);
 
         // Set the othcer mode references in use for validation purposes.
         modeRefInterface_->setContainingElementModeReferences(otherModeRefsInUse);
@@ -135,12 +130,7 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
 //-----------------------------------------------------------------------------
 void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    if (index.column() == FieldAccessPolicyColumns::MODE)
-    {
-
-    }
-
-    else if (index.column() == FieldAccessPolicyColumns::ACCESS)
+    if (index.column() == FieldAccessPolicyColumns::ACCESS)
     {
         auto castEditor = qobject_cast<AccessComboBox*>(editor);
         

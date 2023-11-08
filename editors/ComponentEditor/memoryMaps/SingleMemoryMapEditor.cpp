@@ -73,7 +73,7 @@ isMemoryRemap_(isMemoryRemap)
         addressUnitBitsEditor_->setEnabled(false);
 
         currentRemap_ = memoryRemap.dynamicCast<MemoryRemap>();
-        modeRefInterface_->setModeReferences(currentRemap_->getModeReferences());
+        modeRefInterface_->setModeReferences(mapInterface_->getRemapModeReferences(parentMapName_, remapName_));
 
         auto containingModeRefs = mapInterface_->getRemapModeReferencesExcludingRemap(parentMapName_, remapName_);
         modeRefInterface_->setContainingElementModeReferences(containingModeRefs);
@@ -81,11 +81,11 @@ isMemoryRemap_(isMemoryRemap)
     }
     else
     {
-        // Clear the current mode refs, if first in remap, then in default remap editor. Otherwise
-        // ghost cells appear in the mode ref table.
-        if (auto currentModeRefs = modeRefInterface_->getModeReferences())
+        // Clear the current mode refs, if user was first editing remap, then moves to default remap editor. If not done, 
+        // ghost cells will appear in the mode ref table.
+        if (auto currentModeRefs = modeRefInterface_->getModeReferences(); !currentModeRefs.empty())
         {
-            modeRefInterface_->setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > >());
+            modeRefInterface_->setModeReferences(std::vector<std::pair<unsigned int, std::string> >());
         }
     }
 
@@ -162,6 +162,7 @@ void SingleMemoryMapEditor::connectSignals()
     connect(&nameEditor_, SIGNAL(nameChanged()), this, SLOT(onNameChange()), Qt::UniqueConnection);
 
     connect(modeReferenceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(modeReferenceEditor_, SIGNAL(contentChanged()), this, SLOT(onRemapModeReferencesEdited()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +199,7 @@ void SingleMemoryMapEditor::refresh()
         // Refresh mode references for use in current editor.
         if (isMemoryRemap_)
         {
-            modeRefInterface_->setModeReferences(currentRemap_->getModeReferences());
+            modeRefInterface_->setModeReferences(mapInterface_->getRemapModeReferences(parentMapName_, remapName_));
 
             auto containingModeRefs = mapInterface_->getRemapModeReferencesExcludingRemap(parentMapName_, remapName_);
             modeRefInterface_->setContainingElementModeReferences(containingModeRefs);
@@ -206,9 +207,9 @@ void SingleMemoryMapEditor::refresh()
         // Clear mode references from interface, 
         else
         {
-            if (auto currentModeRefs = modeRefInterface_->getModeReferences())
+            if (auto currentModeRefs = modeRefInterface_->getModeReferences(); !currentModeRefs.empty())
             {
-                modeRefInterface_->setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > >());
+                modeRefInterface_->setModeReferences(std::vector<std::pair<unsigned int, std::string> >());
             }
         }
     }
@@ -398,6 +399,16 @@ void SingleMemoryMapEditor::onRemapStateSelected(QString const& newRemapState)
         mapInterface_->setRemapState(parentMapName_, remapName_, newRemapState.toStdString());
         emit contentChanged();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: SingleMemoryMapEditor::onRemapModeReferencesEdited()
+//-----------------------------------------------------------------------------
+void SingleMemoryMapEditor::onRemapModeReferencesEdited()
+{
+    auto newRemapModes = modeRefInterface_->getModeReferences();
+
+    mapInterface_->setRemapModeReferences(parentMapName_, remapName_, newRemapModes);
 }
 
 //-----------------------------------------------------------------------------

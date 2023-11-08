@@ -16,6 +16,8 @@
 
 #include <common/KactusColors.h>
 
+using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesModel::AccessPoliciesModel()
 //-----------------------------------------------------------------------------
@@ -131,8 +133,6 @@ QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::Di
         {
             QVariant modeRefsVariant;
 
-            using ModeRefList = QSharedPointer<QList<QSharedPointer<ModeReference> > >;
-
             // Mode references for current index and all other mode refs.
             QPair<ModeRefList, ModeRefList> modeRefs;
 
@@ -168,8 +168,7 @@ bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& valu
         // Set modified mode reference data to access policy.
         if (index.column() == 0)
         {
-            QSharedPointer<QList<QSharedPointer<ModeReference> > > updatedModeRefs =
-                value.value<QSharedPointer<QList<QSharedPointer<ModeReference> > > >();
+            ModeRefList updatedModeRefs = value.value<ModeRefList>();
 
             interface_->setAccessPolicyModeReferences(index.row(), updatedModeRefs);
         }
@@ -223,10 +222,10 @@ QVariant AccessPoliciesModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == 0) // Mode ref display values
     {
-        auto modeRefsList = interface_->getModeRefs(index.row());
+        auto modeRefsList = interface_->getAccesPolicyModeReferences(index.row());
 
         QStringList valueList;
-        for (auto const& [reference, priority] : modeRefsList)
+        for (auto const& [priority, reference] : modeRefsList)
         {
             valueList.append(QString::fromStdString(reference));
         }

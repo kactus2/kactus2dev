@@ -20,6 +20,8 @@
 
 #include <IPXACTmodels/Component/ModeReference.h>
 
+using ModeRefsList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesDelegate::AccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
@@ -37,8 +39,6 @@ QWidget* AccessPoliciesDelegate::createEditor(QWidget* parent, const QStyleOptio
 {
     if (index.column() == 0)
     {
-        using ModeRefsList = QSharedPointer<QList<QSharedPointer<ModeReference> > >;
-
         // Update the mode reference interface with the mode references of the currently selected access policy
         // by copying mode references over to interface to be able to abort editing in floating mode ref editor.
         auto modeReferencesVariant = index.data(Qt::UserRole);
@@ -46,13 +46,8 @@ QWidget* AccessPoliciesDelegate::createEditor(QWidget* parent, const QStyleOptio
         auto [currentModeRefs, otherModeRefsInUse] =
             modeReferencesVariant.value<QPair<ModeRefsList, ModeRefsList> >();
 
-        QSharedPointer<QList<QSharedPointer<ModeReference> > > copiedModeRefs(
-            new QList<QSharedPointer<ModeReference> >());
-
-        Utilities::copyList(copiedModeRefs, currentModeRefs);
-
         // Set the mode references of the currently selected access policy to the mode reference interface.
-        modeRefInterface_->setModeReferences(copiedModeRefs);
+        modeRefInterface_->setModeReferences(currentModeRefs);
 
         // Set the othcer mode references in use for validation purposes.
         modeRefInterface_->setContainingElementModeReferences(otherModeRefsInUse);

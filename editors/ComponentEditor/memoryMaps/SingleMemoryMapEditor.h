@@ -130,6 +130,11 @@ private slots:
      */
     void onRemapStateSelected(QString const& newRemapState);
 
+    /*!
+     *	Gets updated remap mode references from mode reference interface, and saves to remap.
+     */
+    void onRemapModeReferencesEdited();
+
 signals:
     
     /*!

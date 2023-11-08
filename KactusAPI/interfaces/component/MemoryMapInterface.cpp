@@ -953,67 +953,50 @@ int MemoryMapInterface::getRemapModeReferenceCount(std::string const& mapName, s
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::getRemapModeReferenceValue()
+// Function: MemoryMapInterface::getRemapModeReferences()
 //-----------------------------------------------------------------------------
-std::string MemoryMapInterface::getRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const
+std::vector<std::pair<unsigned int, std::string> > MemoryMapInterface::getRemapModeReferences(std::string const& mapName, std::string const& remapName) const
 {
-    std::string refValue;
+    std::vector<std::pair<unsigned int, std::string> > modeRefs;
 
-    auto remap = getMemoryRemap(mapName, remapName);
-    if (!remap || modeReferenceIndex < 0 || modeReferenceIndex > getRemapModeReferenceCount(mapName, remapName))
+    if (auto remap = getMemoryRemap(mapName, remapName))
     {
-        return refValue;
+        auto modeReferences = remap->getModeReferences();
+
+        std::transform(modeReferences->cbegin(), modeReferences->cend(), std::back_inserter(modeRefs),
+            [](auto modeReference)
+            {
+                return std::make_pair(modeReference->getPriority(), modeReference->getReference().toStdString());
+            });
     }
 
-    return remap->getModeReferences()->at(modeReferenceIndex)->getReference().toStdString();
+    return modeRefs;
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::getRemapModeReferencePriority()
+// Function: MemoryMapInterface::setRemapModeReferences()
 //-----------------------------------------------------------------------------
-unsigned int MemoryMapInterface::getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const
+bool MemoryMapInterface::setRemapModeReferences(std::string const& mapName, std::string const& remapName, 
+    std::vector<std::pair<unsigned int, std::string> > const& newModeRefs)
 {
-    int priority = -1;
-
-    auto remap = getMemoryRemap(mapName, remapName);
-    if (!remap || modeReferenceIndex < 0 || modeReferenceIndex >= getRemapModeReferenceCount(mapName, remapName) )
+    if (auto remap = getMemoryRemap(mapName, remapName))
     {
-        return priority;
+        QSharedPointer<QList<QSharedPointer<ModeReference> > > createdModeRefs(
+            new QList<QSharedPointer<ModeReference> >());
+
+        for (auto const& [priority, reference] : newModeRefs)
+        {
+            QSharedPointer<ModeReference> createdModeRef(new ModeReference());
+            createdModeRef->setReference(QString::fromStdString(reference));
+            createdModeRef->setPriority(priority);
+            createdModeRefs->append(createdModeRef);
+        }
+
+        remap->setModeReferences(createdModeRefs);
+        return true;
     }
 
-    return remap->getModeReferences()->at(modeReferenceIndex)->getPriority();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::setRemapModeReferenceValue()
-//-----------------------------------------------------------------------------
-bool MemoryMapInterface::setRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, std::string const& newValue)
-{
-    auto remap = getMemoryRemap(mapName, remapName);
-    if (!remap || modeReferenceIndex < 0 || modeReferenceIndex >= getRemapModeReferenceCount(mapName, remapName))
-    {
-        return false;
-    }
-
-    remap->getModeReferences()->at(modeReferenceIndex)->setReference(QString::fromStdString(newValue));
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::setRemapModeReferencePriority()
-//-----------------------------------------------------------------------------
-bool MemoryMapInterface::setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, unsigned int newPriority)
-{
-    auto remap = getMemoryRemap(mapName, remapName);
-    if (!remap || modeReferenceIndex < 0 || modeReferenceIndex >= getRemapModeReferenceCount(mapName, remapName))
-    {
-        return false;
-    }
-
-    remap->getModeReferences()->at(modeReferenceIndex)->setPriority(newPriority);
-
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1067,23 +1050,26 @@ void MemoryMapInterface::setModeReferenceInterface(ModeReferenceInterface* modeR
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getRemapModeReferencesExcludingRemap()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > MemoryMapInterface::getRemapModeReferencesExcludingRemap(
+std::vector<std::pair<unsigned int, std::string> > MemoryMapInterface::getRemapModeReferencesExcludingRemap(
     std::string const& mapName, std::string const& remapName) const
 {
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > allModeRefs(new QList<QSharedPointer<ModeReference> >());
+    std::vector<std::pair<unsigned int, std::string> > allModeRefs;
 
-    auto selectedMap = getMemoryMap(mapName);
-    if (!selectedMap)
+    if (auto selectedMap = getMemoryMap(mapName))
     {
-        return allModeRefs;
-    }
-
-    QString remapNameQ = QString::fromStdString(remapName);
-    for (auto const& remap : *selectedMap->getMemoryRemaps())
-    {
-        if (remap->name() != remapNameQ)
+        QString remapNameQ = QString::fromStdString(remapName);
+        for (auto const& remap : *selectedMap->getMemoryRemaps())
         {
-            allModeRefs->append(*remap->getModeReferences());
+            // Get all other mode references, excluding mode references in given remap.
+            if (remap->name() != remapNameQ)
+            {
+                std::transform(remap->getModeReferences()->cbegin(), remap->getModeReferences()->cend(), 
+                    std::back_inserter(allModeRefs),
+                    [](auto modeRef)
+                    {
+                        return std::make_pair(modeRef->getPriority(), modeRef->getReference().toStdString());
+                    });
+            }
         }
     }
 

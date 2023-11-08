@@ -33,7 +33,7 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] modeRefInterface     Interface to access mode references.
+     *      @param [in] modeRefInterface     Interface for accessing mode references.
      */
     explicit AccessPolicyInterface(ModeReferenceInterface* modeRefInterface);
 
@@ -70,25 +70,6 @@ public:
      * 	    @return True, if the removal was successful, otherwise false.
      */
     bool removeAccessPolicy(int accessPolicyIndex);
-
-    /*!
-     *	Clear and set the mode references of an access policy.
-     *  
-     *      @param [in] newModeRefs             The mode references to set.
-     *      @param [in] accessPolicyIndex       The index of the access policy whose mode refs are set.
-     *	    
-     * 	    @return True, if the operation was successful, otherwise false.
-     */
-    bool setModeRefs(std::vector<std::pair<std::string, unsigned int> > const& newModeRefs, int accessPolicyIndex);
-
-    /*!
-     *	Get the mode references of an access policy.
-     *  
-     *      @param [in] accessPolicyIndex     The index of the access policy whose mode references will be get.
-     *	    
-     * 	    @return A list of mode references as string-int pair vector.
-     */
-    std::vector<std::pair<std::string, unsigned int> > getModeRefs(int accessPolicyIndex) const;
 
     /*!
      *	Validates the available access policies.
@@ -139,7 +120,7 @@ public:
      *	    
      * 	    @return  The mode references of access policy given by index.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getAccesPolicyModeReferences(int accessPolicyIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getAccesPolicyModeReferences(int accessPolicyIndex) const;
 
     /*!
      *	Set mode references of an access policy.
@@ -149,7 +130,7 @@ public:
      *	    
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setAccessPolicyModeReferences(int accessPolicyIndex, QSharedPointer<QList<QSharedPointer<ModeReference> > > newModeRefs);
+    bool setAccessPolicyModeReferences(int accessPolicyIndex, std::vector<std::pair<unsigned int, std::string> > const& newModeRefs);
 
     /*!
      *	Get the mode references in use by other than selected access policy given by index.
@@ -159,7 +140,7 @@ public:
      *	    
      * 	    @return All other mode references in use.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferencesInUse(int accessPolicyIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getModeReferencesInUse(int accessPolicyIndex) const;
 
 private:
 

@@ -188,15 +188,16 @@ bool CommonItemsValidator::singleModeReferenceIsValid(
 //-----------------------------------------------------------------------------
 // Function: CommonItemsValidator::modeReferencePriorityIsValid()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::modeReferencePriorityIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem, QSharedPointer<ModeReference> modeReferenceToCheck, bool isRemap /*= false*/)
+bool CommonItemsValidator::modeReferencePriorityIsValid(QList<unsigned int> const& modeRefPrioritiesInContainingElem,
+    unsigned int modeReferencePriorityToCheck, bool isRemap /*= false*/)
 {
     if (!isRemap)
     {
-        for (auto const& modeRef : *modeRefsInContainingElem)
+        for (auto const& modeRef : modeRefPrioritiesInContainingElem)
         {  
             // Check priority only if mode ref is contained in other element than memory remap. In remaps, priority
             // doesn't have to be unique.
-            if (modeRef->getPriority() == modeReferenceToCheck->getPriority())
+            if (modeRef == modeReferencePriorityToCheck)
             {
                 return false;
             }
@@ -209,19 +210,21 @@ bool CommonItemsValidator::modeReferencePriorityIsValid(QSharedPointer<QList<QSh
 //-----------------------------------------------------------------------------
 // Function: CommonItemsValidator::modeReferenceValueIsValid()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::modeReferenceValueIsValid(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsInContainingElem, QSharedPointer<ModeReference> modeReferenceToCheck, QStringList const& availableModes)
-{
-    auto refToCheck = modeReferenceToCheck->getReference();
-    
-    if (!CommonItemsValidator::hasValidName(refToCheck))
+bool CommonItemsValidator::modeReferenceValueIsValid(std::vector<std::string> const& modeRefsInContainingElem, 
+    std::string const& modeReferenceToCheck, QStringList const& availableModes)
+{    
+    auto modeRefToCheckQ = QString::fromStdString(modeReferenceToCheck);
+    if (!CommonItemsValidator::hasValidName(modeRefToCheckQ))
     {
         return false;
     }
 
-    return std::none_of(modeRefsInContainingElem->cbegin(), modeRefsInContainingElem->cend(),
-        [&refToCheck, &availableModes](auto modeRef)
+    // Check that there are no duplicate mode references in containing element and that a corresponding component
+    // mode is found.
+    return std::none_of(modeRefsInContainingElem.cbegin(), modeRefsInContainingElem.cend(),
+        [&modeReferenceToCheck, &modeRefToCheckQ, &availableModes](auto const& modeRef)
         {
-            return modeRef->getReference() == refToCheck || !availableModes.contains(refToCheck);
+            return modeRef == modeReferenceToCheck || !availableModes.contains(modeRefToCheckQ);
         });
 }
 

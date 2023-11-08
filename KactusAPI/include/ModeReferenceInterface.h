@@ -34,7 +34,7 @@ public:
      *  
      *      @param [in] modeReferences     The mode references to set.
      */
-    void setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences);
+    void setModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences);
 
     /*!
      *	Get the number of mode references.
@@ -135,14 +135,14 @@ public:
      *  
      *      @param [in] modeRefs     The mode references to set.
      */
-    void setContainingElementModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
+    void setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences);
 
     /*!
      *	Get the available component modes.
      *  
      * 	    @return The available component modes.
      */
-    QSharedPointer<QList<QSharedPointer<Mode> > > getComponentModes() const;
+    std::vector<std::string> getComponentModes() const;
 
     /*!
      *	Set the available component modes.
@@ -156,7 +156,7 @@ public:
      *  
      * 	    @return The currently set mode references.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferences() const;
+    std::vector<std::pair<unsigned int, std::string> > getModeReferences() const;
 
 private:
     
@@ -167,13 +167,13 @@ private:
      *	    
      * 	    @return The mode references currently in use by other elements.
      */
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > getModeReferencesInUse(int modeReferenceIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getModeReferencesInUse(int modeReferenceIndex) const;
 
     //! Should contain all mode references except for the mode refs of access policy/remap currently being edited.
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > containingElementModeReferences_;
+    std::vector<std::pair<unsigned int, std::string> > containingElementModeReferences_;
 
     //! The mode references of the item currently being edited.
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences_;
+    std::vector<std::pair<unsigned int, std::string> > modeReferences_;
 
     //! List of available component modes.
     QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;

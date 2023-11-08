@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::setModeReferences()
 //-----------------------------------------------------------------------------
-void ModeReferenceInterface::setModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences)
+void ModeReferenceInterface::setModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences)
 {
     modeReferences_ = modeReferences;
 }
@@ -28,12 +28,7 @@ void ModeReferenceInterface::setModeReferences(QSharedPointer<QList<QSharedPoint
 //-----------------------------------------------------------------------------
 int ModeReferenceInterface::getModeReferenceCount() const
 {
-    if (modeReferences_)
-    {
-        return modeReferences_->size();
-    }
-
-    return 0;
+    return modeReferences_.size();
 }
 
 //-----------------------------------------------------------------------------
@@ -42,9 +37,9 @@ int ModeReferenceInterface::getModeReferenceCount() const
 std::string ModeReferenceInterface::getModeReferenceValue(int modeReferenceIndex) const
 {
     std::string modeRefValue;
-    if (modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size())
+    if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        modeRefValue = modeReferences_->at(modeReferenceIndex)->getReference().toStdString();
+        modeRefValue = modeReferences_.at(modeReferenceIndex).second;
     }
 
     return modeRefValue;
@@ -55,9 +50,9 @@ std::string ModeReferenceInterface::getModeReferenceValue(int modeReferenceIndex
 //-----------------------------------------------------------------------------
 int ModeReferenceInterface::getModeReferencePriority(int modeReferenceIndex) const
 {
-    if (modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size())
+    if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        return modeReferences_->at(modeReferenceIndex)->getPriority();
+        return modeReferences_.at(modeReferenceIndex).first;
     }
 
     return 0;
@@ -68,9 +63,9 @@ int ModeReferenceInterface::getModeReferencePriority(int modeReferenceIndex) con
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::setModeReferenceValue(int modeReferenceIndex, std::string const& newValue)
 {
-    if (modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size())
+    if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        modeReferences_->at(modeReferenceIndex)->setReference(QString::fromStdString(newValue));
+        modeReferences_.at(modeReferenceIndex).second = newValue;
         return true;
     }
 
@@ -82,9 +77,9 @@ bool ModeReferenceInterface::setModeReferenceValue(int modeReferenceIndex, std::
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::setModeReferencePriority(int modeReferenceIndex, unsigned int newPriority)
 {
-    if (modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size())
+    if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        modeReferences_->at(modeReferenceIndex)->setPriority(newPriority);
+        modeReferences_.at(modeReferenceIndex).first = newPriority;
         return true;
     }
 
@@ -96,14 +91,8 @@ bool ModeReferenceInterface::setModeReferencePriority(int modeReferenceIndex, un
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::addModeReference()
 {
-    if (modeReferences_)
-    {
-        QSharedPointer<ModeReference> createdModeRef(new ModeReference());
-        modeReferences_->append(createdModeRef);
-        return true;
-    }
-
-    return false;
+    modeReferences_.emplace_back(0, std::string());
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -111,9 +100,9 @@ bool ModeReferenceInterface::addModeReference()
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::removeModeReference(int modeReferenceIndex)
 {
-    if (modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size())
+    if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        modeReferences_->removeAt(modeReferenceIndex);
+        modeReferences_.erase(modeReferences_.begin() + modeReferenceIndex);
         return true;
     }
 
@@ -125,16 +114,24 @@ bool ModeReferenceInterface::removeModeReference(int modeReferenceIndex)
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::modeReferenceValueIsValid(int modeReferenceIndex) const
 {
-    if (!(modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size()))
+    if (!(modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size()))
     {
         return false;
     }
 
     // Get the mode reference to check from the remap/access policy mode references. Check against mode references
     // in all remaps/access policies.
-    auto modeRefToCheck = modeReferences_->at(modeReferenceIndex);
+    auto const& modeRefToCheck = modeReferences_.at(modeReferenceIndex);
 
     auto allModeRefs = getModeReferencesInUse(modeReferenceIndex);
+
+    std::vector<std::string> modeRefValuesInUse;
+    modeRefValuesInUse.reserve(allModeRefs.size());
+    std::transform(allModeRefs.cbegin(), allModeRefs.cend(), std::back_inserter(modeRefValuesInUse),
+        [](auto const& tuple)
+        {
+            return tuple.second;
+        });
 
     QStringList availableModeNames;
     for (auto const& mode : *componentModes_)
@@ -142,7 +139,7 @@ bool ModeReferenceInterface::modeReferenceValueIsValid(int modeReferenceIndex) c
         availableModeNames << mode->name();
     }
 
-    return CommonItemsValidator::modeReferenceValueIsValid(allModeRefs, modeRefToCheck, availableModeNames);
+    return CommonItemsValidator::modeReferenceValueIsValid(modeRefValuesInUse, modeRefToCheck.second, availableModeNames);
 }
 
 //-----------------------------------------------------------------------------
@@ -150,18 +147,27 @@ bool ModeReferenceInterface::modeReferenceValueIsValid(int modeReferenceIndex) c
 //-----------------------------------------------------------------------------
 bool ModeReferenceInterface::modeReferencePriorityIsValid(int modeReferenceIndex) const
 {
-    if (!(modeReferences_ && modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_->size()))
+    if (!(modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size()))
     {
         return false;
     }
 
     // Get the mode reference to check from the remap/access policy mode references. Check against mode references
     // in all remaps/access policies.
-    auto modeRefToCheck = modeReferences_->at(modeReferenceIndex);
+    auto modeRefToCheck = modeReferences_.at(modeReferenceIndex).first;
 
     auto allModeRefs = getModeReferencesInUse(modeReferenceIndex);
 
-    return CommonItemsValidator::modeReferencePriorityIsValid(allModeRefs, modeRefToCheck, containingElementIsRemap);
+    QList<unsigned int> modeRefPrioritiesInUse;
+    modeRefPrioritiesInUse.reserve(allModeRefs.size());
+
+    std::transform(allModeRefs.cbegin(), allModeRefs.cend(), std::back_inserter(modeRefPrioritiesInUse),
+        [](auto const& tuple)
+        {
+            return tuple.first;
+        });
+
+    return CommonItemsValidator::modeReferencePriorityIsValid(modeRefPrioritiesInUse, modeRefToCheck, containingElementIsRemap);
 }
 
 //-----------------------------------------------------------------------------
@@ -170,10 +176,10 @@ bool ModeReferenceInterface::modeReferencePriorityIsValid(int modeReferenceIndex
 std::vector<std::string> ModeReferenceInterface::getModeReferencesString() const
 {
     std::vector<std::string> referencesAsStrings;
-    std::transform(modeReferences_->cbegin(), modeReferences_->cend(), std::back_inserter(referencesAsStrings),
-        [](QSharedPointer<ModeReference> modeRef)
+    std::transform(modeReferences_.cbegin(), modeReferences_.cend(), std::back_inserter(referencesAsStrings),
+        [](auto const& modeRef)
         {
-            return modeRef->getReference().toStdString();
+            return modeRef.second;
         });
 
     return referencesAsStrings;
@@ -190,17 +196,24 @@ void ModeReferenceInterface::setContainingElementIsRemap(bool isRemap)
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::setContainingElementModeReferences()
 //-----------------------------------------------------------------------------
-void ModeReferenceInterface::setContainingElementModeReferences(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
+void ModeReferenceInterface::setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences)
 {
-    containingElementModeReferences_ = modeRefs;
+    containingElementModeReferences_ = modeReferences;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::getComponentModes()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Mode> > > ModeReferenceInterface::getComponentModes() const
+std::vector<std::string> ModeReferenceInterface::getComponentModes() const
 {
-    return componentModes_;
+    std::vector<std::string> availableModes;
+    std::transform(componentModes_->cbegin(), componentModes_->cend(), std::back_inserter(availableModes),
+        [](auto mode)
+        {
+            return mode->name().toStdString();
+        });
+
+    return availableModes;
 }
 
 //-----------------------------------------------------------------------------
@@ -214,7 +227,7 @@ void ModeReferenceInterface::setComponentModes(QSharedPointer<QList<QSharedPoint
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::getModeReferences()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > ModeReferenceInterface::getModeReferences() const
+std::vector<std::pair<unsigned int, std::string> > ModeReferenceInterface::getModeReferences() const
 {
     return modeReferences_;
 }
@@ -222,19 +235,21 @@ QSharedPointer<QList<QSharedPointer<ModeReference> > > ModeReferenceInterface::g
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::getModeReferencesInUse()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ModeReference> > > ModeReferenceInterface::getModeReferencesInUse(int modeReferenceIndex) const
+std::vector<std::pair<unsigned int, std::string> > ModeReferenceInterface::getModeReferencesInUse(int modeReferenceIndex) const
 {
     // List containing all other mode references in containing parent, than the one being validated (given by index).
-    QSharedPointer<QList<QSharedPointer<ModeReference> > > allModeRefs(new QList<QSharedPointer<ModeReference> >());
+    std::vector<std::pair<unsigned int, std::string> > allModeRefs;
 
-    allModeRefs->append(*containingElementModeReferences_);
+    allModeRefs.insert(allModeRefs.end(), containingElementModeReferences_.begin(), 
+        containingElementModeReferences_.end());
 
     int currentIndex = 0;
-    for (auto modeRef : *modeReferences_)
+    for (auto const& modeRef : modeReferences_)
     {
+        // Get all other mode references, excluding mode references given by index.
         if (currentIndex != modeReferenceIndex)
         {
-            allModeRefs->append(modeRef);
+            allModeRefs.push_back(modeRef);
         }
         currentIndex++;
     }
