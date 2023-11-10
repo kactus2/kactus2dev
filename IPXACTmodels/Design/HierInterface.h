@@ -30,7 +30,7 @@ public:
      *
      *      @param [in] busRef  The name of the referenced bus interface.
      */
-    explicit HierInterface(QString busRef = QString());
+    explicit HierInterface(QString const& busRef = QString());
 
     /*!
      *  Copy constructor.
@@ -40,7 +40,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~HierInterface();
+    ~HierInterface() override;
 
     /*!
      *  Assignment operator.
@@ -111,7 +111,7 @@ public:
      *
      *      @param [in] newRoute    The new route.
      */
-    void setRoute(QList<QPointF> newRoute);
+    void setRoute(QList<QPointF> newRoute) const;
 
     /*!
      *  Get the route to this interface.

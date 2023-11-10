@@ -80,7 +80,7 @@ public:
      *
      *      @return Name of the selected port.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
 
     /*!
      *  Get the number of available port abstractions.

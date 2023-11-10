@@ -58,15 +58,23 @@ void ComponentInstanceReader::Details::parsePowerDomainLinks(QDomNode const& ins
     QDomElement domainsNode = instanceNode.firstChildElement(QStringLiteral("ipxact:powerDomainLinks"));
     QDomNodeList domainNodeList = domainsNode.childNodes();
 
-    const int count = domainNodeList.count();
-    for (int index = 0; index < count; ++index)
+    const int DOMAIN_COUNT = domainNodeList.count();
+    for (int index = 0; index < DOMAIN_COUNT; ++index)
     {
         auto const& domainNode = domainNodeList.at(index);
         auto externalLink = domainNode.firstChildElement(QStringLiteral("ipxact:externalPowerDomainReference")).firstChild().nodeValue();
-        auto internalLink = domainNode.firstChildElement(QStringLiteral("ipxact:internalPowerDomainReference")).firstChild().nodeValue();
+
+        QStringList internalLinks;
+        auto linkNodes = domainNode.toElement().elementsByTagName(QStringLiteral("ipxact:internalPowerDomainReference"));
+        const auto LINK_COUNT = linkNodes.count();
+        for (int i = 0; i < LINK_COUNT; ++i)
+        {
+            auto linkNode = linkNodes.at(i);
+            internalLinks.append(linkNode.firstChild().nodeValue());
+        }
 
         auto link = QSharedPointer<ComponentInstance::PowerDomainLink>(
-            new ComponentInstance::PowerDomainLink({ externalLink, internalLink }));
+            new ComponentInstance::PowerDomainLink({ externalLink, internalLinks }));
         instance->getPowerDomainLinks()->append(link);
     }
 }
@@ -80,8 +88,8 @@ void ComponentInstanceReader::Details::parseExtensions(const QDomNode& component
     QDomElement extensionsNode = componentInstanceNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
     QDomNodeList extensionNodeList = extensionsNode.childNodes();
 
-    QDomElement uuidElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:uuid"));
-    if (!uuidElement.isNull())
+    if (QDomElement uuidElement = extensionsNode.firstChildElement(QStringLiteral("kactus2:uuid")); 
+        !uuidElement.isNull())
     {
         instance->setUuid(uuidElement.firstChild().nodeValue());
     }
@@ -125,10 +133,7 @@ void ComponentInstanceReader::Details::parseExtensions(const QDomNode& component
 void ComponentInstanceReader::Details::parseDraft(QDomElement const& draftNode,
     QSharedPointer<ComponentInstance> instance)
 {
-    if (!draftNode.isNull())
-    {
-        instance->setDraft(true);
-    }
+    instance->setDraft(!draftNode.isNull());
 }
 
 //-----------------------------------------------------------------------------
@@ -259,20 +264,20 @@ QMap<QString, QPointF> ComponentInstanceReader::Details::createMappedPositions(Q
     QMap<QString, QPointF> positionMap;
 
     QDomNodeList positionNodeList = positionElement.elementsByTagName(itemIdentifier);
-    for (int positionIndex = 0; positionIndex < positionNodeList.count(); ++positionIndex)
+    const int NODE_COUNT = positionNodeList.count();
+    for (int positionIndex = 0; positionIndex < NODE_COUNT; ++positionIndex)
     {
-        QDomNode singlePositionNode = positionNodeList.at(positionIndex);
-        QDomElement positionElement = singlePositionNode.toElement();
+        QDomElement currentPosition = positionNodeList.at(positionIndex).toElement();
 
-        QString interfaceReference = positionElement.attribute(referenceIdentifier);
+        QString interfaceReference = currentPosition.attribute(referenceIdentifier);
 
-        if (!positionElement.hasAttribute(QStringLiteral("x")))
+        if (!currentPosition.hasAttribute(QStringLiteral("x")))
         {
-            positionElement = positionElement.firstChildElement(QStringLiteral("kactus2:position"));
+            currentPosition = currentPosition.firstChildElement(QStringLiteral("kactus2:position"));
         }
 
-        int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
-        int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
+        int positionX = currentPosition.attribute(QStringLiteral("x")).toInt();
+        int positionY = currentPosition.attribute(QStringLiteral("y")).toInt();
 
         positionMap.insert(interfaceReference, QPointF(positionX, positionY));
     }

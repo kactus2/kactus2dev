@@ -25,17 +25,8 @@ class IPXACTMODELS_EXPORT Protocol : public Extendable
 {
 public:
 
-	//! The constructor.
-	Protocol();
-
 	//! The destructor.
 	~Protocol() = default;
-
-    //! Copy constructor.
-    Protocol(Protocol const& other) = default;
-
-    // Disable copying.
-    Protocol& operator=(Protocol const& rhs) = delete;
 
     /*!
      *  Sets the protocol type.
@@ -128,7 +119,7 @@ private:
     QString payloadExtension_;
 
     //! Specifies if the payload extension is mandatory or not.
-    bool mandatoryPayloadExtension_;
+    bool mandatoryPayloadExtension_{ false };
 };
 
 #endif // PROTOCOL_H

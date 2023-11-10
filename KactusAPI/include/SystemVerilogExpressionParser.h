@@ -44,7 +44,7 @@ public:
      *
      *      @return The decimal value of the evaluated expression.
      */
-    QString parseExpression(QString const& expression, bool* validExpression = nullptr) const override;
+    QString parseExpression(QStringView expression, bool* validExpression = nullptr) const override;
 
     /*!
      *  Check if the given expression is an array.
@@ -53,7 +53,7 @@ public:
      *
      *      @return True, if the expression is an array, otherwise false.
      */
-    virtual bool isArrayExpression(QString const& expression) const;
+    virtual bool isArrayExpression(QStringView expression) const noexcept;
 
     /*!
      *  Checks if the given expression is a plain value and does not need evaluation.
@@ -62,7 +62,7 @@ public:
      *
      *      @return True, if the expression is a plain value, otherwise false.
      */
-    bool isPlainValue(QString const& expression) const override;
+    bool isPlainValue(QStringView expression) const override;
 
     /*!
      *  Finds the common base in the expression.
@@ -71,7 +71,7 @@ public:
      *
      *      @return The common base for the expression.
      */
-    int baseForExpression(QString const& expression) const override;
+    int baseForExpression(QStringView expression) const override;
 
 protected:
      
@@ -82,7 +82,7 @@ protected:
      *
      *      @return The decimal value of the constant or the given string.
      */
-    QString parseConstant(QString const& token) const;
+    QString parseConstant(QStringView token) const;
 
     /*!
      *  Checks if the given expression is a symbol e.g. reference.
@@ -91,7 +91,7 @@ protected:
      *
      *      @return True, if the expression is a symbol, otherwise false.
      */
-    virtual bool isSymbol(QString const& expression) const;
+    virtual bool isSymbol(QStringView expression) const;
 
     /*!
      *  Finds the value for given symbol.
@@ -100,7 +100,7 @@ protected:
      *
      *      @return The found symbol value.
      */
-    virtual QString findSymbolValue(QString const& symbol) const;
+    virtual QString findSymbolValue(QStringView symbol) const;
 
     /*!
      *  Finds the base in the symbol.
@@ -109,7 +109,7 @@ protected:
      *
      *      @return The base for the symbol.
      */
-    virtual int getBaseForSymbol(QString const& symbol) const;
+    virtual int getBaseForSymbol(QStringView symbol) const;
 
     /*!
     *  Get the operator precedence value for the given operator.
@@ -118,7 +118,7 @@ protected:
     *
     *      @return The precedence value where bigger value has higher precedence.
     */
-    static unsigned int operatorPrecedence(QString const& oper);
+    static unsigned int operatorPrecedence(QStringView oper);
 
     /*!
      *  Checks if the given token is a unary operator.
@@ -127,7 +127,7 @@ protected:
      *
      *      @return True, if the token is a unary operator, otherwise false.
      */
-    virtual bool isUnaryOperator(QString const& token) const;
+    virtual bool isUnaryOperator(QStringView token) const;
 
     /*!
      *  Solves a binary operation.
@@ -137,7 +137,7 @@ protected:
      *
      *      @return The result of the operation.
      */
-    virtual QString solveUnary(QString const& operation, QString const& term) const;
+    virtual QString solveUnary(QStringView operation, QString const& term) const;
 
 private:
 
@@ -149,7 +149,7 @@ private:
      *
      *      @return The conversion result.
      */
-    static QVector<QString> convertToRPN(QString const& expression);
+    static QVector<QStringView> convertToRPN(QStringView expression);
 
     /*!
      *  Solves the given RPN expression.
@@ -159,7 +159,7 @@ private:
      *
      *      @return The solved result.
      */
-    QString solveRPN(QVector<QString> const& rpn, bool* validExpression) const;
+    QString solveRPN(QVector<QStringView> rpn, bool* validExpression) const;
 
     /*!
      *  Checks if the given expression is a string.
@@ -168,7 +168,7 @@ private:
      *
      *      @return True, if the expression is a string, otherwise false.
      */
-    bool isStringLiteral(QString const &expression) const;
+    bool isStringLiteral(QStringView expression) const noexcept;
 
     /*!
      *  Checks if the given expression is a numeric literal.
@@ -177,7 +177,7 @@ private:
      *
      *      @return True, if the expression is a literal, otherwise false.
      */
-    bool isLiteral(QString const& expression) const;
+    bool isLiteral(QStringView expression) const;
 
     /*!
      *  Checks if the given token is a binary operator.
@@ -186,7 +186,7 @@ private:
      *
      *      @return True, if the token is a binary operator, otherwise false.
      */
-    bool isBinaryOperator(QString const& token) const;
+    bool isBinaryOperator(QStringView token) const;
 
     /*!
      *  Checks if the given token is a ternary operator.
@@ -195,7 +195,7 @@ private:
      *
      *      @return True, if the token is a ternary operator, otherwise false.
      */
-    bool isTernaryOperator(QString const& token) const;
+    bool isTernaryOperator(QStringView token) const;
 
     /*!
      *  Solves a Ternary operation.
@@ -206,7 +206,8 @@ private:
      *
      *      @return The result of the operation.
      */
-    QString solveTernary( QString const& condition, QString const& trueCase, QString const& falseCase) const;
+    QString solveTernary(QStringView condition, QString const& trueCase, QString const& falseCase) const;
+
 
     /*!
      *  Solves a binary operation.
@@ -217,7 +218,7 @@ private:
      *
      *      @return The result of the operation.
      */
-    QString solveBinary(QString const& operation, QString const& leftTerm, QString const& rightTerm) const;
+    QString solveBinary(QStringView operation, QString const& leftTerm, QString const& rightTerm) const;
 
     /*!
      *  Solves the SystemVerilog $clog2 function.
@@ -244,7 +245,7 @@ private:
      *
      *      @return The precision of the decimal used in the given term.
      */
-    static int precisionOf(QString const& term);
+    static int precisionOf(QStringView term) noexcept;
 
     /*!
      *  Get the base for a given number.
@@ -253,7 +254,7 @@ private:
      *
      *      @return The base for the selected number. Either 2, 8, 10 or 16.
      */
-    static int baseOf(QString const& constantNumber);
+    static int baseOf(QStringView constantNumber);
 };
 
 #endif // SYSTEMVERILOGEXPRESSIONPARSER_H

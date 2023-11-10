@@ -17,16 +17,7 @@
 // Function: ConfigurableElementFinder::ConfigurableElementFinder()
 //-----------------------------------------------------------------------------
 ConfigurableElementFinder::ConfigurableElementFinder():
-ParameterFinder(),
-elementList_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConfigurableElementFinder::~ConfigurableElementFinder()
-//-----------------------------------------------------------------------------
-ConfigurableElementFinder::~ConfigurableElementFinder()
+ParameterFinder()
 {
 
 }
@@ -34,18 +25,17 @@ ConfigurableElementFinder::~ConfigurableElementFinder()
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::getParameterWithID()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ConfigurableElementFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> ConfigurableElementFinder::getParameterWithID(QStringView parameterId) const
 {
-    QSharedPointer<EditorConfigurableElement> element = getElementForID(parameterId);
-    return element->getReferencedParameter();
+    return  getElementForID(parameterId)->getReferencedParameter();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::hasId()
 //-----------------------------------------------------------------------------
-bool ConfigurableElementFinder::hasId(QString const& id) const
+bool ConfigurableElementFinder::hasId(QStringView id) const
 {
-    foreach (QSharedPointer<EditorConfigurableElement> element, elementList_)
+    for (QSharedPointer<EditorConfigurableElement> element : elementList_)
     {
         QSharedPointer<Parameter> referencedParameter = element->getReferencedParameter();
         if (referencedParameter && referencedParameter->getValueId() == id)
@@ -60,9 +50,9 @@ bool ConfigurableElementFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::getElementForID()
 //-----------------------------------------------------------------------------
-QSharedPointer<EditorConfigurableElement> ConfigurableElementFinder::getElementForID(QString const& id) const
+QSharedPointer<EditorConfigurableElement> ConfigurableElementFinder::getElementForID(QStringView id) const
 {
-    foreach (QSharedPointer<EditorConfigurableElement> element, elementList_)
+    for (QSharedPointer<EditorConfigurableElement> element : elementList_)
     {
         QSharedPointer<Parameter> referencedParameter = element->getReferencedParameter();
         if (referencedParameter && referencedParameter->getValueId() == id)
@@ -77,10 +67,10 @@ QSharedPointer<EditorConfigurableElement> ConfigurableElementFinder::getElementF
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString ConfigurableElementFinder::nameForId(QString const& id) const
+QString ConfigurableElementFinder::nameForId(QStringView id) const
 {
-    QSharedPointer<EditorConfigurableElement> element = getElementForID(id);
-    if (element && element->getReferencedParameter())
+    if (QSharedPointer<EditorConfigurableElement> element = getElementForID(id); 
+        element && element->getReferencedParameter())
     {
         return element->getReferencedParameter()->name();
     }
@@ -91,10 +81,10 @@ QString ConfigurableElementFinder::nameForId(QString const& id) const
 //-----------------------------------------------------------------------------
 // Function: ConfigurableElementFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString ConfigurableElementFinder::valueForId(QString const& id) const
+QString ConfigurableElementFinder::valueForId(QStringView id) const
 {
-    QSharedPointer<EditorConfigurableElement> element = getElementForID(id);
-    if (element && element->getReferencedParameter())
+    if (QSharedPointer<EditorConfigurableElement> element = getElementForID(id); 
+        element && element->getReferencedParameter())
     {
         return element->getConfiguratedValue();
     }
@@ -109,7 +99,7 @@ QStringList ConfigurableElementFinder::getAllParameterIds() const
 {
     QStringList allElementIDs;
 
-    foreach (QSharedPointer<EditorConfigurableElement> element, elementList_)
+    for (QSharedPointer<EditorConfigurableElement> element : elementList_)
     {
         if (element->getReferencedParameter())
         {
@@ -117,7 +107,7 @@ QStringList ConfigurableElementFinder::getAllParameterIds() const
         }
     }
 
-    allElementIDs.removeAll("");
+    allElementIDs.removeAll(QString());
     return allElementIDs;
 }
 

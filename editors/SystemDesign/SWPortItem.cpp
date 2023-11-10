@@ -255,7 +255,7 @@ void SWPortItem::updateInterface()
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::isHierachical()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isHierarchical() const
+bool SWPortItem::isHierarchical() const noexcept
 {
     return false;
 }
@@ -546,7 +546,7 @@ QVariant SWPortItem::itemChange(GraphicsItemChange change, QVariant const& value
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isDirectionFixed() const
+bool SWPortItem::isDirectionFixed() const noexcept
 {
     return true;
 }
@@ -954,7 +954,7 @@ void SWPortItem::shortenNameLabel( qreal width )
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::isCom()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isCom() const
+bool SWPortItem::isCom() const noexcept
 {
     return comInterface_ != nullptr;
 }
@@ -962,7 +962,7 @@ bool SWPortItem::isCom() const
 //-----------------------------------------------------------------------------
 // Function: SWPortItem::isApi()
 //-----------------------------------------------------------------------------
-bool SWPortItem::isApi() const
+bool SWPortItem::isApi() const noexcept
 {
     return apiInterface_ != nullptr;
 }

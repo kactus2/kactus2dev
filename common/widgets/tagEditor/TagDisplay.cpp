@@ -13,7 +13,6 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
-#include <common/widgets/colorBox/ColorBox.h>
 #include <common/widgets/tagEditor/TagLabel.h>
 #include <KactusAPI/include/TagManager.h>
 #include <common/widgets/tagEditor/TagCompleterModel.h>
@@ -25,10 +24,8 @@
 //-----------------------------------------------------------------------------
 // Function: TagDisplay::TagDisplay()
 //-----------------------------------------------------------------------------
-TagDisplay::TagDisplay(TagLabel* tagLabel, QWidget* parent /* = 0 */):
+TagDisplay::TagDisplay(TagLabel* tagLabel, QWidget* parent):
 QFrame(parent),
-colorButton_(),
-deleteButton_(new QPushButton(QIcon(":/icons/common/graphics/cross.png"), QLatin1String(""), this)),
 editedLabel_(tagLabel)
 {
 
@@ -39,21 +36,23 @@ editedLabel_(tagLabel)
 //-----------------------------------------------------------------------------
 void TagDisplay::setupEditors(QWidget* nameEditor)
 {
-    int editorHeight = 19;
-    nameEditor->setFixedHeight(editorHeight);
-    deleteButton_->setFixedHeight(editorHeight);
+    nameEditor->setFixedHeight(BUTTON_SIDE);
 
-    int smallButtonWidth = 20;
-    deleteButton_->setFixedWidth(smallButtonWidth);
+    okButton_->setFixedHeight(BUTTON_SIDE);
+    okButton_->setFixedWidth(BUTTON_SIDE);
+
+    deleteButton_->setFixedHeight(BUTTON_SIDE);
+    deleteButton_->setFixedWidth(BUTTON_SIDE);
+
     deleteButton_->adjustSize();
 
-    colorButton_ = new ColorBox(QSize(smallButtonWidth, editorHeight), this);
-
-    colorButton_->setToolTip(QLatin1String("Select Color"));
-    deleteButton_->setToolTip(QLatin1String("Delete Tag"));
+    colorButton_->setToolTip(tr("Select Color"));
+    okButton_->setToolTip(tr("Ok"));
+    deleteButton_->setToolTip(tr("Delete Tag"));
 
     colorButton_->setColor(editedLabel_->palette().color(QPalette::Window));
     colorButton_->update();
+    colorButton_->setVisible(showColorButton());
 
     setupLayout(nameEditor);
     connectSignals();
@@ -67,11 +66,13 @@ void TagDisplay::setupEditors(QWidget* nameEditor)
 //-----------------------------------------------------------------------------
 void TagDisplay::setupLayout(QWidget* nameEditor)
 {
-    QHBoxLayout* editorLayout = new QHBoxLayout(this);
+    auto editorLayout = new QHBoxLayout(this);
     editorLayout->setContentsMargins(1, 1, 1, 1);
+    editorLayout->setSpacing(2);
 
     editorLayout->addWidget(nameEditor);
     editorLayout->addWidget(colorButton_);
+    editorLayout->addWidget(okButton_);
     editorLayout->addWidget(deleteButton_);
 }
 
@@ -80,6 +81,7 @@ void TagDisplay::setupLayout(QWidget* nameEditor)
 //-----------------------------------------------------------------------------
 void TagDisplay::connectSignals()
 {
+    connect(okButton_, SIGNAL(clicked()), this, SLOT(onAcceptChanges()), Qt::UniqueConnection);
     connect(deleteButton_, SIGNAL(clicked()), this, SLOT(onDeleteItem()), Qt::UniqueConnection);
 }
 
@@ -97,8 +99,7 @@ void TagDisplay::completerColorChange(QColor const& newColor)
 //-----------------------------------------------------------------------------
 void TagDisplay::onAcceptChanges()
 {
-    QString newName = getNewName();
-    if (!newName.isEmpty())
+    if (QString newName = getNewName(); !newName.isEmpty())
     {
         editedLabel_->setText(newName);
     }
@@ -146,6 +147,14 @@ bool TagDisplay::eventFilter(QObject *watched, QEvent *event)
     {
         return QFrame::eventFilter(watched, event);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TagDisplay::showColorButton()
+//-----------------------------------------------------------------------------
+bool TagDisplay::showColorButton() const noexcept
+{
+    return false;
 }
 
 //-----------------------------------------------------------------------------

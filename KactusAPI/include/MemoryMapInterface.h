@@ -98,7 +98,7 @@ public:
      *
      *      @return Name of the selected memory map.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
     
     /*
      *  Get name of the indexed memory remap.

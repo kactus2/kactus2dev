@@ -68,6 +68,10 @@ public:
 	 */
 	virtual ~ConfigurableElementsModel() = default;
 
+    //! No copying. //! No assignment.
+    ConfigurableElementsModel(const ConfigurableElementsModel& other) = delete;
+    ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other) = delete;
+
 	/*!
 	 *  Set the parameters for configurable element values.
 	 *
@@ -275,21 +279,18 @@ protected:
     QList<QSharedPointer<EditorConfigurableElement> > configurableElements_;
 
     //! A list of the available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_ = nullptr;
 
     //! Name of the containing item.
     QString containingItemName_;
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator> validator_;
+    QSharedPointer<ParameterValidator> validator_ = nullptr;
 
     //! Configurable element values contained within the containing item.
-    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_;
+    QSharedPointer<QList<QSharedPointer<ConfigurableElementValue> > > itemConfigurableElementValues_ = nullptr;
 
 private:
-    //! No copying. //! No assignment.
-	ConfigurableElementsModel(const ConfigurableElementsModel& other);
-	ConfigurableElementsModel& operator=(const ConfigurableElementsModel& other);
 
     /*!
      *  Check if the configurable element is editable.
@@ -407,7 +408,6 @@ private:
 
     //! The expression parser for default values.
     QSharedPointer<ExpressionParser> defaultValueParser_;
-
 };
 
 //! Meta types for QVariants.

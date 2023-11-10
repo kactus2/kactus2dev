@@ -20,13 +20,6 @@ ParameterConfigurableElementsFilter(parent)
 
 }
 
-//-----------------------------------------------------------------------------
-// Function: MissingConfigurableElementsFilter::~MissingConfigurableElementsFilter()
-//-----------------------------------------------------------------------------
-MissingConfigurableElementsFilter::~MissingConfigurableElementsFilter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: MissingConfigurableElementsFilter::filterAcceptsRow()

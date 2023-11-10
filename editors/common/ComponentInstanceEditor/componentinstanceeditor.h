@@ -12,16 +12,20 @@
 #ifndef COMPONENTINSTANCEEDITOR_H
 #define COMPONENTINSTANCEEDITOR_H
 
+#include "PowerDomainLinkEditor.h"
+
 #include <common/IEditProvider.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 #include <common/widgets/nameGroupBox/namegroupbox.h>
 
 #include <KactusAPI/include/ComponentParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <editors/ComponentEditor/software/PropertyValueEditor.h>
 #include <editors/ComponentEditor/common/ConfigurableElementFinder.h>
 
 #include <editors/common/ComponentInstanceEditor/ComponentInstanceConfigurableElementsEditor.h>
+#include <editors/common/TopComponentParameterFinder.h>
 
 #include <QWidget>
 #include <QComboBox>
@@ -145,45 +149,51 @@ private:
     void setupLayout();
 
 	//! Pointer to the component instance being edited.
-	ComponentItem* component_;
+	ComponentItem* component_ = nullptr;
 
 	//! The widget to display the vlnv of the component instance
-	VLNVDisplayer* vlnvDisplayer_;
+	VLNVDisplayer* vlnvDisplayer_ = new VLNVDisplayer(this, VLNV(), true);
 
 	//! The widget to set the instance name, display name and description.
-	NameGroupBox* nameGroup_;
+	NameGroupBox* nameGroup_ = new NameGroupBox(this, tr("Component instance name"));
 
-    QLabel* activeViewLabel_;
+    QLabel* activeViewLabel_ = new QLabel(this);
 
 	//! The widget to set the configurable elements of a component instance.
-    ComponentInstanceConfigurableElementsEditor* configurableElements_;
+    ComponentInstanceConfigurableElementsEditor* configurableElements_ = nullptr;
+
+    //! The widget for setting power domain links.
+    PowerDomainLinkEditor* powerDomainEditor_ = new PowerDomainLinkEditor(this);
 
     //! SW group.
-    QGroupBox* swGroup_;
+    QGroupBox* swGroup_ = new QGroupBox(tr("Software"), this);
 
     //! File set reference combo box.
-    QComboBox* fileSetRefCombo_;
+    QComboBox* fileSetRefCombo_ = new QComboBox(this);
 
     //! Property value editor for SW properties.
-    PropertyValueEditor* propertyValueEditor_;
+    PropertyValueEditor* propertyValueEditor_ = new PropertyValueEditor(this);
 
 	//! Pointer to the generic edit provider that manages the undo/redo stack.
-	QSharedPointer<IEditProvider> editProvider_;
+	QSharedPointer<IEditProvider> editProvider_ = nullptr;
 
     //! The parameter finder for component instances.
-    QSharedPointer<ComponentParameterFinder> instanceFinder_;
+    QSharedPointer<ComponentParameterFinder> instanceFinder_ =
+        QSharedPointer<ComponentParameterFinder>(new ComponentParameterFinder(nullptr));
 
     //! The parameter finder for component instances.
-    QSharedPointer<TopComponentParameterFinder> topFinder_;
+    QSharedPointer<TopComponentParameterFinder> topFinder_ =
+        QSharedPointer<TopComponentParameterFinder>(new TopComponentParameterFinder(nullptr));
 
     //! The parameter finder for design.
-    QSharedPointer<ListParameterFinder> designParameterFinder_;
+    QSharedPointer<ListParameterFinder> designParameterFinder_ =
+        QSharedPointer<ListParameterFinder>(new ListParameterFinder());
 
     //! The current top component.
-    QSharedPointer<Component> topComponent_;
+    QSharedPointer<Component> topComponent_ = nullptr;
 
     //! The design containing the component instance.
-    QSharedPointer<Design> containingDesign_;
+    QSharedPointer<Design> containingDesign_ = nullptr;
 };
 
 #endif // COMPONENTINSTANCEEDITOR_H

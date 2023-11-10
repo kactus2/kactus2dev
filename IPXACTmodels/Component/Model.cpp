@@ -16,15 +16,13 @@
 #include "DesignConfigurationInstantiation.h"
 #include "Port.h"
 
+#include <IPXACTmodels/utilities/Search.h>
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Model::Model()
 //-----------------------------------------------------------------------------
-Model::Model():
-views_(new QList<QSharedPointer<View> > ()),
-    componentInstantiations_(new QList<QSharedPointer<ComponentInstantiation> > ()),
-    designInstantiations_(new QList<QSharedPointer<DesignInstantiation> > ()),
-    designConfigurationInstantiations_(new QList<QSharedPointer<DesignConfigurationInstantiation> > ()),
-    ports_(new QList<QSharedPointer<Port> > ())
+Model::Model()
 {
 
 }
@@ -32,12 +30,7 @@ views_(new QList<QSharedPointer<View> > ()),
 //-----------------------------------------------------------------------------
 // Function: Model::Model()
 //-----------------------------------------------------------------------------
-Model::Model(Model const& other):
-views_(new QList<QSharedPointer<View> > ()),
-    componentInstantiations_(new QList<QSharedPointer<ComponentInstantiation> > ()),
-    designInstantiations_(new QList<QSharedPointer<DesignInstantiation> > ()),
-    designConfigurationInstantiations_(new QList<QSharedPointer<DesignConfigurationInstantiation> > ()),
-    ports_(new QList<QSharedPointer<Port> > ())
+Model::Model(Model const& other)
 {
     copyViews(other);
     copyComponentInstantiations(other);
@@ -100,15 +93,7 @@ void Model::setViews(QSharedPointer<QList<QSharedPointer<View> > > newViews)
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentInstantiation> Model::findComponentInstantiation(QString const& name) const
 {
-	foreach (QSharedPointer<ComponentInstantiation> currentInstantiation, *componentInstantiations_)
-	{
-		if (currentInstantiation->name() == name)
-		{
-			return currentInstantiation;
-		}
-	}
-
-	return QSharedPointer<ComponentInstantiation>();
+	return Search::findByName(name, componentInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -133,15 +118,7 @@ void Model::setComponentInstantiations(
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignInstantiation> Model::findDesignInstantiation(QString const& name) const
 {
-	foreach (QSharedPointer<DesignInstantiation> currentInstantiation, *designInstantiations_)
-	{
-		if (currentInstantiation->name() == name)
-		{
-			return currentInstantiation;
-		}
-	}
-
-	return QSharedPointer<DesignInstantiation>();
+    return Search::findByName(name, designInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -166,16 +143,7 @@ void Model::setDesignInstantiations(QSharedPointer<QList<QSharedPointer<DesignIn
 QSharedPointer<DesignConfigurationInstantiation> Model::findDesignConfigurationInstantiation(QString const& name) 
     const
 {
-	foreach (QSharedPointer<DesignConfigurationInstantiation> currentInstantiation, 
-        *designConfigurationInstantiations_)
-	{
-		if (currentInstantiation->name() == name)
-		{
-			return currentInstantiation;
-		}
-	}
-
-	return QSharedPointer<DesignConfigurationInstantiation>();
+    return Search::findByName(name, designConfigurationInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -225,12 +193,7 @@ bool Model::hasViews() const
 //-----------------------------------------------------------------------------
 QStringList Model::getViewNames() const
 {
-    QStringList nameList;
-    foreach (QSharedPointer<View> view, *views_)
-    {
-        nameList.append(view->name());
-    }
-    return nameList;
+    return Search::getNames(views_);
 }
 
 //-----------------------------------------------------------------------------
@@ -239,7 +202,7 @@ QStringList Model::getViewNames() const
 QStringList Model::getHierViews() const
 {
     QStringList viewList;
-    foreach (QSharedPointer<View> view, *views_)
+    for (QSharedPointer<View> view : *views_)
     {
         if (view->isHierarchical())
         {
@@ -255,7 +218,7 @@ QStringList Model::getHierViews() const
 QStringList Model::getFlatViews() const
 {
     QStringList viewList;
-    foreach (QSharedPointer<View> view, *views_)
+    for (QSharedPointer<View> view : *views_)
     {
         if (!view->isHierarchical())
         {
@@ -270,15 +233,7 @@ QStringList Model::getFlatViews() const
 //-----------------------------------------------------------------------------
 QSharedPointer<View> Model::findView(const QString name) const
 {
-	foreach (QSharedPointer<View> currentView, *views_)
-	{
-		if (currentView->name() == name)
-		{
-			return currentView;
-		}
-	}
-
-	return QSharedPointer<View>();
+	return Search::findByName(name, views_);
 }
 
 //-----------------------------------------------------------------------------
@@ -320,7 +275,7 @@ QList<VLNV> Model::getHierarchyRefs() const
 {
     QList<VLNV> list;
 
-    foreach (QSharedPointer<View> view, *views_)
+    for (QSharedPointer<View> view : *views_)
     {
         if (view->isHierarchical())
         {
@@ -347,14 +302,7 @@ QList<VLNV> Model::getHierarchyRefs() const
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> Model::getPort(QString const& name) const
 {
-    foreach (QSharedPointer<Port> port, *ports_)
-    {
-        if (port->name() == name)
-        {
-            return port;
-        }
-    }
-    return QSharedPointer<Port>();
+    return Search::findByName(name, ports_);
 }
 
 //-----------------------------------------------------------------------------
@@ -362,15 +310,7 @@ QSharedPointer<Port> Model::getPort(QString const& name) const
 //-----------------------------------------------------------------------------
 bool Model::hasPort(QString const& name) const
 {
-    foreach (QSharedPointer<Port> port, *ports_)
-    {
-        if (port->name() == name)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return getPort(name).isNull() == false;
 }
 
 //-----------------------------------------------------------------------------
@@ -378,12 +318,7 @@ bool Model::hasPort(QString const& name) const
 //-----------------------------------------------------------------------------
 QStringList Model::getPortNames() const
 {
-    QStringList portNames;
-    foreach (QSharedPointer<Port> port, *ports_)
-    {
-        portNames.append(port->name());
-    }
-    return portNames;
+    return Search::getNames(ports_);
 }
 
 //-----------------------------------------------------------------------------
@@ -399,14 +334,7 @@ bool Model::hasPorts() const
 //-----------------------------------------------------------------------------
 bool Model::hasHierView() const
 {
-    for (QSharedPointer<View> view : *views_)
-    {
-        if (view->isHierarchical())
-        {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(views_->cbegin(), views_->cend(), [](const auto& view) { return view->isHierarchical(); });
 }
 
 //-----------------------------------------------------------------------------
@@ -416,7 +344,7 @@ QList<VLNV> Model::getViewReferences() const
 {
     QList<VLNV> vlnvList;
 
-    foreach (QSharedPointer<View> view, *views_)
+    for (QSharedPointer<View> view : *views_)
     {
         if (!view->getDesignInstantiationRef().isEmpty())
         {
@@ -447,13 +375,8 @@ QList<VLNV> Model::getViewReferences() const
 //-----------------------------------------------------------------------------
 bool Model::hasContents() const
 {
-    if (!views_->isEmpty() || !componentInstantiations_->isEmpty() || !designInstantiations_->isEmpty() ||
-        !designConfigurationInstantiations_->isEmpty() || !ports_->isEmpty())
-    {
-        return true;
-    }
-
-    return false;
+    return (!views_->isEmpty() || !componentInstantiations_->isEmpty() || !designInstantiations_->isEmpty() ||
+        !designConfigurationInstantiations_->isEmpty() || !ports_->isEmpty());
 }
 
 //-----------------------------------------------------------------------------
@@ -461,11 +384,7 @@ bool Model::hasContents() const
 //-----------------------------------------------------------------------------
 void Model::copyViews(Model const& other) const
 {
-    for (QSharedPointer<View> view : *other.views_)
-    {
-        QSharedPointer<View> copy = QSharedPointer<View>(new View(*view.data()));
-        views_->append(copy);
-    }
+    Copy::copyList(other.views_, views_);
 }
 
 //-----------------------------------------------------------------------------
@@ -473,12 +392,7 @@ void Model::copyViews(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyComponentInstantiations(Model const& other) const
 {
-    for (QSharedPointer<ComponentInstantiation> instantiation : *other.componentInstantiations_)
-    {
-        QSharedPointer<ComponentInstantiation> copy =
-            QSharedPointer<ComponentInstantiation>(new ComponentInstantiation(*instantiation.data()));
-        componentInstantiations_->append(copy);
-    }
+    Copy::copyList(other.componentInstantiations_, componentInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -486,11 +400,7 @@ void Model::copyComponentInstantiations(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyDesignInstantiations(Model const& other) const
 {
-    for (QSharedPointer<DesignInstantiation> instantiation : *other.designInstantiations_)
-    {
-        QSharedPointer<DesignInstantiation> copy(new DesignInstantiation(*instantiation));
-        designInstantiations_->append(copy);
-    }
+    Copy::copyList(other.designInstantiations_, designInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -498,13 +408,7 @@ void Model::copyDesignInstantiations(Model const& other) const
 //-----------------------------------------------------------------------------
 void Model::copyDesignConfigurationInstantiations(const Model& other) const
 {
-    for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
-        *other.designConfigurationInstantiations_)
-    {
-        QSharedPointer<DesignConfigurationInstantiation> copy(new DesignConfigurationInstantiation(
-            *instantiation));
-        designConfigurationInstantiations_->append(copy);
-    }
+    Copy::copyList(other.designConfigurationInstantiations_, designConfigurationInstantiations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -512,9 +416,5 @@ void Model::copyDesignConfigurationInstantiations(const Model& other) const
 //-----------------------------------------------------------------------------
 void Model::copyPorts(Model const& other) const
 {
-    for (QSharedPointer<Port> port : *other.ports_)
-    {
-        QSharedPointer<Port> copy = QSharedPointer<Port>(new Port(*port));
-        ports_->append(copy);
-    }
+    Copy::copyList(other.ports_, ports_);
 }

@@ -821,17 +821,11 @@
     <Filter Include="Header Files\editors\HWDesign\columnview">
       <UniqueIdentifier>{fbc7bdf7-d3b5-4030-b470-178ac88791da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\editors\HWDesign\views">
-      <UniqueIdentifier>{cc9095e4-21a6-4581-ac27-c5ea327a9e5a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\editors\HWDesign">
       <UniqueIdentifier>{0c7dffdc-2062-4560-8709-d0d093ac7c1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\HWDesign\columnview">
       <UniqueIdentifier>{af62a80d-ef25-4e59-be26-578debf59af6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\editors\HWDesign\views">
-      <UniqueIdentifier>{5a2d5566-85aa-4691-b84d-04b2657b950e}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\editors\HWDesign\AdhocEditor">
       <UniqueIdentifier>{4d4e6c3c-1f87-43df-b058-2eef2e1f8998}</UniqueIdentifier>
@@ -931,9 +925,6 @@
     </Filter>
     <Filter Include="Source Files\editors\BusDefinitionEditor\interfaces">
       <UniqueIdentifier>{a7c8e980-018f-4596-aad8-996bf453851a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\editors\ComponentEditor\ports\interfaces">
-      <UniqueIdentifier>{635c99e6-325d-44e3-8df8-8811e54cc299}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\PythonAPI">
       <UniqueIdentifier>{c7179758-fd64-4532-9cc8-e0608bd5db93}</UniqueIdentifier>
@@ -2512,9 +2503,6 @@
     <ClCompile Include="editors\HWDesign\undoCommands\ConnectionDeleteCommand.cpp">
       <Filter>Source Files\editors\HWDesign\undoCommands</Filter>
     </ClCompile>
-    <ClCompile Include="editors\HWDesign\views\CellEditTableView.cpp">
-      <Filter>Source Files\editors\HWDesign\views</Filter>
-    </ClCompile>
     <ClCompile Include="editors\HWDesign\HWDesignDiagram.cpp">
       <Filter>Source Files\editors\HWDesign</Filter>
     </ClCompile>
@@ -3342,6 +3330,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.cpp">
+      <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -4655,9 +4652,6 @@
     <QtMoc Include="editors\HWDesign\undoCommands\InterfaceDeleteCommand.h">
       <Filter>Header Files\editors\HWDesign\undoCommands</Filter>
     </QtMoc>
-    <QtMoc Include="editors\HWDesign\views\CellEditTableView.h">
-      <Filter>Header Files\editors\HWDesign\views</Filter>
-    </QtMoc>
     <QtMoc Include="editors\HWDesign\SelectItemTypeDialog.h">
       <Filter>Header Files\editors\HWDesign</Filter>
     </QtMoc>
@@ -5776,6 +5770,10 @@
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h">
       <Filter>Header Files\editors\ComponentEditor\powerDomains</Filter>
     </ClInclude>
+    <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6016,6 +6014,15 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkEditor.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.h">
+      <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

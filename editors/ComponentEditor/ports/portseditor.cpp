@@ -68,7 +68,7 @@ busInterface_(busInterface)
 
     portsInterface_ =
         QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    portsInterface_->setPorts(component);
+    portsInterface_->setPorts(component->getPorts());
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
@@ -231,7 +231,7 @@ void PortsEditor::setComponent(QSharedPointer<Component> component)
 {
     component_ = component;
 
-    portsInterface_->setPorts(component_);
+    portsInterface_->setPorts(component_->getPorts());
     wireEditor_->setComponent(component);
     transactionalEditor_->setComponent(component);
 }

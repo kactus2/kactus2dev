@@ -11,6 +11,8 @@
 
 #include "MultipleAbstractorInstances.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: MultipleAbstractorInstances::MultipleAbstractorInstances()
 //-----------------------------------------------------------------------------
@@ -25,25 +27,9 @@ MultipleAbstractorInstances::MultipleAbstractorInstances()
 MultipleAbstractorInstances::MultipleAbstractorInstances(const MultipleAbstractorInstances& other):
 isPresent_(other.isPresent_)
 {
-    for (QSharedPointer<InterfaceRef> interfaceReference : *other.interfaceReferences_)
-    {
-        if (interfaceReference)
-        {
-            QSharedPointer<InterfaceRef> copy = QSharedPointer<InterfaceRef>(
-                new InterfaceRef(*interfaceReference));
-            interfaceReferences_->append(copy);
-        }
-    }
+    Copy::copyList(other.interfaceReferences_, interfaceReferences_);
 
-    for (QSharedPointer<AbstractorInstance> abstractorInstance : *other.abstractorInstances_)
-    {
-        if (abstractorInstance)
-        {
-            QSharedPointer<AbstractorInstance> copy = QSharedPointer<AbstractorInstance>(
-                new AbstractorInstance(*abstractorInstance));
-            abstractorInstances_->append(copy);
-        }
-    }
+    Copy::copyList(other.abstractorInstances_, abstractorInstances_);
 }
 
 //-----------------------------------------------------------------------------

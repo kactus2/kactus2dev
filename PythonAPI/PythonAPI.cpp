@@ -430,7 +430,7 @@ bool PythonAPI::openComponent(std::string const& vlnvString)
         {
             parameterFinder_->setComponent(component);
             portValidator_->componentChange(component->getViews());
-            portsInterface_->setPorts(component);
+            portsInterface_->setPorts(component->getPorts());
 
             parameterValidator_->componentChange(component->getChoices(), component->getRevision());
             componentParameterInterface_->setParameters(component->getParameters());

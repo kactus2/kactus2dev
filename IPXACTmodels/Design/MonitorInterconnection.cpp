@@ -11,6 +11,8 @@
 
 #include "MonitorInterconnection.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: MonitorInterconnection::MonitorInterconnection()
 //-----------------------------------------------------------------------------
@@ -40,12 +42,7 @@ NameGroup(other),
 isPresent_(other.isPresent_),
 monitoredActiveInterface_(new MonitorInterface(*other.monitoredActiveInterface_))
 {
-    for (auto const& singleInterface : *other.monitorInterfaces_)
-    {
-        QSharedPointer<MonitorInterface> copy =
-            QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
-        monitorInterfaces_->append(copy);
-    }
+    Copy::copyList(other.monitorInterfaces_, monitorInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -64,12 +61,8 @@ MonitorInterconnection& MonitorInterconnection::operator=(const MonitorInterconn
             QSharedPointer<MonitorInterface>(new MonitorInterface(*other.monitoredActiveInterface_));
 
         monitorInterfaces_->clear();
-        for (auto const& singleInterface : *other.monitorInterfaces_)
-        {
-            QSharedPointer<MonitorInterface> copy =
-                QSharedPointer<MonitorInterface>(new MonitorInterface(*singleInterface));
-            monitorInterfaces_->append(copy);
-        }
+
+        Copy::copyList(other.monitorInterfaces_, monitorInterfaces_);
     }
 
     return *this;

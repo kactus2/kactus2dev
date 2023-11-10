@@ -13,7 +13,7 @@
 
 #include <IPXACTmodels/common/Parameter.h>
 
-using namespace std;
+#include <KactusAPI/include/ListHelper.h>
 
 namespace
 {
@@ -26,8 +26,7 @@ namespace
 //-----------------------------------------------------------------------------
 ParametersInterface::ParametersInterface(QSharedPointer<ParameterValidator> validator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
-AbstractParameterInterface(validator, expressionParser, expressionFormatter),
-parameters_()
+AbstractParameterInterface(validator, expressionParser, expressionFormatter)
 {
 
 }
@@ -43,34 +42,22 @@ void ParametersInterface::setParameters(QSharedPointer<QList<QSharedPointer<Para
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::getItemIndex()
 //-----------------------------------------------------------------------------
-int ParametersInterface::getItemIndex(string const& itemName) const
+int ParametersInterface::getItemIndex(std::string const& itemName) const
 {
-    if (parameters_)
-    {
-        for (int i = 0; i < parameters_->size(); ++i)
-        {
-            if (parameters_->at(i)->name().toStdString() == itemName)
-            {
-                return i;
-            }
-        }
-    }
-
-    return -1;
+    return ListHelper::itemIndex(itemName, parameters_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string ParametersInterface::getIndexedItemName(int const& itemIndex) const
+std::string ParametersInterface::getIndexedItemName(int itemIndex) const
 {
-    string parameterName = "";
     if (parameters_ && (itemIndex >= 0 && itemIndex < parameters_->size()))
     {
-        parameterName = parameters_->at(itemIndex)->name().toStdString();
+        return parameters_->at(itemIndex)->name().toStdString();
     }
 
-    return parameterName;
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -89,24 +76,20 @@ int ParametersInterface::itemCount() const
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> ParametersInterface::getItemNames() const
+std::vector<std::string> ParametersInterface::getItemNames() const
 {
-    vector<string> names;
     if (parameters_)
     {
-        for (auto parameter : *parameters_)
-        {
-            names.push_back(parameter->name().toStdString());
-        }
+        return ListHelper::listNames(parameters_);
     }
 
-    return names;
+    return std::vector<std::string>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::addParameter()
 //-----------------------------------------------------------------------------
-void ParametersInterface::addParameter(int const& row, string const& newParameterName)
+void ParametersInterface::addParameter(int const& row, std::string const& newParameterName)
 {
     QString parameterName = getUniqueName(newParameterName, "parameter");
 
@@ -119,7 +102,7 @@ void ParametersInterface::addParameter(int const& row, string const& newParamete
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::removeParameter()
 //-----------------------------------------------------------------------------
-bool ParametersInterface::removeParameter(string const& parameterName)
+bool ParametersInterface::removeParameter(std::string const& parameterName)
 {
     QSharedPointer<Parameter> removedParameter = getParameter(parameterName);
     if (!removedParameter)
@@ -141,7 +124,7 @@ QSharedPointer<NameGroup> ParametersInterface::getItem(std::string const& parame
 //-----------------------------------------------------------------------------
 // Function: ParametersInterface::getParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ParametersInterface::getParameter(string const& parameterName) const
+QSharedPointer<Parameter> ParametersInterface::getParameter(std::string const& parameterName) const
 {
     if (parameters_)
     {

@@ -12,56 +12,8 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#include "Range.h"
+#include "Vector.h"
 
-#include <IPXACTmodels/ipxactmodels_global.h>
+using Array = Vector;
 
-#include <QString>
-#include <QXmlStreamWriter>
-
-//-----------------------------------------------------------------------------
-// Kactus2 vendor extension for arrays.
-//-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT Array : public Range
-{
-public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] left    The left side of the array.
-     *      @param [in] right   The right side of the array.
-     */
-    Array(QString left, QString right);
-
-	/*!
-	 *  The destructor.
-	*/
-    virtual ~Array();
-
-    //! Disable copying.
-    Array(Array const& other);
-
-	// Disable assignment.
-    Array& operator=(Array const& other);
-
-    /*!
-     *	Set the array id.
-     *  
-     *      @param [in] id     The new array id.
-     */
-    void setId(QString const& id);
-
-    /*!
-     *	Get the array id.
-     *  
-     * 	    @return The array id.
-     */
-    QString getId() const;
-
-private:
-
-    //! Name for referencing the array.
-    QString arrayId_;
-};
 #endif // ARRAY_H

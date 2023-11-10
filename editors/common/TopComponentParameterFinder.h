@@ -29,19 +29,25 @@ public:
      *
      *      @param [in] component   The component which parameters are being searched for.
      */
-    TopComponentParameterFinder(QSharedPointer<Component> component);
+    explicit TopComponentParameterFinder(QSharedPointer<Component> component);
 
     /*!
      *  Destructor.
      */
-    ~TopComponentParameterFinder();
+    ~TopComponentParameterFinder() final = default;
+
+    //! No copying
+    TopComponentParameterFinder(const TopComponentParameterFinder& other) = delete;
+
+    //! No assignment
+    TopComponentParameterFinder& operator=(const TopComponentParameterFinder& other) = delete;
 
     /*!
      *  Get the parameter with the given id.
      *
      *      @param [in] parameterId     The id of the parameter being searched for.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const;
+    QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const final;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -50,7 +56,7 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const;
+    bool hasId(QStringView id) const final;
 
     /*!
      *  Finds the name of the parameter with the given id.
@@ -59,7 +65,7 @@ public:
      *
      *      @return The name of the parameter.
      */
-    virtual QString nameForId(QString const& id) const;
+    QString nameForId(QStringView id) const final;
 
     /*!
      *  Finds the value of the parameter with the given id.
@@ -68,21 +74,21 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const;
+    QString valueForId(QStringView id) const final;
 
     /*!
      *  Gets all of the ids of components parameters.
      *
      *      @return A list containing all of the ids.
      */
-    virtual QStringList getAllParameterIds() const;
+    QStringList getAllParameterIds() const final;
 
     /*!
      *  Gets the number of parameters in the component.
      *
      *      @return The number of parameters in the component.
      */
-    virtual int getNumberOfParameters() const;
+    int getNumberOfParameters() const final;
 
     /*!
      *  Set a new component for the parameter finder.
@@ -103,15 +109,10 @@ public:
      *
      *      @param [in] model   The model to register.
      */
-    virtual void registerParameterModel(QAbstractItemModel const* model);
+    void registerParameterModel(QAbstractItemModel const* model) final;
 
 private:
 
-	//! No copying
-    TopComponentParameterFinder(const TopComponentParameterFinder& other);
-	
-    //! No assignment
-    TopComponentParameterFinder& operator=(const TopComponentParameterFinder& other);
 
     /*!
      *  Finds all the parameters in the active view.

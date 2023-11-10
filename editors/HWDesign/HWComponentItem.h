@@ -215,7 +215,8 @@ private:
     //-----------------------------------------------------------------------------
 
 	//! Hierarchy icon for the component.
-    QGraphicsPixmapItem* hierIcon_ = nullptr;
+    QGraphicsPixmapItem* hierIcon_ =
+        new QGraphicsPixmapItem(QPixmap(QStringLiteral(":icons/common/graphics/hierarchy.png")), this);
 
     //! The old column from where the mouse drag event began.
     HWColumn* oldColumn_ = nullptr;

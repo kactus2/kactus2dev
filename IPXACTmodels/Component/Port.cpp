@@ -17,16 +17,14 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Value.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Port::Port()
 //-----------------------------------------------------------------------------
 Port::Port(QString const& portName) :
 NameGroup(portName),
-Extendable(),
-isPresent_(),
-wire_(),
-transactional_(),
-configurableArrays_(new QList<QSharedPointer<Array> > ())
+Extendable()
 {
 
 }
@@ -37,10 +35,7 @@ configurableArrays_(new QList<QSharedPointer<Array> > ())
 Port::Port(const Port &other): 
 NameGroup(other),
 Extendable(other),
-isPresent_(other.isPresent_),
-wire_(),
-transactional_(),
-configurableArrays_(new QList<QSharedPointer<Array> > ())
+isPresent_(other.isPresent_)
 {
     if (other.wire_)
     {
@@ -52,7 +47,7 @@ configurableArrays_(new QList<QSharedPointer<Array> > ())
         transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
 	}
 
-    copyArrays(other);
+    Copy::copyList(other.configurableArrays_, configurableArrays_);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +63,7 @@ Port & Port::operator=( const Port &other )
 
 		if (other.wire_)
         {
-            wire_ = QSharedPointer<Wire>(new Wire(*other.wire_.data()));
+            wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
         }
         else
         {
@@ -77,7 +72,7 @@ Port & Port::operator=( const Port &other )
 
 		if (other.transactional_) 
         {
-			transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
+			transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_));
 		}
 		else
         {
@@ -85,19 +80,9 @@ Port & Port::operator=( const Port &other )
         }
 
         configurableArrays_->clear();
-        copyArrays(other);
+        Copy::copyList(other.configurableArrays_, configurableArrays_);
 	}
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Port::~Port()
-//-----------------------------------------------------------------------------
-Port::~Port()
-{
-    wire_.clear();
-    transactional_.clear();
-    configurableArrays_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -113,18 +98,12 @@ QSharedPointer<Wire> Port::getWire() const
 //-----------------------------------------------------------------------------
 void Port::setWire(QSharedPointer<Wire> newWire)
 {
-    if (wire_)
-    {
-        wire_.clear();
-    }
-
     if (transactional_)
     {
         transactional_.clear();
     }
 
-    // change the port type
-    wire_ = QSharedPointer<Wire>(newWire);
+    wire_ = newWire;
 }
 
 //-----------------------------------------------------------------------------
@@ -145,12 +124,7 @@ void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
         wire_.clear();
 	}
 
-	if (transactional_)
-    {
-		transactional_.clear();
-	}
-
-	transactional_ = QSharedPointer<Transactional>(newTransactional);
+	transactional_ = newTransactional;
 }
 
 //-----------------------------------------------------------------------------
@@ -158,12 +132,9 @@ void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 //-----------------------------------------------------------------------------
 QString Port::getLeftBound() const
 {
-    if (wire_)
+    if (wire_ && wire_->getVector())
     {
-        if (wire_->getVector())
-        {
-            return wire_->getVectorLeftBound();
-        }
+        return wire_->getVectorLeftBound();
     }
 
     return QStringLiteral("0");
@@ -174,15 +145,12 @@ QString Port::getLeftBound() const
 //-----------------------------------------------------------------------------
 void Port::setLeftBound(QString const& newLeftBound)
 {
-    if (wire_)
-    {
-        wire_->setVectorLeftBound(newLeftBound);
-    }
-    else
+    if (wire_.isNull())
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        wire_->setVectorLeftBound(newLeftBound);
     }
+
+    wire_->setVectorLeftBound(newLeftBound);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,12 +158,9 @@ void Port::setLeftBound(QString const& newLeftBound)
 //-----------------------------------------------------------------------------
 QString Port::getRightBound() const
 {
-    if (wire_)
+    if (wire_ && wire_->getVector())
     {
-        if (wire_->getVector())
-        {
-            return wire_->getVectorRightBound();
-        }
+        return wire_->getVectorRightBound();
     }
 
     return QStringLiteral("0");
@@ -206,15 +171,12 @@ QString Port::getRightBound() const
 //-----------------------------------------------------------------------------
 void Port::setRightBound(QString const& newRightBound)
 {
-    if (wire_)
-    {
-        wire_->setVectorRightBound(newRightBound);
-    }
-    else
+    if (wire_.isNull())
     {
         wire_ = QSharedPointer<Wire>(new Wire());
-        wire_->setVectorRightBound(newRightBound);
     }
+
+    wire_->setVectorRightBound(newRightBound);
 }
 
 //-----------------------------------------------------------------------------
@@ -322,7 +284,7 @@ void Port::setAllLogicalDirectionsAllowed( bool allowed )
 //-----------------------------------------------------------------------------
 // Function: Port::getTypeName()
 //-----------------------------------------------------------------------------
-QString Port::getTypeName( const QString& viewName /*= QString("")*/ ) const
+QString Port::getTypeName( const QString& viewName ) const
 {
     if (wire_)
     {
@@ -341,7 +303,7 @@ QString Port::getTypeName( const QString& viewName /*= QString("")*/ ) const
 //-----------------------------------------------------------------------------
 // Function: Port::setTypeName()
 //-----------------------------------------------------------------------------
-void Port::setTypeName( const QString& typeName, const QString& viewName /*= QString("")*/ )
+void Port::setTypeName( const QString& typeName, const QString& viewName )
 {
     if (wire_)
     {
@@ -361,7 +323,7 @@ void Port::setTypeName( const QString& typeName, const QString& viewName /*= QSt
 //-----------------------------------------------------------------------------
 // Function: Port::hasType()
 //-----------------------------------------------------------------------------
-bool Port::hasType( const QString& viewName /*= QString("")*/ ) const
+bool Port::hasType( const QString& viewName ) const
 {
     if (wire_)
     {
@@ -378,7 +340,7 @@ bool Port::hasType( const QString& viewName /*= QString("")*/ ) const
 //-----------------------------------------------------------------------------
 // Function: Port::getTypeDefinition()
 //-----------------------------------------------------------------------------
-QString Port::getTypeDefinition( const QString& typeName )
+QString Port::getTypeDefinition( const QString& typeName ) const
 {
     if (wire_)
     {
@@ -457,15 +419,8 @@ bool Port::hasTypeDefinitions() const
 //-----------------------------------------------------------------------------
 bool Port::isAdHocVisible() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:adHocVisible"))
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return std::any_of(getVendorExtensions()->cbegin(), getVendorExtensions()->cend(),
+        [](auto const& extension) { return extension->type() == QStringLiteral("kactus2:adHocVisible"); });
 }
 
 //-----------------------------------------------------------------------------
@@ -473,23 +428,17 @@ bool Port::isAdHocVisible() const
 //-----------------------------------------------------------------------------
 void Port::setAdHocVisible(bool visible)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:adHocVisible"))
-        {
-            if (!visible)
-            {
-                getVendorExtensions()->removeAll(extension);
-            }
-            return;
-        }
-    }
-
-    if (visible)
+    auto adHocExtension = findVendorExtension(QStringLiteral("kactus2:adHocVisible"));
+   
+    if (visible && adHocExtension.isNull())
     {
         QSharedPointer<Kactus2Placeholder> adHocVisibility(new Kactus2Placeholder(
             QStringLiteral("kactus2:adHocVisible")));
         getVendorExtensions()->append(adHocVisibility);
+    }
+    else if (visible == false)
+    {
+        getVendorExtensions()->removeAll(adHocExtension);
     }
 }
 
@@ -498,13 +447,10 @@ void Port::setAdHocVisible(bool visible)
 //-----------------------------------------------------------------------------
 QPointF Port::getDefaultPos() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    if (auto positionExtension = findVendorExtension(QStringLiteral("kactus2:position")); 
+        positionExtension.isNull() == false)
     {
-        if (extension->type() == QLatin1String("kactus2:position"))
-        {
-            QSharedPointer<Kactus2Position> positionExtension = extension.dynamicCast<Kactus2Position>();
-            return positionExtension->position();
-        }
+        return positionExtension.dynamicCast<Kactus2Position>()->position();
     }
 
     return QPointF();
@@ -515,18 +461,14 @@ QPointF Port::getDefaultPos() const
 //-----------------------------------------------------------------------------
 void Port::setDefaultPos(QPointF const& pos)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto positionExtension = findVendorExtension(QStringLiteral("kactus2:position")).dynamicCast<Kactus2Position>();
+    if (positionExtension.isNull())
     {
-        if (extension->type() == QLatin1String("kactus2:position"))
-        {
-            QSharedPointer<Kactus2Position> positionExtension = extension.dynamicCast<Kactus2Position>();
-            positionExtension->setPosition(pos);
-            return;
-        }
+        positionExtension = QSharedPointer<Kactus2Position>(new Kactus2Position(pos));
+        getVendorExtensions()->append(positionExtension);
     }
 
-    QSharedPointer<Kactus2Position> newPosition (new Kactus2Position(pos));
-    getVendorExtensions()->append(newPosition);
+    positionExtension->setPosition(pos);
 }
 
 //-----------------------------------------------------------------------------
@@ -538,10 +480,8 @@ QString Port::getArrayLeft() const
     {
         return QString();
     }
-    else
-    {
-        return configurableArrays_->first()->getLeft();
-    }
+
+    return configurableArrays_->first()->getLeft();
 }
 
 //-----------------------------------------------------------------------------
@@ -577,10 +517,8 @@ QString Port::getArrayRight() const
     {
         return QString();
     }
-    else
-    {
-        return configurableArrays_->first()->getRight();
-    }
+    
+    return configurableArrays_->first()->getRight();
 }
 
 //-----------------------------------------------------------------------------
@@ -610,18 +548,15 @@ void Port::setArrayRight(QString const& newArrayRight)
 //-----------------------------------------------------------------------------
 // Function: port::getPortTags()
 //-----------------------------------------------------------------------------
-const QString Port::getPortTags() const
+QString Port::getPortTags() const
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
+    auto tagExtension = findVendorExtension(QStringLiteral("kactus2:portTags")).dynamicCast<Kactus2Value>();
+    if (tagExtension.isNull())
     {
-        if (extension->type() == QLatin1String("kactus2:portTags"))
-        {
-            QSharedPointer<Kactus2Value> portTags = extension.dynamicCast<Kactus2Value>();
-            return portTags->value();
-        }
+        return QString();
     }
 
-    return QString();
+    return tagExtension->value();
 }
 
 //-----------------------------------------------------------------------------
@@ -629,25 +564,21 @@ const QString Port::getPortTags() const
 //-----------------------------------------------------------------------------
 void Port::setPortTags(const QString& newPortTags)
 {
-    foreach (QSharedPointer<VendorExtension> extension, *getVendorExtensions())
-    {
-        if (extension->type() == QLatin1String("kactus2:portTags"))
-        {
-            if (newPortTags.isEmpty())
-            {
-                getVendorExtensions()->removeAll(extension);
-            }
-            else
-            {
-                QSharedPointer<Kactus2Value> tagExtension = extension.dynamicCast<Kactus2Value>();
-                tagExtension->setValue(newPortTags);
-            }
-            return;
-        }
-    }
+    auto tagExtension = findVendorExtension(QStringLiteral("kactus2:portTags")).dynamicCast<Kactus2Value>();
 
-    QSharedPointer<Kactus2Value> tagExtension (new Kactus2Value(QStringLiteral("kactus2:portTags"), newPortTags));
-    getVendorExtensions()->append(tagExtension);
+    if (newPortTags.isEmpty())
+    {
+        getVendorExtensions()->removeAll(tagExtension);
+    }
+    else if (tagExtension.isNull())
+    {
+        tagExtension = QSharedPointer<Kactus2Value>(new Kactus2Value(QStringLiteral("kactus2:portTags"), newPortTags));
+        getVendorExtensions()->append(tagExtension);
+    }
+    else
+    {
+        tagExtension->setValue(newPortTags);
+    }    
 }
 
 //-----------------------------------------------------------------------------
@@ -675,36 +606,27 @@ QSharedPointer<QList<QSharedPointer<Array> > > Port::getArrays() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: Port::copyArrays()
+// Function: Port::getTypes()
 //-----------------------------------------------------------------------------
-void Port::copyArrays(const Port& other)
+QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Port::getWireTypes() const
 {
-    foreach (QSharedPointer<Array> configurableArray, *other.configurableArrays_)
+    if (wire_)
     {
-        if (configurableArray)
-        {
-            QString arrayLeft = configurableArray->getLeft();
-            QString arrayRight = configurableArray->getRight();
-
-            QSharedPointer<Array> copy (new Array(arrayLeft, arrayRight));
-            configurableArrays_->append(copy);
-        }
+        return wire_->getWireTypeDefs();
     }
+
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
-// Function: Port::getTypes()
+// Function: Port::getTransactionalTypes()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Port::getTypes() const
+QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Port::getTransactionalTypes() const
 {
-    if (getWire())
+    if (transactional_)
     {
-        return getWire()->getWireTypeDefs();
-    }
-    else if (getTransactional())
-    {
-        return getTransactional()->getTransTypeDef();
+        return transactional_->getTransTypeDef();
     }
 
-    return QSharedPointer<QList<QSharedPointer<WireTypeDef> > >();
+    return nullptr;
 }

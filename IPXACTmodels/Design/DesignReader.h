@@ -202,10 +202,10 @@ namespace DesignReader
         /*!
          *  Reads the design column layout (Kactus2 extension).
          *
-         *      @param [in] columnNode  The XML description of the column layout.
-         *      @param [in] design      The new design item.
+         *      @param [in] columnLayoutNode    The XML description of the column layout.
+         *      @param [in] design              The new design item.
          */
-        void parseColumnLayout(QDomNode const& columnNode, QSharedPointer<Design> design);
+        void parseColumnLayout(QDomNode const& columnLayoutNode, QSharedPointer<Design> design);
 
         /*!
          * Reads the route for a connection (Kactus2 extension).

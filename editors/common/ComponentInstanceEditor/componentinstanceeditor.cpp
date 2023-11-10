@@ -14,10 +14,8 @@
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <KactusAPI/include/MultipleParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <editors/common/DesignCompletionModel.h>
-#include <editors/common/TopComponentParameterFinder.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <editors/HWDesign/HWChangeCommands.h>
@@ -40,21 +38,7 @@
 // Function: ComponentInstanceEditor::ComponentInstanceEditor()
 //-----------------------------------------------------------------------------
 ComponentInstanceEditor::ComponentInstanceEditor(QWidget *parent):
-QWidget(parent),
-    component_(0),
-    vlnvDisplayer_(new VLNVDisplayer(this, VLNV(), true)),
-    nameGroup_(new NameGroupBox(this, tr("Component instance name"))),
-    activeViewLabel_(new QLabel(this)),
-    configurableElements_(0),
-    swGroup_(new QGroupBox(tr("Software"), this)),
-    fileSetRefCombo_(new QComboBox(this)),
-    propertyValueEditor_(new PropertyValueEditor(this)),
-    editProvider_(0),
-    instanceFinder_(new ComponentParameterFinder(nullptr)),
-    topFinder_(new TopComponentParameterFinder(nullptr)),
-    designParameterFinder_(new ListParameterFinder()),
-    topComponent_(),
-    containingDesign_()
+QWidget(parent)
 {
     QSharedPointer<MultipleParameterFinder> parameterFinder(new MultipleParameterFinder());
     parameterFinder->addFinder(instanceFinder_);
@@ -71,7 +55,7 @@ QWidget(parent),
     QSharedPointer<IPXactSystemVerilogParser> designParameterParser(
         new IPXactSystemVerilogParser(parameterFinder));
 
-    ComponentParameterModel* completionModel = new ComponentParameterModel(designParameterFinder_, this);
+    auto completionModel = new ComponentParameterModel(designParameterFinder_, this);
     completionModel->setExpressionParser(designParameterParser);
 
     configurableElements_ = new ComponentInstanceConfigurableElementsEditor(parameterExpressions, 
@@ -83,12 +67,14 @@ QWidget(parent),
     nameGroup_->setFlat(true);
     swGroup_->setFlat(true);
     propertyValueEditor_->setFlat(true);
+    powerDomainEditor_->setFlat(true);
 
 	vlnvDisplayer_->hide();
 	nameGroup_->hide();
     swGroup_->hide();
 	configurableElements_->hide();
     propertyValueEditor_->hide();
+    powerDomainEditor_->hide();
 
 	vlnvDisplayer_->setTitle(tr("Component VLNV"));
 
@@ -100,6 +86,8 @@ QWidget(parent),
     connect(nameGroup_, SIGNAL(descriptionChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
     connect(propertyValueEditor_, SIGNAL(contentChanged()),
             this, SLOT(onPropertyValuesChanged()), Qt::UniqueConnection);            
+
+    connect(powerDomainEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(configurableElements_, SIGNAL(increaseReferences(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
@@ -135,7 +123,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 	component_ = componentItem;
 	instanceFinder_->setComponent(componentItem->componentModel());
 
-    QString instanceViewName = QString();
+    auto instanceViewName = QString();
 
     if (designConfiguration)
     {
@@ -162,10 +150,9 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
 	nameGroup_->show();
 
     // Show the file set reference if the component is software.
-    if (dynamic_cast<SWComponentItem*>(componentItem) != 0)
+    if (auto swComponent = dynamic_cast<SWComponentItem*>(componentItem);
+        swComponent != nullptr)
     {
-        SWComponentItem* swComponent = static_cast<SWComponentItem*>(componentItem);
-
         fileSetRefCombo_->clear();
         fileSetRefCombo_->addItem("");
         fileSetRefCombo_->addItems(topComponent_->getFileSetNames());
@@ -188,15 +175,15 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
     }
 
     // Show the component's property values in case of SW/HW mapping.
-	if (dynamic_cast<SystemComponentItem*>(componentItem) != 0)
+	if (auto swComponent = dynamic_cast<SystemComponentItem*>(componentItem);
+        swComponent != nullptr)
     {
-        SystemComponentItem* swComponent = static_cast<SystemComponentItem*>(componentItem);
-
         propertyValueEditor_->setData(swComponent->getPropertyValues());
         propertyValueEditor_->setAllowedProperties(*swComponent->componentModel()->getSWProperties());
 
         propertyValueEditor_->show();
         configurableElements_->hide();
+        powerDomainEditor_->hide();
 
         connect(swComponent, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                 propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)), Qt::UniqueConnection);
@@ -214,8 +201,16 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
             configurableElements_->setComponent(componentItem->componentModel(), componentItem->getComponentInstance(),
                 matchingViewConfiguration, editProvider);
         }
+        
+        if (design->getRevision() == Document::Revision::Std22)
+        {
+            powerDomainEditor_->setContent(componentItem->getComponentInstance()->getPowerDomainLinks(),
+                topComponent_, componentItem->componentModel());
+            powerDomainEditor_->show();
+        }
 
 	    configurableElements_->show();
+
     }
 
 	connect(component_, SIGNAL(nameChanged(QString const&, QString const&)),
@@ -253,6 +248,7 @@ void ComponentInstanceEditor::setProtection(bool locked)
     nameGroup_->setEnabled(!locked);
     fileSetRefCombo_->setEnabled(!locked);
     propertyValueEditor_->setEnabled(!locked);
+    powerDomainEditor_->setEnabled(!locked);
     configurableElements_->setEnabled(!locked);
 }
 
@@ -281,12 +277,13 @@ void ComponentInstanceEditor::clear()
                    this, SLOT(onFileSetRefChanged(QString const&)));
 	}
 
-	component_ = 0;
+	component_ = nullptr;
 	vlnvDisplayer_->hide();
 	nameGroup_->hide();
     swGroup_->hide();
     fileSetRefCombo_->clear();
     propertyValueEditor_->hide();
+    powerDomainEditor_->hide();
 	configurableElements_->hide();
 	configurableElements_->clear();
     activeViewLabel_->parentWidget()->hide();
@@ -370,7 +367,7 @@ void ComponentInstanceEditor::onPropertyValuesChanged()
     disconnect(component_, SIGNAL(propertyValuesChanged(QMap<QString, QString> const&)),
                propertyValueEditor_, SLOT(setData(QMap<QString, QString> const&)));
 
-    SystemComponentItem* swComp = static_cast<SystemComponentItem*>(component_);
+    auto swComp = static_cast<SystemComponentItem*>(component_);
     QSharedPointer<PropertyValuesChangeCommand> cmd(new PropertyValuesChangeCommand(swComp,
         propertyValueEditor_->getData()));
     editProvider_->addCommand(cmd);
@@ -388,7 +385,7 @@ void ComponentInstanceEditor::onFileSetRefChanged(QString const& fileSetRef)
     disconnect(component_, SIGNAL(fileSetRefChanged(QString const&)),
                this, SLOT(updateFileSetRef(QString const&)));
 
-    SWComponentItem* swComp = static_cast<SWComponentItem*>(component_);
+    auto swComp = static_cast<SWComponentItem*>(component_);
     QSharedPointer<FileSetRefChangeCommand> cmd(new FileSetRefChangeCommand(swComp, fileSetRef));
     editProvider_->addCommand(cmd);
     cmd->redo();
@@ -411,20 +408,21 @@ void ComponentInstanceEditor::updateFileSetRef(QString const& fileSetRef)
 //-----------------------------------------------------------------------------
 void ComponentInstanceEditor::setupLayout()
 {
-    QHBoxLayout* swGroupLayout = new QHBoxLayout(swGroup_);
+    auto swGroupLayout = new QHBoxLayout(swGroup_);
     swGroupLayout->addWidget(new QLabel(tr("File set reference:"), this));
     swGroupLayout->addWidget(fileSetRefCombo_, 1);
 
-    QGroupBox* configurationBox = new QGroupBox(tr("Configuration"), this);
+    auto configurationBox = new QGroupBox(tr("Configuration"), this);
     configurationBox->setFlat(true);
 
-    QFormLayout* configurationLayout = new QFormLayout(configurationBox);
+    auto configurationLayout = new QFormLayout(configurationBox);
     configurationLayout->addRow(tr("Active view:"), activeViewLabel_);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(vlnvDisplayer_);
     layout->addWidget(nameGroup_);
     layout->addWidget(configurationBox);
+    layout->addWidget(powerDomainEditor_);
     layout->addWidget(configurableElements_, 1);
     layout->addWidget(swGroup_);
     layout->addWidget(propertyValueEditor_);

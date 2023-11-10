@@ -18,14 +18,8 @@
 // Function: ComponentInstantiationParameterFinder::ComponentInstantiationParameterFinder()
 //-----------------------------------------------------------------------------
 ComponentInstantiationParameterFinder::ComponentInstantiationParameterFinder
-    (QSharedPointer<ComponentInstantiation const> componentInstantiation) : componentInstantiation_(componentInstantiation)
-{
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentInstantiationParameterFinder::~ComponentInstantiationParameterFinder()
-//-----------------------------------------------------------------------------
-ComponentInstantiationParameterFinder::~ComponentInstantiationParameterFinder()
+    (QSharedPointer<ComponentInstantiation const> componentInstantiation) :
+    componentInstantiation_(componentInstantiation)
 {
 
 }
@@ -33,55 +27,45 @@ ComponentInstantiationParameterFinder::~ComponentInstantiationParameterFinder()
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationParameterFinder::ComponentInstantiationParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ComponentInstantiationParameterFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> ComponentInstantiationParameterFinder::getParameterWithID(QStringView parameterId) const
 {
-    // First, search for the parameter corresponding the id.
-    QSharedPointer<Parameter> parameter = searchParameter(parameterId);
-
-    return parameter;
+    return searchParameter(parameterId);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationParameterFinder::hasId()
 //-----------------------------------------------------------------------------
-bool ComponentInstantiationParameterFinder::hasId(QString const& id) const
+bool ComponentInstantiationParameterFinder::hasId(QStringView id) const
 {
-    if (!componentInstantiation_.isNull() && searchParameter(id))
-    {
-        return true;
-    }
-
-    return false;
+    return !componentInstantiation_.isNull() && searchParameter(id);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationParameterFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString ComponentInstantiationParameterFinder::nameForId(QString const& id) const
+QString ComponentInstantiationParameterFinder::nameForId(QStringView id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer <Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->name();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString ComponentInstantiationParameterFinder::valueForId(QString const& id) const
+QString ComponentInstantiationParameterFinder::valueForId(QStringView id) const
 {
-    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer<Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->getValue();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,18 +77,18 @@ QStringList ComponentInstantiationParameterFinder::getAllParameterIds() const
 
     if (componentInstantiation_)
     {
-        foreach (QSharedPointer<ModuleParameter> parameter, *componentInstantiation_->getModuleParameters())
+        for (QSharedPointer<ModuleParameter> parameter : *componentInstantiation_->getModuleParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> parameter, *componentInstantiation_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *componentInstantiation_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
     }
 
-    allParameterIds.removeAll("");
+    allParameterIds.removeAll(QString());
     return allParameterIds;
 }
 
@@ -141,11 +125,11 @@ void ComponentInstantiationParameterFinder::registerParameterModel(QAbstractItem
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationParameterFinder::searchParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ComponentInstantiationParameterFinder::searchParameter(QString const& parameterId) const
+QSharedPointer<Parameter> ComponentInstantiationParameterFinder::searchParameter(QStringView parameterId) const
 {
     if (componentInstantiation_)
     {
-        foreach (QSharedPointer<ModuleParameter> parameter, *componentInstantiation_->getModuleParameters())
+        for (QSharedPointer<ModuleParameter> parameter : *componentInstantiation_->getModuleParameters())
         {
             if (parameter->getValueId() == parameterId)
             {
@@ -153,7 +137,7 @@ QSharedPointer<Parameter> ComponentInstantiationParameterFinder::searchParameter
             }
         }
 
-        foreach (QSharedPointer<Parameter> parameter, *componentInstantiation_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *componentInstantiation_->getParameters())
         {
             if (parameter->getValueId() == parameterId)
             {

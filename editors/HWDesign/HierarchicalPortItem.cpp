@@ -34,14 +34,15 @@ HierarchicalPortItem::HierarchicalPortItem(QSharedPointer<Component> component, 
 AdHocItem(port, component, parent, QVector2D(1.0f, 0.0f)),
 dataGroup_(dataGroup)
 {
-    if (dataGroup_->getAttributeValue("portName").isEmpty())
+    if (dataGroup_->getAttributeValue(QStringLiteral("portName")).isEmpty())
     {
-        dataGroup_->setAttribute("portName", getPort()->name());
+        dataGroup_->setAttribute(QStringLiteral("portName"), getPort()->name());
     }
 
-    if (!dataGroup_->getAttributeValue("x").isEmpty())
+    if (!dataGroup_->getAttributeValue(QStringLiteral("x")).isEmpty())
     {
-        QPointF position(dataGroup_->getAttributeValue("x").toInt(), dataGroup_->getAttributeValue("y").toInt());
+        QPointF position(dataGroup_->getAttributeValue(QStringLiteral("x")).toInt(),
+            dataGroup_->getAttributeValue(QStringLiteral("y")).toInt());
         setPos(position);
     }
 
@@ -56,7 +57,7 @@ dataGroup_(dataGroup)
 //-----------------------------------------------------------------------------
 // Function: HierarchicalPortItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool HierarchicalPortItem::isHierarchical() const
+bool HierarchicalPortItem::isHierarchical() const noexcept
 {
     return true;
 }
@@ -74,7 +75,7 @@ void HierarchicalPortItem::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: HierarchicalPortItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool HierarchicalPortItem::isDirectionFixed() const
+bool HierarchicalPortItem::isDirectionFixed() const noexcept
 {
     return false;
 }

@@ -40,16 +40,7 @@ ConfigurableElementDelegate::ConfigurableElementDelegate(QAbstractItemModel* com
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QObject *parent) :
 ChoiceCreatorDelegate(completionModel, parameterFinder, parent),
-expressionFormatter_(expressionFormatter),
-editProvider_(0)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: configurableelementdelegate::~ConfigurableElementDelegate()
-//-----------------------------------------------------------------------------
-ConfigurableElementDelegate::~ConfigurableElementDelegate() 
+expressionFormatter_(expressionFormatter)
 {
 
 }
@@ -70,9 +61,9 @@ QWidget* ConfigurableElementDelegate::createEditor(QWidget* parent, QStyleOption
 {
     if (index.column() == valueColumn() && valueIsArray(index))
     {
-        ArrayView* editor = new ArrayView(parent);
+        auto editor = new ArrayView(parent);
 
-        QScrollArea* scrollingWidget = new QScrollArea(parent);
+        auto scrollingWidget = new QScrollArea(parent);
         scrollingWidget->setWidgetResizable(true);
         scrollingWidget->setWidget(editor);
         scrollingWidget->parent()->installEventFilter(editor);
@@ -112,9 +103,9 @@ void ConfigurableElementDelegate::setModelData(QWidget* editor, QAbstractItemMod
 
     if (index.column() == valueColumn() && valueIsArray(index))
     {
-        QScrollArea* scrollWidget = qobject_cast<QScrollArea*>(editor);
-        ArrayView* arrayTable = qobject_cast<ArrayView*>(scrollWidget->widget());
-        ParameterArrayModel* arrayModel = qobject_cast<ParameterArrayModel*>(arrayTable->model());
+        auto scrollWidget = qobject_cast<QScrollArea*>(editor);
+        auto arrayTable = qobject_cast<ArrayView*>(scrollWidget->widget());
+        auto arrayModel = qobject_cast<ParameterArrayModel*>(arrayTable->model());
 
         QString arrayValue = arrayModel->getArrayData();
         model->setData(index, arrayValue, Qt::EditRole);
@@ -203,8 +194,7 @@ void ConfigurableElementDelegate::onCreateRemoveElementCommands(QModelIndexList 
             int indexRowCount = index.model()->rowCount(index);
             if (index.parent().isValid() || (!index.parent().isValid() && indexRowCount == 0))
             {
-                ConfigurableElementRemoveCommand* elementRemoveCommand =
-                    createElementRemoveCommand(index, parentCommand);
+                auto elementRemoveCommand = createElementRemoveCommand(index, parentCommand);
 
                 connect(elementRemoveCommand, SIGNAL(increaseReferencesInNewValue(QString const&)),
                     this, SLOT(increaseReferencesInNewValue(QString const&)), Qt::UniqueConnection);
@@ -251,8 +241,8 @@ ConfigurableElementRemoveCommand* ConfigurableElementDelegate::createElementRemo
 
     QString elementID = index.data(ConfigurableElementsModel::parameterIDRole).toString();
 
-    ConfigurableElementRemoveCommand* elementRemoveCommand(new ConfigurableElementRemoveCommand(
-        elementID, filteredRow, parentName, itemConfigurableElements, parentCommand.data()));
+    auto elementRemoveCommand(new ConfigurableElementRemoveCommand(elementID, filteredRow, parentName,
+        itemConfigurableElements, parentCommand.data()));
 
     connectElementRemoveCommand(elementRemoveCommand);
 
@@ -266,8 +256,8 @@ int ConfigurableElementDelegate::getFilteredIndexRow(QModelIndex const& index) c
 {
     QModelIndex modelIndex = index;
 
-    const QSortFilterProxyModel* filter = dynamic_cast<const QSortFilterProxyModel*>(index.model());
-    if (filter)
+    if (auto filter = dynamic_cast<const QSortFilterProxyModel*>(index.model()); 
+        filter)
     {
         modelIndex = filter->mapToSource(index);
     }
@@ -347,7 +337,7 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
 
                     QString elementID = elementIndex.data(ConfigurableElementsModel::parameterIDRole).toString();
 
-                    ConfigurableElementRemoveCommand* elementRemoveCommand(new ConfigurableElementRemoveCommand(
+                    auto elementRemoveCommand(new ConfigurableElementRemoveCommand(
                         elementID, filteredRow, parentName, itemConfigurableElements, multipleRemoveCommand));
 
                     connect(elementRemoveCommand, SIGNAL(addConfigurableElement(QString const&, QString const&,
@@ -368,7 +358,7 @@ void ConfigurableElementDelegate::onCreateMultipleElementRemoveCommands(QModelIn
         const QUndoCommand* multipleRemoveCommand = mainRemoveCommand->child(i);
         for (int j = 0; j < multipleRemoveCommand->childCount(); ++j)
         {
-            const ConfigurableElementRemoveCommand* removeCommand =
+            auto removeCommand =
                 dynamic_cast<const ConfigurableElementRemoveCommand*>(multipleRemoveCommand->child(i));
             if (removeCommand)
             {
@@ -548,7 +538,7 @@ void ConfigurableElementDelegate::repositionAndResizeEditor(QWidget* editor, QSt
 //-----------------------------------------------------------------------------
 void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex const& index) const
 {
-    ArrayView* view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
+    auto view = dynamic_cast<ArrayView*>(dynamic_cast<QScrollArea*>(editor)->widget());
 
     QModelIndex arrayLeftIndex = index.sibling(index.row(), ConfigurableElementsColumns::ARRAY_LEFT);
     int arrayLeft = arrayLeftIndex.data(Qt::DisplayRole).toInt();
@@ -565,7 +555,7 @@ void ConfigurableElementDelegate::createArrayEditor(QWidget* editor, QModelIndex
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(getParameterFinder()));
     QSharedPointer<Choice> selectedChoice = findChoice(index);
-    ParameterArrayModel* model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
+    auto model = new ParameterArrayModel(arraySize, expressionParser, getParameterFinder(),
         expressionFormatter_, selectedChoice, KactusColors::MANDATORY_FIELD, arrayStartIndex, docRevision_, view);
     
     QModelIndex valueIndex = index.sibling(index.row(), valueColumn());

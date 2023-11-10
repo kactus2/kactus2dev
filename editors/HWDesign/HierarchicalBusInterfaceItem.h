@@ -66,7 +66,7 @@ public:
      *
      *      @return The graphics item type of this item.
      */
-    int type() const { return Type; }
+    int type() const final { return Type; }
 
     //-----------------------------------------------------------------------------
     // HWConnectionEndpoint implementation.
@@ -75,7 +75,7 @@ public:
     /*!
      *  Returns true if the port represents a hierarchical connection
      */
-    virtual bool isHierarchical() const;
+    bool isHierarchical() const noexcept final;
 
     /*!
      *  Set the direction for the bus interface item.
@@ -87,7 +87,7 @@ public:
 	/*!
 	 * Set the position of the name label.
 	 */
-	virtual void setLabelPosition();
+	void setLabelPosition() final;
 
     /*!
      *  Gets the data extension for the bus interface.
@@ -104,14 +104,14 @@ protected:
      *      @param [in] change  The change.
      *      @param [in] value   The new value.
      */
-    virtual QVariant itemChange(GraphicsItemChange change, QVariant const& value);
+    QVariant itemChange(GraphicsItemChange change, QVariant const& value) final;
 
     /*!
      *  Event for mouse press.
      *
      *      @param [in] event   The pressed mouse button.
      */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) final;
 
 private:
 
@@ -121,12 +121,12 @@ private:
      *      @param [in] previousName    The previous name of the bus interface.
      *      @param [in] newName         The new name of the bus interface.
      */
-    virtual void updateName(QString const& previousName, QString const& newName);
+    void updateName(QString const& previousName, QString const& newName) final;
 
     /*!
      *  Move by dragging with the mouse.
      */
-    virtual void moveItemByMouse();
+    void moveItemByMouse() final;
 
     /*!
      *  Create a move command for this end point item.
@@ -135,7 +135,7 @@ private:
      *
      *      @return The created move command.
      */
-    virtual QSharedPointer<QUndoCommand> createMouseMoveCommand(DesignDiagram* diagram);
+    QSharedPointer<QUndoCommand> createMouseMoveCommand(DesignDiagram* diagram) final;
 
     /*!
      *  Create move command for an end point that has been moved by the movement of this end point.
@@ -145,8 +145,8 @@ private:
      *      @param [in] diagram             Design diagram containing the end point.
      *      @param [in] parentCommand       Parent command.
      */
-    virtual void createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
-        DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand);
+    void createMoveCommandForClashedItem(ConnectionEndpoint* endPoint, QPointF endPointPosition,
+        DesignDiagram* diagram, QSharedPointer<QUndoCommand> parentCommand) final;
 
     /*!
      *  Check if a connection can be made to the selected connection end point.
@@ -155,14 +155,14 @@ private:
      *
      *      @return True, if the connection can be made, false otherwise.
      */
-    virtual bool canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const;
+    bool canConnectToInterface(ConnectionEndpoint const* otherEndPoint) const final;
 
     /*!
      *  Get the current position of the end point.
      *
      *      @return The current position of the end point.
      */
-    virtual QPointF getCurrentPosition() const;
+    QPointF getCurrentPosition() const final;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -14,6 +14,8 @@
 
 #include "HWConnectionEndpoint.h"
 
+#include <editors/common/diagramgrid.h>
+
 #include <QSharedPointer>
 #include <QVector2D>
 #include <QPolygonF>
@@ -66,21 +68,21 @@ public:
      *
      *      @return The name of the ad hoc port.
      */
-    virtual QString name() const;
+    QString name() const override;
 
 	/*!
      *  Returns the description of the port.
      *
      *      @return The description of the port.
      */
-	virtual QString description() const;
+	QString description() const override;
 
 	/*!
      *  Sets the description of the port.
      *
      *      @param [in] description The description to set.
      */
-	virtual void setDescription(QString const& description);
+	void setDescription(QString const& description) override;
 
     /*!
      *  Called when a connection between this and another end point is done.
@@ -89,21 +91,21 @@ public:
      *
      *      @return False if there was an error in the connection. Otherwise true.
      */
-    virtual bool onConnect(ConnectionEndpoint const* other);
+    bool onConnect(ConnectionEndpoint const* other) override;
 
     /*!
      *  Check if the port is exclusive, i.e. can only have one connection.
      *
      *      @return False. Ad hoc ports are always non-exclusive.
      */
-    virtual bool isExclusive() const;
+    bool isExclusive() const final;
 
     /*! 
      *  Returns the IP-XACT bus interface model of the port.
      *
      *      @return Ad hoc interfaces do not have a bus interface, returns an empty pointer.
      */
-    virtual QSharedPointer<BusInterface> getBusInterface() const;
+    QSharedPointer<BusInterface> getBusInterface() const override;
 
     /*!
      *  Returns the ad-hoc port of the end point.
@@ -113,19 +115,19 @@ public:
      *
      *      @return The ad hoc port of the item.
      */
-    virtual QSharedPointer<Port> getPort() const;
+    QSharedPointer<Port> getPort() const override;
 
     /*!
      *  Check if the end point is an ad hoc port.
      *
      *      @return True, if the end point is an ad hoc port, false otherwise.
      */
-    virtual bool isAdHoc() const;
+    bool isAdHoc() const noexcept override;
 
     /*!
      *  Returns the type of the endpoint (API/COM/bus/ad-hoc/undefined).
      */
-    virtual ConnectionEndpoint::EndpointType getType() const;
+    ConnectionEndpoint::EndpointType getType() const noexcept override;
 
     /*!
      *  Create or change the current tie off label.
@@ -148,7 +150,7 @@ public:
      *
      *      @return True, if the connection can be created, false otherwise.
      */
-    virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
+    bool isConnectionValid(ConnectionEndpoint const* other) const override;
 
 protected:
 
@@ -176,27 +178,23 @@ protected:
      *
      *      @param [in] event   The mouse press event.
      */
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
 
 private:
 
     /*!
      *  Get the shape of an in port.
      *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
      *      @return Polygon containing the shape of an in port.
      */
-    virtual QPolygonF getInPortShape(const int squareSize) const;
+    static QPolygonF getInPortShape();
 
     /*!
      *  Get the shape of an out port.
      *
-     *      @param [in] squareSize  The size of a square in the design grid.
-     *
      *      @return Polygon containing the shape of an out port.
      */
-    virtual QPolygonF getOutPortShape(const int squareSize) const;
+    static QPolygonF getOutPortShape();
 
     /*!
      *  Create the tie off label.
@@ -228,6 +226,9 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
+
+    static constexpr int SQUARE_SIZE = GridSize - 4;
+    static constexpr int TIEOFFITEM_DISTANCE = 20;
 
     //! The port contained within the item.
     QSharedPointer<Port> port_ = nullptr;

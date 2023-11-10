@@ -11,6 +11,8 @@
 
 #include "InterconnectionValidator.h"
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/PortMap.h>
@@ -68,16 +70,7 @@ bool InterconnectionValidator::validateInterconnection(QSharedPointer<Interconne
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::hasValidName(QString const& name) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
-
-    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -85,20 +78,7 @@ bool InterconnectionValidator::hasValidName(QString const& name) const
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::hasValidIsPresent(QString const& isPresent) const
 {
-    if (!isPresent.isEmpty())
-    {
-        QString solvedValue = parser_->parseExpression(isPresent);
-
-        bool toIntOk = true;
-        int intValue = solvedValue.toInt(&toIntOk);
-
-        if (!toIntOk || intValue < 0 || intValue > 1)
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidIsPresent(isPresent, parser_);
 }
 
 //-----------------------------------------------------------------------------
@@ -190,7 +170,6 @@ bool InterconnectionValidator::busReferenceIsValid(QSharedPointer<const Componen
         
     return std::any_of(component->getBusInterfaces()->cbegin(), component->getBusInterfaces()->cend(),
         [&busReference](auto const& currentBus) { return currentBus->name() == busReference; });
-  
 }
 
 //-----------------------------------------------------------------------------
@@ -329,10 +308,9 @@ bool InterconnectionValidator::hasValidMonitoredActiveInterface(QSharedPointer<M
 //-----------------------------------------------------------------------------
 bool InterconnectionValidator::monitorInterfaceIsValid(QSharedPointer<MonitorInterface> monitorInterface) const
 {
-    QSharedPointer<ComponentInstance> referencedInstance =
-        getReferencedComponentInstance(monitorInterface->getComponentReference());
-
-    if (referencedInstance)
+    if (QSharedPointer<ComponentInstance> referencedInstance = getReferencedComponentInstance(
+            monitorInterface->getComponentReference()); 
+        referencedInstance)
     {
         QSharedPointer<const Component> referencedComponent = getReferencedComponent(referencedInstance);
 
@@ -401,7 +379,7 @@ void InterconnectionValidator::findErrorsInName(QVector<QString>& errors, QStrin
 {
     if (!hasValidName(name))
     {
-        errors.append(QObject::tr("Invalid name '%1' set for %2 within %3").arg(name).arg(element).arg(context));
+        errors.append(QObject::tr("Invalid name '%1' set for %2 within %3").arg(name, element, context));
     }
 }
 
@@ -413,8 +391,7 @@ void InterconnectionValidator::findErrorsInIsPresent(QVector<QString>& errors, Q
 {
     if (!hasValidIsPresent(isPresent))
     {
-        errors.append(QObject::tr("Invalid isPresent set for %1 within %2")
-            .arg(innerContext).arg(context));
+        errors.append(QObject::tr("Invalid isPresent set for %1 within %2").arg(innerContext, context));
     }
 }
 
@@ -432,7 +409,7 @@ void InterconnectionValidator::findErrorsInStartInterface(QVector<QString>& erro
     }
     else
     {
-        errors.append(QObject::tr("No active interface set for %1 within %2").arg(innerContext).arg(context));
+        errors.append(QObject::tr("No active interface set for %1 within %2").arg(innerContext, context));
     }
 }
 
@@ -442,7 +419,7 @@ void InterconnectionValidator::findErrorsInStartInterface(QVector<QString>& erro
 void InterconnectionValidator::findErrorsInActiveInterface(QVector<QString>& errors,
     QSharedPointer<ActiveInterface> activeInterface, QString const& innerContext, QString const& context) const
 {
-    QString elementName = QLatin1String("active interface");
+    QString elementName = QStringLiteral("active interface");
 
     QSharedPointer<ComponentInstance> referencedInstance =
         getReferencedComponentInstance(activeInterface->getComponentReference());
@@ -470,14 +447,14 @@ void InterconnectionValidator::findErrorsInComponentReference(QVector<QString>& 
     if (componentReference.isEmpty())
     {
         errors.append(QObject::tr("No component reference set for %1 in %2 within %3")
-            .arg(elementName).arg(innerContext).arg(context));
+            .arg(elementName, innerContext, context));
     }
 
     else if (!referencedInstance)
     {
         errors.append(QObject::tr("Component instance '%1' referenced by the %2 in %3 within %4 was "
             "not found")
-            .arg(componentReference).arg(elementName).arg(innerContext).arg(context));
+            .arg(componentReference, elementName, innerContext, context));
     }
 }
 
@@ -493,14 +470,14 @@ void InterconnectionValidator::findErrorsInBusReference(QVector<QString>& errors
         if (busReference.isEmpty())
         {
             errors.append(QObject::tr("No bus reference set for %1 in %2 within %3")
-                .arg(elementName).arg(innerContext).arg(context));
+                .arg(elementName, innerContext, context));
         }
         else
         {
             if (!busReferenceIsValid(referencedComponent, busReference))
             {
                 errors.append(QObject::tr("Bus interface '%1' referenced by the %2 in %3 within %4 was not found")
-                    .arg(busReference).arg(elementName).arg(innerContext).arg(context));
+                    .arg(busReference, elementName, innerContext, context));
             }
         }
     }
@@ -528,7 +505,7 @@ void InterconnectionValidator::findErrorsInExcludePorts(QVector<QString>& errors
             {
                 errors.append(QObject::tr("Logical port referenced in active interface in %1 was not "
                     "found in the port maps of the referenced bus interface %2")
-                    .arg(innerContext).arg(busInterface->name()));
+                    .arg(innerContext,busInterface->name()));
             }
         }
     }
@@ -544,7 +521,7 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
         interConnection->getHierInterfaces()->isEmpty()))
     {
         errors.append(QObject::tr("No active interfaces or hierarchical interfaces set for %1 within %2")
-            .arg(innerContext).arg(context));        
+            .arg(innerContext, context));        
     }
     else
     {
@@ -563,8 +540,8 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
             {
                 errors.append(QObject::tr("Component reference '%1' and bus reference '%2' pair is not unique in "
                     "active interfaces of %3 within %4.")
-                    .arg(currentInterface->getComponentReference()).arg(currentInterface->getBusReference())
-                    .arg(innerContext).arg(context));
+                    .arg(currentInterface->getComponentReference(), currentInterface->getBusReference(),
+                        innerContext, context));
             }
             else
             {
@@ -582,7 +559,7 @@ void InterconnectionValidator::findErrorsInInterfaces(QVector<QString>& errors,
             {
                 errors.append(QObject::tr("Bus reference '%1' is not unique in hierarchical interfaces of %2 "
                     "within %3.")
-                    .arg(hierarchicalInterface->getBusReference()).arg(innerContext).arg(context));
+                    .arg(hierarchicalInterface->getBusReference(), innerContext, context));
             }
             else
             {
@@ -602,7 +579,7 @@ void InterconnectionValidator::findErrorsInMonitorInterconnection(QVector<QStrin
 {
     QString monitorContext = QObject::tr("monitor interconnection '%1'").arg(connection->name());
 
-    findErrorsInName(errors, connection->name(), QLatin1String("monitor interconnection"), context);
+    findErrorsInName(errors, connection->name(), QStringLiteral("monitor interconnection"), context);
     findErrorsInIsPresent(errors, connection->getIsPresent(), monitorContext, context);
     findErrorsInMonitoredActiveInterface(errors, connection, monitorContext, context);
     findErrorsInMonitorInterfaces(errors, connection, monitorContext, context);
@@ -614,7 +591,7 @@ void InterconnectionValidator::findErrorsInMonitorInterconnection(QVector<QStrin
 void InterconnectionValidator::findErrorsInMonitoredActiveInterface(QVector<QString>& errors,
     QSharedPointer<MonitorInterconnection> connection, QString const& innerContext, QString const& context) const
 {
-    QString elementName = QLatin1String("monitored active interface");
+    QString elementName = QStringLiteral("monitored active interface");
 
     if (connection->getMonitoredActiveInterface() &&
         (!connection->getMonitoredActiveInterface()->getComponentReference().isEmpty() ||
@@ -625,7 +602,7 @@ void InterconnectionValidator::findErrorsInMonitoredActiveInterface(QVector<QStr
     }
     else
     {
-        errors.append(QObject::tr("No %1 set for %2 within %3").arg(elementName).arg(innerContext).arg(context));
+        errors.append(QObject::tr("No %1 set for %2 within %3").arg(elementName, innerContext, context));
     }
 }
 
@@ -670,8 +647,8 @@ void InterconnectionValidator::findErrorsInMonitorInterfaces(QVector<QString>& e
             {
                 errors.append(QObject::tr("Component reference '%1' and bus reference '%2' pair is not unique in "
                     "monitor interfaces of %3 within %4.")
-                    .arg(monitorInterface->getComponentReference()).arg(monitorInterface->getBusReference())
-                    .arg(innerContext).arg(context));
+                    .arg(monitorInterface->getComponentReference(), monitorInterface->getBusReference(),
+                    innerContext, context));
             }
             else
             {
@@ -684,6 +661,6 @@ void InterconnectionValidator::findErrorsInMonitorInterfaces(QVector<QString>& e
     }
     else
     {
-        errors.append(QObject::tr("No monitor interfaces set for %1 within %2").arg(innerContext).arg(context));
+        errors.append(QObject::tr("No monitor interfaces set for %1 within %2").arg(innerContext, context));
     }
 }

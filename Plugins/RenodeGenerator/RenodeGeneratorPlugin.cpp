@@ -62,7 +62,7 @@ QString RenodeGeneratorPlugin::getName() const
 //-----------------------------------------------------------------------------
 QString RenodeGeneratorPlugin::getVersion() const
 {
-    return "0.3";
+    return QStringLiteral("1.0");
 }
 
 //-----------------------------------------------------------------------------
@@ -78,7 +78,7 @@ QString RenodeGeneratorPlugin::getDescription() const
 //-----------------------------------------------------------------------------
 QString RenodeGeneratorPlugin::getVendor() const
 {
-    return tr("Tampere University (tuni.fi)");
+    return QStringLiteral("Tampere University (tuni.fi)");
 }
 
 //-----------------------------------------------------------------------------
@@ -118,7 +118,7 @@ PluginSettingsModel* RenodeGeneratorPlugin::getSettingsModel()
 //-----------------------------------------------------------------------------
 QIcon RenodeGeneratorPlugin::getIcon() const
 {
-    return QIcon(":icons/RenodeGenerator.png");
+    return QIcon(QStringLiteral(":icons/RenodeGenerator.png"));
 }
 
 //-----------------------------------------------------------------------------
@@ -129,7 +129,7 @@ bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
     // Must be ran on a design.
-    return (design != 0 && designConfiguration != 0);
+    return (design != nullptr && designConfiguration != nullptr);
 }
 
 //-----------------------------------------------------------------------------
@@ -210,7 +210,6 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
                     if (!fileSetName.isEmpty())
                     {
                         QStringList generatedFiles = generator.getGeneratedFiles();
-                        bool testi = false;
                         saveToFileset(utility, generatedFiles, component, fileSetName);
                     }
                 }
@@ -248,12 +247,12 @@ void RenodeGeneratorPlugin::saveToFileset(IPluginUtility* utility, QStringList c
         component->getFileSets()->append(targetFileset);
     }
 
-    for (auto fileName : renodeFiles)
+    for (auto const& fileName : renodeFiles)
     {
         QString relativeFilePath = General::getRelativePath(xmlFilePath, fileName);
 
         QSharedPointer<File> file;
-        foreach(QSharedPointer<File> filesetFile, *targetFileset->getFiles())
+        for (QSharedPointer<File> filesetFile : *targetFileset->getFiles())
         {
             if (filesetFile->name().compare(relativeFilePath) == 0)
             {

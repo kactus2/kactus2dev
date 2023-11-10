@@ -15,16 +15,7 @@
 // Function: ListParameterFinder::ListParameterFinder()
 //-----------------------------------------------------------------------------
 ListParameterFinder::ListParameterFinder():
-ParameterFinder(),
-parameterList_(new QList<QSharedPointer<Parameter> > ())
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ListParameterFinder::~ListParameterFinder()
-//-----------------------------------------------------------------------------
-ListParameterFinder::~ListParameterFinder()
+ParameterFinder()
 {
 
 }
@@ -32,71 +23,63 @@ ListParameterFinder::~ListParameterFinder()
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::getParameterWithID()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ListParameterFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> ListParameterFinder::getParameterWithID(QStringView parameterId) const
 {
     if (parameterList_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+        for (QSharedPointer<Parameter> parameter : *parameterList_)
         {
-            if (parameter->getValueId() == parameterId)
+            if (parameter->getValueId().compare(parameterId) == 0)
             {
                 return parameter;
             }
         }
     }
 
-    return QSharedPointer<Parameter> (new Parameter());
+    return QSharedPointer<Parameter>();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::hasId()
 //-----------------------------------------------------------------------------
-bool ListParameterFinder::hasId(QString const& id) const
+bool ListParameterFinder::hasId(QStringView id) const
 {
-    if (parameterList_)
+    if (parameterList_ == nullptr)
     {
-        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
-        {
-            if (parameter->getValueId() == id)
-            {
-                return true;
-            }
-        }
+        return false;
     }
 
-    return false;
+    return std::any_of(parameterList_->cbegin(), parameterList_->cend(), 
+        [id](auto const& parameter) { return parameter->getValueId().compare(id) == 0; });
 }
 
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString ListParameterFinder::nameForId(QString const& id) const
+QString ListParameterFinder::nameForId(QStringView id) const
 {
-    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-    if (targetParameter)
+    if (QSharedPointer<Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->name();
     }
-    else
-    {
-        return QString();
-    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString ListParameterFinder::valueForId(QString const& id) const
+QString ListParameterFinder::valueForId(QStringView id) const
 {
-    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-    if (targetParameter)
+    
+    if (QSharedPointer<Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->getValue();
     }
-    else
-    {
-        return QString();
-    }
+
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -108,20 +91,20 @@ QStringList ListParameterFinder::getAllParameterIds() const
 
     if (parameterList_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *parameterList_)
+        for (QSharedPointer<Parameter> parameter : *parameterList_)
         {
             allParameterIds.append(parameter->getValueId());
         }
     }
 
-    allParameterIds.removeAll("");
+    allParameterIds.removeAll(QString());
     return allParameterIds;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::getNumberOfParameters()
 //-----------------------------------------------------------------------------
-int ListParameterFinder::getNumberOfParameters() const
+int ListParameterFinder::getNumberOfParameters() const noexcept
 {
     return parameterList_->size();
 }
@@ -129,7 +112,7 @@ int ListParameterFinder::getNumberOfParameters() const
 //-----------------------------------------------------------------------------
 // Function: ListParameterFinder::setParameterList()
 //-----------------------------------------------------------------------------
-void ListParameterFinder::setParameterList(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList)
+void ListParameterFinder::setParameterList(QSharedPointer<QList<QSharedPointer<Parameter> > > parameterList) noexcept
 {
     parameterList_ = parameterList;
 }

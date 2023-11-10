@@ -28,6 +28,8 @@ class IPXACTMODELS_EXPORT DesignInstantiation : public NameGroup, public Extenda
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<DesignInstantiation> > >;
+
     /*!
      *  The constructor.
      *

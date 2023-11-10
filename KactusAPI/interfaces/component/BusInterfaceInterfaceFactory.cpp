@@ -199,7 +199,7 @@ PortMapInterface* BusInterfaceInterfaceFactory::Details::createPortMapInterface(
     QSharedPointer<PortValidator> portValidator(new PortValidator(expressionParser, component->getViews()));
 
     PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    physicalPortInterface->setPorts(component);
+    physicalPortInterface->setPorts(component->getPorts());
 
     PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
     PortMapInterface* portMapInterface(new PortMapInterface(

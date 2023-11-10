@@ -18,26 +18,18 @@
 //-----------------------------------------------------------------------------
 // Function: ParameterCache::ParameterCache()
 //-----------------------------------------------------------------------------
-ParameterCache::ParameterCache(QSharedPointer<const Component> component) : QObject(0),
-ComponentParameterFinder(component), availableParameters_()
+ParameterCache::ParameterCache(QSharedPointer<const Component> component) : QObject(nullptr),
+ComponentParameterFinder(component)
 {
     resetCache();
 }
 
 //-----------------------------------------------------------------------------
-// Function: ParameterCache::~ParameterCache()
-//-----------------------------------------------------------------------------
-ParameterCache::~ParameterCache()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ParameterCache::hasId()
 //-----------------------------------------------------------------------------
-bool ParameterCache::hasId(QString const& id) const
+bool ParameterCache::hasId(QStringView id) const
 {
-    return availableParameters_.contains(id);
+    return availableParameters_.contains(id.toString());
 }
 
 //-----------------------------------------------------------------------------
@@ -51,9 +43,9 @@ QStringList ParameterCache::getAllParameterIds() const
 //-----------------------------------------------------------------------------
 // Function: ParameterCache::getParameterWithID()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ParameterCache::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> ParameterCache::getParameterWithID(QStringView parameterId) const
 {
-	return availableParameters_.value(parameterId);
+	return availableParameters_.value(parameterId.toString());
 }
 
 //-----------------------------------------------------------------------------
@@ -92,7 +84,7 @@ void ParameterCache::registerParameterModel(QAbstractItemModel const* model)
 void ParameterCache::resetCache()
 {
     availableParameters_.clear();
-    foreach(QString const& id, ComponentParameterFinder::getAllParameterIds())
+    for(QString const& id : ComponentParameterFinder::getAllParameterIds())
     {
         availableParameters_.insert(id, ComponentParameterFinder::getParameterWithID(id));
     }

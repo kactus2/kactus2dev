@@ -73,24 +73,24 @@ void ComponentItem::updateComponent()
 
     VLNV vlnv = component_->getVlnv();
 
-    QString toolTipText = "";
+    QString toolTipText;
     if (!vlnv.isEmpty())
     {
-        toolTipText += "<b>Vendor:</b> " + vlnv.getVendor() + "<br>" +
-                       "<b>Library:</b> " + vlnv.getLibrary() + "<br>" +
-                       "<b>Name:</b> " + vlnv.getName() + "<br>" +
-                       "<b>Version:</b> " + vlnv.getVersion();
+        toolTipText += QStringLiteral("<b>Vendor:</b> ") + vlnv.getVendor() +
+            QStringLiteral("<br><b>Library:</b> ") + vlnv.getLibrary() + 
+            QStringLiteral("<br><b>Name:</b> ") + vlnv.getName() + 
+            QStringLiteral("<br><b>Version:</b> ") + vlnv.getVersion();
     }
     else
     {
-        toolTipText += "Unpackaged component. No VLNV assigned!";
+        toolTipText += QStringLiteral("Unpackaged component. No VLNV assigned!");
     }
 
-    toolTipText += "<br><br><b>Instance name:</b> " + name();
+    toolTipText += QStringLiteral("<br><br><b>Instance name:</b> ") + name();
 
     if (!description().isEmpty())
     {
-        toolTipText += "<br><br><b>Description:</b><br>" + description();
+        toolTipText += QStringLiteral("<br><br><b>Description:</b><br>") + description();
     }
 
     setToolTip(toolTipText);
@@ -118,7 +118,7 @@ void ComponentItem::updateSize()
 //-----------------------------------------------------------------------------
 // Function: ComponentItem::getWidth()
 //-----------------------------------------------------------------------------
-qreal ComponentItem::getWidth()
+qreal ComponentItem::getWidth() noexcept
 {
 	return COMPONENTWIDTH;
 }
@@ -242,7 +242,7 @@ void ComponentItem::updateNameLabel()
         text = name();
     }
 
-    nameLabel_->setHtml("<center>" + text + "</center>");
+    nameLabel_->setHtml(QStringLiteral("<center>") + text + QStringLiteral("</center>"));
 }
 
 //-----------------------------------------------------------------------------
@@ -399,36 +399,35 @@ void ComponentItem::addPortToRight(ConnectionEndpoint* port)
 //-----------------------------------------------------------------------------
 void ComponentItem::checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> const& otherSide)
 {
-    for (int i = 0; i < otherSide.size(); ++i)
+    if (auto it = std::find_if(otherSide.cbegin(), otherSide.cend(),
+        [y = port->y()](auto const& otherPort) { return otherPort->y() == y; }); 
+        it != otherSide.cend())
     {
-        if (port->y() == otherSide.at(i)->y())
+        auto opposingPort = *it;
+        qreal portLabelWidth = port->getNameLength();
+        qreal otherLabelWidth = opposingPort->getNameLength();
+
+        constexpr auto halfWidth = ComponentItem::COMPONENTWIDTH/2;
+
+        // Check if both of the labels exceed the mid section of the component.
+        if (portLabelWidth + SPACING * 2 > halfWidth && otherLabelWidth + SPACING * 2 > halfWidth)
         {
-            qreal portLabelWidth = port->getNameLength();
-            qreal otherLabelWidth = otherSide.at(i)->getNameLength();
-
-            // Check if both of the labels exceed the mid section of the component.
-            if (portLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH / 2) &&
-                otherLabelWidth + SPACING * 2 > (ComponentItem::COMPONENTWIDTH) / 2)
-            {
-                port->shortenNameLabel(ComponentItem::COMPONENTWIDTH / 2);
-                otherSide.at(i)->shortenNameLabel(ComponentItem::COMPONENTWIDTH / 2);
-            }
-
-            // Check if the other port is wider than the other.
-            else if (portLabelWidth > otherLabelWidth)
-            {
-                port->shortenNameLabel(ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2);
-            }
-
-            else
-            {
-                otherSide.at(i)->shortenNameLabel(ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2);
-            }
-
-            return;
+            port->shortenNameLabel(halfWidth);
+            opposingPort->shortenNameLabel(halfWidth);
+        }
+        // Check if the other port is wider than the other.
+        else if (portLabelWidth > otherLabelWidth)
+        {
+            port->shortenNameLabel(ComponentItem::COMPONENTWIDTH - otherLabelWidth - SPACING * 2);
+        }
+        else
+        {
+            opposingPort->shortenNameLabel(ComponentItem::COMPONENTWIDTH - portLabelWidth - SPACING * 2);
         }
     }
-
-    // If the port gets here, there is no ports with the same y() value, and so the port name is restored.
-    port->shortenNameLabel(ComponentItem::COMPONENTWIDTH);
+    else
+    {
+        // If there is no ports with the same y() value, the full port name width is restored.
+        port->shortenNameLabel(ComponentItem::COMPONENTWIDTH);
+    }
 }

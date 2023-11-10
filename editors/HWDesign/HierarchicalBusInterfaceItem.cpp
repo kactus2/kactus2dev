@@ -108,7 +108,7 @@ bool HierarchicalBusInterfaceItem::canConnectToInterface(ConnectionEndpoint cons
 
     if (bus)
     {
-        busDefinition = getLibraryAccess()->getModelReadOnly(bus->getBusType()).dynamicCast<const BusDefinition>();
+        busDefinition = getLibraryAccess()->getModelReadOnly<BusDefinition>(bus->getBusType());
     }
 
     return (otherInterface &&
@@ -121,7 +121,7 @@ bool HierarchicalBusInterfaceItem::canConnectToInterface(ConnectionEndpoint cons
 //-----------------------------------------------------------------------------
 // Function: HierarchicalBusInterfaceItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool HierarchicalBusInterfaceItem::isHierarchical() const
+bool HierarchicalBusInterfaceItem::isHierarchical() const noexcept
 {
     return true;
 }

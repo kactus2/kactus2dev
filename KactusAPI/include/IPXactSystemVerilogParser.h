@@ -50,7 +50,7 @@ public:
      *
      *      @return True, if the expression is a symbol, otherwise false.
      */
-    bool isSymbol(QString const& expression) const override;
+    bool isSymbol(QStringView expression) const override;
 
     /*!
      *  Finds the value for given symbol.
@@ -59,7 +59,7 @@ public:
      *
      *      @return The found symbol value.
      */
-    QString findSymbolValue(QString const& symbol) const override;
+    QString findSymbolValue(QStringView symbol) const override;
 
     /*!
      *  Finds the base in the symbol.
@@ -68,7 +68,7 @@ public:
      *
      *      @return The base for the symbol.
      */
-    int getBaseForSymbol(QString const& symbol) const final;
+    int getBaseForSymbol(QStringView symbol) const final;
 
 private:
 
@@ -80,7 +80,7 @@ private:
     QSharedPointer<ParameterFinder> finder_;
 
     //! Stack for tracking already evaluated symbols to check for loops in references.
-    mutable QVector<QString> symbolStack_;
+    mutable QVector<QStringView> symbolStack_;
 };
 
 #endif // IPXACTSYSTEMVERILOGPARSER_H

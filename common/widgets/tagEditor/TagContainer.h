@@ -14,10 +14,12 @@
 
 #include <IPXACTmodels/common/TagData.h>
 
+#include <common/widgets/tagEditor/TagLabel.h>
+
 #include <QWidget>
 #include <QObject>
 
-class TagLabel;
+
 class TagDisplay;
 
 //-----------------------------------------------------------------------------
@@ -40,6 +42,11 @@ public:
      *  The destructor.
      */
     virtual ~TagContainer() = default;
+
+    // Disable copying.
+    TagContainer(TagContainer const& rhs) = delete;
+    TagContainer& operator=(TagContainer const& rhs) = delete;
+
 
     /*!
      *  Setup the existing tags.
@@ -104,10 +111,6 @@ protected:
     void connectTagLabel(QWidget* tagItem);
 
 private:
-    // Disable copying.
-    TagContainer(TagContainer const& rhs);
-    TagContainer& operator=(TagContainer const& rhs);
-
     /*!
      *  Setup the layout.
      */
@@ -136,7 +139,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The button for creating new tags.
-    TagLabel* additionTag_;
+    TagLabel* additionTag_ = new TagLabel(QStringLiteral("+"), this);
 
     //! List of all the constructed tags.
     QVector<QWidget*> tags_;

@@ -73,6 +73,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WarningLevel>Level4</WarningLevel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,7 +144,6 @@
     <ClCompile Include="Catalog\IpxactFile.cpp" />
     <ClCompile Include="Catalog\validators\CatalogValidator.cpp" />
     <ClCompile Include="common\AccessTypes.cpp" />
-    <ClCompile Include="common\Array.cpp" />
     <ClCompile Include="common\Assertion.cpp" />
     <ClCompile Include="common\BooleanValue.cpp" />
     <ClCompile Include="common\BuildModel.cpp" />
@@ -481,6 +481,7 @@
     <ClInclude Include="DesignConfiguration\validators\ViewConfigurationValidator.h" />
     <ClInclude Include="DesignConfiguration\ViewConfiguration.h" />
     <ClInclude Include="utilities\BusDefinitionUtils.h" />
+    <ClInclude Include="utilities\Copy.h" />
     <ClInclude Include="utilities\XmlUtils.h" />
     <CustomBuild Include="AbstractionDefinition\AbstractionDefinitionReader.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(AdditionalInputs)</AdditionalInputs>

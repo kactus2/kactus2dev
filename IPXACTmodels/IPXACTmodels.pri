@@ -289,6 +289,7 @@ HEADERS += ./generaldeclarations.h \
     ./Catalog/CatalogWriter.h \
     ./Catalog/validators/CatalogValidator.h \
     ./utilities/BusDefinitionUtils.h \
+    ./utilities/Copy.h \
     ./utilities/XmlUtils.h \
     ./DesignConfiguration/AbstractorInstance.h \
     ./DesignConfiguration/DesignConfiguration.h \
@@ -332,7 +333,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.cpp \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.cpp \
     ./common/AccessTypes.cpp \
-    ./common/Array.cpp \
     ./common/Assertion.cpp \
     ./common/BooleanValue.cpp \
     ./common/BuildModel.cpp \

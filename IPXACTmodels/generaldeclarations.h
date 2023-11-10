@@ -479,6 +479,7 @@ namespace General
     *      @return The absolute path of the target directory/file
     */
     IPXACTMODELS_EXPORT QString getAbsolutePath(const QString& originalPath, const QString& relativePath);
+
 }
 
 #endif /* GENERALDECLARATIONS_H_ */

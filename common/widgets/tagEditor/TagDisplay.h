@@ -16,8 +16,9 @@
 #include <QObject>
 #include <QPushButton>
 
+#include <common/widgets/colorBox/ColorBox.h>
+
 class TagLabel;
-class ColorBox;
 
 //-----------------------------------------------------------------------------
 //! Display for tags.
@@ -34,12 +35,16 @@ public:
      *      @param [in] tagLabel    The tag label being edited.
      *      @param [in] parent      The parent widget.
      */
-    TagDisplay(TagLabel* tagLabel, QWidget* parent = 0);
+    TagDisplay(TagLabel* tagLabel, QWidget* parent = nullptr);
 
     /*!
      *  The destructor.
      */
     virtual ~TagDisplay() = default;
+
+    // Disable copying.
+    TagDisplay(TagDisplay const& rhs) = delete;
+    TagDisplay& operator=(TagDisplay const& rhs) = delete;
 
     /*!
      *  The event filter.
@@ -49,23 +54,31 @@ public:
      *
      *      @return True, if the event is caught, false otherwise.
      */
-    virtual bool eventFilter(QObject *watched, QEvent *event) override final;
+    bool eventFilter(QObject *watched, QEvent *event) final;
+
 
 protected:
+    
+    /*!
+     *  Check if color selection button should be shown.
+     *
+     *      @return True, if button should be shown, otherwise false.
+     */
+    virtual bool showColorButton() const noexcept;
 
     /*!
      *  Handler for focus out events.
      *
      *      @param [in] event   The focus event.
      */
-    virtual void focusOutEvent(QFocusEvent* event) override final;
+    void focusOutEvent(QFocusEvent* event) final;
 
     /*!
      *  Handler for key press events.
      *
      *      @param [in] event   The key event.
      */
-    virtual void keyPressEvent(QKeyEvent *event) override final;
+    void keyPressEvent(QKeyEvent *event) final;
     
     /*!
      *  Get the color display button.
@@ -133,9 +146,6 @@ private slots:
     void onDeleteItem();
 
 private:
-    // Disable copying.
-    TagDisplay(TagDisplay const& rhs);
-    TagDisplay& operator=(TagDisplay const& rhs);
 
     /*!
      *  Setup the layout.
@@ -155,11 +165,19 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
+    constexpr static int BUTTON_SIDE = 20;
+
     //! Tag color editor.
-    ColorBox* colorButton_;
+    ColorBox* colorButton_ =
+         new ColorBox(QSize(BUTTON_SIDE, BUTTON_SIDE), this);
+
+    //! Accept tag button.
+    QPushButton* okButton_ = new QPushButton(
+        QIcon(QStringLiteral(":/icons/common/graphics/checkMark.png")), QString(), this);
 
     //! Delete tag button.
-    QPushButton* deleteButton_;
+    QPushButton* deleteButton_ = new QPushButton(
+        QIcon(QStringLiteral(":/icons/common/graphics/cross.png")), QString(), this);
 
     //! The edited tag label.
     TagLabel* editedLabel_;

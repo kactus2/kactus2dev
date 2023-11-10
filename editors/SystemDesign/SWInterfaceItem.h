@@ -134,7 +134,7 @@ public:
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
      */
-    virtual bool isDirectionFixed() const;
+    bool isDirectionFixed() const noexcept override;
 
     /*!
      *  Returns the name of the interface.
@@ -209,7 +209,7 @@ public:
     /*!
      *  Returns true if the port represents a hierarchical connection.
      */
-    virtual bool isHierarchical() const;
+    bool isHierarchical() const noexcept override;
 
 	/*!
 	 *  Set the position of the name label.
@@ -226,12 +226,12 @@ public:
     /*!
      *  Returns true if the endpoint is a COM interface endpoint.
      */
-    virtual bool isCom() const;
+    bool isCom() const noexcept override;
 
     /*!
      *  Returns true if the endpoint is an API interface endpoint.
      */
-    virtual bool isApi() const;
+    bool isApi() const noexcept override;
 
 protected:
 

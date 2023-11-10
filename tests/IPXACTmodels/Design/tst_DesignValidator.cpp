@@ -234,7 +234,7 @@ void tst_DesignValidator::testComponentInstanceHasValidName()
         validator->findErrorsIn(foundErrors, testInstance, "test");
 
         QString expectedError = QObject::tr("Invalid instance name '%1' set for component instance within %2")
-            .arg(name).arg("test");
+            .arg(name.trimmed()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -332,7 +332,7 @@ void tst_DesignValidator::testComponentInstanceHasValidComponentReference()
 
         if (addToLibrary)
         {
-            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(referencedComponent);
         }
     }
@@ -448,7 +448,7 @@ void tst_DesignValidator::testHasValidComponentInstances()
         if (componentReferenceExists)
         {
             testInstance->setComponentRef(componentVLNV);
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(testComponent);
         }
 
@@ -533,7 +533,7 @@ void tst_DesignValidator::testInterconnectionHasValidName()
         validator->findErrorsInInterconnection(foundErrors, testInterconnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for interconnection within %2")
-            .arg(name).arg("test");
+            .arg(name.trimmed()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -642,7 +642,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceIsValid()
             }
             containedInstances->append(componentInstance);
 
-            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(referencedComponent);
 
             if (busInterfaceExists)
@@ -789,7 +789,7 @@ void tst_DesignValidator::testInterconnectionActiveInterfaceHasValidExcludePorts
 
     QSharedPointer<ConfigurableVLNVReference> componentVLNV (
         new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-    QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+    QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
 
     testComponent->getBusInterfaces()->append(testBus);
 
@@ -883,7 +883,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
 
     QSharedPointer<ConfigurableVLNVReference> startVLNV (
         new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Start", "1.0")));
-    QSharedPointer<Component> startComponent (new Component(*startVLNV));
+    QSharedPointer<Component> startComponent (new Component(*startVLNV, Document::Revision::Std14));
     mockLibrary.addComponent(startComponent);
 
     QSharedPointer<ComponentInstance> startInstance (
@@ -901,7 +901,7 @@ void tst_DesignValidator::testInterconnectionInterfacesAreValid()
     {
         QSharedPointer<ConfigurableVLNVReference> componentVLNV (
             new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
 
         QSharedPointer<ComponentInstance> testInstance (
             new ComponentInstance(testInterface->getComponentReference(), componentVLNV));
@@ -1019,7 +1019,7 @@ void tst_DesignValidator::testHasValidInterconnections()
 
             QSharedPointer<ConfigurableVLNVReference> componentVLNV (
                 new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(testComponent);
 
             QSharedPointer<ComponentInstance> testInstance (
@@ -1121,7 +1121,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidName()
         validator->findErrorsInMonitorInterconnection(foundErrors, testConnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for monitor interconnection within %2")
-            .arg(name).arg("test");
+            .arg(name.trimmed()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1228,7 +1228,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitoredActiveInter
             }
             containedInstances->append(componentInstance);
 
-            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(referencedComponent);
 
             if (busInterfaceExists)
@@ -1352,7 +1352,7 @@ void tst_DesignValidator::testMonitorInterconnectionHasValidMonitorInterfaces()
             }
             containedInstances->append(componentInstance);
 
-            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> referencedComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(referencedComponent);
 
             if (busInterfaceExists)
@@ -1481,7 +1481,7 @@ void tst_DesignValidator::testHasValidMonitorInterconnections()
 
             QSharedPointer<ConfigurableVLNVReference> componentVLNV (
                 new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(testComponent);
 
             QSharedPointer<ComponentInstance> testInstance (
@@ -1501,7 +1501,7 @@ void tst_DesignValidator::testHasValidMonitorInterconnections()
 
             QSharedPointer<ConfigurableVLNVReference> componentVLNV(
                 new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "Spike", "Jet", "Faye", "Edward")));
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(testComponent);
 
             QSharedPointer<ComponentInstance> testInstance (
@@ -1598,7 +1598,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidName()
         validator->findErrorsIn(foundErrors, testConnection, "test");
 
         QString expectedError = QObject::tr("Invalid name '%1' set for ad hoc connection within %2")
-            .arg(name).arg("test");
+            .arg(name.trimmed()).arg("test");
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
@@ -1745,7 +1745,7 @@ void tst_DesignValidator::testAdHocConnectionHasValidInternalPortReference()
     {
         QSharedPointer<ConfigurableVLNVReference> componentVLNV (
             new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
         mockLibrary->addComponent(testComponent);
 
         QSharedPointer<ComponentInstance> testInstance(new ComponentInstance(componentReference, componentVLNV));
@@ -2029,7 +2029,7 @@ void tst_DesignValidator::testHasValidAdHocConnections()
 
             QSharedPointer<ConfigurableVLNVReference> componentVLNV (
                 new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "One", "Punch", "Man", "Saitama")));
-            QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+            QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
             mockLibrary->addComponent(testComponent);
 
             QSharedPointer<ComponentInstance> testInstance(

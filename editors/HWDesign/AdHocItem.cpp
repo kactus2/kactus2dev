@@ -13,15 +13,12 @@
 
 #include <common/graphicsItems/GraphicsConnection.h>
 
-#include <editors/common/diagramgrid.h>
 #include <editors/common/DesignDiagram.h>
 #include <editors/common/GraphicsItemLabel.h>
 
 #include <QPen>
 #include <QFont>
 #include <QGraphicsDropShadowEffect>
-
-const int TIEOFFITEM_DISTANCE = 20;
 
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::AdHocItem()
@@ -39,39 +36,38 @@ AdHocItem::AdHocItem(QSharedPointer<Port> port, QSharedPointer<Component> contai
 //-----------------------------------------------------------------------------
 QPolygonF AdHocItem::getPortShape() const
 {
-    int squareSize = GridSize - 4;
-
     QPolygonF shape;
     if (port_->getDirection() == DirectionTypes::IN)
     {
         if (isHierarchical())
         {
-            shape = getInPortShape(squareSize);
+            shape = getInPortShape();
         }
         else
         {
-            shape = getOutPortShape(squareSize);
+            shape = getOutPortShape();
         }
     }
     else if (port_->getDirection() == DirectionTypes::OUT)
     {
         if (isHierarchical())
         {
-            shape = getOutPortShape(squareSize);
+            shape = getOutPortShape();
         }
         else
         {
-            shape = getInPortShape(squareSize);
+            shape = getInPortShape();
         }
     }
     else
     {
-        shape << QPointF(-squareSize / 2, squareSize / 2)
-            << QPointF(-squareSize / 2, -squareSize / 2)
-            << QPointF(0, -squareSize)
-            << QPointF(squareSize / 2, -squareSize / 2)
-            << QPointF(squareSize / 2, squareSize / 2)
-            << QPointF(0, squareSize);
+        shape = QPolygonF({ QPointF(-SQUARE_SIZE / 2, SQUARE_SIZE / 2),
+            QPointF(-SQUARE_SIZE / 2, -SQUARE_SIZE / 2),
+            QPointF(0, -SQUARE_SIZE),
+            QPointF(SQUARE_SIZE / 2, -SQUARE_SIZE / 2),
+            QPointF(SQUARE_SIZE / 2, SQUARE_SIZE / 2),
+            QPointF(0, SQUARE_SIZE),
+            });
     }
 
     return shape;
@@ -80,17 +76,17 @@ QPolygonF AdHocItem::getPortShape() const
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getInPortShape()
 //-----------------------------------------------------------------------------
-QPolygonF AdHocItem::getInPortShape(const int squareSize) const
+QPolygonF AdHocItem::getInPortShape()
 {
-    QPolygonF shape;
+    constexpr int halfSquare = SQUARE_SIZE / 2;
 
-    int halfSquare = squareSize / 2;
-
-    shape << QPointF(-halfSquare, halfSquare)
-        << QPointF(-halfSquare, -halfSquare)
-        << QPointF(0, -squareSize)
-        << QPointF(halfSquare, -halfSquare)
-        << QPointF(halfSquare, halfSquare);
+    QPolygonF shape({
+        QPointF(-halfSquare, halfSquare),
+        QPointF(-halfSquare, -halfSquare),
+        QPointF(0, -SQUARE_SIZE),
+        QPointF(halfSquare, -halfSquare),
+        QPointF(halfSquare, halfSquare),
+    });
 
     return shape;
 }
@@ -98,17 +94,17 @@ QPolygonF AdHocItem::getInPortShape(const int squareSize) const
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getOutPortShape()
 //-----------------------------------------------------------------------------
-QPolygonF AdHocItem::getOutPortShape(const int squareSize) const
+QPolygonF AdHocItem::getOutPortShape()
 {
-    QPolygonF shape;
+    constexpr int halfSquare = SQUARE_SIZE / 2;
 
-    int halfSquare = squareSize / 2;
-
-    shape << QPointF(-halfSquare, halfSquare)
-        << QPointF(-halfSquare, -halfSquare)
-        << QPointF(halfSquare, -halfSquare)
-        << QPointF(halfSquare, halfSquare)
-        << QPointF(0, squareSize);
+    QPolygonF shape({
+        QPointF(-halfSquare, halfSquare),
+        QPointF(-halfSquare, -halfSquare),
+        QPointF(halfSquare, -halfSquare),
+        QPointF(halfSquare, halfSquare),
+        QPointF(0, SQUARE_SIZE),
+    });
 
     return shape;
 }
@@ -204,7 +200,7 @@ QSharedPointer<BusInterface> AdHocItem::getBusInterface() const
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::isAdHoc()
 //-----------------------------------------------------------------------------
-bool AdHocItem::isAdHoc() const
+bool AdHocItem::isAdHoc() const noexcept
 {
     return true;
 }
@@ -212,7 +208,7 @@ bool AdHocItem::isAdHoc() const
 //-----------------------------------------------------------------------------
 // Function: AdHocItem::getType()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::EndpointType AdHocItem::getType() const
+ConnectionEndpoint::EndpointType AdHocItem::getType() const noexcept
 {
     return ConnectionEndpoint::ENDPOINT_TYPE_ADHOC;
 }
@@ -236,17 +232,15 @@ void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const
         createTieOffLabel();
     }
 
-    QString textColour = "#000000";
     QString tieOffText = tieOffValue;
-    if (!tieOffIsSupported && tieOffExpression.compare("open", Qt::CaseInsensitive) != 0)
+    if (!tieOffIsSupported && tieOffExpression.compare(QLatin1String("open"), Qt::CaseInsensitive) != 0)
     {
-        tieOffText = "n/a";
-        textColour = "#FF0000";
+        tieOffText = QStringLiteral("n/a");
     }
 
     if (tieOffText.size() > 4)
     {
-        tieOffText = tieOffValue.left(4) + "...";
+        tieOffText = tieOffValue.left(4) + QStringLiteral("...");
     }
 
     tieOffLabel_->setText(tieOffText);
@@ -260,7 +254,7 @@ void AdHocItem::changeTieOffLabel(QString const& tieOffExpression, QString const
 //-----------------------------------------------------------------------------
 void AdHocItem::createTieOffLabel()
 {
-    tieOffLabel_ = new GraphicsItemLabel("", this);
+    tieOffLabel_ = new GraphicsItemLabel(QString(), this);
 
     QFont font = tieOffLabel_->font();
     font.setPointSize(8);
@@ -310,17 +304,11 @@ void AdHocItem::setTieOffLabelPosition()
 //-----------------------------------------------------------------------------
 void AdHocItem::removeTieOffItem()
 {
-    if (tieOffPath_ != nullptr)
-    {
-        delete tieOffPath_;
-        tieOffPath_ = nullptr;
-    }
+    delete tieOffPath_;
+    tieOffPath_ = nullptr;
 
-    if (tieOffLabel_ != nullptr)
-    {
-        delete tieOffLabel_;
-        tieOffLabel_ = nullptr;
-    }
+    delete tieOffLabel_;
+    tieOffLabel_ = nullptr;
 }
 
 //-----------------------------------------------------------------------------

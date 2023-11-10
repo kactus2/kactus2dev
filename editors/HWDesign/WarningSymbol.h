@@ -57,10 +57,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Line of the warning exclamation mark.
-    QGraphicsPolygonItem* exclamationLine_;
+    QGraphicsPolygonItem* exclamationLine_ = new QGraphicsPolygonItem(this);
 
     //! Dot of the warning exclamation mark.
-    QGraphicsPolygonItem* exclamationDot_;
+    QGraphicsPolygonItem* exclamationDot_ = new QGraphicsPolygonItem(this);
 };
 
 #endif // WARNINGSYMBOL_H

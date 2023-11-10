@@ -121,7 +121,7 @@ int MemoryBlockInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string MemoryBlockInterface::getIndexedItemName(int const& itemIndex) const
+string MemoryBlockInterface::getIndexedItemName(int itemIndex) const
 {
     string blockName = "";
     if (itemIndex >= 0 && itemIndex < blockData_->size())

@@ -41,14 +41,19 @@ public:
     /*!
      *  Destructor.
      */
-    ~ParameterCache();
-    
+    ~ParameterCache() override = default;
+
+    //! No copying
+    ParameterCache(const ParameterCache& other) = delete;
+    //! No assignment
+    ParameterCache& operator=(const ParameterCache& other) = delete;
+
     /*!
      *  Get the parameter corresponding the id.
      *
      *      @param [in] parameterId     The id of the parameter being searched for.
      */
-    virtual QSharedPointer<Parameter> getParameterWithID(QString const& parameterId) const;
+    QSharedPointer<Parameter> getParameterWithID(QStringView parameterId) const final;
 
     /*!
      *  Checks if a parameter with the given id exists.
@@ -57,35 +62,35 @@ public:
      *
      *      @return True, if the parameter with the given id exists, otherwise false.
      */
-    virtual bool hasId(QString const& id) const;
+    bool hasId(QStringView id) const final;
 
     /*!
      *  Gets all of the ids of components parameters.
      *
      *      @return A list containing all of the ids.
      */
-    virtual QStringList getAllParameterIds() const;
+    QStringList getAllParameterIds() const final;
 
 	/*!
      *  Gets the number of parameters in the component.
      *
      *      @return The number of parameters in the component.
      */
-    virtual int getNumberOfParameters() const;
+    int getNumberOfParameters() const final;
 
     /*!
      *  Set a new component for the parameter finder.
      *
      *      @param [in] component   The new component.
      */
-    virtual void setComponent(QSharedPointer<Component const> component);
+    void setComponent(QSharedPointer<Component const> component) final;
     
     /*!
      *  Registers a parameter model that can modify parameters for the finder.
      *
      *      @param [in] model   The model to register.
      */
-    virtual void registerParameterModel(QAbstractItemModel const* model);
+    void registerParameterModel(QAbstractItemModel const* model) final;
 
 private slots:
 
@@ -93,10 +98,6 @@ private slots:
 
 private:
 
-	//! No copying
-    ParameterCache(const ParameterCache& other);
-	//! No assignment
-    ParameterCache& operator=(const ParameterCache& other);
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -44,7 +44,7 @@ namespace
     {
         QVector<QSharedPointer<MemoryItem>> subItems;
 
-        for (auto subItem : memoryItem->getChildItems())
+        for (auto const& subItem : memoryItem->getChildItems())
         {
             if (subItem->getType().compare(subItemType, Qt::CaseInsensitive) == 0)
             {
@@ -62,9 +62,9 @@ namespace
     {
         QMultiMap<quint64, QSharedPointer<MemoryItem>> blockItems;
 
-        for (auto subItem : getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE))
+        for (auto const& subItem : getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE))
         {
-            blockItems.insertMulti(subItem->getOffset().toULongLong(), mapItem);
+            blockItems.insert(subItem->getOffset().toULongLong(), mapItem);
         }
 
         return blockItems;
@@ -76,9 +76,9 @@ namespace
     QMultiMap<quint64, QSharedPointer<MemoryItem> > getOrderedChildItems(QSharedPointer<MemoryItem> mapItem)
     {
         QMultiMap<quint64, QSharedPointer<MemoryItem>> blockItems;
-        for (auto subItem : mapItem->getChildItems())
+        for (auto const& subItem : mapItem->getChildItems())
         {
-            blockItems.insertMulti(subItem->getAddress().toULongLong(), subItem);
+            blockItems.insert(subItem->getAddress().toULongLong(), subItem);
         }
 
         return blockItems;
@@ -89,15 +89,7 @@ namespace
     //-----------------------------------------------------------------------------
     bool nameIsUnique(QString const& mapName, QStringList const& peripheralNames)
     {
-        for (auto containedName : peripheralNames)
-        {
-            if (containedName == mapName)
-            {
-                return false;
-            }
-        }
-
-        return true;
+        return peripheralNames.contains(mapName) == false;
     }
 
     //-----------------------------------------------------------------------------
@@ -105,15 +97,12 @@ namespace
     //-----------------------------------------------------------------------------
     QString getUniqueName(QString const& referenceName, QStringList const& peripheralNames)
     {
-        QString newName(referenceName);
+        QString newName(referenceName.toLower());
 
-        QString format(QLatin1String("$itemName$_$itemNumber$"));
         int runningNumber = 0;
         while (!nameIsUnique(newName, peripheralNames))
         {
-            newName = format;
-            newName.replace("$itemName$", referenceName);
-            newName.replace("$itemNumber$", QString::number(runningNumber));
+            newName = referenceName.toLower() + QString::number(runningNumber);
 
             runningNumber++;
         }
@@ -165,7 +154,7 @@ namespace
         quint64 size = endAddress - offset + 1;
 
         QSharedPointer<RenodeStructs::cpuMemories> newMemory(new RenodeStructs::cpuMemories());
-        QString newMemoryName = getUniqueName(mapItem->getName(), memoryNames);
+        QString newMemoryName = getUniqueName(mapItem->getName() + "_" + firstBlock->getName(), memoryNames);
 
         newMemory->memoryName_ = newMemoryName;
         newMemory->memoryID_ = "";
@@ -204,7 +193,8 @@ namespace
     //-----------------------------------------------------------------------------
     bool usageIsMatching(General::Usage currentUsage, General::Usage previousUsage)
     {
-        return (currentUsage == General::MEMORY && currentUsage == previousUsage) || (currentUsage != General::MEMORY && previousUsage != General::MEMORY);
+        return (currentUsage == General::MEMORY && currentUsage == previousUsage) || 
+            (currentUsage != General::MEMORY && previousUsage != General::MEMORY);
     }
 
     //-----------------------------------------------------------------------------
@@ -212,7 +202,7 @@ namespace
     //-----------------------------------------------------------------------------
     General::Usage getFirstBlockUsage(QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems)
     {
-        QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
+        QMultiMapIterator blockIterator(orderedChildItems);
         while (blockIterator.hasNext())
         {
             blockIterator.next();
@@ -288,7 +278,7 @@ namespace
     QSharedPointer<RenodeStructs::cpuMemories> findMemory(QString const& memoryName,
         QVector<QSharedPointer<RenodeStructs::cpuMemories> > const& memories)
     {
-        for (auto currentMemory : memories)
+        for (auto const& currentMemory : memories)
         {
             if (currentMemory->memoryName_ == memoryName)
             {
@@ -342,7 +332,7 @@ namespace
             QJsonArray cpuArray = multiCpuValue.toArray();
             if (!cpuArray.isEmpty())
             {
-                for (auto cpuValue : cpuArray)
+                for (auto const& cpuValue : cpuArray)
                 {
                     if (cpuValue.isObject())
                     {
@@ -386,7 +376,7 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
         for (auto cpuInterfaceContainer : defaultCPU->getRoutes())
         {
             QSharedPointer<const ConnectivityInterface> cpuInterface = cpuInterfaceContainer->cpuInterface_;
-            for (auto masterSlaveRoute : cpuInterfaceContainer->routes_)
+            for (auto const& masterSlaveRoute : cpuInterfaceContainer->routes_)
             {
                 for (auto routeInterface : masterSlaveRoute)
                 {
@@ -395,8 +385,6 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
 
                     if (interfaceMemory && interfaceMemory->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE, Qt::CaseInsensitive) == 0)
                     {
-                        QSharedPointer<const Component> component = ConnectivityGraphUtilities::getInterfacedComponent(library, interfacedComponent);
-
                         MemoryConnectionAddressCalculator::ConnectionPathVariables pathAddresses =
                             MemoryConnectionAddressCalculator::calculatePathAddresses(cpuInterface, routeInterface, masterSlaveRoute);
 
@@ -409,7 +397,7 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
                         QMultiMap<quint64, QSharedPointer<MemoryItem> > orderedChildItems = getOrderedChildItems(interfaceMemory);
                         currentItemBlock.first = getFirstBlockUsage(orderedChildItems);
 
-                        QMultiMapIterator<quint64, QSharedPointer<MemoryItem> > blockIterator(orderedChildItems);
+                        QMultiMapIterator blockIterator(orderedChildItems);
                         while (blockIterator.hasNext())
                         {
                             blockIterator.next();
@@ -462,7 +450,7 @@ QVector<QSharedPointer<RenodeCpuRoutesContainer> > RenodeUtilities::getRenodeCpu
 QStringList RenodeUtilities::getTemplateNames(QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates)
 {
     QStringList names;
-    for (auto singleTemplate : templates)
+    for (auto const& singleTemplate : templates)
     {
         names.append(singleTemplate->identifier_);
     }
@@ -476,7 +464,7 @@ QStringList RenodeUtilities::getTemplateNames(QVector<QSharedPointer<RenodeStruc
 QSharedPointer<RenodeStructs::peripheralTemplate> RenodeUtilities::getTemplateFromList(QString const& templateName,
     QVector<QSharedPointer<RenodeStructs::peripheralTemplate> > templates)
 {
-    for (auto singleTemplate : templates)
+    for (auto const& singleTemplate : templates)
     {
         if (singleTemplate->identifier_ == templateName)
         {
@@ -484,5 +472,5 @@ QSharedPointer<RenodeStructs::peripheralTemplate> RenodeUtilities::getTemplateFr
         }
     }
 
-    return QSharedPointer<RenodeStructs::peripheralTemplate>();
+    return nullptr;
 }

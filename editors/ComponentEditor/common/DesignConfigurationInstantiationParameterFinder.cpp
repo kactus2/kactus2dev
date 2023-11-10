@@ -24,65 +24,48 @@ DesignConfigurationInstantiationParameterFinder::DesignConfigurationInstantiatio
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignConfigurationInstantiationParameterFinder::~DesignConfigurationInstantiationParameterFinder()
-//-----------------------------------------------------------------------------
-DesignConfigurationInstantiationParameterFinder::~DesignConfigurationInstantiationParameterFinder()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationParameterFinder::DesignConfigurationInstantiationParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> DesignConfigurationInstantiationParameterFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> DesignConfigurationInstantiationParameterFinder::getParameterWithID(
+    QStringView parameterId) const
 {
-    // First, search for the parameter corresponding the id.
-    QSharedPointer<Parameter> parameter = searchParameter(parameterId);
-
-    return parameter;
+    return searchParameter(parameterId);
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationParameterFinder::hasId()
 //-----------------------------------------------------------------------------
-bool DesignConfigurationInstantiationParameterFinder::hasId(QString const& id) const
+bool DesignConfigurationInstantiationParameterFinder::hasId(QStringView id) const
 {
-    if (!designConfigurationInstantiation_.isNull() && searchParameter(id))
-    {
-        return true;
-    }
-
-    return false;
+    return searchParameter(id) != nullptr;
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationParameterFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString DesignConfigurationInstantiationParameterFinder::nameForId(QString const& id) const
+QString DesignConfigurationInstantiationParameterFinder::nameForId(QStringView id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
+        targetParameter)
     {
         return targetParameter->name();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString DesignConfigurationInstantiationParameterFinder::valueForId(QString const& id) const
+QString DesignConfigurationInstantiationParameterFinder::valueForId(QStringView id) const
 {
-    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer<Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->getValue();
     }
 
-    return "";
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -94,13 +77,13 @@ QStringList DesignConfigurationInstantiationParameterFinder::getAllParameterIds(
 
     if (designConfigurationInstantiation_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *designConfigurationInstantiation_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *designConfigurationInstantiation_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
     }
 
-    allParameterIds.removeAll("");
+    allParameterIds.removeAll(QString());
     return allParameterIds;
 }
 
@@ -137,13 +120,14 @@ void DesignConfigurationInstantiationParameterFinder::registerParameterModel(QAb
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationParameterFinder::searchParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> DesignConfigurationInstantiationParameterFinder::searchParameter(QString const& parameterId) const
+QSharedPointer<Parameter> DesignConfigurationInstantiationParameterFinder::searchParameter(
+    QStringView parameterId) const
 {
     if (designConfigurationInstantiation_)
     {
-        foreach (QSharedPointer<Parameter> parameter, *designConfigurationInstantiation_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *designConfigurationInstantiation_->getParameters())
         {
-            if (parameter->getValueId() == parameterId)
+            if (parameter->getValueId().compare(parameterId) == 0)
             {
                 return parameter;
             }

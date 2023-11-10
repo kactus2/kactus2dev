@@ -66,14 +66,14 @@ public:
     /*!
 	 *  Clone this design configuration.
 	 */
-	virtual QSharedPointer<Document> clone() const;
+	QSharedPointer<Document> clone() const final;
 
     /*!
 	 *  Set the vlnv.
 	 *
 	 *      @param [in] vlnv    Reference to the vlnv to be set.
 	 */
-	virtual void setVlnv(const VLNV& vlnv);
+	void setVlnv(const VLNV& vlnv) final;
 
     /*!
      *  Get the design reference.

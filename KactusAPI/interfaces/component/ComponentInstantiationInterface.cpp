@@ -70,7 +70,7 @@ int ComponentInstantiationInterface::getItemIndex(std::string const& itemName) c
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string ComponentInstantiationInterface::getIndexedItemName(int const& itemIndex) const
+std::string ComponentInstantiationInterface::getIndexedItemName(int itemIndex) const
 {
     std::string instantiationName = "";
     if (itemIndex >= 0 && itemIndex < instantiations_->size())

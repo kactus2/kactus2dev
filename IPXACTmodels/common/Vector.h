@@ -31,19 +31,11 @@ public:
      *      @param [in] left    The left side of the vector.
      *      @param [in] right   The right side of the vector.
      */
-    Vector(QString left, QString right);
+    Vector(QString const& left, QString const& right);
+   
+    //! The destructor.
+    ~Vector() = default;
 
-    //! Copy constructor.
-    Vector(Vector const& other);
-
-	// Assignment.
-    Vector& operator=(Vector const& other);
-
-	/*!
-	 *  The destructor.
-	*/
-    virtual ~Vector();
-    
     /*!
      *	Sets the vector id.
      *  

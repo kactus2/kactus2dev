@@ -216,7 +216,7 @@ void BusInterfaceEndPoint::setDirection(QVector2D const& dir)
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::isBus()
 //-----------------------------------------------------------------------------
-bool BusInterfaceEndPoint::isBus() const
+bool BusInterfaceEndPoint::isBus() const noexcept
 {
     return true;
 }
@@ -224,7 +224,7 @@ bool BusInterfaceEndPoint::isBus() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getType()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::EndpointType BusInterfaceEndPoint::getType() const
+ConnectionEndpoint::EndpointType BusInterfaceEndPoint::getType() const noexcept
 {
     return ConnectionEndpoint::ENDPOINT_TYPE_BUS;
 }
@@ -276,8 +276,7 @@ void BusInterfaceEndPoint::saveOldPortPositions(QList<QGraphicsItem*> items)
         ConnectionEndpoint* endPointItem = dynamic_cast<ConnectionEndpoint*>(item);
         if (endPointItem && item != this && endPointItem->isHierarchical() == isHierarchical())
         {
-            ConnectionEndpoint* port = static_cast<ConnectionEndpoint*>(item);
-            oldPortPositions_.insert(port, port->pos());
+            oldPortPositions_.insert(endPointItem, endPointItem->pos());
         }
     }
 }
@@ -366,15 +365,16 @@ bool BusInterfaceEndPoint::onConnect(ConnectionEndpoint const* other)
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getDirectionOutShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getDirectionOutShape() const
+QPolygonF BusInterfaceEndPoint::getDirectionOutShape()
 {
-    int squareSize = GridSize;
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize/2)
-        << QPointF(-squareSize/2, 0)
-        << QPointF(0, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(squareSize/2, squareSize/2);
+    constexpr int squareSize = GridSize;
+    QPolygonF shape({
+        QPointF(-squareSize / 2, squareSize / 2),
+        QPointF(-squareSize / 2, 0),
+        QPointF(0, -squareSize / 2),
+        QPointF(squareSize / 2, 0),
+        QPointF(squareSize / 2, squareSize / 2)
+    });
 
     return shape;
 }
@@ -382,17 +382,16 @@ QPolygonF BusInterfaceEndPoint::getDirectionOutShape() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getDirectionInShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getDirectionInShape() const
+QPolygonF BusInterfaceEndPoint::getDirectionInShape()
 {
-    QPolygonF shape;
+    constexpr int squareSize = GridSize;
 
-    int squareSize = GridSize;
-
-    shape << QPointF(-squareSize/2, 0)
-        << QPointF(-squareSize/2, -squareSize/2)
-        << QPointF(squareSize/2, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(0, squareSize/2);
+    QPolygonF shape({ QPointF(-squareSize / 2, 0),
+        QPointF(-squareSize / 2, -squareSize / 2),
+        QPointF(squareSize / 2, -squareSize / 2),
+        QPointF(squareSize / 2, 0),
+        QPointF(0, squareSize / 2),
+    });
 
     return shape;
 }
@@ -400,17 +399,18 @@ QPolygonF BusInterfaceEndPoint::getDirectionInShape() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getDirectionInOutShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getDirectionInOutShape() const
+QPolygonF BusInterfaceEndPoint::getDirectionInOutShape()
 {
-    int squareSize = GridSize;
+    constexpr int squareSize = GridSize;
 
-    QPolygonF shape;
-    shape << QPointF(-squareSize/2, squareSize/2)
-        << QPointF(-squareSize/2, 0)
-        << QPointF(0, -squareSize/2)
-        << QPointF(squareSize/2, 0)
-        << QPointF(squareSize/2, squareSize/2)
-        << QPointF(0, squareSize);
+    QPolygonF shape({
+        QPointF(-squareSize / 2, squareSize / 2),
+        QPointF(-squareSize / 2, 0),
+        QPointF(0, -squareSize / 2),
+        QPointF(squareSize / 2, 0),
+        QPointF(squareSize / 2, squareSize / 2),
+        QPointF(0, squareSize)
+    });
 
     return shape;
 }
@@ -418,20 +418,20 @@ QPolygonF BusInterfaceEndPoint::getDirectionInOutShape() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getInitiativeProvidesShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getInitiativeProvidesShape() const
+QPolygonF BusInterfaceEndPoint::getInitiativeProvidesShape()
 {
-    int squareSize = GridSize;
+    constexpr int squareSize = GridSize;
 
-    QPolygonF shape;
-
-    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
-        << QPointF(-squareSize / 2, -squareSize / 4)
-        << QPointF(-squareSize / 4, -squareSize / 4)
-        << QPointF(-squareSize / 4, -squareSize / 2)
-        << QPointF(squareSize / 4, -squareSize / 2)
-        << QPointF(squareSize / 4, -squareSize / 4)
-        << QPointF(squareSize / 2, -squareSize / 4)
-        << QPointF(squareSize / 2, squareSize * 3 / 4);
+    QPolygonF shape({
+        QPointF(-squareSize / 2, squareSize * 3 / 4),
+        QPointF(-squareSize / 2, -squareSize / 4),
+        QPointF(-squareSize / 4, -squareSize / 4),
+        QPointF(-squareSize / 4, -squareSize / 2),
+        QPointF(squareSize / 4, -squareSize / 2),
+        QPointF(squareSize / 4, -squareSize / 4),
+        QPointF(squareSize / 2, -squareSize / 4),
+        QPointF(squareSize / 2, squareSize * 3 / 4)
+    });
 
     return shape;
 }
@@ -439,20 +439,20 @@ QPolygonF BusInterfaceEndPoint::getInitiativeProvidesShape() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getInitiativeRequiresShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getInitiativeRequiresShape() const
+QPolygonF BusInterfaceEndPoint::getInitiativeRequiresShape()
 {
-    int squareSize = GridSize;
+    constexpr int squareSize = GridSize;
 
-    QPolygonF shape;
-
-    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
-        << QPointF(-squareSize / 2, -squareSize / 2)
-        << QPointF(-squareSize / 4, -squareSize / 2)
-        << QPointF(-squareSize / 4, -squareSize / 4)
-        << QPointF(squareSize / 4, -squareSize / 4)
-        << QPointF(squareSize / 4, -squareSize / 2)
-        << QPointF(squareSize / 2, -squareSize / 2)
-        << QPointF(squareSize / 2, squareSize * 3 / 4);
+    QPolygonF shape({
+        QPointF(-squareSize / 2, squareSize * 3 / 4),
+        QPointF(-squareSize / 2, -squareSize / 2),
+        QPointF(-squareSize / 4, -squareSize / 2),
+        QPointF(-squareSize / 4, -squareSize / 4),
+        QPointF(squareSize / 4, -squareSize / 4),
+        QPointF(squareSize / 4, -squareSize / 2),
+        QPointF(squareSize / 2, -squareSize / 2),
+        QPointF(squareSize / 2, squareSize * 3 / 4)
+    });
 
     return shape;
 }
@@ -460,24 +460,24 @@ QPolygonF BusInterfaceEndPoint::getInitiativeRequiresShape() const
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getInitiativeRequiresProvidesShape()
 //-----------------------------------------------------------------------------
-QPolygonF BusInterfaceEndPoint::getInitiativeRequiresProvidesShape() const
+QPolygonF BusInterfaceEndPoint::getInitiativeRequiresProvidesShape()
 {
-    int squareSize = GridSize;
+    constexpr int squareSize = GridSize;
 
-    QPolygonF shape;
-
-    shape << QPointF(-squareSize / 2, squareSize * 3 / 4)
-        << QPointF(-squareSize / 2, -squareSize / 4)
-        << QPointF(-squareSize / 4, -squareSize / 4)
-        << QPointF(-squareSize / 4, -squareSize / 2)
-        << QPointF(squareSize / 4, -squareSize / 2)
-        << QPointF(squareSize / 4, -squareSize / 4)
-        << QPointF(squareSize / 2, -squareSize / 4)
-        << QPointF(squareSize / 2, squareSize * 3 / 4)
-        << QPointF(squareSize / 4, squareSize * 3 / 4)
-        << QPointF(squareSize / 4, squareSize / 2)
-        << QPointF(-squareSize / 4, squareSize / 2)
-        << QPointF(-squareSize / 4, squareSize * 3 / 4);
+    QPolygonF shape({
+        QPointF(-squareSize / 2, squareSize * 3 / 4),
+        QPointF(-squareSize / 2, -squareSize / 4),
+        QPointF(-squareSize / 4, -squareSize / 4),
+        QPointF(-squareSize / 4, -squareSize / 2),
+        QPointF(squareSize / 4, -squareSize / 2),
+        QPointF(squareSize / 4, -squareSize / 4),
+        QPointF(squareSize / 2, -squareSize / 4),
+        QPointF(squareSize / 2, squareSize * 3 / 4),
+        QPointF(squareSize / 4, squareSize * 3 / 4),
+        QPointF(squareSize / 4, squareSize / 2),
+        QPointF(-squareSize / 4, squareSize / 2),
+        QPointF(-squareSize / 4, squareSize * 3 / 4)
+    });
 
     return shape;
 }

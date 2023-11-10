@@ -19,11 +19,9 @@
 // Function: WarningSymbol::WarningSymbol()
 //-----------------------------------------------------------------------------
 WarningSymbol::WarningSymbol(QGraphicsItem* parent) :
-QGraphicsPolygonItem(parent),
-exclamationLine_(new QGraphicsPolygonItem(this)),
-exclamationDot_(new QGraphicsPolygonItem(this))
+QGraphicsPolygonItem(parent)
 {
-    setToolTip("No portmaps found");
+    setToolTip(QObject::tr("No portmaps found"));
 
     QPen warningPen(Qt::black, 0);
     setPen(warningPen);
@@ -31,28 +29,23 @@ exclamationDot_(new QGraphicsPolygonItem(this))
     QBrush warningBrush(QColor(255, 223, 0));
     setBrush(warningBrush);
 
-    int squareSize = GridSize;
-    qreal startingY = squareSize - 2;
-    qreal pointDistance = 2 * squareSize / 3;
+    constexpr int squareSize = GridSize;
+    constexpr qreal startingY = squareSize - 2;
+    constexpr qreal pointDistance = 2 * squareSize / 3;
 
-    QPolygonF warningShape;
-    warningShape << QPointF(0, startingY)
-        << QPointF(-pointDistance, startingY + pointDistance)
-        << QPointF(-pointDistance * 2, startingY)
-        << QPointF(-pointDistance, startingY - pointDistance);
+    QPolygonF warningShape({
+        QPointF(0, startingY),
+        QPointF(-pointDistance, startingY + pointDistance),
+        QPointF(-pointDistance * 2, startingY),
+        QPointF(-pointDistance, startingY - pointDistance)
+    });
 
     setPolygon(warningShape);
 
-    QPolygonF exclamationShape;
-    exclamationShape << QPointF(- squareSize / 5, startingY)
-        << QPointF(- squareSize + 3, startingY);
-
+    QPolygonF exclamationShape({ QPointF(-squareSize / 5, startingY), QPointF(-squareSize + 3, startingY) });
     exclamationLine_->setPolygon(exclamationShape);
 
-    QPolygonF exclamationDotShape;
-    exclamationDotShape << QPointF(-squareSize, startingY)
-        << QPointF(-squareSize + 1 , startingY);
-
+    QPolygonF exclamationDotShape({ QPointF(-squareSize, startingY), QPointF(-squareSize + 1 , startingY) });
     exclamationDot_->setPolygon(exclamationDotShape);
 }
 

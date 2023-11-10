@@ -57,10 +57,10 @@ bool SystemColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems)
 void SystemColumn::prepareColumnMove()
 {
     // Begin the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item : scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
         {
             conn->beginUpdatePosition();
         }
@@ -75,10 +75,10 @@ QSharedPointer<QUndoCommand> SystemColumn::createMoveUndoCommand()
     QSharedPointer<QUndoCommand> cmd = GraphicsColumn::createMoveUndoCommand();
 
     // End the position update for all connections.
-    foreach (QGraphicsItem *item, scene()->items())
+    for (QGraphicsItem *item : scene()->items())
     {
-        GraphicsConnection* conn = dynamic_cast<GraphicsConnection*>(item);
-        if (conn != 0)
+        auto conn = dynamic_cast<GraphicsConnection*>(item);
+        if (conn != nullptr)
         {
             conn->endUpdatePosition(cmd.data());
         }

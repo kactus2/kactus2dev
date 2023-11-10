@@ -16,6 +16,8 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+
 #include <InterconnectionInterface.h>
 #include <AdHocConnectionInterface.h>
 
@@ -30,7 +32,6 @@ namespace
 ComponentInstanceInterface::ComponentInstanceInterface(InterconnectionInterface* connectionInterface,
     AdHocConnectionInterface* adHocInterface):
 NameGroupInterface(),
-componentInstances_(),
 connectionInterface_(connectionInterface),
 adHocConnectionInterface_(adHocInterface)
 {
@@ -54,16 +55,7 @@ void ComponentInstanceInterface::setComponentInstances(QSharedPointer<Design> ne
 QSharedPointer<ComponentInstance> ComponentInstanceInterface::getComponentInstance(std::string const& instanceName)
 const
 {
-    QString instanceNameQ = QString::fromStdString(instanceName);
-    for (auto instance : *componentInstances_)
-    {
-        if (instance->getInstanceName() == instanceNameQ)
-        {
-            return instance;
-        }
-    }
-
-    return QSharedPointer<ComponentInstance>();
+    return Search::findByName(QString::fromStdString(instanceName), componentInstances_);
 }
 
 //-----------------------------------------------------------------------------
@@ -94,7 +86,7 @@ int ComponentInstanceInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: ComponentInstanceInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string ComponentInstanceInterface::getIndexedItemName(int const& itemIndex) const
+std::string ComponentInstanceInterface::getIndexedItemName(int itemIndex) const
 {
     std::string instanceName = "";
     if (itemIndex >= 0 && itemIndex < itemCount())
@@ -118,19 +110,10 @@ int ComponentInstanceInterface::itemCount() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> ComponentInstanceInterface::getItemNames() const
 {
-    QVector<QString> instanceNamesQ;
-    for (auto instance : *componentInstances_)
-    {
-        if (!instanceNamesQ.contains(instance->getInstanceName()))
-        {
-            instanceNamesQ.append(instance->getInstanceName());
-        }
-    }
-
     std::vector<std::string> instanceNames;
-    for (auto instanceName : instanceNamesQ)
+    for (auto const& instance : *componentInstances_)
     {
-        instanceNames.push_back(instanceName.toStdString());
+        instanceNames.push_back(instance->getInstanceName().toStdString());
     }
 
     return instanceNames;
@@ -164,13 +147,13 @@ bool ComponentInstanceInterface::setName(std::string const& currentName, std::st
 //-----------------------------------------------------------------------------
 std::string ComponentInstanceInterface::getDescription(std::string const& itemName) const
 {
-    QSharedPointer<ComponentInstance> editedInstance = getComponentInstance(itemName);
-    if (editedInstance)
+    if (QSharedPointer<ComponentInstance> editedInstance = getComponentInstance(itemName); 
+        editedInstance)
     {
         return editedInstance->description().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -210,8 +193,8 @@ bool ComponentInstanceInterface::itemHasValidName(std::string const& /*itemName*
 QSharedPointer<ConfigurableVLNVReference> ComponentInstanceInterface::getComponentReference(
     std::string const& instanceName) const
 {
-    QSharedPointer<ComponentInstance> selectedInstance = getComponentInstance(instanceName);
-    if (selectedInstance)
+    if (QSharedPointer<ComponentInstance> selectedInstance = getComponentInstance(instanceName); 
+        selectedInstance)
     {
         return selectedInstance->getComponentRef();
     }
@@ -275,13 +258,5 @@ bool ComponentInstanceInterface::removeComponentInstance(std::string const& inst
 //-----------------------------------------------------------------------------
 bool ComponentInstanceInterface::instanceExists(std::string const& instanceName) const
 {
-    for (auto name : getItemNames())
-    {
-        if (name == instanceName)
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return getComponentInstance(instanceName) != nullptr;
 }

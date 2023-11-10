@@ -36,12 +36,14 @@ class IPXACTMODELS_EXPORT Port : public NameGroup, public Extendable
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<Port> > >;
+
 	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] portName    Name of the port.
 	 */
-    Port(QString const& portName = QString());
+    explicit Port(QString const& portName = QString());
 
     /*!
      *  Copy constructor.
@@ -56,7 +58,7 @@ public:
 	/*!
 	 *  The destructor.
 	 */
-	~Port();
+	~Port() = default;
     
     /*!
      *  Get a pointer to the wire element.
@@ -170,7 +172,7 @@ public:
      *
      *      @return The matching type name.
 	 */
-	QString getTypeName(const QString& viewName = QLatin1String("")) const;
+	QString getTypeName(const QString& viewName = QString()) const;
     
 	/*!
 	 *  Set the type name for the port in given view.
@@ -178,7 +180,7 @@ public:
 	 *      @param [in] typeName    The name of the type.
 	 *      @param [in] viewName    The name of the view used for this type.
 	 */
-	void setTypeName(const QString& typeName, const QString& viewName = QLatin1String(""));
+	void setTypeName(const QString& typeName, const QString& viewName = QString());
 
 	/*!
 	 *  Check if the port has a type name in given view.
@@ -195,7 +197,7 @@ public:
 	 *      @param [in] typeName    The name of the type that's type definition is wanted.
      *      @return The found type definition.
 	 */
-	QString getTypeDefinition(const QString& typeName);
+	QString getTypeDefinition(const QString& typeName) const;
 
 	/*!
 	 *  Get the type definitions of the wired port.
@@ -276,7 +278,7 @@ public:
      *
      *      @return Tags associated with the port.
      */
-    const QString getPortTags() const;
+    QString getPortTags() const;
 
     /*!
      *  Set the port tags.
@@ -307,20 +309,20 @@ public:
     QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
 
     /*!
-     *  Get the type definitions.
+     *  Get the wire type definitions.
      *
-     *      @return A list of pointers to the type definitions contained within the port.
+     *      @return The type definitions contained within the wire port.
      */
-    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTypes() const;
-
-private:
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getWireTypes() const;
 
     /*!
-     *  Copy the list of arrays.
+     *  Get the transactional type definitions.
      *
-     *      @param [in] other   The target of the copying.
+     *      @return The type definitions contained within the transactional port.
      */
-    void copyArrays(const Port& other);
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > getTransactionalTypes() const;
+
+private:
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -330,13 +332,13 @@ private:
     QString isPresent_;
 
     //! The wire port type.
-	QSharedPointer<Wire> wire_;
+    QSharedPointer<Wire> wire_{ nullptr };
 
     //! Transactional port type.
-	QSharedPointer<Transactional> transactional_;
+	QSharedPointer<Transactional> transactional_{ nullptr };
 
     //! The list of arrays.
-    QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_;
+    QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_{ new QList<QSharedPointer<Array> >() };
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Port>)

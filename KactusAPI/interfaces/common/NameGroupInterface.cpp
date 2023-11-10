@@ -21,7 +21,7 @@ std::string NameGroupInterface::getDisplayName(std::string const& itemName) cons
         return item->displayName().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ std::string NameGroupInterface::getDescription(std::string const& itemName) cons
         return item->description().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -77,7 +77,7 @@ std::string NameGroupInterface::getShortDescription(std::string const& itemName)
         return item->shortDescription().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

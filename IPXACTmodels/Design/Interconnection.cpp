@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Interconnection::Interconnection()
 //-----------------------------------------------------------------------------
@@ -42,23 +44,11 @@ Interconnection::Interconnection(const Interconnection& other) :
 NameGroup(other),
 Extendable(other),
 startInterface_(new ActiveInterface(*other.startInterface_)),
-activeInterfaces_(new QList<QSharedPointer<ActiveInterface> > ()),
-hierInterfaces_(new QList<QSharedPointer<HierInterface> > ()),
 isPresent_(other.isPresent_)
 {
-    for (auto const& singleInterface: *other.activeInterfaces_)
-    {
-        QSharedPointer<ActiveInterface> copy =
-            QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
-        activeInterfaces_->append(copy);
-    }
+    Copy::copyList(other.activeInterfaces_, activeInterfaces_);
 
-    for (auto const& singleInterface : *other.hierInterfaces_)
-    {
-        QSharedPointer<HierInterface> copy =
-            QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
-        hierInterfaces_->append(copy);
-    }
+    Copy::copyList(other.hierInterfaces_, hierInterfaces_);
 }
 
 //-----------------------------------------------------------------------------
@@ -77,20 +67,11 @@ Interconnection& Interconnection::operator=( const Interconnection& other)
         startInterface_ = QSharedPointer<ActiveInterface>(new ActiveInterface(*other.startInterface_));
 
         activeInterfaces_->clear();
-        for (auto const& singleInterface : *other.activeInterfaces_)
-        {
-            QSharedPointer<ActiveInterface> copy =
-                QSharedPointer<ActiveInterface>(new ActiveInterface(*singleInterface));
-            activeInterfaces_->append(copy);
-        }
+        Copy::copyList(other.activeInterfaces_, activeInterfaces_);
 
         hierInterfaces_->clear();
-        for (auto const& singleInterface : *other.hierInterfaces_)
-        {
-            QSharedPointer<HierInterface> copy =
-                QSharedPointer<HierInterface>(new HierInterface(*singleInterface));
-            hierInterfaces_->append(copy);
-        }
+
+        Copy::copyList(other.hierInterfaces_, hierInterfaces_);
     }
 
     return *this;

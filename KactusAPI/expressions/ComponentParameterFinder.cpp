@@ -26,7 +26,7 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
-ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component const> component) :
+ComponentParameterFinder::ComponentParameterFinder(QSharedPointer<Component const> component) noexcept :
 component_(component)
 {
 }
@@ -34,35 +34,26 @@ component_(component)
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::ComponentParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> ComponentParameterFinder::getParameterWithID(QStringView parameterId) const
 {
-    // First, search for the parameter corresponding the id.
-    QSharedPointer<Parameter> parameter = searchParameter(parameterId);
-
-    return parameter;
+    return searchParameter(parameterId);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::hasId()
 //-----------------------------------------------------------------------------
-bool ComponentParameterFinder::hasId(QString const& id) const
+bool ComponentParameterFinder::hasId(QStringView id) const
 {
-    if (!component_.isNull() && searchParameter(id))
-    {
-        return true;
-    }
-
-    return false;
+    return !component_.isNull() && searchParameter(id);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString ComponentParameterFinder::nameForId(QString const& id) const
+QString ComponentParameterFinder::nameForId(QStringView id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer <Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->name();
     }
@@ -73,11 +64,10 @@ QString ComponentParameterFinder::nameForId(QString const& id) const
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString ComponentParameterFinder::valueForId(QString const& id) const
+QString ComponentParameterFinder::valueForId(QStringView id) const
 {
-    QSharedPointer<Parameter> targetParameter = getParameterWithID(id);
-
-    if (targetParameter)
+    if (QSharedPointer<Parameter> targetParameter = getParameterWithID(id); 
+        targetParameter)
     {
         return targetParameter->getValue();
     }
@@ -94,32 +84,32 @@ QStringList ComponentParameterFinder::getAllParameterIds() const
 
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> cpuParameter, allCpuParameters())
+        for (QSharedPointer<Parameter> cpuParameter : allCpuParameters())
         {
             allParameterIds.append(cpuParameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> generatorParameter, allGeneratorParameters())
+        for (QSharedPointer<Parameter> generatorParameter : allGeneratorParameters())
         {
             allParameterIds.append(generatorParameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
+        for (QSharedPointer<Parameter> busInterfaceParameter : allBusInterfaceParameters())
         {
             allParameterIds.append(busInterfaceParameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> addressSpaceParameter, allAddressSpaceParameters())
+        for (QSharedPointer<Parameter> addressSpaceParameter : allAddressSpaceParameters())
         {
             allParameterIds.append(addressSpaceParameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
+        for (QSharedPointer<Parameter> registerParameter : allRegisterParameters())
         {
             allParameterIds.append(registerParameter->getValueId());
         }
@@ -172,66 +162,68 @@ void ComponentParameterFinder::setComponent(QSharedPointer<Component const> comp
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::searchParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString const& parameterId) const
+QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QStringView parameterId) const
 {
-    if (component_)
+    if (component_ == nullptr)
     {
-        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
-        {
-            if (parameter->getValueId() == parameterId)
-            {
-                return parameter;
-            }
-        }
+        return nullptr;
+    }
 
-        foreach (QSharedPointer<Parameter> busInterfaceParameter, allBusInterfaceParameters())
+    for (QSharedPointer<Parameter> parameter : *component_->getParameters())
+    {
+        if (parameter->getValueId() == parameterId)
         {
-            if (busInterfaceParameter->getValueId() == parameterId)
-            {
-                return busInterfaceParameter;
-            }
+            return parameter;
         }
+    }
 
-        foreach (QSharedPointer<Parameter> cpuParameter, allCpuParameters())
+    for (QSharedPointer<Parameter> busInterfaceParameter : allBusInterfaceParameters())
+    {
+        if (busInterfaceParameter->getValueId() == parameterId)
         {
-            if (cpuParameter->getValueId() == parameterId)
-            {
-                return cpuParameter;
-            }
+            return busInterfaceParameter;
         }
+    }
 
-        foreach (QSharedPointer<Parameter> generatorParameter, allGeneratorParameters())
+    for (QSharedPointer<Parameter> cpuParameter : allCpuParameters())
+    {
+        if (cpuParameter->getValueId() == parameterId)
         {
-            if (generatorParameter->getValueId() == parameterId)
-            {
-                return generatorParameter;
-            }
+            return cpuParameter;
         }
+    }
 
-        foreach (QSharedPointer<Parameter> addressSpaceParameter, allAddressSpaceParameters())
+    for (QSharedPointer<Parameter> generatorParameter : allGeneratorParameters())
+    {
+        if (generatorParameter->getValueId() == parameterId)
         {
-            if (addressSpaceParameter->getValueId() == parameterId)
-            {
-                return addressSpaceParameter;
-            }
+            return generatorParameter;
         }
+    }
 
-        foreach (QSharedPointer<Parameter> registerParameter, allRegisterParameters())
+    for (QSharedPointer<Parameter> addressSpaceParameter : allAddressSpaceParameters())
+    {
+        if (addressSpaceParameter->getValueId() == parameterId)
         {
-            if (registerParameter->getValueId() == parameterId)
-            {
-                return registerParameter;
-            }
+            return addressSpaceParameter;
         }
+    }
 
-        for (auto indirectInterfaceParameter : allIndirectInterfacesParameters())
+    for (QSharedPointer<Parameter> registerParameter : allRegisterParameters())
+    {
+        if (registerParameter->getValueId() == parameterId)
         {
-            if (indirectInterfaceParameter->getValueId() == parameterId)
-            {
-                return indirectInterfaceParameter;
-            }
+            return registerParameter;
         }
-    }    
+    }
+
+    for (auto indirectInterfaceParameter : allIndirectInterfacesParameters())
+    {
+        if (indirectInterfaceParameter->getValueId() == parameterId)
+        {
+            return indirectInterfaceParameter;
+        }
+    }
 
     return QSharedPointer<Parameter>();
 }
@@ -242,7 +234,7 @@ QSharedPointer<Parameter> ComponentParameterFinder::searchParameter(QString cons
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParameters() const
 {
     QList<QSharedPointer<Parameter> > busInterfaceParameters;
-    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *component_->getBusInterfaces())
     {
         busInterfaceParameters.append(*busInterface->getParameters());
     }
@@ -256,7 +248,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allBusInterfaceParam
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allCpuParameters() const
 {
     QList<QSharedPointer<Parameter> > cpuParameters;
-    foreach (QSharedPointer<Cpu> cpu, *component_->getCpus())
+    for (QSharedPointer<Cpu> cpu : *component_->getCpus())
     {
         cpuParameters.append(*cpu->getParameters());
     }
@@ -270,7 +262,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allCpuParameters() c
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allGeneratorParameters() const
 {
     QList<QSharedPointer<Parameter> > generatorParameters;
-    foreach (QSharedPointer<ComponentGenerator> generator, *component_->getComponentGenerators())
+    for (QSharedPointer<ComponentGenerator> generator : *component_->getComponentGenerators())
     {
         generatorParameters.append(*generator->getParameters());
     }
@@ -284,18 +276,18 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allGeneratorParamete
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allAddressSpaceParameters() const
 {
     QList<QSharedPointer<Parameter> > parameters;
-    foreach (QSharedPointer<AddressSpace> addressSpace, *component_->getAddressSpaces())
+    for (QSharedPointer<AddressSpace> addressSpace : *component_->getAddressSpaces())
     {
         parameters.append(*addressSpace->getParameters());
 
         if (addressSpace->getLocalMemoryMap())
         {
-            foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *addressSpace->getLocalMemoryMap()->getMemoryBlocks())
+            for (QSharedPointer<MemoryBlockBase> memoryBlock : *addressSpace->getLocalMemoryMap()->getMemoryBlocks())
             {
                 QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
                 if (addressBlock)
                 {
-                    foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                    for (QSharedPointer<RegisterBase> registerBase : *addressBlock->getRegisterData())
                     {
                         parameters.append(*registerBase->getParameters());
                     }
@@ -313,14 +305,14 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allAddressSpaceParam
 QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameters() const
 {
     QList<QSharedPointer<Parameter> > registerParameters;
-    foreach (QSharedPointer<MemoryMapBase> memoryMap, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMapBase> memoryMap : *component_->getMemoryMaps())
     {
-        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> memoryBlock : *memoryMap->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                for (QSharedPointer<RegisterBase> registerBase : *addressBlock->getRegisterData())
                 {
                     registerParameters.append(*registerBase->getParameters());
                 }
@@ -337,7 +329,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allRegisterParameter
 int ComponentParameterFinder::busInterfaceParameterCount() const
 {
     int parameterCount = 0;
-    foreach (QSharedPointer<BusInterface> busInterface, *component_->getBusInterfaces())
+    for (QSharedPointer<BusInterface> busInterface : *component_->getBusInterfaces())
     {
         parameterCount += busInterface->getParameters()->count();
     }
@@ -352,14 +344,14 @@ int ComponentParameterFinder::registerParameterCount() const
 {
     int parameterCount = 0;
 
-    foreach (QSharedPointer<MemoryMapBase> memoryMap, *component_->getMemoryMaps())
+    for (QSharedPointer<MemoryMapBase> memoryMap : *component_->getMemoryMaps())
     {
-        foreach (QSharedPointer<MemoryBlockBase> memoryBlock, *memoryMap->getMemoryBlocks())
+        for (QSharedPointer<MemoryBlockBase> memoryBlock : *memoryMap->getMemoryBlocks())
         {
             QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
             if (addressBlock)
             {
-                foreach (QSharedPointer<RegisterBase> registerBase, *addressBlock->getRegisterData())
+                for (QSharedPointer<RegisterBase> registerBase : *addressBlock->getRegisterData())
                 {
                     parameterCount += registerBase->getParameters()->count();
                 }
@@ -388,7 +380,7 @@ QList<QSharedPointer<Parameter> > ComponentParameterFinder::allIndirectInterface
 //-----------------------------------------------------------------------------
 // Function: ComponentParameterFinder::getComponent()
 //-----------------------------------------------------------------------------
-QSharedPointer<const Component> ComponentParameterFinder::getComponent() const
+QSharedPointer<const Component> ComponentParameterFinder::getComponent() const noexcept
 {
     return component_;
 }

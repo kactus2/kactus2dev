@@ -94,7 +94,6 @@ private:
      */
     void writeFiles(QString const& componentPath,
         QSharedPointer<RenodeCpuRoutesContainer> cpuRoute,
-        QStringList& fileNames,
         bool createCpuFile,
         QString const& cpuFileName,
         bool createMemoryFile,

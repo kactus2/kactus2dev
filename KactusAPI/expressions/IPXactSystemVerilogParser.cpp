@@ -25,7 +25,7 @@ SystemVerilogExpressionParser(), finder_(finder)
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::isSymbol()
 //-----------------------------------------------------------------------------
-bool IPXactSystemVerilogParser::isSymbol(QString const& expression) const
+bool IPXactSystemVerilogParser::isSymbol(QStringView expression) const
 {
     return finder_->hasId(expression);
 }
@@ -33,7 +33,7 @@ bool IPXactSystemVerilogParser::isSymbol(QString const& expression) const
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::findSymbolValue()
 //-----------------------------------------------------------------------------
-QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) const
+QString IPXactSystemVerilogParser::findSymbolValue(QStringView expression) const
 {
     // Check for ring references.
     if (symbolStack_.contains(expression))
@@ -55,7 +55,7 @@ QString IPXactSystemVerilogParser::findSymbolValue(QString const& expression) co
 //-----------------------------------------------------------------------------
 // Function: IPXactSystemVerilogParser::findSymbolValue()
 //-----------------------------------------------------------------------------
-int IPXactSystemVerilogParser::getBaseForSymbol(QString const& symbol) const
+int IPXactSystemVerilogParser::getBaseForSymbol(QStringView symbol) const
 {
     return baseForExpression(finder_->valueForId(symbol));
 }

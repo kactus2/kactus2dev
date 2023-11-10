@@ -21,15 +21,7 @@
 // Function: TopComponentParameterFinder::TopComponentParameterFinder()
 //-----------------------------------------------------------------------------
 TopComponentParameterFinder::TopComponentParameterFinder(QSharedPointer<Component> component):
-component_(component), activeView_()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: TopComponentParameterFinder::~TopComponentParameterFinder()
-//-----------------------------------------------------------------------------
-TopComponentParameterFinder::~TopComponentParameterFinder()
+component_(component)
 {
 
 }
@@ -37,11 +29,11 @@ TopComponentParameterFinder::~TopComponentParameterFinder()
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::TopComponentParameterFinder()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QString const& parameterId) const
+QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStringView parameterId) const
 {
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component_->getParameters())
         {
             if (parameter->getValueId() == parameterId)
             {
@@ -49,7 +41,7 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
             }
         }
 
-        foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
+        for (QSharedPointer<Parameter> viewParameter : activeViewParameters())
         {
             if (viewParameter->getValueId() == parameterId)
             {
@@ -64,11 +56,11 @@ QSharedPointer<Parameter> TopComponentParameterFinder::getParameterWithID(QStrin
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::hasId()
 //-----------------------------------------------------------------------------
-bool TopComponentParameterFinder::hasId(QString const& id) const
+bool TopComponentParameterFinder::hasId(QStringView id) const
 {
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component_->getParameters())
         {
             if (parameter->getValueId() == id)
             {
@@ -76,7 +68,7 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
             }
         }
 
-        foreach (QSharedPointer<Parameter> viewParameter, activeViewParameters())
+        for (QSharedPointer<Parameter> viewParameter : activeViewParameters())
         {
             if (viewParameter->getValueId() == id)
             {
@@ -91,19 +83,17 @@ bool TopComponentParameterFinder::hasId(QString const& id) const
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::nameForId()
 //-----------------------------------------------------------------------------
-QString TopComponentParameterFinder::nameForId(QString const& id) const
+QString TopComponentParameterFinder::nameForId(QStringView id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-    return targetParameter->name();
+    return  getParameterWithID(id)->name();
 }
 
 //-----------------------------------------------------------------------------
 // Function: TopComponentParameterFinder::valueForId()
 //-----------------------------------------------------------------------------
-QString TopComponentParameterFinder::valueForId(QString const& id) const
+QString TopComponentParameterFinder::valueForId(QStringView id) const
 {
-    QSharedPointer <Parameter> targetParameter = getParameterWithID(id);
-    return targetParameter->getValue();
+    return  getParameterWithID(id)->getValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -115,12 +105,12 @@ QStringList TopComponentParameterFinder::getAllParameterIds() const
 
     if (!component_.isNull())
     {
-        foreach (QSharedPointer<Parameter> parameter, *component_->getParameters())
+        for (QSharedPointer<Parameter> parameter : *component_->getParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
 
-        foreach (QSharedPointer<Parameter> parameter, activeViewParameters())
+        for (QSharedPointer<Parameter> parameter : activeViewParameters())
         {
             allParameterIds.append(parameter->getValueId());
         }
@@ -134,8 +124,7 @@ QStringList TopComponentParameterFinder::getAllParameterIds() const
 //-----------------------------------------------------------------------------
 int TopComponentParameterFinder::getNumberOfParameters() const
 {
-    QStringList allParameterIds = getAllParameterIds();
-    return allParameterIds.size();
+    return getAllParameterIds().size();
 }
 
 //-----------------------------------------------------------------------------
@@ -184,7 +173,7 @@ QList<QSharedPointer<Parameter> > TopComponentParameterFinder::activeViewParamet
 
     viewParameters.append(*instantiation->getParameters());
 
-    foreach (QSharedPointer<ModuleParameter> parameter, *instantiation->getModuleParameters())
+    for (QSharedPointer<ModuleParameter> parameter : *instantiation->getModuleParameters())
     {
         viewParameters.append(parameter);
     }

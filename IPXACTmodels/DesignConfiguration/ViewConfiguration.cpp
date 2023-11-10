@@ -11,6 +11,8 @@
 
 #include "ViewConfiguration.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: ViewConfiguration::ViewConfiguration()
 //-----------------------------------------------------------------------------
@@ -38,12 +40,7 @@ instanceName_(other.instanceName_),
 isPresent_(other.isPresent_),
 viewRef_(other.viewRef_)
 {
-    for (QSharedPointer<ConfigurableElementValue> configurable : *other.viewConfigurables_)
-    {
-        auto copy = QSharedPointer<ConfigurableElementValue>(
-            new ConfigurableElementValue(configurable->getConfigurableValue(), configurable->getReferenceId()));
-        viewConfigurables_->append(copy);
-    }
+    Copy::copyList(other.viewConfigurables_, viewConfigurables_);
 }
 
 //-----------------------------------------------------------------------------

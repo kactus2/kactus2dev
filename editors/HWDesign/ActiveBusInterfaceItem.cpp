@@ -120,7 +120,7 @@ bool ActiveBusInterfaceItem::canConnectToInterface(ConnectionEndpoint const* oth
 //-----------------------------------------------------------------------------
 // Function: isHierarchical()
 //-----------------------------------------------------------------------------
-bool ActiveBusInterfaceItem::isHierarchical() const
+bool ActiveBusInterfaceItem::isHierarchical() const noexcept
 {
     return false;
 }
@@ -137,7 +137,7 @@ void ActiveBusInterfaceItem::setTemporary(bool temp)
 //-----------------------------------------------------------------------------
 // Function: ActiveBusInterfaceItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool ActiveBusInterfaceItem::isDirectionFixed() const
+bool ActiveBusInterfaceItem::isDirectionFixed() const noexcept
 {
     return true;
 }

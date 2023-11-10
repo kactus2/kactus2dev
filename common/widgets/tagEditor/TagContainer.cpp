@@ -11,7 +11,6 @@
 
 #include "TagContainer.h"
 
-#include <common/widgets/tagEditor/TagLabel.h>
 #include <common/widgets/tagEditor/TagDisplay.h>
 #include <common/widgets/tagEditor/FlowLayout.h>
 
@@ -21,11 +20,9 @@
 // Function: TagContainer::TagContainer()
 //-----------------------------------------------------------------------------
 TagContainer::TagContainer(QWidget* parent):
-QWidget(parent),
-additionTag_(new TagLabel(QLatin1String("+"), this)),
-tags_()
+QWidget(parent)
 {
-    additionTag_->setToolTip(QLatin1String("Create new tag"));
+    additionTag_->setToolTip(tr("Create new tag"));
     connect(additionTag_, SIGNAL(clicked(TagLabel*)), this, SLOT(createNewTag()), Qt::UniqueConnection);
 
     setupLayout();
@@ -46,9 +43,9 @@ void TagContainer::setupTags(QVector<TagData> documentTags)
 
     tags_.clear();
 
-    for (auto tag : documentTags)
+    for (auto const& tag : documentTags)
     {
-        TagLabel* newTag(new TagLabel(tag.name_, this, tag.color_));
+        auto newTag(new TagLabel(tag.name_, this, tag.color_));
         connectTagLabel(newTag);
 
         tags_.append(newTag);
@@ -71,7 +68,7 @@ void TagContainer::connectTagLabel(QWidget* tagItem)
 //-----------------------------------------------------------------------------
 void TagContainer::setupLayout()
 {
-    FlowLayout* layout = new FlowLayout(this);
+    auto layout = new FlowLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
 }
 
@@ -82,7 +79,7 @@ void TagContainer::createNewTag()
 {
     layout()->removeWidget(additionTag_);
 
-    TagLabel* newLabel = new TagLabel(QLatin1String("unnamed"), this);
+    auto newLabel = new TagLabel(QStringLiteral("unnamed"), this);
     connectTagLabel(newLabel);
     layout()->addWidget(newLabel);
 
@@ -170,9 +167,9 @@ void TagContainer::itemChangesAccepted(TagLabel* editedTag, TagDisplay* tagEdito
 //-----------------------------------------------------------------------------
 bool TagContainer::tagExists(TagLabel* editedTag) const
 {
-    for (auto comparisonWidget : tags_)
+    for (auto& comparisonWidget : tags_)
     {
-        TagLabel* comparisonTag = dynamic_cast<TagLabel*>(comparisonWidget);
+        auto comparisonTag = dynamic_cast<TagLabel*>(comparisonWidget);
         if (comparisonTag && comparisonTag->text().compare(editedTag->text()) == 0)
         {
             comparisonTag->setPalette(editedTag->palette());
@@ -205,9 +202,9 @@ QVector<TagData> TagContainer::getTags() const
 {
     QVector<TagData> finishedTags;
 
-    for (auto tagWidget : tags_)
+    for (auto const& tagWidget : tags_)
     {
-        TagLabel* tag = dynamic_cast<TagLabel*>(tagWidget);
+        auto tag = dynamic_cast<TagLabel*>(tagWidget);
         if (tag)
         {
             QColor tagColor = tag->palette().color(QPalette::Window);

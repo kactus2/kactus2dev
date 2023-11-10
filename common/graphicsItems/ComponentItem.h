@@ -80,7 +80,7 @@ public:
     /*!
 	 *  Returns the width of the component box.
 	 */
-    virtual qreal getWidth();
+    virtual qreal getWidth() noexcept;
 
 	/*!
      *  Sets the instance name.
@@ -177,7 +177,7 @@ public:
     virtual void onMovePort(ConnectionEndpoint* port) = 0;
 
     // The basic width of the components.
-    static const int COMPONENTWIDTH = 220;
+    static constexpr qreal COMPONENTWIDTH = 220;
 
 signals:
     //! Emitted when an endpoint has been moved.
@@ -255,9 +255,9 @@ protected:
      */
     void checkPortLabelSize(ConnectionEndpoint* port, QList<ConnectionEndpoint*> const& otherSide);
 
-    const int SPACING = GridSize;
-    const int MIN_Y_PLACEMENT = 3 * GridSize;
-    const int BOTTOM_MARGIN = 2 * GridSize;
+    static constexpr int SPACING = GridSize;
+    static constexpr int MIN_Y_PLACEMENT = 3 * GridSize;
+    static constexpr int BOTTOM_MARGIN = 2 * GridSize;
 
 
     //! The layout for ports.

@@ -11,7 +11,7 @@
 
 #include "HierInterface.h"
 
-#include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
+#include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
 #include <QPointF>
@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: HierInterface::HierInterface()
 //-----------------------------------------------------------------------------
-HierInterface::HierInterface(QString busRef) :
+HierInterface::HierInterface(QString const& busRef) :
 Extendable(),
 busRef_(busRef)
 {
@@ -127,7 +127,7 @@ void HierInterface::setDescription(QString const& newDescription)
 //-----------------------------------------------------------------------------
 // Function: HierInterface::setRoute()
 //-----------------------------------------------------------------------------
-void HierInterface::setRoute(QList<QPointF> newRoute)
+void HierInterface::setRoute(QList<QPointF> newRoute) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
     getVendorExtensions()->removeAll(extension);
@@ -138,11 +138,7 @@ void HierInterface::setRoute(QList<QPointF> newRoute)
 
         for (QPointF const& position : newRoute)
         {
-            QSharedPointer<Kactus2Placeholder> newPosition(
-                new Kactus2Placeholder(QStringLiteral("kactus2:position")));
-            newPosition->setAttribute(QStringLiteral("x"), QString::number(int(position.x())));
-            newPosition->setAttribute(QStringLiteral("y"), QString::number(int(position.y())));
-
+            QSharedPointer<Kactus2Position> newPosition(new Kactus2Position(position));
             routeGroup->addToGroup(newPosition);
         }
 
@@ -164,11 +160,8 @@ QList<QPointF> HierInterface::getRoute() const
     {
         for (QSharedPointer<VendorExtension> extension : routeExtension)
         {
-            QSharedPointer<Kactus2Placeholder> position = extension.dynamicCast<Kactus2Placeholder>();
-            int positionX = position->getAttributeValue(QStringLiteral("x")).toInt();
-            int positionY = position->getAttributeValue(QStringLiteral("y")).toInt();
-
-            route.append(QPointF(positionX, positionY));
+            QSharedPointer<Kactus2Position> position = extension.dynamicCast<Kactus2Position>();
+            route.append(position->position());
         }
     }
 

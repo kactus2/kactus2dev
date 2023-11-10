@@ -351,7 +351,7 @@ private:
     QSharedPointer<AbstractionDefinition const> abstractionDefinition_;
 
     //! Interface mode of the containing bus interface.
-    General::InterfaceMode interfaceMode_;
+    General::InterfaceMode interfaceMode_ = General::INTERFACE_MODE_COUNT;
 
     //! The system group name in case of system mode.
     QString systemGroup_;

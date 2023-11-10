@@ -497,9 +497,6 @@
     <ClCompile Include="Component\WriteValueConstraint.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="common\Array.cpp">
-      <Filter>Source Files\common</Filter>
-    </ClCompile>
     <ClCompile Include="common\Assertion.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
@@ -1752,6 +1749,9 @@
     </ClInclude>
     <ClInclude Include="Component\RemapStateWriter.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="utilities\Copy.h">
+      <Filter>Header Files\utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

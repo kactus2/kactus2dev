@@ -117,23 +117,20 @@ HWDesignDiagram::HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvi
     QSharedPointer<MultipleParameterFinder> designandInstancesParameterFinder,
     QSharedPointer<ListParameterFinder> designParameterFinder, DesignWidget* parent):
 ComponentDesignDiagram(lh, editProvider, parent),
-dragCompType_(ColumnTypes::NONE),
-dragBus_(false),
-dragEndPoint_(0),
 diagramResolver_(new DesignDiagramResolver(designParameterFinder)),
 designAndInstancesParameterFinder_(designandInstancesParameterFinder)
 {
 
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::loadDesign()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
 {
-    QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns();
-    if (designColumns.isEmpty())
+    
+    if (QList<QSharedPointer<ColumnDesc> > designColumns = design->getColumns(); 
+        designColumns.isEmpty())
     {
         loadColumn(QSharedPointer<ColumnDesc>(new ColumnDesc(
             "IO", ColumnTypes::IO, 0, GraphicsColumnConstants::IO_COLUMN_WIDTH)));
@@ -167,7 +164,7 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         QSharedPointer<InterfaceGraphicsData> dataGroup =
             findOrCreateInterfaceExtensionGroup(design, busIf->name());
 
-        HierarchicalBusInterfaceItem* topInterface =
+        auto topInterface =
             new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, getLibraryInterface());
 
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
@@ -231,7 +228,7 @@ HWComponentItem* HWDesignDiagram::getComponentItem(QString const& instanceName)
 
 	// if no component was found
 	emit errorMessage(tr("Component %1 was not found within design").arg(instanceName));
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -246,7 +243,7 @@ void HWDesignDiagram::updateHierComponent()
     for (QGraphicsItem *item : items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
-        HierarchicalBusInterfaceItem* diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
+        auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
         if (diagIf != nullptr && diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
         {
 			busIfs.append(diagIf->getBusInterface());
@@ -279,7 +276,7 @@ void HWDesignDiagram::updateHierComponent()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::loadColumn(QSharedPointer<ColumnDesc> description)
 {
-    HWColumn* column = new HWColumn(description, getLayout().data());
+    auto column = new HWColumn(description, getLayout().data());
 
     getLayout()->appendColumn(column);
     getDesign()->addColumn(description);
@@ -290,7 +287,7 @@ void HWDesignDiagram::loadColumn(QSharedPointer<ColumnDesc> description)
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::addColumn(QSharedPointer<ColumnDesc> desc)
 {
-    HWColumn* column = new HWColumn(desc, getLayout().data());
+    auto column = new HWColumn(desc, getLayout().data());
 
     QSharedPointer<QUndoCommand> cmd(new HWColumnAddCommand(getLayout().data(), column, this));
     getEditProvider()->addCommand(cmd);
@@ -318,8 +315,8 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
 
         HierarchicalPortItem* adHocIf;
 
-        QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName);
-        if (adhocPort)
+        
+        if (QSharedPointer<Port> adhocPort = getEditedComponent()->getPort(portName); adhocPort)
         {
             adHocIf = new HierarchicalPortItem(getEditedComponent(), adhocPort, adhocData, 0);
         }
@@ -344,13 +341,13 @@ void HWDesignDiagram::onAdHocVisibilityChanged(QString const& portName, bool vis
         for (QSharedPointer<VendorExtension> extension : adhocGroup->getByType("kactus2:adHocVisible"))
         {
             QSharedPointer<Kactus2Placeholder> portExtension = extension.dynamicCast<Kactus2Placeholder>();
-            if (portExtension->getAttributeValue("portName") == portName)
+            if (portExtension->getAttributeValue(QStringLiteral("portName")) == portName)
             {
                 adhocGroup->removeFromGroup(portExtension);
             }
         }
 
-        if (adhocGroup->getByType("kactus2:adHocVisible").isEmpty())
+        if (adhocGroup->getByType(QStringLiteral("kactus2:adHocVisible")).isEmpty())
         {
             getDesign()->getVendorExtensions()->removeAll(adhocExtension);
         }
@@ -389,7 +386,7 @@ void HWDesignDiagram::onCopyAction()
             BusInterfaceCollectionCopyData collection;
             copyInterfaces(items, collection);
 
-            QMimeData* mimeData = new QMimeData();
+            auto mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
             QApplication::clipboard()->setMimeData(mimeData);
         }
@@ -398,7 +395,7 @@ void HWDesignDiagram::onCopyAction()
             ComponentCollectionCopyData collection;
             copyInstances(items, collection);
 
-            QMimeData* mimeData = new QMimeData();
+            auto mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
             QApplication::clipboard()->setMimeData(mimeData);
         }
@@ -410,7 +407,7 @@ void HWDesignDiagram::onCopyAction()
 
             for (QGraphicsItem* item : items)
             {
-                HWColumn* column = static_cast<HWColumn*>(item);
+                auto column = static_cast<HWColumn*>(item);
 
                 collection.columns.append(ColumnCopyData());
                 ColumnCopyData& columnData = collection.columns.back();
@@ -420,7 +417,7 @@ void HWDesignDiagram::onCopyAction()
                 copyInterfaces(column->getItems(), columnData.interfaces);
             }
 
-            QMimeData* mimeData = new QMimeData();
+            auto mimeData = new QMimeData();
             mimeData->setImageData(QVariant::fromValue(collection));
             QApplication::clipboard()->setMimeData(mimeData);
         }
@@ -471,7 +468,7 @@ void HWDesignDiagram::pasteInterfacesToDraftComponent(HWComponentItem* targetIte
     // Paste interfaces only to draft components.
     if (targetItem->isDraft())
     {
-        QMimeData const* mimedata = QApplication::clipboard()->mimeData();
+        auto const* mimedata = QApplication::clipboard()->mimeData();
         if (mimedata->hasImage() && mimedata->imageData().canConvert<BusInterfaceCollectionCopyData>())
         {				
             BusInterfaceCollectionCopyData collection = mimedata->imageData().value<BusInterfaceCollectionCopyData>();
@@ -482,7 +479,7 @@ void HWDesignDiagram::pasteInterfacesToDraftComponent(HWComponentItem* targetIte
 
             // Update sidebar view.
             emit componentSelected(targetItem);
-            emit helpUrlRequested("hwdesign/hwinstance.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/hwinstance.html"));
         }
     }
 }
@@ -495,7 +492,7 @@ void HWDesignDiagram::pasteComponentsToColumn()
     GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
     if (column != nullptr)
     {
-        QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+        auto const* mimeData = QApplication::clipboard()->mimeData();
         ComponentCollectionCopyData collection = mimeData->imageData().value<ComponentCollectionCopyData>();
 
         QSharedPointer<QUndoCommand> pasteUndoCommand(new QUndoCommand());
@@ -511,7 +508,7 @@ void HWDesignDiagram::pasteComponentsToColumn()
 //-----------------------------------------------------------------------------
 void HWDesignDiagram::pasteColumns()
 {
-    QMimeData const* mimeData = QApplication::clipboard()->mimeData();
+    auto const* mimeData = QApplication::clipboard()->mimeData();
     ColumnCollectionCopyData collection = mimeData->imageData().value<ColumnCollectionCopyData>();
 
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
@@ -521,7 +518,7 @@ void HWDesignDiagram::pasteColumns()
     for (ColumnCopyData const& columnData : collection.columns)
     {
         QSharedPointer<ColumnDesc> columnCopy(new ColumnDesc(*columnData.desc));
-        HWColumn* columnItem = new HWColumn(columnCopy, getLayout().data());
+        auto columnItem = new HWColumn(columnCopy, getLayout().data());
         columnItem->setPos(columnPosition);
 
         new HWColumnAddCommand(getLayout().data(), columnItem, this, parentCommand.data());
@@ -603,9 +600,9 @@ void HWDesignDiagram::onAddToLibraryAction()
                 interfacePoint->setSelectionHighlight(true);
                 interfacePoint->setTemporary(false);
 
-                ConnectionEndpoint* definedPoint(0);
+                ConnectionEndpoint* definedPoint(nullptr);
 
-                for (GraphicsConnection* connection : interfacePoint->getConnections())
+                for (auto const connection : interfacePoint->getConnections())
                 {
                     if (connection->endpoint1() != interfacePoint && !connection->endpoint1()->isTemporary())
                     {
@@ -701,37 +698,35 @@ void HWDesignDiagram::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *mouseEvent
            onAddToLibraryAction();
         }
     }
-    else if (item->type() == HWColumn::Type)
+    else if (item->type() == HWColumn::Type && !isProtected())
     {
-        if (!isProtected())
+        item->setSelected(true);
+        HWColumn* column = qgraphicsitem_cast<HWColumn*>(item);
+
+        ColumnEditDialog dialog(getParent(), false, column);
+
+        if (dialog.exec() == QDialog::Accepted)
         {
-            item->setSelected(true);
-            HWColumn* column = qgraphicsitem_cast<HWColumn*>(item);
+            int columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
 
-            ColumnEditDialog dialog(getParent(), false, column);
-
-            if (dialog.exec() == QDialog::Accepted)
+            if (dialog.getContentType() == ColumnTypes::IO)
             {
-                int columnWidth = GraphicsColumnConstants::COMPONENT_COLUMN_WIDTH;
-
-                if (dialog.getContentType() == ColumnTypes::IO)
-                {
-                    columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
-                }
-
-                QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(),
-                    dialog.getAllowedItems(), columnWidth));
-
-                // Keep the previous width if the content type did not change.
-                if (dialog.getContentType() == column->getColumnDesc()->getContentType())
-                {
-                    desc->setWidth(column->getColumnDesc()->getWidth());
-                }
-
-                QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, this));
-                getEditProvider()->addCommand(cmd);
-                cmd->redo();
+                columnWidth = GraphicsColumnConstants::IO_COLUMN_WIDTH;
             }
+
+            QSharedPointer<ColumnDesc> desc(new ColumnDesc(dialog.name(), dialog.getContentType(),
+                dialog.getAllowedItems(), columnWidth));
+
+            // Keep the previous width if the content type did not change.
+            if (dialog.getContentType() == column->getColumnDesc()->getContentType())
+            {
+                desc->setWidth(column->getColumnDesc()->getWidth());
+            }
+
+            QSharedPointer<QUndoCommand> cmd(new GraphicsColumnChangeCommand(column, desc, this));
+            getEditProvider()->addCommand(cmd);
+            cmd->redo();
+
         }
     }
 }
@@ -854,7 +849,7 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             QSharedPointer<QUndoCommand> addCommand(new QUndoCommand());
             QString instanceName = createInstanceName(dropComponent->getVlnv().getName());
 
-            HWComponentItem* createdItem = createComponentItem(dropComponent, instanceName,
+            auto createdItem = createComponentItem(dropComponent, instanceName,
                 event->scenePos(), addCommand.data());
 
             if (createdItem)
@@ -932,7 +927,7 @@ void HWDesignDiagram::setInterfaceVLNVatEndpoint(VLNV const& droppedVLNV)
 void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QSharedPointer<Component> component)
 {
     // Replace the underlying component with the new one.
-    HWComponentItem* previousItem = static_cast<HWComponentItem*>(getTopmostComponent(position));
+    auto previousItem = static_cast<HWComponentItem*>(getTopmostComponent(position));
     Q_ASSERT(previousItem != nullptr);
 
     QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
@@ -948,8 +943,7 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
             parentCommand.data());
 
         // Perform the replacement.
-        ReplaceComponentCommand* replaceCommand(
-            new ReplaceComponentCommand(previousItem, newCompItem, this, parentCommand.data()));
+        auto replaceCommand(new ReplaceComponentCommand(previousItem, newCompItem, this, parentCommand.data()));
 
         connect(replaceCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -959,7 +953,7 @@ void HWDesignDiagram::replaceComponentItemAtPositionWith(QPointF position, QShar
         replaceCommand->redo();
 
         // Remove the old component.
-        ComponentDeleteCommand* deleteCmd = new ComponentDeleteCommand(this, 
+        auto deleteCmd = new ComponentDeleteCommand(this, 
             getLayout()->findColumnAt(previousItem->scenePos()), previousItem, parentCommand.data());
 
         connect(deleteCmd, SIGNAL(componentInstantiated(ComponentItem*)),
@@ -981,9 +975,9 @@ void HWDesignDiagram::updateDropAction(QGraphicsSceneDragDropEvent* event)
     if (dragCompType_ != ColumnTypes::NONE)
     {
         // Find the topmost component under the cursor.
-        ComponentItem* item = getTopmostComponent(event->scenePos());
+        auto const item = getTopmostComponent(event->scenePos());
 
-        GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
+        auto const column = getLayout()->findColumnAt(snapPointToGrid(event->scenePos()));
 
         // If the item is a HW component, determine whether the component can be replaced with the dragged one.
         if (item != nullptr && item->type() == HWComponentItem::Type && column != nullptr)
@@ -1068,8 +1062,7 @@ bool HWDesignDiagram::selectedItemIsCorrectType() const
 //-----------------------------------------------------------------------------
 bool HWDesignDiagram::isHierarchicalComponent(QGraphicsItem* item) const
 {
-    HWComponentItem* component = qgraphicsitem_cast<HWComponentItem*>(item);
-    if (component)
+    if (auto const component = qgraphicsitem_cast<HWComponentItem*>(item); component)
     {
         return component->componentModel()->isHierarchical();
     }
@@ -1113,7 +1106,7 @@ bool HWDesignDiagram::pasteActionEnabled() const
 
     if (selection.empty())
     {
-        GraphicsColumn* column = getLayout()->findColumnAt(contextMenuPosition());
+        auto const column = getLayout()->findColumnAt(contextMenuPosition());
 
         pasteEnabled = (mimeData->imageData().canConvert<ColumnCollectionCopyData>() || 
             (column != nullptr && mimeData->imageData().canConvert<ComponentCollectionCopyData>()) ||
@@ -1214,63 +1207,63 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
         // Check if the selected item was a component.
         if (newSelection->type() == HWComponentItem::Type)
         {
-            HWComponentItem* comp = qgraphicsitem_cast<HWComponentItem *>(newSelection);
+            auto comp = qgraphicsitem_cast<HWComponentItem *>(newSelection);
             emit componentSelected(comp);
-            emit helpUrlRequested("hwdesign/hwinstance.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/hwinstance.html"));
         }
         // Check if the selected item was a port.
         else if (newSelection->type() == ActiveBusInterfaceItem::Type)
         {
-            ActiveBusInterfaceItem* port = qgraphicsitem_cast<ActiveBusInterfaceItem*>(newSelection);
+            auto port = qgraphicsitem_cast<ActiveBusInterfaceItem*>(newSelection);
             emit interfaceSelected(port);
-            emit helpUrlRequested("hwdesign/busport.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/busport.html"));
         }
         // Check if the selected item was an interface.
         else if (newSelection->type() == HierarchicalBusInterfaceItem::Type)
         {
-            HierarchicalBusInterfaceItem* interface = qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(newSelection);
+            auto interface = qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
-            emit helpUrlRequested("hwdesign/busport.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/busport.html"));
         }
         // Check if the selected item was an ad-hoc port.
         else if (newSelection->type() == ActivePortItem::Type)
         {
-            ActivePortItem* adHocPort = static_cast<ActivePortItem*>(newSelection);
+            auto adHocPort = static_cast<ActivePortItem*>(newSelection);
             emit interfaceSelected(adHocPort);
-            emit helpUrlRequested("hwdesign/adhocport.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/adhocport.html"));
         }
         // Check if the selected item was an ad-hoc interface.
         else if (newSelection->type() == HierarchicalPortItem::Type)
         {
-            HierarchicalPortItem* adHocIf = static_cast<HierarchicalPortItem*>(newSelection);
+            auto adHocIf = static_cast<HierarchicalPortItem*>(newSelection);
             emit interfaceSelected(adHocIf);
-            emit helpUrlRequested("hwdesign/adhocport.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/adhocport.html"));
         }
 		// check if the selected item was a connection
 		else if (newSelection->type() == HWConnection::Type)
         {
-			HWConnection* connection = qgraphicsitem_cast<HWConnection*>(newSelection);
+            auto connection = qgraphicsitem_cast<HWConnection*>(newSelection);
 			emit connectionSelected(connection);
-            emit helpUrlRequested("hwdesign/connection.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/connection.html"));
 		}
         else if (newSelection->type() == AdHocConnectionItem::Type)
         {
-            AdHocConnectionItem* connection = qgraphicsitem_cast<AdHocConnectionItem*>(newSelection);
+            auto connection = qgraphicsitem_cast<AdHocConnectionItem*>(newSelection);
             emit connectionSelected(connection);
-            emit helpUrlRequested("hwdesign/adhocconnection.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/adhocconnection.html"));
         }
         else
         {
             // inform others that nothing is currently selected
             emit clearItemSelection();
-            emit helpUrlRequested("hwdesign/hwdesign.html");
+            emit helpUrlRequested(QStringLiteral("hwdesign/hwdesign.html"));
         }
     }
     else
     {
         // Clear the selection.
         emit clearItemSelection();
-        emit helpUrlRequested("hwdesign/hwdesign.html");
+        emit helpUrlRequested(QStringLiteral("hwdesign/hwdesign.html"));
     }
 }
 
@@ -1382,14 +1375,12 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
 //-----------------------------------------------------------------------------
 QSharedPointer<QUndoCommand> HWDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
 {
-    AdHocConnectionItem* adhocConnection = dynamic_cast<AdHocConnectionItem*>(connection);
-    if (adhocConnection)
+    if (auto const adhocConnection = dynamic_cast<AdHocConnectionItem*>(connection); adhocConnection)
     {
         return QSharedPointer<QUndoCommand>(new AdHocConnectionAddCommand(this, adhocConnection, getDesign()));
     }
 
-    HWConnection* hwConnection = dynamic_cast<HWConnection*>(connection);
-    if (hwConnection)
+    if (auto const hwConnection = dynamic_cast<HWConnection*>(connection); hwConnection)
     {
         QSharedPointer<QUndoCommand> connectionCommand(new ConnectionAddCommand(this, hwConnection, getDesign()));
 
@@ -1616,7 +1607,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
     General::InterfaceMode mode = target->getBusInterface()->getInterfaceMode();
     QStringList reservedNames = target->getOwnerComponent()->getPortNames();
 
-    QUndoCommand* copyCommand = new QUndoCommand(parentCommand);
+    auto copyCommand = new QUndoCommand(parentCommand);
 
     QMap<QString, QString> nameTranslations;
     QList< QSharedPointer<PortMap> > newPortMaps;   
@@ -1647,15 +1638,15 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
             QSharedPointer<PortMap> cloneMap(new PortMap(*portMap));
             cloneMap->getPhysicalPort()->name_ = nameTranslations.value(physicalName);   
 
-            QSharedPointer<PartSelect> clonePart = cloneMap->getPhysicalPort()->partSelect_;
-            if (clonePart)
+            if (QSharedPointer<PartSelect> clonePart = cloneMap->getPhysicalPort()->partSelect_; 
+                clonePart)
             {
                 clonePart->setLeftRange(diagramResolver_->parseToConstant(clonePart->getLeftRange()));
                 clonePart->setRightRange(diagramResolver_->parseToConstant(clonePart->getRightRange()));
             }
-
-            QSharedPointer<Range> logicalRange = cloneMap->getLogicalPort()->range_;
-            if (logicalRange)
+            
+            if (QSharedPointer<Range> logicalRange = cloneMap->getLogicalPort()->range_; 
+                logicalRange)
             {
                 logicalRange->setLeft(diagramResolver_->parseToConstant(logicalRange->getLeft()));
                 logicalRange->setRight(diagramResolver_->parseToConstant(logicalRange->getRight()));
@@ -1680,7 +1671,7 @@ QSharedPointer<Port> HWDesignDiagram::createConnectingPhysicalPort(QSharedPointe
     QSharedPointer<Port> connectingPort(new Port(*sourcePort));
 
     QString newPortName = sourcePort->name();
-    QRegularExpression directionalEnd("_((i)|(in)|(o)|(out)|(inout))$");                    
+    QRegularExpression directionalEnd(QStringLiteral("_((i)|(in)|(o)|(out)|(inout))$"));
     if (sourcePort->getDirection() != portDirection && directionalEnd.match(newPortName).hasMatch())
     {
         newPortName.remove(directionalEnd);
@@ -1740,8 +1731,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     dataGroup->setPosition(newPosition);
     getDesign()->getVendorExtensions()->append(dataGroup);
 
-    HierarchicalBusInterfaceItem* newItem =
-        new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup, getLibraryInterface());
+    auto newItem = new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup, getLibraryInterface());
     newItem->setPos(newPosition);
 
     // Save the positions of the other diagram interfaces.
@@ -1753,7 +1743,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
         {
             if (item->type() == HierarchicalBusInterfaceItem::Type)
             {
-                HierarchicalBusInterfaceItem* interface = static_cast<HierarchicalBusInterfaceItem*>(item);
+                auto interface = static_cast<HierarchicalBusInterfaceItem*>(item);
                 oldPositions.insert(interface, interface->scenePos());
             }
         }
@@ -1765,8 +1755,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     // Determine if the other interfaces changed their position and create undo commands for them.
     if (column->getContentType() == ColumnTypes::IO)
     {
-        for (QMap<HierarchicalBusInterfaceItem*, QPointF>::iterator cur = oldPositions.begin(); cur != oldPositions.end();
-            ++cur)
+        for (auto cur = oldPositions.cbegin(); cur != oldPositions.cend(); ++cur)
         {
             if (cur.key()->scenePos() != cur.value())
             {
@@ -1799,9 +1788,8 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
         if (column != nullptr)
         {
             // Check what kind of item should be created.
-            unsigned int itemType = findColumnItemType(column);
-
-            if (itemType == ColumnTypes::INTERFACE)
+            if (unsigned int itemType = findColumnItemType(column); 
+                itemType == ColumnTypes::INTERFACE)
             {
                 addTopLevelInterface(column, clickedPosition);
             }
@@ -1815,7 +1803,7 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
     // we can add a new port (bus interface) to it.
     else if (clickedItem->type() == HWComponentItem::Type)
     {
-        HWComponentItem* component = static_cast<HWComponentItem*>(clickedItem);
+        auto component = static_cast<HWComponentItem*>(clickedItem);
         addDraftComponentInterface(component, clickedPosition);
     }
 }
@@ -1855,14 +1843,14 @@ void HWDesignDiagram::addDraftComponentInstance(GraphicsColumn* column, QPointF 
     QString name = createInstanceName("instance");
 
     // Create a component model without a valid vlnv.
-    QSharedPointer<Component> comp = QSharedPointer<Component>(new Component(VLNV(), getEditedComponent()->getRevision()));
+    auto comp = QSharedPointer<Component>(new Component(VLNV(), getEditedComponent()->getRevision()));
     comp->setImplementation(getEditedComponent()->getImplementation());
 
     // Create the corresponding diagram component.
     QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
     componentInstance->setInstanceName(name);
 
-    HWComponentItem* diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
+    auto diagComp = new HWComponentItem(getLibraryInterface(), componentInstance, comp, column);
     diagComp->setDraft();
     diagComp->setPos(snapPointToGrid(position));
 
@@ -1892,7 +1880,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
         {
             if (item->type() == ActiveBusInterfaceItem::Type)
             {
-                ActiveBusInterfaceItem* port = static_cast<ActiveBusInterfaceItem*>(item);
+                auto port = static_cast<ActiveBusInterfaceItem*>(item);
                 oldPositions.insert(port, port->pos());
             }
         }
@@ -1901,8 +1889,7 @@ void HWDesignDiagram::addDraftComponentInterface(HWComponentItem* targetComponen
         cmd->redo();
 
         // Create child undo commands for the ports with changed position.
-        for (QMap<ActiveBusInterfaceItem*, QPointF>::iterator current = oldPositions.begin();
-            current != oldPositions.end(); ++current)
+        for (auto current = oldPositions.cbegin(); current != oldPositions.cend(); ++current)
         {
             if (current.key()->pos() != current.value())
             {
@@ -1947,7 +1934,7 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 
     if (!instance->isDraft())
     {
-        component = getLibraryInterface()->getModel(*instance->getComponentRef()).dynamicCast<Component>();
+        component = getLibraryInterface()->getModel<Component>(*instance->getComponentRef());
 
         if (!component && instance->getComponentRef()->isValid())
         {
@@ -1963,12 +1950,13 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
         component->setImplementation(KactusAttribute::HW);
     }
     
-    HWComponentItem* item = new HWComponentItem(getLibraryInterface(), instance, component);
+    auto item = new HWComponentItem(getLibraryInterface(), instance, component);
 
     // Check if the position is not found.
     // Migrate from the old layout to the column based layout.
-    QPointF instancePosition = instance->getPosition();
-    if (instancePosition.isNull())
+    
+    if (QPointF instancePosition = instance->getPosition(); 
+        instancePosition.isNull())
     {
         getLayout()->addItem(item);
     }
@@ -1994,9 +1982,8 @@ void HWDesignDiagram::createComponentItem(QSharedPointer<ComponentInstance> inst
 HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> comp, QString const& instanceName,
     QPointF position, QUndoCommand* parentCommand)
 {
-    GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(position));
-    
-    if (column != nullptr)
+    if (GraphicsColumn* column = getLayout()->findColumnAt(snapPointToGrid(position)); 
+        column != nullptr)
     {
         if (!referenceFinderContainsComponent(comp))
         {
@@ -2011,10 +1998,10 @@ HWComponentItem* HWDesignDiagram::createComponentItem(QSharedPointer<Component> 
 
         componentInstance->setInstanceName(instanceName);
 
-        HWComponentItem* newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
+        auto newItem = new HWComponentItem(getLibraryInterface(), componentInstance, comp);
         newItem->setPos(snapPointToGrid(position));
 
-        HWComponentAddCommand* addCommand(new HWComponentAddCommand(this, column, newItem, parentCommand));
+        auto addCommand(new HWComponentAddCommand(this, column, newItem, parentCommand));
 
         connect(addCommand, SIGNAL(componentInstantiated(ComponentItem*)),
             this, SIGNAL(componentInstantiated(ComponentItem*)), Qt::UniqueConnection);
@@ -2109,7 +2096,7 @@ void HWDesignDiagram::createInterconnectionBetweenComponents(QSharedPointer<Inte
         endPort = endPort->getOffPageConnector();
     }
 
-    HWConnection* connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
+    auto connectionItem = new HWConnection(startPort, endPort, interconnection, route, this);
     addItem(connectionItem);
 
     startPort->onConnect(endPort);
@@ -2174,8 +2161,7 @@ ActiveBusInterfaceItem* HWDesignDiagram::createMissingBusInterface(QString const
     QSharedPointer<BusInterface> busIf(new BusInterface());
     busIf->setName(interfaceName);
 
-    ActiveBusInterfaceItem* missingInterface =
-        new ActiveBusInterfaceItem(busIf, getLibraryInterface(), containingComponent);
+    auto missingInterface = new ActiveBusInterfaceItem(busIf, getLibraryInterface(), containingComponent);
     missingInterface->setTemporary(true);
     containingComponent->addPort(missingInterface);
 
@@ -2201,8 +2187,9 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     QSharedPointer<ActiveInterface> startInterface = connection->getStartInterface();
 
     QString startComponentRef = startInterface->getComponentReference();
-    HWComponentItem* startComponent = getComponentItem(startComponentRef);
-    if (!startComponent)
+    
+    if (auto startComponent = getComponentItem(startComponentRef); 
+        !startComponent)
     {
         emit errorMessage(tr("Component %1 was not found in the design").arg(startComponentRef));
         return;
@@ -2213,8 +2200,9 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
     Q_ASSERT(hierarchicalInterface != nullptr);
 
     // Check if the interface item is already assigned to a column.
-    GraphicsColumn* column = getLayout()->findColumnAt(hierarchicalInterface->scenePos());
-    if (column != nullptr)
+    
+    if (GraphicsColumn* column = getLayout()->findColumnAt(hierarchicalInterface->scenePos()); 
+        column != nullptr)
     {
         column->addItem(hierarchicalInterface);
     }
@@ -2244,7 +2232,7 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
         hierarchicalInterface = hierarchicalInterface->getOffPageConnector();
     }
   
-    HWConnection* connectionItem = new HWConnection(componentPort, hierarchicalInterface, connection, route, this);
+    auto connectionItem = new HWConnection(componentPort, hierarchicalInterface, connection, route, this);
     if (route->isOffpage())
     {
         connectionItem->hide();
@@ -2269,10 +2257,9 @@ void HWDesignDiagram::createHierarchicalConnection(QSharedPointer<Interconnectio
 //-----------------------------------------------------------------------------
 ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString const& busRef)
 {
-    QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(busRef);
-
     // if the bus interface was not found
-    if (busIf != 0)
+    if (QSharedPointer<BusInterface> busIf = getEditedComponent()->getBusInterface(busRef); 
+        busIf != nullptr)
     {
         // Find the corresponding diagram interface.
         for (QGraphicsItem* item : items())
@@ -2295,8 +2282,7 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
         getDesign()->getVendorExtensions()->append(dataGroup);
 
-        ConnectionEndpoint* hierarchicalInterface =
-            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, 0);
+        auto hierarchicalInterface = new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, nullptr);
         hierarchicalInterface->setTemporary(true);
         hierarchicalInterface->updateInterface();
 
@@ -2362,8 +2348,7 @@ void HWDesignDiagram::createHierachicalAdHocPorts(QSharedPointer<Design> design)
 
             adhocGroup->addToGroup(positionPlaceHolder);
 
-            HierarchicalPortItem* adhocInterface
-                (new HierarchicalPortItem(getEditedComponent(), adhocPort, positionPlaceHolder, 0));
+            auto adhocInterface(new HierarchicalPortItem(getEditedComponent(), adhocPort, positionPlaceHolder, nullptr));
 
             getLayout()->addItem(adhocInterface);
         }
@@ -2379,8 +2364,7 @@ HierarchicalPortItem* HWDesignDiagram::createMissingHierarchicalAdHocPort(QStrin
     QSharedPointer<Port> missingPort (new Port());
     missingPort->setName(portName);
 
-    HierarchicalPortItem* missingInterface =
-        new HierarchicalPortItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
+    auto missingInterface = new HierarchicalPortItem(getEditedComponent(), missingPort, adHocExtension, parentItem);
 
     return missingInterface;
 }
@@ -2457,10 +2441,10 @@ void HWDesignDiagram::createAdHocConnection(QSharedPointer<AdHocConnection> adHo
 //-----------------------------------------------------------------------------
 ActivePortItem* HWDesignDiagram::findAdhocPort(QSharedPointer<PortReference> primaryPort)
 {
-    ActivePortItem* portItem(0);
-
-    HWComponentItem* componentItem = getComponentItem(primaryPort->getComponentRef());
-    if (componentItem == nullptr)
+    ActivePortItem* portItem(nullptr);
+ 
+    if (HWComponentItem* componentItem = getComponentItem(primaryPort->getComponentRef()); 
+        componentItem == nullptr)
     {
         emit errorMessage(tr("Component %1 was not found in the design").arg(primaryPort->getComponentRef()));
     }
@@ -2569,8 +2553,7 @@ void HWDesignDiagram::createConnectionForAdHocPorts(QSharedPointer<AdHocConnecti
     }
 
     // Create the ad-hoc connection graphics item.
-    AdHocConnectionItem* connection =
-        new AdHocConnectionItem(primaryPortItem, secondaryPortItem, adHocConnection, route, this);
+    auto connection = new AdHocConnectionItem(primaryPortItem, secondaryPortItem, adHocConnection, route, this);
 
     connection->setRoute(adHocConnection->getRoute());
 

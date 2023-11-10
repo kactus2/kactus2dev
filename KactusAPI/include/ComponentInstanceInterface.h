@@ -67,7 +67,7 @@ public:
      *
      *      @return Name of the selected component instance.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
 
     /*!
      *  Get the number of available component instances.

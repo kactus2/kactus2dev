@@ -40,7 +40,7 @@ public:
 	 *      @param [in] extensionNode   The DOM node representation of the vendor extension.
      *      @param [in] parent          Parent extension.
 	 */
-	GenericVendorExtension(QDomNode const& extensionNode, GenericVendorExtension* parent = 0);
+	GenericVendorExtension(QDomNode const& extensionNode, GenericVendorExtension* parent = nullptr);
 
     /*!
      *  Copy constructor.
@@ -267,7 +267,7 @@ private:
     QVector<GenericVendorExtension*> children_;
 
     //! The parent generic vendor extension.
-    GenericVendorExtension* parent_;
+    GenericVendorExtension* parent_ = nullptr;
 };
 
 Q_DECLARE_METATYPE(GenericVendorExtension*)

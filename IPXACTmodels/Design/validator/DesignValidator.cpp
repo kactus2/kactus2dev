@@ -267,7 +267,7 @@ void DesignValidator::findErrorsInComponentInstances(QVector<QString>& errors, Q
             !duplicateNames.contains(instance->getInstanceName()))
         {
             errors.append(QObject::tr("Component instance name '%1' within %2 is not unique.")
-                .arg(instance->getInstanceName()).arg(context));
+                .arg(instance->getInstanceName(), context));
             duplicateNames.append(instance->getInstanceName());
         }
 
@@ -295,7 +295,7 @@ void DesignValidator::findErrorsInInterconnections(QVector<QString>& errors, QSh
         if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
         {
             errors.append(QObject::tr("Interconnection name %1 within %2 is not unique")
-                .arg(connection->name()).arg(context));
+                .arg(connection->name(), context));
             duplicateNames.append(connection->name());
         }
 
@@ -323,7 +323,7 @@ void DesignValidator::findErrorsInMonitorInterconnections(QVector<QString>& erro
         if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
         {
             errors.append(QObject::tr("Monitor interconnection name %1 within %2 is not unique")
-                .arg(connection->name()).arg(context));
+                .arg(connection->name(), context));
             duplicateNames.append(connection->name());
         }
 
@@ -351,7 +351,7 @@ void DesignValidator::findErrorsInAdHocConnections(QVector<QString>& errors, QSh
         if (connectionNames.contains(connection->name()) && !duplicateNames.contains(connection->name()))
         {
             errors.append(QObject::tr("Ad hoc connection name %1 within %2 is not unique")
-                .arg(connection->name()).arg(context));
+                .arg(connection->name(), context));
             duplicateNames.append(connection->name());
         }
 
@@ -379,7 +379,7 @@ void DesignValidator::findErrorsInParameters(QVector<QString>& errors, QSharedPo
         if (parameterNames.contains(parameter->name()) && !duplicateNames.contains(parameter->name()))
         {
             errors.append(QObject::tr("Parameter name %1 within %2 is not unique.")
-                .arg(parameter->name()).arg(context));
+                .arg(parameter->name(), context));
             duplicateNames.append(parameter->name());
         }
 
@@ -406,7 +406,7 @@ void DesignValidator::findErrorsInAssertions(QVector<QString>& errors, QSharedPo
         if (assertionNames.contains(assertion->name()) && !duplicateNames.contains(assertion->name()))
         {
             errors.append(QObject::tr("Assertion name %1 within %2 is not unique.")
-                .arg(assertion->name()).arg(context));
+                .arg(assertion->name(), context));
             duplicateNames.append(assertion->name());
         }
 

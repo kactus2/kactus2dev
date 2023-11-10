@@ -143,7 +143,7 @@ bool SWConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) co
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::isCom()
 //-----------------------------------------------------------------------------
-bool SWConnectionEndpoint::isCom() const
+bool SWConnectionEndpoint::isCom() const noexcept
 {
     return type_ == ConnectionEndpoint::ENDPOINT_TYPE_COM;
 }
@@ -151,7 +151,7 @@ bool SWConnectionEndpoint::isCom() const
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::isApi()
 //-----------------------------------------------------------------------------
-bool SWConnectionEndpoint::isApi() const
+bool SWConnectionEndpoint::isApi() const noexcept
 {
     return type_ == ConnectionEndpoint::ENDPOINT_TYPE_API;
 }
@@ -159,7 +159,7 @@ bool SWConnectionEndpoint::isApi() const
 //-----------------------------------------------------------------------------
 // Function: SWConnectionEndpoint::getType()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::EndpointType SWConnectionEndpoint::getType() const
+ConnectionEndpoint::EndpointType SWConnectionEndpoint::getType() const noexcept
 {
     return type_;
 }

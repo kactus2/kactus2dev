@@ -88,7 +88,7 @@ int RegisterInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string RegisterInterface::getIndexedItemName(int const& itemIndex) const
+string RegisterInterface::getIndexedItemName(int itemIndex) const
 {
     string fieldName = "";
     if (itemIndex >= 0 && itemIndex < registers_.size())

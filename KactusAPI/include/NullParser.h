@@ -27,7 +27,11 @@ public:
 	NullParser();
 
 	//! The destructor.
-	virtual ~NullParser();
+	~NullParser() final = default;
+
+    // Disable copying.
+    NullParser(NullParser const& rhs) = delete;
+    NullParser& operator=(NullParser const& rhs) = delete;
 
     /*!
      *  Parses an expression to decimal number.
@@ -36,7 +40,7 @@ public:
      *
      *      @return The decimal value of the constant.
      */
-    virtual QString parseExpression(QString const& expression, bool* isValidExpression) const;
+    QString parseExpression(QStringView expression, bool* isValidExpression) const final;
 
     /*!
      *  Checks if the given expression is a plain value and does not need evaluation.
@@ -45,7 +49,7 @@ public:
      *
      *      @return True, if the expression is a plain value, otherwise false.
      */
-    virtual bool isPlainValue(QString const& expression) const;
+    bool isPlainValue(QStringView expression) const final;
     
     /*!
      *  Finds the common base in the expression.
@@ -54,13 +58,7 @@ public:
      *
      *      @return The common base for the expression.
      */
-    virtual int baseForExpression(QString const& expression) const;
-
-private:
-
-	// Disable copying.
-	NullParser(NullParser const& rhs);
-	NullParser& operator=(NullParser const& rhs);
+    int baseForExpression(QStringView expression) const final;
 
 };
 

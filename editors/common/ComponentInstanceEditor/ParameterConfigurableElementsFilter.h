@@ -36,7 +36,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ParameterConfigurableElementsFilter();
+    virtual ~ParameterConfigurableElementsFilter() = default;
+
+    // Disable copying.
+    ParameterConfigurableElementsFilter(ParameterConfigurableElementsFilter const& rhs) = delete;
+    ParameterConfigurableElementsFilter& operator=(ParameterConfigurableElementsFilter const& rhs) = delete;
 
 protected:
 
@@ -48,7 +52,7 @@ protected:
      *
      *      @return True, if the object should be displayed, false otherwise.
      */
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
     /*!
      *  Check if the default value of the indexed item is empty.
@@ -58,12 +62,7 @@ protected:
      *      @return True, if the default value of the indexed item is empty, false otherwise.
      */
     bool isIndexedDefaultValueEmpty(int sourceRow) const;
-
-private:
    
-    // Disable copying.
-    ParameterConfigurableElementsFilter(ParameterConfigurableElementsFilter const& rhs);
-    ParameterConfigurableElementsFilter& operator=(ParameterConfigurableElementsFilter const& rhs);
 };
 
 #endif // PARAMETERCONFIGURABLESELEMENTFILTER_H

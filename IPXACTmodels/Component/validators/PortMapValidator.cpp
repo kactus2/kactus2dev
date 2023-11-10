@@ -37,9 +37,6 @@ PortMapValidator::PortMapValidator(QSharedPointer<ExpressionParser> parser,
     QSharedPointer<QList<QSharedPointer<Port> > > ports, LibraryInterface* libraryHandler) :
 expressionParser_(parser),
 availablePorts_(ports),
-abstractionDefinition_(),
-interfaceMode_(General::INTERFACE_MODE_COUNT),
-systemGroup_(),
 libraryHandler_(libraryHandler)
 {
 
@@ -525,65 +522,66 @@ void PortMapValidator::findErrorsInLogicalPort(QVector<QString>& errors,
     QSharedPointer<PortMap::LogicalPort> logicalPort, QSharedPointer<PortAbstraction> referencedPort,
     QString const& context) const
 {
-    if (logicalPort && !logicalPort->name_.isEmpty())
-    {
-        if (!referencedPort)
-        {
-            errors.append(QObject::tr("Could not locate logical port %1 mapped within %2")
-                .arg(logicalPort->name_).arg(context));
-        }
-        else if (logicalPort->range_)
-        {
-            QSharedPointer<Range> logicalRange = logicalPort->range_;
-            if (!bothRangeValuesExist(logicalRange->getLeft(), logicalRange->getRight()))
-            {
-                if (logicalRange->getLeft().isEmpty())
-                {
-                    errors.append(QObject::tr("Empty left value in logical port %1 mapped within %2")
-                        .arg(logicalPort->name_).arg(context));
-                }
-                if (logicalRange->getRight().isEmpty())
-                {
-                    errors.append(QObject::tr("Empty right value in logical port %1 mapped within %2")
-                        .arg(logicalPort->name_).arg(context));
-                }
-            }
-            else
-            {
-                bool leftValid = false;
-                bool rightValid = false;
-                qint64 rangeLeft = 0;
-                qint64 rangeRight = 0;
-
-                std::tie(leftValid, rangeLeft) = checkAndParseExpression(logicalRange->getLeft());
-                std::tie(rightValid, rangeRight) = checkAndParseExpression(logicalRange->getRight());
-
-                if (!logicalRange->getLeft().isEmpty() && !leftValid)
-                {
-                    errors.append(QObject::tr(
-                        "Invalid value given for logical left in logical port %1 mapped within %2")
-                        .arg(logicalPort->name_).arg(context));
-                }
-                if (!logicalRange->getRight().isEmpty() && !rightValid)
-                {
-                    errors.append(QObject::tr(
-                        "Invalid value given for logical right in logical port %1 mapped within %2")
-                        .arg(logicalPort->name_).arg(context));
-                }
-
-                if (leftValid && rightValid &&
-                    !rangeIsWithinWidth(rangeLeft, rangeRight, getLogicalPortWidth(referencedPort)))
-                {
-                    errors.append(QObject::tr(
-                        "Range is not within the referenced port width in mapped logical port %1 in %2")
-                        .arg(logicalPort->name_).arg(context));
-                }
-            }
-        }
-    }
-    else
+    if (logicalPort == nullptr || logicalPort->name_.isEmpty())
     {
         errors.append(QObject::tr("Port map does not contain a logical port within %1").arg(context));
+        return;
+    }
+
+    if (referencedPort == nullptr)
+    {
+        errors.append(QObject::tr("Could not locate logical port %1 mapped within %2")
+            .arg(logicalPort->name_).arg(context));
+        return;
+    }
+
+    if (logicalPort->range_)
+    {
+        QSharedPointer<Range> logicalRange = logicalPort->range_;
+        if (!bothRangeValuesExist(logicalRange->getLeft(), logicalRange->getRight()))
+        {
+            if (logicalRange->getLeft().isEmpty())
+            {
+                errors.append(QObject::tr("Empty left value in logical port %1 mapped within %2")
+                    .arg(logicalPort->name_).arg(context));
+            }
+            if (logicalRange->getRight().isEmpty())
+            {
+                errors.append(QObject::tr("Empty right value in logical port %1 mapped within %2")
+                    .arg(logicalPort->name_).arg(context));
+            }
+        }
+        else
+        {
+            bool leftValid = false;
+            bool rightValid = false;
+            qint64 rangeLeft = 0;
+            qint64 rangeRight = 0;
+
+            std::tie(leftValid, rangeLeft) = checkAndParseExpression(logicalRange->getLeft());
+            std::tie(rightValid, rangeRight) = checkAndParseExpression(logicalRange->getRight());
+
+            if (!logicalRange->getLeft().isEmpty() && !leftValid)
+            {
+                errors.append(QObject::tr(
+                    "Invalid value given for logical left in logical port %1 mapped within %2")
+                    .arg(logicalPort->name_).arg(context));
+            }
+            if (!logicalRange->getRight().isEmpty() && !rightValid)
+            {
+                errors.append(QObject::tr(
+                    "Invalid value given for logical right in logical port %1 mapped within %2")
+                    .arg(logicalPort->name_).arg(context));
+            }
+
+            if (leftValid && rightValid &&
+                !rangeIsWithinWidth(rangeLeft, rangeRight, getLogicalPortWidth(referencedPort)))
+            {
+                errors.append(QObject::tr(
+                    "Range is not within the referenced port width in mapped logical port %1 in %2")
+                    .arg(logicalPort->name_).arg(context));
+            }
+        }
     }
 }
 
@@ -606,75 +604,80 @@ void PortMapValidator::findErrorsInPhysicalPort(QVector<QString>& errors,
     QSharedPointer<PortMap::PhysicalPort> physicalPort, QSharedPointer<Port> referencedPort,
     QString const& context) const
 {
-    if (physicalPort)
+    if (physicalPort == nullptr)
     {
-        if (physicalPort->name_.isEmpty())
+        return;
+    }
+
+    if (physicalPort->name_.isEmpty())
+    {
+        errors.append(QObject::tr("Port map does not contain a physical port within %1").arg(context));
+        return;
+    }
+    
+    if (!referencedPort)
+    {
+        errors.append(QObject::tr("Could not locate physical port %1 mapped within %2")
+            .arg(physicalPort->name_).arg(context));
+        return;
+    }
+
+    QSharedPointer<PartSelect> physicalPart = physicalPort->partSelect_;
+    if (!physicalPart.isNull())
+    {
+        if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
         {
-            errors.append(QObject::tr("Port map does not contain a physical port within %1").arg(context));
-        }
-        else if (!referencedPort)
-        {
-            errors.append(QObject::tr("Could not locate physical port %1 mapped within %2")
-                .arg(physicalPort->name_).arg(context));
+            if (physicalPart->getLeftRange().isEmpty())
+            {
+                errors.append(QObject::tr("Empty left value in physical port %1 mapped within %2")
+                    .arg(physicalPort->name_).arg(context));
+            }
+            if (physicalPart->getRightRange().isEmpty())
+            {
+                errors.append(QObject::tr("Empty right value in physical port %1 mapped within %2")
+                    .arg(physicalPort->name_).arg(context));
+            }
         }
         else
         {
-            QSharedPointer<PartSelect> physicalPart = physicalPort->partSelect_;
-            if (!physicalPart.isNull())
+            bool leftValid = false;
+            bool rightValid = false;
+            qint64 rangeLeft = 0;
+            qint64 rangeRight = 0;
+
+            std::tie(leftValid, rangeLeft) = checkAndParseExpression(physicalPart->getLeftRange());
+            std::tie(rightValid, rangeRight) = checkAndParseExpression(physicalPart->getRightRange());
+
+            if (!leftValid)
             {
-                if (!bothRangeValuesExist(physicalPart->getLeftRange(), physicalPart->getRightRange()))
+                errors.append(QObject::tr(
+                    "Invalid value given for physical left in physical port %1 mapped within %2")
+                    .arg(physicalPort->name_).arg(context));
+            }
+            if (!rightValid)
+            {
+                errors.append(QObject::tr(
+                    "Invalid value given for physical right in physical port %1 mapped within %2")
+                    .arg(physicalPort->name_).arg(context));
+            }
+            if (leftValid && rightValid)
+            {
+                if ((referencedPort->getWire() && !rangeIsValidInWire(rangeLeft, rangeRight,
+                    expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
+                    expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong())) ||
+                    ((referencedPort->getTransactional() && !rangeIsWithinWidth(rangeLeft, rangeRight,
+                        expressionParser_->parseExpression(
+                            referencedPort->getTransactional()->getBusWidth()).toULongLong()))))
                 {
-                    if (physicalPart->getLeftRange().isEmpty())
-                    {
-                        errors.append(QObject::tr("Empty left value in physical port %1 mapped within %2")
-                            .arg(physicalPort->name_).arg(context));
-                    }
-                    if (physicalPart->getRightRange().isEmpty())
-                    {
-                        errors.append(QObject::tr("Empty right value in physical port %1 mapped within %2")
-                            .arg(physicalPort->name_).arg(context));
-                    }
-                }
-                else
-                {
-                    bool leftValid = false;
-                    bool rightValid = false;
-                    qint64 rangeLeft = 0;
-                    qint64 rangeRight = 0;
-
-                    std::tie(leftValid, rangeLeft) = checkAndParseExpression(physicalPart->getLeftRange());
-                    std::tie(rightValid, rangeRight) = checkAndParseExpression(physicalPart->getRightRange());
-
-                    if (!leftValid)
-                    {
-                        errors.append(QObject::tr(
-                            "Invalid value given for physical left in physical port %1 mapped within %2")
-                            .arg(physicalPort->name_).arg(context));
-                    }
-                    if (!rightValid)
-                    {
-                        errors.append(QObject::tr(
-                            "Invalid value given for physical right in physical port %1 mapped within %2")
-                            .arg(physicalPort->name_).arg(context));
-                    }
-                    if (leftValid && rightValid)
-                    {
-                        if ((referencedPort->getWire() && !rangeIsValidInWire(rangeLeft, rangeRight,
-                            expressionParser_->parseExpression(referencedPort->getLeftBound()).toULongLong(),
-                            expressionParser_->parseExpression(referencedPort->getRightBound()).toULongLong())) ||
-                            ((referencedPort->getTransactional() && !rangeIsWithinWidth(rangeLeft, rangeRight,
-                                expressionParser_->parseExpression(
-                                    referencedPort->getTransactional()->getBusWidth()).toULongLong()))))
-                        {
-                            errors.append(QObject::tr(
-                                "Range is not within the referenced port width in mapped physical port %1 in %2")
-                                .arg(physicalPort->name_).arg(context));
-                        }
-                    }
+                    errors.append(QObject::tr(
+                        "Range is not within the referenced port width in mapped physical port %1 in %2")
+                        .arg(physicalPort->name_).arg(context));
                 }
             }
         }
     }
+
+
 }
 
 //-----------------------------------------------------------------------------

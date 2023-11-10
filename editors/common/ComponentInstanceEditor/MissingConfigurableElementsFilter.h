@@ -36,7 +36,7 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~MissingConfigurableElementsFilter();
+    virtual ~MissingConfigurableElementsFilter() = default;
 
 protected:
 
@@ -48,7 +48,7 @@ protected:
      *
      *      @return True, if the object should be displayed, false otherwise.
      */
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const final;
 
 private:
    

@@ -15,6 +15,8 @@
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Position.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::AdHocConnection()
 //-----------------------------------------------------------------------------
@@ -37,19 +39,9 @@ NameGroup(other),
     isPresent_(other.isPresent_),
     tiedValue_(other.tiedValue_)
 {
-    for (auto const& interalReference : *other.internalPortReferences_)
-    {
-        QSharedPointer<PortReference> copy =
-            QSharedPointer<PortReference>(new PortReference(*interalReference));
-        internalPortReferences_->append(copy);
-    }
+    Copy::copyList(other.internalPortReferences_, internalPortReferences_);
 
-    for (auto const& externalReference  :*other.externalPortReferences_)
-    {
-        QSharedPointer<PortReference> copy =
-            QSharedPointer<PortReference>(new PortReference(*externalReference));
-        externalPortReferences_->append(copy);
-    }
+    Copy::copyList(other.externalPortReferences_, externalPortReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -65,20 +57,10 @@ AdHocConnection& AdHocConnection::operator=( const AdHocConnection& other )
         tiedValue_ = other.tiedValue_;
 
         internalPortReferences_->clear();
-        for (auto const& interalReference : *other.internalPortReferences_)
-        {
-            QSharedPointer<PortReference> copy =
-                QSharedPointer<PortReference>(new PortReference(*interalReference));
-            internalPortReferences_->append(copy);
-        }
+        Copy::copyList(other.internalPortReferences_, internalPortReferences_);
 
         externalPortReferences_->clear();
-        for (auto const& externalReference : *other.externalPortReferences_)
-        {
-            QSharedPointer<PortReference> copy =
-                QSharedPointer<PortReference>(new PortReference(*externalReference));
-            externalPortReferences_->append(copy);
-        }
+        Copy::copyList(other.externalPortReferences_, externalPortReferences_);
     }
 
     return *this;
@@ -119,11 +101,10 @@ void AdHocConnection::setExternalPortReferences(QSharedPointer<QList<QSharedPoin
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::setRoute()
 //-----------------------------------------------------------------------------
-void AdHocConnection::setRoute(QList<QPointF> const& route)
+void AdHocConnection::setRoute(QList<QPointF> const& route) const
 {
     auto extension = findVendorExtension(QStringLiteral("kactus2:route"));
     getVendorExtensions()->removeAll(extension);
-
 
     if (!route.isEmpty())
     {
@@ -207,7 +188,7 @@ void AdHocConnection::setTiedValue(QString const& newTiedValue)
 //-----------------------------------------------------------------------------
 // Function: AdHocConnection::changeInterfaceComponentReferences()
 //-----------------------------------------------------------------------------
-void AdHocConnection::changeInterfaceComponentReferences(QString const& oldName, QString const& newName)
+void AdHocConnection::changeInterfaceComponentReferences(QString const& oldName, QString const& newName) const
 {
     for (QSharedPointer<PortReference> portReference : *internalPortReferences_)
     {

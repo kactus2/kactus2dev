@@ -62,7 +62,7 @@ int FileInterface::getItemIndex(std::string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: FileInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string FileInterface::getIndexedItemName(int const& itemIndex) const
+std::string FileInterface::getIndexedItemName(int itemIndex) const
 {
     std::string fileName = "";
     if (files_ && (itemIndex >= 0 && itemIndex < files_->size()))

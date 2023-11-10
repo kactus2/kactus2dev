@@ -587,10 +587,10 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of available choices.
-    QSharedPointer<QList<QSharedPointer<Choice> > > choices_;
+    QSharedPointer<QList<QSharedPointer<Choice> > > choices_ = nullptr;
 
     //! The parameter validator.
-    QSharedPointer<ParameterValidator> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_ = nullptr;
 };
 
 #endif // ABSTRACTPARAMETERSINTERFACE_H

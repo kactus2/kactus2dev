@@ -75,7 +75,7 @@ public:
      *
      *      @param [in] route   The route to set.
      */
-    void setRoute(QList<QPointF> const& route);
+    void setRoute(QList<QPointF> const& route) const;
 
     /*!
      *  Gets the route of the connection.     
@@ -146,7 +146,7 @@ public:
      *      @param [in] oldName     The old component reference.
      *      @param [in] newName     The new component reference.
      */
-    void changeInterfaceComponentReferences(QString const& oldName, QString const& newName);
+    void changeInterfaceComponentReferences(QString const& oldName, QString const& newName) const;
 
 private:
 

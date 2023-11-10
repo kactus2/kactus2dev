@@ -178,7 +178,7 @@ QVector2D OffPageConnectorItem::getDirection() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isDirectionFixed()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isDirectionFixed() const
+bool OffPageConnectorItem::isDirectionFixed() const noexcept
 {
     if (getConnections().isEmpty() == false)
     {
@@ -241,7 +241,7 @@ QSharedPointer<ApiInterface> OffPageConnectorItem::getApiInterface() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isHierarchical()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isHierarchical() const
+bool OffPageConnectorItem::isHierarchical() const noexcept
 {
     return parent_->isHierarchical();
 }
@@ -270,7 +270,7 @@ QVariant OffPageConnectorItem::itemChange(GraphicsItemChange change, QVariant co
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::getType()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint::EndpointType OffPageConnectorItem::getType() const
+ConnectionEndpoint::EndpointType OffPageConnectorItem::getType() const noexcept
 {
     return parent_->getType();
 }
@@ -278,7 +278,7 @@ ConnectionEndpoint::EndpointType OffPageConnectorItem::getType() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isBus()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isBus() const
+bool OffPageConnectorItem::isBus() const noexcept
 {
     return parent_->isBus();
 }
@@ -286,7 +286,7 @@ bool OffPageConnectorItem::isBus() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isAdHoc()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isAdHoc() const
+bool OffPageConnectorItem::isAdHoc() const noexcept
 {
     return parent_->isAdHoc();
 }
@@ -294,7 +294,7 @@ bool OffPageConnectorItem::isAdHoc() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isCom()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isCom() const
+bool OffPageConnectorItem::isCom() const noexcept
 {
     return parent_->isCom();
 }
@@ -302,7 +302,7 @@ bool OffPageConnectorItem::isCom() const
 //-----------------------------------------------------------------------------
 // Function: OffPageConnectorItem::isApi()
 //-----------------------------------------------------------------------------
-bool OffPageConnectorItem::isApi() const
+bool OffPageConnectorItem::isApi() const noexcept
 {
     return parent_->isApi();
 }

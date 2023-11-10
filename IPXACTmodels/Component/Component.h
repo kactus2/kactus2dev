@@ -532,6 +532,8 @@ public:
 	 *      @return QList containing pointers to the VLNVs.
 	 */
 	virtual QList<VLNV> getDependentVLNVs() const;
+    
+    QStringList getPowerDomainNames() const;
 
     /*!
      *  Get the names of the remap states.
@@ -540,7 +542,8 @@ public:
      */
     QStringList getRemapStateNames() const;
     
-	/*!
+
+    /*!
      *  Get the names of the memory maps contained within this component.
 	 *
 	 *      @return QStringList containing the memory map names.
@@ -651,7 +654,7 @@ public:
 	 *
      *      @return A vlnv of a design or configuration that is used within this component.
      */
-	VLNV getHierSystemRef(const QString viewName = QString()) const;
+	VLNV getHierSystemRef(QString const& viewName = QString()) const;
 
 	/*!
      *  Get the hierarchical system references this component contains.
@@ -873,7 +876,7 @@ public:
 	 *
 	 *      @return QStringList containing the relative directory paths.
 	 */
-	virtual QStringList getDependentDirs() const;
+	QStringList getDependentDirs() const final;
 
 private:
 

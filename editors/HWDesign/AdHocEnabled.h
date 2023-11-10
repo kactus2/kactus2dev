@@ -35,6 +35,12 @@ public:
      */
     AdHocEnabled();
 
+    virtual ~AdHocEnabled() = default;
+
+    // Disable copying.
+    AdHocEnabled(AdHocEnabled const& rhs) = delete;
+    AdHocEnabled& operator=(AdHocEnabled const& rhs) = delete;
+
     /*!
      *  Sets the ad-hoc data based on the given component and saved port ad-hoc visibilities.
      *
@@ -117,9 +123,6 @@ public:
     void changeAdhocVisibility(AdHocItem* portItem, bool newVisibility);
 
 private:
-    // Disable copying.
-    AdHocEnabled(AdHocEnabled const& rhs);
-    AdHocEnabled& operator=(AdHocEnabled const& rhs);
 
     /*!
      *  Show an ad hoc port item.
@@ -140,7 +143,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The component whose ports to consider.
-    QSharedPointer<Component> component_;
+    QSharedPointer<Component> component_ = nullptr;
 
     //! The ad-hoc visibility flags for ports.
     QMap<QString, bool> portAdHocVisibilities_;

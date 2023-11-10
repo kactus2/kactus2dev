@@ -11,7 +11,6 @@
 
 #include "DesignWidget.h"
 
-#include <common/GenericEditProvider.h>
 
 #include <editors/common/ImageExporter.h>
 #include <editors/common/DesignDiagram.h>
@@ -39,12 +38,7 @@
 DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent):
 TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT | DOC_PROTECTION_SUPPORT |
     DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
-library_(lh),
-view_(new QGraphicsView(this)),
-editedComponent_(),
-viewName_(),
-editProvider_(new GenericEditProvider(EDIT_HISTORY_SIZE)),
-diagram_(0)
+library_(lh)
 {
     supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
 
@@ -52,7 +46,7 @@ diagram_(0)
     view_->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     view_->setAlignment(Qt::AlignLeft | Qt::AlignTop);
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(view_);
 
     view_->verticalScrollBar()->setTracking(true);
@@ -308,9 +302,8 @@ void DesignWidget::removeSelectedNotes()
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
     for (QGraphicsItem* selected : selectedItems)
     {
-        StickyNote* note = qgraphicsitem_cast<StickyNote*>(selected);
-        StickyNoteRemoveCommand* noteRemoveCommand = new StickyNoteRemoveCommand(note, getDiagram(), 
-            parentCommand.data());
+        auto note = qgraphicsitem_cast<StickyNote*>(selected);
+        auto noteRemoveCommand = new StickyNoteRemoveCommand(note, getDiagram(), parentCommand.data());
 
         connect(noteRemoveCommand, SIGNAL(addVendorExtension(QSharedPointer<VendorExtension>)),
             diagram_, SLOT(onVendorExtensionAdded(QSharedPointer<VendorExtension>)), Qt::UniqueConnection);
@@ -335,9 +328,8 @@ void DesignWidget::removeSelectedAssociations()
     QSharedPointer<QUndoCommand> parentCommand(new QUndoCommand());
     for (QGraphicsItem* selected : selectedItems)
     {
-        Association* association = qgraphicsitem_cast<Association*>(selected);
-        QUndoCommand* associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), 
-            parentCommand.data()); 
+        auto association = qgraphicsitem_cast<Association*>(selected);
+        auto associationRemoveCmd = new AssociationRemoveCommand(association, getDiagram(), parentCommand.data()); 
         associationRemoveCmd->redo();
     }
 

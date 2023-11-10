@@ -94,10 +94,10 @@ private:
         QString id_;
 
         //! Start point of the area.
-        qint64 begin_;
+        qint64 begin_ = 0;
 
         //! End point of the area.
-        qint64 end_;
+        qint64 end_ = 0;
 
         /*!
          *  Assignment operator for MemoryArea.

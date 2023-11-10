@@ -19,6 +19,8 @@
 
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QList>
 #include <QDomNode>
 #include <QMap>
@@ -43,34 +45,11 @@ DesignConfiguration::DesignConfiguration(DesignConfiguration const& other):
 Document(other),
 designRef_(other.designRef_)
 {
-    for (QSharedPointer<ConfigurableVLNVReference> generatorChainConf : *other.generatorChainConfigurations_)
-    {
-        if (generatorChainConf)
-        {
-            auto copy = QSharedPointer<ConfigurableVLNVReference>(
-                new ConfigurableVLNVReference(*generatorChainConf));
-            generatorChainConfigurations_->append(copy);
-        }
-    }
-    for (QSharedPointer<InterconnectionConfiguration> configuration : *other.interconnectionConfigurations_)
-    {
-        if (configuration)
-        {
-            auto copy = QSharedPointer<InterconnectionConfiguration>(
-                new InterconnectionConfiguration(*configuration));
-            interconnectionConfigurations_->append(copy);
-        }
-    }
+    Copy::copyList(other.generatorChainConfigurations_, generatorChainConfigurations_);
 
-    for (QSharedPointer<ViewConfiguration> configuration : *other.viewConfigurations_)
-    {
-        if (configuration)
-        {
-            auto copy = QSharedPointer<ViewConfiguration>(new ViewConfiguration(*configuration));
-            viewConfigurations_->append(copy);
-        }
-    }
+    Copy::copyList(other.interconnectionConfigurations_, interconnectionConfigurations_);
 
+    Copy::copyList(other.viewConfigurations_, viewConfigurations_);
 }
 
 //-----------------------------------------------------------------------------
@@ -83,38 +62,15 @@ DesignConfiguration& DesignConfiguration::operator=( const DesignConfiguration& 
 		Document::operator=(other);
 		designRef_ = other.designRef_;
 
-        generatorChainConfigurations_->clear();
-        for (QSharedPointer<ConfigurableVLNVReference> generatorChainConf : *other.generatorChainConfigurations_)
-        {
-            if (generatorChainConf)
-            {
-                auto copy = QSharedPointer<ConfigurableVLNVReference>
-                    (new ConfigurableVLNVReference(*generatorChainConf));
-                generatorChainConfigurations_->append(copy);
-			}
-		}
+        generatorChainConfigurations_->clear();  
+        Copy::copyList(other.generatorChainConfigurations_, generatorChainConfigurations_);
 
         interconnectionConfigurations_->clear();
-        for  (QSharedPointer<InterconnectionConfiguration> configuration : *other.interconnectionConfigurations_)
-        {
-            if (configuration)
-            {
-                auto copy = QSharedPointer<InterconnectionConfiguration>(
-                    new InterconnectionConfiguration(*configuration));
-                interconnectionConfigurations_->append(copy);
-			}
-		}
-
+        Copy::copyList(other.interconnectionConfigurations_, interconnectionConfigurations_);
+       
         viewConfigurations_->clear();
-        for (QSharedPointer<ViewConfiguration> configuration : *other.viewConfigurations_)
-        {
-            if (configuration)
-            {
-                auto copy = QSharedPointer<ViewConfiguration>(
-                    new ViewConfiguration(*configuration));
-                viewConfigurations_->append(copy);
-            }
-        }
+        Copy::copyList(other.viewConfigurations_, viewConfigurations_);
+       
 	}
 	return *this;
 }
@@ -295,9 +251,8 @@ QSharedPointer<ViewConfiguration> DesignConfiguration::getViewConfiguration(QStr
 //-----------------------------------------------------------------------------
 QString DesignConfiguration::getActiveView(QString const& instanceName) const
 {
-    auto configuration = getViewConfiguration(instanceName);
-
-    if (configuration)
+    if (auto configuration = getViewConfiguration(instanceName); 
+        configuration)
     {
         return configuration->getViewReference();
     }
@@ -402,7 +357,7 @@ QSharedPointer<VendorExtension> DesignConfiguration::findOrCreateInstanceExtensi
     }
 
     QSharedPointer<Kactus2Group> targetInstanceGroup;
-    QString instanceIdentifier = QStringLiteral("kactus2:componentInstance");
+    auto instanceIdentifier = QStringLiteral("kactus2:componentInstance");
     for  (QSharedPointer<VendorExtension> instanceNode : cevGroup->getByType(instanceIdentifier))
     {
         QSharedPointer<Kactus2Group> instanceGroup = instanceNode.dynamicCast<Kactus2Group>();

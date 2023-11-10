@@ -14,8 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryReserve::MemoryReserve()
 //-----------------------------------------------------------------------------
-MemoryReserve::MemoryReserve():
-reservedArea_()
+MemoryReserve::MemoryReserve()
 {
 
 }
@@ -46,31 +45,20 @@ void MemoryReserve::addArea(QString const& newId, qint64 newBegin, qint64 newEnd
 //-----------------------------------------------------------------------------
 bool MemoryReserve::hasOverlap()
 {
-    if (reservedArea_.isEmpty())
+    if (reservedArea_.count() < 2)
     {
         return false;
     }
 
-	std::sort(reservedArea_.begin(), reservedArea_.end());
+    std::sort(reservedArea_.begin(), reservedArea_.end());
 
-	for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
-	{
-		MemoryArea const& area = reservedArea_.at(areaIndex);
-
-		for (int nextIndex = areaIndex + 1; nextIndex < reservedArea_.size(); ++nextIndex)
-		{
-			MemoryArea const& nextArea = reservedArea_.at(nextIndex);
-
-			if (nextArea.begin_ > area.end_)
-			{
-				break;
-			}
-			else
-			{
-				return true;
-			}
-		}
-	}
+    for (int areaIndex = 0; areaIndex < reservedArea_.size() - 1; ++areaIndex)
+    {
+        if (reservedArea_.at(areaIndex + 1).begin_ <= reservedArea_.at(areaIndex).end_)
+        {
+            return true;
+        }
+    }
 
     return false;
 }
@@ -80,28 +68,30 @@ bool MemoryReserve::hasOverlap()
 //-----------------------------------------------------------------------------
 bool MemoryReserve::hasIdDependantOverlap()
 {
-    if (!reservedArea_.isEmpty())
+    if (reservedArea_.count() < 2)
     {
-        std::sort(reservedArea_.begin(), reservedArea_.end());
+        return false;
+    }
 
-        for (int areaIndex = 0; areaIndex < reservedArea_.size(); ++areaIndex)
+    std::sort(reservedArea_.begin(), reservedArea_.end());
+
+    for (int areaIndex = 0; areaIndex < reservedArea_.size() - 1; ++areaIndex)
+    {
+        MemoryArea const& area = reservedArea_.at(areaIndex);
+
+        for (int nextIndex = areaIndex + 1; nextIndex < reservedArea_.size(); ++nextIndex)
         {
-            MemoryArea const& area = reservedArea_.at(areaIndex);
+            MemoryArea const& nextArea = reservedArea_.at(nextIndex);
 
-            for (int nextIndex = areaIndex + 1; nextIndex < reservedArea_.size(); ++nextIndex)
+            if (area.id_ == nextArea.id_)
             {
-                MemoryArea const& nextArea = reservedArea_.at(nextIndex);
-
-                if (area.id_ == nextArea.id_)
+                if (nextArea.begin_ > area.end_)
                 {
-                    if (nextArea.begin_ > area.end_)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        return true;
-                    }
+                    break;
+                }
+                else
+                {
+                    return true;
                 }
             }
         }

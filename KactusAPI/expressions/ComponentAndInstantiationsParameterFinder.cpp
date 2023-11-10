@@ -19,7 +19,7 @@
 // Function: ComponentAndInstantiationsParameterFinder::ComponentAndInstantiationsParameterFinder()
 //-----------------------------------------------------------------------------
 ComponentAndInstantiationsParameterFinder::ComponentAndInstantiationsParameterFinder(
-    QSharedPointer<Component const> component):
+    QSharedPointer<Component const> component) noexcept:
 ComponentParameterFinder(component)
 {
 }
@@ -36,7 +36,7 @@ QStringList ComponentAndInstantiationsParameterFinder::getAllParameterIds() cons
         allParameterIds.append(instantiationParameter->getValueId());
     }
 
-    allParameterIds.removeAll("");
+    allParameterIds.removeAll(QString());
     return allParameterIds;
 }
 
@@ -54,22 +54,20 @@ int ComponentAndInstantiationsParameterFinder::getNumberOfParameters() const
 //-----------------------------------------------------------------------------
 // Function: ComponentAndInstantiationsParameterFinder::searchParameter()
 //-----------------------------------------------------------------------------
-QSharedPointer<Parameter> ComponentAndInstantiationsParameterFinder::searchParameter(QString const& parameterId)
+QSharedPointer<Parameter> ComponentAndInstantiationsParameterFinder::searchParameter(QStringView parameterId)
     const
 {
-    QSharedPointer<Parameter> parameter = ComponentParameterFinder::searchParameter(parameterId);
-    if (parameter)
+    if (QSharedPointer<Parameter> parameter = ComponentParameterFinder::searchParameter(parameterId); 
+        parameter)
     {
         return parameter;
     }
-    else
+
+    for (auto const& instantiationParameter : allInstantiationsParameters())
     {
-        for (auto instantiationParameter : allInstantiationsParameters())
+        if (instantiationParameter->getValueId() == parameterId)
         {
-            if (instantiationParameter->getValueId() == parameterId)
-            {
-                return instantiationParameter;
-            }
+            return instantiationParameter;
         }
     }
 

@@ -257,7 +257,7 @@ void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
         portMapInterface->setupPortMaps(abstractionInterface->getAbstraction(abstractionIndex));
         portMapInterface->setupBusMode(busMode);
         portMapInterface->setupSystemGroup(systemGroup);
-        portMapInterface->setupPhysicalPorts(component_);
+        portMapInterface->setupPhysicalPorts(component_->getPorts());
 
         portMapDelegate_->setBusMode(busMode);
         portMapDelegate_->setSystemGroup(systemGroup);

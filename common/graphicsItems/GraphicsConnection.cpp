@@ -1564,7 +1564,7 @@ void GraphicsConnection::changeConnectionComponentReference(QString const&, QStr
 //-----------------------------------------------------------------------------
 // Function: GraphicsConnection::pointsToLines()
 //-----------------------------------------------------------------------------
-QList<QLineF> GraphicsConnection::pointsToLines(QList<QPointF> points) const
+QList<QLineF> GraphicsConnection::pointsToLines(QList<QPointF> const& points) const
 {
     QList<QLineF> lines;
     for (int i = 0; i < points.size() - 1; i++)

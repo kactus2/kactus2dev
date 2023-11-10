@@ -34,8 +34,11 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ConfigurableElementsFilter();
+    virtual ~ConfigurableElementsFilter() = default;
 
+    // Disable copying.
+    ConfigurableElementsFilter(ConfigurableElementsFilter const& rhs) = delete;
+    ConfigurableElementsFilter& operator=(ConfigurableElementsFilter const& rhs) = delete;
    
 signals:
 
@@ -56,7 +59,7 @@ protected:
      *
      *      @return True, if the object should be displayed, false otherwise.
      */
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const;
+    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const override;
 
     /*!
      *  Check if the immediate values are visible.
@@ -89,20 +92,17 @@ public slots:
      *
      *      @param [in] filterIndex     The index of the item to be removed.
      */
-    virtual void onRemoveItem(QModelIndex const& filterIndex);
+    void onRemoveItem(QModelIndex const& filterIndex);
 
 private:
    
-    // Disable copying.
-    ConfigurableElementsFilter(ConfigurableElementsFilter const& rhs);
-    ConfigurableElementsFilter& operator=(ConfigurableElementsFilter const& rhs);
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Flag for displaying the immediate values.
-    bool showImmediateValues_;
+    bool showImmediateValues_ = false;
 };
 
 #endif // CONFIGURABLESELEMENTFILTER_H

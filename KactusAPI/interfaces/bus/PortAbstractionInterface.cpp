@@ -250,7 +250,7 @@ int PortAbstractionInterface::getItemIndex(std::string const& itemName, General:
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getIndexedItemName(int const& itemIndex) const
+std::string PortAbstractionInterface::getIndexedItemName(int itemIndex) const
 {
     std::string portName("");
     if (itemIndex >= 0 && itemIndex < signals_.size())

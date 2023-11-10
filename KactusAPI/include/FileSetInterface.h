@@ -77,7 +77,7 @@ public:
      *
      *      @return Name of the selected item.
      */
-    virtual std::string getIndexedItemName(int const& itemIndex) const override final;
+    std::string getIndexedItemName(int itemIndex) const final;
 
     /*!
      *  Get the number of available items.

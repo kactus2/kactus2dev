@@ -41,15 +41,9 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
 		return true;
     }
 
-	HierarchyItem* item = static_cast<HierarchyItem*>(itemIndex.internalPointer());
+	auto item = static_cast<HierarchyItem const*>(itemIndex.internalPointer());
 
     if (checkValidity(item->isValid()) == false)
-    {
-        return false;
-    }
-
-    QSharedPointer<const Document> document = getLibraryInterface()->getModelReadOnly(item->getVLNV());
-    if (!checkTags(document))
     {
         return false;
     }
@@ -59,9 +53,15 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     {
         return false;
     }
+    
+    if (auto document = getLibraryInterface()->getModelReadOnly(item->getVLNV()); 
+        !checkTags(document))
+    {
+        return false;
+    }
 
-    HierarchyItem::ObjectType itemType = item->type();
-    if (itemType == HierarchyItem::COMPONENT && !type().components_)
+    if (HierarchyItem::ObjectType itemType = item->type(); 
+        itemType == HierarchyItem::COMPONENT && !type().components_)
     {
         return false;
     }
@@ -88,16 +88,11 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
         }
     }
 
-    QSharedPointer<Component const> component = item->component();
-    if (component)
+    if (QSharedPointer<Component const> component = item->component(); 
+        component && (!checkFirmness(component) || !checkImplementation(component) || !checkHierarchy(component)))
     {
-        // check the filters
-        if (!checkFirmness(component) || !checkImplementation(component) || !checkHierarchy(component))
-        {
-            return false;
-        }
+        return false;
     }
-
 
     return QSortFilterProxyModel::filterAcceptsRow(sourceRow, sourceParent);
 }

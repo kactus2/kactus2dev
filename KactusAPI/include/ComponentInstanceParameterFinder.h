@@ -43,8 +43,13 @@ public:
     /*!
      *  Destructor.
      */
-    virtual ~ComponentInstanceParameterFinder();
-    
+    ~ComponentInstanceParameterFinder() final = default;
+
+    //! No copying
+    ComponentInstanceParameterFinder(const ParameterCache& other) = delete;
+    //! No assignment
+    ComponentInstanceParameterFinder& operator=(const ParameterCache& other) = delete;
+
     /*!
      *  Finds the value of the parameter with the given id.
      *
@@ -52,14 +57,9 @@ public:
      *
      *      @return The value of the parameter.
      */
-    virtual QString valueForId(QString const& id) const;
+    QString valueForId(QStringView id) const final;
 
 private:
-
-	//! No copying
-    ComponentInstanceParameterFinder(const ParameterCache& other);
-	//! No assignment
-    ComponentInstanceParameterFinder& operator=(const ParameterCache& other);
 
     // The component instance whose parameters are being searched for.
     QSharedPointer<const ComponentInstance> componentInstance_;
