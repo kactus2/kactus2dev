@@ -9,7 +9,8 @@
 // Interface for accessing Kactus2 data using Python.
 //-----------------------------------------------------------------------------
 
-// #pragma once
+#ifndef PYTHON_API_H
+#define PYTHON_API_H
 
 #include "pythonapi_global.h"
 
@@ -19,7 +20,21 @@
 #include <vector>
 #include <QSharedPointer>
 
-class LibraryInterface;
+#include <KactusAPI/include/ComponentInstanceInterface.h>
+#include <KactusAPI/include/InterconnectionInterface.h>
+#include <KactusAPI/include/AdHocConnectionInterface.h>
+
+#include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
+#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/ParametersInterface.h>
+
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
 class MessageMediator;
 
 class Component;
@@ -30,11 +45,8 @@ class AddressBlock;
 class MemoryMap;
 class FileSet;
 
-class PortsInterface;
-class ParametersInterface;
 class MemoryMapInterface;
 class FileSetInterface;
-class BusInterfaceInterface;
 
 class ComponentParameterFinder;
 class ExpressionParser;
@@ -46,9 +58,6 @@ class MemoryMapValidator;
 
 class Design;
 
-class ComponentInstanceInterface;
-class InterconnectionInterface;
-class AdHocConnectionInterface;
 
 //-----------------------------------------------------------------------------
 //! Interface for accessing Kactus2 data using Python.
@@ -696,56 +705,64 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Interface to the library.
-    LibraryInterface* library_;
+    LibraryInterface* library_{ KactusAPI::getLibrary() };
 
     //! Message handler.
-    MessageMediator* messager_;
-
-    //! Currently active component.
-    QSharedPointer<Component> activeComponent_;
-
-    //! Currently active design.
-    QSharedPointer<Design> activeDesign_;
-
-    //! Interface for accessing the component ports.
-    PortsInterface* portsInterface_;
-
-    //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterface_;
-
-    //! Interface for accessing the component parameters.
-    ParametersInterface* componentParameterInterface_;
-
-    //! Interface for accessing memory maps.
-    MemoryMapInterface* mapInterface_;
-
-    //! Interface for accessing file sets.
-    FileSetInterface* fileSetInterface_;
-
-    //! Interface for accessing component instances.
-    ComponentInstanceInterface* instanceInterface_;
-
-    //! Interface for accessing interconnections.
-    InterconnectionInterface* connectionInterface_;
-
-    //! Interface for accessing ad hoc connections.
-    AdHocConnectionInterface* adhocConnectionInterface_;
+    MessageMediator* messager_{ KactusAPI::getMessageChannel() };
 
     //! Component parameter finder.
-    QSharedPointer<ComponentParameterFinder> parameterFinder_;
+    QSharedPointer<ComponentParameterFinder> parameterFinder_{ new ComponentAndInstantiationsParameterFinder(nullptr) };
 
     //! Parser for expressions.
-    QSharedPointer<ExpressionParser> expressionParser_;
+    QSharedPointer<ExpressionParser> expressionParser_{ new IPXactSystemVerilogParser(parameterFinder_) };
 
     //! Formatter for expressions.
-    QSharedPointer<ExpressionFormatter>expressionFormatter_;
+    QSharedPointer<ExpressionFormatter>expressionFormatter_{ new ExpressionFormatter(parameterFinder_) };
+
+    //! Currently active component.
+    QSharedPointer<Component> activeComponent_{ nullptr };
+
+    //! Currently active design.
+    QSharedPointer<Design> activeDesign_{ nullptr };
 
     //! Validator for ports.
-    QSharedPointer<PortValidator> portValidator_;
+    QSharedPointer<PortValidator> portValidator_{ new PortValidator(expressionParser_,
+        QSharedPointer<QList<QSharedPointer<View> > >()) };
 
     //! Validator for parameters.
-    QSharedPointer<ParameterValidator> parameterValidator_;
+    QSharedPointer<ParameterValidator> parameterValidator_{ new ParameterValidator(expressionParser_,
+        QSharedPointer<QList<QSharedPointer<Choice> > >()) };
 
     //! Validator for memory maps.
-    QSharedPointer<MemoryMapValidator> mapValidator_;
+    QSharedPointer<MemoryMapValidator> mapValidator_{ nullptr };
+
+    //! Interface for accessing the component ports. 
+    PortsInterface* portsInterface_{ new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };
+
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInterface_{ BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
+        expressionFormatter_, expressionParser_, QSharedPointer<Component>(new Component()), library_) };
+
+    //! Interface for accessing the component parameters.
+    ParametersInterface* componentParameterInterface_{ new ParametersInterface(parameterValidator_, 
+        expressionParser_, expressionFormatter_) };
+
+    //! Interface for accessing memory maps.
+    MemoryMapInterface* mapInterface_{ nullptr };
+
+    //! Interface for accessing file sets.
+    FileSetInterface* fileSetInterface_{ nullptr };
+
+    //! Interface for accessing interconnections.
+    InterconnectionInterface* connectionInterface_{ new InterconnectionInterface() };
+
+    //! Interface for accessing ad hoc connections.
+    AdHocConnectionInterface* adhocConnectionInterface_{ new AdHocConnectionInterface() };
+
+    //! Interface for accessing component instances.
+    ComponentInstanceInterface* instanceInterface_{ new ComponentInstanceInterface(connectionInterface_, 
+        adhocConnectionInterface_) };
+
 };
+
+#endif // !PYTHON_API_H

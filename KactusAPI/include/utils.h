@@ -132,7 +132,7 @@ namespace Utils
 
 
     //! Regular expression to validate URLs.
-    const QRegularExpression URL_VALIDITY_REG_EXP = QRegularExpression(
+    inline const QRegularExpression URL_VALIDITY_REG_EXP(
         "^[a-z]{3,9}[:][/]{2}[a-z0-9]+([-.][a-z0-9]+)*([/][-a-z0-9_.;,?=&%#~+]*)*$",
         QRegularExpression::CaseInsensitiveOption);
 

@@ -134,10 +134,10 @@ int main(int argc, char *argv[])
 
     loadPlugins(settings);
 
-    LibraryHandler::initialize(mediator.data());
-    QScopedPointer<LibraryHandler> library(LibraryHandler::getInstance());
+    auto& library = LibraryHandler::getInstance();
+    library.setOutputChannel(mediator.data());
 
-    QScopedPointer<KactusAPI> coreAPI(new KactusAPI(library.data(), mediator.data()));
+    QScopedPointer<KactusAPI> coreAPI(new KactusAPI(mediator.data()));
 
     wchar_t *program = Py_DecodeLocale(argv[0], NULL);
     if (program == NULL)
@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
     if (startGui(argc))
     {
         // Create the main window and close the splash after 1.5 seconds.
-        MainWindow mainWindow(library.data(), mediator.data());
+        MainWindow mainWindow(&library, mediator.data());
 
         // the release mode
 #ifdef NDEBUG
@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
         
         if (parser.commandlineMode())
         {
-            library->searchForIPXactFiles();
+            library.searchForIPXactFiles();
 
             QScopedPointer<FileChannel> outChannel(new FileChannel(stdout));
             QScopedPointer<FileChannel> errChannel(new FileChannel(stderr));

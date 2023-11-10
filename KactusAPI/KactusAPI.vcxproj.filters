@@ -279,6 +279,12 @@
     <ClInclude Include="include\ConsoleMediator.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\NullChannel.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LibraryLoader.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -482,6 +488,9 @@
     <ClCompile Include="library\TagManager.cpp">
       <Filter>Source Files\library</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\NullChannel.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -517,9 +526,6 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\LibraryLoader.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
   </ItemGroup>

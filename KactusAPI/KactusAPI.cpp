@@ -31,23 +31,15 @@
 
 #include <QFileInfo>
 
-LibraryInterface* KactusAPI::library_ = nullptr;
-MessageMediator* KactusAPI::messageChannel_ = new ConsoleMediator();
-
 //-----------------------------------------------------------------------------
 // Function: KactusAPI::KactusAPI()
 //-----------------------------------------------------------------------------
-KactusAPI::KactusAPI(LibraryInterface* library, MessageMediator* messageChannel)
+KactusAPI::KactusAPI(MessageMediator* messageChannel)
 {
-    if (library_ == nullptr)
-    {
-        library_ = library;        
-    }
-
     if (messageChannel != nullptr)
     {
-        delete messageChannel_;
         messageChannel_ = messageChannel;
+        LibraryHandler::getInstance().setOutputChannel(messageChannel_);
     }
 }
 
@@ -56,12 +48,6 @@ KactusAPI::KactusAPI(LibraryInterface* library, MessageMediator* messageChannel)
 //-----------------------------------------------------------------------------
 LibraryInterface* KactusAPI::getLibrary()
 {
-    if (library_ == nullptr)
-    {
-        library_ = LibraryHandler::getInstance();
-    }
-
-    Q_ASSERT(library_ != nullptr);
     return library_;
 }
 
@@ -117,7 +103,7 @@ void KactusAPI::setLibraryPaths(QStringList const& activeLocations, QStringList 
     QStringList oldActives = settings.value(QStringLiteral("Library/ActiveLocations")).toStringList();
     QStringList newActives = activeLocations;
 
-    for (auto location : newActives)
+    for (auto const& location : newActives)
     {
         if (newLocations.contains(location) == false)
         {
