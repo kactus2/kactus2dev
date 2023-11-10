@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/Component/Mode.h>
+#include <IPXACTmodels/utilities/Search.h>
 
 #include <QRegularExpression>
 
@@ -78,15 +79,65 @@ bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<
     QStringList checkedReferences;
     QList<uint> checkedPriorities;
 
-    // TODO use Search::getNames()
-    QStringList availableModeNames;
-    std::transform(availableModes->cbegin(), availableModes->cend(), std::back_inserter(availableModeNames),
-        [](auto mode)
-        {
-            return mode->name();
-        });
+    QStringList availableModeNames = Search::getNames(availableModes);
 
     for (auto const& modeRef : *modeRefs)
+    {
+        auto reference = modeRef->getReference();
+        auto priority = modeRef->getPriority();
+
+        if (!CommonItemsValidator::hasValidName(reference))
+        {
+            return false;
+        }
+
+        if (checkedPriorities.contains(priority))
+        {
+            return false;
+        }
+        else
+        {
+            checkedPriorities.append(priority);
+        }
+
+        if (checkedReferences.contains(reference))
+        {
+            return false;
+        }
+        else
+        {
+            checkedReferences.append(reference);
+        }
+
+        if (!availableModeNames.contains(reference))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::hasValidModeRefs()
+//-----------------------------------------------------------------------------
+bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsToCheck,
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > otherModeReferencesInUse,
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
+{
+    QStringList checkedReferences;
+    QList<uint> checkedPriorities;
+
+    QStringList availableModeNames = Search::getNames(availableModes);
+
+    std::for_each(otherModeReferencesInUse->cbegin(), otherModeReferencesInUse->cend(),
+        [&checkedReferences, &checkedPriorities](auto modeReference)
+        {
+            checkedReferences << modeReference->getReference();
+            checkedPriorities << modeReference->getPriority();
+        });
+
+    for (auto const& modeRef : *modeRefsToCheck)
     {
         auto reference = modeRef->getReference();
         auto priority = modeRef->getPriority();
@@ -131,13 +182,7 @@ void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors,
     QStringList& checkedRefs, QList<unsigned int>& checkedPriorities, bool* duplicateRefErrorIssued, 
     bool* duplicatePriorityErrorIssued, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
 {
-    // TODO use Search::getNames()
-    QStringList availableModeNames;
-    std::transform(availableModes->cbegin(), availableModes->cend(), std::back_inserter(availableModeNames),
-        [](auto mode)
-        {
-            return mode->name();
-        });
+    QStringList availableModeNames = Search::getNames(availableModes);
 
     for (auto const& modeRef : *modeRefs)
     {

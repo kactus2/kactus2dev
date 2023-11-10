@@ -953,7 +953,6 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const
 {
-
     bool hasAccessPolicyWithoutModeRef = false;
     
     auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
@@ -985,4 +984,33 @@ bool FieldValidator::hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> fie
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldValidator::singleFieldAccessPolicyHasValidModeRefs()
+//-----------------------------------------------------------------------------
+bool FieldValidator::singleFieldAccessPolicyHasValidModeRefs(QSharedPointer<Field> field, 
+    int fieldAccessPolicyIndex) const
+{
+    auto fieldAccessPolicies = field->getFieldAccessPolicies();
+
+    if (fieldAccessPolicyIndex < 0 || fieldAccessPolicyIndex >= fieldAccessPolicies->size())
+    {
+        return false;
+    }
+
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > otherModeRefs(new QList<QSharedPointer<ModeReference> >());
+
+    for (int i = 0; i < fieldAccessPolicies->size(); ++i)
+    {
+        auto currentAccessPolicy = fieldAccessPolicies->at(i);
+        if (i != fieldAccessPolicyIndex)
+        {
+            otherModeRefs->append(currentAccessPolicy->getModeReferences()->begin(),
+                currentAccessPolicy->getModeReferences()->end());
+        }
+    }
+
+    return CommonItemsValidator::hasValidModeRefs(fieldAccessPolicies->at(fieldAccessPolicyIndex)->getModeReferences(),
+        otherModeRefs, componentModes_);
 }

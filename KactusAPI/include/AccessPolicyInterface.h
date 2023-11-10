@@ -80,13 +80,6 @@ public:
     bool removeAccessPolicy(int accessPolicyIndex);
 
     /*!
-     *	Validates the available access policies.
-     *  
-     * 	    @return True, if the access policies are valid, otherwise false.
-     */
-    bool hasValidAccessPolicies() const;
-
-    /*!
      *	Set the access value for a given accesspolicy.
      *  
      *      @param [in] newAccess             The new access value to set.
@@ -149,6 +142,16 @@ public:
      * 	    @return All other mode references in use.
      */
     std::vector<std::pair<unsigned int, std::string> > getModeReferencesInUse(int accessPolicyIndex) const;
+
+    /*!
+     *	Validates the mode references of selected access policy. Compares against all mode references 
+     *  in other access policies.
+     *  
+     *      @param [in] accessPolicyIndex     The index of the access policy whose mode references are validated.
+     *	    
+     * 	    @return True, if the mode references of selected accesspolicy are valid, otherwise false.
+     */
+    bool accessPolicyHasValidModeReferences(int accessPolicyIndex) const;
 
 private:
 

@@ -75,14 +75,6 @@ bool AccessPolicyInterface::removeAccessPolicy(int accessPolicyIndex)
 }
 
 //-----------------------------------------------------------------------------
-// Function: AccessPolicyInterface::hasValidAccessPolicies()
-//-----------------------------------------------------------------------------
-bool AccessPolicyInterface::hasValidAccessPolicies() const
-{
-    return CommonItemsValidator::hasValidAccessPolicies(accessPolicies_, componentModes_);
-}
-
-//-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::setAccess()
 //-----------------------------------------------------------------------------
 bool AccessPolicyInterface::setAccess(std::string const& newAccess, int accessPolicyIndex)
@@ -202,4 +194,32 @@ std::vector<std::pair<unsigned int, std::string> > AccessPolicyInterface::getMod
     }
 
     return modeRefsInUse;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AccessPolicyInterface::accessPolicyHasValidModeReferences()
+//-----------------------------------------------------------------------------
+bool AccessPolicyInterface::accessPolicyHasValidModeReferences(int accessPolicyIndex) const
+{
+    if (accessPolicyIndex >= 0 && accessPolicyIndex < accessPolicies_->size())
+    {
+        auto accessPolicyModeRefs = accessPolicies_->at(accessPolicyIndex)->getModeReferences();
+
+        // Get mode refs of other access policies.
+        QSharedPointer<QList<QSharedPointer<ModeReference> > > otherModeRefs(
+            new QList<QSharedPointer<ModeReference> >());
+
+        for (int i = 0; i < accessPolicies_->size(); ++i)
+        {
+            if (i != accessPolicyIndex)
+            {
+                auto currentAccessPolicyModeRefs = accessPolicies_->at(i)->getModeReferences();
+                otherModeRefs->append(currentAccessPolicyModeRefs->cbegin(), currentAccessPolicyModeRefs->cend());
+            }
+        }
+
+        return CommonItemsValidator::hasValidModeRefs(accessPolicyModeRefs, otherModeRefs, componentModes_);
+    }
+
+    return false;
 }

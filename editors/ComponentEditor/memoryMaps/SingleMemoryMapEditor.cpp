@@ -200,6 +200,7 @@ void SingleMemoryMapEditor::refresh()
         if (isMemoryRemap_)
         {
             modeRefInterface_->setModeReferences(mapInterface_->getRemapModeReferences(parentMapName_, remapName_));
+            modeRefInterface_->setContainingElementIsRemap(true);
 
             auto containingModeRefs = mapInterface_->getRemapModeReferencesExcludingRemap(parentMapName_, remapName_);
             modeRefInterface_->setContainingElementModeReferences(containingModeRefs);

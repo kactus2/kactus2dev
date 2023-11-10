@@ -248,7 +248,7 @@ bool AccessPoliciesModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == 0)
     {
-        return interface_->hasValidAccessPolicies();
+        return interface_->accessPolicyHasValidModeReferences(index.row());
     }
 
     return true;

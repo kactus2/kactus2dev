@@ -51,10 +51,25 @@ namespace CommonItemsValidator
      *  previously checked references.
      *  
      *      @param [in] modeRefs              The mode references to check.
+     *      @param [in] availableModes        The available component modes.
      *	    
      * 	    @return True, if the given mode references are valid, otherwise false.
      */
     bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
+
+    /*!
+     *	Check if given mode references are valid. Compare with other mode references in the containing element.
+     *  Used for validating mode references of single item, for UI purposes.
+     *  
+     *      @param [in] modeRefsToCheck             The mode references to check.
+     *      @param [in] otherModeReferencesInUse    The other mode references in the containing item.
+     *      @param [in] availableModes              The available component modes.
+     *	    
+     * 	    @return True, if mode references were valid, otherwise false.
+     */
+    IPXACTMODELS_EXPORT bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefsToCheck, 
+        QSharedPointer<QList<QSharedPointer<ModeReference> > > otherModeReferencesInUse, 
+        QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
 
     /*!
      *	Finds errors in mode references within in a parent element. Mode reference values and priorities must 

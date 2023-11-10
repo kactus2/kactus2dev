@@ -555,7 +555,7 @@ bool FieldInterface::hasValidAccessPolicyModeRefs(std::string const& fieldName, 
         if (auto accessPolicies = field->getFieldAccessPolicies();
             accessPolicyIndex <= accessPolicies->size() - 1)
         {
-            return validator_->hasValidFieldAccessPolicyModeRefs(field);
+            return validator_->singleFieldAccessPolicyHasValidModeRefs(field, accessPolicyIndex);
         }
     }
 
@@ -1391,7 +1391,7 @@ ResetInterface* FieldInterface::getSubInterface() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasWriteConstraint()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasWriteConstraint(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
+bool FieldInterface::hasWriteConstraint(std::string const& fieldName) const
 {
     QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName);
     if (fieldWriteConstraint)

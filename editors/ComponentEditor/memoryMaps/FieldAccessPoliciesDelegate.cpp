@@ -63,6 +63,8 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
         // Set the othcer mode references in use for validation purposes.
         modeRefInterface_->setContainingElementModeReferences(otherModeRefsInUse);
 
+        modeRefInterface_->setContainingElementIsRemap(false);
+
         FloatingModeReferenceEditor* modeRefEditor = new FloatingModeReferenceEditor(modeRefInterface_, parent);
         connect(modeRefEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         connect(modeRefEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);

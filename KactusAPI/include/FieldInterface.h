@@ -582,11 +582,10 @@ public:
      *  std revision field.
      *
      *      @param [in] fieldName           Name of the selected field.
-     *      @param [in] accessPolicyIndex   The index of the selected field access policy.
      *
      *      @return True, if the selected field or field access policy has write value constraint, false otherwise.
      */
-    bool hasWriteConstraint(std::string const& fieldName, int accessPolicyIndex = -1) const;
+    bool hasWriteConstraint(std::string const& fieldName) const;
 
     /*!
      *  Get the write value constraint type of the selected field or field access policy.
