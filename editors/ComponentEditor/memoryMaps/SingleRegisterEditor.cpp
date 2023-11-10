@@ -181,6 +181,9 @@ void SingleRegisterEditor::refresh()
     fieldsEditor_->refresh();
     accessPoliciesEditor_->refresh();
 
+    // Block signals from here for the duration of refreshing editors.
+    blockSignals(true);
+
     changeExpressionEditorsSignalBlockStatus(true);
     
     offsetEditor_->setExpression(QString::fromStdString(registerInterface_->getOffsetExpression(registerName_)));
@@ -204,6 +207,8 @@ void SingleRegisterEditor::refresh()
 
     accessEditor_->setCurrentValue(registerInterface_->getAccess(registerName_));
     volatileEditor_->setCurrentValue(QString::fromStdString(registerInterface_->getVolatile(registerName_)));
+
+    blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------

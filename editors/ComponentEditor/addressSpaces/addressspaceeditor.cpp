@@ -105,10 +105,15 @@ void AddressSpaceEditor::refresh()
 {
     QStringList masterInterfaceList = component()->getMasterInterfaces(addrSpace_->name());
 
+    // Block signals from here for the duration of refreshing editors.
+    blockSignals(true);
+
     nameEditor_.refresh();
 	generalEditor_.refresh(masterInterfaceList);
 	segmentsEditor_.refresh();
 	localMemMapEditor_.refresh();
+
+    blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------

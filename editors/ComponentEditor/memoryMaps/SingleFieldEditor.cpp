@@ -171,6 +171,9 @@ void SingleFieldEditor::refresh()
     resetsEditor_->refresh();
     enumerationsEditor_->refresh();
 
+    // Block signals from here for the duration of refreshing editors.
+    blockSignals(true);
+
     changeExpressionEditorSignalBlockStatus(true);
 
     offsetEditor_->setExpression(QString::fromStdString(fieldInterface_->getOffsetExpression(fieldName_)));
@@ -219,6 +222,8 @@ void SingleFieldEditor::refresh()
     {
         setWriteMinMaxConstraintEnableStatus(writeConstraintEditor_->currentIndex());
     }
+
+    blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------
