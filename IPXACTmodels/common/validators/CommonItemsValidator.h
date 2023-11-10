@@ -21,6 +21,7 @@
 class ModeReference;
 class RegisterBase;
 class AccessPolicy;
+class Mode;
 
 namespace CommonItemsValidator
 {
@@ -53,7 +54,7 @@ namespace CommonItemsValidator
      *	    
      * 	    @return True, if the given mode references are valid, otherwise false.
      */
-    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs);
+    bool hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
 
     /*!
      *	Finds errors in mode references within in a parent element. Mode reference values and priorities must 
@@ -70,7 +71,7 @@ namespace CommonItemsValidator
      */
     void findErrorsInModeRefs(QStringList& errors, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs,
         QString const& context, QStringList& checkedRefs, QList<unsigned int>& checkedPriorities, 
-        bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued);
+        bool* duplicateRefErrorIssued, bool* duplicatePriorityErrorIssued, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
     
     /*!
      *	Check if a single mode reference is valid. Provide all mode references in containing element to check 
@@ -119,7 +120,7 @@ namespace CommonItemsValidator
      *	    
      * 	    @return True, if the access policies are valid, otherwise false.
      */
-    IPXACTMODELS_EXPORT bool hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies);
+    IPXACTMODELS_EXPORT bool hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
 };
 
 

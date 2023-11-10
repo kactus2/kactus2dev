@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/ModeReference.h>
 
 //-----------------------------------------------------------------------------
@@ -25,8 +26,7 @@
 MemoryMapValidator::MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QSharedPointer<SubspaceMapValidator> subspaceValidator, QSharedPointer<Component> component):
-MemoryMapBaseValidator(expressionParser, addressBlockValidator, subspaceValidator),
-availableRemapStates_()
+MemoryMapBaseValidator(expressionParser, addressBlockValidator, subspaceValidator)
 {
     componentChange(component);
 }
@@ -44,6 +44,7 @@ void MemoryMapValidator::componentChange(QSharedPointer<Component> newComponent)
     if (newComponent)
     {
         availableRemapStates_ = newComponent->getRemapStates();
+        componentModes_ = newComponent->getModes();
     }
 
     MemoryMapBaseValidator::componentChange(newComponent);

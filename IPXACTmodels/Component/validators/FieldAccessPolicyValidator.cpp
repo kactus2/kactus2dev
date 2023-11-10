@@ -12,6 +12,8 @@
 #include "FieldAccessPolicyValidator.h"
 #include "FieldReferenceValidator.h"
 
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <QRegularExpression>
@@ -28,25 +30,27 @@ FieldAccessPolicyValidator::FieldAccessPolicyValidator(QSharedPointer<Expression
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPolicyValidator::validate()
 //-----------------------------------------------------------------------------
-bool FieldAccessPolicyValidator::validate(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const
+bool FieldAccessPolicyValidator::validate(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const
 {
     return hasValidAccess(fieldAccessPolicy) &&
         hasValidDefinitionRef(fieldAccessPolicy) && hasValidWriteValueConstraint(fieldAccessPolicy) &&
         hasValidReadResponse(fieldAccessPolicy) && hasValidBroadcasts(fieldAccessPolicy) &&
-        hasValidAccessRestrictions(fieldAccessPolicy) && hasValidReserved(fieldAccessPolicy);
+        hasValidAccessRestrictions(fieldAccessPolicy, availableModes) && hasValidReserved(fieldAccessPolicy);
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPolicyValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void FieldAccessPolicyValidator::findErrorsIn(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const
+void FieldAccessPolicyValidator::findErrorsIn(QStringList& errors, 
+    QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context, 
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const
 {
     finderrorsInDefinitionRef(errors, fieldAccessPolicy, context);
     findErrorsInAccess(errors, fieldAccessPolicy, context);
     findErrorsInWriteValueConstraint(errors, fieldAccessPolicy, context);
     findErrorsInReadResponse(errors, fieldAccessPolicy, context);
     findErrorsInBroadcasts(errors, fieldAccessPolicy, context);
-    findErrorsInAccessRestrictions(errors, fieldAccessPolicy, context);
+    findErrorsInAccessRestrictions(errors, fieldAccessPolicy, context, availableModes);
     findErrorsInReserved(errors, fieldAccessPolicy, context);
 }
 
@@ -144,7 +148,7 @@ bool FieldAccessPolicyValidator::hasValidBroadcasts(QSharedPointer<FieldAccessPo
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPolicyValidator::hasValidAccessRestrictions()
 //-----------------------------------------------------------------------------
-bool FieldAccessPolicyValidator::hasValidAccessRestrictions(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const
+bool FieldAccessPolicyValidator::hasValidAccessRestrictions(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const
 {
     if (fieldAccessPolicy->getAccessRestrictions()->isEmpty())
     {
@@ -165,40 +169,7 @@ bool FieldAccessPolicyValidator::hasValidAccessRestrictions(QSharedPointer<Field
         }
     }
 
-    return hasValidAccessRestrictionsModeRefs(allModeRefs);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FieldAccessPolicyValidator::hasValidAccessRestrictionsModeRefs()
-//-----------------------------------------------------------------------------
-bool FieldAccessPolicyValidator::hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const
-{
-    QStringList refs;
-    QList<unsigned int> priorities;
-
-    for (auto const& modeRef : *modeRefs)
-    {
-
-        if (!refs.contains(modeRef->getReference()))
-        {
-            refs.append(modeRef->getReference());
-        }
-        else
-        {
-            return false;
-        }
-
-        if (!priorities.contains(modeRef->getPriority()))
-        {
-            priorities.append(modeRef->getPriority());
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidModeRefs(allModeRefs, availableModes);
 }
 
 //-----------------------------------------------------------------------------
@@ -332,7 +303,7 @@ void FieldAccessPolicyValidator::findErrorsInBroadcasts(QStringList& errors, QSh
 // Function: FieldAccessPolicyValidator::findErrorsInAccessRestrictions()
 //-----------------------------------------------------------------------------
 
-void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const
+void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const
 {
     if (fieldAccessPolicy->getAccessRestrictions()->isEmpty())
     {
@@ -359,7 +330,7 @@ void FieldAccessPolicyValidator::findErrorsInAccessRestrictions(QStringList& err
         }
     }
 
-    if (!hasValidAccessRestrictionsModeRefs(allModeRefs))
+    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs, availableModes))
     {
         errors.append(QObject::tr("Field access policy access restrictions in %1"
             " cannot have empty or duplicate mode references or priorities.").arg(context));

@@ -31,6 +31,7 @@ class Field;
 class FieldValidator;
 class ParameterValidator;
 class ModeReference;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
@@ -215,6 +216,9 @@ protected:
 
     //! The memory array validator.
     MemoryArrayValidator memArrayValidator_;
+
+    //! Available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 };
 
 #endif // RegisterBaseValidator_H

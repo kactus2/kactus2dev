@@ -28,6 +28,7 @@ class ResetType;
 class ParameterValidator;
 class EnumeratedValueValidator;
 class Component;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
@@ -444,6 +445,9 @@ private:
 
     //! The IP-XACT standard revision in use.
     Document::Revision docRevision_;
+
+    //! The available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 };
 
 #endif // FIELDVALIDATOR_H

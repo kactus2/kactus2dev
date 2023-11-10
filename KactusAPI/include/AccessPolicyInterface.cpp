@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/Component/ModeReference.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 //-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::AccessPolicyInterface()
@@ -32,6 +33,14 @@ AccessPolicyInterface::AccessPolicyInterface(ModeReferenceInterface* modeRefInte
 void AccessPolicyInterface::setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies)
 {
     accessPolicies_ = accessPolicies;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AccessPolicyInterface::setAvailableModes()
+//-----------------------------------------------------------------------------
+void AccessPolicyInterface::setComponentModes(QSharedPointer<QList<QSharedPointer<Mode> > > componentModes)
+{
+    componentModes_ = componentModes;
 }
 
 //-----------------------------------------------------------------------------
@@ -70,7 +79,7 @@ bool AccessPolicyInterface::removeAccessPolicy(int accessPolicyIndex)
 //-----------------------------------------------------------------------------
 bool AccessPolicyInterface::hasValidAccessPolicies() const
 {
-    return CommonItemsValidator::hasValidAccessPolicies(accessPolicies_);
+    return CommonItemsValidator::hasValidAccessPolicies(accessPolicies_, componentModes_);
 }
 
 //-----------------------------------------------------------------------------

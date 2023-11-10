@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
+#include <IPXACTmodels/Component/Component.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -53,6 +54,14 @@ bool AddressSpaceValidator::validate(QSharedPointer<AddressSpace> addressSpace) 
         hasValidRange(addressSpace) && hasValidWidth(addressSpace) && hasValidSegments(addressSpace) &&
         hasValidAddressUnitBits(addressSpace) && hasValidLocalMemoryMap(addressSpace) &&
         hasValidParameters(addressSpace);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceValidator::changeComponent()
+//-----------------------------------------------------------------------------
+void AddressSpaceValidator::componentChange(QSharedPointer<Component> newComponent)
+{
+    localMemoryMapValidator_->componentChange(newComponent);
 }
 
 //-----------------------------------------------------------------------------

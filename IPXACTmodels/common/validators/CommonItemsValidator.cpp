@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/AccessPolicy.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 #include <QRegularExpression>
 
@@ -71,10 +72,19 @@ bool CommonItemsValidator::isValidExpression(QString const& expression, QSharedP
 //-----------------------------------------------------------------------------
 // Function: CommonItemsValidator::hasValidModeRefs()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs)
+bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, 
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
 {
     QStringList checkedReferences;
     QList<uint> checkedPriorities;
+
+    // TODO use Search::getNames()
+    QStringList availableModeNames;
+    std::transform(availableModes->cbegin(), availableModes->cend(), std::back_inserter(availableModeNames),
+        [](auto mode)
+        {
+            return mode->name();
+        });
 
     for (auto const& modeRef : *modeRefs)
     {
@@ -103,6 +113,11 @@ bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<
         {
             checkedReferences.append(reference);
         }
+
+        if (!availableModeNames.contains(reference))
+        {
+            return false;
+        }
     }
 
     return true;
@@ -114,14 +129,22 @@ bool CommonItemsValidator::hasValidModeRefs(QSharedPointer<QList<QSharedPointer<
 void CommonItemsValidator::findErrorsInModeRefs(QStringList& errors, 
     QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs, QString const& context,
     QStringList& checkedRefs, QList<unsigned int>& checkedPriorities, bool* duplicateRefErrorIssued, 
-    bool* duplicatePriorityErrorIssued)
+    bool* duplicatePriorityErrorIssued, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
 {
+    // TODO use Search::getNames()
+    QStringList availableModeNames;
+    std::transform(availableModes->cbegin(), availableModes->cend(), std::back_inserter(availableModeNames),
+        [](auto mode)
+        {
+            return mode->name();
+        });
+
     for (auto const& modeRef : *modeRefs)
     {
         auto reference = modeRef->getReference();
         auto priority = modeRef->getPriority();
 
-        if (!hasValidName(reference))
+        if (!hasValidName(reference) || !availableModeNames.contains(reference))
         {
             errors.append(QObject::tr(
                 "Mode reference in %1 has invalid or empty reference value '%2'.").arg(context).arg(reference));
@@ -231,7 +254,9 @@ bool CommonItemsValidator::modeReferenceValueIsValid(std::vector<std::string> co
 //-----------------------------------------------------------------------------
 // Function: CommonItemsValidator::hasValidAccessPolicies()
 //-----------------------------------------------------------------------------
-bool CommonItemsValidator::hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies)
+bool CommonItemsValidator::hasValidAccessPolicies(
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies,
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
 {
     bool hasAccessPolicyWithoutModeRef = false;
 
@@ -254,7 +279,7 @@ bool CommonItemsValidator::hasValidAccessPolicies(QSharedPointer<QList<QSharedPo
 
     // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
     // all address block access policies.
-    if (!hasValidModeRefs(allModeRefs))
+    if (!hasValidModeRefs(allModeRefs, availableModes))
     {
         return false;
     }

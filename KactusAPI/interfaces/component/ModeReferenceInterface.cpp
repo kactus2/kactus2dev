@@ -196,7 +196,8 @@ void ModeReferenceInterface::setContainingElementIsRemap(bool isRemap)
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::setContainingElementModeReferences()
 //-----------------------------------------------------------------------------
-void ModeReferenceInterface::setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences)
+void ModeReferenceInterface::setContainingElementModeReferences(
+    std::vector<std::pair<unsigned int, std::string> > const& modeReferences)
 {
     containingElementModeReferences_ = modeReferences;
 }

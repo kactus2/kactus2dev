@@ -22,6 +22,7 @@
 class AccessPolicy;
 class ModeReferenceInterface;
 class ModeReference;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing access policies.
@@ -49,6 +50,13 @@ public:
      *      @param [in] accessPolicies     Access policies to set.
      */
     void setAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies);
+
+    /*!
+     *	Set the available component modes for the interface.
+     *  
+     *      @param [in] componentModes     The available component modes.
+     */
+    void setComponentModes(QSharedPointer<QList<QSharedPointer<Mode> > > componentModes);
 
     /*!
      *	Get the access policy count.
@@ -150,6 +158,9 @@ private:
     
     //! The interface for accessing access policy mode references.
     ModeReferenceInterface* modeRefInterface_;
+
+    //! Available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 };
 
 

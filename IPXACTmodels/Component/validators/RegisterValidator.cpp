@@ -52,6 +52,7 @@ void RegisterValidator::componentChange(QSharedPointer<Component> newComponent)
     if (newComponent)
     {
         docRevision_ = newComponent->getRevision();
+        componentModes_ = newComponent->getModes();
     }
 }   
 
@@ -199,7 +200,7 @@ bool RegisterValidator::hasValidAlternateRegisters(QSharedPointer<Register> sele
         }
     }
     
-    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs))
+    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs, componentModes_))
     {
         return false;
     }
@@ -543,7 +544,7 @@ void RegisterValidator::findErrorsInAlternateRegisterModeRefs(QStringList& error
         + QStringLiteral(" within ") + context;
 
     CommonItemsValidator::findErrorsInModeRefs(errors, selectedRegister->getModeReferences(), altRegisterContext, 
-        checkedModeRefs, checkedPriorities, duplicateRefErrorIssued, duplicatePriorityErrorIssued);
+        checkedModeRefs, checkedPriorities, duplicateRefErrorIssued, duplicatePriorityErrorIssued, componentModes_);
 }
 
 //-----------------------------------------------------------------------------

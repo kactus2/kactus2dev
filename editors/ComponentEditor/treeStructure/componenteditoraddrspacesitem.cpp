@@ -163,6 +163,8 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
     QSharedPointer<AddressBlockValidator> blockValidator(
         new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator, 
             component_->getRevision()));
+    blockValidator->componentChange(component_);
+
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
         new SubspaceMapValidator(expressionParser_, parameterValidator, component_->getRevision()));
 

@@ -1353,6 +1353,7 @@ void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
         cpuValidator_->componentChange(newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),
             newComponent->getRevision());
         powerDomainValidator_->componentChange(newComponent->getPowerDomains());
+        addressSpaceValidator_->componentChange(newComponent);
 
         component_ = newComponent;
     }

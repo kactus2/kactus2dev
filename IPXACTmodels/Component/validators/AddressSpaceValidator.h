@@ -21,9 +21,11 @@ class ExpressionParser;
 class AddressSpace;
 class Segment;
 class MemoryReserve;
+class Component;
 
 class MemoryMapBaseValidator;
 class ParameterValidator;
+
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:addressSpace.
 //-----------------------------------------------------------------------------
@@ -60,6 +62,13 @@ public:
      *      @return True, if the address space is valid IP-XACT, otherwise false.
      */
     virtual bool validate(QSharedPointer<AddressSpace> addressSpace) const;
+
+    /*!
+     *	Change the containing component.
+     *  
+     *      @param [in] newComponent     The new component.
+     */
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
      *  Check if the name is valid.

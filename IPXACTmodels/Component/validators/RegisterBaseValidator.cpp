@@ -12,11 +12,15 @@
 #include "RegisterBaseValidator.h"
 
 #include <KactusAPI/include/ExpressionParser.h>
+
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/CommonItemsValidator.h>
+#include <IPXACTmodels/common/Parameter.h>
+
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/AccessPolicy.h>
-#include <IPXACTmodels/common/Parameter.h>
+#include <IPXACTmodels/Component/Mode.h>
+
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -139,7 +143,7 @@ bool RegisterBaseValidator::hasValidParameters(QSharedPointer<RegisterBase> sele
 //-----------------------------------------------------------------------------
 bool RegisterBaseValidator::hasValidAccessPolicies(QSharedPointer<RegisterBase> registerBase) const
 {
-    return CommonItemsValidator::hasValidAccessPolicies(registerBase->getAccessPolicies());
+    return CommonItemsValidator::hasValidAccessPolicies(registerBase->getAccessPolicies(), componentModes_);
 }
 
 //-----------------------------------------------------------------------------
@@ -259,7 +263,7 @@ void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
 
         // Check mode references in current access policy, and look for duplicate references.
         CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext, 
-            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued);
+            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued, componentModes_);
     }
 
     // Number of access policies cannot be greater than one if a field access policy has no mode references.

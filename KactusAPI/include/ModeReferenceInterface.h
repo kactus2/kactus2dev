@@ -135,7 +135,7 @@ public:
      *  
      *      @param [in] modeRefs     The mode references to set.
      */
-    void setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences);
+    void setContainingElementModeReferences(std::vector<std::pair<unsigned int, std::string> > const& modeReferences);
 
     /*!
      *	Get the available component modes.

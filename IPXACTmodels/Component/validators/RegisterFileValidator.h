@@ -24,6 +24,7 @@ class RegisterBase;
 class RegisterFile;
 class RegisterValidator;
 class ParameterValidator;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:RegisterFile.
@@ -54,7 +55,7 @@ public:
 
     QSharedPointer<RegisterValidator> getRegisterValidator() const;
 
-    void componentChange(Document::Revision newDocRevision);
+    void componentChange(QSharedPointer<Component> newComponent);
 
     /*!
     *  Validates the given register file.
