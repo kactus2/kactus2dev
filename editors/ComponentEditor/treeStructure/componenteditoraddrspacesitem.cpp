@@ -215,6 +215,7 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     modeRefInterface->setComponentModes(component_->getModes());
 
     AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface(modeRefInterface));
+    accessPolicyInterface->setComponentModes(component_->getModes());
 
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, accessPolicyInterface));
