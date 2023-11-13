@@ -14,6 +14,8 @@
 #include <QComboBox>
 #include <QLineEdit>
 
+#include <QRegularExpressionValidator>
+
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceDelegate::ModeReferenceDelegate()
 //-----------------------------------------------------------------------------
@@ -31,6 +33,8 @@ QWidget* ModeReferenceDelegate::createEditor(QWidget* parent, const QStyleOption
     if (index.column() == 0)
     {
         auto lineEdit = new QLineEdit(parent);
+
+        lineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\d*"), parent));
         return lineEdit;
     }
     else if (index.column() == 1)

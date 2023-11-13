@@ -5773,7 +5773,6 @@
     <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </ClInclude>
-
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
