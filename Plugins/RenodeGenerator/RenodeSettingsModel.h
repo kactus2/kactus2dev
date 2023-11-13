@@ -26,14 +26,9 @@ class RenodeSettingsModel : public PluginSettingsModel
 public:
 
     /*!
-     *  Constructor.
-     */
-    RenodeSettingsModel();
-
-    /*!
      *  Destructor.
      */
-    virtual ~RenodeSettingsModel() = default;
+    ~RenodeSettingsModel() final = default;
     
     /*!
      *  Loads plugin settings from the given settings store. Is called when Kactus2 loads the plugin.
@@ -75,7 +70,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Path to the peripheral template configuration file.
-    QString templateFilePath_ = QString("");
+    QString templateFilePath_;
 };
 
 //-----------------------------------------------------------------------------

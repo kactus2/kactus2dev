@@ -102,7 +102,7 @@ QString RenodeGeneratorPlugin::getLicenseHolder() const
 //-----------------------------------------------------------------------------
 QWidget* RenodeGeneratorPlugin::getSettingsWidget()
 {
-    return new RenodeSettingsWidget(settingsModel_);
+    return new RenodeSettingsWidget(&settingsModel_);
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +110,7 @@ QWidget* RenodeGeneratorPlugin::getSettingsWidget()
 //-----------------------------------------------------------------------------
 PluginSettingsModel* RenodeGeneratorPlugin::getSettingsModel()
 {
-    return settingsModel_;
+    return &settingsModel_;
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 
     auto configManager(new RenodeConfigurationManager(utility));
     QJsonObject configurationObject = configManager->getConfigurationObject(component);
-    auto templateConfigurationManager(new PeripheralTemplateConfigurer(settingsModel_));
+    auto templateConfigurationManager(new PeripheralTemplateConfigurer(&settingsModel_));
 
     QString configurationFolderPath = configurationObject.value(RenodeConstants::FOLDERPATH).toString("");
     QString configurationView = configurationObject.value(RenodeConstants::VIEW).toString("");
@@ -346,14 +346,6 @@ void RenodeGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 QList<IPlugin::ExternalProgramRequirement> RenodeGeneratorPlugin::getProgramRequirements()
 {
     return QList<IPlugin::ExternalProgramRequirement>();
-}
-
-//-----------------------------------------------------------------------------
-// Function: RenodeGeneratorPlugin:::onErrorReport()
-//-----------------------------------------------------------------------------
-void RenodeGeneratorPlugin::onErrorReport(const QString& /*report*/)
-{
-//     utility_->printError(report);
 }
 
 //-----------------------------------------------------------------------------

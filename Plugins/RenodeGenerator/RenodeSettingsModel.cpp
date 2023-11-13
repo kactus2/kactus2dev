@@ -25,14 +25,6 @@ namespace
     QString const DEFAULTPATH = QCoreApplication::applicationDirPath() + QString("/templates/defaultTemplateConfiguration.json");
 };
 
-//-----------------------------------------------------------------------------
-// Function: RenodeSettingsModel::RenodeSettingsModel()
-//-----------------------------------------------------------------------------
-RenodeSettingsModel::RenodeSettingsModel() :
-PluginSettingsModel()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: RenodeSettingsModel::loadSettings()
