@@ -25,6 +25,9 @@
 #include <IPXACTmodels/designConfiguration/validators/DesignConfigurationValidator.h>
 #include <IPXACTmodels/kactusExtensions/validators/SystemDesignConfigurationValidator.h>
 
+#include <KactusAPI/include/ListParameterFinder.h>
+#include <KactusAPI/include/ParameterCache.h>
+
 class Document;
 class AbstractionDefinition;
 class BusDefinition;
@@ -34,17 +37,20 @@ class ComponentParameterFinder;
 class Design;
 class DesignConfiguration;
 class LibraryInterface;
-class ListParameterFinder;
 
 class DocumentValidator 
 {
 public:
 
     //! The constructor.
-    DocumentValidator(LibraryInterface* library);
+    explicit DocumentValidator(LibraryInterface* library);
 
     //! The destructor.
     ~DocumentValidator() = default;
+
+    // Disable copying.
+    DocumentValidator(DocumentValidator const& rhs) = delete;
+    DocumentValidator& operator=(DocumentValidator const& rhs) = delete;
 
     bool validate(QSharedPointer<Document> document);
 
@@ -53,9 +59,6 @@ public:
    
 private:
 
-    // Disable copying.
-    DocumentValidator(DocumentValidator const& rhs);
-    DocumentValidator& operator=(DocumentValidator const& rhs);
      
     /*!
      *  Change the component used in the component validator parameter finder.
@@ -113,7 +116,7 @@ private:
      LibraryInterface* library_;
 
      //! The parameter finder used in the component validator.
-     QSharedPointer<ComponentParameterFinder> componentValidatorFinder_;
+     QSharedPointer<ComponentParameterFinder> componentValidatorFinder_{ new ParameterCache(QSharedPointer<Component>()) };
 
      //! The used abstraction definition validator.
      AbstractionDefinitionValidator abstractionValidator_;
@@ -128,7 +131,7 @@ private:
      ComponentValidator componentValidator_;
 
      //! The parameter finder used in the design validator.
-     QSharedPointer<ListParameterFinder> designValidatorFinder_;
+     QSharedPointer<ListParameterFinder> designValidatorFinder_{ new ListParameterFinder() };
 
      //! The used design validator.
      DesignValidator designValidator_;

@@ -484,6 +484,9 @@ private:
     //! The last validated component.
     QSharedPointer<Component> component_;
 
+    //! The used parameter validator.
+    QSharedPointer<ParameterValidator> parameterValidator_;
+
     //! The used bus interface validator.
     QSharedPointer<BusInterfaceValidator> busInterfaceValidator_;
 
@@ -525,9 +528,6 @@ private:
 
     //! The used other clock driver validator.
     QSharedPointer<OtherClockDriverValidator> otherClockDriverValidator_;
-
-    //! The used parameter validator.
-    QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;

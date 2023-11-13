@@ -79,7 +79,8 @@ DockWidgetHandler::DockWidgetHandler(
     QToolBar* leftToolbar,
     QToolBar* rightToolbar,
     QMainWindow* parent) :
-libraryHandler_(library),
+QObject(parent),
+    libraryHandler_(library),
     libraryDock_(0),
     libraryWidget_(0),
     console_(0),

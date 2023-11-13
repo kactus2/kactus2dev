@@ -26,22 +26,10 @@ PythonInterpreter::PythonInterpreter(WriteChannel* outputChannel, WriteChannel* 
     QObject(parent), 
     WriteChannel(),
     printPrompt_(printPromt),
-    runMultiline_(false),
     outputChannel_(outputChannel),
-    errorChannel_(errorChannel),
-    globalContext_(nullptr),
-    localContext_(nullptr),
-    threadState_(nullptr)
+    errorChannel_(errorChannel)
 {
    
-}
-
-//-----------------------------------------------------------------------------
-// Function: PythonInterpreter::~PythonInterpreter()
-//-----------------------------------------------------------------------------
-PythonInterpreter::~PythonInterpreter()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -61,10 +49,10 @@ bool PythonInterpreter::initialize(bool interactive)
 
     threadState_ = Py_NewInterpreter();
 
-    outputChannel_->write(QString("Python ") + QString(Py_GetVersion()) + QString("\n"));    
+    outputChannel_->write(QStringLiteral("Python ") + QString(Py_GetVersion()) + QString("\n"));    
 
-    PyObject *module = PyImport_ImportModule("__main__");
-    localContext_ = PyModule_GetDict(module);
+    PyObject *pyModule = PyImport_ImportModule("__main__");
+    localContext_ = PyModule_GetDict(pyModule);
     globalContext_ = localContext_;
 
     if (redirectIO(interactive) == false)

@@ -40,7 +40,7 @@ public:
 	/*!
      *  The destructor.
      */
-    ~MemoryBlockValidator() = default;
+    virtual ~MemoryBlockValidator() = default;
     
     /*!
      *  Validates the given memory block.

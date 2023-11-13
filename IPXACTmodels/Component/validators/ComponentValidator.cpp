@@ -59,52 +59,35 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
 
-#include <QRegularExpression>
-
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::ComponentValidator()
 //-----------------------------------------------------------------------------
-ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library):
-component_(),
-busInterfaceValidator_(),
-indirectInterfaceValidator_(),
-channelValidator_(),
-remapStateValidator_(),
-addressSpaceValidator_(),
-memoryMapValidator_(),
-viewValidator_(),
-instantiationsValidator_(),
-portValidator_(),
-generatorValidator_(),
-choiceValidator_(),
-fileSetValidator_(),
-cpuValidator_(),
-otherClockDriverValidator_(),
-parameterValidator_(),
-assertionValidator_()
+ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library) :
+    component_(nullptr),
+    parameterValidator_(new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >())),
+    busInterfaceValidator_(nullptr),
+    indirectInterfaceValidator_(new IndirectInterfaceValidator(component_, parser, parameterValidator_)),
+    channelValidator_(new ChannelValidator(parser, QSharedPointer<QList<QSharedPointer<BusInterface> > >())),
+    remapStateValidator_(new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > >())),
+    addressSpaceValidator_(nullptr),
+    memoryMapValidator_(nullptr),
+    viewValidator_(new ViewValidator(parser, QSharedPointer<Model>())),
+    instantiationsValidator_(new InstantiationsValidator(parser, QSharedPointer<QList<QSharedPointer<FileSet> > >(),
+        parameterValidator_, library)),
+    portValidator_(new PortValidator(parser, QSharedPointer<QList<QSharedPointer<View> > >())),
+    generatorValidator_(new ComponentGeneratorValidator(parser, parameterValidator_)),
+    choiceValidator_(new ChoiceValidator(parser)),
+    fileSetValidator_(nullptr),
+    cpuValidator_(new CPUValidator(parameterValidator_, parser, QSharedPointer<QList<QSharedPointer<AddressSpace> > >())),
+    otherClockDriverValidator_(new OtherClockDriverValidator(parser)),
+    assertionValidator_(new AssertionValidator(parser))
 {
-    parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
-
     QSharedPointer<PortMapValidator> portMapvalidator(
         new PortMapValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > (), library));
 
     busInterfaceValidator_ = QSharedPointer<BusInterfaceValidator>(new BusInterfaceValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > (), QSharedPointer<QList<QSharedPointer<View> > > (),
-        QSharedPointer<QList<QSharedPointer<Port> > > (), QSharedPointer<QList<QSharedPointer<AddressSpace> > > (),
-        QSharedPointer<QList<QSharedPointer<MemoryMap> > > (),
-        QSharedPointer<QList<QSharedPointer<BusInterface> > > (),
-        QSharedPointer<QList<QSharedPointer<FileSet> > > (),
-        QSharedPointer<QList<QSharedPointer<RemapState> > > (), portMapvalidator, parameterValidator_, library));
-
-    indirectInterfaceValidator_ = QSharedPointer<IndirectInterfaceValidator>(
-        new IndirectInterfaceValidator(component_, parser, parameterValidator_));
-
-    channelValidator_ = QSharedPointer<ChannelValidator>(
-        new ChannelValidator(parser, QSharedPointer<QList<QSharedPointer<BusInterface> > > ()));
-
-    remapStateValidator_ = QSharedPointer<RemapStateValidator>(
-        new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
+        nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr,
+        portMapvalidator, parameterValidator_, library));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_));
@@ -125,28 +108,9 @@ assertionValidator_()
     memoryMapValidator_ = QSharedPointer<MemoryMapValidator>(new MemoryMapValidator(
         parser, addressBlockValidator, subspaceValidator, QSharedPointer<Component>()));
 
-    viewValidator_ = QSharedPointer<ViewValidator>(new ViewValidator(parser, QSharedPointer<Model> ()));
-
-    instantiationsValidator_ = QSharedPointer<InstantiationsValidator>(new InstantiationsValidator(
-        parser, QSharedPointer<QList<QSharedPointer<FileSet> > > (), parameterValidator_, library));
-
-    portValidator_ =
-        QSharedPointer<PortValidator>(new PortValidator(parser, QSharedPointer<QList<QSharedPointer<View> > > ()));
-
-    generatorValidator_ =
-        QSharedPointer<ComponentGeneratorValidator>(new ComponentGeneratorValidator(parser, parameterValidator_));
-
-    choiceValidator_ = QSharedPointer<ChoiceValidator>(new ChoiceValidator(parser));
-
-    QSharedPointer<FileValidator> fileValidator (new FileValidator(parser));
-    fileSetValidator_ = QSharedPointer<FileSetValidator>(new FileSetValidator(fileValidator, parser));
-
-    cpuValidator_ = QSharedPointer<CPUValidator>(
-        new CPUValidator(parameterValidator_, parser, QSharedPointer<QList<QSharedPointer<AddressSpace> > > ()));
-
-    otherClockDriverValidator_ = QSharedPointer<OtherClockDriverValidator>(new OtherClockDriverValidator(parser));
-
-    assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
+    auto fileValidator = QSharedPointer<FileValidator>(new FileValidator(parser));
+    fileSetValidator_ =
+        QSharedPointer<FileSetValidator>(new FileSetValidator(fileValidator, parser));
 }
 
 //-----------------------------------------------------------------------------
@@ -1230,7 +1194,7 @@ void ComponentValidator::findErrorsInAssertions(QVector<QString>& errors, QShare
 //-----------------------------------------------------------------------------
 void ComponentValidator::changeComponent(QSharedPointer<Component> newComponent)
 {
-    if (newComponent && (!component_ || component_ != newComponent))
+    if (newComponent && (component_ != newComponent))
     {
         busInterfaceValidator_->componentChange(newComponent->getChoices(), newComponent->getViews(),
             newComponent->getPorts(), newComponent->getAddressSpaces(), newComponent->getMemoryMaps(),

@@ -40,7 +40,7 @@ public:
 	/*!
      *  The destructor.
      */
-	virtual ~VLNVDisplayer();
+	~VLNVDisplayer() final = default;
 
 	/*!
      *  Set the vlnv to be displayed in the widget.
@@ -67,12 +67,7 @@ private:
     /*!
      *  Setup the VLNV layout.
      */
-    void setupLayout();
-
-    /*!
-     *  Setup a compact VLNV layout.
-     */
-    void setupCompactLayout();
+    void setupLayout(bool compact);
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -95,18 +90,10 @@ private:
 
 	//! The label to display the version.
 	QLabel version_;
-	
-	//! The layout of the widget (non-compact).
-	QFormLayout* layout_;
-
-    //! Compact layout.
-    QHBoxLayout* compactLayout_;
 
     //! Label containing the folder path of the displayed VLNV item.
-    QLabel* pathLabel_;
+    QLabel pathLabel_;
 
-    //! Compact VLNV display takes less screen space.
-    bool compact_;
 };
 
 #endif // VLNVDISPLAYER_H
