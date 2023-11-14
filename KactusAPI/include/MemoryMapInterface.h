@@ -487,6 +487,18 @@ public:
     std::vector<std::pair<unsigned int, std::string> > getRemapModeReferences(std::string const& mapName, std::string const& remapName) const;
 
     /*!
+     *	Get string to display in mode references editor, depending on if remap has no mode references, 
+     *  one mode reference or multiple mode references. Returns an empty string if remap is not found.
+     *  
+     *      @param [in] mapName         The containing memory map.
+     *      @param [in] remapName       The name of the remap.
+     *
+     * 	    @return Empty string if remap is not found, or "None", "<mode>" or "[multiple]" 
+     *              depending on mode references of the remap.
+     */
+    std::string getRemapModeReferenceString(std::string const& mapName, std::string const& remapName) const;
+
+    /*!
      *	Set the mode references of given remap.
      *  
      *      @param [in] mapName             The containing memory map.

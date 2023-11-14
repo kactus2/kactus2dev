@@ -39,7 +39,7 @@ MemoryMapsEditor::MemoryMapsEditor(MemoryMapInterface* mapInterface, QSharedPoin
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new EditableTreeSortFilter(this)),
-model_(new MemoryMapsModel(parameterFinder, expressionParser, mapInterface, this)),
+model_(new MemoryMapsModel(parameterFinder, expressionParser, mapInterface, component->getRevision(), this)),
 delegate_(),
 interface_(mapInterface),
 component_(component)
@@ -75,6 +75,11 @@ component_(component)
     QHeaderView* header = new QHeaderView(Qt::Horizontal, this);
     header->setStretchLastSection(true);
     view_->setHeader(header);
+
+    if (component->getRevision() == Document::Revision::Std22)
+    {
+        view_->hideColumn(MemoryMapsColumns::IS_PRESENT);
+    }
 
     connectSignals();
 }
@@ -166,7 +171,7 @@ void MemoryMapsEditor::refresh()
 QStringList MemoryMapsEditor::getRemapStateNames() const
 {
     QStringList remapStateNames;
-    foreach (QSharedPointer<RemapState> remapState, *component()->getRemapStates())
+    for (auto const& remapState : *component()->getRemapStates())
     {
         remapStateNames.append(remapState->name());
     }

@@ -974,6 +974,30 @@ std::vector<std::pair<unsigned int, std::string> > MemoryMapInterface::getRemapM
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getRemapModeReferenceString()
+//-----------------------------------------------------------------------------
+std::string MemoryMapInterface::getRemapModeReferenceString(std::string const& mapName, std::string const& remapName) const
+{
+    if (auto remap = getMemoryRemap(mapName, remapName))
+    {
+        auto modeRefs = remap->getModeReferences();
+
+        if (modeRefs->isEmpty())
+        {
+            return std::string("None");
+        }
+        else if (modeRefs->size() > 1)
+        {
+            return std::string("[multiple]");
+        }
+
+        return modeRefs->first()->getReference().toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::setRemapModeReferences()
 //-----------------------------------------------------------------------------
 bool MemoryMapInterface::setRemapModeReferences(std::string const& mapName, std::string const& remapName, 

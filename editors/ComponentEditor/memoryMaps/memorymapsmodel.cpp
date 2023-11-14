@@ -37,10 +37,12 @@
 // Function: memorymapsmodel::MemoryMapsModel()
 //-----------------------------------------------------------------------------
 MemoryMapsModel::MemoryMapsModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface, QObject *parent):
+    QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface, 
+    Document::Revision docRevision, QObject *parent) :
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
-mapInterface_(mapInterface)
+mapInterface_(mapInterface),
+docRevision_(docRevision)
 {
     setExpressionParser(expressionParser);
 }
@@ -90,10 +92,25 @@ Qt::ItemFlags MemoryMapsModel::flags(QModelIndex const& index) const
 		return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 	}
 
-    else if ((!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
-        (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
+    if (docRevision_ == Document::Revision::Std22)
     {
-        return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+
+        if (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN)
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
+    }
+    else
+    {
+        if ((!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
+            (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
+        {
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+        }
     }
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
@@ -117,7 +134,7 @@ QVariant MemoryMapsModel::headerData(int section, Qt::Orientation orientation, i
         }
         else if (section == MemoryMapsColumns::REMAPSTATE_COLUMN)
         {
-            return tr("Remap state");
+            return docRevision_ == Document::Revision::Std22 ? tr("Mode reference") : tr("Remap state");
         }
         else if (section == MemoryMapsColumns::AUB_COLUMN)
         {
@@ -189,10 +206,20 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
     }
 	else if (role == Qt::ForegroundRole)
     {
-        if(index.column() == MemoryMapsColumns::INTERFACE_COLUMN ||
+        if (index.column() == MemoryMapsColumns::INTERFACE_COLUMN ||
             (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN) ||
             (index.parent().isValid() && index.column() == MemoryMapsColumns::AUB_COLUMN))
         {
+            return KactusColors::DISABLED_TEXT;
+        }
+
+        if (docRevision_ == Document::Revision::Std22 && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+        {
+            if (index.data(Qt::DisplayRole).toString() == "None")
+            {
+                return KactusColors::ERROR;
+            }
+
             return KactusColors::DISABLED_TEXT;
         }
 
@@ -200,6 +227,22 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
 	}
 	else if (role == Qt::BackgroundRole)
     {
+        if (docRevision_ == Document::Revision::Std22)
+        {
+            if (index.column() == MemoryMapsColumns::NAME_COLUMN)
+            {
+                return KactusColors::MANDATORY_FIELD;
+            }
+            else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+            {
+                return KactusColors::DISABLED_FIELD;
+            }
+            else
+            {
+                return KactusColors::REGULAR_FIELD;
+            }
+        }
+
         if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
             index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
         {
@@ -402,7 +445,7 @@ void MemoryMapsModel::decreaseReferencesWithRemovedMemoryMap(QString const& mapN
 {
     auto expressionList = mapInterface_->getMapExpressions(mapName.toStdString(), remapName.toStdString());
     QStringList expressionListQT;
-    for (auto expression : expressionList)
+    for (auto const& expression : expressionList)
     {
         expressionListQT.append(QString::fromStdString(expression));
     }
@@ -411,7 +454,7 @@ void MemoryMapsModel::decreaseReferencesWithRemovedMemoryMap(QString const& mapN
     QMap<QString, int> referencedParameters =
         memoryMapReferenceCalculator.getReferencedParameters(expressionListQT);
 
-    foreach(QString referencedId, referencedParameters.keys())
+    for (auto const& referencedId : referencedParameters.keys())
     {
         for (int i = 0; i < referencedParameters.value(referencedId); ++i)
         {
@@ -451,7 +494,7 @@ void MemoryMapsModel::increaseReferencesWithNewRemap(QString const& memoryMapNam
 {
     auto expressionList = mapInterface_->getMapExpressions(memoryMapName.toStdString(), "");
     QStringList expressionListQT;
-    for (auto expression : expressionList)
+    for (auto const& expression : expressionList)
     {
         expressionListQT.append(QString::fromStdString(expression));
     }
@@ -460,7 +503,7 @@ void MemoryMapsModel::increaseReferencesWithNewRemap(QString const& memoryMapNam
     QMap<QString, int> referencedParameters =
         memoryMapReferenceCalculator.getReferencedParameters(expressionListQT);
 
-    foreach (QString referencedId, referencedParameters.keys())
+    for (auto const& referencedId : referencedParameters.keys())
     {
         for (int i = 0; i < referencedParameters.value(referencedId); ++i)
         {
@@ -573,10 +616,10 @@ bool MemoryMapsModel::isIndexValid(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::onCopyRows()
 //-----------------------------------------------------------------------------
-void MemoryMapsModel::onCopyRows(QModelIndexList indexList)
+void MemoryMapsModel::onCopyRows(QModelIndexList const& indexList)
 {
     std::vector<std::string> copiedRows;
-    foreach (QModelIndex index, indexList)
+    for (auto const& index : indexList)
     {
         QString row = QString::number(index.row());
         if (index.parent().isValid())
@@ -593,7 +636,7 @@ void MemoryMapsModel::onCopyRows(QModelIndexList indexList)
 //-----------------------------------------------------------------------------
 // Function: memorymapsmodel::onPasteRows()
 //-----------------------------------------------------------------------------
-void MemoryMapsModel::onPasteRows(QModelIndex index)
+void MemoryMapsModel::onPasteRows(QModelIndex const& index)
 {
     std::string mapName = "";
     QModelIndex parentIndex = index;
@@ -636,7 +679,7 @@ void MemoryMapsModel::onPasteRows(QModelIndex index)
             std::string copyName = mapInterface_->getIndexedItemName(i);
 
             QStringList expressionList;
-            for (auto expression : mapInterface_->getMapExpressions(copyName, ""))
+            for (auto const& expression : mapInterface_->getMapExpressions(copyName, ""))
             {
                 expressionList.append(QString::fromStdString(expression));
             }
@@ -659,7 +702,7 @@ void MemoryMapsModel::onPasteRows(QModelIndex index)
         {
             std::string remapName = mapInterface_->getIndexedRemapName(mapName, i);
             QStringList expressionList;
-            for (auto expression : mapInterface_->getMapExpressions(mapName, remapName))
+            for (auto const& expression : mapInterface_->getMapExpressions(mapName, remapName))
             {
                 expressionList.append(QString::fromStdString(expression));
             }
@@ -735,7 +778,10 @@ bool MemoryMapsModel::validateIndex(QModelIndex const& index) const
         }
         else if (columnIndex == MemoryMapsColumns::REMAPSTATE_COLUMN)
         {
-            return mapInterface_->remapHasValidRemapState(mapName, remapName);
+            if (docRevision_ == Document::Revision::Std14)
+            {
+                return mapInterface_->remapHasValidRemapState(mapName, remapName);
+            }
         }
         else if (columnIndex == MemoryMapsColumns::IS_PRESENT)
         {
@@ -830,6 +876,11 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {
+        if (docRevision_ == Document::Revision::Std22)
+        {
+            return QString::fromStdString(mapInterface_->getRemapModeReferenceString(mapName, remapName));
+        }
+
         return QString::fromStdString(mapInterface_->getRemapState(mapName, remapName));
     }
     else if (index.column() == MemoryMapsColumns::IS_PRESENT)
