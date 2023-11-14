@@ -12,6 +12,7 @@
 #include "PacketReader.h"
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/QualifierReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: PacketReader::createPacketFrom()
@@ -85,7 +86,7 @@ void PacketReader::Details::parseSinglePacketField(QDomNode const& fieldNode, QS
         fieldNode.firstChildElement(QStringLiteral("ipxact:endianness")).firstChild().nodeValue());
 
     QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
-    CommonItemsReader::parseQualifier(
+    QualifierReader::parseQualifier(
         fieldNode.firstChildElement(QStringLiteral("ipxact:qualifier")), fieldQualifier, Document::Revision::Std22);
 
     parsedPacketField->setQualifier(fieldQualifier);

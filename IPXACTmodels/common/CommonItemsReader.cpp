@@ -215,137 +215,6 @@ QSharedPointer<QList<QSharedPointer<Choice> > > CommonItemsReader::parseChoices(
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsReader::parseQualifier()
-//-----------------------------------------------------------------------------
-void CommonItemsReader::parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
-    Document::Revision revision)
-{
-    if (qualifierNode.isNull())
-    {
-        return;
-    }
-
-    bool isStd22 = revision == Document::Revision::Std22;
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isAddress")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Address);
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isData")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Data);
-
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isClock")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Clock);
-
-    }
-
-    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isReset"));
-        node.firstChild().nodeValue() == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Reset);
-        
-        if (isStd22)
-        {
-            qualifier->setAttribute(Qualifier::Attribute::ResetLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
-        }
-    }
-
-    if (!isStd22)
-    {
-        return;
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isValid")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Valid);
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isInterrupt")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Interrupt);
-    }
-
-    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isClockEn"));
-        node.firstChild().nodeValue() == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::ClockEnable);
-
-        qualifier->setAttribute(Qualifier::Attribute::ClockEnableLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
-    }
-
-    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isPowerEn"));
-        node.firstChild().nodeValue() == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::PowerEnable);
-
-        qualifier->setAttribute(Qualifier::Attribute::PowerEnableLevel, node.attributes().namedItem(QStringLiteral("level")).nodeValue());
-        qualifier->setAttribute(Qualifier::Attribute::PowerDomainReference, node.attributes().namedItem(QStringLiteral("powerDomainRef")).nodeValue());
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isOpcode")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Opcode);
-
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isProtection")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Protection);
-
-    }
-
-    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isFlowControl"));
-        node.firstChild().nodeValue() == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::FlowControl);
-
-        auto attributes = node.attributes();
-
-        auto flowType = attributes.namedItem(QStringLiteral("flowType")).nodeValue();
-        qualifier->setAttribute(Qualifier::Attribute::FlowType, flowType);
-
-        if (flowType == QStringLiteral("user"))
-        {
-            qualifier->setAttribute(Qualifier::Attribute::UserFlowType, attributes.namedItem(QStringLiteral("user")).nodeValue());
-        }
-    }
-
-    if (auto const& node = qualifierNode.firstChildElement(QStringLiteral("ipxact:isUser"));
-        node.firstChild().nodeValue() == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::User);
-
-        qualifier->setAttribute(Qualifier::Attribute::UserDefined, node.attributes().namedItem(QStringLiteral("user")).nodeValue());
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isRequest")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Request);
-
-    }
-
-    if (qualifierNode.firstChildElement(QStringLiteral("ipxact:isResponse")).firstChild().nodeValue()
-        == QStringLiteral("true"))
-    {
-        qualifier->setType(Qualifier::Response);
-
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsReader::parsePartSelect()
 //-----------------------------------------------------------------------------
 QSharedPointer<PartSelect> CommonItemsReader::parsePartSelect(QDomNode const& partSelectNode)
@@ -372,6 +241,16 @@ QSharedPointer<PartSelect> CommonItemsReader::parsePartSelect(QDomNode const& pa
     }
 
     return newPartSelect;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsReader::parseRange()
+//-----------------------------------------------------------------------------
+Range CommonItemsReader::parseRange(QDomElement const& rangeElement)
+{
+    return Range(
+        rangeElement.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue(),
+        rangeElement.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue());
 }
 
 //-----------------------------------------------------------------------------

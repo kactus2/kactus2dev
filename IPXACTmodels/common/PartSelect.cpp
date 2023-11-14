@@ -77,6 +77,14 @@ QString PartSelect::getRightRange() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PartSelect::getRange()
+//-----------------------------------------------------------------------------
+Range PartSelect::getRange() const
+{
+    return range_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PartSelect::setLeftRange()
 //-----------------------------------------------------------------------------
 void PartSelect::setLeftRange(QString const& newLeftRange)

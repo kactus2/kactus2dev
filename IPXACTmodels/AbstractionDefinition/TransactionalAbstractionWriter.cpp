@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolWriter.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/QualifierWriter.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -28,7 +29,7 @@ void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer
 {
     writer.writeStartElement(QStringLiteral("ipxact:transactional"));
 
-    Details::writeQualifier(writer, transactional);
+    QualifierWriter::writeQualifier(writer, transactional->getQualifier());
 
     Details::writeSystem(writer, transactional);
 
@@ -48,23 +49,12 @@ void TransactionalAbstractionWriter::writeTransactional(QXmlStreamWriter& writer
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalAbstractionWriter::Details::writeQualifier()
-//-----------------------------------------------------------------------------
-void TransactionalAbstractionWriter::Details::writeQualifier(QXmlStreamWriter& writer, 
-    QSharedPointer<TransactionalAbstraction> transactional)
-{
-    auto qualifier = transactional->getQualifier();
-    
-    CommonItemsWriter::writeQualifier(writer, qualifier);
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransactionalAbstractionWriter::Details::writeSystem()
 //-----------------------------------------------------------------------------
 void TransactionalAbstractionWriter::Details::writeSystem(QXmlStreamWriter& writer,
     QSharedPointer<TransactionalAbstraction> transactional)
 {
-    for (auto systemPort : *transactional->getSystemPorts())
+    for (auto const& systemPort : *transactional->getSystemPorts())
     {
         writer.writeStartElement(QStringLiteral("ipxact:onSystem"));
         writer.writeTextElement(QStringLiteral("ipxact:group"), systemPort->getSystemGroup());

@@ -304,7 +304,7 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 
         parseInstantiations(modelElement, newmodel, newComponent->getRevision());
 
-        parsePorts(modelElement, newmodel);
+        parsePorts(modelElement, newmodel, newComponent->getRevision());
 
         newComponent->setModel(newmodel);
     }
@@ -415,19 +415,18 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::parsePorts()
 //-----------------------------------------------------------------------------
-void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
+void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomElement portsElement = modelElement.firstChildElement(QStringLiteral("ipxact:ports"));
 
     if (!portsElement.isNull())
     {
-        PortReader portReader;
-
         QDomNodeList portNodeList = portsElement.elementsByTagName(QStringLiteral("ipxact:port"));
         for (int portIndex = 0; portIndex < portNodeList.count(); ++portIndex)
         {
             QDomNode portNode = portNodeList.at(portIndex);
-            QSharedPointer<Port> newPort = portReader.createPortFrom(portNode);
+            QSharedPointer<Port> newPort = PortReader::createPortFrom(portNode, docRevision);
 
             newModel->getPorts()->append(newPort);
         }

@@ -165,7 +165,7 @@ private:
      *      @param [in] modelElement    XML description of the model.
      *      @param [in] newModel        The new model item.
      */
-    void parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel) const;
+    void parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel, Document::Revision docRevisio) const;
 
     /*!
      *  Reads the component generators.

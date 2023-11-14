@@ -36,6 +36,7 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
     ./common/ChoiceWriter.h \
     ./common/FileType.h \
+    ./common/QualifierReader.h \
     ./common/TagData.h \
     ./common/AccessTypes.h \
     ./common/Array.h \
@@ -133,6 +134,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/AccessPolicy.h \
     ./Component/AccessPolicyReader.h \
     ./Component/AccessPolicyWriter.h \
+    ./Component/Driver.h \
     ./Component/ExecutableImage.h \
     ./Component/FieldAccessPolicy.h \
     ./Component/FieldAccessPolicyReader.h \
@@ -301,7 +303,8 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./common/QualifierWriter.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -371,6 +374,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/ProtocolReader.cpp \
     ./common/ProtocolWriter.cpp \
     ./common/Qualifier.cpp \
+    ./common/QualifierReader.cpp \
     ./common/Range.cpp \
     ./common/TimingConstraint.cpp \
     ./common/TransactionalTypes.cpp \
@@ -456,6 +460,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/CPUWriter.cpp \
     ./Component/DesignConfigurationInstantiation.cpp \
     ./Component/DesignInstantiation.cpp \
+    ./Component/Driver.cpp \
     ./Component/EnumeratedValue.cpp \
     ./Component/EnumeratedValueReader.cpp \
     ./Component/EnumeratedValueWriter.cpp \
@@ -595,4 +600,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./common/QualifierWriter.cpp

@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/common/NameGroupWriter.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/QualifierWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: PacketWriter::writePacket()
@@ -67,7 +68,7 @@ void PacketWriter::Details::writeSinglePacketField(QXmlStreamWriter& writer, QSh
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:value"), packetField->getValue());
     CommonItemsWriter::writeNonEmptyElement(writer, QStringLiteral("ipxact:endianness"), packetField->getEndianness());
 
-    CommonItemsWriter::writeQualifier(writer, packetField->getQualifier());
+    QualifierWriter::writeQualifier(writer, packetField->getQualifier());
 
     CommonItemsWriter::writeVendorExtensions(writer, packetField);
 

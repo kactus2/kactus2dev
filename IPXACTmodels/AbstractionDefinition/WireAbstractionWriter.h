@@ -42,14 +42,6 @@ namespace WireAbstractionWriter
     {
 
         /*!
-         *  Writes the given wire qualifier into XML.
-         *
-         *      @param [in] writer      The XML writer to use.
-         *      @param [in] wire        The wire whose qualifier to write.
-         */
-        void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<WireAbstraction> wire);
-
-        /*!
          *  Writes the system port for the given wire into XML.
          *
          *      @param [in] writer      The XML writer to use.

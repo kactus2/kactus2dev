@@ -24,7 +24,6 @@ class Parameter;
 class Choice;
 class Assertion;
 class ConfigurableElementValue;
-class Qualifier;
 class NameGroup;
 class PartSelect;
 class ModeReference;
@@ -37,15 +36,7 @@ class CommonItemsWriter
 {
 public:
 
-    //! The constructor.
-    CommonItemsWriter();
-
-	//! The destructor.
     virtual ~CommonItemsWriter() = default;
-
-    // Disable copying.
-    CommonItemsWriter(CommonItemsWriter const& rhs) = delete;
-    CommonItemsWriter& operator=(CommonItemsWriter const& rhs) = delete;
 
     /*!
      *  Writes the given VLNV as separate elements into XML.
@@ -164,9 +155,6 @@ public:
     
     static void writeNonEmptyAttribute(QXmlStreamWriter& writer, QString const& attributeName, std::string const& value);
 
-
-	static void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier);
-
     /*!
      *  Write a part select.
      *
@@ -174,6 +162,8 @@ public:
      *      @param [in] partSelect  The selected part select.
      */
     static void writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect);
+
+    static void writeRange(QXmlStreamWriter& writer, Range const& range);
 
     /*!
      *	Write mode references.

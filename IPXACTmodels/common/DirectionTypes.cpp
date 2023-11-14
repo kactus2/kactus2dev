@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: DirectionTypes::convert2Mirrored()
 //-----------------------------------------------------------------------------
-DirectionTypes::Direction DirectionTypes::convert2Mirrored(const Direction originalDirection )
+constexpr DirectionTypes::Direction DirectionTypes::convert2Mirrored(Direction originalDirection )
 {
     if (originalDirection == DirectionTypes::IN)
     {
@@ -45,19 +45,19 @@ DirectionTypes::Direction DirectionTypes::convert2Mirrored(const Direction origi
 //-----------------------------------------------------------------------------
 DirectionTypes::Direction DirectionTypes::str2Direction(QString const& str, DirectionTypes::Direction defaultValue)
 {
-	if (str == QLatin1String("in"))
+	if (str == QStringLiteral("in"))
     {
 		return DirectionTypes::IN;
 	}
-	else if (str == QLatin1String("out"))
+	else if (str == QStringLiteral("out"))
     {
 		return DirectionTypes::OUT;
 	}
-	else if (str == QLatin1String("inout"))
+	else if (str == QStringLiteral("inout"))
     {
 		return DirectionTypes::INOUT;
 	}
-	else if (str == QLatin1String("phantom"))
+	else if (str == QStringLiteral("phantom"))
     {
 		return DirectionTypes::DIRECTION_PHANTOM;
 	}
@@ -70,7 +70,7 @@ DirectionTypes::Direction DirectionTypes::str2Direction(QString const& str, Dire
 //-----------------------------------------------------------------------------
 // Function: DirectionTypes::str2Direction()
 //-----------------------------------------------------------------------------
-DirectionTypes::Direction DirectionTypes::str2Direction(std::string const& str, DirectionTypes::Direction defaultValue )
+DirectionTypes::Direction DirectionTypes::str2Direction(std::string_view str, DirectionTypes::Direction defaultValue )
 {
     if (str == "in")
     {

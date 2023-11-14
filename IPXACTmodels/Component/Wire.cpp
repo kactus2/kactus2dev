@@ -25,9 +25,8 @@
 //-----------------------------------------------------------------------------
 Wire::Wire(Wire const& other) : 
 direction_(other.direction_),
-allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_),
-defaultDriverValue_(other.defaultDriverValue_),
-defaultValueAttributes_(other.defaultValueAttributes_)
+qualifier_(new Qualifier(*other.qualifier_)),
+allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_)
 {
 	if (other.vector_)
     {
@@ -35,6 +34,11 @@ defaultValueAttributes_(other.defaultValueAttributes_)
 	}
 
     Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+    if (other.driver_)
+    {
+        driver_ = QSharedPointer<Driver>(new Driver(*other.driver_));
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -45,17 +49,21 @@ Wire& Wire::operator=( const Wire &other )
 	if (this != &other)
     {
 		direction_ = other.direction_;
+        qualifier_ = QSharedPointer<Qualifier>(new Qualifier(*other.qualifier_));
 		allLogicalDirectionsAllowed_ = other.allLogicalDirectionsAllowed_;
-		defaultDriverValue_ = other.defaultDriverValue_;
-		defaultValueAttributes_ = other.defaultValueAttributes_;
 
 		if (other.vector_)
         {
             vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
 		}
 
-        wireTypeDefs_.clear();
+        wireTypeDefs_ = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >(new QList<QSharedPointer<WireTypeDef> >);
         Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+        if (other.driver_)
+        {
+            driver_ = QSharedPointer<Driver>(new Driver(*other.driver_));
+        }
 	}
 	return *this;
 }
@@ -66,6 +74,14 @@ Wire& Wire::operator=( const Wire &other )
 DirectionTypes::Direction Wire::getDirection() const
 {
     return direction_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::getQualifier()
+//-----------------------------------------------------------------------------
+QSharedPointer<Qualifier> Wire::getQualifier() const
+{
+    return qualifier_;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,7 +145,12 @@ void Wire::setAllLogicalDirectionsAllowed(bool allow)
 //-----------------------------------------------------------------------------
 void Wire::setDefaultDriverValue(const QString& defaultDriverValue)
 {
-    defaultDriverValue_ = defaultDriverValue;
+    if (driver_.isNull())
+    {
+        driver_ = QSharedPointer<Driver>(new Driver{});
+    }
+
+    driver_->setDefaultValue(defaultDriverValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +158,12 @@ void Wire::setDefaultDriverValue(const QString& defaultDriverValue)
 //-----------------------------------------------------------------------------
 QString Wire::getDefaultDriverValue() const
 {
-    return defaultDriverValue_;
+    if (driver_.isNull())
+    {
+        return QString();
+    }
+
+    return driver_->getDefaultValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -190,6 +216,22 @@ QString Wire::getVectorRightBound() const
     }
 
     return vector_->getRight();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::setDriver()
+//-----------------------------------------------------------------------------
+void Wire::setDriver(QSharedPointer<Driver> driver)
+{
+    driver_ = driver;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::getDriver()
+//-----------------------------------------------------------------------------
+QSharedPointer<Driver> Wire::getDriver() const
+{
+    return driver_;
 }
 
 //-----------------------------------------------------------------------------

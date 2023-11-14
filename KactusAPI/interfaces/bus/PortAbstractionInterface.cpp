@@ -588,7 +588,7 @@ std::vector<std::string> PortAbstractionInterface::getQualifierStringList(int co
             portQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
         }
 
-        for (auto const& type : *portQualifier->getTypes())
+        for (auto const& type : portQualifier->getTypes())
         {
             qualifierList.push_back(Qualifier::typeToString(type).toStdString());
         }
@@ -732,7 +732,7 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         return false;
     }
 
-    if (attributes.size() != Qualifier::Attribute::COUNT * 2)
+    if (attributes.size() != Qualifier::ATTRIBUTE_COUNT * 2)
     {
         return false;
     }
@@ -1726,12 +1726,10 @@ Qualifier::Attribute PortAbstractionInterface::getQualifierAttributeType(std::st
     {
         return Qualifier::Attribute::UserFlowType;
     }
-    else if (attributeName == "userDefined")
+    else 
     {
         return Qualifier::Attribute::UserDefined;
     }
-
-    return Qualifier::Attribute::COUNT;
 }
 
 //-----------------------------------------------------------------------------

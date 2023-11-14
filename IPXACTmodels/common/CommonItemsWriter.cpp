@@ -26,13 +26,6 @@
 #include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
 
-//-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::CommonItemsWriter()
-//-----------------------------------------------------------------------------
-CommonItemsWriter::CommonItemsWriter()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeVLNVElements()
@@ -228,139 +221,6 @@ void CommonItemsWriter::writeNonEmptyAttribute(QXmlStreamWriter& writer, QString
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonItemsWriter::writeQualifier()
-//-----------------------------------------------------------------------------
-void CommonItemsWriter::writeQualifier(QXmlStreamWriter& writer, QSharedPointer<Qualifier> qualifier)
-{
-    if (!qualifier->isSet())
-    {
-        return;
-    }
-
-    writer.writeStartElement(QStringLiteral("ipxact:qualifier"));
-
-    if (qualifier->hasType(Qualifier::Address))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isAddress"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Data))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isData"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Clock))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isClock"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Reset))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:isReset"));
-
-        if (auto level = qualifier->getAttribute(Qualifier::Attribute::ResetLevel); !level.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("level"), level);
-        }
-        writer.writeCharacters(QStringLiteral("true"));
-        
-        writer.writeEndElement();
-    }
-    if (qualifier->hasType(Qualifier::Valid))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isValid"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Interrupt))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isInterrupt"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::ClockEnable))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:isClockEn"));
-
-        if (auto level = qualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel); !level.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("level"), level);
-        }
-        writer.writeCharacters(QStringLiteral("true"));
-
-        writer.writeEndElement();
-    }
-    if (qualifier->hasType(Qualifier::PowerEnable))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:isPowerEn"));
-
-        if (auto level = qualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel); !level.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("level"), level);
-        }
-
-        if (auto const& reference = qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference);
-            !reference.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("powerDomainRef"), reference);
-        }
-
-        writer.writeCharacters(QStringLiteral("true"));
-
-        writer.writeEndElement();
-    }
-    if (qualifier->hasType(Qualifier::Opcode))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isOpcode"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Protection))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isProtection"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::FlowControl))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:isFlowControl"));
-        
-        auto const& type = qualifier->getAttribute(Qualifier::Attribute::FlowType);
-        if (!type.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("flowType"), type);
-        }
-
-        if (type == QStringLiteral("user"))
-        {
-            if (auto const& userType = qualifier->getAttribute(Qualifier::Attribute::UserFlowType);
-                !userType.isEmpty())
-            {
-                writer.writeAttribute(QStringLiteral("user"), userType);
-            }
-        }
-
-        writer.writeCharacters(QStringLiteral("true"));
-
-        writer.writeEndElement();
-    }
-    if (qualifier->hasType(Qualifier::User))
-    {
-        writer.writeStartElement(QStringLiteral("ipxact:isUser"));
-
-        if (auto const& userDefined = qualifier->getAttribute(Qualifier::Attribute::UserDefined);
-            !userDefined.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("user"), userDefined);
-        }
-
-        writer.writeCharacters(QStringLiteral("true"));
-
-        writer.writeEndElement();
-    }
-    if (qualifier->hasType(Qualifier::Request))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isRequest"), QStringLiteral("true"));
-    }
-    if (qualifier->hasType(Qualifier::Response))
-    {
-        writer.writeTextElement(QStringLiteral("ipxact:isResponse"), QStringLiteral("true"));
-    }
-
-    writer.writeEndElement(); // ipxact:qualifier
-}
-
-
-//-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writePartSelect()
 //-----------------------------------------------------------------------------
 void CommonItemsWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer<PartSelect> partSelect)
@@ -372,10 +232,8 @@ void CommonItemsWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer
 
     writer.writeStartElement(QStringLiteral("ipxact:partSelect"));
 
-    writer.writeStartElement(QStringLiteral("ipxact:range"));
-    writer.writeTextElement(QStringLiteral("ipxact:left"), partSelect->getLeftRange());
-    writer.writeTextElement(QStringLiteral("ipxact:right"), partSelect->getRightRange());
-    writer.writeEndElement();
+    writeRange(writer, partSelect->getRange());
+
 
     // Write all indices of the part select.
     if (partSelect->getIndices()->isEmpty() == false)
@@ -393,10 +251,26 @@ void CommonItemsWriter::writePartSelect(QXmlStreamWriter& writer, QSharedPointer
     writer.writeEndElement(); // ipxact:partSelect
 }
 
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsWriter::writeRange()
+//-----------------------------------------------------------------------------
+void CommonItemsWriter::writeRange(QXmlStreamWriter& writer, Range const& range)
+{
+    if (range.getLeft().isEmpty() == false || range.getRight().isEmpty() == false)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:range"));
+        writer.writeTextElement(QStringLiteral("ipxact:left"), range.getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), range.getRight());
+        writer.writeEndElement();
+    }
+}
+
 //-----------------------------------------------------------------------------
 // Function: CommonItemsWriter::writeModeReferences()
 //-----------------------------------------------------------------------------
-void CommonItemsWriter::writeModeReferences(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences)
+void CommonItemsWriter::writeModeReferences(QXmlStreamWriter& writer,
+    QSharedPointer<QList<QSharedPointer<ModeReference> > > modeReferences)
 {
     if (!modeReferences || modeReferences->isEmpty())
     {

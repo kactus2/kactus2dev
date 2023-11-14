@@ -16,6 +16,7 @@
 #include <IPXACTmodels/common/TimingConstraint.h>
 #include <IPXACTmodels/common/CellSpecification.h>
 #include <IPXACTmodels/common/CommonItemsWriter.h>
+#include <IPXACTmodels/common/QualifierWriter.h>
 
 //-----------------------------------------------------------------------------
 // Function: WireAbstractionWriter::writeWire()
@@ -25,7 +26,7 @@ void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<W
 {
     writer.writeStartElement(QStringLiteral("ipxact:wire"));
 
-    Details::writeQualifier(writer, wire);
+    QualifierWriter::writeQualifier(writer, wire->getQualifier());
 
     QString initiatorElementName = revision == Document::Revision::Std22
         ? QStringLiteral("ipxact:onInitiator")
@@ -52,17 +53,6 @@ void WireAbstractionWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<W
     }
 
     writer.writeEndElement();
-}
-
-//-----------------------------------------------------------------------------
-// Function: WireAbstractionWriter::Details::writeQualifier()
-//-----------------------------------------------------------------------------
-void WireAbstractionWriter::Details::writeQualifier(QXmlStreamWriter& writer, 
-    QSharedPointer<WireAbstraction> wire)
-{
-    auto qualifier = wire->getQualifier();
-    
-    CommonItemsWriter::writeQualifier(writer, qualifier);
 }
 
 //-----------------------------------------------------------------------------

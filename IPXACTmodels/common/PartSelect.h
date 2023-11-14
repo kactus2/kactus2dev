@@ -68,6 +68,8 @@ public:
      */
     QString getRightRange() const;
 
+    Range getRange() const;
+
     /*!
      *  Set the left value for the range.
      *

@@ -34,10 +34,12 @@ private slots:
 
     void writeWirePortAllLogicalDirectionsAllowed();
     void writeWirePortVectors();
+    void writeWirePortVectors_2022();
     void emptyVectorIsNotWritten();
     void writeWireTypeDefinitions();
     void emptyWireTypeDefinitionIsNotWritten();
-    void writeWireDefaultValue();
+    void writeWireDefaultDriver();
+    void writeWireQualifiers_2022();
 
     void writeTransactionalAllLogicalInitiativesAllowed();
     void writeTransactionalKind();
@@ -80,7 +82,7 @@ void tst_ComponentPortWriter::writeSimplePort()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -113,7 +115,7 @@ void tst_ComponentPortWriter::writeSimpleTransactionalPort()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -140,7 +142,7 @@ void tst_ComponentPortWriter::writePortPresence()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -176,7 +178,7 @@ void tst_ComponentPortWriter::writePortArrays()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -212,7 +214,7 @@ void tst_ComponentPortWriter::writePortExtensions()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -241,7 +243,7 @@ void tst_ComponentPortWriter::writePortAdHocVisible()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -271,7 +273,7 @@ void tst_ComponentPortWriter::writePortDefaultPosition()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -300,7 +302,7 @@ void tst_ComponentPortWriter::writePortTags()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -326,7 +328,7 @@ void tst_ComponentPortWriter::writeWirePortAllLogicalDirectionsAllowed()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -359,7 +361,41 @@ void tst_ComponentPortWriter::writeWirePortVectors()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeWirePortVectors_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeWirePortVectors_2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setDirection(DirectionTypes::OUT);
+    testPort->getWire()->setVectorLeftBound("4+18-Yaoxao");
+    testPort->getWire()->setVectorRightBound("Yaoxao");
+    testPort->getWire()->getVector()->setId("testID");
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:vectors>"
+                    "<ipxact:vector vectorId=\"testID\">"
+                        "<ipxact:left>4+18-Yaoxao</ipxact:left>"
+                        "<ipxact:right>Yaoxao</ipxact:right>"
+                    "</ipxact:vector>"
+                "</ipxact:vectors>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+    );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -386,7 +422,7 @@ void tst_ComponentPortWriter::emptyVectorIsNotWritten()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -401,7 +437,8 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
     QSharedPointer<Port> testPort(new Port("testPort"));
     testPort->setDirection(DirectionTypes::OUT);
 
-    QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
+    QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType"));
+    testTypeDefinition->getViewRefs()->append(QStringList{ "testView" });
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
@@ -426,7 +463,7 @@ void tst_ComponentPortWriter::writeWireTypeDefinitions()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -441,7 +478,8 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
     QSharedPointer<Port> testPort(new Port("testPort"));
     testPort->setDirection(DirectionTypes::OUT);
 
-    QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
+    QSharedPointer<WireTypeDef> testTypeDefinition(new WireTypeDef("testType"));
+    testTypeDefinition->getViewRefs()->append(QStringList{ "testView" });
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
@@ -466,7 +504,7 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -487,14 +525,14 @@ void tst_ComponentPortWriter::emptyWireTypeDefinitionIsNotWritten()
             "</ipxact:wire>"
         "</ipxact:port>";
 
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentPortWriter::writeWireDefaultValue()
+// Function: tst_ComponentPortWriter::writeWireDefaultDriver()
 //-----------------------------------------------------------------------------
-void tst_ComponentPortWriter::writeWireDefaultValue()
+void tst_ComponentPortWriter::writeWireDefaultDriver()
 {
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
@@ -502,6 +540,8 @@ void tst_ComponentPortWriter::writeWireDefaultValue()
     QSharedPointer<Port> testPort(new Port("testPort"));
     testPort->setDirection(DirectionTypes::OUT);
     testPort->setDefaultValue("4+4-2");
+    auto driver = testPort->getWire()->getDriver();
+    driver->setRange(Range("1", "0"));
 
     QString expectedOutput(
         "<ipxact:port>"
@@ -510,6 +550,10 @@ void tst_ComponentPortWriter::writeWireDefaultValue()
                 "<ipxact:direction>out</ipxact:direction>"
                 "<ipxact:drivers>"
                     "<ipxact:driver>"
+                        "<ipxact:range>"
+                            "<ipxact:left>1</ipxact:left>"
+                            "<ipxact:right>0</ipxact:right>"
+                        "</ipxact:range>"
                         "<ipxact:defaultValue>4+4-2</ipxact:defaultValue>"
                     "</ipxact:driver>"
                 "</ipxact:drivers>"
@@ -518,7 +562,43 @@ void tst_ComponentPortWriter::writeWireDefaultValue()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeWireQualifiers_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeWireQualifiers_2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));
+    testPort->setWire(QSharedPointer<Wire>(new Wire()));
+    testPort->setDirection(DirectionTypes::OUT);
+    
+    auto wire = testPort->getWire(); 
+    auto qualifier = wire->getQualifier();
+    qualifier->setType(Qualifier::Type::Reset);
+    qualifier->setAttribute(Qualifier::Attribute::ResetLevel, "low");
+    qualifier->setType(Qualifier::Type::FlowControl);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:qualifier>"
+                    "<ipxact:isReset level=\"low\">true</ipxact:isReset>"
+                    "<ipxact:isFlowControl>true</ipxact:isFlowControl>"
+                "</ipxact:qualifier>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -547,7 +627,7 @@ void tst_ComponentPortWriter::writeTransactionalAllLogicalInitiativesAllowed()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -577,7 +657,7 @@ void tst_ComponentPortWriter::writeTransactionalKind()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -595,7 +675,7 @@ void tst_ComponentPortWriter::writeTransactionalKind()
         "</ipxact:port>"
         ;
 
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -626,7 +706,7 @@ void tst_ComponentPortWriter::writeTransactionalBusWidth()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -679,7 +759,7 @@ void tst_ComponentPortWriter::writeTransactionalProtocol()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 
     output.clear();
@@ -706,7 +786,7 @@ void tst_ComponentPortWriter::writeTransactionalProtocol()
         "</ipxact:port>"
         ;
 
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -718,7 +798,8 @@ void tst_ComponentPortWriter::writeTransactionalTypeDefinitions()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    QSharedPointer<WireTypeDef> testTypeDefinition (new WireTypeDef("testType", "testView"));
+    QSharedPointer<WireTypeDef> testTypeDefinition(new WireTypeDef("testType"));
+    testTypeDefinition->getViewRefs()->append(QStringList{ "testView" });
     testTypeDefinition->setConstrained(true);
     QStringList typeDefinitions;
     typeDefinitions.append("testTypeDefinition");
@@ -748,7 +829,7 @@ void tst_ComponentPortWriter::writeTransactionalTypeDefinitions()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -782,7 +863,7 @@ void tst_ComponentPortWriter::writeTransactionalConnectionMinMax()
         );
 
     PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort);
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

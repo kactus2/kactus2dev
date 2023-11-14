@@ -12,9 +12,11 @@
 #ifndef WIRE_H
 #define WIRE_H
 
+#include "Driver.h"
 #include "WireTypeDef.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -35,7 +37,7 @@ class IPXACTMODELS_EXPORT Wire
 public:
 
 	//! The default constructor.
-	Wire() = default;
+	Wire() noexcept = default;
 
     /*!
 	 * Copy constructor.
@@ -65,6 +67,8 @@ public:
      *      @return Enum direction specifying the port direction.
 	 */
 	DirectionTypes::Direction getDirection() const;
+
+	QSharedPointer<Qualifier> getQualifier() const;
 
     /*!
      *  Get the vector element of this port.
@@ -150,6 +154,10 @@ public:
      */
     QString getVectorRightBound() const;
 
+	void setDriver(QSharedPointer<Driver> driver);
+
+	QSharedPointer<Driver> getDriver() const;
+
 	/*!
 	 *  Get the type name of the port for a given view.
 	 *
@@ -212,20 +220,31 @@ private:
     //! The direction of the port.
 	DirectionTypes::Direction direction_{ DirectionTypes::DIRECTION_INVALID };
 
+	//! The wire qualifier.
+	QSharedPointer<Qualifier> qualifier_{ new Qualifier };
+
     //! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
 	bool allLogicalDirectionsAllowed_{ false };
 
     //! Determines the vector qualities of the port.
+    //! Multiple vectors not supported.
 	QSharedPointer<Vector> vector_{ nullptr };
 
     //! Describes the ports type as defined bu the implementation.
 	QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
 
-    //! Specifies a static logic value for this port.
-	QString defaultDriverValue_;
+    //! DomainTypeDefs not supported.
+    
+    //! SignalTypeDefs not supported.
+	
+    //! Specifies a driver for this port.
+	//! Multiple drivers not supported.
+	QSharedPointer<Driver> driver_{ nullptr };
 
-	//! OPTIONAL Attributes for the defaultDriverValue element.
-	QMap<QString, QString> defaultValueAttributes_;
+    //! ConstraintSets not supported.
+
+	//! PowerConstraints not supported.
+
 };
 
 #endif // WIRE_H

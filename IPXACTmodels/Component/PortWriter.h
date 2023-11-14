@@ -28,30 +28,14 @@ class IPXACTMODELS_EXPORT PortWriter : public CommonItemsWriter
 public:
 
     /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
-     */
-    PortWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~PortWriter();
-
-    /*!
      *  Write a component port to an XML file.
      *
      *      @param [in] writer  The used XML writer.
      *      @param [in] port    The port to be written.
      */
-    void writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) const;
+    void writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, Document::Revision docRevision) const;
 
 private:
-
-    //! No copying allowed.
-    PortWriter(PortWriter const& rhs);
-    PortWriter& operator=(PortWriter const& rhs);
 
     /*!
      *  Write a wire port.
@@ -59,7 +43,7 @@ private:
      *      @param [in] writer  Used XML writer.
      *      @param [in] wire    The wire to be written.
      */
-    void writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire) const;
+    void writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, Document::Revision docRevision) const;
 
     /*!
      *  Write a transactional port.
@@ -83,7 +67,7 @@ private:
      *      @param [in] writer  Used XML writer.
      *      @param [in] vector  The vector to be written.
      */
-    void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector) const;
+    void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector, Document::Revision docRevision) const;
 
     /*!
      *  Write the wire type definitions.
@@ -123,12 +107,12 @@ private:
         QString const& attributeName) const;
 
     /*!
-     *  Write the wire default value.
+     *  Write the wire driver.
      *
      *      @param [in] writer          Used XML writer.
-     *      @param [in] defaultValue    The default value to be written.
+     *      @param [in] driver          The driver to be written.
      */
-    void writeWireDefaultValue(QXmlStreamWriter& writer, QString const& defaultValue) const;
+    void writeWireDriver(QXmlStreamWriter& writer, QSharedPointer<Driver> driver) const;
 
     /*!
      *  Write the transactional kind.
