@@ -317,7 +317,7 @@ public:
      *
      *      @return The number of references made to the selected parameter in the selected memory remap.
      */
-    int getAllReferencesToIdInRemapItem(std::string const& mapName, std::string& remapName,
+    int getAllReferencesToIdInRemapItem(std::string const& mapName, std::string const& remapName,
         std::string const& valueID) const;
 
     /*!
@@ -415,7 +415,7 @@ public:
      *
      *      @param [in] selectedRows    Indexes of the selected items.
      */
-    void copyRows(std::vector<std::string> selectedRows);
+    void copyRows(std::vector<std::string> const& selectedRows);
 
     /*!
      *  Paste the selected memory maps.

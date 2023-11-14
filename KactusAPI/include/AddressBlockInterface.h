@@ -284,8 +284,7 @@ public:
      *
      *      @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const
-        override final;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const override final;
 
     /*!
      *  Get the sub interface.
@@ -347,7 +346,7 @@ private:
      *
      *      @return List of the copied memory blocks.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> selectedRows) const override
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const override
         final;
 
     /*!

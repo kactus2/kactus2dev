@@ -410,7 +410,7 @@ public:
      *
      *      @param [in] selectedRows    Indexes of the selected registers.
      */
-    void copyRows(std::vector<int> selectedRows);
+    void copyRows(std::vector<int> const& selectedRows);
 
     /*!
      *  Paste the selected registers.
@@ -433,7 +433,7 @@ public:
      *
      *      @return The expressions of the selected registers.
      */
-    std::vector<std::string> getExpressionsInSelectedRegisters(std::vector<std::string> registerNames) const;
+    std::vector<std::string> getExpressionsInSelectedRegisters(std::vector<std::string> const& registerNames) const;
 
     /*!
      *  Change the value for address unit bits.

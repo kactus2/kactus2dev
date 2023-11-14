@@ -507,7 +507,7 @@ std::vector<std::string> MemoryMapInterface::getAssociatedSlaveInterfaces(std::s
 {
     std::vector<std::string> associatedSlaves;
 
-    for (auto slave : component_->getTargetInterfaces(QString::fromStdString(mapName)))
+    for (auto const& slave : component_->getTargetInterfaces(QString::fromStdString(mapName)))
     {
         associatedSlaves.push_back(slave.toStdString());
     }
@@ -553,7 +553,7 @@ std::vector<std::string> MemoryMapInterface::getMapExpressions(std::string const
 
     std::vector<std::string> expressionList;
 
-    for (auto expression : mapExpressions)
+    for (auto const& expression : mapExpressions)
     {
         expressionList.push_back(expression.toStdString());
     }
@@ -564,7 +564,7 @@ std::vector<std::string> MemoryMapInterface::getMapExpressions(std::string const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getAllReferencesToIdInRemapItem()
 //-----------------------------------------------------------------------------
-int MemoryMapInterface::getAllReferencesToIdInRemapItem(std::string const& mapName, std::string& remapName,
+int MemoryMapInterface::getAllReferencesToIdInRemapItem(std::string const& mapName, std::string const& remapName,
     std::string const& valueID) const
 {
     QSharedPointer<MemoryRemap> selectedItem = getMemoryRemap(mapName, remapName);
@@ -743,11 +743,11 @@ bool MemoryMapInterface::removeRemap(std::string const& mapName, std::string rem
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::copyRows()
 //-----------------------------------------------------------------------------
-void MemoryMapInterface::copyRows(std::vector<std::string> selectedRows)
+void MemoryMapInterface::copyRows(std::vector<std::string> const& selectedRows)
 {
     QList<QSharedPointer<MemoryMapBase> > copiedMemories;
     QList<QSharedPointer<MemoryRemap> > copiedRemaps;
-    for (auto row : selectedRows)
+    for (auto const& row : selectedRows)
     {
         QStringList rowData = QString::fromStdString(row).split("_");
         int mapIndex = rowData.first().toInt();
@@ -838,7 +838,7 @@ std::vector<std::string> MemoryMapInterface::pasteMemoryRemaps(std::string const
             QList<QSharedPointer<MemoryMapBase> > copiedMapList =
                 pasteVariant.value<QList<QSharedPointer<MemoryMapBase>>>();
 
-            foreach(QSharedPointer<MemoryMapBase> copiedMap, copiedMapList)
+            for (auto const& copiedMap : copiedMapList)
             {
                 QSharedPointer<MemoryRemap> copyRemap = copiedMap.dynamicCast<MemoryRemap>();
                 if (copyRemap)
@@ -1117,7 +1117,7 @@ QString MemoryMapInterface::getUniqueRemapName(std::string const& mapName, std::
 //-----------------------------------------------------------------------------
 bool MemoryMapInterface::remapNameIsUnique(std::string const& mapName, QString const& remapName) const
 {
-    for (auto containedName : getRemapNames(mapName))
+    for (auto const& containedName : getRemapNames(mapName))
     {
         QString convertedName = QString::fromStdString(containedName);
         if (convertedName == remapName)

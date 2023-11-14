@@ -544,7 +544,7 @@ public:
      *
      *      @param [in] selectedRows    Indexes of the selected fields.
      */
-    void copyRows(std::vector<int> selectedRows);
+    void copyRows(std::vector<int> const& selectedRows);
 
     /*!
      *  Paste the selected fields.
@@ -567,7 +567,7 @@ public:
      *
      *      @return The expressions of the selected fields.
      */
-    std::vector<std::string> getExpressionsInSelectedFields(std::vector<std::string> fieldNames) const;
+    std::vector<std::string> getExpressionsInSelectedFields(std::vector<std::string> const& fieldNames) const;
 
     /*!
      *  Get the sub interface.
@@ -820,7 +820,7 @@ public:
      *	    
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setModeReferences(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<unsigned int, std::string> > newModeRefs);
+    bool setModeReferences(std::string const& fieldName, int accessPolicyIndex, std::vector<std::pair<unsigned int, std::string> > const& newModeRefs);
 
     /*!
      *	Get the access policy count of the given field.

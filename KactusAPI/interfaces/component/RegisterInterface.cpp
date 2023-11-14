@@ -669,7 +669,7 @@ bool RegisterInterface::removeRegister(std::string const& registerName, int cons
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::copyRows()
 //-----------------------------------------------------------------------------
-void RegisterInterface::copyRows(std::vector<int> selectedRows)
+void RegisterInterface::copyRows(std::vector<int> const& selectedRows)
 {
     QList<QSharedPointer<Register> > copiedRegisters;
     for (auto index : selectedRows)
@@ -704,7 +704,7 @@ std::vector<std::string> RegisterInterface::pasteRows()
         {
             QList<QSharedPointer<Register> > copiedRegisterList = pasteVariant.value<QList<QSharedPointer<Register>>>();
 
-            foreach(QSharedPointer<Register> copiedRegister, copiedRegisterList)
+            for (auto const& copiedRegister : copiedRegisterList)
             {
                 QSharedPointer<Register> newRegister(new Register(*copiedRegister.data()));
                 newRegister->setName(getUniqueName(newRegister->name().toStdString(), REGISTER_TYPE));
@@ -743,17 +743,17 @@ int RegisterInterface::getPasteRowCount() const
 // Function: RegisterInterface::getExpressionsInSelectedFields()
 //-----------------------------------------------------------------------------
 std::vector<std::string> RegisterInterface::
-    getExpressionsInSelectedRegisters(std::vector<std::string> registerNames) const
+    getExpressionsInSelectedRegisters(std::vector<std::string> const& registerNames) const
 {
     std::vector<std::string> expressionList;
 
     RegisterExpressionsGatherer gatherer;
 
-    for (auto name : registerNames)
+    for (auto const& name : registerNames)
     {
         QSharedPointer<Register> currentRegister = getRegister(name);
         QStringList registerExpressions = gatherer.getExpressions(currentRegister);
-        for (auto expression : registerExpressions)
+        for (auto const& expression : registerExpressions)
         {
             expressionList.push_back(expression.toStdString());
         }

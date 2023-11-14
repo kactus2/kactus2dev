@@ -382,7 +382,7 @@ int AddressBlockInterface::getAllReferencesToIdInItem(const string& itemName, st
 //-----------------------------------------------------------------------------
 bool AddressBlockInterface::validateItems() const
 {
-    for (auto currentItemName : getItemNames())
+    for (auto const& currentItemName : getItemNames())
     {
         QSharedPointer<AddressBlock> block = getAddressBlock(currentItemName);
         if (block)
@@ -476,7 +476,7 @@ void AddressBlockInterface::addBlock(int const& row, std::string const& newBlock
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getCopiedBlocks()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<MemoryBlockBase> > AddressBlockInterface::getCopiedBlocks(std::vector<int> selectedRows) const
+QList<QSharedPointer<MemoryBlockBase> > AddressBlockInterface::getCopiedBlocks(std::vector<int> const& selectedRows) const
 {
     QList<QSharedPointer<MemoryBlockBase> > copiedBlocks;
     for (auto index : selectedRows)
@@ -538,18 +538,17 @@ int AddressBlockInterface::countItems(QList<QSharedPointer<MemoryBlockBase> > it
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getExpressionsInSelectedItems()
 //-----------------------------------------------------------------------------
-std::vector<std::string> AddressBlockInterface::getExpressionsInSelectedItems(std::vector<std::string> itemNames)
-    const
+std::vector<std::string> AddressBlockInterface::getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const
 {
     std::vector<std::string> expressionList;
 
     AddressBlockExpressionGatherer gatherer;
 
-    for (auto name : itemNames)
+    for (auto const& name : itemNames)
     {
         QSharedPointer<AddressBlock> currentBlock = getAddressBlock(name);
         QStringList itemExpressions = gatherer.getExpressions(currentBlock);
-        for (auto expression : itemExpressions)
+        for (auto const& expression : itemExpressions)
         {
             expressionList.push_back(expression.toStdString());
         }

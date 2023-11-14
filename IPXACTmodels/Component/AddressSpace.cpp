@@ -223,7 +223,7 @@ void AddressSpace::copyLocalMemoryMap(const AddressSpace& other)
 //-----------------------------------------------------------------------------
 void AddressSpace::copySegments(const AddressSpace& other)
 {
-    foreach (QSharedPointer<Segment> segment, *other.segments_)
+    for (auto const& segment :*other.segments_)
     {
         if (segment)
         {
@@ -238,7 +238,7 @@ void AddressSpace::copySegments(const AddressSpace& other)
 //-----------------------------------------------------------------------------
 void AddressSpace::copyParameters(const AddressSpace& other)
 {
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
+    for (auto const& parameter : *other.parameters_)
     {
         if (parameter)
         {

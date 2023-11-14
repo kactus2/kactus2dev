@@ -169,7 +169,7 @@ bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceM
     {
 		if (mode == General::INTERFACE_MODE_COUNT)
 		{
-			foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+			for (auto const& port: *logicalPorts_)
 			{
 				if (port->getLogicalName() == portName && port->hasWire())
 				{
@@ -178,7 +178,7 @@ bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceM
 			}
 		}
 
-        foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+        for (auto const& port : *logicalPorts_)
         {
             if (port->getLogicalName() == portName)
             {
@@ -217,7 +217,7 @@ QStringList AbstractionDefinition::getPortNames(General::InterfaceMode mode) con
     QStringList portNames;
     if (logicalPorts_)
     {
-        foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+        for (auto const& port : *logicalPorts_)
         {
             if (port->hasWire())
             {
@@ -249,7 +249,7 @@ DirectionTypes::Direction AbstractionDefinition::getPortDirection(QString const&
 {
     if (logicalPorts_)
     {
-        foreach (QSharedPointer<PortAbstraction> port, *logicalPorts_)
+        for (auto const& port : *logicalPorts_)
         {
             if (port->getLogicalName() == portName && port->hasWire())
             {
@@ -288,7 +288,7 @@ QSharedPointer<PortAbstraction> AbstractionDefinition::getPort(QString const& po
 {
     if (logicalPorts_)
     {
-        for (QSharedPointer<PortAbstraction> port : *logicalPorts_)
+        for (auto const& port : *logicalPorts_)
         {
             if (port->getLogicalName() == portName)
             {

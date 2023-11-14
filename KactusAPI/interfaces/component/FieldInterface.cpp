@@ -1290,7 +1290,7 @@ bool FieldInterface::removeField(string const& fieldName)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::copyRows()
 //-----------------------------------------------------------------------------
-void FieldInterface::copyRows(std::vector<int> selectedRows)
+void FieldInterface::copyRows(std::vector<int> const& selectedRows)
 {
     QList<QSharedPointer<Field> > copiedFields;
     for (auto index : selectedRows)
@@ -1325,9 +1325,9 @@ std::vector<std::string> FieldInterface::pasteRows()
         {
             QList<QSharedPointer<Field> > newFields = pasteVariant.value<QList<QSharedPointer<Field> > >();
 
-            foreach(QSharedPointer<Field> copiedField, newFields)
+            for (auto const& field : newFields)
             {
-                QSharedPointer<Field> newField(new Field(*copiedField.data()));
+                QSharedPointer<Field> newField(new Field(*field));
                 newField->setName(getUniqueName(newField->name().toStdString(), FIELD_TYPE));
                 fields_->append(newField);
 
@@ -1361,17 +1361,17 @@ int FieldInterface::getPasteRowCount() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getExpressionsInSelectedFields()
 //-----------------------------------------------------------------------------
-std::vector<std::string> FieldInterface::getExpressionsInSelectedFields(std::vector<std::string> fieldNames) const
+std::vector<std::string> FieldInterface::getExpressionsInSelectedFields(std::vector<std::string> const& fieldNames) const
 {
     std::vector<std::string> expressionList;
 
     FieldExpressionsGatherer gatherer;
 
-    for (auto name : fieldNames)
+    for (auto const& name : fieldNames)
     {
         QSharedPointer<Field> field = getField(name);
         QStringList fieldExpressions = gatherer.getExpressions(field);
-        for (auto expression : fieldExpressions)
+        for (auto const& expression : fieldExpressions)
         {
             expressionList.push_back(expression.toStdString());
         }
@@ -1412,8 +1412,7 @@ std::string FieldInterface::getWriteConstraint(std::string const& fieldName, int
     std::string writeConstraintText =
         WriteValueConversions::typeToString(WriteValueConstraint::TYPE_COUNT).toStdString();
 
-    QSharedPointer<WriteValueConstraint> fieldWriteConstraint = getWriteValueConstraint(fieldName, accessPolicyIndex);
-    if (fieldWriteConstraint)
+    if (auto fieldWriteConstraint = getWriteValueConstraint(fieldName, accessPolicyIndex))
     {
         writeConstraintText = WriteValueConversions::typeToString(fieldWriteConstraint->getType()).toStdString();
     }
@@ -1876,7 +1875,7 @@ std::vector<std::pair<unsigned int, std::string> > FieldInterface::getModeRefere
 // Function: FieldInterface::setModeReferences()
 //-----------------------------------------------------------------------------
 bool FieldInterface::setModeReferences(std::string const& fieldName, int accessPolicyIndex, 
-    std::vector<std::pair<unsigned int, std::string> > newModeRefs)
+    std::vector<std::pair<unsigned int, std::string> > const& newModeRefs)
 {
     if (auto field = getField(fieldName))
     {
