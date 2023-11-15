@@ -12,23 +12,6 @@
 #include "OtherClockDriverWriter.h"
 
 //-----------------------------------------------------------------------------
-// Function: OtherClockDriverWriter::OtherClockDriverWriter()
-//-----------------------------------------------------------------------------
-OtherClockDriverWriter::OtherClockDriverWriter(QObject* parent) :
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: OtherClockDriverWriter::~OtherClockDriverWriter()
-//-----------------------------------------------------------------------------
-OtherClockDriverWriter::~OtherClockDriverWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriverWriter::writeOtherClockDriver()
 //-----------------------------------------------------------------------------
 void OtherClockDriverWriter::writeOtherClockDriver(QXmlStreamWriter& writer, QSharedPointer<OtherClockDriver> otherClockDriver) const

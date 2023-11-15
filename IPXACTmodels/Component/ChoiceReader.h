@@ -14,30 +14,16 @@
 
 #include "Choice.h"
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT Choice element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ChoiceReader : public QObject
+class IPXACTMODELS_EXPORT ChoiceReader
 {
-    Q_OBJECT
 
 public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    ChoiceReader(QObject* parent = 0);
-
-    /*!
-     *  The destructor.
-     */
-    ~ChoiceReader();
 
     /*!
      *  Creates a new Choice from a given Choice node.
@@ -46,11 +32,6 @@ public:
      */
     QSharedPointer<Choice> createChoiceFrom(QDomNode const& choiceNode) const;
 
-private:
-
-    //! No copying allowed.
-    ChoiceReader(ChoiceReader const& rhs);
-    ChoiceReader& operator=(ChoiceReader const& rhs);
 };
 
 #endif // ChoiceReader_H

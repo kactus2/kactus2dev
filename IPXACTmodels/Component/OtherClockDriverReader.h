@@ -16,30 +16,15 @@
 
 #include <IPXACTmodels/common/ClockUnit.h>
 
-#include <QObject>
 #include <QSharedPointer>
 #include <QDomNode>
 
 //-----------------------------------------------------------------------------
 //! Reader class for IP-XACT OtherClockDriver element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT OtherClockDriverReader : public QObject
+class IPXACTMODELS_EXPORT OtherClockDriverReader
 {
-    Q_OBJECT
-
 public:
-
-    /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  The owner of this reader.
-     */
-    OtherClockDriverReader(QObject* parent = 0);
-
-    /*!
-     *  The destructor.
-     */
-    ~OtherClockDriverReader();
 
     /*!
      *  Creates a new OtherClockDriver from a given OtherClockDriver node.
@@ -49,10 +34,6 @@ public:
     QSharedPointer<OtherClockDriver> createOtherClockDriverFrom(QDomNode const& otherClockDriverNode) const;
 
 private:
-
-    //! No copying allowed.
-    OtherClockDriverReader(OtherClockDriverReader const& rhs);
-	OtherClockDriverReader& operator=(OtherClockDriverReader const& rhs);
 
     /*!
      *  Parse the clock driver attributes.

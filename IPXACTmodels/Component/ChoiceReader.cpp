@@ -13,22 +13,6 @@
 
 #include <IPXACTmodels/utilities/XmlUtils.h>
 
-//-----------------------------------------------------------------------------
-// Function: ChoiceReader::ChoiceReader()
-//-----------------------------------------------------------------------------
-ChoiceReader::ChoiceReader(QObject* parent) :
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ChoiceReader::~ChoiceReader()
-//-----------------------------------------------------------------------------
-ChoiceReader::~ChoiceReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: ChoiceReader::createCPUFrom()
