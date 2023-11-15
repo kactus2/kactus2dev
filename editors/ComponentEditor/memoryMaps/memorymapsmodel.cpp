@@ -233,7 +233,7 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
             {
                 return KactusColors::MANDATORY_FIELD;
             }
-            else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
+            else if (!index.parent().isValid() && index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
             {
                 return KactusColors::DISABLED_FIELD;
             }

@@ -18,9 +18,9 @@ namespace MemoryMapsColumns
     enum Column
     {
         NAME_COLUMN = 0,
-        REMAPSTATE_COLUMN,
         AUB_COLUMN,
         INTERFACE_COLUMN,
+        REMAPSTATE_COLUMN,
         IS_PRESENT,       
         DESCRIPTION_COLUMN,
         COLUMN_COUNT
