@@ -33,7 +33,7 @@ view_(new EditableTableView(this))
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(view_);
 
-    auto model = new FieldAccessPoliciesModel(fieldName, parameterFinder, fieldInterface, this);
+    auto model = new FieldAccessPoliciesModel(fieldName, parameterFinder, fieldInterface, expressionParser, this);
     auto proxy = new QSortFilterProxyModel(this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
@@ -49,6 +49,9 @@ view_(new EditableTableView(this))
     view_->horizontalHeader()->setStretchLastSection(false);
     view_->setAllowElementCopying(true);
     view_->setItemsDraggable(false);
+
+    // Hide type defs until they are implemented
+    view_->hideColumn(FieldAccessPolicyColumns::TYPE_DEFINITION);
 
     connect(view_, SIGNAL(addItem(QModelIndex const&)),
         model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);

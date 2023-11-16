@@ -151,6 +151,10 @@ QVariant MemoryBlockModel::data(QModelIndex const& index, int role) const
             return KactusColors::REGULAR_FIELD;
         }
     }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
     else 
     {
         return QVariant();
@@ -279,14 +283,6 @@ void MemoryBlockModel::onRemoveItem( QModelIndex const& index )
 
     emit invalidateOtherFilter();
 	emit contentChanged();
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryBlockModel::isValidExpressionColumn()
-//-----------------------------------------------------------------------------
-bool MemoryBlockModel::isValidExpressionColumn(QModelIndex const& index) const
-{
-    return index.column() == baseAddressColumn() || index.column() == isPresentColumn();
 }
 
 //-----------------------------------------------------------------------------

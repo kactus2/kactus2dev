@@ -163,15 +163,6 @@ public slots:
 protected:
 
     /*!
-     *  Checks if the column index is valid for expressions.
-     *
-     *      @param [in] index   The index being evaluated.
-     *
-     *      @return True, if the column can have expressions, otherwise false.
-     */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const;
-
-    /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
      *
      *      @param [in] index   The index of the target data.

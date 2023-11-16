@@ -23,8 +23,17 @@ class FieldAccessPoliciesModel : public ReferencingTableModel, public Parameteri
 
 public:
         
-    FieldAccessPoliciesModel(QString const& fieldName,
-        QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QObject* parent);
+    /*!
+     *	The constructor.
+     *  
+     *      @param [in] fieldName           The name of the field being edited.
+     *      @param [in] parameterFinder     Parameter finder to use.
+     *      @param [in] fieldInterface      Field interface to access field data.
+     *      @param [in] expressionParser    Expression parser to use.
+     *      @param [in] parent              Parent object.
+     */
+    FieldAccessPoliciesModel(QString const& fieldName, QSharedPointer<ParameterFinder> parameterFinder, 
+        FieldInterface* fieldInterface, QSharedPointer<ExpressionParser> expressionParser, QObject* parent);
 
     virtual ~FieldAccessPoliciesModel() = default;
 

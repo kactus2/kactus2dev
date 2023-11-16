@@ -96,7 +96,7 @@ QVariant ModeReferenceModel::headerData(int section, Qt::Orientation orientation
 //-----------------------------------------------------------------------------
 QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::DisplayRole*/) const
 {
-    if (role == Qt::DisplayRole || role == Qt::EditRole)
+    if (role == Qt::DisplayRole || role == Qt::EditRole || role == Qt::ToolTipRole)
     {
         if (index.column() == 0)
         {

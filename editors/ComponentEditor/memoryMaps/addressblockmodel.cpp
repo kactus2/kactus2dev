@@ -198,6 +198,10 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
             return KactusColors::REGULAR_FIELD;
         }
     }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
 
     return QVariant();
 }

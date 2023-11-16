@@ -236,8 +236,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
 //-----------------------------------------------------------------------------
 bool MemoryMapModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == MemoryMapColumns::WIDTH_COLUMN || index.column() == MemoryMapColumns::IS_PRESENT ||
-        MemoryBlockModel::isValidExpressionColumn(index);
+    int column = index.column();
+
+    return column == MemoryMapColumns::WIDTH_COLUMN || column == MemoryMapColumns::IS_PRESENT ||
+        column == MemoryMapColumns::BASE_COLUMN || column == MemoryMapColumns::RANGE_COLUMN;
 }
 
 //-----------------------------------------------------------------------------
