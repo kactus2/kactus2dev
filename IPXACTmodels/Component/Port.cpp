@@ -44,7 +44,7 @@ isPresent_(other.isPresent_)
 
 	if (other.transactional_)
     {
-        transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_.data()));
+        transactional_ = QSharedPointer<Transactional>(other.transactional_->clone());
 	}
 
     Copy::copyList(other.configurableArrays_, configurableArrays_);
@@ -61,23 +61,17 @@ Port & Port::operator=( const Port &other )
         Extendable::operator=(other);
         isPresent_ = other.isPresent_;
 
+        wire_.clear();
 		if (other.wire_)
         {
             wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
         }
-        else
-        {
-            wire_ = QSharedPointer<Wire>();
-        }
 
+        transactional_.clear();
 		if (other.transactional_) 
         {
-			transactional_ = QSharedPointer<Transactional>(new Transactional(*other.transactional_));
+			transactional_ = QSharedPointer<Transactional>(other.transactional_->clone());
 		}
-		else
-        {
-			transactional_ = QSharedPointer<Transactional>();
-        }
 
         configurableArrays_->clear();
         Copy::copyList(other.configurableArrays_, configurableArrays_);
@@ -98,10 +92,7 @@ QSharedPointer<Wire> Port::getWire() const
 //-----------------------------------------------------------------------------
 void Port::setWire(QSharedPointer<Wire> newWire)
 {
-    if (transactional_)
-    {
-        transactional_.clear();
-    }
+    transactional_.clear();
 
     wire_ = newWire;
 }
@@ -119,10 +110,7 @@ QSharedPointer<Transactional> Port::getTransactional() const
 //-----------------------------------------------------------------------------
 void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 {
-	if (wire_)
-    {
-        wire_.clear();
-	}
+    wire_.clear();
 
 	transactional_ = newTransactional;
 }

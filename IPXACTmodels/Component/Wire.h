@@ -231,7 +231,7 @@ private:
 	QSharedPointer<Vector> vector_{ nullptr };
 
     //! Describes the ports type as defined bu the implementation.
-	QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
+	WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
 
     //! DomainTypeDefs not supported.
     

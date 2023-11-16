@@ -23,15 +23,16 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT port element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT PortWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT PortWriter
 {
 public:
 
     /*!
      *  Write a component port to an XML file.
      *
-     *      @param [in] writer  The used XML writer.
-     *      @param [in] port    The port to be written.
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] port            The port to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, Document::Revision docRevision) const;
 
@@ -40,8 +41,9 @@ private:
     /*!
      *  Write a wire port.
      *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] wire    The wire to be written.
+     *      @param [in] writer          Used XML writer.
+     *      @param [in] wire            The wire to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, Document::Revision docRevision) const;
 
@@ -50,8 +52,10 @@ private:
      *
      *      @param [in] writer          Used XML writer.
      *      @param [in] transactional   The transactional to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional) const;
+    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the port arrays.
@@ -64,8 +68,9 @@ private:
     /*!
      *  Write a vector.
      *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] vector  The vector to be written.
+     *      @param [in] writer          Used XML writer.
+     *      @param [in] vector          The vector to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
     void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector, Document::Revision docRevision) const;
 

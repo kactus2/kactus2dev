@@ -26,7 +26,14 @@ class IPXACTMODELS_EXPORT Protocol : public Extendable
 public:
 
 	//! The destructor.
-	~Protocol() = default;
+	~Protocol() final = default;
+
+    /*!
+     *  Create a copy of the Protocol.
+     *
+     *      @return A Protocol identical to this.
+     */
+    Protocol* clone() const;
 
     /*!
      *  Sets the protocol type.

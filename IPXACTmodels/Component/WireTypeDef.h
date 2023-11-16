@@ -26,6 +26,8 @@ class IPXACTMODELS_EXPORT WireTypeDef
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >;
+
     /*!
      *  The constructor.
      *

@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 Wire::Wire(Wire const& other) : 
 direction_(other.direction_),
-qualifier_(new Qualifier(*other.qualifier_)),
+qualifier_(other.qualifier_->clone()),
 allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_)
 {
 	if (other.vector_)
@@ -49,7 +49,7 @@ Wire& Wire::operator=( const Wire &other )
 	if (this != &other)
     {
 		direction_ = other.direction_;
-        qualifier_ = QSharedPointer<Qualifier>(new Qualifier(*other.qualifier_));
+        qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
 		allLogicalDirectionsAllowed_ = other.allLogicalDirectionsAllowed_;
 
 		if (other.vector_)

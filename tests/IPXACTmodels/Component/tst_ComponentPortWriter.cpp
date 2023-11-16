@@ -10,7 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/PortWriter.h>
+
 #include <IPXACTmodels/common/GenericVendorExtension.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <QtTest>
 #include <QDomDocument>
@@ -44,6 +46,7 @@ private slots:
     void writeTransactionalAllLogicalInitiativesAllowed();
     void writeTransactionalKind();
     void writeTransactionalBusWidth();
+    void writeTransactionalQualifier_2022();
     void writeTransactionalProtocol();
     void writeTransactionalTypeDefinitions();
     void writeTransactionalConnectionMinMax();
@@ -707,6 +710,41 @@ void tst_ComponentPortWriter::writeTransactionalBusWidth()
 
     PortWriter portWriter;
     portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeTransactionalQualifier_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeTransactionalQualifier_2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Transactional> testTransactional(new Transactional());
+    auto qualifier = testTransactional->getQualifier();
+    qualifier->setType(Qualifier::Type::Data);
+    qualifier->setType(Qualifier::Type::User);
+    qualifier->setAttribute(Qualifier::Attribute::UserDefined, "test");
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
+    testPort->setTransactional(testTransactional);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:transactional>"
+                "<ipxact:initiative></ipxact:initiative>"
+                "<ipxact:qualifier>"
+                    "<ipxact:isData>true</ipxact:isData>"
+                    "<ipxact:isUser user=\"test\">true</ipxact:isUser>"
+                "</ipxact:qualifier>"
+            "</ipxact:transactional>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 

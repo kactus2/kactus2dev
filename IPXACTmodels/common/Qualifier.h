@@ -58,6 +58,13 @@ public:
     static constexpr auto ATTRIBUTE_COUNT = 7;
 
     /*!
+     *  Create a copy of the Qualifier.
+     *
+     *      @return A Qualifier identical to this.
+     */
+    Qualifier* clone() const;
+
+    /*!
      *	Checks if the qualifier has been set.
      *		
      * 		@return True, if any qualifier type is set, otherwise false.
