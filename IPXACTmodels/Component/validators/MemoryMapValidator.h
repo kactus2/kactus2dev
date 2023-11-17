@@ -25,6 +25,7 @@ class MemoryRemap;
 class RemapState;
 class AddressBlockValidator;
 class SubspaceMapValidator;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:memoryMap.
@@ -196,6 +197,9 @@ private:
 
     //! The available remap states.
     QSharedPointer<QList<QSharedPointer<RemapState> > > availableRemapStates_;
+
+    //! The available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 };
 
 #endif // MEMORYMAPVALIDATOR_H

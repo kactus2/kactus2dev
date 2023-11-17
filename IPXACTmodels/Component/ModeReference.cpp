@@ -48,7 +48,7 @@ void ModeReference::setReference(QString const& val)
 //-----------------------------------------------------------------------------
 // Function: ModeReference::getPriority()
 //-----------------------------------------------------------------------------
-QString ModeReference::getPriority() const
+unsigned int ModeReference::getPriority() const
 {
     return priority_;
 }
@@ -56,7 +56,7 @@ QString ModeReference::getPriority() const
 //-----------------------------------------------------------------------------
 // Function: ModeReference::setPriority()
 //-----------------------------------------------------------------------------
-void ModeReference::setPriority(QString const& val)
+void ModeReference::setPriority(unsigned int val)
 {
     priority_ = val;
 }

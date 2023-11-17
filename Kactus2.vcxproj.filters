@@ -3325,9 +3325,6 @@
     <ClCompile Include="editors\ComponentEditor\instantiations\DesignInstantiationsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\instantiations</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\common\FloatingModeReferenceEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
@@ -5776,7 +5773,6 @@
     <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </ClInclude>
-
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6016,9 +6012,6 @@
       <Filter>Header Files\editors\ComponentEditor\common</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\RemapModeReferenceEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\memoryMaps\MemoryRemapModeReferenceModel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
     </QtMoc>
     <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkModel.h">

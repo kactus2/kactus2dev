@@ -172,7 +172,7 @@ std::string SubspaceMapInterface::getWidthValue(std::string const& subspaceName,
 //-----------------------------------------------------------------------------
 bool SubspaceMapInterface::validateItems() const
 {
-    for (auto currentItemName : getItemNames())
+    for (auto const& currentItemName : getItemNames())
     {
         QSharedPointer<SubSpaceMap> block = getSubspaceMap(currentItemName);
         if (block)
@@ -232,12 +232,11 @@ void SubspaceMapInterface::addBlock(int const& row, std::string const& newBlockN
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::getExpressionsInSelectedItems()
 //-----------------------------------------------------------------------------
-std::vector<std::string> SubspaceMapInterface::getExpressionsInSelectedItems(std::vector<std::string> itemNames)
-    const
+std::vector<std::string> SubspaceMapInterface::getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const
 {
     std::vector<std::string> expressionList;
 
-    for (auto name : itemNames)
+    for (auto const& name : itemNames)
     {
         QSharedPointer<SubSpaceMap> currentSubMap = getSubspaceMap(name);
         if (currentSubMap)
@@ -253,7 +252,7 @@ std::vector<std::string> SubspaceMapInterface::getExpressionsInSelectedItems(std
 //-----------------------------------------------------------------------------
 // Function: SubspaceMapInterface::getCopiedBlocks()
 //-----------------------------------------------------------------------------
-QList<QSharedPointer<MemoryBlockBase> > SubspaceMapInterface::getCopiedBlocks(std::vector<int> selectedRows) const
+QList<QSharedPointer<MemoryBlockBase> > SubspaceMapInterface::getCopiedBlocks(std::vector<int> const& selectedRows) const
 {
     QList<QSharedPointer<MemoryBlockBase> > copiedBlocks;
     for (auto index : selectedRows)

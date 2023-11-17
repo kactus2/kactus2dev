@@ -14,6 +14,8 @@
 
 #include <common/KactusColors.h>
 
+using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesModel::FieldAccessPoliciesModel()
 //-----------------------------------------------------------------------------
@@ -199,16 +201,19 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
         // Data for mode ref editor.
         if (index.column() == FieldAccessPolicyColumns::MODE)
         {
-            auto const& modeRefsList = fieldInterface_->getModeRefs(fieldName_, index.row());
-
-            QList<QPair<QString, int> > modeRefs;
-            for (auto const& [reference, priority] : modeRefsList)
-            {
-                modeRefs.append(QPair<QString, int>({ QString::fromStdString(reference), priority }));
-            }
-
             QVariant modeRefsVariant;
+
+            // Mode references for current index and all other mode refs.
+            QPair<ModeRefList, ModeRefList> modeRefs;
+
+            auto currentModeRefs = fieldInterface_->getModeReferences(fieldName_, index.row());
+            auto otherModeRefsInUse = fieldInterface_->getModeReferencesInUse(fieldName_, index.row());
+
+            modeRefs.first = currentModeRefs;
+            modeRefs.second = otherModeRefsInUse;
+            
             modeRefsVariant.setValue(modeRefs);
+
             return modeRefsVariant;
         }
     }
@@ -230,15 +235,9 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
 
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        auto modeRefs = value.value<QList<QPair<QString, int> > >();
+        ModeRefList updatedModeRefs = value.value<ModeRefList>();
 
-        std::vector<std::pair<std::string, int> > modeRefsStdType;
-        for (auto const& [reference, priority] : modeRefs)
-        {
-            modeRefsStdType.emplace_back(reference.toStdString(), priority);
-        }
-
-        fieldInterface_->setModeRefs(fieldName_, index.row(), modeRefsStdType);
+        fieldInterface_->setModeReferences(fieldName_, index.row(), updatedModeRefs);
     }
 
     else if (index.column() == FieldAccessPolicyColumns::ACCESS)
@@ -297,7 +296,7 @@ bool FieldAccessPoliciesModel::setData(const QModelIndex& index, const QVariant&
     {
         fieldInterface_->setWriteConstraintMaximum(fieldName_, value.toString().toStdString(), index.row());
     }
-
+    
     emit dataChanged(index, index);
     return true;
 }

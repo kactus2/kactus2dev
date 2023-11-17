@@ -39,7 +39,8 @@ view_(new EditableTableView(this))
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
 
-    auto delegate = new FieldAccessPoliciesDelegate(componentParameterModel, parameterFinder, this);
+    auto delegate = new FieldAccessPoliciesDelegate(componentParameterModel, parameterFinder, 
+        fieldInterface->getModeReferenceInterface(), this);
 
     view_->setSortingEnabled(true);
     proxy->setSourceModel(model);

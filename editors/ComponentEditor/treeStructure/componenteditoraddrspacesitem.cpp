@@ -21,6 +21,7 @@
 #include <KactusAPI/include/AddressBlockInterface.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AccessPolicyInterface.h>
+#include <KactusAPI/include/ModeReferenceInterface.h>
 
 #include <KactusAPI/include/ParametersInterface.h>
 
@@ -162,6 +163,8 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
     QSharedPointer<AddressBlockValidator> blockValidator(
         new AddressBlockValidator(expressionParser_, registerValidator,registerFileValidator, parameterValidator, 
             component_->getRevision()));
+    blockValidator->componentChange(component_);
+
     QSharedPointer<SubspaceMapValidator> subspaceValidator(
         new SubspaceMapValidator(expressionParser_, parameterValidator, component_->getRevision()));
 
@@ -208,7 +211,11 @@ void ComponentEditorAddrSpacesItem::createAddressBlockInterface()
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
 
-    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
+    ModeReferenceInterface* modeRefInterface(new ModeReferenceInterface());
+    modeRefInterface->setComponentModes(component_->getModes());
+
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface(modeRefInterface));
+    accessPolicyInterface->setComponentModes(component_->getModes());
 
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, accessPolicyInterface));

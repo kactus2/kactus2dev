@@ -12,6 +12,8 @@
 #ifndef MEMORYMAPSMODEL_H
 #define MEMORYMAPSMODEL_H
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
@@ -47,13 +49,12 @@ public:
      *      @param [in] parameterFinder     The instance used to find parameters.
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] mapInterface        Interface for memory maps.
+     *      @param [in] docRevision         The IP-XACT standard revision to use.
 	 *      @param [in] parent              The owner of the model.
 	 */
-	MemoryMapsModel(
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionParser> expressionParser,
-        MemoryMapInterface* mapInterface,
-        QObject *parent);
+	MemoryMapsModel( QSharedPointer<ParameterFinder> parameterFinder, 
+        QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface, 
+        Document::Revision docRevision, QObject *parent);
 
     //! No copying
     MemoryMapsModel(const MemoryMapsModel& other) = delete;
@@ -180,14 +181,14 @@ public slots:
      *
      *      @param [in] indexList   A list of the selected indexes.
      */
-    void onCopyRows(QModelIndexList indexList);
+    void onCopyRows(QModelIndexList const& indexList);
 
     /*!
      *  Paste the selected items.
      *
      *      @param [in] index   The owner of the pasted memory remap items.
      */
-    void onPasteRows(QModelIndex index);
+    void onPasteRows(QModelIndex const& index);
 
     /*!
      *  Remove all memory remaps from the selected memory map.
@@ -366,6 +367,9 @@ private:
 
     //! Interface for accessing memory maps.
     MemoryMapInterface* mapInterface_;
+
+    //! The IP-XACT standard revision to use.
+    Document::Revision docRevision_;
 };
 
 #endif // MEMORYMAPSMODEL_H

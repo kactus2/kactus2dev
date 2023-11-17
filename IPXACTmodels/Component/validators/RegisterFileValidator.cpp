@@ -21,6 +21,7 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <QRegularExpression>
 
 //-----------------------------------------------------------------------------
@@ -47,9 +48,13 @@ QSharedPointer<RegisterValidator> RegisterFileValidator::getRegisterValidator() 
 //-----------------------------------------------------------------------------
 // Function: RegisterFileValidator::componentChange()
 //-----------------------------------------------------------------------------
-void RegisterFileValidator::componentChange(Document::Revision newDocRevision)
+void RegisterFileValidator::componentChange(QSharedPointer<Component> newComponent)
 {
-    docRevision_ = newDocRevision;
+    if (newComponent)
+    {
+        docRevision_ = newComponent->getRevision();
+        componentModes_ = newComponent->getModes();
+    }
 }
 
 //-----------------------------------------------------------------------------

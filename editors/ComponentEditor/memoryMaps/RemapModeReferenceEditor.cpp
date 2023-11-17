@@ -11,8 +11,6 @@
 
 #include "RemapModeReferenceEditor.h"
 
-#include "MemoryRemapModeReferenceModel.h"
-
 #include <editors/ComponentEditor/common/ModeReferenceEditor.h>
 
 #include <QVBoxLayout>
@@ -20,9 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: RemapModeReferenceEditor::RemapModeReferenceEditor()
 //-----------------------------------------------------------------------------
-RemapModeReferenceEditor::RemapModeReferenceEditor(MemoryRemapModeReferenceModel* model, QWidget* parent):
+RemapModeReferenceEditor::RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent):
     QGroupBox(tr("Mode references"), parent),
-    modeReferencesEditor_(new ModeReferenceEditor(model, parent))
+    modeReferencesEditor_(new ModeReferenceEditor(modeRefInterface, parent))
 {
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(modeReferencesEditor_);

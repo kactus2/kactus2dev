@@ -24,6 +24,8 @@ class MemoryRemap;
 class MemoryMapValidator;
 class AddressBlockInterface;
 class SubspaceMapInterface;
+class ModeReferenceInterface;
+class ModeReference;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing memory maps and remaps.
@@ -315,7 +317,7 @@ public:
      *
      *      @return The number of references made to the selected parameter in the selected memory remap.
      */
-    int getAllReferencesToIdInRemapItem(std::string const& mapName, std::string& remapName,
+    int getAllReferencesToIdInRemapItem(std::string const& mapName, std::string const& remapName,
         std::string const& valueID) const;
 
     /*!
@@ -413,7 +415,7 @@ public:
      *
      *      @param [in] selectedRows    Indexes of the selected items.
      */
-    void copyRows(std::vector<std::string> selectedRows);
+    void copyRows(std::vector<std::string> const& selectedRows);
 
     /*!
      *  Paste the selected memory maps.
@@ -475,50 +477,37 @@ public:
     int getRemapModeReferenceCount(std::string const& mapName, std::string const& remapName) const;
 
     /*!
-     *	Get the mode reference value for a mode reference of a selected remap.
+     *	Get the mode references of a selected remap.
      *  
      *      @param [in] mapName             The containing memory map.
      *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to get.
      *	    
-     * 	    @return The mode reference value.
+     * 	    @return The mode references of selected remap.
      */
-    std::string getRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
+    std::vector<std::pair<unsigned int, std::string> > getRemapModeReferences(std::string const& mapName, std::string const& remapName) const;
 
     /*!
-     *	Get the mode reference priority for a mode reference of a selected remap.
+     *	Get string to display in mode references editor, depending on if remap has no mode references, 
+     *  one mode reference or multiple mode references. Returns an empty string if remap is not found.
+     *  
+     *      @param [in] mapName         The containing memory map.
+     *      @param [in] remapName       The name of the remap.
      *
-     *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose priority to get.
-     *
-     * 	    @return The mode reference priority.
+     * 	    @return Empty string if remap is not found, or "None", "<mode>" or "[multiple]" 
+     *              depending on mode references of the remap.
      */
-    int getRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex) const;
-    
-    /*!
-     *	Set the mode reference value for a mode reference of a selected remap.
-     *
-     *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference value to set.
-     *      @param [in] newValue            The new reference to set.
-     *
-     * 	    @return True, if the operation was successful, otherwise false.
-     */
-    bool setRemapModeReferenceValue(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, std::string const& newValue);
+    std::string getRemapModeReferenceString(std::string const& mapName, std::string const& remapName) const;
 
     /*!
-     *	Set the mode reference priority for a mode reference of a selected remap.
-     *
+     *	Set the mode references of given remap.
+     *  
      *      @param [in] mapName             The containing memory map.
-     *      @param [in] remapName           The name of the remap.
-     *      @param [in] modeReferenceIndex  The index of the mode reference whose reference priority to set.
-     *      @param [in] newPriority         The new priority value to set.
-     *
+     *      @param [in] remapName           The name of the remap whose mode references are set.
+     *      @param [in] newModeRefs         The mode references to set.
+     *	    
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool setRemapModeReferencePriority(std::string const& mapName, std::string const& remapName, int modeReferenceIndex, int newPriority);
+    bool setRemapModeReferences(std::string const& mapName, std::string const& remapName, std::vector<std::pair<unsigned int, std::string> > const& newModeRefs);
 
     /*!
      *	Add a new mode reference to a selected remap.
@@ -540,6 +529,32 @@ public:
      * 	    @return True, if the operation was successful, otherwise false.
      */
     bool removeRemapModeReference(std::string const& mapName, std::string const& remapName, int modeReferenceIndex);
+
+    /*!
+     *	Get the mode reference interface used for accessing remap mode references.
+     *  
+     * 	    @return  The mode reference interface.
+     */
+    ModeReferenceInterface* getModeReferenceInterface() const;
+
+    /*!
+     *	Set the mode reference interface used for accessing remap mode references.
+     *  
+     *      @param [in] modeRefInterface     Description
+     */
+    void setModeReferenceInterface(ModeReferenceInterface* modeRefInterface);
+
+    /*!
+     *	Get the mode references of all remaps in memory map (excluding selected remap) as a list of priority, 
+     *  reference pairs.
+     *  
+     *      @param [in] mapName             The containing memory map.
+     *      @param [in] remapName           The name of the remap to exclude from the mode ref list.
+     *
+     * 	    @return  The mode references of remaps in memory map, excluding selected remap.
+     */
+    std::vector<std::pair<unsigned int, std::string> > getRemapModeReferencesExcludingRemap(
+        std::string const& mapName, std::string const& remapName) const;
 
 private:
 
@@ -630,6 +645,9 @@ private:
 
     //! Interface for accessing subspace maps.
     SubspaceMapInterface* subspaceInterface_;
+
+    //! Interface for accessing remap mode references.
+    ModeReferenceInterface* modeReferenceInterface_;
 };
 
 #endif // MEMORYMAPINTERFACE_H

@@ -24,6 +24,7 @@
 #include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/AccessPolicyInterface.h>
+#include <KactusAPI/include/ModeReferenceInterface.h>
 
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -230,7 +231,13 @@ void ComponentEditorMemMapsItem::createMemoryMapInterface()
     ResetInterface* resetInterface(new ResetInterface(fieldValidator, expressionParser_, expressionFormatter_));
     FieldInterface* fieldInterface(
         new FieldInterface(fieldValidator, expressionParser_, expressionFormatter_, resetInterface));
-    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface());
+
+    ModeReferenceInterface* modeRefInterface(new ModeReferenceInterface());
+    modeRefInterface->setComponentModes(component_->getModes());
+
+    AccessPolicyInterface* accessPolicyInterface(new AccessPolicyInterface(modeRefInterface));
+    accessPolicyInterface->setComponentModes(component_->getModes());
+
     RegisterInterface* registerInterface(
         new RegisterInterface(registerValidator, expressionParser_, expressionFormatter_, fieldInterface, accessPolicyInterface));
 
@@ -245,6 +252,9 @@ void ComponentEditorMemMapsItem::createMemoryMapInterface()
         new MemoryMapInterface(memoryMapValidator_, expressionParser_, expressionFormatter_);
     mapInterface_->setAddressBlockInterface(blockInterface);
     mapInterface_->setSubspaceMapInterface(subspaceInterface);
+    mapInterface_->setModeReferenceInterface(modeRefInterface);
+
+    fieldInterface->setModeReferenceInterface(modeRefInterface);
 }
 
 //-----------------------------------------------------------------------------

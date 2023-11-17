@@ -46,11 +46,8 @@ void AccessPolicyReader::Details::parseModeRefs(QDomNode const& rootNode,
 
             newModeRef->setReference(modeRefNode.firstChild().nodeValue());
             
-            if (auto const& priority = modeRefNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
-                !priority.isEmpty())
-            {
-                newModeRef->setPriority(priority);
-            }
+            auto const& priority = modeRefNode.attributes().namedItem(QStringLiteral("priority")).nodeValue();
+            newModeRef->setPriority(priority.toUInt());
 
             modeRefList->append(newModeRef);
         }

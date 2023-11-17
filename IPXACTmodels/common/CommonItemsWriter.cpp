@@ -280,11 +280,8 @@ void CommonItemsWriter::writeModeReferences(QXmlStreamWriter& writer,
     for (auto const& modeRef : *modeReferences)
     {
         writer.writeStartElement(QStringLiteral("ipxact:modeRef"));
-
-        if (auto const& priority = modeRef->getPriority(); !priority.isEmpty())
-        {
-            writer.writeAttribute(QStringLiteral("priority"), priority);
-        }
+        
+        writer.writeAttribute(QStringLiteral("priority"), QString::number(modeRef->getPriority()));
 
         writer.writeCharacters(modeRef->getReference());
         writer.writeEndElement(); // ipxact:modeRef

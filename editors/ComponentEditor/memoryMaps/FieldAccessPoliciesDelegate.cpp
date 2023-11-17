@@ -13,6 +13,7 @@
 #include "FieldAccessPolicyColumns.h"
 
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
+#include <IPXACTmodels/Component/ModeReference.h>
 
 #include <editors/ComponentEditor/common/FloatingModeReferenceEditor.h>
 #include <editors/ComponentEditor/common/ModeReferenceModel.h>
@@ -23,15 +24,21 @@
 #include <common/widgets/booleanComboBox/booleancombobox.h>
 #include <common/widgets/testConstraintComboBox/testconstraintcombobox.h>
 
+#include <KactusAPI/include/ModeReferenceInterface.h>
+
 #include <QCompleter>
 #include <QLineEdit>
+#include <QSortFilterProxyModel>
+
+using ModeRefsList = std::vector<std::pair<unsigned int, std::string> >;
 
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate()
 //-----------------------------------------------------------------------------
 FieldAccessPoliciesDelegate::FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
-    QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent):
-ExpressionDelegate(completionModel, parameterFinder, parent)
+    QSharedPointer<ParameterFinder> parameterFinder, ModeReferenceInterface* modeRefInterface, QWidget* parent) :
+ExpressionDelegate(completionModel, parameterFinder, parent),
+modeRefInterface_(modeRefInterface)
 {
 
 }
@@ -44,11 +51,21 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
+        // Update the mode reference interface with the mode references of the current access policy
+        // by copying mode references over to interface to be able to abort editing in floating mode ref editor.
+        auto modeReferencesVariant = index.data(Qt::UserRole);
 
-        ModeReferenceModel* model = new ModeReferenceModel(modeRefs, parent);
+        auto [currentModeRefs, otherModeRefsInUse] = modeReferencesVariant.value<QPair<ModeRefsList, ModeRefsList> >();
 
-        FloatingModeReferenceEditor* modeRefEditor = new FloatingModeReferenceEditor(model, parent);
+        // Set the mode references of the currently selected field access policy to the mode reference interface.
+        modeRefInterface_->setModeReferences(currentModeRefs);
+
+        // Set the othcer mode references in use for validation purposes.
+        modeRefInterface_->setContainingElementModeReferences(otherModeRefsInUse);
+
+        modeRefInterface_->setContainingElementIsRemap(false);
+
+        FloatingModeReferenceEditor* modeRefEditor = new FloatingModeReferenceEditor(modeRefInterface_, parent);
         connect(modeRefEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         connect(modeRefEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
         return modeRefEditor;
@@ -115,17 +132,7 @@ QWidget* FieldAccessPoliciesDelegate::createEditor(QWidget* parent, const QStyle
 //-----------------------------------------------------------------------------
 void FieldAccessPoliciesDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    if (index.column() == FieldAccessPolicyColumns::MODE)
-    {
-        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
-        if (modeEditor)
-        {
-            auto modeRefs = index.data(Qt::UserRole).value<QList<QPair<QString, int> > >();
-            modeEditor->setModeRefs(modeRefs);
-        }
-    }
-
-    else if (index.column() == FieldAccessPolicyColumns::ACCESS)
+    if (index.column() == FieldAccessPolicyColumns::ACCESS)
     {
         auto castEditor = qobject_cast<AccessComboBox*>(editor);
         
@@ -200,15 +207,13 @@ void FieldAccessPoliciesDelegate::setModelData(QWidget* editor, QAbstractItemMod
 {
     if (index.column() == FieldAccessPolicyColumns::MODE)
     {
-        auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor);
-        if (modeEditor)
+        if (auto modeEditor = qobject_cast<FloatingModeReferenceEditor*>(editor))
         {
-            auto modeRefs = modeEditor->getModeRefs();
+            // Get the modified mode references from interface and send to access policy.
+            auto updatedModeRefs = modeRefInterface_->getModeReferences();
 
-            QVariant modeRefsVariant;
-            modeRefsVariant.setValue(modeRefs);
-
-            model->setData(index, modeRefsVariant, Qt::EditRole);
+            QVariant modeRefsVariant = QVariant::fromValue(updatedModeRefs);
+            model->setData(index, modeRefsVariant);
         }
     }
 

@@ -1267,7 +1267,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/memoryMaps/memorymapseditor.cpp \
     ./editors/ComponentEditor/memoryMaps/memorymapsmodel.cpp \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.cpp \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.cpp \
     ./editors/ComponentEditor/memoryMaps/registerdelegate.cpp \
     ./editors/ComponentEditor/memoryMaps/registereditor.cpp \
     ./editors/ComponentEditor/memoryMaps/registerfiledelegate.cpp \

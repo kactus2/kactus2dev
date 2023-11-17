@@ -483,7 +483,7 @@ std::vector<std::string> MemoryBlockInterface::pasteRows()
             QList<QSharedPointer<MemoryBlockBase> > copiedItemList =
                 pasteVariant.value<QList<QSharedPointer<MemoryBlockBase>>>();
 
-            foreach(QSharedPointer<MemoryBlockBase> copiedItem, copiedItemList)
+            for (auto const& copiedItem : copiedItemList)
             {
                 QSharedPointer<MemoryBlockBase> newBlock = createCopyBlock(copiedItem);
                 if (newBlock)

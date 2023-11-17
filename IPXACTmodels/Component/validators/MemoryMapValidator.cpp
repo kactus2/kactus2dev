@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/RemapState.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/Component/ModeReference.h>
 
 //-----------------------------------------------------------------------------
@@ -25,8 +26,7 @@
 MemoryMapValidator::MemoryMapValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QSharedPointer<SubspaceMapValidator> subspaceValidator, QSharedPointer<Component> component):
-MemoryMapBaseValidator(expressionParser, addressBlockValidator, subspaceValidator),
-availableRemapStates_()
+MemoryMapBaseValidator(expressionParser, addressBlockValidator, subspaceValidator)
 {
     componentChange(component);
 }
@@ -44,6 +44,7 @@ void MemoryMapValidator::componentChange(QSharedPointer<Component> newComponent)
     if (newComponent)
     {
         availableRemapStates_ = newComponent->getRemapStates();
+        componentModes_ = newComponent->getModes();
     }
 
     MemoryMapBaseValidator::componentChange(newComponent);
@@ -231,23 +232,18 @@ bool MemoryMapValidator::remapsHaveValidModeRefs(QSharedPointer<MemoryMap> memor
     QStringList references; // References must be unique within the containing memoryMap
 
     for (auto const& remap : *memoryMap->getMemoryRemaps())
-    {
-        QStringList priorities; // Must be unique within remap.
-        
+    {        
         auto modeRefs = remap->getModeReferences();
 
         for (auto const& ref : *modeRefs)
         {
             if (references.contains(ref->getReference()) ||
-                priorities.contains(ref->getPriority()) ||
-                ref->getReference().isEmpty() ||
-                ref->getPriority().isEmpty())
+                ref->getReference().isEmpty())
             {
                 return false;
             }
 
             references.append(ref->getReference());
-            priorities.append(ref->getPriority());
         }
 
         // Remap must contain at least one mode reference.
@@ -275,23 +271,16 @@ void MemoryMapValidator::findErrorsInRemapModeRefs(QStringList& errors, QSharedP
 
     for (auto const& remap : *memoryMap->getMemoryRemaps())
     {
-        QStringList priorities; // Must be unique within remap.
-
         auto modeRefs = remap->getModeReferences();
 
         for (auto const& ref : *modeRefs)
         {
             QString const& referenceValue = ref->getReference();
-            QString const& referencePriority = ref->getPriority();
+            auto referencePriority = ref->getPriority();
 
             if (referenceValue.isEmpty())
             {
                 errors.append(QObject::tr("Empty mode reference value set for memory remap %1 in %2").arg(remap->name()).arg(context));
-            }
-
-            if (referencePriority.isEmpty())
-            {
-                errors.append(QObject::tr("Empty mode reference priority set for memory remap %1 in %2").arg(remap->name()).arg(context));
             }
 
             if (references.contains(referenceValue))
@@ -302,16 +291,6 @@ void MemoryMapValidator::findErrorsInRemapModeRefs(QStringList& errors, QSharedP
             else
             {
                 references.append(referenceValue);
-            }
-
-            if (priorities.contains(referencePriority))
-            {
-                errors.append(QObject::tr("Duplicate mode reference priority set for memory remap %1 in %2")
-                    .arg(remap->name()).arg(context));
-            }
-            else
-            {
-                priorities.append(referencePriority);
             }
         }
 

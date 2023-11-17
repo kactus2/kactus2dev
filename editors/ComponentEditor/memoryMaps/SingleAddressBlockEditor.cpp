@@ -124,6 +124,9 @@ void SingleAddressBlockEditor::refresh()
     registersEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
     registerFilesEditor_->setEnabled(blockInterface_->hasRegisters(blockName_) || (usage != General::RESERVED));
 
+    // Block signals from here for the duration of refreshing editors.
+    blockSignals(true);
+
     usageEditor_->setCurrentValue(usage);
 
     changeExpressionEditorSignalBlockStatus(true);
@@ -146,6 +149,8 @@ void SingleAddressBlockEditor::refresh()
 
     accessEditor_->setCurrentValue(blockInterface_->getAccess(blockName_));
     volatileEditor_->setCurrentValue(QString::fromStdString(blockInterface_->getVolatile(blockName_)));
+
+    blockSignals(false);
 }
 
 //-----------------------------------------------------------------------------

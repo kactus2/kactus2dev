@@ -28,10 +28,10 @@ public:
     /*!
      *	The constructor.
      *  
-     *      @param [in] model      The mode reference model to use.
-     *      @param [in] parent     The parent widget.
+     *      @param [in] modeRefInterface    The mode reference interface to use.
+     *      @param [in] parent              The parent widget.
      */
-    RemapModeReferenceEditor(MemoryRemapModeReferenceModel* model, QWidget* parent);
+    RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent);
 
     virtual ~RemapModeReferenceEditor() = default;
 

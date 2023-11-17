@@ -150,8 +150,7 @@ public:
      *
      *      @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const
-        override final;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const override final;
 
     //! No copying. No assignment.
     SubspaceMapInterface(const SubspaceMapInterface& other) = delete;
@@ -191,8 +190,7 @@ private:
      *
      *      @return List of the copied subspace maps.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> selectedRows) const override
-        final;
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const override final;
 
     /*!
      *  Get the mime type of the subspace map.

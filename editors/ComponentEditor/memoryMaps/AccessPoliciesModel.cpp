@@ -16,6 +16,8 @@
 
 #include <common/KactusColors.h>
 
+using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
+
 //-----------------------------------------------------------------------------
 // Function: AccessPoliciesModel::AccessPoliciesModel()
 //-----------------------------------------------------------------------------
@@ -127,19 +129,21 @@ QVariant AccessPoliciesModel::data(const QModelIndex& index, int role /*= Qt::Di
 
     else if (role == Qt::UserRole)
     {
-        // Data for mode ref editor.
         if (index.column() == 0)
         {
-            auto const& modeRefsList = interface_->getModeRefs(index.row());
-
-            QList<QPair<QString, int> > modeRefs;
-            for (auto const& [reference, priority] : modeRefsList)
-            {
-                modeRefs.append(QPair<QString, int>({ QString::fromStdString(reference), priority }));
-            }
-
             QVariant modeRefsVariant;
+
+            // Mode references for current index and all other mode refs.
+            QPair<ModeRefList, ModeRefList> modeRefs;
+
+            auto currentModeRefs = interface_->getAccesPolicyModeReferences(index.row());
+            auto otherModeRefsInUse = interface_->getModeReferencesInUse(index.row());
+
+            modeRefs.first = currentModeRefs;
+            modeRefs.second = otherModeRefsInUse;
+
             modeRefsVariant.setValue(modeRefs);
+
             return modeRefsVariant;
         }
     }
@@ -159,22 +163,19 @@ bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& valu
         return false;
     }
 
-    if (index.column() == 0)
+    if (role == Qt::EditRole)
     {
-        auto modeRefs = value.value<QList<QPair<QString, int> > >();
-
-        std::vector<std::pair<std::string, int> > modeRefsStdType;
-        for (auto const& [reference, priority] : modeRefs)
+        // Set modified mode reference data to access policy.
+        if (index.column() == 0)
         {
-            modeRefsStdType.emplace_back(reference.toStdString(), priority);
+            ModeRefList updatedModeRefs = value.value<ModeRefList>();
+
+            interface_->setAccessPolicyModeReferences(index.row(), updatedModeRefs);
         }
-
-        interface_->setModeRefs(modeRefsStdType, index.row());
-    }
-
-    else if (index.column() == 1)
-    {
-        interface_->setAccess(value.toString().toStdString(), index.row());
+        else if (index.column() == 1)
+        {
+            interface_->setAccess(value.toString().toStdString(), index.row());
+        }
     }
 
     emit dataChanged(index, index);
@@ -221,10 +222,10 @@ QVariant AccessPoliciesModel::valueForIndex(QModelIndex const& index) const
 {
     if (index.column() == 0) // Mode ref display values
     {
-        auto modeRefsList = interface_->getModeRefs(index.row());
+        auto modeRefsList = interface_->getAccesPolicyModeReferences(index.row());
 
         QStringList valueList;
-        for (auto const& [reference, priority] : modeRefsList)
+        for (auto const& [priority, reference] : modeRefsList)
         {
             valueList.append(QString::fromStdString(reference));
         }
@@ -247,7 +248,7 @@ bool AccessPoliciesModel::validateIndex(QModelIndex const& index) const
 {
     if (index.column() == 0)
     {
-        return interface_->hasValidAccessPolicies();
+        return interface_->accessPolicyHasValidModeReferences(index.row());
     }
 
     return true;

@@ -60,11 +60,12 @@ QString AddressBlockValidator::getBlockType() const
 void AddressBlockValidator::componentChange(QSharedPointer<Component> newComponent)
 {
     registerValidator_->componentChange(newComponent);
+    registerFileValidator_->componentChange(newComponent);
 
     if (newComponent)
     {
-        registerFileValidator_->componentChange(newComponent->getRevision());
         docRevision_ = newComponent->getRevision();
+        componentModes_ = newComponent->getModes();
     }
 }
 
@@ -434,7 +435,7 @@ bool AddressBlockValidator::hasValidMemoryArray(QSharedPointer<AddressBlock> add
 //-----------------------------------------------------------------------------
 bool AddressBlockValidator::hasValidAccessPolicies(QSharedPointer<AddressBlock> addressBlock) const
 {
-    return CommonItemsValidator::hasValidAccessPolicies(addressBlock->getAccessPolicies());
+    return CommonItemsValidator::hasValidAccessPolicies(addressBlock->getAccessPolicies(), componentModes_);
 }
 
 //-----------------------------------------------------------------------------
@@ -711,7 +712,7 @@ void AddressBlockValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
     bool duplicateModePriorityErrorIssued = false;
 
     QStringList checkedModeReferences;
-    QStringList checkedModePriorities;
+    QList<unsigned int> checkedModePriorities;
 
     for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
     {
@@ -722,7 +723,7 @@ void AddressBlockValidator::findErrorsInAccessPolicies(QStringList& errors, QSha
 
         // Check mode references in current access policy, and look for duplicate references.
         CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext,
-            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued);
+            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued, componentModes_);
     }
 
     // Number of access policies cannot be greater than one if one access policy has no mode references.

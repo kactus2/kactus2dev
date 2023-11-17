@@ -284,8 +284,7 @@ public:
      *
      *      @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const
-        override final;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const override final;
 
     /*!
      *  Get the sub interface.
@@ -321,14 +320,6 @@ public:
      */
     bool addAccessPolicy(std::string const& blockName) const;
 
-    /*!
-     *  Get the address block with the selected name, sliced to a NameGroup.
-     *
-     *      @param [in] itemName    Name of the selected address block.
-     *
-     *      @return The sliced address block with the selected name.
-     */
-    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
 
 private:
 
@@ -355,7 +346,7 @@ private:
      *
      *      @return List of the copied memory blocks.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> selectedRows) const override
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const override
         final;
 
     /*!
@@ -390,6 +381,15 @@ private:
      *      @return The address block validator.
      */
     virtual QSharedPointer<MemoryBlockValidator> getValidator() const override final;
+
+    /*!
+     *  Get the address block with the selected name, sliced to a NameGroup.
+     *
+     *      @param [in] itemName    Name of the selected address block.
+     *
+     *      @return The sliced address block with the selected name.
+     */
+    QSharedPointer<NameGroup> getItem(std::string const& itemName) const override;
 
     //-----------------------------------------------------------------------------
     // Data.

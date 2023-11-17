@@ -28,6 +28,7 @@ class ResetType;
 class ParameterValidator;
 class EnumeratedValueValidator;
 class Component;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
@@ -243,6 +244,17 @@ public:
     bool hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const;
 
     /*!
+     *	Validate the mode references of a single field access policy against mode references of other field access
+     *  policies. For validation in UI.
+     *  
+     *      @param [in] field                   The field containing the field access policy.
+     *      @param [in] fieldAccessPolicy       The field access policy whose mode referneces are checked.
+     *	    
+     * 	    @return True, if the mode references are valid, otherwise false.
+     */
+    bool singleFieldAccessPolicyHasValidModeRefs(QSharedPointer<Field> field, int fieldAccessPolicyIndex) const;
+
+    /*!
      *  Locate errors within a field.
      *
      *      @param [in] errors      List of found errors.
@@ -444,6 +456,9 @@ private:
 
     //! The IP-XACT standard revision in use.
     Document::Revision docRevision_;
+
+    //! The available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 };
 
 #endif // FIELDVALIDATOR_H

@@ -16,6 +16,7 @@
 
 #include <QStyledItemDelegate>
 
+class ModeReferenceInterface;
 
 class FieldAccessPoliciesDelegate : public ExpressionDelegate
 {
@@ -28,10 +29,12 @@ public:
      *
      *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] parameterFinder     The parameter finder to use for for expression editor.
+     *      @param [in] modeRefInterface    The interface to access mode references.
      *      @param [in] parent              The parent object.
      */
-    FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel,
-        QSharedPointer<ParameterFinder> parameterFinder, QWidget* parent);
+    FieldAccessPoliciesDelegate(QAbstractItemModel* completionModel, 
+        QSharedPointer<ParameterFinder> parameterFinder, ModeReferenceInterface* modeRefInterface, 
+        QWidget* parent);
 
     virtual ~FieldAccessPoliciesDelegate() = default;
 
@@ -102,6 +105,11 @@ private slots:
 
     void onEditingCanceled();
 
+
+private:
+
+    //! Interface for accessing mode references. Used by mode reference editor.
+    ModeReferenceInterface* modeRefInterface_;
 };
 
 #endif // FIELDACCESSPOLICIESDELEGATE_H

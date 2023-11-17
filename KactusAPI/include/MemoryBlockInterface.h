@@ -301,7 +301,7 @@ public:
      *
      *      @return The expressions of the selected items.
      */
-    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> itemNames) const = 0;
+    virtual std::vector<std::string> getExpressionsInSelectedItems(std::vector<std::string> const& itemNames) const = 0;
 
     /*!
      *  Change the value for address unit bits.
@@ -367,7 +367,7 @@ private:
      *
      *      @return List of the copied memory blocks.
      */
-    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> selectedRows) const = 0;
+    virtual QList<QSharedPointer<MemoryBlockBase> > getCopiedBlocks(std::vector<int> const& selectedRows) const = 0;
 
     /*!
      *  Get the mime type of the memory block.

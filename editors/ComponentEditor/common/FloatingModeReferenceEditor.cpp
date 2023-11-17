@@ -10,7 +10,6 @@
 //-----------------------------------------------------------------------------
 
 #include "FloatingModeReferenceEditor.h"
-
 #include "ModeReferenceEditor.h"
 
 #include <QVBoxLayout>
@@ -19,31 +18,15 @@
 //-----------------------------------------------------------------------------
 // Function: FloatingModeReferenceEditor::FloatingModeReferenceEditor()
 //-----------------------------------------------------------------------------
-FloatingModeReferenceEditor::FloatingModeReferenceEditor(ModeReferenceModel* model, QWidget* parent):
-    QFrame(parent),
-    modeReferencesEditor_(new ModeReferenceEditor(model, parent))
+FloatingModeReferenceEditor::FloatingModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent):
+    QFrame(parent)
 {
+    modeReferencesEditor_ = new ModeReferenceEditor(modeRefInterface, this);
+
     setFrameStyle(QFrame::StyledPanel);
     setAutoFillBackground(true);
 
     setupLayout();
-}
-
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceEditor::setModeRefs()
-//-----------------------------------------------------------------------------
-void FloatingModeReferenceEditor::setModeRefs(QList<QPair<QString, int> > modeRefs) const
-{
-    modeReferencesEditor_->setModeRefs(modeRefs);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceEditor::getModeRefs()
-//-----------------------------------------------------------------------------
-QList<QPair<QString, int> > FloatingModeReferenceEditor::getModeRefs() const
-{
-    return modeReferencesEditor_->getModeRefs();
 }
 
 //-----------------------------------------------------------------------------

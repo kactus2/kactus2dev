@@ -17,12 +17,13 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 class ExpressionParser;
+class Mode;
 
 class IPXACTMODELS_EXPORT FieldAccessPolicyValidator
 {
 public:
 
-    FieldAccessPolicyValidator(QSharedPointer<ExpressionParser> expressionParser);
+    explicit FieldAccessPolicyValidator(QSharedPointer<ExpressionParser> expressionParser);
 
     ~FieldAccessPolicyValidator() = default;
 
@@ -36,7 +37,8 @@ public:
      *	    
      * 	    @return True, if the field access policy is valid, otherwise false.
      */
-    bool validate(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const;
+    bool validate(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const;
 
     /*!
      *	Locate errors within a field access policy.
@@ -45,7 +47,8 @@ public:
      *      @param [in] fieldAccessPolicy     The selected field access policy.
      *      @param [in] context               Context to help locate the error.
      */
-    void findErrorsIn(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsIn(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const;
     
     /*!
      *  Check if the field access policy has a valid access value.
@@ -110,16 +113,8 @@ private:
      *
      *      @return True, if the access restrictions are valid, otherwise false.
      */
-    bool hasValidAccessRestrictions(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy) const;
-
-    /*!
-     *	Check if there are missing or duplicate mode references and priorities in access restrictions.
-     *  
-     *      @param [in] modeRefs     The mode references to check.
-     *	    
-     * 	    @return True, if the access restriction mode refs are valid, otherwise false.
-     */
-    bool hasValidAccessRestrictionsModeRefs(QSharedPointer<QList<QSharedPointer<ModeReference> > > modeRefs) const;
+    bool hasValidAccessRestrictions(QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const;
 
     /*!
      *  Find errors within the field access policy definition reference.
@@ -128,7 +123,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void finderrorsInDefinitionRef(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void finderrorsInDefinitionRef(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *  Find errors within the access value.
@@ -137,7 +133,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInAccess(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInAccess(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *  Find errors within the write value constraint.
@@ -146,7 +143,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInWriteValueConstraint(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInWriteValueConstraint(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *  Find errors in the read response value.
@@ -155,7 +153,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInReadResponse(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInReadResponse(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *  Find errors in the broadcasts of the field access policy.
@@ -164,7 +163,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInBroadcasts(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInBroadcasts(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *  Find errors in the access restrictions of the field access policy.
@@ -173,7 +173,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInAccessRestrictions(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInAccessRestrictions(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy,
+        QString const& context, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes) const;
 
     /*!
      *  Find errors in the reserved value.
@@ -182,7 +183,8 @@ private:
      *      @param [in] fieldAccessPolicy       The selected field access policy.
      *      @param [in] context                 Context to help locate the error.
      */
-    void findErrorsInReserved(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, QString const& context) const;
+    void findErrorsInReserved(QStringList& errors, QSharedPointer<FieldAccessPolicy> fieldAccessPolicy, 
+        QString const& context) const;
 
     /*!
      *	Check if a given bit expression is valid.

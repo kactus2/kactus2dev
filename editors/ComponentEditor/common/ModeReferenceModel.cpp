@@ -11,30 +11,20 @@
 
 #include "ModeReferenceModel.h"
 
+#include <KactusAPI/include/ModeReferenceInterface.h>
+
+#include <IPXACTmodels/Component/Mode.h>
+
+#include <common/KactusColors.h>
+
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceModel::ModeReferenceModel()
 //-----------------------------------------------------------------------------
-ModeReferenceModel::ModeReferenceModel(QList<QPair<QString, int> > const& modeRefs, QObject* parent):
+ModeReferenceModel::ModeReferenceModel(ModeReferenceInterface* modeRefInterface, QObject* parent):
     QAbstractTableModel(parent),
-    modeRefs_(modeRefs)
+    interface_(modeRefInterface)
 {
 
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceModel::getModeRefs()
-//-----------------------------------------------------------------------------
-QList<QPair<QString, int> > ModeReferenceModel::getModeRefs() const
-{
-    return modeRefs_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ModeReferenceModel::setModeRefs()
-//-----------------------------------------------------------------------------
-void ModeReferenceModel::setModeRefs(QList<QPair<QString, int> > const& modeRefs)
-{
-    modeRefs_ = modeRefs;
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +37,7 @@ int ModeReferenceModel::rowCount(const QModelIndex& parent /*= QModelIndex()*/) 
         return 0;
     }
 
-    return modeRefs_.size();
+    return interface_->getModeReferenceCount();
 }
 
 //-----------------------------------------------------------------------------
@@ -110,13 +100,46 @@ QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::Dis
     {
         if (index.column() == 0)
         {
-            return QString::number(modeRefs_.at(index.row()).second);
+            return QString::number(interface_->getModeReferencePriority(index.row()));
         }
 
         else if (index.column() == 1)
         {
-            return modeRefs_.at(index.row()).first;
+            return QString::fromStdString(interface_->getModeReferenceValue(index.row()));
         }
+    }
+
+    // For getting available component modes.
+    if (role == Qt::UserRole && index.column() == 1)
+    {
+        auto modes = interface_->getComponentModes();
+
+        QStringList modeNames;
+        std::for_each(modes.begin(), modes.end(), [&modeNames](std::string const& mode)
+            {
+                modeNames.append(QString::fromStdString(mode));
+            });
+
+        return modeNames;
+    }
+
+    // Show error, if mode ref value or priority is not valid.
+    if (role == Qt::ForegroundRole)
+    {
+        bool isValid = false;
+
+        if (index.column() == 0)
+        {
+            isValid = interface_->modeReferencePriorityIsValid(index.row());
+
+        }
+        else if (index.column() == 1)
+        {
+            isValid = interface_->modeReferenceValueIsValid(index.row());
+        }
+
+        return isValid ? KactusColors::REGULAR_TEXT : KactusColors::ERROR;
+
     }
 
     return QVariant();
@@ -128,7 +151,7 @@ QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::Dis
 bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value, int role /*= Qt::EditRole*/)
 {
     if (!index.isValid() || index.row() < 0 ||
-        index.row() >= modeRefs_.size() ||
+        index.row() >= interface_->getModeReferenceCount() ||
         !(flags(index) & Qt::ItemIsEditable) || role != Qt::EditRole)
     {
         return false;
@@ -136,12 +159,12 @@ bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value
 
     if (index.column() == 0)
     {
-        modeRefs_[index.row()].second = value.toInt();
+        interface_->setModeReferencePriority(index.row(), value.toInt());
     }
-    
+
     else if (index.column() == 1)
     {
-        modeRefs_[index.row()].first = value.toString();
+        interface_->setModeReferenceValue(index.row(), value.toString().toStdString());
     }
 
     emit dataChanged(index, index);
@@ -155,10 +178,10 @@ bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value
 //-----------------------------------------------------------------------------
 void ModeReferenceModel::onAddRow(QModelIndex const& index)
 {
-    int lastRow = modeRefs_.size();
+    int lastRow = interface_->getModeReferenceCount();
 
     beginInsertRows(QModelIndex(), lastRow, lastRow);
-    modeRefs_.append(QPair<QString, int>());
+    interface_->addModeReference();
     endInsertRows();
 
     emit invalidateFilter();
@@ -173,13 +196,13 @@ void ModeReferenceModel::onRemoveItem(QModelIndex const& index)
     int rowToRemove = index.row();
 
     if (!index.isValid() || rowToRemove < 0 ||
-        rowToRemove >= modeRefs_.size())
+        rowToRemove >= interface_->getModeReferenceCount())
     {
         return;
     }
 
     beginRemoveRows(QModelIndex(), rowToRemove, rowToRemove);
-    modeRefs_.removeAt(rowToRemove);
+    interface_->removeModeReference(rowToRemove);
     endRemoveRows();
 
     emit contentChanged();

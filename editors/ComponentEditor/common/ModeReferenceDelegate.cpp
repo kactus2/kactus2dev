@@ -11,7 +11,10 @@
 
 #include "ModeReferenceDelegate.h"
 
+#include <QComboBox>
 #include <QLineEdit>
+
+#include <QRegularExpressionValidator>
 
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceDelegate::ModeReferenceDelegate()
@@ -27,8 +30,20 @@ ModeReferenceDelegate::ModeReferenceDelegate(QObject* parent):
 //-----------------------------------------------------------------------------
 QWidget* ModeReferenceDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    auto lineEdit = new QLineEdit(parent);
-    return lineEdit;
+    if (index.column() == 0)
+    {
+        auto lineEdit = new QLineEdit(parent);
+
+        lineEdit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\d*"), parent));
+        return lineEdit;
+    }
+    else if (index.column() == 1)
+    {
+        auto comboBox = new QComboBox(parent);
+        return comboBox;
+    }
+
+    return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
 //-----------------------------------------------------------------------------
@@ -36,9 +51,20 @@ QWidget* ModeReferenceDelegate::createEditor(QWidget* parent, const QStyleOption
 //-----------------------------------------------------------------------------
 void ModeReferenceDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-    if (auto lineEdit = qobject_cast<QLineEdit*>(editor); lineEdit)
+    if (index.column() == 0)
     {
-        lineEdit->setText(index.data(Qt::DisplayRole).toString());
+        if (auto lineEdit = qobject_cast<QLineEdit*>(editor))
+        {
+            lineEdit->setText(index.data(Qt::DisplayRole).toString());
+        }
+    }
+    else if (index.column() == 1)
+    {
+        if (auto comboBox = qobject_cast<QComboBox*>(editor))
+        {
+            comboBox->setCurrentText(index.data(Qt::DisplayRole).toString());
+            comboBox->addItems(index.data(Qt::UserRole).toStringList());
+        }
     }
 }
 
@@ -47,14 +73,20 @@ void ModeReferenceDelegate::setEditorData(QWidget* editor, const QModelIndex& in
 //-----------------------------------------------------------------------------
 void ModeReferenceDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
-    auto lineEdit = qobject_cast<QLineEdit*>(editor);
-
-    if (!lineEdit)
+    if (index.column() == 0)
     {
-        return;
+        if (auto lineEdit = qobject_cast<QLineEdit*>(editor))
+        {
+            model->setData(index, lineEdit->text(), Qt::EditRole);
+        }
     }
-
-    model->setData(index, lineEdit->text(), Qt::EditRole);
+    else if (index.column() == 1)
+    {
+        if (auto comboBox = qobject_cast<QComboBox*>(editor))
+        {
+            model->setData(index, comboBox->currentText(), Qt::EditRole);
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

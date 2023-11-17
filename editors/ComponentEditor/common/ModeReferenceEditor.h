@@ -16,6 +16,7 @@
 #include "ModeReferenceModel.h"
 
 class EditableTableView;
+class ModeReferenceInterface;
 
 class ModeReferenceEditor : public QWidget
 {
@@ -29,26 +30,12 @@ public:
      *      @param [in] model        The mode reference model to use.
      *      @param [in] parent       The parent widget.
      */
-    ModeReferenceEditor(ModeReferenceModel* model, QWidget* parent);
+    ModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent);
 
     virtual ~ModeReferenceEditor() = default;
 
     ModeReferenceEditor(ModeReferenceEditor& other) = delete;
     ModeReferenceEditor& operator=(ModeReferenceEditor& other) = delete;
-
-    /*!
-     *	Set the model mode references.
-     *  
-     *      @param [in] modeRefs     The mode references to set.
-     */
-    void setModeRefs(QList<QPair<QString, int> > modeRefs) const;
-
-    /*!
-     *	Get the mode referneces from the model.
-     *  
-     * 	    @return The mode references as a list.
-     */
-    QList<QPair<QString, int> > getModeRefs() const;
 
 signals:
 

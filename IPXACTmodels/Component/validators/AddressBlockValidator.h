@@ -28,6 +28,7 @@ class Component;
 class RegisterValidator;
 class RegisterFileValidator;
 class ParameterValidator;
+class Mode;
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
@@ -343,6 +344,10 @@ private:
 
     //! The validator used for register files.
     QSharedPointer<RegisterFileValidator> registerFileValidator_;
+
+    //! Available component modes.
+    QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
+
 };
 
 #endif // ADDRESSBLOCKVALIDATOR_H
