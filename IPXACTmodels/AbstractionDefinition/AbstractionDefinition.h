@@ -32,9 +32,6 @@ class IPXACTMODELS_EXPORT AbstractionDefinition: public Document
 {
 public:
 
-	//! The default constructor.
-	AbstractionDefinition();
-
     AbstractionDefinition(VLNV const& vlnv, Document::Revision revision);
 
 	//! Copy constructor.

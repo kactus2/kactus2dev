@@ -29,22 +29,14 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinition::AbstractionDefinition()
-//-----------------------------------------------------------------------------
-AbstractionDefinition::AbstractionDefinition(): 
-Document()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::AbstractionDefinition()
 //-----------------------------------------------------------------------------
 AbstractionDefinition::AbstractionDefinition(VLNV const& vlnv, Document::Revision revision):
-Document(revision)
+Document(vlnv, revision)
 {
-    setVlnv(vlnv);
+
 }
 
 //-----------------------------------------------------------------------------

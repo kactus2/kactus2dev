@@ -14,6 +14,8 @@
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
@@ -23,18 +25,6 @@
 #include <QObject>
 #include <QList>
 #include <QStringList>
-
-//-----------------------------------------------------------------------------
-// Function: Document::Document()
-//-----------------------------------------------------------------------------
-Document::Document(Revision revision):
-Extendable(),
-    
-    revision_(revision)
-{
-    addDefaultNameSpaces(revision);
-    setSchemaLocation(revision);
-}
 
 //-----------------------------------------------------------------------------
 // Function: Document::Document()
@@ -60,8 +50,8 @@ Extendable(other),
     xmlNameSpaces_(other.xmlNameSpaces_),
     xmlSchemaLocation_(other.xmlSchemaLocation_)
 {
-    copyParameters(other);
-    copyAssertions(other);
+    Copy::copyList(other.parameters_, parameters_);
+    Copy::copyList(other.assertions_, assertions_);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,8 +79,11 @@ Document & Document::operator=( const Document &other )
         xmlNameSpaces_ = other.xmlNameSpaces_;
         xmlSchemaLocation_ = other.xmlSchemaLocation_;
 
-        copyParameters(other);
-        copyAssertions(other);
+        parameters_->clear();
+        Copy::copyList(other.parameters_, parameters_);
+
+        assertions_->clear();
+        Copy::copyList(other.assertions_, assertions_);
 
 	}
 	return *this;
@@ -190,7 +183,7 @@ QSharedPointer<QList<QSharedPointer<Assertion> > > Document::getAssertions() con
 //-----------------------------------------------------------------------------
 void Document::setTopComments(QString const& comment)
 {
-    topComments_ = comment.split(QStringLiteral("\n"));
+    topComments_ = comment.split(QLatin1Char('\n'));
 }
 
 //-----------------------------------------------------------------------------
@@ -265,7 +258,7 @@ void Document::setSchemaLocation(Document::Revision revision)
     }
     else
     {
-        xmlSchemaLocation_ = QStringLiteral("");
+        xmlSchemaLocation_ = QString();
     }
 }
 
@@ -582,35 +575,6 @@ void Document::addDefaultNameSpaces(Revision revision)
     }
 
     xmlNameSpaces_.append(qMakePair(QStringLiteral("kactus2"), QStringLiteral("http://kactus2.cs.tut.fi")));
-}
-
-//-----------------------------------------------------------------------------
-// Function: Document::copyParameters()
-//-----------------------------------------------------------------------------
-void Document::copyParameters(Document const& other)
-{
-    parameters_->reserve(other.parameters_->count());
-    for (QSharedPointer<Parameter> parameter : *other.parameters_)
-    {
-        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-        parameters_->append(copy);
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Document::copyAssertions()
-//-----------------------------------------------------------------------------
-void Document::copyAssertions(Document const& other)
-{
-    assertions_->reserve(other.assertions_->count());
-    for (QSharedPointer<Assertion> assertion : *other.assertions_)
-    {
-        if (assertion)
-        {
-            QSharedPointer<Assertion> copy = QSharedPointer<Assertion>(new Assertion(*assertion.data()));
-            assertions_->append(copy);
-        }
-    }
 }
 
 //-----------------------------------------------------------------------------

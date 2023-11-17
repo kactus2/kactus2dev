@@ -26,15 +26,6 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::BusDefinition()
 //-----------------------------------------------------------------------------
-BusDefinition::BusDefinition(): 
-Document()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinition::BusDefinition()
-//-----------------------------------------------------------------------------
 BusDefinition::BusDefinition(VLNV const& vlnv, Document::Revision revision):
 Document(vlnv, revision)
 {

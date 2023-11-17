@@ -2195,6 +2195,8 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory 
     Q_ASSERT(busDefVLNV.isValid());
     Q_ASSERT(!directory.isEmpty());
 
+    auto busDef = libraryHandler_->getModelReadOnly(busDefVLNV);
+
     VLNV absVLNV = busDefVLNV;
 
     // remove the possible .busDef from the end of the name field
@@ -2222,8 +2224,7 @@ void MainWindow::createAbsDef( const VLNV& busDefVLNV, const QString& directory 
     }
 
     // create an abstraction definition
-    QSharedPointer<AbstractionDefinition> absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
-    absDef->setVlnv(absVLNV);
+    auto absDef = QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(absVLNV, busDef->getRevision()));
     absDef->setVersion(VersionHelper::versionFileStr());
 
     // set reference from abstraction definition to bus definition

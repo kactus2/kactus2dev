@@ -39,7 +39,7 @@ namespace DirectionTypes
      *
      *      @return The mirrored direction.
      */
-    IPXACTMODELS_EXPORT constexpr DirectionTypes::Direction convert2Mirrored(
+    IPXACTMODELS_EXPORT DirectionTypes::Direction convert2Mirrored(
          DirectionTypes::Direction originalDirection);
 
     /*!

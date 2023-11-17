@@ -38,9 +38,6 @@ class IPXACTMODELS_EXPORT BusDefinition: public Document
 {
 public:
 
-	//! The default constructor.
-	BusDefinition();
-
 	BusDefinition(VLNV const& vlnv, Document::Revision revision);
 
 	//! Copy constructor.
@@ -50,7 +47,7 @@ public:
 	BusDefinition &operator=(BusDefinition const& other);
 
 	//! The destructor.
-	virtual ~BusDefinition();
+	~BusDefinition() final;
 
 	/*!
 	 *  Creates a perfect copy of the Bus Definition.

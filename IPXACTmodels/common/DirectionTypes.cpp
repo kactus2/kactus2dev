@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 // Function: DirectionTypes::convert2Mirrored()
 //-----------------------------------------------------------------------------
-constexpr DirectionTypes::Direction DirectionTypes::convert2Mirrored(Direction originalDirection )
+DirectionTypes::Direction DirectionTypes::convert2Mirrored(Direction originalDirection )
 {
     if (originalDirection == DirectionTypes::IN)
     {
