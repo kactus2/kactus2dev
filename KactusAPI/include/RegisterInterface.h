@@ -292,15 +292,15 @@ public:
     bool setVolatile(std::string const& registerName, std::string const& newVolatile);
     
     /*!
-     *  Get the access string of the selected register or access policy given by the access policy index.
-     *  Use the default access policy index of -1 to fetch the access value stored directly in the register.
+     *  Get the access string of the selected register or first access policy.
      *
-     *      @param [in] registerName        Name of the selected register.
-     *      @param [in] accessPolicyIndex   The index of the selected access policy.
+     *      @param [in] registerName            Name of the selected register.
+     *      @param [in] getAccessPolicyAccess   Flag indicating if access is fetched from access policy or directly
+     *                                          from register. Access is fetched from first access policy, if true.
      *
      *      @return The access string of the selected register.
      */
-    std::string getAccessString(std::string const& registerName) const;
+    std::string getAccessString(std::string const& registerName, bool getAccessPolicyAccess = false) const;
 
     /*!
      *  Get the access of the selected register or access policy given by the access policy index.
@@ -315,13 +315,32 @@ public:
     /*!
      *  Set the access value for the selected register or its access policy given by the access policy index.
      *
-     *      @param [in] registerName        Name of the selected register.
-     *      @param [in] newAccess           The new access value.
-     *      @param [in] accessPolicyIndex   The index of the selected access policy.
+     *      @param [in] registerName            Name of the selected register.
+     *      @param [in] newAccess               The new access value.
+     *      @param [in] getAccessPolicyAccess   Flag indicating if access is set to access policy or directly
+     *                                          to register. Access is set to first access policy, if true.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAccess(std::string const& registerName, std::string const& newAccess);
+    bool setAccess(std::string const& registerName, std::string const& newAccess, bool setAccessPolicyAccess = false);
+
+    /*!
+     *	Get the number of access policies for a given register.
+     *  
+     *      @param [in] registerName     The name of the register to get the number off access policies of.
+     *	    
+     * 	    @return The number of access policies for the given register.
+     */
+    int getAccessPolicyCount(std::string const& registerName) const;
+
+    /*!
+     *	Adds a new access policy to the selected register.
+     *  
+     *      @param [in] registerName     The selected register.
+     *	    
+     * 	    @return True, if operation was successful, otherwise false.
+     */
+    bool addAccessPolicy(std::string const& registerName);
 
     /*!
      *  Calculate all the references to the selected ID in the selected item.

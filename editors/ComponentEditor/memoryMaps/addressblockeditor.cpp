@@ -49,7 +49,7 @@ registers_(registers)
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    model_ = new AddressBlockModel(registerInterface, expressionParser, parameterFinder, this);
+    model_ = new AddressBlockModel(registerInterface, expressionParser, parameterFinder, component->getRevision(), this);
 
     ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
@@ -80,7 +80,6 @@ registers_(registers)
     {
         view_->hideColumn(AddressBlockColumns::REGISTER_DIMENSION);
         view_->hideColumn(AddressBlockColumns::VOLATILE);
-        view_->hideColumn(AddressBlockColumns::REGISTER_ACCESS);
         view_->hideColumn(AddressBlockColumns::IS_PRESENT);
     }
 

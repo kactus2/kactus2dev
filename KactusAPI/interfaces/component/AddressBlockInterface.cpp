@@ -214,20 +214,21 @@ bool AddressBlockInterface::setUsage(std::string const& blockName, std::string c
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getAccessString()
 //-----------------------------------------------------------------------------
-std::string AddressBlockInterface::getAccessString(std::string const& blockName, int accessPolicyIndex /*= -1*/) const
+std::string AddressBlockInterface::getAccessString(std::string const& blockName, bool getAccessPolicyAccess /*= false*/) const
 {
     if (auto selectedBlock = getAddressBlock(blockName))
     {
-        if (accessPolicyIndex == -1)
+        if (!getAccessPolicyAccess)
         {
             return AccessTypes::access2Str(selectedBlock->getAccess()).toStdString();
         }
-        else if (accessPolicyIndex >= 0)
+        else
         {
-            if (auto accessPolicies = selectedBlock->getAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
+            auto accessPolicies = selectedBlock->getAccessPolicies();
+
+            if (!accessPolicies->isEmpty())
             {
-                return AccessTypes::access2Str(accessPolicies->at(accessPolicyIndex)->getAccess()).toStdString();
+                return AccessTypes::access2Str(accessPolicies->first()->getAccess()).toStdString();
             }
         }
     }
@@ -238,22 +239,11 @@ std::string AddressBlockInterface::getAccessString(std::string const& blockName,
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getAccess()
 //-----------------------------------------------------------------------------
-AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockName, int accessPolicyIndex /*= -1*/) const
+AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockName) const
 {
     if (auto selectedBlock = getAddressBlock(blockName))
     {
-        if (accessPolicyIndex == -1)
-        {
-            return selectedBlock->getAccess();
-        }
-        else if (accessPolicyIndex >= 0)
-        {
-            if (auto accessPolicies = selectedBlock->getAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
-            {
-                return accessPolicies->at(accessPolicyIndex)->getAccess();
-            }
-        }
+        return selectedBlock->getAccess();
     }
 
     return AccessTypes::ACCESS_COUNT;
@@ -262,7 +252,7 @@ AccessTypes::Access AddressBlockInterface::getAccess(std::string const& blockNam
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::setAccess()
 //-----------------------------------------------------------------------------
-bool AddressBlockInterface::setAccess(std::string const& blockName, std::string const& newAccess, int accessPolicyIndex /*= -1*/) const
+bool AddressBlockInterface::setAccess(std::string const& blockName, std::string const& newAccess, bool setAccessPolicyAccess /*= false*/) const
 {
     auto selectedBlock = getAddressBlock(blockName);
     if (!selectedBlock)
@@ -270,30 +260,26 @@ bool AddressBlockInterface::setAccess(std::string const& blockName, std::string 
         return false;
     }
 
-    if (accessPolicyIndex == -1)
+    if (!setAccessPolicyAccess)
     {
         selectedBlock->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT));
         return true;
     }
-    else if (accessPolicyIndex >= 0)
+    else
     {
-        if (auto accessPolicies = selectedBlock->getAccessPolicies();
-            accessPolicyIndex <= accessPolicies->size() - 1)
+        auto accessPolicy = selectedBlock->getAccessPolicies()->first();
+
+        // Remove access policy, if new access is empty.
+        if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
+            accessPolicy->getVendorExtensions()->isEmpty())
         {
-            auto accessPolicy = accessPolicies->at(accessPolicyIndex);
-
-            // Remove if empty.
-            if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
-                accessPolicy->getVendorExtensions()->isEmpty())
-            {
-                selectedBlock->getAccessPolicies()->removeAt(accessPolicyIndex);
-                return true;
-            }
-
-            accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), 
-                AccessTypes::ACCESS_COUNT));
+            selectedBlock->getAccessPolicies()->clear();
             return true;
         }
+
+        accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), 
+            AccessTypes::ACCESS_COUNT));
+        return true;
     }
     
     return false;

@@ -59,6 +59,7 @@ Qt::ItemFlags MemoryMapModel::flags(QModelIndex const& index) const
 
     std::string addressBlockName = localBlockInterface_->getIndexedItemName(index.row());
 
+    // Disable access field if there is more than one access policy for that address block.
     if (index.column() == MemoryMapColumns::ACCESS_COLUMN && docRevision_ == Document::Revision::Std22)
     {
         if (localBlockInterface_->getAccessPolicyCount(addressBlockName) > 1)
@@ -179,7 +180,7 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
         else if (index.column() == MemoryMapColumns::ACCESS_COLUMN)
         {
             // Modify the access of the address block by default.
-            int accessPolicyIndex = -1;
+            bool setAccessPolicyAccess = false;
 
             if (docRevision_ == Document::Revision::Std22)
             {
@@ -191,10 +192,10 @@ bool MemoryMapModel::setData(QModelIndex const& index, QVariant const& value, in
                 }
 
                 // Modify first access policy, if std22.
-                accessPolicyIndex = 0;
+                setAccessPolicyAccess = true;
             }
 
-            if (!localBlockInterface_->setAccess(blockName, value.toString().toStdString(), accessPolicyIndex))
+            if (!localBlockInterface_->setAccess(blockName, value.toString().toStdString(), setAccessPolicyAccess))
             {
                 return false;
             }
@@ -328,7 +329,7 @@ QVariant MemoryMapModel::valueForIndex(QModelIndex const& index) const
                 return QStringLiteral("[multiple]");
             }
 
-            return QString::fromStdString(localBlockInterface_->getAccessString(blockName, index.row()));
+            return QString::fromStdString(localBlockInterface_->getAccessString(blockName, true));
         }
 
         return QString::fromStdString(localBlockInterface_->getAccessString(blockName));

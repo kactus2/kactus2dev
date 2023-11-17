@@ -17,6 +17,7 @@
 class AccessPolicyInterface;
 class AccessPolicy;
 class EditableTableView;
+class QSortFilterProxyModel;
 
 //-----------------------------------------------------------------------------
 //! Editor for access policies found in address blocks, registers, register files etc.
@@ -54,6 +55,9 @@ private:
 
     //! The access policy table view.
     EditableTableView* view_;
+
+    //! The sort filter proxy.
+    QSortFilterProxyModel* proxy_;
 
     //! Interface for accessing access policies.
     AccessPolicyInterface* interface_;

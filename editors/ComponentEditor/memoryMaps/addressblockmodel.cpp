@@ -24,10 +24,12 @@
 //-----------------------------------------------------------------------------
 AddressBlockModel::AddressBlockModel(RegisterInterface* registerInterface,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterFinder> parameterFinder,
-    QObject *parent):
+    Document::Revision docRevision, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-registerInterface_(registerInterface)
+registerInterface_(registerInterface),
+accessPolicyInterface_(registerInterface->getAccessPolicyInterface()),
+docRevision_(docRevision)
 {
     setExpressionParser(expressionParser);
 }
@@ -66,6 +68,14 @@ Qt::ItemFlags AddressBlockModel::flags(QModelIndex const& index) const
     if (!index.isValid())
     {
         return Qt::NoItemFlags;
+    }
+
+    // Indicate that cell can be colored gray if register has multiple access policies
+    if (index.column() == AddressBlockColumns::REGISTER_ACCESS &&
+        registerInterface_->getAccessPolicyCount(
+            registerInterface_->getIndexedItemName(index.row())) > 1)
+    {
+        return Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     }
 
     return Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable;
@@ -187,6 +197,12 @@ QVariant AddressBlockModel::data(QModelIndex const& index, int role) const
     }
     else if (role == Qt::BackgroundRole)
     {
+        if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable) &&
+            index.column() == AddressBlockColumns::REGISTER_ACCESS)
+        {
+            return KactusColors::DISABLED_FIELD;
+        }
+
         if (index.column() == AddressBlockColumns::NAME ||
             index.column() == AddressBlockColumns::REGISTER_OFFSET ||
             index.column() == AddressBlockColumns::REGISTER_SIZE)
@@ -295,6 +311,16 @@ QVariant AddressBlockModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
     {
+        if (docRevision_ == Document::Revision::Std22)
+        {
+            if (index.flags() == (Qt::ItemIsEnabled | Qt::ItemIsSelectable))
+            {
+                return QStringLiteral("[multiple]");
+            }
+
+            return QString::fromStdString(registerInterface_->getAccessString(registerName, true));
+        }
+
         return QString::fromStdString(registerInterface_->getAccessString(registerName));
     }
 
@@ -392,7 +418,23 @@ bool AddressBlockModel::setData(QModelIndex const& index, QVariant const& value,
         }
         else if (index.column() == AddressBlockColumns::REGISTER_ACCESS)
         {
-            registerInterface_->setAccess(registerName, value.toString().toStdString());
+            // Modify the access of the register block by default.
+            bool setAccessPolicyAccess = false;
+
+            if (docRevision_ == Document::Revision::Std22)
+            {
+                // Create access policy first, if one doesn't exist.
+                if (registerInterface_->getAccessPolicyCount(registerName) == 0 &&
+                    value.toString().isEmpty() == false)
+                {
+                    registerInterface_->addAccessPolicy(registerName);
+                }
+
+                // Modify first access policy, if std22.
+                setAccessPolicyAccess = true;
+            }
+
+            registerInterface_->setAccess(registerName, value.toString().toStdString(), setAccessPolicyAccess);
         }
         else
         {

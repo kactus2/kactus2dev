@@ -166,34 +166,34 @@ public:
      *  accessPolicyIndex parameter. The default value of -1 returns the address block's access value. 0 and above
      *  returns an indexed access policy's access value.
      *
-     *      @param [in] blockName           Name of the selected address block.
-     *      @param [in] accessPolicyIndex   The access policy to get the access value of.
+     *      @param [in] blockName               Name of the selected address block.
+     *      @param [in] getAccessPolicyAccess   Flag indicating if access is fetched from access policy or directly
+     *                                          from address block.
      *
      *      @return Access string of the selected address block or its access policy.
      */
-    std::string getAccessString(std::string const& blockName, int accessPolicyIndex = -1) const;
+    std::string getAccessString(std::string const& blockName, bool getAccessPolicyAccess = false) const;
 
     /*!
-     *  Get the access of the selected address block or one of its access policies specified by the
-     *  accessPolicyIndex parameter. The default value of -1 returns the address block's access value. 0 and above
-     *  returns an indexed access policy's access value.
+     *  Get the access of the selected address block. Used in std14 access editor.
      *
      *      @param [in] blockName           Name of the selected address block.
-     *      @param [in] accessPolicyIndex   The access policy to get the access value of.
      *
-     *      @return Access of the selected address block or its access policy.
+     *      @return Access of the selected address block.
      */
-    AccessTypes::Access getAccess(std::string const& blockName, int accessPolicyIndex = -1) const;
+    AccessTypes::Access getAccess(std::string const& blockName) const;
 
     /*!
      *  Set a new access for the selected address block.
      *
-     *      @param [in] blockName   Name of the selected address block.
-     *      @param [in] newAccess   New access value.
+     *      @param [in] blockName               Name of the selected address block.
+     *      @param [in] newAccess               New access value.
+     *      @param [in] getAccessPolicyAccess   Flag indicating if access is set to access policy or directly to
+     *                                          address block.
      *
      *      @return True, if successful, false otherwise.
      */
-    bool setAccess(std::string const& blockName, std::string const& newAccess, int accessPolicyIndex = -1) const;
+    bool setAccess(std::string const& blockName, std::string const& newAccess, bool setAccessPolicyAccess = false) const;
 
     /*!
      *  Get the volatile value of the selected address block.
