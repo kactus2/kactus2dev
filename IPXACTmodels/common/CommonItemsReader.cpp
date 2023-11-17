@@ -14,7 +14,7 @@
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
-#include <IPXACTmodels/Component/ChoiceReader.h>
+#include <IPXACTmodels/common/ChoiceReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: CommonItemsReader::CommonItemsReader()

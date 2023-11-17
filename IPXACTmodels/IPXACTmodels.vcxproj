@@ -148,6 +148,8 @@
     <ClCompile Include="common\BooleanValue.cpp" />
     <ClCompile Include="common\BuildModel.cpp" />
     <ClCompile Include="common\CellSpecification.cpp" />
+    <ClCompile Include="common\Choice.cpp" />
+    <ClCompile Include="common\ChoiceReader.cpp" />
     <ClCompile Include="common\ChoiceWriter.cpp" />
     <ClCompile Include="common\ClockUnit.cpp" />
     <ClCompile Include="common\CommonItemsReader.cpp" />
@@ -189,6 +191,7 @@
     <ClCompile Include="common\TransactionalTypes.cpp" />
     <ClCompile Include="common\validators\AssertionValidator.cpp" />
     <ClCompile Include="common\validators\CellSpecificationValidator.cpp" />
+    <ClCompile Include="common\validators\ChoiceValidator.cpp" />
     <ClCompile Include="common\validators\CommonItemsValidator.cpp" />
     <ClCompile Include="common\validators\namevalidator.cpp" />
     <ClCompile Include="common\validators\NMTokenValidator.cpp" />
@@ -216,8 +219,6 @@
     <ClCompile Include="Component\Channel.cpp" />
     <ClCompile Include="Component\ChannelReader.cpp" />
     <ClCompile Include="Component\ChannelWriter.cpp" />
-    <ClCompile Include="Component\Choice.cpp" />
-    <ClCompile Include="Component\ChoiceReader.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Component\ComponentGenerator.cpp" />
     <ClCompile Include="Component\ComponentGeneratorReader.cpp" />
@@ -315,7 +316,6 @@
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
     <ClCompile Include="Component\validators\BusInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\ChannelValidator.cpp" />
-    <ClCompile Include="Component\validators\ChoiceValidator.cpp" />
     <ClCompile Include="Component\validators\ComponentGeneratorValidator.cpp" />
     <ClCompile Include="Component\validators\ComponentValidator.cpp" />
     <ClCompile Include="Component\validators\CPUValidator.cpp" />
@@ -421,11 +421,14 @@
     <ClInclude Include="AbstractionDefinition\PacketReader.h" />
     <ClInclude Include="AbstractionDefinition\PacketWriter.h" />
     <ClInclude Include="AbstractionDefinition\validators\PacketValidator.h" />
+    <ClInclude Include="common\Choice.h" />
+    <ClInclude Include="common\ChoiceReader.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
     <ClInclude Include="common\FileType.h" />
     <ClInclude Include="common\QualifierReader.h" />
     <ClInclude Include="common\QualifierWriter.h" />
     <ClInclude Include="common\TagData.h" />
+    <ClInclude Include="common\validators\ChoiceValidator.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\AccessPolicy.h" />
@@ -858,9 +861,6 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
       </Command>
     </CustomBuild>
-    <ClInclude Include="Component\Choice.h" />
-    <QtMoc Include="Component\ChoiceReader.h">
-    </QtMoc>
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Component\ComponentGenerator.h" />
     <CustomBuild Include="Component\ComponentGeneratorReader.h">
@@ -1287,7 +1287,6 @@
     <ClInclude Include="Component\validators\AddressSpaceValidator.h" />
     <ClInclude Include="Component\validators\BusInterfaceValidator.h" />
     <ClInclude Include="Component\validators\ChannelValidator.h" />
-    <ClInclude Include="Component\validators\ChoiceValidator.h" />
     <ClInclude Include="Component\validators\ComponentGeneratorValidator.h" />
     <ClInclude Include="Component\validators\ComponentValidator.h" />
     <ClInclude Include="Component\validators\CPUValidator.h" />

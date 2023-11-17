@@ -11,10 +11,10 @@
 
 #include "AbstractParameterInterface.h"
 
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <IPXACTmodels/Component/Choice.h>
 
 #include <IPXACTmodels/utilities/Search.h>
 

@@ -25,7 +25,6 @@
 #include "Port.h"
 #include "PowerDomain.h"
 #include "ComponentGenerator.h"
-#include "Choice.h"
 #include "FileSet.h"
 #include "Cpu.h"
 #include "OtherClockDriver.h"
@@ -41,9 +40,11 @@
 #include <IPXACTmodels/kactusExtensions/FileDependency.h>
 #include <IPXACTmodels/kactusExtensions/Kactus2Group.h>
 
-#include <IPXACTmodels/common/Parameter.h>
 
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/VLNV.h>
+
 #include <IPXACTmodels/utilities/Search.h>
 #include <IPXACTmodels/utilities/Copy.h>
 

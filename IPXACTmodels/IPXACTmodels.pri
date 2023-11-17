@@ -3,7 +3,9 @@
 # ------------------------------------------------------
 
 
-HEADERS += ./generaldeclarations.h \
+HEADERS += ./common/Choice.h \
+    ./Component/validators/ChoiceValidator.h \
+    ./generaldeclarations.h \
     ./ipxactmodels_global.h \
     ./kactusExtensions/ApiDefinition.h \
     ./kactusExtensions/ApiFunction.h \
@@ -172,7 +174,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/BuildCommand.h \
     ./Component/BusInterface.h \
     ./Component/Channel.h \
-    ./Component/Choice.h \
+    ./common/ChoiceReader.h \
     ./Component/Component.h \
     ./Component/ComponentGenerator.h \
     ./Component/ComponentInstantiation.h \
@@ -245,7 +247,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/PortWriter.h \
     ./Component/RegisterReader.h \
     ./Component/RegisterWriter.h \
-    ./Component/ChoiceReader.h \
     ./Component/OtherClockDriverReader.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
@@ -265,7 +266,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/validators/AddressSpaceValidator.h \
     ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
-    ./Component/validators/ChoiceValidator.h \
     ./Component/validators/ComponentGeneratorValidator.h \
     ./Component/validators/ComponentValidator.h \
     ./Component/validators/CPUValidator.h \
@@ -446,8 +446,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Channel.cpp \
     ./Component/ChannelReader.cpp \
     ./Component/ChannelWriter.cpp \
-    ./Component/Choice.cpp \
-    ./Component/ChoiceReader.cpp \
+    ./common/Choice.cpp \
     ./Component/Component.cpp \
     ./Component/ComponentGenerator.cpp \
     ./Component/ComponentGeneratorReader.cpp \
@@ -551,7 +550,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/AddressSpaceValidator.cpp \
     ./Component/validators/BusInterfaceValidator.cpp \
     ./Component/validators/ChannelValidator.cpp \
-    ./Component/validators/ChoiceValidator.cpp \
     ./Component/validators/ComponentGeneratorValidator.cpp \
     ./Component/validators/ComponentValidator.cpp \
     ./Component/validators/CPUValidator.cpp \
@@ -601,4 +599,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./common/ChoiceReader.cpp \
+    ./Component/validators/ChoiceValidator.cpp \
     ./common/QualifierWriter.cpp

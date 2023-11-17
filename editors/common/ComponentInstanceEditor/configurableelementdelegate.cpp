@@ -23,7 +23,7 @@
 #include <editors/HWDesign/undoCommands/ConfigurableElementChangeCommand.h>
 #include <editors/HWDesign/undoCommands/ConfigurableElementRemoveCommand.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
 #include <QPen>

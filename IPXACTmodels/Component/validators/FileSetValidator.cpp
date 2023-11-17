@@ -14,7 +14,7 @@
 
 #include <KactusAPI/include/ExpressionParser.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/FileBuilder.h>
 

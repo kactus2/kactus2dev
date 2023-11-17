@@ -18,7 +18,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 

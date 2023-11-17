@@ -14,7 +14,7 @@
 #include "ParameterColumns.h"
 
 #include <IPXACTmodels/common/validators/namevalidator.h>
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>

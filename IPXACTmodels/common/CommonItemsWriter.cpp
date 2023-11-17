@@ -16,7 +16,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/ChoiceWriter.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
 #include <IPXACTmodels/Component/FileSetRef.h>
 

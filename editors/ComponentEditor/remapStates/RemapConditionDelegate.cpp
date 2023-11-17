@@ -20,7 +20,7 @@
 
 #include <editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <QCompleter>
 #include <QScrollArea>

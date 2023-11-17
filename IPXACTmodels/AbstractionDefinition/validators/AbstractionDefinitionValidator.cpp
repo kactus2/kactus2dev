@@ -21,8 +21,8 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 

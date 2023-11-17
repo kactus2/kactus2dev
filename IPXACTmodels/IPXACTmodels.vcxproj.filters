@@ -305,12 +305,6 @@
     <ClCompile Include="Component\ChannelWriter.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
-    <ClCompile Include="Component\Choice.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\ChoiceReader.cpp">
-      <Filter>Source Files\Component</Filter>
-    </ClCompile>
     <ClCompile Include="Component\Component.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
@@ -628,9 +622,6 @@
     </ClCompile>
     <ClCompile Include="BusDefinition\validators\BusDefinitionValidator.cpp">
       <Filter>Source Files\BusDefinition\validators</Filter>
-    </ClCompile>
-    <ClCompile Include="Component\validators\ChoiceValidator.cpp">
-      <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
     <ClCompile Include="Component\validators\EnumeratedValueValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
@@ -1022,6 +1013,15 @@
     <ClCompile Include="common\QualifierWriter.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="common\Choice.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\ChoiceReader.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\ChoiceValidator.cpp">
+      <Filter>Source Files\common\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1145,9 +1145,6 @@
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\Channel.h">
-      <Filter>Header Files\Component</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\Choice.h">
       <Filter>Header Files\Component</Filter>
     </ClInclude>
     <ClInclude Include="Component\Component.h">
@@ -1341,9 +1338,6 @@
     </ClInclude>
     <ClInclude Include="BusDefinition\validators\BusDefinitionValidator.h">
       <Filter>Header Files\BusDefinition\validators</Filter>
-    </ClInclude>
-    <ClInclude Include="Component\validators\ChoiceValidator.h">
-      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
     <ClInclude Include="Component\validators\FieldValidator.h">
       <Filter>Header Files\Component\validators</Filter>
@@ -1765,6 +1759,15 @@
     <ClInclude Include="common\QualifierWriter.h">
       <Filter>Header Files\common</Filter>
     </ClInclude>
+    <ClInclude Include="common\Choice.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ChoiceReader.h">
+      <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\ChoiceValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="BusDefinition\BusDefinitionReader.h">
@@ -1815,9 +1818,6 @@
     <CustomBuild Include="Component\ChannelWriter.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>
-    <QtMoc Include="Component\ChoiceReader.h">
-      <Filter>Header Files\Component</Filter>
-    </QtMoc>
     <CustomBuild Include="Component\ComponentGeneratorReader.h">
       <Filter>Header Files\Component</Filter>
     </CustomBuild>

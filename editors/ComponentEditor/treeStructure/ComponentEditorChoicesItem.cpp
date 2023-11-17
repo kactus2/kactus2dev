@@ -15,8 +15,8 @@
 #include <editors/ComponentEditor/choices/ChoicesEditor.h>
 
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorChoicesItem::ComponentEditorChoicesItem()

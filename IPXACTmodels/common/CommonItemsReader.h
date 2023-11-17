@@ -22,7 +22,7 @@
 #include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
 #include <IPXACTmodels/Component/FileSetRef.h>
 

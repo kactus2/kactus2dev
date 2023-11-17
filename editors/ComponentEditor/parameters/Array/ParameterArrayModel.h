@@ -19,7 +19,7 @@
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <QSharedPointer>
 #include <QList>

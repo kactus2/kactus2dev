@@ -12,6 +12,7 @@
 #include "ComponentReader.h"
 #include "Component.h"
 
+#include <IPXACTmodels/common/ChoiceReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/Component/BusInterfaceReader.h>
 #include <IPXACTmodels/Component/ChannelReader.h>
@@ -24,7 +25,6 @@
 #include <IPXACTmodels/Component/PortReader.h>
 #include <IPXACTmodels/Component/PowerDomainReader.h>
 #include <IPXACTmodels/Component/ComponentGeneratorReader.h>
-#include <IPXACTmodels/Component/ChoiceReader.h>
 #include <IPXACTmodels/Component/FileSetReader.h>
 #include <IPXACTmodels/Component/CPUReader.h>
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>

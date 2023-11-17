@@ -14,8 +14,8 @@
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <KactusAPI/include/LibraryInterface.h>

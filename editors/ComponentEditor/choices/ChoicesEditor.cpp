@@ -20,8 +20,8 @@
 #include <editors/ComponentEditor/choices/ChoicesModel.h>
 #include <editors/ComponentEditor/choices/EnumerationModel.h>
 
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Component/Choice.h>
 
 #include <QSortFilterProxyModel>
 #include <QVBoxLayout>

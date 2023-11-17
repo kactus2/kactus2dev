@@ -11,8 +11,8 @@
 
 #include "ChoicesModel.h"
 
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
 #include <common/KactusColors.h>
 

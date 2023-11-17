@@ -12,7 +12,7 @@
 #include "ArrayDelegate.h"
 #include "ArrayColumns.h"
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <QComboBox>
 

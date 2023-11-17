@@ -18,11 +18,11 @@
 
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterFile.h>
-#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/AccessTypes.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <common/KactusColors.h>
 
