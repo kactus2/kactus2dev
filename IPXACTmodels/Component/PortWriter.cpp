@@ -110,13 +110,13 @@ void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> ve
 void PortWriter::writeWireTypeDefinitions(QXmlStreamWriter& writer,
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const
 {
-    if (typeDefinitions && !typeDefinitions->isEmpty() && !wireTypeDefinitionsAreEmpty(typeDefinitions))
+    if (typeDefinitions && hasNonEmptyTypeDefinitions(typeDefinitions))
     {
         writer.writeStartElement(QStringLiteral("ipxact:wireTypeDefs"));
 
         for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
         {
-            if (!singleWireTypeDefintionIsEmpty(singleTypeDefinition))
+            if (singleTypeDefinition->isEmpty() == false)
             {
                 writer.writeStartElement(QStringLiteral("ipxact:wireTypeDef"));
 
@@ -131,48 +131,15 @@ void PortWriter::writeWireTypeDefinitions(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortWriter::wireTypeDefinitionsAreEmpty()
+// Function: PortWriter::hasNonEmptyTypeDefinitions()
 //-----------------------------------------------------------------------------
-bool PortWriter::wireTypeDefinitionsAreEmpty(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions)
+bool PortWriter::hasNonEmptyTypeDefinitions(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions)
     const
 {
-    for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
-    {
-        if (singleWireTypeDefintionIsEmpty(singleTypeDefinition) == false)
+    return std::any_of(typeDefinitions->cbegin(), typeDefinitions->cend(), [](auto const& singleTypeDefinition)
         {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortWriter::singleWireTypeDefintionIsEmpty()
-//-----------------------------------------------------------------------------
-bool PortWriter::singleWireTypeDefintionIsEmpty(QSharedPointer<WireTypeDef> typeDefinition) const
-{
-    for (QString const& singleDefinition : *typeDefinition->getTypeDefinitions())
-    {
-        if (!singleDefinition.isEmpty())
-        {
-            return false;
-        }
-    }
-    for (QString const& singleViewReference : *typeDefinition->getViewRefs())
-    {
-        if (!singleViewReference.isEmpty())
-        {
-            return false;
-        }
-    }
-
-    if (!typeDefinition->getTypeName().isEmpty())
-    {
-        return false;
-    }
-
-    return true;
+            return singleTypeDefinition->isEmpty() == false;
+        });
 }
 
 //-----------------------------------------------------------------------------

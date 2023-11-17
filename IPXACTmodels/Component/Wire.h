@@ -36,8 +36,8 @@ class IPXACTMODELS_EXPORT Wire
 
 public:
 
-	//! The default constructor.
-	Wire() noexcept = default;
+    //! The default constructor.
+    Wire() noexcept = default;
 
     /*!
 	 * Copy constructor.
@@ -50,10 +50,16 @@ public:
 	Wire &operator=(const Wire &other);
 
 	/*!
-	 *  The destructor.
+	 *  Create a copy of the Wire.
+	 *
+	 *      @return A Wire identical to this.
 	 */
-	~Wire() = default;
-	
+	Wire* clone() const;
+
+    /* The destructor.
+     */
+    ~Wire() = default;
+
 	/*!
 	 *  Get the value of all logical directions allowed element.
 	 *
@@ -219,32 +225,31 @@ private:
 
     //! The direction of the port.
 	DirectionTypes::Direction direction_{ DirectionTypes::DIRECTION_INVALID };
+    
+	//! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
+    bool allLogicalDirectionsAllowed_{ false };
 
 	//! The wire qualifier.
 	QSharedPointer<Qualifier> qualifier_{ new Qualifier };
-
-    //! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
-	bool allLogicalDirectionsAllowed_{ false };
 
     //! Determines the vector qualities of the port.
     //! Multiple vectors not supported.
 	QSharedPointer<Vector> vector_{ nullptr };
 
-    //! Describes the ports type as defined bu the implementation.
-	WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
-
-    //! DomainTypeDefs not supported.
-    
-    //! SignalTypeDefs not supported.
-	
     //! Specifies a driver for this port.
 	//! Multiple drivers not supported.
 	QSharedPointer<Driver> driver_{ nullptr };
 
+    //! Describes the ports type as defined bu the implementation.
+    WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
+
+    //! DomainTypeDefs not supported.
+
+    //! SignalTypeDefs not supported.
+	 
     //! ConstraintSets not supported.
 
-	//! PowerConstraints not supported.
-
+    //! PowerConstraints not supported.
 };
 
 #endif // WIRE_H

@@ -43,11 +43,18 @@ public:
      *  Copy constructor.
      */
     PartSelect(const PartSelect& other);
-
+    
     /*!
      *  The destructor.
      */
-    virtual ~PartSelect();
+    ~PartSelect() = default;
+
+    /*!
+     *  Create a copy of the PartSelect.
+     *
+     *      @return A PartSelect identical to this.
+     */
+    PartSelect* clone() const;
 
     /*!
      *  Assignment operator.

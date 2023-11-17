@@ -124,6 +124,14 @@ void WireTypeDef::setViewRefs(QSharedPointer<QStringList> newViewRefs)
 }
 
 //-----------------------------------------------------------------------------
+// Function: WireTypeDef::isEmpty()
+//-----------------------------------------------------------------------------
+bool WireTypeDef::isEmpty() const
+{
+    return typeName_.isEmpty() && typeDefinitions_->isEmpty() && viewNameRefs_->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
 // Function: WireTypeDef::copyTypeDefinitions()
 //-----------------------------------------------------------------------------
 void WireTypeDef::copyTypeDefinitions(QStringList const& newTypeDefinitions)

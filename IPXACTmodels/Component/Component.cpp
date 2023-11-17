@@ -60,23 +60,24 @@ Document(vlnv, revision)
 // Function: Component::Component()
 //-----------------------------------------------------------------------------
 Component::Component(const Component &other):
-Document(other)
+Document(other),
+pendingFileDependencies_(other.pendingFileDependencies_)
 {
-    copyPowerDomains(other);
-    copyBusInterfaces(other);
-    copyIndirectInterfaces(other);
-    copyChannels(other);
-    copyRemapStates(other);
-    copyModes(other);
-    copyAddressSpaces(other);
-    copyMemoryMaps(other);
-    copyModel(other);
-    copyComponentGenerators(other);
-    copyChoices(other);
-    copyFileSets(other);
-    copyCpus(other);
-    copyOtherClockDrivers(other);
-    copyResetTypes(other);
+    Copy::copyList(other.powerDomains_, powerDomains_);
+    Copy::copyList(other.busInterfaces_, busInterfaces_);
+    Copy::copyList(other.indirectInterfaces_, indirectInterfaces_);
+    Copy::copyList(other.channels_, channels_);
+    Copy::copyList(other.remapStates_, remapStates_);
+    Copy::copyList(other.modes_, modes_);
+    Copy::copyList(other.addressSpaces_, addressSpaces_);
+    Copy::copyList(other.memoryMaps_, memoryMaps_);
+    model_ = QSharedPointer<Model>(new Model(*other.model_));
+    Copy::copyList(other.componentGenerators_, componentGenerators_);
+    Copy::copyList(other.choices_, choices_);
+    Copy::copyList(other.fileSets_, fileSets_);
+    Copy::copyList(other.cpus_, cpus_);
+    Copy::copyList(other.otherClockDrivers_, otherClockDrivers_);
+    Copy::copyList(other.resetTypes_, resetTypes_);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,32 +108,24 @@ Component& Component::operator=( const Component& other)
         otherClockDrivers_->clear();
         resetTypes_->clear();
 
-        copyPowerDomains(other);
-        copyBusInterfaces(other);
-        copyIndirectInterfaces(other);
-        copyChannels(other);
-        copyRemapStates(other);
-        copyModes(other);
-        copyAddressSpaces(other);
-        copyMemoryMaps(other);
-        copyModel(other);
-        copyComponentGenerators(other);
-        copyChoices(other);
-        copyFileSets(other);
-        copyCpus(other);
-        copyOtherClockDrivers(other);
-        copyResetTypes(other);
+        Copy::copyList(other.powerDomains_, powerDomains_);
+        Copy::copyList(other.busInterfaces_, busInterfaces_);
+        Copy::copyList(other.indirectInterfaces_, indirectInterfaces_);
+        Copy::copyList(other.channels_, channels_);
+        Copy::copyList(other.remapStates_, remapStates_);
+        Copy::copyList(other.modes_, modes_);
+        Copy::copyList(other.addressSpaces_, addressSpaces_);
+        Copy::copyList(other.memoryMaps_, memoryMaps_);
+        model_ = QSharedPointer<Model>(new Model(*other.model_));
+        Copy::copyList(other.componentGenerators_, componentGenerators_);
+        Copy::copyList(other.choices_, choices_);
+        Copy::copyList(other.fileSets_, fileSets_);
+        Copy::copyList(other.cpus_, cpus_);
+        Copy::copyList(other.otherClockDrivers_, otherClockDrivers_);
+        Copy::copyList(other.resetTypes_, resetTypes_);
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::~Component()
-//-----------------------------------------------------------------------------
-Component::~Component()
-{
-
 }
 
 //-----------------------------------------------------------------------------
@@ -1385,127 +1378,4 @@ QStringList Component::getDependentDirs() const
     }
 
     return dirs;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyPowerDomains()
-//-----------------------------------------------------------------------------
-void Component::copyPowerDomains(const Component& other) const
-{
-    Copy::copyList(other.powerDomains_, powerDomains_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyBusInterfaces_()
-//-----------------------------------------------------------------------------
-void Component::copyBusInterfaces(const Component& other) const
-{
-    Copy::copyList(other.busInterfaces_, busInterfaces_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyIndirectInterfaces()
-//-----------------------------------------------------------------------------
-void Component::copyIndirectInterfaces(Component const& other) const
-{
-    Copy::copyList(other.indirectInterfaces_, indirectInterfaces_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyChannels()
-//-----------------------------------------------------------------------------
-void Component::copyChannels(const Component& other) const
-{
-    Copy::copyList(other.channels_, channels_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyRemapStates()
-//-----------------------------------------------------------------------------
-void Component::copyRemapStates(const Component& other) const
-{
-    Copy::copyList(other.remapStates_, remapStates_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyModes()
-//-----------------------------------------------------------------------------
-void Component::copyModes(const Component& other) const
-{
-    Copy::copyList(other.modes_, modes_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyAddressSpaces()
-//-----------------------------------------------------------------------------
-void Component::copyAddressSpaces(const Component& other) const
-{
-    Copy::copyList(other.addressSpaces_, addressSpaces_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyMemoryMaps()
-//-----------------------------------------------------------------------------
-void Component::copyMemoryMaps(const Component& other) const
-{
-    Copy::copyList(other.memoryMaps_, memoryMaps_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyModel()
-//-----------------------------------------------------------------------------
-void Component::copyModel(const Component& other)
-{
-    if (other.model_)
-    {
-        model_ = QSharedPointer<Model> (new Model(*other.model_));
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyComponentGenerators()
-//-----------------------------------------------------------------------------
-void Component::copyComponentGenerators(const Component& other) const
-{
-    Copy::copyList(other.componentGenerators_, componentGenerators_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyChoices()
-//-----------------------------------------------------------------------------
-void Component::copyChoices(const Component& other) const
-{
-    Copy::copyList(other.choices_, choices_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyFileSets()
-//-----------------------------------------------------------------------------
-void Component::copyFileSets(const Component& other) const
-{
-    Copy::copyList(other.fileSets_, fileSets_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyCpus()
-//-----------------------------------------------------------------------------
-void Component::copyCpus(const Component& other) const
-{
-    Copy::copyList(other.cpus_, cpus_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyOtherClockDrivers()
-//-----------------------------------------------------------------------------
-void Component::copyOtherClockDrivers(const Component& other) const
-{
-    Copy::copyList(other.otherClockDrivers_, otherClockDrivers_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Component::copyResetTypes()
-//-----------------------------------------------------------------------------
-void Component::copyResetTypes(const Component& other) const
-{
-    Copy::copyList(other.resetTypes_, resetTypes_);
 }

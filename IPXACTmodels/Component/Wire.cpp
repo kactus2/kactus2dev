@@ -25,19 +25,19 @@
 //-----------------------------------------------------------------------------
 Wire::Wire(Wire const& other) : 
 direction_(other.direction_),
-qualifier_(other.qualifier_->clone()),
-allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_)
+allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_),
+qualifier_(other.qualifier_->clone())
 {
 	if (other.vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
+        vector_ = QSharedPointer<Vector>(other.vector_->clone());
 	}
 
     Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
 
     if (other.driver_)
     {
-        driver_ = QSharedPointer<Driver>(new Driver(*other.driver_));
+        driver_ = QSharedPointer<Driver>(other.driver_->clone());
     }
 }
 
@@ -49,23 +49,33 @@ Wire& Wire::operator=( const Wire &other )
 	if (this != &other)
     {
 		direction_ = other.direction_;
-        qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
 		allLogicalDirectionsAllowed_ = other.allLogicalDirectionsAllowed_;
+        qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
 
+        vector_.clear();
 		if (other.vector_)
         {
-            vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
+            vector_ = QSharedPointer<Vector>(other.vector_->clone());
 		}
 
-        wireTypeDefs_ = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >(new QList<QSharedPointer<WireTypeDef> >);
+        wireTypeDefs_->clear();
         Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
 
+        driver_.clear();
         if (other.driver_)
         {
-            driver_ = QSharedPointer<Driver>(new Driver(*other.driver_));
+            driver_ = QSharedPointer<Driver>(other.driver_->clone());
         }
 	}
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::clone()
+//-----------------------------------------------------------------------------
+Wire* Wire::clone() const
+{
+    return new Wire(*this);
 }
 
 //-----------------------------------------------------------------------------

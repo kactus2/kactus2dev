@@ -125,6 +125,13 @@ public:
      */
     void setViewRefs(QSharedPointer<QStringList> newViewRefs);
 
+    /*!
+     *  Checks if all the fields are empty.
+     *
+     *      @return True, if all the type definition fields are empty, otherwise false. 
+     */
+    bool isEmpty() const;
+
 private:
 
     /*!

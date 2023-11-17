@@ -52,6 +52,11 @@ public:
 	 */
 	Transactional &operator=(const Transactional &other);
 
+    /*!
+     *  The destructor.
+     */
+    ~Transactional() = default;
+
 	/*!
 	 *  Get the all logical initiatives allowed settings.
 	 *

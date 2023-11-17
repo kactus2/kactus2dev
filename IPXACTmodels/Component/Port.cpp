@@ -39,7 +39,7 @@ isPresent_(other.isPresent_)
 {
     if (other.wire_)
     {
-        wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
+        wire_ = QSharedPointer<Wire>(other.wire_->clone());
 	}
 
 	if (other.transactional_)
@@ -64,7 +64,7 @@ Port & Port::operator=( const Port &other )
         wire_.clear();
 		if (other.wire_)
         {
-            wire_ = QSharedPointer<Wire>(new Wire(*other.wire_));
+            wire_ = QSharedPointer<Wire>(other.wire_->clone());
         }
 
         transactional_.clear();
