@@ -26,14 +26,15 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/ResetType.h>
 
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
@@ -54,7 +55,6 @@
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 #include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>

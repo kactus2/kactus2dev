@@ -331,7 +331,7 @@ private:
 	QMap<QString, QString> valueAttributes_;
 
     //! Vector for containing the bit width of the parameter.
-    QSharedPointer<Vector> bitWidthVector_;
+    QSharedPointer<Vector> bitWidthVector_{ nullptr };
 
     //! Vectors for defining parameter bit width.
     QSharedPointer<QList<QSharedPointer<Vector> > > vectors_ = 

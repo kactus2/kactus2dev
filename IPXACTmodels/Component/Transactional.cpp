@@ -15,24 +15,32 @@
 
 #include <IPXACTmodels/utilities/Copy.h>
 
-
 //-----------------------------------------------------------------------------
 // Function: Transactional::Transactional()
 //-----------------------------------------------------------------------------
-Transactional::Transactional(const Transactional &other):
-allLogicalInitiativesAllowed_(other.allLogicalInitiativesAllowed_),
-initiative_(other.initiative_),
-kind_(other.kind_),
-busWidth_(other.busWidth_),
-maxConnections_(other.maxConnections_),
-minConnections_(other.minConnections_)
+Transactional::Transactional(const Transactional& other) :
+    allLogicalInitiativesAllowed_(other.allLogicalInitiativesAllowed_),
+    initiative_(other.initiative_),
+    kind_(other.kind_),
+    busWidth_(other.busWidth_),
+    qualifier_(other.qualifier_->clone()),
+    maxConnections_(other.maxConnections_),
+    minConnections_(other.minConnections_)
 {
     if (other.protocol_)
     {
-        protocol_ = QSharedPointer<Protocol>(new Protocol(*other.protocol_));
+        protocol_ = QSharedPointer<Protocol>(other.protocol_->clone());
     }
 
     Copy::copyList(other.transTypeDefs_, transTypeDefs_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: Transactional::clone()
+//-----------------------------------------------------------------------------
+Transactional* Transactional::clone() const
+{
+    return new Transactional(*this);
 }
 
 //-----------------------------------------------------------------------------
@@ -46,13 +54,14 @@ Transactional& Transactional::operator=( const Transactional& other)
         initiative_ = other.initiative_;
         kind_ = other.kind_;
         busWidth_ = other.busWidth_;
+        qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
         maxConnections_ = other.maxConnections_;
         minConnections_ = other.minConnections_;
 
         protocol_.clear();
         if (other.protocol_)
         {
-            protocol_ = QSharedPointer<Protocol>(new Protocol(*other.protocol_));
+            protocol_ = QSharedPointer<Protocol>(other.protocol_->clone());
         }
 
         transTypeDefs_->clear();
@@ -127,6 +136,14 @@ QString Transactional::getBusWidth() const
 void Transactional::setBusWidth(QString const& newBusWidth)
 {
     busWidth_ = newBusWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Transactional::getQualifier()
+//-----------------------------------------------------------------------------
+QSharedPointer<Qualifier> Transactional::getQualifier() const
+{
+    return qualifier_;
 }
 
 //-----------------------------------------------------------------------------
@@ -217,7 +234,7 @@ void Transactional::setTypeName(QString const& typeName, QString const& viewName
 {
     for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
-        if (transactionalTypeDefinition->getViewRefs()->contains(viewName) || viewName.isEmpty())
+        if (viewName.isEmpty() || transactionalTypeDefinition->hasView(viewName))
         {
             transactionalTypeDefinition->setTypeName(typeName);
             return;
@@ -239,16 +256,13 @@ void Transactional::setTypeName(QString const& typeName, QString const& viewName
 //-----------------------------------------------------------------------------
 bool Transactional::hasType(QString const& viewName) const
 {
-    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
-    {
-        if ((viewName.isEmpty() && !transactionalTypeDefinition->getTypeName().isEmpty()) ||
-            (transactionalTypeDefinition->hasView(viewName) &&
-            !transactionalTypeDefinition->getTypeName().isEmpty()))
+    return std::any_of(transTypeDefs_->cbegin(), transTypeDefs_->cend(),
+        [&viewName](auto const& transactionalTypeDefinition)
         {
-            return true;
-        }
-    }
-    return false;
+            return ((viewName.isEmpty() && !transactionalTypeDefinition->getTypeName().isEmpty()) ||
+                (transactionalTypeDefinition->hasView(viewName) &&
+                    !transactionalTypeDefinition->getTypeName().isEmpty()));
+        });
 }
 
 //-----------------------------------------------------------------------------
@@ -275,10 +289,7 @@ QStringList Transactional::getTypeDefinitions() const
     QStringList typeDefs;
     for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
     {
-        for (QString singleDefinition : *transactionalTypeDefinition->getTypeDefinitions())
-        {
-            typeDefs.append(singleDefinition);
-        }
+        typeDefs.append(*transactionalTypeDefinition->getTypeDefinitions());
     }
     return typeDefs;
 }
@@ -313,14 +324,10 @@ void Transactional::setTypeDefinition(const QString& typeName, const QString& ty
 //-----------------------------------------------------------------------------
 bool Transactional::hasTypeDefinitions() const
 {
-    for (QSharedPointer<WireTypeDef> transactionalTypeDefinition : *transTypeDefs_)
-    {
-        if (!transactionalTypeDefinition->getTypeName().isEmpty() ||
-            !transactionalTypeDefinition->getTypeDefinitions()->isEmpty())
+    return std::any_of(transTypeDefs_->cbegin(), transTypeDefs_->cend(),
+        [](auto const& transactionalTypeDefinition)
         {
-            return true;
-        }
-    }
-
-    return false;
+            return (!transactionalTypeDefinition->getTypeName().isEmpty() ||
+                !transactionalTypeDefinition->getTypeDefinitions()->isEmpty());
+        });
 }

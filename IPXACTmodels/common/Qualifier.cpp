@@ -11,54 +11,33 @@
 
 #include "Qualifier.h"
 
-const QMap<Qualifier::Type, QString> Qualifier::QUALIFIER_TYPE_STRING =
-{
-    {Qualifier::Type::Address, QStringLiteral("address")},
-    {Qualifier::Type::Data, QStringLiteral("data")},
-    {Qualifier::Type::Clock, QStringLiteral("clock")},
-    {Qualifier::Type::Reset, QStringLiteral("reset")},
-    {Qualifier::Type::Valid, QStringLiteral("valid")},
-    {Qualifier::Type::Interrupt, QStringLiteral("interrupt")},
-    {Qualifier::Type::ClockEnable, QStringLiteral("clock enable")},
-    {Qualifier::Type::PowerEnable, QStringLiteral("power enable")},
-    {Qualifier::Type::Opcode, QStringLiteral("opcode")},
-    {Qualifier::Type::Protection, QStringLiteral("protection")},
-    {Qualifier::Type::FlowControl, QStringLiteral("flow control")},
-    {Qualifier::Type::User, QStringLiteral("user")},
-    {Qualifier::Type::Request, QStringLiteral("request")},
-    {Qualifier::Type::Response, QStringLiteral("response")}
-};
+namespace {
 
-//-----------------------------------------------------------------------------
-// Function: Qualifier::Qualifier()
-//-----------------------------------------------------------------------------
-Qualifier::Qualifier()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Qualifier::Qualifier()
-//-----------------------------------------------------------------------------
-Qualifier::Qualifier(Qualifier const& other) :
-    types_(new QList<Type>(*other.types_)),
-    attributes_(other.attributes_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Qualifier::operator=()
-//-----------------------------------------------------------------------------
-Qualifier& Qualifier::operator=(Qualifier const& other)
-{
-    if (this != &other)
+    const QMap<Qualifier::Type, QString> QUALIFIER_TYPE_STRING =
     {
-        types_ = QSharedPointer<QList<Type> >(new QList<Type>(*other.types_));
-        attributes_ = other.attributes_;
-    }
+        {Qualifier::Type::Address, QStringLiteral("address")},
+        {Qualifier::Type::Data, QStringLiteral("data")},
+        {Qualifier::Type::Clock, QStringLiteral("clock")},
+        {Qualifier::Type::Reset, QStringLiteral("reset")},
+        {Qualifier::Type::Valid, QStringLiteral("valid")},
+        {Qualifier::Type::Interrupt, QStringLiteral("interrupt")},
+        {Qualifier::Type::ClockEnable, QStringLiteral("clock enable")},
+        {Qualifier::Type::PowerEnable, QStringLiteral("power enable")},
+        {Qualifier::Type::Opcode, QStringLiteral("opcode")},
+        {Qualifier::Type::Protection, QStringLiteral("protection")},
+        {Qualifier::Type::FlowControl, QStringLiteral("flow control")},
+        {Qualifier::Type::User, QStringLiteral("user")},
+        {Qualifier::Type::Request, QStringLiteral("request")},
+        {Qualifier::Type::Response, QStringLiteral("response")}
+    };
+}
 
-    return *this;
+//-----------------------------------------------------------------------------
+// Function: Qualifier::clone()
+//-----------------------------------------------------------------------------
+Qualifier* Qualifier::clone() const
+{
+    return new Qualifier(*this);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +45,7 @@ Qualifier& Qualifier::operator=(Qualifier const& other)
 //-----------------------------------------------------------------------------
 bool Qualifier::isSet() const
 {
-    return !types_->isEmpty();
+    return !types_.isEmpty();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,7 +53,7 @@ bool Qualifier::isSet() const
 //-----------------------------------------------------------------------------
 void Qualifier::clear()
 {
-    types_->clear();
+    types_.clear();
     attributes_.fill(QString());
 }
 
@@ -83,7 +62,7 @@ void Qualifier::clear()
 //-----------------------------------------------------------------------------
 bool Qualifier::hasType(Type type) const
 {
-    return types_->contains(type);
+    return types_.contains(type);
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +72,7 @@ void Qualifier::setType(Type type)
 {
     if (!hasType(type))
     {
-        types_->append(type);
+        types_.append(type);
     }
 }
 
@@ -102,13 +81,13 @@ void Qualifier::setType(Type type)
 //-----------------------------------------------------------------------------
 void Qualifier::removeType(Type type)
 {
-    types_->removeOne(type);
+    types_.removeOne(type);
 }
 
 //-----------------------------------------------------------------------------
 // Function: Qualifier::getTypes()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<Qualifier::Type> > Qualifier::getTypes() const
+QList<Qualifier::Type> Qualifier::getTypes() const
 {
     return types_;
 }
@@ -118,12 +97,7 @@ QSharedPointer<QList<Qualifier::Type> > Qualifier::getTypes() const
 //-----------------------------------------------------------------------------
 QString Qualifier::getAttribute(Attribute attribute) const
 {   
-    if (attribute == COUNT)
-    {
-        return QString();
-    }
-
-    return attributes_[attribute];
+    return attributes_[static_cast<unsigned int>(attribute)];
 }
 
 //-----------------------------------------------------------------------------
@@ -131,25 +105,21 @@ QString Qualifier::getAttribute(Attribute attribute) const
 //-----------------------------------------------------------------------------
 void Qualifier::setAttribute(Attribute attribute, QString const& attributeValue)
 {
-    if (attribute != COUNT)
-    {
-        attributes_[attribute] = attributeValue;
-    }
+    attributes_[static_cast<unsigned int>(attribute)] = attributeValue;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Qualifier::operator==()
 //-----------------------------------------------------------------------------
-bool Qualifier::operator==(Qualifier const& other)
+bool Qualifier::operator==(Qualifier const& other) const
 {
-    return (*types_ == *other.types_ &&
-        attributes_ == other.attributes_);
+    return (types_ == other.types_ && attributes_ == other.attributes_);
 }
 
 //-----------------------------------------------------------------------------
 // Function: Qualifier::operator!=()
 //-----------------------------------------------------------------------------
-bool Qualifier::operator!=(Qualifier const& other)
+bool Qualifier::operator!=(Qualifier const& other) const
 {
     return !(*this == other);
 }
@@ -159,7 +129,7 @@ bool Qualifier::operator!=(Qualifier const& other)
 //-----------------------------------------------------------------------------
 QString Qualifier::typeToString(Type type)
 {
-    return QUALIFIER_TYPE_STRING.value(type, QStringLiteral(""));
+    return QUALIFIER_TYPE_STRING.value(type, QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -167,14 +137,7 @@ QString Qualifier::typeToString(Type type)
 //-----------------------------------------------------------------------------
 Qualifier::Type Qualifier::stringToType(QString const& typeString)
 {
-    for (auto i = QUALIFIER_TYPE_STRING.cbegin(), end = QUALIFIER_TYPE_STRING.cend(); i != end; ++i)
-    {
-        if (i.value() == typeString)
-        {
-            return i.key();
-        }
-    }
-    return Type::Any;
+    return QUALIFIER_TYPE_STRING.key(typeString, Qualifier::Type::Any);
 }
 
 //-----------------------------------------------------------------------------
@@ -206,12 +169,8 @@ Qualifier::Attribute Qualifier::stringToAttributeName(QString const& attributeNa
     {
         return Attribute::UserFlowType;
     }
-    else if (attributeName == QStringLiteral("userDefined"))
+    else 
     {
         return Attribute::UserDefined;
-    }
-    else
-    {
-        return Attribute::COUNT;
     }
 }

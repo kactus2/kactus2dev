@@ -22,7 +22,7 @@
 #include <IPXACTmodels/common/PartSelect.h>
 #include <IPXACTmodels/common/Qualifier.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/ModeReference.h>
 #include <IPXACTmodels/Component/FileSetRef.h>
 
@@ -134,19 +134,12 @@ public:
      *      @return A list of choices.
      */
     static QSharedPointer<QList<QSharedPointer<Choice> > > parseChoices(QDomNode const& itemNode);
-   
-    /*!
-     *  Parses a qualifier.
-     *
-     *      @param [in] qualifierNode       XML description of the IP-XACT element.
-     *      @param [in] qualifier           The qualifier to read to.
-     *      @param [in] revision            The standard revision of the XML document being read.
-
-     */
-    static void parseQualifier(QDomNode const& qualifierNode, QSharedPointer<Qualifier> qualifier,
-        Document::Revision revision);
+  
 
     static QSharedPointer<PartSelect> parsePartSelect(QDomNode const& partSelectNode);
+
+    static Range parseRange(QDomElement const& rangeElement);
+
 
     /*!
      *	Parses mode references.
@@ -165,7 +158,8 @@ public:
      *	    
      * 	    @return A list of parsed file set references.
      */
-    static QSharedPointer<QList<QSharedPointer<FileSetRef> > > parseFileSetReferences(QDomElement const& itemNode, Document::Revision docRevision);
+    static QSharedPointer<QList<QSharedPointer<FileSetRef> > > parseFileSetReferences(QDomElement const& itemNode,
+        Document::Revision docRevision);
 };
 
 #endif // DOCUMENTREADER_H

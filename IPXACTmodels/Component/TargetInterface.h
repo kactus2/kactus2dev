@@ -17,6 +17,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QString>
 #include <QList>
 #include <QStringList>
@@ -44,7 +46,7 @@ public:
 
 		FileSetRefGroup(FileSetRefGroup const& other) : group_(other.group_)
 		{
-			Utilities::copyList(fileSetRefs_, other.fileSetRefs_);
+			Copy::copyList(other.fileSetRefs_, fileSetRefs_);
 		}
 
 		FileSetRefGroup& operator=(FileSetRefGroup const& other)
@@ -52,7 +54,9 @@ public:
 			if (this != &other)
 			{
 				group_ = other.group_;
-				Utilities::copyList(fileSetRefs_, other.fileSetRefs_);
+
+				fileSetRefs_->clear();
+				Copy::copyList(other.fileSetRefs_, fileSetRefs_);
 			}
 
 			return *this;

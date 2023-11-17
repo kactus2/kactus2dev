@@ -11,6 +11,8 @@
 
 #include "FieldAccessPolicy.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: FieldAccessPolicy::AccessRestriction::AccessRestriction()
 //-----------------------------------------------------------------------------
@@ -19,7 +21,7 @@ FieldAccessPolicy::AccessRestriction::AccessRestriction(AccessRestriction const&
     readAccessMask_(other.readAccessMask_),
     writeAccessMask_(other.writeAccessMask_)
 {
-    Utilities::copyList(modeRefs_, other.modeRefs_);
+    Copy::copyList(other.modeRefs_, modeRefs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -31,7 +33,9 @@ FieldAccessPolicy::AccessRestriction& FieldAccessPolicy::AccessRestriction::oper
     {
         readAccessMask_ = other.readAccessMask_;
         writeAccessMask_ = other.writeAccessMask_;
-        Utilities::copyList(modeRefs_, other.modeRefs_);
+
+        modeRefs_->clear();
+        Copy::copyList(other.modeRefs_, modeRefs_);
     }
 
     return *this;
@@ -65,8 +69,8 @@ FieldAccessPolicy::FieldAccessPolicy(FieldAccessPolicy const& other) :
     testConstraint_(other.testConstraint_),
     reserved_(other.reserved_)
 {
-    Utilities::copyList(broadcasts_, other.broadcasts_);
-    Utilities::copyList(accessRestrictions_, accessRestrictions_);
+    Copy::copyList(other.broadcasts_, broadcasts_);
+    Copy::copyList(other.accessRestrictions_, accessRestrictions_);
     copyWriteValueConstraint(other);
 }
 
@@ -89,8 +93,11 @@ FieldAccessPolicy& FieldAccessPolicy::operator=(FieldAccessPolicy const& other)
         testConstraint_ = other.testConstraint_;
         reserved_ = other.reserved_;
 
-        Utilities::copyList(broadcasts_, other.broadcasts_);
-        Utilities::copyList(accessRestrictions_, accessRestrictions_);
+        broadcasts_->clear();
+        Copy::copyList(other.broadcasts_, broadcasts_);
+
+        accessRestrictions_->clear();
+        Copy::copyList(other.accessRestrictions_, accessRestrictions_);
         copyWriteValueConstraint(other);
     }
 

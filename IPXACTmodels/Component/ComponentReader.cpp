@@ -12,6 +12,7 @@
 #include "ComponentReader.h"
 #include "Component.h"
 
+#include <IPXACTmodels/common/ChoiceReader.h>
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/Component/BusInterfaceReader.h>
 #include <IPXACTmodels/Component/ChannelReader.h>
@@ -24,7 +25,6 @@
 #include <IPXACTmodels/Component/PortReader.h>
 #include <IPXACTmodels/Component/PowerDomainReader.h>
 #include <IPXACTmodels/Component/ComponentGeneratorReader.h>
-#include <IPXACTmodels/Component/ChoiceReader.h>
 #include <IPXACTmodels/Component/FileSetReader.h>
 #include <IPXACTmodels/Component/CPUReader.h>
 #include <IPXACTmodels/Component/OtherClockDriverReader.h>
@@ -304,7 +304,7 @@ void ComponentReader::parseModel(QDomNode const& componentNode, QSharedPointer<C
 
         parseInstantiations(modelElement, newmodel, newComponent->getRevision());
 
-        parsePorts(modelElement, newmodel);
+        parsePorts(modelElement, newmodel, newComponent->getRevision());
 
         newComponent->setModel(newmodel);
     }
@@ -415,19 +415,18 @@ void ComponentReader::parseDesignConfigurationInstantiations(QDomElement const& 
 //-----------------------------------------------------------------------------
 // Function: ComponentReader::parsePorts()
 //-----------------------------------------------------------------------------
-void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel) const
+void ComponentReader::parsePorts(QDomElement const& modelElement, QSharedPointer<Model> newModel,
+    Document::Revision docRevision) const
 {
     QDomElement portsElement = modelElement.firstChildElement(QStringLiteral("ipxact:ports"));
 
     if (!portsElement.isNull())
     {
-        PortReader portReader;
-
         QDomNodeList portNodeList = portsElement.elementsByTagName(QStringLiteral("ipxact:port"));
         for (int portIndex = 0; portIndex < portNodeList.count(); ++portIndex)
         {
             QDomNode portNode = portNodeList.at(portIndex);
-            QSharedPointer<Port> newPort = portReader.createPortFrom(portNode);
+            QSharedPointer<Port> newPort = PortReader::createPortFrom(portNode, docRevision);
 
             newModel->getPorts()->append(newPort);
         }

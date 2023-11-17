@@ -43,11 +43,18 @@ public:
      *  Copy constructor.
      */
     PartSelect(const PartSelect& other);
-
+    
     /*!
      *  The destructor.
      */
-    virtual ~PartSelect();
+    ~PartSelect() = default;
+
+    /*!
+     *  Create a copy of the PartSelect.
+     *
+     *      @return A PartSelect identical to this.
+     */
+    PartSelect* clone() const;
 
     /*!
      *  Assignment operator.
@@ -67,6 +74,8 @@ public:
      *      @return The right value of the range.
      */
     QString getRightRange() const;
+
+    Range getRange() const;
 
     /*!
      *  Set the left value for the range.

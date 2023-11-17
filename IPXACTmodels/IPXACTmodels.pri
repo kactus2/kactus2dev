@@ -34,8 +34,12 @@ HEADERS += ./generaldeclarations.h \
     ./kactusExtensions/ComDefinitionReader.h \
     ./kactusExtensions/validators/SystemDesignConfigurationValidator.h \
     ./kactusExtensions/validators/SystemViewConfigurationValidator.h \
+    ./common/Choice.h \
+    ./common/ChoiceReader.h \
     ./common/ChoiceWriter.h \
     ./common/FileType.h \
+    ./common/QualifierReader.h \
+    ./common/QualifierWriter.h \
     ./common/TagData.h \
     ./common/AccessTypes.h \
     ./common/Array.h \
@@ -81,6 +85,7 @@ HEADERS += ./generaldeclarations.h \
     ./common/FileBuilderReader.h \
     ./common/FileBuilderWriter.h \
     ./common/GenericVendorExtension.h \
+    ./common/validators/ChoiceValidator.h \
     ./common/validators/CommonItemsValidator.h \
     ./common/validators/QualifierValidator.h \
     ./common/validators/AssertionValidator.h \
@@ -133,6 +138,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/AccessPolicy.h \
     ./Component/AccessPolicyReader.h \
     ./Component/AccessPolicyWriter.h \
+    ./Component/Driver.h \
     ./Component/ExecutableImage.h \
     ./Component/FieldAccessPolicy.h \
     ./Component/FieldAccessPolicyReader.h \
@@ -170,7 +176,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/BuildCommand.h \
     ./Component/BusInterface.h \
     ./Component/Channel.h \
-    ./Component/Choice.h \
     ./Component/Component.h \
     ./Component/ComponentGenerator.h \
     ./Component/ComponentInstantiation.h \
@@ -192,6 +197,7 @@ HEADERS += ./generaldeclarations.h \
     ./Component/Model.h \
     ./Component/AbstractionType.h \
     ./Component/OtherClockDriver.h \
+    ./Component/OtherClockDriverReader.h \
     ./Component/Port.h \
     ./Component/PortMap.h \
     ./Component/Register.h \
@@ -243,8 +249,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/PortWriter.h \
     ./Component/RegisterReader.h \
     ./Component/RegisterWriter.h \
-    ./Component/ChoiceReader.h \
-    ./Component/OtherClockDriverReader.h \
     ./Component/OtherClockDriverWriter.h \
     ./Component/validators/FieldAccessPolicyValidator.h \
     ./Component/validators/FieldReferenceValidator.h \
@@ -263,7 +267,6 @@ HEADERS += ./generaldeclarations.h \
     ./Component/validators/AddressSpaceValidator.h \
     ./Component/validators/BusInterfaceValidator.h \
     ./Component/validators/ChannelValidator.h \
-    ./Component/validators/ChoiceValidator.h \
     ./Component/validators/ComponentGeneratorValidator.h \
     ./Component/validators/ComponentValidator.h \
     ./Component/validators/CPUValidator.h \
@@ -337,6 +340,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/BooleanValue.cpp \
     ./common/BuildModel.cpp \
     ./common/CellSpecification.cpp \
+    ./common/Choice.cpp \
+    ./common/ChoiceReader.cpp \
     ./common/ChoiceWriter.cpp \
     ./common/ClockUnit.cpp \
     ./common/CommonItemsReader.cpp \
@@ -371,6 +376,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/ProtocolReader.cpp \
     ./common/ProtocolWriter.cpp \
     ./common/Qualifier.cpp \
+    ./common/QualifierReader.cpp \
+    ./common/QualifierWriter.cpp \
     ./common/Range.cpp \
     ./common/TimingConstraint.cpp \
     ./common/TransactionalTypes.cpp \
@@ -378,6 +385,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/VLNV.cpp \
     ./common/validators/AssertionValidator.cpp \
     ./common/validators/CellSpecificationValidator.cpp \
+    ./common/validators/ChoiceValidator.cpp \
     ./common/validators/CommonItemsValidator.cpp \
     ./common/validators/namevalidator.cpp \
     ./common/validators/NMTokenValidator.cpp \
@@ -442,8 +450,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/Channel.cpp \
     ./Component/ChannelReader.cpp \
     ./Component/ChannelWriter.cpp \
-    ./Component/Choice.cpp \
-    ./Component/ChoiceReader.cpp \
     ./Component/Component.cpp \
     ./Component/ComponentGenerator.cpp \
     ./Component/ComponentGeneratorReader.cpp \
@@ -456,6 +462,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/CPUWriter.cpp \
     ./Component/DesignConfigurationInstantiation.cpp \
     ./Component/DesignInstantiation.cpp \
+    ./Component/Driver.cpp \
     ./Component/EnumeratedValue.cpp \
     ./Component/EnumeratedValueReader.cpp \
     ./Component/EnumeratedValueWriter.cpp \
@@ -546,7 +553,6 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/validators/AddressSpaceValidator.cpp \
     ./Component/validators/BusInterfaceValidator.cpp \
     ./Component/validators/ChannelValidator.cpp \
-    ./Component/validators/ChoiceValidator.cpp \
     ./Component/validators/ComponentGeneratorValidator.cpp \
     ./Component/validators/ComponentValidator.cpp \
     ./Component/validators/CPUValidator.cpp \

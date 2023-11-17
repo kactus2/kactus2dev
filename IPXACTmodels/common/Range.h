@@ -59,7 +59,6 @@ public:
 
 private:
 
-
     //! The left side of the range.
     QString left_;
 

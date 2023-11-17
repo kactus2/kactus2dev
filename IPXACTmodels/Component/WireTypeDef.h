@@ -26,6 +26,8 @@ class IPXACTMODELS_EXPORT WireTypeDef
 
 public:
 
+    using List = QSharedPointer<QList<QSharedPointer<WireTypeDef> > >;
+
     /*!
      *  The constructor.
      *
@@ -122,6 +124,13 @@ public:
      *      @param [in] newViewRefs     A new list of view references.
      */
     void setViewRefs(QSharedPointer<QStringList> newViewRefs);
+
+    /*!
+     *  Checks if all the fields are empty.
+     *
+     *      @return True, if all the type definition fields are empty, otherwise false. 
+     */
+    bool isEmpty() const;
 
 private:
 

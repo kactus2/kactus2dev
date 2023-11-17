@@ -255,13 +255,10 @@ void BusinterfaceReader::Details::parseLogicalPort(QDomElement const& logicalPor
 
     QSharedPointer<PortMap::LogicalPort> logicalPort(new PortMap::LogicalPort(portName));
 
-    QDomElement rangeElement = logicalPortElement.firstChildElement(QStringLiteral("ipxact:range"));
-    if (!rangeElement.isNull())
+    if (QDomElement rangeElement = logicalPortElement.firstChildElement(QStringLiteral("ipxact:range")); 
+        !rangeElement.isNull())
     {
-        QString leftRange = rangeElement.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
-        QString rightRange = rangeElement.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
-
-        logicalPort->range_ = QSharedPointer<Range>(new Range(leftRange, rightRange));
+        logicalPort->range_ = QSharedPointer<Range>(new Range(CommonItemsReader::parseRange(rangeElement)));
     }
 
 	portMap->setLogicalPort(logicalPort);

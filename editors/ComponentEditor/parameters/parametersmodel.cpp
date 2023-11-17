@@ -12,7 +12,7 @@
 #include "parametersmodel.h"
 #include "ParameterColumns.h"
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <KactusAPI/include/ParametersInterface.h>
 

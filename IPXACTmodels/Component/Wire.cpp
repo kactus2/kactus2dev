@@ -26,15 +26,19 @@
 Wire::Wire(Wire const& other) : 
 direction_(other.direction_),
 allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_),
-defaultDriverValue_(other.defaultDriverValue_),
-defaultValueAttributes_(other.defaultValueAttributes_)
+qualifier_(other.qualifier_->clone())
 {
 	if (other.vector_)
     {
-        vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
+        vector_ = QSharedPointer<Vector>(other.vector_->clone());
 	}
 
     Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+    if (other.driver_)
+    {
+        driver_ = QSharedPointer<Driver>(other.driver_->clone());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -46,18 +50,32 @@ Wire& Wire::operator=( const Wire &other )
     {
 		direction_ = other.direction_;
 		allLogicalDirectionsAllowed_ = other.allLogicalDirectionsAllowed_;
-		defaultDriverValue_ = other.defaultDriverValue_;
-		defaultValueAttributes_ = other.defaultValueAttributes_;
+        qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
 
+        vector_.clear();
 		if (other.vector_)
         {
-            vector_ = QSharedPointer<Vector>(new Vector(*other.vector_));
+            vector_ = QSharedPointer<Vector>(other.vector_->clone());
 		}
 
-        wireTypeDefs_.clear();
+        wireTypeDefs_->clear();
         Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
+
+        driver_.clear();
+        if (other.driver_)
+        {
+            driver_ = QSharedPointer<Driver>(other.driver_->clone());
+        }
 	}
 	return *this;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::clone()
+//-----------------------------------------------------------------------------
+Wire* Wire::clone() const
+{
+    return new Wire(*this);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,6 +84,14 @@ Wire& Wire::operator=( const Wire &other )
 DirectionTypes::Direction Wire::getDirection() const
 {
     return direction_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::getQualifier()
+//-----------------------------------------------------------------------------
+QSharedPointer<Qualifier> Wire::getQualifier() const
+{
+    return qualifier_;
 }
 
 //-----------------------------------------------------------------------------
@@ -129,7 +155,12 @@ void Wire::setAllLogicalDirectionsAllowed(bool allow)
 //-----------------------------------------------------------------------------
 void Wire::setDefaultDriverValue(const QString& defaultDriverValue)
 {
-    defaultDriverValue_ = defaultDriverValue;
+    if (driver_.isNull())
+    {
+        driver_ = QSharedPointer<Driver>(new Driver{});
+    }
+
+    driver_->setDefaultValue(defaultDriverValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -137,7 +168,12 @@ void Wire::setDefaultDriverValue(const QString& defaultDriverValue)
 //-----------------------------------------------------------------------------
 QString Wire::getDefaultDriverValue() const
 {
-    return defaultDriverValue_;
+    if (driver_.isNull())
+    {
+        return QString();
+    }
+
+    return driver_->getDefaultValue();
 }
 
 //-----------------------------------------------------------------------------
@@ -190,6 +226,22 @@ QString Wire::getVectorRightBound() const
     }
 
     return vector_->getRight();
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::setDriver()
+//-----------------------------------------------------------------------------
+void Wire::setDriver(QSharedPointer<Driver> driver)
+{
+    driver_ = driver;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Wire::getDriver()
+//-----------------------------------------------------------------------------
+QSharedPointer<Driver> Wire::getDriver() const
+{
+    return driver_;
 }
 
 //-----------------------------------------------------------------------------

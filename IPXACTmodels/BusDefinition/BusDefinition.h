@@ -18,7 +18,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/VLNV.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 
@@ -38,9 +38,6 @@ class IPXACTMODELS_EXPORT BusDefinition: public Document
 {
 public:
 
-	//! The default constructor.
-	BusDefinition();
-
 	BusDefinition(VLNV const& vlnv, Document::Revision revision);
 
 	//! Copy constructor.
@@ -50,7 +47,7 @@ public:
 	BusDefinition &operator=(BusDefinition const& other);
 
 	//! The destructor.
-	virtual ~BusDefinition();
+	~BusDefinition() final;
 
 	/*!
 	 *  Creates a perfect copy of the Bus Definition.

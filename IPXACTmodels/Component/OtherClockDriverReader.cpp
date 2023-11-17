@@ -14,23 +14,6 @@
 #include <IPXACTmodels/common/ClockUnit.h>
 
 //-----------------------------------------------------------------------------
-// Function: OtherClockDriverReader::OtherClockDriverReader()
-//-----------------------------------------------------------------------------
-OtherClockDriverReader::OtherClockDriverReader(QObject* parent /* = 0 */) :
-QObject(parent)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: OtherClockDriverReader::~OtherClockDriverReader()
-//-----------------------------------------------------------------------------
-OtherClockDriverReader::~OtherClockDriverReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: OtherClockDriverReader::createCPUFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<OtherClockDriver> OtherClockDriverReader::createOtherClockDriverFrom

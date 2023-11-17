@@ -17,6 +17,7 @@
 #include "Packet.h"
 
 #include <IPXACTmodels/common/Qualifier.h>
+#include <IPXACTmodels/utilities/Copy.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -27,10 +28,7 @@
 //-----------------------------------------------------------------------------
 PortAbstraction::PortAbstraction():
 NameGroup(),
-    Extendable(),
-    isPresent_(),
-    wire_(),
-    transactional_()
+    Extendable()
 {
 
 }
@@ -41,24 +39,22 @@ NameGroup(),
 PortAbstraction::PortAbstraction(PortAbstraction const& other):
 NameGroup(other),
     Extendable(other),
-    isPresent_(),
-    wire_(),
-    transactional_(),
+    isPresent_(other.isPresent_),
     match_(other.match_)
 {
 
  	if (other.wire_)
     {
- 		wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction(*other.wire_.data()));
+ 		wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction(*other.wire_));
  	}
 
     if (other.transactional_)
     {
         transactional_ = QSharedPointer<TransactionalAbstraction>(
-            new TransactionalAbstraction(*other.transactional_.data()));
+            new TransactionalAbstraction(*other.transactional_));
     }
 
-    Utilities::copyList(packets_, other.packets_);
+    Copy::copyList(other.packets_, packets_);
 }
 
 //-----------------------------------------------------------------------------
@@ -81,26 +77,21 @@ PortAbstraction& PortAbstraction::operator=(PortAbstraction const& other)
         isPresent_ = other.isPresent_;
         match_ = other.match_;
 
+        wire_.clear();
 		if (other.wire_)
         {
-			wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction(*other.wire_.data()));
+			wire_ = QSharedPointer<WireAbstraction>(new WireAbstraction(*other.wire_));
 		}
-		else
-        {
-			wire_ = QSharedPointer<WireAbstraction>();
-        }
 
+        transactional_.clear();
 		if (other.transactional_)
         {
 			transactional_ = QSharedPointer<TransactionalAbstraction>(
-                new TransactionalAbstraction(*other.transactional_.data()));
+                new TransactionalAbstraction(*other.transactional_));
 		}
-		else
-        {
-			transactional_ = QSharedPointer<TransactionalAbstraction>();
-        }
 
-        Utilities::copyList(packets_, other.packets_);
+        packets_->clear();
+        Copy::copyList(other.packets_, packets_);
 	}
 	return *this;
 }

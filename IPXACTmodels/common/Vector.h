@@ -34,7 +34,14 @@ public:
     Vector(QString const& left, QString const& right);
    
     //! The destructor.
-    ~Vector() = default;
+    ~Vector() final = default;
+
+    /*!
+     *  Create a copy of the Vector.
+     *
+     *      @return A Vector identical to this.
+     */
+    Vector* clone() const;
 
     /*!
      *	Sets the vector id.

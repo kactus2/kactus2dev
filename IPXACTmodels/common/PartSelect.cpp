@@ -24,7 +24,7 @@ range_(leftRange, rightRange)
 // Function: PartSelect::PartSelect()
 //-----------------------------------------------------------------------------
 PartSelect::PartSelect(const PartSelect& other):
-range_(other.getLeftRange(), other.getRightRange())
+range_(other.range_)
 {
     for (QString const& index : *other.indices_)
     {
@@ -33,11 +33,11 @@ range_(other.getLeftRange(), other.getRightRange())
 }
 
 //-----------------------------------------------------------------------------
-// Function: PartSelect::~PartSelect()
+// Function: PartSelect::clone()
 //-----------------------------------------------------------------------------
-PartSelect::~PartSelect()
+PartSelect* PartSelect::clone() const
 {
-
+    return new PartSelect(*this);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,8 +47,7 @@ PartSelect& PartSelect::operator=(const PartSelect& other)
 {
     if (this != &other)
     {
-        setLeftRange(other.getLeftRange());
-        setRightRange(other.getRightRange());
+        range_ = other.range_;
 
         indices_->clear();
         for (QString const& index : *other.indices_)
@@ -74,6 +73,14 @@ QString PartSelect::getLeftRange() const
 QString PartSelect::getRightRange() const
 {
     return range_.getRight();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PartSelect::getRange()
+//-----------------------------------------------------------------------------
+Range PartSelect::getRange() const
+{
+    return range_;
 }
 
 //-----------------------------------------------------------------------------

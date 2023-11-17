@@ -276,8 +276,7 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
 
     // Create a bus definition.
-    QSharedPointer<BusDefinition> busDef(new BusDefinition());
-    busDef->setVlnv(busVLNV);
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, component_->getRevision()));
 
     // Create the file for the bus definition.
     if (!handler_->writeModelToFile(absDirectory, busDef))
@@ -287,9 +286,8 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
 
     // create an abstraction definition
-    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition());
-    absDef->setVlnv(absVLNV);
-
+    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition(absVLNV, component_->getRevision()));
+    
     // set reference from abstraction definition to bus definition
     absDef->setBusType(busVLNV);
 

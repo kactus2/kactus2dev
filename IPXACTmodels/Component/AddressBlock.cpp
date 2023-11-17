@@ -15,6 +15,8 @@
 #include "MemoryArray.h"
 #include "AccessPolicy.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: AddressBlock::AddressBlock()
 //-----------------------------------------------------------------------------
@@ -50,7 +52,7 @@ volatile_(other.volatile_),
 access_(other.access_)
 {
     copyRegisterData(other);
-    Utilities::copyList(accessPolicies_, other.accessPolicies_);
+    Copy::copyList(other.accessPolicies_, accessPolicies_);
 
     if (other.memoryArray_)
     {
@@ -81,7 +83,8 @@ AddressBlock& AddressBlock::operator=( const AddressBlock& other )
         registerData_->clear();
         copyRegisterData(other);
 
-        Utilities::copyList(accessPolicies_, other.accessPolicies_);
+        accessPolicies_->clear();
+        Copy::copyList(other.accessPolicies_, accessPolicies_);
 
         memoryArray_.clear();
         if (other.memoryArray_)
@@ -154,7 +157,6 @@ QMap<QString, QString> AddressBlock::getRangeAttributes() const
 //-----------------------------------------------------------------------------
 void AddressBlock::setRangeAttributes(QMap<QString, QString> const& newRangeAttributes)
 {
-    rangeAttributes_.clear();
     rangeAttributes_ = newRangeAttributes;
 }
 
@@ -187,7 +189,6 @@ QMap<QString, QString> AddressBlock::getWidthAttributes() const
 //-----------------------------------------------------------------------------
 void AddressBlock::setWidthAttributes(QMap<QString, QString> const& newWidthAttributes)
 {
-    widthAttributes_.clear();
     widthAttributes_ = newWidthAttributes;
 }
 

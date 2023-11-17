@@ -12,6 +12,8 @@
 
 #include "FieldReference.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 const QString FieldReference::TYPES_AS_STRINGS[] = {
     QLatin1String("addressSpaceRef"),
     QLatin1String("memoryMapRef"),
@@ -79,8 +81,8 @@ FieldReference::FieldReference(FieldReference const& other) :
     alternateRegisterRef_(other.alternateRegisterRef_),
     fieldRef_(other.fieldRef_)
 {
-    Utilities::copyList(bankRefs_, other.bankRefs_);
-    Utilities::copyList(registerFileRefs_, other.registerFileRefs_);
+    Copy::copyList(other.bankRefs_, bankRefs_);
+    Copy::copyList(other.registerFileRefs_, registerFileRefs_);
 }
 
 //-----------------------------------------------------------------------------
@@ -98,8 +100,11 @@ FieldReference& FieldReference::operator=(FieldReference const& other)
         alternateRegisterRef_ = other.alternateRegisterRef_;
         fieldRef_ = other.fieldRef_;
 
-        Utilities::copyList(bankRefs_, other.bankRefs_);
-        Utilities::copyList(registerFileRefs_, other.registerFileRefs_);
+        bankRefs_->clear();
+        Copy::copyList(other.bankRefs_, bankRefs_);
+
+        registerFileRefs_->clear();
+        Copy::copyList(other.registerFileRefs_, registerFileRefs_);
     }
 
     return *this;

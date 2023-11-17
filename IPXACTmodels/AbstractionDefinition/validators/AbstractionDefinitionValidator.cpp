@@ -21,8 +21,8 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
@@ -577,7 +577,7 @@ bool AbstractionDefinitionValidator::isValidPortQualifier(QSharedPointer<Qualifi
         return false;
     }
 
-    if (qualifier->hasType(Qualifier::PowerEnable) && 
+    if (qualifier->hasType(Qualifier::Type::PowerEnable) && 
         !qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).isEmpty())
     {
         return false;
@@ -595,7 +595,7 @@ void AbstractionDefinitionValidator::findErrorsInPortQualifier(QVector<QString>&
 {
     QualifierValidator::findErrorsIn(errors, qualifier, context, abstraction->getRevision());
 
-    if (qualifier->hasType(Qualifier::PowerEnable))
+    if (qualifier->hasType(Qualifier::Type::PowerEnable))
     {
         if (!qualifier->getAttribute(Qualifier::Attribute::PowerDomainReference).isEmpty())
         {

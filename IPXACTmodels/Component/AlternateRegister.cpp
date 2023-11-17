@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/Component/ModeReference.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: AlternateRegister::AlternateRegister()
 //-----------------------------------------------------------------------------
@@ -34,7 +36,7 @@ RegisterDefinition(other),
 alternateGroups_(new QStringList())
 {
     copyAlternateGroups(other);
-    Utilities::copyList(modeReferences_, other.modeReferences_);
+    Copy::copyList(other.modeReferences_, modeReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -48,7 +50,9 @@ AlternateRegister& AlternateRegister::operator=(const AlternateRegister& other)
 
         alternateGroups_->clear();
         copyAlternateGroups(other);
-        Utilities::copyList(modeReferences_, other.modeReferences_);
+
+        modeReferences_->clear();
+        Copy::copyList(other.modeReferences_, modeReferences_);
     }
 
     return *this;
@@ -59,7 +63,7 @@ AlternateRegister& AlternateRegister::operator=(const AlternateRegister& other)
 //-----------------------------------------------------------------------------
 AlternateRegister::~AlternateRegister()
 {
-	alternateGroups_.clear();
+
 }
 
 //-----------------------------------------------------------------------------

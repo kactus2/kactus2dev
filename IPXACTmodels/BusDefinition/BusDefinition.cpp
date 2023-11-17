@@ -10,7 +10,9 @@
 //-----------------------------------------------------------------------------
 
 #include "BusDefinition.h"
-  
+
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QDomDocument>
 #include <QString>
 #include <QDomNamedNodeMap>
@@ -24,19 +26,10 @@
 //-----------------------------------------------------------------------------
 // Function: BusDefinition::BusDefinition()
 //-----------------------------------------------------------------------------
-BusDefinition::BusDefinition(): 
-Document()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusDefinition::BusDefinition()
-//-----------------------------------------------------------------------------
 BusDefinition::BusDefinition(VLNV const& vlnv, Document::Revision revision):
-Document(revision)
+Document(vlnv, revision)
 {
-	setVlnv(vlnv);
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -52,7 +45,7 @@ maxSlaves_(other.maxSlaves_),
 systemGroupNames_(other.systemGroupNames_),
 extends_(other.extends_)
 {
-	Utilities::copyList(choices_, other.choices_);
+	Copy::copyList(other.choices_, choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -71,7 +64,8 @@ BusDefinition & BusDefinition::operator=(BusDefinition const& other)
 		systemGroupNames_ = other.systemGroupNames_;
 		extends_ = other.extends_;
 
-        Utilities::copyList(choices_, other.choices_);
+		choices_->clear();
+		Copy::copyList(other.choices_, choices_);
 	}
 	return *this;
 }

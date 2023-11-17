@@ -48,9 +48,6 @@ public:
         Std14, Std22, Unknown
     };
 
-    //! The default constructor.
-	explicit Document(Revision revision = Revision::Unknown);
-
 	/*!
 	 *  The constructor.
 	 *
@@ -369,27 +366,6 @@ private:
      *  Add the default namespaces to the list of namespaces.
      */
     void addDefaultNameSpaces(Revision revision);
-    
-    /*!
-     *  Copies parameters from another document.
-     *
-     *      @param [in] other   The document to copy parameters from.
-     */
-    void copyParameters(Document const& other);
-    
-    /*!
-     *  Copies assertions from another document.
-     *
-     *      @param [in] other   The document to copy assertions from.
-     */
-    void copyAssertions(Document const& other);
-
-    /*!
-     *  Copies vendor extensions from another document.
-     *
-     *      @param [in] other   The document to copy extensions from.
-     */
-    void copyVendorExtensions(const Document & other);
 
     /*!
      *  Get the group container for document tags.

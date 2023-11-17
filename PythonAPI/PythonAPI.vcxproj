@@ -125,7 +125,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">swig -python -c++ -O -doxygen %(Identity)</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Running SWIG</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PythonAPI_wrap.cxx</Outputs>
-      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PythonAPI.cpp PythonAPI.h</AdditionalInputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PythonAPI.cpp;PythonAPI.h</AdditionalInputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

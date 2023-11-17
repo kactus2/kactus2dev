@@ -1,15 +1,14 @@
 //-----------------------------------------------------------------------------
-// File: tst_ComponentPortReader.cpp
+// File: tst_ComponentPortReader::cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Mikko Teuho
 // Date: 14.09.2015
 //
 // Description:
-// Unit test for class tst_ComponentPortReader.
+// Unit test for class tst_ComponentPortReader::
 //-----------------------------------------------------------------------------
 
-//#include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PortReader.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
@@ -21,8 +20,6 @@ class tst_ComponentPortReader : public QObject
 {
     Q_OBJECT
 
-public:
-    tst_ComponentPortReader();
 
 private slots:
 
@@ -37,8 +34,11 @@ private slots:
 
     void readWirePortAllLogicalDirectionsAllowed();
     void readWirePortVectors();
+    void readWirePortVectors_2022();
     void readWireTypeDefinitions();
-    void readWireDefaultValue();
+    void readWireDriver();
+    void readWireDefaultDriver();
+    void readWireQualifiers_2022();
 
     void readTransactionalAllLogicalInitiativesAllowed();
     void readTransactionalKind();
@@ -47,14 +47,6 @@ private slots:
     void readTransactionalTypeDefinitions();
     void readTransactionalConnectionMinMax();
 };
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentPortReader::()
-//-----------------------------------------------------------------------------
-tst_ComponentPortReader::tst_ComponentPortReader()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentPortReader::readSimplePort()
@@ -78,8 +70,7 @@ void tst_ComponentPortReader::readSimplePort()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->displayName(), QString("PortorDisplay"));
@@ -112,8 +103,7 @@ void tst_ComponentPortReader::readSimpleTransactionalPort()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->displayName(), QString("PortorDisplay"));
@@ -145,8 +135,7 @@ void tst_ComponentPortReader::readPortPresence()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getIsPresent(), QString("4-2*2+1"));
@@ -182,8 +171,7 @@ void tst_ComponentPortReader::readPortArrays()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getArrays()->size(), 1);
@@ -218,8 +206,7 @@ void tst_ComponentPortReader::readPortExtensions()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getVendorExtensions()->size(), 1);
@@ -253,8 +240,7 @@ void tst_ComponentPortReader::readPortAdHocVisibility()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getVendorExtensions()->size(), 1);
@@ -287,8 +273,7 @@ void tst_ComponentPortReader::readPortPosition()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getVendorExtensions()->size(), 1);
@@ -322,8 +307,7 @@ void tst_ComponentPortReader::readPortTags()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getVendorExtensions()->size(), 1);
@@ -353,8 +337,7 @@ void tst_ComponentPortReader::readWirePortAllLogicalDirectionsAllowed()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -390,13 +373,52 @@ void tst_ComponentPortReader::readWirePortVectors()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
     QCOMPARE(testPort->getTransactional().isNull(), true);
     QCOMPARE(testPort->getWire().isNull(), false);
+    QCOMPARE(testPort->getWire()->getVectorLeftBound(), QStringLiteral("4+18-Yaoxao"));
+    QCOMPARE(testPort->getWire()->getVectorRightBound(), QStringLiteral("Yaoxao"));
+    QCOMPARE(testPort->getWire()->getVector()->getId(), QString());
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readWirePortVectors_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readWirePortVectors_2022()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:vectors>"
+                    "<ipxact:vector vectorId=\"testVector\">"
+                        "<ipxact:left>1</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
+                "</ipxact:vectors>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->name(), QString("testPort"));
+
+    QCOMPARE(testPort->getTransactional().isNull(), true);
+    QCOMPARE(testPort->getWire().isNull(), false);
+    QCOMPARE(testPort->getWire()->getVector()->getLeft(), QStringLiteral("1"));
+    QCOMPARE(testPort->getWire()->getVector()->getRight(), QStringLiteral("0"));
+    QCOMPARE(testPort->getWire()->getVector()->getId(), QStringLiteral("testVector"));
 }
 
 //-----------------------------------------------------------------------------
@@ -426,8 +448,7 @@ void tst_ComponentPortReader::readWireTypeDefinitions()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -444,9 +465,50 @@ void tst_ComponentPortReader::readWireTypeDefinitions()
 }
 
 //-----------------------------------------------------------------------------
-// Function: tst_ComponentPortReader::readWireDefaultValue()
+// Function: tst_ComponentPortReader::readWireDriver()
 //-----------------------------------------------------------------------------
-void tst_ComponentPortReader::readWireDefaultValue()
+void tst_ComponentPortReader::readWireDriver()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:drivers>"
+                    "<ipxact:driver>"
+                        "<ipxact:range>"
+                            "<ipxact:left>7</ipxact:left>"
+                            "<ipxact:right>0</ipxact:right>"
+                        "</ipxact:range>"
+                        "<ipxact:defaultValue>4+4-2</ipxact:defaultValue>"
+                    "</ipxact:driver>"
+                "</ipxact:drivers>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
+
+    QCOMPARE(testPort->getTransactional().isNull(), true);
+    QCOMPARE(testPort->getWire().isNull(), false);
+    QCOMPARE(testPort->getDefaultValue(), QString("4+4-2"));
+
+    auto wireRange = testPort->getWire()->getDriver()->getRange();
+    QCOMPARE(wireRange.getLeft(), QString("7"));
+    QCOMPARE(wireRange.getRight(), QString("0"));
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readWireDefaultDriver()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readWireDefaultDriver()
 {
     QString documentContent(
         "<ipxact:port>"
@@ -468,8 +530,7 @@ void tst_ComponentPortReader::readWireDefaultValue()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -477,6 +538,46 @@ void tst_ComponentPortReader::readWireDefaultValue()
     QCOMPARE(testPort->getWire().isNull(), false);
     QCOMPARE(testPort->getDefaultValue(), QString("4+4-2"));
 }
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readWireQualifiers_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readWireQualifiers_2022()
+{
+     QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:wire>"
+                "<ipxact:direction>out</ipxact:direction>"
+                "<ipxact:qualifier>"
+                    "<ipxact:isData>true</ipxact:isData>"
+                    "<ipxact:isValid>true</ipxact:isValid>"
+                    "<ipxact:isInterrupt>false</ipxact:isInterrupt>"
+                    "<ipxact:isClockEn level=\"high\">true</ipxact:isClockEn>"
+                "</ipxact:qualifier>"
+            "</ipxact:wire>"
+        "</ipxact:port>"
+        );
+
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getTransactional().isNull(), true);
+    
+    auto wire = testPort->getWire();
+    QCOMPARE(wire.isNull(), false);
+    QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::Data), true);
+    QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::Valid), true);
+    QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::Interrupt), false);
+    QCOMPARE(wire->getQualifier()->hasType(Qualifier::Type::ClockEnable), true);
+    QCOMPARE(wire->getQualifier()->getAttribute(Qualifier::Attribute::ClockEnableLevel), QString("high"));
+}
+
 
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentPortReader::readTransactionalAllLogicalInitiativesAllowed()
@@ -498,8 +599,7 @@ void tst_ComponentPortReader::readTransactionalAllLogicalInitiativesAllowed()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -529,8 +629,7 @@ void tst_ComponentPortReader::readTransactionalKind()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -551,7 +650,7 @@ void tst_ComponentPortReader::readTransactionalKind()
 
     document.setContent(documentContent);
     portNode = document.firstChildElement("ipxact:port");
-    testPort = portReader.createPortFrom(portNode);
+    testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -581,8 +680,7 @@ void tst_ComponentPortReader::readTransactionalBusWidth()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -622,8 +720,7 @@ void tst_ComponentPortReader::readTransactionalProtocol()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
 
@@ -659,7 +756,7 @@ void tst_ComponentPortReader::readTransactionalProtocol()
 
     document.setContent(documentContent);
     portNode = document.firstChildElement("ipxact:port");
-    testPort = portReader.createPortFrom(portNode);
+    testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->getTransactional()->getProtocol().isNull(), false);
 
@@ -699,8 +796,7 @@ void tst_ComponentPortReader::readTransactionalTypeDefinitions()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getTransactional().isNull(), false);
@@ -739,8 +835,7 @@ void tst_ComponentPortReader::readTransactionalConnectionMinMax()
 
     QDomNode portNode = document.firstChildElement("ipxact:port");
 
-    PortReader portReader;
-    QSharedPointer<Port> testPort = portReader.createPortFrom(portNode);
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std14);
 
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getTransactional().isNull(), false);

@@ -21,14 +21,14 @@ bool QualifierValidator::validate(QSharedPointer<Qualifier> qualifier, Document:
     {
         auto oldRevisionAllowedTypes = QList(
             {
-                Qualifier::Address,
-                Qualifier::Data,
-                Qualifier::Clock,
-                Qualifier::Reset,
-                Qualifier::Any
+                Qualifier::Type::Address,
+                Qualifier::Type::Data,
+                Qualifier::Type::Clock,
+                Qualifier::Type::Reset,
+                Qualifier::Type::Any
             });
 
-        auto qualifierTypes = *qualifier->getTypes();
+        auto qualifierTypes = qualifier->getTypes();
 
         for (auto const& type : qualifierTypes)
         {
@@ -67,14 +67,14 @@ void QualifierValidator::findErrorsIn(QStringList& errors, QSharedPointer<Qualif
     {
         auto revisionAllowedTypes = QList(
             {
-                Qualifier::Address,
-                Qualifier::Data,
-                Qualifier::Clock,
-                Qualifier::Reset,
-                Qualifier::Any
+                Qualifier::Type::Address,
+                Qualifier::Type::Data,
+                Qualifier::Type::Clock,
+                Qualifier::Type::Reset,
+                Qualifier::Type::Any
             });
 
-        auto qualifierTypes = *qualifier->getTypes();
+        auto qualifierTypes = qualifier->getTypes();
 
         for (auto const& type : qualifierTypes)
         {

@@ -12,7 +12,7 @@
 #include "BusDefinitionWriter.h"
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefinitionWriter::writeBusDefinition()

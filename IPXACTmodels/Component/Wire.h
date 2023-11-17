@@ -12,9 +12,11 @@
 #ifndef WIRE_H
 #define WIRE_H
 
+#include "Driver.h"
 #include "WireTypeDef.h"
 
 #include <IPXACTmodels/common/DirectionTypes.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
@@ -34,8 +36,8 @@ class IPXACTMODELS_EXPORT Wire
 
 public:
 
-	//! The default constructor.
-	Wire() = default;
+    //! The default constructor.
+    Wire() noexcept = default;
 
     /*!
 	 * Copy constructor.
@@ -48,10 +50,16 @@ public:
 	Wire &operator=(const Wire &other);
 
 	/*!
-	 *  The destructor.
+	 *  Create a copy of the Wire.
+	 *
+	 *      @return A Wire identical to this.
 	 */
-	~Wire() = default;
-	
+	Wire* clone() const;
+
+    /* The destructor.
+     */
+    ~Wire() = default;
+
 	/*!
 	 *  Get the value of all logical directions allowed element.
 	 *
@@ -65,6 +73,8 @@ public:
      *      @return Enum direction specifying the port direction.
 	 */
 	DirectionTypes::Direction getDirection() const;
+
+	QSharedPointer<Qualifier> getQualifier() const;
 
     /*!
      *  Get the vector element of this port.
@@ -150,6 +160,10 @@ public:
      */
     QString getVectorRightBound() const;
 
+	void setDriver(QSharedPointer<Driver> driver);
+
+	QSharedPointer<Driver> getDriver() const;
+
 	/*!
 	 *  Get the type name of the port for a given view.
 	 *
@@ -211,21 +225,31 @@ private:
 
     //! The direction of the port.
 	DirectionTypes::Direction direction_{ DirectionTypes::DIRECTION_INVALID };
+    
+	//! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
+    bool allLogicalDirectionsAllowed_{ false };
 
-    //! Defines whether the port may be mapped to a port in an abstraction definition with a different direction.
-	bool allLogicalDirectionsAllowed_{ false };
+	//! The wire qualifier.
+	QSharedPointer<Qualifier> qualifier_{ new Qualifier };
 
     //! Determines the vector qualities of the port.
+    //! Multiple vectors not supported.
 	QSharedPointer<Vector> vector_{ nullptr };
 
+    //! Specifies a driver for this port.
+	//! Multiple drivers not supported.
+	QSharedPointer<Driver> driver_{ nullptr };
+
     //! Describes the ports type as defined bu the implementation.
-	QSharedPointer<QList<QSharedPointer<WireTypeDef> > > wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
+    WireTypeDef::List wireTypeDefs_{ new QList<QSharedPointer<WireTypeDef> > };
 
-    //! Specifies a static logic value for this port.
-	QString defaultDriverValue_;
+    //! DomainTypeDefs not supported.
 
-	//! OPTIONAL Attributes for the defaultDriverValue element.
-	QMap<QString, QString> defaultValueAttributes_;
+    //! SignalTypeDefs not supported.
+	 
+    //! ConstraintSets not supported.
+
+    //! PowerConstraints not supported.
 };
 
 #endif // WIRE_H

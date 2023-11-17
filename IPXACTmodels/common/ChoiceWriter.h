@@ -12,7 +12,7 @@
 #ifndef CHOICEWRITER_H
 #define CHOICEWRITER_H
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
 #include <QXmlStreamWriter>

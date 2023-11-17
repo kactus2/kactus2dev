@@ -11,6 +11,8 @@
 
 #include "ComponentInstantiation.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiation::ComponentInstantiation()
 //-----------------------------------------------------------------------------
@@ -45,10 +47,10 @@ moduleName_(other.moduleName_),
 architectureName_(other.architectureName_),
 configurationName_(other.configurationName_)
 {
-    Utilities::copyList(moduleParameters_, other.moduleParameters_);
-    Utilities::copyList(defaultFileBuilders_, other.defaultFileBuilders_);
-    Utilities::copyList(fileSetReferences_, other.fileSetReferences_);
-    Utilities::copyList(parameters_, other.parameters_);
+    Copy::copyList(other.moduleParameters_, moduleParameters_);
+    Copy::copyList(other.defaultFileBuilders_, defaultFileBuilders_);
+    Copy::copyList(other.fileSetReferences_, fileSetReferences_);
+    Copy::copyList(other.parameters_, parameters_);
 }
 
 //-----------------------------------------------------------------------------
@@ -70,10 +72,17 @@ ComponentInstantiation& ComponentInstantiation::operator=(const ComponentInstant
         architectureName_ = other.architectureName_;
         configurationName_ = other.configurationName_;
 
-        Utilities::copyList(moduleParameters_, other.moduleParameters_);
-        Utilities::copyList(defaultFileBuilders_, other.defaultFileBuilders_);
-        Utilities::copyList(fileSetReferences_, other.fileSetReferences_);
-        Utilities::copyList(parameters_, other.parameters_);
+        moduleParameters_->clear();
+        Copy::copyList(other.moduleParameters_, moduleParameters_);
+
+        defaultFileBuilders_->clear();
+        Copy::copyList(other.defaultFileBuilders_, defaultFileBuilders_);
+
+        fileSetReferences_->clear();
+        Copy::copyList(other.fileSetReferences_, fileSetReferences_);
+
+        parameters_->clear();
+        Copy::copyList(other.parameters_, parameters_);
     }
 
     return *this;
@@ -84,10 +93,7 @@ ComponentInstantiation& ComponentInstantiation::operator=(const ComponentInstant
 //-----------------------------------------------------------------------------
 ComponentInstantiation::~ComponentInstantiation()
 {
-    moduleParameters_.clear();
-    defaultFileBuilders_.clear();
-    fileSetReferences_.clear();
-    parameters_.clear();
+
 }
 
 //-----------------------------------------------------------------------------

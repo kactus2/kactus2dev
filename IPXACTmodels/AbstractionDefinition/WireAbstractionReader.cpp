@@ -12,6 +12,7 @@
 #include "WireAbstractionReader.h"
 
 #include <IPXACTmodels/common/CellSpecification.h>
+#include <IPXACTmodels/common/QualifierReader.h>
 #include <IPXACTmodels/generaldeclarations.h>
 
 #include <IPXACTmodels/common/CommonItemsReader.h>
@@ -63,7 +64,7 @@ void WireAbstractionReader::Details::parseQualifier(QDomNode const& wireNode,
 
     auto qualifier = wire->getQualifier();
 
-    CommonItemsReader::parseQualifier(qualifierNode, qualifier, revision);
+    QualifierReader::parseQualifier(qualifierNode, qualifier, revision);
 }
 
 //-----------------------------------------------------------------------------

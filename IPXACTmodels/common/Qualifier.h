@@ -24,7 +24,7 @@ class IPXACTMODELS_EXPORT Qualifier
 {
 public:
 
-    enum Type
+    enum class Type
     {
         Address,
         Data,
@@ -42,8 +42,9 @@ public:
         Response,
         Any
     };
+    static constexpr auto TYPE_COUNT = 14;
 
-    enum Attribute
+    enum class Attribute: unsigned int
     {
         ResetLevel = 0,
         ClockEnableLevel,
@@ -51,20 +52,17 @@ public:
         PowerDomainReference,
         FlowType,
         UserFlowType,
-        UserDefined,
-        COUNT
+        UserDefined
     };
 
-    //! Map of qualifier type and string pairs.
-    static const QMap<Qualifier::Type, QString> QUALIFIER_TYPE_STRING;
+    static constexpr auto ATTRIBUTE_COUNT = 7;
 
-    Qualifier();
-
-    Qualifier(Qualifier const& other);
-
-    Qualifier& operator=(Qualifier const& other);
-
-    ~Qualifier() = default;
+    /*!
+     *  Create a copy of the Qualifier.
+     *
+     *      @return A Qualifier identical to this.
+     */
+    Qualifier* clone() const;
 
     /*!
      *	Checks if the qualifier has been set.
@@ -94,6 +92,9 @@ public:
      */
     void setType(Type type);
 
+    /*!
+     *	Clears the given type from the qualifier.
+     */
     void removeType(Type type);
 
     /*!
@@ -102,7 +103,7 @@ public:
      *		
      * 		@return A list of set types.
      */
-    QSharedPointer<QList<Type> > getTypes() const;
+    QList<Type> getTypes() const;
     
     /*!
      *	Get a selected attribute.
@@ -121,9 +122,9 @@ public:
      */
     void setAttribute(Attribute attribute, QString const& attributeValue);
 
-    bool operator==(Qualifier const& other);
+    bool operator==(Qualifier const& other) const;
 
-    bool operator!=(Qualifier const& other);
+    bool operator!=(Qualifier const& other) const;
 
     /*!
      *	Gets a qualifier type as string.
@@ -154,10 +155,10 @@ public:
 
 private:
     //! The list of types assigned to this qualifier.
-    QSharedPointer<QList<Type> > types_ = QSharedPointer<QList<Type> >(new QList<Type>());
+    QList<Type> types_{ };
 
     //! The list of attributes set for the qualifier.
-    std::array<QString, Attribute::COUNT> attributes_;
+    std::array<QString, ATTRIBUTE_COUNT> attributes_;
 };
 
 #endif // QUALIFIER_H

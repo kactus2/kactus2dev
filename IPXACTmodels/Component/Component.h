@@ -80,14 +80,14 @@ public:
 	/*!
      *  The destructor
 	 */
-	virtual ~Component();
+	~Component() final = default;
 
 	/*!
      *  Clone this component and return pointer to the copy.
 	 * 
 	 *      @return Pointer to the cloned component.
 	 */
-	virtual QSharedPointer<Document> clone()  const;
+	QSharedPointer<Document> clone() const final;
 
 	/*!
      *  Is this a bus component.
@@ -124,13 +124,6 @@ public:
 	 */
 	bool isHierarchical() const;
 
-    /*!
-     *  Is this a hierarchical sw component.
-     *
-     *      @return True if the component has hierarchical SW, false otherwise.
-     */
-    bool isHierarchicalSW() const;
-
     QSharedPointer<QList<QSharedPointer<PowerDomain> > > getPowerDomains() const;
 
 	/*!
@@ -165,7 +158,6 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<BusInterface> > > getInterfacesUsedByPort(QString const& portName) const;
 
-    
 	/*!
      *  Get the indirect interfaces of a component.
 	 *
@@ -524,14 +516,14 @@ public:
 	 *
 	 *      @return A list containing the paths to the files.
 	 */
-	virtual QStringList getDependentFiles() const;
+	QStringList getDependentFiles() const final;
 
 	/*!
      *  Get list of the VLNVs needed by this component.
 	 *
 	 *      @return QList containing pointers to the VLNVs.
 	 */
-	virtual QList<VLNV> getDependentVLNVs() const;
+	QList<VLNV> getDependentVLNVs() const final;
     
     QStringList getPowerDomainNames() const;
 
@@ -879,111 +871,6 @@ public:
 	QStringList getDependentDirs() const final;
 
 private:
-
-    /*!
-     *  Copy power domains.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyPowerDomains(const Component& other) const;
-    
-    /*!
-     *  Copy bus interfaces.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyBusInterfaces(const Component& other) const;
-   
-    /*!
-     *  Copy indirect interfaces.
-     *
-     *      @param [in] other   The component being copied.
-     */ 
-    void copyIndirectInterfaces(Component const& other) const;
-
-    /*!
-     *  Copy channels.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyChannels(const Component& other) const;
-    
-    /*!
-     *  Copy remap states.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyRemapStates(const Component& other) const;
-
-    /*!
-     *  Copy modes.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyModes(const Component& other) const;
-
-    /*!
-     *  Copy address spaces.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyAddressSpaces(const Component& other) const;
-    
-    /*!
-     *  Copy memory maps.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyMemoryMaps(const Component& other) const;
-    
-    /*!
-     *  Copy model.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyModel(const Component& other);
-
-    /*!
-     *  Copy component generators.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyComponentGenerators(const Component& other) const;
-    
-    /*!
-     *  Copy choices.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyChoices(const Component& other) const;
-    
-    /*!
-     *  Copy file sets.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyFileSets(const Component& other) const;
-    
-    /*!
-     *  Copy cpus.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyCpus(const Component& other) const;
-    
-    /*!
-     *  Copy other clock drivers.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyOtherClockDrivers(const Component& other) const;
-    
-    /*!
-     *  Copy reset types.
-     *
-     *      @param [in] other   The component being copied.
-     */
-    void copyResetTypes(const Component& other) const;
 
     //-----------------------------------------------------------------------------
     // Data.

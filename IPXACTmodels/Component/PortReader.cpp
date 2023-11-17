@@ -13,27 +13,12 @@
 
 #include <IPXACTmodels/common/NameGroupReader.h>
 #include <IPXACTmodels/common/ProtocolReader.h>
-
-//-----------------------------------------------------------------------------
-// Function: PortReader::PortReader()
-//-----------------------------------------------------------------------------
-PortReader::PortReader(): CommonItemsReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: PortReader::~PortReader()
-//-----------------------------------------------------------------------------
-PortReader::~PortReader()
-{
-
-}
+#include <IPXACTmodels/common/QualifierReader.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortReader::createPortFrom()
 //-----------------------------------------------------------------------------
-QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode) const
+QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Document::Revision docRevision)
 {
     QSharedPointer<Port> newPort (new Port());
 
@@ -44,25 +29,26 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode) const
     QDomElement wireElement = portNode.firstChildElement(QStringLiteral("ipxact:wire"));
     if (!wireElement.isNull())
     {
-        parseWire(wireElement, newPort);
+        Details::parseWire(wireElement, newPort, docRevision);
     }
     QDomElement transactionalElement = portNode.firstChildElement(QStringLiteral("ipxact:transactional"));
     if (!transactionalElement.isNull())
     {
-        parseTransactional(transactionalElement, newPort);
+        Details::parseTransactional(transactionalElement, newPort);
     }
 
-    parseArrays(portNode, newPort);
+    Details::parseArrays(portNode, newPort);
 
-    parsePortExtensions(portNode, newPort);
+    Details::parsePortExtensions(portNode, newPort);
 
     return newPort;
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseWire()
+// Function: PortReader::Details::parseWire()
 //-----------------------------------------------------------------------------
-void PortReader::parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort) const
+void PortReader::Details::parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort,
+    Document::Revision docRevision)
 {
     QDomElement directionElement = wireElement.firstChildElement(QStringLiteral("ipxact:direction"));
     QString directionString = directionElement.firstChild().nodeValue();
@@ -70,13 +56,19 @@ void PortReader::parseWire(QDomElement const& wireElement, QSharedPointer<Port> 
     QSharedPointer<Wire> newWire (new Wire());
     newWire->setDirection(DirectionTypes::str2Direction(directionString, DirectionTypes::IN));
 
+    if (docRevision == Document::Revision::Std22)
+    {
+        auto qualifierElement = wireElement.firstChildElement(QStringLiteral("ipxact:qualifier"));
+        QualifierReader::parseQualifier(qualifierElement, newWire->getQualifier(), docRevision);
+    }
+
     QString allLogicalDirectionsAllowed = wireElement.attribute(QStringLiteral("allLogicalDirectionsAllowed"));
     if (!allLogicalDirectionsAllowed.isEmpty())
     {
         newWire->setAllLogicalDirectionsAllowed(true);
     }
 
-    parseWireVectors(wireElement.firstChildElement(QStringLiteral("ipxact:vectors")), newWire);
+    parseWireVectors(wireElement.firstChildElement(QStringLiteral("ipxact:vectors")), newWire, docRevision);
 
     QDomElement wireTypeDefsElement = wireElement.firstChildElement(QStringLiteral("ipxact:wireTypeDefs"));
     if (!wireTypeDefsElement.isNull())
@@ -91,25 +83,33 @@ void PortReader::parseWire(QDomElement const& wireElement, QSharedPointer<Port> 
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseWireVectors()
+// Function: PortReader::Details::parseWireVectors()
 //-----------------------------------------------------------------------------
-void PortReader::parseWireVectors(QDomElement const& vectorsElement, QSharedPointer<Wire> newWire) const
+void PortReader::Details::parseWireVectors(QDomElement const& vectorsElement, QSharedPointer<Wire> newWire,
+    Document::Revision docRevision)
 {
     QDomNodeList vectorNodeList = vectorsElement.elementsByTagName(QStringLiteral("ipxact:vector"));
     for (int vectorIndex = 0; vectorIndex < vectorNodeList.count(); ++vectorIndex)
     {
         QDomNode vectorNode = vectorNodeList.at(vectorIndex);
+
         newWire->setVectorLeftBound(vectorNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue());
         newWire->setVectorRightBound(vectorNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue());
-    }
 
+        auto vector = newWire->getVector();
+        if (docRevision == Document::Revision::Std22)
+        {
+            vector->setId(vectorNode.toElement().attribute(QStringLiteral("vectorId")));
+        }
+
+    }
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseWireTypeDefinitions()
+// Function: PortReader::Details::parseWireTypeDefinitions()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<WireTypeDef> > > PortReader::parseWireTypeDefinitions(
-    QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName) const
+QSharedPointer<QList<QSharedPointer<WireTypeDef> > > PortReader::Details::parseWireTypeDefinitions(
+    QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName)
 {
     QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions (new QList<QSharedPointer<WireTypeDef> >);
 
@@ -137,10 +137,10 @@ QSharedPointer<QList<QSharedPointer<WireTypeDef> > > PortReader::parseWireTypeDe
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseTypeDefinitions()
+// Function: PortReader::Details::parseTypeDefinitions()
 //-----------------------------------------------------------------------------
-void PortReader::parseTypeDefinitions(QDomElement const& wireTypeDefinitionElement,
-    QSharedPointer<WireTypeDef> newWireTypeDefinition) const
+void PortReader::Details::parseTypeDefinitions(QDomElement const& wireTypeDefinitionElement,
+    QSharedPointer<WireTypeDef> newWireTypeDefinition)
 {
     QDomNodeList typeDefinitionList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:typeDefinition"));
     QSharedPointer<QStringList> definitionList(new QStringList());
@@ -156,10 +156,10 @@ void PortReader::parseTypeDefinitions(QDomElement const& wireTypeDefinitionEleme
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseViewReferences()
+// Function: PortReader::Details::parseViewReferences()
 //-----------------------------------------------------------------------------
-void PortReader::parseViewReferences(QDomElement const& wireTypeDefinitionElement,
-    QSharedPointer<WireTypeDef> newWireTypeDefinition) const
+void PortReader::Details::parseViewReferences(QDomElement const& wireTypeDefinitionElement,
+    QSharedPointer<WireTypeDef> newWireTypeDefinition)
 {
     QDomNodeList viewRefNodeList = wireTypeDefinitionElement.elementsByTagName(QStringLiteral("ipxact:viewRef"));
     QSharedPointer<QStringList> viewRefs(new QStringList());
@@ -177,9 +177,9 @@ void PortReader::parseViewReferences(QDomElement const& wireTypeDefinitionElemen
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseWireDefaultValue()
+// Function: PortReader::Details::parseWireDefaultValue()
 //-----------------------------------------------------------------------------
-void PortReader::parseWireDefaultValue(QDomElement const& wireElement, QSharedPointer<Wire> newWire) const
+void PortReader::Details::parseWireDefaultValue(QDomElement const& wireElement, QSharedPointer<Wire> newWire)
 {
     QDomElement driversElement = wireElement.firstChildElement(QStringLiteral("ipxact:drivers"));
 
@@ -188,17 +188,26 @@ void PortReader::parseWireDefaultValue(QDomElement const& wireElement, QSharedPo
         QDomNodeList driverNodeList = driversElement.elementsByTagName(QStringLiteral("ipxact:driver"));
         for (int driverIndex = 0; driverIndex < driverNodeList.count(); ++driverIndex)
         {
+            auto driver = QSharedPointer<Driver>(new Driver());
+            if (QDomElement rangeElement = driverNodeList.at(driverIndex).firstChildElement(QStringLiteral("ipxact:range"));
+                !rangeElement.isNull())
+            {
+                driver->setRange(CommonItemsReader::parseRange(rangeElement));
+            }
+
             QDomNode driverDefaultNode = driverNodeList.at(driverIndex).firstChildElement(QStringLiteral("ipxact:defaultValue"));
             QString defaultValue = driverDefaultNode.firstChild().nodeValue();
-            newWire->setDefaultDriverValue(defaultValue);
+            driver->setDefaultValue(defaultValue);
+
+            newWire->setDriver(driver);
         }
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseTransactional()
+// Function: PortReader::Details::parseTransactional()
 //-----------------------------------------------------------------------------
-void PortReader::parseTransactional(QDomElement const& transactionalElement, QSharedPointer<Port> newPort) const
+void PortReader::Details::parseTransactional(QDomElement const& transactionalElement, QSharedPointer<Port> newPort)
 {
     QSharedPointer<Transactional> newTransactional(new Transactional());
 
@@ -237,10 +246,10 @@ void PortReader::parseTransactional(QDomElement const& transactionalElement, QSh
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseTransactionalKind()
+// Function: PortReader::Details::parseTransactionalKind()
 //-----------------------------------------------------------------------------
-void PortReader::parseTransactionalKind(QDomElement const& kindElement,
-    QSharedPointer<Transactional> transactional) const
+void PortReader::Details::parseTransactionalKind(QDomElement const& kindElement,
+    QSharedPointer<Transactional> transactional)
 {
     if (!kindElement.isNull())
     {
@@ -254,10 +263,10 @@ void PortReader::parseTransactionalKind(QDomElement const& kindElement,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseTransactionalProtocol()
+// Function: PortReader::Details::parseTransactionalProtocol()
 //-----------------------------------------------------------------------------
-void PortReader::parseTransactionalProtocol(QDomNode const& transactionalNode,
-    QSharedPointer<Transactional> transactional) const
+void PortReader::Details::parseTransactionalProtocol(QDomNode const& transactionalNode,
+    QSharedPointer<Transactional> transactional)
 {
     QDomNode protocolNode = transactionalNode.firstChildElement(QStringLiteral("ipxact:protocol"));
     if (!protocolNode.isNull())
@@ -269,10 +278,10 @@ void PortReader::parseTransactionalProtocol(QDomNode const& transactionalNode,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseTransactionalConnectionsMinMax()
+// Function: PortReader::Details::parseTransactionalConnectionsMinMax()
 //-----------------------------------------------------------------------------
-void PortReader::parseTransactionalConnectionsMinMax(QDomElement const& transactionalElement,
-    QSharedPointer<Transactional> transactional) const
+void PortReader::Details::parseTransactionalConnectionsMinMax(QDomElement const& transactionalElement,
+    QSharedPointer<Transactional> transactional)
 {
     QDomElement connectionsElement = transactionalElement.firstChildElement(QStringLiteral("ipxact:connection"));
     if (!connectionsElement.isNull())
@@ -294,9 +303,9 @@ void PortReader::parseTransactionalConnectionsMinMax(QDomElement const& transact
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parseArrays()
+// Function: PortReader::Details::parseArrays()
 //-----------------------------------------------------------------------------
-void PortReader::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort) const
+void PortReader::Details::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort)
 {
     QDomElement arraysElement = portNode.firstChildElement(QStringLiteral("ipxact:arrays"));
 
@@ -314,9 +323,9 @@ void PortReader::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newP
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parsePortExtensions()
+// Function: PortReader::Details::parsePortExtensions()
 //-----------------------------------------------------------------------------
-void PortReader::parsePortExtensions(QDomNode const& portNode, QSharedPointer<Port> newPort) const
+void PortReader::Details::parsePortExtensions(QDomNode const& portNode, QSharedPointer<Port> newPort)
 {
     QDomElement extensionsNode = portNode.firstChildElement(QStringLiteral("ipxact:vendorExtensions"));
 
@@ -338,13 +347,13 @@ void PortReader::parsePortExtensions(QDomNode const& portNode, QSharedPointer<Po
         newPort->setPortTags(tagsElement.firstChild().nodeValue());
     }
 
-    parseVendorExtensions(portNode, newPort);
+    CommonItemsReader::parseVendorExtensions(portNode, newPort);
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::parsePosition()
+// Function: PortReader::Details::parsePosition()
 //-----------------------------------------------------------------------------
-void PortReader::parsePosition(QDomElement const& positionElement, QSharedPointer<Port> newPort) const
+void PortReader::Details::parsePosition(QDomElement const& positionElement, QSharedPointer<Port> newPort)
 {
     int positionX = positionElement.attribute(QStringLiteral("x")).toInt();
     int positionY = positionElement.attribute(QStringLiteral("y")).toInt();

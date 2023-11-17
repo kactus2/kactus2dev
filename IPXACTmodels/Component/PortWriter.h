@@ -23,51 +23,39 @@
 //-----------------------------------------------------------------------------
 //! Writer class for IP-XACT port element.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT PortWriter : public CommonItemsWriter
+class IPXACTMODELS_EXPORT PortWriter
 {
 public:
 
     /*!
-     *  The constructor.
-     *
-     *      @param [in] parent  Owner of this writer.
-     */
-    PortWriter();
-
-    /*!
-     *  The destructor.
-     */
-    ~PortWriter();
-
-    /*!
      *  Write a component port to an XML file.
      *
-     *      @param [in] writer  The used XML writer.
-     *      @param [in] port    The port to be written.
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] port            The port to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port) const;
+    void writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, Document::Revision docRevision) const;
 
 private:
-
-    //! No copying allowed.
-    PortWriter(PortWriter const& rhs);
-    PortWriter& operator=(PortWriter const& rhs);
 
     /*!
      *  Write a wire port.
      *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] wire    The wire to be written.
+     *      @param [in] writer          Used XML writer.
+     *      @param [in] wire            The wire to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire) const;
+    void writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, Document::Revision docRevision) const;
 
     /*!
      *  Write a transactional port.
      *
      *      @param [in] writer          Used XML writer.
      *      @param [in] transactional   The transactional to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional) const;
+    void writeTransactional(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the port arrays.
@@ -80,10 +68,11 @@ private:
     /*!
      *  Write a vector.
      *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] vector  The vector to be written.
+     *      @param [in] writer          Used XML writer.
+     *      @param [in] vector          The vector to be written.
+     *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector) const;
+    void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector, Document::Revision docRevision) const;
 
     /*!
      *  Write the wire type definitions.
@@ -95,22 +84,13 @@ private:
         QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
 
     /*!
-     *  Check if the wire type definitions are empty.
+     *  Check if the wire type definitions are not empty.
      *
-     *      @param [in] typeDefinitions     A list of the wire type definitions to be written.
+     *      @param [in] typeDefinitions     A list of the wire type definitions to be check.
      *
-     *      @return True, if the type definitions are empty, false otherwise.
+     *      @return True, if at least one type definition is not empty, false otherwise.
      */
-    bool wireTypeDefinitionsAreEmpty(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
-
-    /*!
-     *  Check a single wire type definition is empty.
-     *
-     *      @param [in] typeDefinition  The selected wire type definition.
-     *
-     *      @return True, if the type definition is empty, false otherwise.
-     */
-    bool singleWireTypeDefintionIsEmpty(QSharedPointer<WireTypeDef> typeDefinition) const;
+    bool hasNonEmptyTypeDefinitions(QSharedPointer<QList<QSharedPointer<WireTypeDef> > > typeDefinitions) const;
 
     /*!
      *  Write a single type definition.
@@ -123,12 +103,12 @@ private:
         QString const& attributeName) const;
 
     /*!
-     *  Write the wire default value.
+     *  Write the wire driver.
      *
      *      @param [in] writer          Used XML writer.
-     *      @param [in] defaultValue    The default value to be written.
+     *      @param [in] driver          The driver to be written.
      */
-    void writeWireDefaultValue(QXmlStreamWriter& writer, QString const& defaultValue) const;
+    void writeWireDriver(QXmlStreamWriter& writer, QSharedPointer<Driver> driver) const;
 
     /*!
      *  Write the transactional kind.

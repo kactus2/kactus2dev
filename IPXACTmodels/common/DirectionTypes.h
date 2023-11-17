@@ -40,7 +40,7 @@ namespace DirectionTypes
      *      @return The mirrored direction.
      */
     IPXACTMODELS_EXPORT DirectionTypes::Direction convert2Mirrored(
-        const DirectionTypes::Direction originalDirection);
+         DirectionTypes::Direction originalDirection);
 
     /*!
      *  Convert a given qstring to direction.
@@ -55,7 +55,7 @@ namespace DirectionTypes
 
 
     IPXACTMODELS_EXPORT DirectionTypes::Direction str2Direction(
-        std::string const& str, DirectionTypes::Direction defaultValue = Direction::DIRECTION_INVALID);
+        std::string_view str, DirectionTypes::Direction defaultValue = Direction::DIRECTION_INVALID);
 
 
     /*!

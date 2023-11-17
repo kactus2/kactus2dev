@@ -457,7 +457,7 @@ private:
 	QString modifiedWriteModify_;
 
 	//! Pointer to the write value constraint.
-	QSharedPointer<WriteValueConstraint> writeValueConstraint_;
+	QSharedPointer<WriteValueConstraint> writeValueConstraint_{ nullptr };
 
 	//! Contains the read action setting for the field.
 	General::ReadAction readAction_;

@@ -15,12 +15,14 @@
 #include "WireTypeDef.h"
 
 #include <IPXACTmodels/common/Protocol.h>
+#include <IPXACTmodels/common/Qualifier.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <QList>
 #include <QString>
 #include <QSharedPointer>
+
 
 //-----------------------------------------------------------------------------
 //! Describes the ipxact:transactional element within component ports.
@@ -33,6 +35,13 @@ public:
     //! The default constructor.
     Transactional() = default;
 
+    /*!
+     *  Create a copy of the Transactional.
+     *
+     *      @return A Transactional identical to this.
+     */
+    Transactional* clone() const;
+
 	/*!
 	 *  Copy constructor.
 	 */
@@ -42,6 +51,11 @@ public:
 	 *  Assignment operator.
 	 */
 	Transactional &operator=(const Transactional &other);
+
+    /*!
+     *  The destructor.
+     */
+    ~Transactional() = default;
 
 	/*!
 	 *  Get the all logical initiatives allowed settings.
@@ -98,6 +112,13 @@ public:
      *      @param [in] newBusWidth     The new bus width.
      */
     void setBusWidth(QString const& newBusWidth);
+
+    /*!
+     *  Get the transactional qualifier.
+     *
+     *      @return The qualifier.
+     */
+    QSharedPointer<Qualifier> getQualifier() const;
 
     /*!
      *  Get the protocol.
@@ -230,12 +251,14 @@ private:
     //! Defines the bus width.
     QString busWidth_;
 
+    //! The transactional qualifier.
+    QSharedPointer<Qualifier> qualifier_{ new Qualifier };
+
     //! Defines the used protocol
     QSharedPointer<Protocol> protocol_{ nullptr };
 
 	//! Defines the port type expressed in the default language for this port.
-    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > transTypeDefs_{ 
-        new QList<QSharedPointer<WireTypeDef> >() };
+    WireTypeDef::List transTypeDefs_{ new QList<QSharedPointer<WireTypeDef> >() };
 
     //! Defines the maximum number of connections.
     QString maxConnections_;

@@ -12,19 +12,27 @@
 #include "Protocol.h"
 
 //-----------------------------------------------------------------------------
+// Function: Protocol::clone()
+//-----------------------------------------------------------------------------
+Protocol* Protocol::clone() const
+{
+    return new Protocol(*this);
+}
+
+//-----------------------------------------------------------------------------
 // Function: Protocol::setType()
 //-----------------------------------------------------------------------------
 void Protocol::setProtocolType(QString const& type)
 {
-    if (type != QLatin1String("tlm"))
-    {
-        protocolType_ = QStringLiteral("custom");
-        customProtocolType_ = type;
-    }
-    else
+    if (type == QStringLiteral("tlm"))
     {
         protocolType_ = type;
         customProtocolType_.clear();
+    }
+    else
+    {
+        protocolType_ = QStringLiteral("custom");
+        customProtocolType_ = type;
     }    
 }
 

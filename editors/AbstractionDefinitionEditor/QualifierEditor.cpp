@@ -168,27 +168,27 @@ void QualifierEditor::onItemClicked(bool isChecked)
 //-----------------------------------------------------------------------------
 void QualifierEditor::populateCheckBoxes()
 {
-    static const std::array<Qualifier::Type, Qualifier::Any> qualifierOrder = 
+    static constexpr std::array<Qualifier::Type, Qualifier::TYPE_COUNT> qualifierOrder =
     {
-        Qualifier::Address,
-        Qualifier::Data,
-        Qualifier::Interrupt,
-        Qualifier::Opcode,
-        Qualifier::Clock,
-        Qualifier::ClockEnable,
-        Qualifier::Reset,
-        Qualifier::PowerEnable,
-        Qualifier::Protection,
-        Qualifier::FlowControl,
-        Qualifier::Request,
-        Qualifier::Response,
-        Qualifier::Valid,
-        Qualifier::User
+        Qualifier::Type::Address,
+        Qualifier::Type::Data,
+        Qualifier::Type::Interrupt,
+        Qualifier::Type::Opcode,
+        Qualifier::Type::Clock,
+        Qualifier::Type::ClockEnable,
+        Qualifier::Type::Reset,
+        Qualifier::Type::PowerEnable,
+        Qualifier::Type::Protection,
+        Qualifier::Type::FlowControl,
+        Qualifier::Type::Request,
+        Qualifier::Type::Response,
+        Qualifier::Type::Valid,
+        Qualifier::Type::User
     };
 
     for (auto const& qualifier : qualifierOrder)
     {
-        QCheckBox* qualifierBox = new QCheckBox(Qualifier::QUALIFIER_TYPE_STRING[qualifier], this);
+        QCheckBox* qualifierBox = new QCheckBox(Qualifier::typeToString(qualifier), this);
         qualifierBoxes_.append(qualifierBox);
 
         connect(qualifierBox, SIGNAL(clicked(bool)), this, SLOT(onItemClicked(bool)), Qt::UniqueConnection);
@@ -251,11 +251,11 @@ void QualifierEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void QualifierEditor::setQualifierAttribute(Qualifier::Attribute attributeType, QString const& attributeValue)
 {
-    if (attributeType == Qualifier::UserDefined)
+    if (attributeType == Qualifier::Attribute::UserDefined)
     {
         userDefinedLineEdit_->setText(attributeValue);
     }
-    else if (attributeType == Qualifier::UserFlowType && !attributeValue.isEmpty())
+    else if (attributeType == Qualifier::Attribute::UserFlowType && !attributeValue.isEmpty())
     {
         flowTypeSelector_->setCurrentText(attributeValue); // Display user attribute when flow type is user.
     }
@@ -302,7 +302,7 @@ QComboBox* QualifierEditor::getAttributeEditor(Qualifier::Attribute attribute)
 //-----------------------------------------------------------------------------
 void QualifierEditor::setQualifierAttributesVisible(Qualifier::Type qualifier, bool visible)
 {
-    if (qualifier == Qualifier::User)
+    if (qualifier == Qualifier::Type::User)
     {
         userDefinedLineEdit_->setVisible(visible);
 
@@ -336,25 +336,25 @@ QList<Qualifier::Attribute> QualifierEditor::getQualifierTypeAttributes(Qualifie
 {
     QList<Qualifier::Attribute> qualifierTypeAttributes;
 
-    if (qualifier == Qualifier::Reset)
+    if (qualifier == Qualifier::Type::Reset)
     {
         qualifierTypeAttributes.append(Qualifier::Attribute::ResetLevel);
     }
-    else if (qualifier == Qualifier::ClockEnable)
+    else if (qualifier == Qualifier::Type::ClockEnable)
     {
         qualifierTypeAttributes.append(Qualifier::Attribute::ClockEnableLevel);
     }
-    else if (qualifier == Qualifier::PowerEnable)
+    else if (qualifier == Qualifier::Type::PowerEnable)
     {
         qualifierTypeAttributes.append(Qualifier::Attribute::PowerEnableLevel);
         qualifierTypeAttributes.append(Qualifier::Attribute::PowerDomainReference);
     }
-    else if (qualifier == Qualifier::FlowControl)
+    else if (qualifier == Qualifier::Type::FlowControl)
     {
         qualifierTypeAttributes.append(Qualifier::Attribute::FlowType);
         qualifierTypeAttributes.append(Qualifier::Attribute::UserFlowType);
     }
-    else if (qualifier == Qualifier::User)
+    else if (qualifier == Qualifier::Type::User)
     {
         qualifierTypeAttributes.append(Qualifier::Attribute::UserDefined);
     }

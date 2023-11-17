@@ -40,15 +40,6 @@ namespace TransactionalAbstractionWriter
 
     namespace Details
     {
-
-        /*!
-         *  Writes the given transactional qualifier into XML.
-         *
-         *      @param [in] writer          The XML writer to use.
-         *      @param [in] transactional   The transactional whose qualifier to write.
-         */
-        void writeQualifier(QXmlStreamWriter& writer, QSharedPointer<TransactionalAbstraction> transactional);
-
         /*!
          *  Writes the system port for the given transactional into XML.
          *

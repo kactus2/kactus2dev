@@ -17,10 +17,12 @@
 #include <IPXACTmodels/Component/MemoryArray.h>
 #include <IPXACTmodels/Component/FieldReference.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Field::Field()
 //-----------------------------------------------------------------------------
-Field::Field(QString const& name /* = QString() */) :
+Field::Field(QString const& name) :
 NameGroup(name),
 Extendable(),
 id_(),
@@ -64,7 +66,6 @@ access_(other.access_),
 enumeratedValues_(new QList<QSharedPointer<EnumeratedValue> > ()),
 modifiedWrite_(other.modifiedWrite_),
 modifiedWriteModify_(other.modifiedWriteModify_),
-writeValueConstraint_(),
 readAction_(other.readAction_),
 readActionModify_(other.readActionModify_),
 testable_(other.testable_),
@@ -72,10 +73,10 @@ testConstraint_(other.testConstraint_),
 reserved_(other.reserved_),
 parameters_(new QList<QSharedPointer<Parameter> > ())
 {
-    Utilities::copyList(enumeratedValues_, other.enumeratedValues_);
-    Utilities::copyList(parameters_, other.parameters_);
-    Utilities::copyList(resets_, other.resets_);
-    Utilities::copyList(fieldAccessPolicies_, other.fieldAccessPolicies_);
+    Copy::copyList(other.enumeratedValues_, enumeratedValues_);
+    Copy::copyList(other.parameters_, parameters_);
+    Copy::copyList(other.resets_, resets_);
+    Copy::copyList(other.fieldAccessPolicies_, fieldAccessPolicies_);
     copyWriteValueConstraint(other);
     copyMemoryArray(other);
 }
@@ -106,10 +107,17 @@ Field& Field::operator=( const Field& other )
         testConstraint_ = other.testConstraint_;
         reserved_ = other.reserved_;
 
-        Utilities::copyList(enumeratedValues_, other.enumeratedValues_);
-        Utilities::copyList(parameters_, other.parameters_);
-        Utilities::copyList(resets_, other.resets_);
-        Utilities::copyList(fieldAccessPolicies_, other.fieldAccessPolicies_);
+        enumeratedValues_->clear();
+        Copy::copyList(other.enumeratedValues_, enumeratedValues_);
+
+        parameters_->clear();
+        Copy::copyList(other.parameters_, parameters_);
+
+        resets_->clear();
+        Copy::copyList(other.resets_, resets_);
+
+        fieldAccessPolicies_->clear();
+        Copy::copyList(other.fieldAccessPolicies_, fieldAccessPolicies_);
         copyWriteValueConstraint(other);
         copyMemoryArray(other);
     }
@@ -122,10 +130,7 @@ Field& Field::operator=( const Field& other )
 //-----------------------------------------------------------------------------
 Field::~Field()
 {
-    resets_.clear();
-    enumeratedValues_.clear();
-    parameters_.clear();
-    writeValueConstraint_.clear();
+
 }
 
 //-----------------------------------------------------------------------------

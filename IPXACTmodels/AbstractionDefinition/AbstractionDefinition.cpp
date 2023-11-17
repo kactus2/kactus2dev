@@ -15,7 +15,9 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
+
+#include <IPXACTmodels/utilities/Copy.h>
 
 #include <QDomDocument>
 #include <QString>
@@ -27,22 +29,14 @@
 #include <QStringList>
 #include <QXmlStreamWriter>
 
-//-----------------------------------------------------------------------------
-// Function: AbstractionDefinition::AbstractionDefinition()
-//-----------------------------------------------------------------------------
-AbstractionDefinition::AbstractionDefinition(): 
-Document()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::AbstractionDefinition()
 //-----------------------------------------------------------------------------
 AbstractionDefinition::AbstractionDefinition(VLNV const& vlnv, Document::Revision revision):
-Document(revision)
+Document(vlnv, revision)
 {
-    setVlnv(vlnv);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -53,8 +47,8 @@ Document(other),
     busType_(other.busType_),
     extends_(other.extends_)
 {
-    Utilities::copyList(logicalPorts_, other.logicalPorts_);
-    Utilities::copyList(choices_, other.choices_);
+    Copy::copyList(other.logicalPorts_, logicalPorts_);
+    Copy::copyList(other.choices_, choices_);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,8 +62,11 @@ AbstractionDefinition & AbstractionDefinition::operator=(AbstractionDefinition c
         busType_ = other.busType_;
 		extends_ = other.extends_;
 
-        Utilities::copyList(logicalPorts_, other.logicalPorts_);
-        Utilities::copyList(choices_, other.choices_);
+        logicalPorts_->clear();
+        Copy::copyList(other.logicalPorts_, logicalPorts_);
+
+        choices_->clear();
+        Copy::copyList(other.choices_, choices_);
 	}
 	return *this;
 }

@@ -11,14 +11,12 @@
 
 #include "TransactionalAbstractionReader.h"
 
+#include <IPXACTmodels/common/CommonItemsReader.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
-
 #include <IPXACTmodels/common/Protocol.h>
 #include <IPXACTmodels/common/ProtocolReader.h>
-
 #include <IPXACTmodels/common/PresenceTypes.h>
-
-#include <IPXACTmodels/common/CommonItemsReader.h>
+#include <IPXACTmodels/common/QualifierReader.h>
 
 #include "TransactionalAbstraction.h"
 #include "TransactionalPort.h"
@@ -52,7 +50,7 @@ void TransactionalAbstractionReader::Details::parseQualifier(QDomNode const& tra
 
     auto qualifier = transactional->getQualifier();
 
-    CommonItemsReader::parseQualifier(qualifierNode, qualifier, revision);
+    QualifierReader::parseQualifier(qualifierNode, qualifier, revision);
 }
 
 //-----------------------------------------------------------------------------
