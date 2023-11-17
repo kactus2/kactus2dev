@@ -11,6 +11,8 @@
 
 #include "Packet.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: Packet::Packet()
 //-----------------------------------------------------------------------------
@@ -28,7 +30,7 @@ Packet::Packet(Packet const& other) :
     Extendable(other),
     endianness_(other.endianness_)
 {
-    Utilities::copyList(packetFields_, other.packetFields_);
+    Copy::copyList(other.packetFields_, packetFields_);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,9 +42,10 @@ Packet& Packet::operator=(Packet const& other)
     {
         NameGroup::operator=(other);
         Extendable::operator=(other);
-
         endianness_ = other.endianness_;
-        Utilities::copyList(packetFields_, other.packetFields_);
+
+        packetFields_->clear();
+        Copy::copyList(other.packetFields_, packetFields_);
     }
 
     return *this;

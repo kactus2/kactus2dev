@@ -15,6 +15,8 @@
 
 #include <IPXACTmodels/common/TransactionalTypes.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QList>
 #include <QObject>
 #include <QString>
@@ -42,14 +44,15 @@ qualifier_(new Qualifier(*other.qualifier_)),
 {
 	if (other.onInitiator_)
     {
-		onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_.data()));
-	}
-	if (other.onTarget_)
-    {
-		onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_.data()));
+		onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_));
 	}
 
-    Utilities::copyList(onSystem_, other.onSystem_);
+	if (other.onTarget_)
+    {
+		onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_));
+	}
+
+    Copy::copyList(other.onSystem_, onSystem_);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,24 +64,20 @@ TransactionalAbstraction& TransactionalAbstraction::operator=(TransactionalAbstr
     {
 	    qualifier_ = other.qualifier_;
 
+        onInitiator_.clear();
 		if (other.onInitiator_)
         {
-			onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_.data()));
+			onInitiator_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onInitiator_));
 		}
-		else
-        {
-			onInitiator_ = QSharedPointer<TransactionalPort>();
-        }
+
+        onTarget_.clear();
 		if (other.onTarget_)
         {
-			onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_.data()));
+			onTarget_ = QSharedPointer<TransactionalPort>(new TransactionalPort(*other.onTarget_));
 		}
-		else
-        {
-			onTarget_ = QSharedPointer<TransactionalPort>();
-        }
 
-        Utilities::copyList(onSystem_, other.onSystem_);
+        onSystem_->clear();
+        Copy::copyList(other.onSystem_, onSystem_);
     }
 	return *this;
 }

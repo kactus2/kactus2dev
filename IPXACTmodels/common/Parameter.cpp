@@ -11,6 +11,8 @@
 
 #include "Parameter.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QString>
 #include <QList>
 #include <QMap>
@@ -21,11 +23,7 @@
 // Function: Parameter::Parameter()
 //-----------------------------------------------------------------------------
 Parameter::Parameter(): NameGroup(),
-    Extendable(),
-    value_(), 
-    attributes_(), 
-    valueAttributes_(), 
-    bitWidthVector_()
+    Extendable()
 {
     createUuid();
 }
@@ -40,8 +38,8 @@ Parameter::Parameter( const Parameter &other ): NameGroup(other),
     valueAttributes_(other.valueAttributes_), 
     bitWidthVector_(other.bitWidthVector_)
 {
-    Utilities::copyList(vectors_, other.vectors_);
-    Utilities::copyList(arrays_, other.arrays_);
+    Copy::copyList(other.vectors_, vectors_);
+    Copy::copyList(other.arrays_, arrays_);
     copyVendorExtensions(other);
 }
 
@@ -50,8 +48,7 @@ Parameter::Parameter( const Parameter &other ): NameGroup(other),
 //-----------------------------------------------------------------------------
 Parameter::~Parameter()
 {
-    attributes_.clear();
-    valueAttributes_.clear();
+    
 }
 
 //-----------------------------------------------------------------------------
@@ -66,9 +63,12 @@ Parameter & Parameter::operator=(Parameter const& other)
 		value_ = other.value_;
         attributes_ = other.attributes_;
 		valueAttributes_ = other.valueAttributes_;
-        
-        Utilities::copyList(vectors_, other.vectors_);
-        Utilities::copyList(arrays_, other.arrays_);
+
+        vectors_->clear();
+        Copy::copyList(other.vectors_, vectors_);
+
+        arrays_->clear();
+        Copy::copyList(other.arrays_, arrays_);
 
         copyVendorExtensions(other);
 	}

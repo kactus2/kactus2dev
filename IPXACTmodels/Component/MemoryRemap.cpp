@@ -13,6 +13,8 @@
 
 #include <IPXACTmodels/Component/ModeReference.h>
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryRemap::MemoryRemap()
 //-----------------------------------------------------------------------------
@@ -32,7 +34,7 @@ remapState_(other.remapState_),
 memoryRemapDefinitionReference_(other.memoryRemapDefinitionReference_),
 typeDefinitionsReference_(other.typeDefinitionsReference_)
 {
-    Utilities::copyList(modeReferences_, other.modeReferences_);
+    Copy::copyList(other.modeReferences_, modeReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,7 +49,8 @@ MemoryRemap& MemoryRemap::operator=(const MemoryRemap& other)
         memoryRemapDefinitionReference_ = other.memoryRemapDefinitionReference_;
         typeDefinitionsReference_ = other.typeDefinitionsReference_;
 
-        Utilities::copyList(modeReferences_, other.modeReferences_);
+        modeReferences_->clear();
+        Copy::copyList(other.modeReferences_, modeReferences_);
     }
 
     return *this;

@@ -13,6 +13,8 @@
 
 #include "WirePort.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <QSharedPointer>
 
 //-----------------------------------------------------------------------------
@@ -37,29 +39,21 @@ qualifier_(new Qualifier(*other.qualifier_)),
     defaultValue_(other.defaultValue_),
     requiresDriver_(other.requiresDriver_),
     driverType_(other.driverType_),
-    onInitiator_(),
-    onTarget_(), 
+    onInitiator_(nullptr),
+    onTarget_(nullptr), 
     onSystem_(new QList<QSharedPointer<WirePort> >())
 {
     if (other.onInitiator_)
     {
-        onInitiator_ = QSharedPointer<WirePort>(new WirePort(*other.onInitiator_.data()));
-    }
-    else
-    {
-        onInitiator_ = QSharedPointer<WirePort>();
+        onInitiator_ = QSharedPointer<WirePort>(new WirePort(*other.onInitiator_));
     }
 
     if (other.onTarget_)
     {
-        onTarget_ = QSharedPointer<WirePort>(new WirePort(*other.onTarget_.data()));
-    }
-    else
-    {
-        onTarget_ = QSharedPointer<WirePort>();
-    }   
+        onTarget_ = QSharedPointer<WirePort>(new WirePort(*other.onTarget_));
+    } 
 
-    Utilities::copyList(onSystem_, other.onSystem_);
+    Copy::copyList(other.onSystem_, onSystem_);
 }
 
 //-----------------------------------------------------------------------------
@@ -74,25 +68,20 @@ WireAbstraction& WireAbstraction::operator=(WireAbstraction const& other)
 		requiresDriver_ = other.requiresDriver_;
         driverType_ = other.driverType_;
       
+        onInitiator_.clear();
 		if (other.onInitiator_)
         {
 			onInitiator_ = QSharedPointer<WirePort>(new WirePort(*other.onInitiator_.data()));
 		}
-		else
-        {
-			onInitiator_ = QSharedPointer<WirePort>();
-        }
 
+        onTarget_.clear();
 		if (other.onTarget_)
         {
 			onTarget_ = QSharedPointer<WirePort>(new WirePort(*other.onTarget_.data()));
 		}
-		else
-        {
-			onTarget_ = QSharedPointer<WirePort>();
-        }   
-
-        Utilities::copyList(onSystem_, other.onSystem_);
+  
+        onSystem_->clear();
+        Copy::copyList(other.onSystem_, onSystem_);
 	}
 	return *this;
 }

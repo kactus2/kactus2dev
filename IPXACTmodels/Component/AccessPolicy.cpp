@@ -11,6 +11,8 @@
 
 #include "AccessPolicy.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: AccessPolicy::AccessPolicy()
 //-----------------------------------------------------------------------------
@@ -23,12 +25,12 @@ AccessPolicy::AccessPolicy():
 //-----------------------------------------------------------------------------
 // Function: AccessPolicy::AccessPolicy()
 //-----------------------------------------------------------------------------
-AccessPolicy::AccessPolicy(AccessPolicy const& other) :
+AccessPolicy::AccessPolicy(AccessPolicy const& other):
     Extendable(other),
     modeReferences_(new QList<QSharedPointer<ModeReference> >()),
     access_(other.access_)
 {
-    Utilities::copyList(modeReferences_, other.modeReferences_);
+    Copy::copyList(other.modeReferences_, modeReferences_);
 }
 
 //-----------------------------------------------------------------------------
@@ -40,7 +42,9 @@ AccessPolicy& AccessPolicy::operator=(AccessPolicy const& other)
     {
         Extendable::operator=(other);
         access_ = other.access_;
-        Utilities::copyList(modeReferences_, other.modeReferences_);
+
+        modeReferences_->clear();
+        Copy::copyList(other.modeReferences_, modeReferences_);
     }
 
     return *this;

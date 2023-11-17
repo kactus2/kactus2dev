@@ -11,6 +11,8 @@
 
 #include "MemoryArray.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryArray::MemoryArray()
 //-----------------------------------------------------------------------------
@@ -25,7 +27,7 @@ MemoryArray::MemoryArray()
 MemoryArray::MemoryArray(MemoryArray const& other):
     stride_(other.stride_)
 {
-    Utilities::copyList(dimensions_, other.dimensions_);
+    Copy::copyList(other.dimensions_, dimensions_);
 }
 
 //-----------------------------------------------------------------------------
@@ -36,7 +38,9 @@ MemoryArray& MemoryArray::operator=(MemoryArray const& other)
     if (this != &other)
     {
         stride_ = other.stride_;
-        Utilities::copyList(dimensions_, other.dimensions_);
+
+        dimensions_->clear();
+        Copy::copyList(other.dimensions_, dimensions_);
     }
 
     return *this;
