@@ -723,7 +723,8 @@ QString BusInterface::getMemoryMapRef() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getAddressSpaceRef() const
 {
-	if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRRORED_MASTER)
+	if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRRORED_MASTER ||
+        interfaceMode_ == General::INITIATOR || interfaceMode_ == General::MIRRORED_INITIATOR)
     {
         if (!initiator_)
         {

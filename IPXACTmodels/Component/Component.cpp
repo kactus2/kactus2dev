@@ -1214,7 +1214,7 @@ QStringList Component::getTargetInterfaces( const QString& memoryMap ) const
 
     for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::SLAVE && busif->getMemoryMapRef() == memoryMap)
+        if ((busif->getInterfaceMode() == interfaceModeName) && busif->getMemoryMapRef() == memoryMap)
         {
             names.append(busif->name());
         }
@@ -1226,13 +1226,19 @@ QStringList Component::getTargetInterfaces( const QString& memoryMap ) const
 //-----------------------------------------------------------------------------
 // Function: Component::getMasterInterfaces()
 //-----------------------------------------------------------------------------
-QStringList Component::getMasterInterfaces( const QString& addressSpace ) const
+QStringList Component::getInitiatorInterfaces( const QString& addressSpace ) const
 {
     QStringList names;
 
+    General::InterfaceMode initiatorModeName = getRevision() == Document::Revision::Std22
+        ? General::INITIATOR : General::MASTER;
+
+    General::InterfaceMode mirroredInitiatorModeName = getRevision() == Document::Revision::Std22
+        ? General::MIRRORED_INITIATOR : General::MIRRORED_MASTER;
+
     for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
     {
-        if ((busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
+        if ((busif->getInterfaceMode() == initiatorModeName || busif->getInterfaceMode() == mirroredInitiatorModeName)
             && (busif->getAddressSpaceRef() == addressSpace))
         {
             names.append(busif->name());
@@ -1245,12 +1251,19 @@ QStringList Component::getMasterInterfaces( const QString& addressSpace ) const
 //-----------------------------------------------------------------------------
 // Function: Component::getMasterInterfaces()
 //-----------------------------------------------------------------------------
-QStringList Component::getMasterInterfaces() const
+QStringList Component::getInitiatorInterfaces() const
 {
     QStringList names;
+
+    General::InterfaceMode initiatorModeName = getRevision() == Document::Revision::Std22
+        ? General::INITIATOR : General::MASTER;
+
+    General::InterfaceMode mirroredInitiatorModeName = getRevision() == Document::Revision::Std22
+        ? General::MIRRORED_INITIATOR : General::MIRRORED_MASTER;
+
     for (QSharedPointer<const BusInterface> busif : *busInterfaces_)
     {
-        if (busif->getInterfaceMode() == General::MASTER || busif->getInterfaceMode() == General::MIRRORED_MASTER)
+        if (busif->getInterfaceMode() == initiatorModeName || busif->getInterfaceMode() == mirroredInitiatorModeName)
         {
             names.append(busif->name());
         }

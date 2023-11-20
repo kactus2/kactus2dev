@@ -142,6 +142,10 @@ QVariant MemoryMapsModel::headerData(int section, Qt::Orientation orientation, i
         }
         else if (section == MemoryMapsColumns::INTERFACE_COLUMN)
         {
+            if (docRevision_ == Document::Revision::Std22)
+            {
+                return tr("Target interface\nbinding");
+            }
             return tr("Slave interface\nbinding");
         }
         else if (section == MemoryMapsColumns::IS_PRESENT)
