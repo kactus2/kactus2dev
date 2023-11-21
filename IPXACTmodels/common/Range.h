@@ -23,6 +23,8 @@ class IPXACTMODELS_EXPORT Range
 {
 public:
 
+    Range() = default;
+
 	//! The constructor.
 	Range(QString const& left, QString const& right);
 

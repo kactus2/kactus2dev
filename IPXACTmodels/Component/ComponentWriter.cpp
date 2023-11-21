@@ -42,14 +42,6 @@ ComponentWriter::ComponentWriter() : DocumentWriter()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentWriter::~ComponentWriter()
-//-----------------------------------------------------------------------------
-ComponentWriter::~ComponentWriter()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentWriter::writeComponent()
 //-----------------------------------------------------------------------------
 void ComponentWriter::writeComponent(QXmlStreamWriter& writer, QSharedPointer<Component> component) const
@@ -210,7 +202,7 @@ void ComponentWriter::writeModes(QXmlStreamWriter& writer, QSharedPointer<Compon
     {
         writer.writeStartElement(QStringLiteral("ipxact:modes"));
 
-        for (auto mode : *component->getModes())
+        for (auto const& mode : *component->getModes())
         {
             ModeWriter::writeMode(writer, mode);
         }
@@ -228,7 +220,7 @@ void ComponentWriter::writeAddressSpaces(QXmlStreamWriter& writer, QSharedPointe
     {
         writer.writeStartElement(QStringLiteral("ipxact:addressSpaces"));
 
-        foreach (QSharedPointer<AddressSpace> addressSpace, *component->getAddressSpaces())
+        for (QSharedPointer<AddressSpace> addressSpace : *component->getAddressSpaces())
         {
             AddressSpaceWriter::writeAddressSpace(writer, addressSpace, component->getRevision());
         }
@@ -353,7 +345,7 @@ void ComponentWriter::writeComponentGenerators(QXmlStreamWriter& writer, QShared
 
         writer.writeStartElement(QStringLiteral("ipxact:componentGenerators"));
 
-        foreach (QSharedPointer<ComponentGenerator> generator, *component->getComponentGenerators())
+        for (QSharedPointer<ComponentGenerator> generator : *component->getComponentGenerators())
         {
             generatorWriter.writeComponentGenerator(writer, generator);
         }
@@ -371,7 +363,7 @@ void ComponentWriter::writeChoices(QXmlStreamWriter& writer, QSharedPointer<Comp
     {
         writer.writeStartElement(QStringLiteral("ipxact:choices"));
 
-        foreach (QSharedPointer<Choice> choice, *component->getChoices())
+        for (QSharedPointer<Choice> choice : *component->getChoices())
         {
             ChoiceWriter::writeChoice(writer, choice);
         }
@@ -427,7 +419,7 @@ void ComponentWriter::writeOtherClockDrivers(QXmlStreamWriter& writer, QSharedPo
 
         writer.writeStartElement(QStringLiteral("ipxact:otherClockDrivers"));
 
-        foreach (QSharedPointer<OtherClockDriver> driver, *component->getOtherClockDrivers())
+        for (QSharedPointer<OtherClockDriver> driver : *component->getOtherClockDrivers())
         {
             clockWriter.writeOtherClockDriver(writer, driver);
         }

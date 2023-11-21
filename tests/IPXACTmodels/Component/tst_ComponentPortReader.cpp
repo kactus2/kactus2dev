@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/PortReader.h>
+#include <IPXACTmodels/Component/Structural.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -46,6 +47,10 @@ private slots:
     void readTransactionalProtocol();
     void readTransactionalTypeDefinitions();
     void readTransactionalConnectionMinMax();
+
+    void readStrucuredType_2022();
+    void readStrucuredType_2022_data();
+    void readStructuredVectors_2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -362,6 +367,10 @@ void tst_ComponentPortReader::readWirePortVectors()
                         "<ipxact:left>4+18-Yaoxao</ipxact:left>"
                         "<ipxact:right>Yaoxao</ipxact:right>"
                     "</ipxact:vector>"
+                    "<ipxact:vector>"
+                        "<ipxact:left>1</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
                 "</ipxact:vectors>"
             "</ipxact:wire>"
         "</ipxact:port>"
@@ -379,9 +388,12 @@ void tst_ComponentPortReader::readWirePortVectors()
 
     QCOMPARE(testPort->getTransactional().isNull(), true);
     QCOMPARE(testPort->getWire().isNull(), false);
-    QCOMPARE(testPort->getWire()->getVectorLeftBound(), QStringLiteral("4+18-Yaoxao"));
-    QCOMPARE(testPort->getWire()->getVectorRightBound(), QStringLiteral("Yaoxao"));
-    QCOMPARE(testPort->getWire()->getVector()->getId(), QString());
+    QCOMPARE(testPort->getWire()->getVectors()->count(), 2);
+
+    auto const& vector = testPort->getWire()->getVectors()->first();
+    QCOMPARE(vector.getLeft(), QStringLiteral("4+18-Yaoxao"));
+    QCOMPARE(vector.getRight(), QStringLiteral("Yaoxao"));
+    QCOMPARE(vector.getId(), QString());
 }
 
 //-----------------------------------------------------------------------------
@@ -416,9 +428,11 @@ void tst_ComponentPortReader::readWirePortVectors_2022()
 
     QCOMPARE(testPort->getTransactional().isNull(), true);
     QCOMPARE(testPort->getWire().isNull(), false);
-    QCOMPARE(testPort->getWire()->getVector()->getLeft(), QStringLiteral("1"));
-    QCOMPARE(testPort->getWire()->getVector()->getRight(), QStringLiteral("0"));
-    QCOMPARE(testPort->getWire()->getVector()->getId(), QStringLiteral("testVector"));
+
+    auto const& vector = testPort->getWire()->getVectors()->first();
+    QCOMPARE(vector.getLeft(), QStringLiteral("1"));
+    QCOMPARE(vector.getRight(), QStringLiteral("0"));
+    QCOMPARE(vector.getId(), QStringLiteral("testVector"));
 }
 
 //-----------------------------------------------------------------------------
@@ -842,6 +856,108 @@ void tst_ComponentPortReader::readTransactionalConnectionMinMax()
 
     QCOMPARE(testPort->getTransactional()->getMaxConnections(), QString("16*2"));
     QCOMPARE(testPort->getTransactional()->getMinConnections(), QString("8*2"));
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readStrucuredType_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readStrucuredType_2022()
+{
+    QFETCH(QString, content);
+    QFETCH(Structural::Type, expectedType);
+    QFETCH(DirectionTypes::Direction, expectedDirection);
+
+     QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structural>" +
+            content +
+            "</ipxact:structural>"
+        "</ipxact:port>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->name(), QString("testPort"));
+    QCOMPARE(testPort->getWire().isNull(), true);
+    QCOMPARE(testPort->getTransactional().isNull(), true);
+    QCOMPARE(testPort->getStructural().isNull(), false);
+
+    auto structural = testPort->getStructural();
+    QCOMPARE(structural->getType(), expectedType);
+    QCOMPARE(structural->getDirection(), expectedDirection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readStrucuredType_2022_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readStrucuredType_2022_data()
+{
+    QTest::addColumn<QString>("content");
+    QTest::addColumn<Structural::Type>("expectedType");
+    QTest::addColumn<DirectionTypes::Direction>("expectedDirection");
+
+    QTest::addRow("Struct without direction") << 
+        "<ipxact:struct>" << Structural::Type::Struct << DirectionTypes::DIRECTION_INVALID;
+    QTest::addRow("Struct with in direction") << 
+        "<ipxact:struct direction = \"in\">" << Structural::Type::Struct << DirectionTypes::IN;
+
+    QTest::addRow("Union without direction") << 
+        "<ipxact:union>" << Structural::Type::Union << DirectionTypes::DIRECTION_INVALID;
+    QTest::addRow("Union with out direction") << 
+        "<ipxact:union direction = \"out\">" << Structural::Type::Union << DirectionTypes::OUT;
+
+    QTest::addRow("Interface without phantom attribute") <<
+        "<ipxact:interface>" << Structural::Type::Interface << DirectionTypes::DIRECTION_INVALID;
+    QTest::addRow("Interface with true phantom attribute") <<
+        "<ipxact:interface phantom=\"true\">" << Structural::Type::Interface << DirectionTypes::DIRECTION_PHANTOM;
+    QTest::addRow("Interface with false phantom attribute") <<
+        "<ipxact:interface phantom=\"false\">" << Structural::Type::Interface << DirectionTypes::DIRECTION_INVALID;
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readStructuredVectors_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readStructuredVectors_2022()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structural>"
+                "<ipxact:vectors>"
+                    "<ipxact:vector>"
+                        "<ipxact:left>1</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
+                    "<ipxact:vector>"
+                        "<ipxact:left>2</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
+                "</ipxact:vectors>"
+            "</ipxact:structural>"
+        "</ipxact:port>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getStructural().isNull(), false);
+
+    auto structural = testPort->getStructural();
+    QCOMPARE(structural->getVectors()->count(), 2);
+
+    auto const& lastVector = structural->getVectors()->last();
+    QCOMPARE(lastVector.getLeft(), "2");
+    QCOMPARE(lastVector.getRight(), "0");
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortReader)

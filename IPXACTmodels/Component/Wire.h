@@ -74,14 +74,19 @@ public:
 	 */
 	DirectionTypes::Direction getDirection() const;
 
+	/*!
+	 *  Get the qualifier of the port.
+	 *
+	 *      @return The wire port qualifier.
+	 */
 	QSharedPointer<Qualifier> getQualifier() const;
 
-    /*!
-     *  Get the vector element of this port.
+	/*!
+     *  Get the vectors element of this port.
      *
-     *      @return Pointer to a vector element.
+     *      @return The vectors of the wire.
      */
-    QSharedPointer<Vector> getVector() const;
+	QSharedPointer<QList<Vector> > getVectors() const;
 
     /*!
      *  Get the list of this port's wire type definitions.
@@ -103,13 +108,6 @@ public:
 	 *      @param [in] direction   The new direction.
 	 */
 	void setDirection(DirectionTypes::Direction direction);
-
-    /*!
-     *  Set the vector element for this port.
-     *
-     *      @param [in] newVector   The new vector element.
-     */
-    void setVector(QSharedPointer<Vector> newVector);
 
     /*!
      *  Set the wire type definitions.
@@ -233,8 +231,7 @@ private:
 	QSharedPointer<Qualifier> qualifier_{ new Qualifier };
 
     //! Determines the vector qualities of the port.
-    //! Multiple vectors not supported.
-	QSharedPointer<Vector> vector_{ nullptr };
+	QSharedPointer<QList<Vector> > vectors_{ new QList<Vector>() };
 
     //! Specifies a driver for this port.
 	//! Multiple drivers not supported.

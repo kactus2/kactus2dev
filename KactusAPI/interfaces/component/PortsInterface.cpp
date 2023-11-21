@@ -431,10 +431,9 @@ std::string PortsInterface::getLeftBoundValue(std::string const& portName, unsig
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return parseExpressionToBaseNumber(wireVector->getLeft(), baseNumber).toStdString();
+            return parseExpressionToBaseNumber(editedPort->getWire()->getVectorLeftBound(), baseNumber).toStdString();
         }
     }
 
@@ -449,10 +448,9 @@ std::string PortsInterface::getLeftBoundFormattedExpression(std::string const& p
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return formattedValueFor(wireVector->getLeft()).toStdString();
+            return formattedValueFor(editedPort->getWire()->getVectorLeftBound()).toStdString();
         }
     }
 
@@ -467,10 +465,9 @@ std::string PortsInterface::getLeftBoundExpression(std::string const& portName) 
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return wireVector->getLeft().toStdString();
+            return editedPort->getWire()->getVectorLeftBound().toStdString();
         }
     }
 
@@ -502,10 +499,9 @@ std::string PortsInterface::getRightBoundValue(std::string const& portName, unsi
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return parseExpressionToBaseNumber(wireVector->getRight(), baseNumber).toStdString();
+            return parseExpressionToBaseNumber(editedPort->getWire()->getVectorRightBound(), baseNumber).toStdString();
         }
     }
 
@@ -520,10 +516,9 @@ std::string PortsInterface::getRightBoundFormattedExpression(std::string const& 
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return formattedValueFor(wireVector->getRight()).toStdString();
+            return formattedValueFor(editedPort->getWire()->getVectorRightBound()).toStdString();
         }
     }
 
@@ -538,10 +533,9 @@ std::string PortsInterface::getRightBoundExpression(std::string const& portName)
     if (QSharedPointer<Port> editedPort = getPort(portName); 
         portIsWire(editedPort))
     {
-        QSharedPointer<Vector> wireVector = editedPort->getWire()->getVector();
-        if (wireVector)
+        if (editedPort->getWire()->getVectors()->isEmpty() == false)
         {
-            return wireVector->getRight().toStdString();
+            return editedPort->getWire()->getVectorRightBound().toStdString();
         }
     }
 

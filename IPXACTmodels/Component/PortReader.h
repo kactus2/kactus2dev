@@ -52,11 +52,31 @@ namespace  PortReader
         /*!
          *  Parse vectors.
          *
-         *      @param [in] vectorsElement  XML description of the vectors.
+         *      @param [in] wireElement     XML description of the wire.
          *      @param [in] newWire         The containing wire item.
          */
-        void parseWireVectors(QDomElement const& vectorsElement, QSharedPointer<Wire> newWire, 
+        void parseWireVectors(QDomElement const& wireElement, QSharedPointer<Wire> newWire,
             Document::Revision docRevision);
+
+        /*!
+         *  Parse the vectors in the given element.
+         *
+         *      @param [in] parentElement   The element containing vectors.
+         *      @param [in] docRevision     The applied IP-XACT revision.
+         *
+         *      @return The parsed vectors.
+         */
+        QList<Vector> parseVectors(QDomElement const& parentElement, Document::Revision docRevision);
+
+        /*!
+         *  Parse a single vector.
+         *
+         *      @param [in] vectorNode  The xml presentation of the vector.
+         *      @param [in] docRevision The applied IP-XACT revision.
+         *
+         *      @return The parsed vector.
+         */
+        Vector parseVector(QDomNode const& vectorNode, Document::Revision docRevision);
 
         /*!
          *  Parse the wire type definitions.
@@ -67,8 +87,8 @@ namespace  PortReader
          *
          *      @return Pointer to a list containing the created type definitions.
          */
-        QSharedPointer<QList<QSharedPointer<WireTypeDef> > >parseWireTypeDefinitions
-        (QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName);
+        QSharedPointer<QList<QSharedPointer<WireTypeDef> > >parseWireTypeDefinitions(
+            QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName);
 
         /*!
          *  Parse the type definitions.
@@ -130,6 +150,32 @@ namespace  PortReader
         void parseTransactionalConnectionsMinMax(QDomElement const& transactionalElement,
             QSharedPointer<Transactional> transactional);
 
+        /*!
+         *  Parse a structural port.
+         *
+         *      @param [in] structuralElement   The XML description of the structural port.
+         *      @param [in] newPort             The containing port item.
+         *
+         *      @return 
+         */
+        void parseStructural(QDomElement const& structuralElement, QSharedPointer<Port> newPort);
+
+        /*!
+         *  Parse the structural port type.
+         *
+         *      @param [in] structuralElementt   The XML description of the structural port.
+         *      @param [in] newStructural        The containing structural port.
+         */
+        void parseStructuralType(QDomElement const& structuralElement, QSharedPointer<Structural> newStructural);
+
+        /*!
+         *  Parse the vectors in the structural port.
+         *
+         *      @param [in] structuralElementt   The XML description of the structural port.
+         *      @param [in] newStructural        The containing structural port.
+         */
+        void parseStructuralVectors(QDomElement const& structuralElement, QSharedPointer<Structural> newStructural);
+       
         /*!
          *  Parse the port arrays.
          *

@@ -39,6 +39,10 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, 
     {
         writeTransactional(writer, port->getTransactional(), docRevision);
     }
+    else if (port->getStructural())
+    {
+        writeStructural(writer, port->getStructural());
+    }
 
     writeArrays(writer, port->getArrays());
 
@@ -66,10 +70,8 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
         QualifierWriter::writeQualifier(writer, wire->getQualifier());
     }
 
-    if (wire->getVector() && (!wire->getVector()->getLeft().isEmpty() || !wire->getVector()->getRight().isEmpty()))
-    {
-        writeVector(writer, wire->getVector(), docRevision);
-    }
+        writeVector(writer, wire->getVectors(), docRevision);
+    
 
     writeWireTypeDefinitions(writer, wire->getWireTypeDefs());
 
@@ -81,27 +83,32 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
 //-----------------------------------------------------------------------------
 // Function: PortWriter::writeVector()
 //-----------------------------------------------------------------------------
-void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector,
+void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
     Document::Revision docRevision) const
 {
-    if (vector)
+    if (vectors->isEmpty())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:vectors"));
+        return;
+    }
 
+    writer.writeStartElement(QStringLiteral("ipxact:vectors"));
+
+    for (auto const& vector : *vectors)
+    {
         writer.writeStartElement(QStringLiteral("ipxact:vector"));
 
-        if (docRevision == Document::Revision::Std22 && vector->getId().isEmpty() == false)
+        if (docRevision == Document::Revision::Std22 && vector.getId().isEmpty() == false)
         {
-            writer.writeAttribute(QStringLiteral("vectorId"), vector->getId());
+            writer.writeAttribute(QStringLiteral("vectorId"), vector.getId());
         }
 
-        writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());
-        writer.writeTextElement(QStringLiteral("ipxact:right"), vector->getRight());
+        writer.writeTextElement(QStringLiteral("ipxact:left"), vector.getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), vector.getRight());
 
         writer.writeEndElement(); // ipxact:vector
-
-        writer.writeEndElement(); // ipxact:vectors
     }
+
+    writer.writeEndElement(); // ipxact:vectors
 }
 
 //-----------------------------------------------------------------------------
@@ -310,24 +317,49 @@ void PortWriter::writeTransactionalMinMaxConnections(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortWriter::writeStructural()
+//-----------------------------------------------------------------------------
+void PortWriter::writeStructural(QXmlStreamWriter& writer, QSharedPointer<Structural> structural) const
+{
+    writer.writeStartElement(QStringLiteral("ipxact:structural"));
+
+    writer.writeStartElement(Structural::toString(structural->getType()));
+    if (structural->getType() == Structural::Type::Struct || structural->getType() == Structural::Type::Union)
+    {
+        writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structural->getDirection()));
+    }
+    else if (structural->getType() == Structural::Type::Interface &&
+        structural->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+    {
+        writer.writeAttribute(QStringLiteral("phantom"), QStringLiteral("true"));
+    }
+
+    writer.writeEndElement(); // struct/union/interface
+
+    writer.writeEndElement(); // ipxact:structural
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortWriter::writeArrays()
 //-----------------------------------------------------------------------------
 void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Array> > > arrays) const
 {
-    if (!arrays->isEmpty())
+    if (arrays->isEmpty())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:arrays"));
-
-        for (QSharedPointer<Array> singleArray : *arrays)
-        {
-            writer.writeStartElement(QStringLiteral("ipxact:array"));
-
-            writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray->getLeft());
-            writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray->getRight());
-
-            writer.writeEndElement(); // ipxact:array
-        }
-
-        writer.writeEndElement(); // ipxact:arrays
+        return;
     }
+
+    writer.writeStartElement(QStringLiteral("ipxact:arrays"));
+
+    for (auto const& singleArray : *arrays)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:array"));
+
+        writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray->getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray->getRight());
+
+        writer.writeEndElement(); // ipxact:array
+    }
+
+    writer.writeEndElement(); // ipxact:arrays
 }

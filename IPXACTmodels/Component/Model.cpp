@@ -22,21 +22,13 @@
 //-----------------------------------------------------------------------------
 // Function: Model::Model()
 //-----------------------------------------------------------------------------
-Model::Model()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::Model()
-//-----------------------------------------------------------------------------
 Model::Model(Model const& other)
 {
-    copyViews(other);
-    copyComponentInstantiations(other);
-    copyDesignInstantiations(other);
-    copyDesignConfigurationInstantiations(other);
-    copyPorts(other);
+    Copy::copyList(other.views_, views_); 
+    Copy::copyList(other.componentInstantiations_, componentInstantiations_);
+    Copy::copyList(other.designInstantiations_, designInstantiations_);
+    Copy::copyList(other.designConfigurationInstantiations_, designConfigurationInstantiations_);
+    Copy::copyList(other.ports_, ports_);
 }
 
 //-----------------------------------------------------------------------------
@@ -47,29 +39,17 @@ Model& Model::operator=(Model const& other )
     if (this != &other)
     {
         views_->clear();
-        copyViews(other);
+        Copy::copyList(other.views_, views_);
         componentInstantiations_->clear();
-        copyComponentInstantiations(other);
+        Copy::copyList(other.componentInstantiations_, componentInstantiations_);
         designInstantiations_->clear();
-        copyDesignInstantiations(other);
+        Copy::copyList(other.designInstantiations_, designInstantiations_);
         designConfigurationInstantiations_->clear();
-        copyDesignInstantiations(other);
+        Copy::copyList(other.designConfigurationInstantiations_, designConfigurationInstantiations_);
         ports_->clear();
-        copyPorts(other);
+        Copy::copyList(other.ports_, ports_);
     }
 	return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::~Model()
-//-----------------------------------------------------------------------------
-Model::~Model()
-{
-	views_.clear();
-    componentInstantiations_.clear();
-    designInstantiations_.clear();
-    designConfigurationInstantiations_.clear();
-	ports_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -377,44 +357,4 @@ bool Model::hasContents() const
 {
     return (!views_->isEmpty() || !componentInstantiations_->isEmpty() || !designInstantiations_->isEmpty() ||
         !designConfigurationInstantiations_->isEmpty() || !ports_->isEmpty());
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::copyViews()
-//-----------------------------------------------------------------------------
-void Model::copyViews(Model const& other) const
-{
-    Copy::copyList(other.views_, views_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::copyComponentInstantiations()
-//-----------------------------------------------------------------------------
-void Model::copyComponentInstantiations(Model const& other) const
-{
-    Copy::copyList(other.componentInstantiations_, componentInstantiations_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::copyDesignInstantiations()
-//-----------------------------------------------------------------------------
-void Model::copyDesignInstantiations(Model const& other) const
-{
-    Copy::copyList(other.designInstantiations_, designInstantiations_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::copyDesignConfigurationInstantiations()
-//-----------------------------------------------------------------------------
-void Model::copyDesignConfigurationInstantiations(const Model& other) const
-{
-    Copy::copyList(other.designConfigurationInstantiations_, designConfigurationInstantiations_);
-}
-
-//-----------------------------------------------------------------------------
-// Function: Model::copyPorts()
-//-----------------------------------------------------------------------------
-void Model::copyPorts(Model const& other) const
-{
-    Copy::copyList(other.ports_, ports_);
 }

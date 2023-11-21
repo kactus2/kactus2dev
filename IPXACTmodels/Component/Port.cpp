@@ -93,6 +93,7 @@ QSharedPointer<Wire> Port::getWire() const
 void Port::setWire(QSharedPointer<Wire> newWire)
 {
     transactional_.clear();
+    structural_.clear();
 
     wire_ = newWire;
 }
@@ -111,8 +112,28 @@ QSharedPointer<Transactional> Port::getTransactional() const
 void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 {
     wire_.clear();
+    structural_.clear();
 
 	transactional_ = newTransactional;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::getStructural()
+//-----------------------------------------------------------------------------
+QSharedPointer<Structural> Port::getStructural() const
+{
+    return structural_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::setStructural()
+//-----------------------------------------------------------------------------
+void Port::setStructural(QSharedPointer<Structural> newStructural)
+{
+    wire_.clear();
+    transactional_.clear();
+
+    structural_ = newStructural;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +141,7 @@ void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 //-----------------------------------------------------------------------------
 QString Port::getLeftBound() const
 {
-    if (wire_ && wire_->getVector())
+    if (wire_)
     {
         return wire_->getVectorLeftBound();
     }
@@ -146,7 +167,7 @@ void Port::setLeftBound(QString const& newLeftBound)
 //-----------------------------------------------------------------------------
 QString Port::getRightBound() const
 {
-    if (wire_ && wire_->getVector())
+    if (wire_)
     {
         return wire_->getVectorRightBound();
     }

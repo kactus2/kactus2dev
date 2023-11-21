@@ -37,7 +37,6 @@ private slots:
     void writeWirePortAllLogicalDirectionsAllowed();
     void writeWirePortVectors();
     void writeWirePortVectors_2022();
-    void emptyVectorIsNotWritten();
     void writeWireTypeDefinitions();
     void emptyWireTypeDefinitionIsNotWritten();
     void writeWireDefaultDriver();
@@ -50,6 +49,9 @@ private slots:
     void writeTransactionalProtocol();
     void writeTransactionalTypeDefinitions();
     void writeTransactionalConnectionMinMax();
+
+    void writeStructuralType_2022();
+    void writeStructuralType_2022_data();
 };
 
 //-----------------------------------------------------------------------------
@@ -380,7 +382,7 @@ void tst_ComponentPortWriter::writeWirePortVectors_2022()
     testPort->setDirection(DirectionTypes::OUT);
     testPort->getWire()->setVectorLeftBound("4+18-Yaoxao");
     testPort->getWire()->setVectorRightBound("Yaoxao");
-    testPort->getWire()->getVector()->setId("testID");
+    testPort->getWire()->getVectors()->first().setId("testID");
 
     QString expectedOutput(
         "<ipxact:port>"
@@ -399,33 +401,6 @@ void tst_ComponentPortWriter::writeWirePortVectors_2022()
 
     PortWriter portWriter;
     portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
-    QCOMPARE(output, expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentPortWriter::emptyVectorIsNotWritten()
-//-----------------------------------------------------------------------------
-void tst_ComponentPortWriter::emptyVectorIsNotWritten()
-{
-    QString output;
-    QXmlStreamWriter xmlStreamWriter(&output);
-
-    QSharedPointer<Port> testPort(new Port("testPort"));
-    testPort->setDirection(DirectionTypes::OUT);
-    testPort->getWire()->setVectorLeftBound("");
-    testPort->getWire()->setVectorRightBound("");
-
-    QString expectedOutput(
-        "<ipxact:port>"
-            "<ipxact:name>testPort</ipxact:name>"
-            "<ipxact:wire>"
-                "<ipxact:direction>out</ipxact:direction>"              
-            "</ipxact:wire>"
-        "</ipxact:port>"
-        );
-
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -903,6 +878,72 @@ void tst_ComponentPortWriter::writeTransactionalConnectionMinMax()
     PortWriter portWriter;
     portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuralType_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuralType_2022()
+{
+    QFETCH(Structural::Type, type);
+    QFETCH(DirectionTypes::Direction, direction);
+    QFETCH(QString, expectedType);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Structural> testStructural(new Structural());
+    testStructural->setType(type);
+    testStructural->setDirection(direction);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
+    testPort->setStructural(testStructural);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structural>"
+               + expectedType +
+            "</ipxact:structural>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuralType_2022_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuralType_2022_data()
+{
+    QTest::addColumn<Structural::Type>("type");
+    QTest::addColumn<DirectionTypes::Direction>("direction");
+    QTest::addColumn<QString>("expectedType");
+
+    QTest::addRow("Struct with out direction") << Structural::Type::Struct << DirectionTypes::OUT <<
+        "<struct direction=\"out\"/>";
+    QTest::addRow("Struct with inout direction") << Structural::Type::Struct << DirectionTypes::INOUT <<
+        "<struct direction=\"inout\"/>";
+    QTest::addRow("Struct with in direction") << Structural::Type::Struct << DirectionTypes::IN <<
+        "<struct direction=\"in\"/>";
+    QTest::addRow("Struct with phantom direction") << Structural::Type::Struct << 
+        DirectionTypes::DIRECTION_PHANTOM << 
+        "<struct direction=\"phantom\"/>";
+    QTest::addRow("Struct with invalid direction") << Structural::Type::Struct <<
+        DirectionTypes::DIRECTION_INVALID <<
+        "<struct direction=\"\"/>";
+
+    QTest::addRow("Union with in direction") << Structural::Type::Union << DirectionTypes::IN <<
+        "<union direction=\"in\"/>";
+
+    QTest::addRow("Interface with phantom direction") << 
+        Structural::Type::Interface << DirectionTypes::DIRECTION_PHANTOM <<
+        "<interface phantom=\"true\"/>";
+
+    QTest::addRow("Interface with invalid direction") << Structural::Type::Interface << DirectionTypes::IN <<
+        "<interface/>";
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortWriter)
