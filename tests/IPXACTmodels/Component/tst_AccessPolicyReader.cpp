@@ -71,9 +71,9 @@ void tst_AccessPolicyReader::readModeRefs()
 
     QCOMPARE(accessPolicy->getModeReferences()->size(), 2);
     QCOMPARE(accessPolicy->getModeReferences()->first()->getReference(), QString("normal"));
-    QCOMPARE(accessPolicy->getModeReferences()->first()->getPriority(), QString("0"));
+    QCOMPARE(accessPolicy->getModeReferences()->first()->getPriority(), 0);
     QCOMPARE(accessPolicy->getModeReferences()->at(1)->getReference(), QString("test"));
-    QCOMPARE(accessPolicy->getModeReferences()->at(1)->getPriority(), QString("1"));
+    QCOMPARE(accessPolicy->getModeReferences()->at(1)->getPriority(), 1);
 }
 
 //-----------------------------------------------------------------------------

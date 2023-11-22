@@ -282,17 +282,22 @@ bool FieldValidator::hasValidReserved(QSharedPointer<Field> field) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidBitWidth(QSharedPointer<Field> field) const
 {
-    QString solvedValue = expressionParser_->parseExpression(field->getBitWidth());
-
-    bool changeOk = true;
-    quint64 intValue = solvedValue.toULongLong(&changeOk);
-
-    if (changeOk && intValue > 0)
+    if (field->getFieldDefinitionRef().isEmpty())
     {
-        return true;
+        QString solvedValue = expressionParser_->parseExpression(field->getBitWidth());
+
+        bool changeOk = true;
+        quint64 intValue = solvedValue.toULongLong(&changeOk);
+
+        if (changeOk && intValue > 0)
+        {
+            return true;
+        }
+
+        return false;
     }
 
-    return false;
+    return true;
 }
 
 //-----------------------------------------------------------------------------

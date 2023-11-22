@@ -501,14 +501,14 @@ void tst_RegisterReader::readRegisterAccessPolicies2022()
      auto accessPolicy2 = testRegister->getAccessPolicies()->at(1);
 
      QCOMPARE(accessPolicy1->getModeReferences()->size(), 1);
-     QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), QString("0"));
+     QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), 0);
      QCOMPARE(accessPolicy1->getModeReferences()->first()->getReference(), QString("testMode"));
      QCOMPARE(accessPolicy1->getAccess(), AccessTypes::READ_ONLY);
 
      QCOMPARE(accessPolicy2->getModeReferences()->size(), 2);
-     QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), QString("1"));
+     QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), 1);
      QCOMPARE(accessPolicy2->getModeReferences()->first()->getReference(), QString("testMode2"));
-     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), QString("2"));
+     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), 2);
      QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getReference(), QString("testMode3"));
 }
 
@@ -587,9 +587,9 @@ void tst_RegisterReader::readAlternateRegisters2022()
 
     auto modeRefs = alternateRegister->getModeReferences();
     QCOMPARE(modeRefs->size(), 2);
-    QCOMPARE(modeRefs->first()->getPriority(), QString("0"));
+    QCOMPARE(modeRefs->first()->getPriority(), 0);
     QCOMPARE(modeRefs->first()->getReference(), QString("testMode"));
-    QCOMPARE(modeRefs->at(1)->getPriority(), QString("1"));
+    QCOMPARE(modeRefs->at(1)->getPriority(), 1);
     QCOMPARE(modeRefs->at(1)->getReference(), QString("testMode2"));
 
     auto accessPolicies = alternateRegister->getAccessPolicies();
@@ -599,14 +599,14 @@ void tst_RegisterReader::readAlternateRegisters2022()
     auto accessPolicy2 = alternateRegister->getAccessPolicies()->at(1);
 
     QCOMPARE(accessPolicy1->getModeReferences()->size(), 1);
-    QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), QString("0"));
+    QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), 0);
     QCOMPARE(accessPolicy1->getModeReferences()->first()->getReference(), QString("testMode"));
     QCOMPARE(accessPolicy1->getAccess(), AccessTypes::READ_ONLY);
 
     QCOMPARE(accessPolicy2->getModeReferences()->size(), 2);
-    QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), QString("1"));
+    QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), 1);
     QCOMPARE(accessPolicy2->getModeReferences()->first()->getReference(), QString("testMode2"));
-    QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), QString("2"));
+    QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), 2);
     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getReference(), QString("testMode3"));
 
     QCOMPARE(alternateRegister->getFields()->size(), 1);
@@ -969,14 +969,14 @@ void tst_RegisterReader::readRegisterFileAccessPolicies2022()
     auto accessPolicy2 = testRegisterFile->getAccessPolicies()->at(1);
 
     QCOMPARE(accessPolicy1->getModeReferences()->size(), 1);
-    QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), QString("0"));
+    QCOMPARE(accessPolicy1->getModeReferences()->first()->getPriority(), 0);
     QCOMPARE(accessPolicy1->getModeReferences()->first()->getReference(), QString("testMode"));
     QCOMPARE(accessPolicy1->getAccess(), AccessTypes::READ_ONLY);
 
     QCOMPARE(accessPolicy2->getModeReferences()->size(), 2);
-    QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), QString("1"));
+    QCOMPARE(accessPolicy2->getModeReferences()->first()->getPriority(), 1);
     QCOMPARE(accessPolicy2->getModeReferences()->first()->getReference(), QString("testMode2"));
-    QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), QString("2"));
+    QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getPriority(), 2);
     QCOMPARE(accessPolicy2->getModeReferences()->at(1)->getReference(), QString("testMode3"));
 }
 

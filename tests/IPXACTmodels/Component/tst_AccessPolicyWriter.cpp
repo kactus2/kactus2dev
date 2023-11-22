@@ -67,11 +67,11 @@ void tst_AccessPolicyWriter::cleanup()
 void tst_AccessPolicyWriter::writeModeRefs()
 {
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("testMode1");
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("testMode2");
 
     accessPolicy_->getModeReferences()->append(modeRef1);
