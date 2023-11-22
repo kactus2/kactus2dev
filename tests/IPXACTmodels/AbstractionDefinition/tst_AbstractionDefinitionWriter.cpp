@@ -30,7 +30,7 @@
 #include <IPXACTmodels/AbstractionDefinition/WireAbstraction.h>
 #include <IPXACTmodels/AbstractionDefinition/Packet.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 class tst_AbstractionDefinitionWriter : public QObject
 {
@@ -272,7 +272,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleWirePort()
     testPort->setDefaultValue("0");
 
     QSharedPointer<Qualifier> testQualifier(new Qualifier());
-    testQualifier->setType(Qualifier::Data);
+    testQualifier->setType(Qualifier::Type::Data);
     testPort->getWire()->setQualifier(testQualifier);
 
     QDomDocument document;
@@ -344,8 +344,8 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
     testPort->setDefaultValue("0");
 
     QSharedPointer<Qualifier> qualifier1(new Qualifier());
-    qualifier1->setType(Qualifier::Data);
-    qualifier1->setType(Qualifier::Address);
+    qualifier1->setType(Qualifier::Type::Data);
+    qualifier1->setType(Qualifier::Type::Address);
 
     testPort->getWire()->setQualifier(qualifier1);
 
@@ -372,7 +372,7 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortWithPackets()
     testPacketField->setValue("8");
 
     QSharedPointer<Qualifier> fieldQualifier(new Qualifier());
-    fieldQualifier->setType(Qualifier::FlowControl);
+    fieldQualifier->setType(Qualifier::Type::FlowControl);
     fieldQualifier->setAttribute(Qualifier::Attribute::FlowType, QStringLiteral("user"));
     fieldQualifier->setAttribute(Qualifier::Attribute::UserFlowType, QStringLiteral("user flow type"));
     testPacketField->setQualifier(fieldQualifier);
@@ -466,7 +466,7 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForAllModes()
     
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
     QSharedPointer<Qualifier> qualifier(new Qualifier());
-    qualifier->setType(Qualifier::Reset);
+    qualifier->setType(Qualifier::Type::Reset);
     wire->setQualifier(qualifier);
     wire->setRequiresDriver(true);
     wire->setDriverType(General::SINGLESHOT);
@@ -557,7 +557,7 @@ void tst_AbstractionDefinitionWriter::testWriteWirePortForInitiatorTarget()
     
     QSharedPointer<WireAbstraction> wire(new WireAbstraction());
     QSharedPointer<Qualifier> qualifier(new Qualifier());
-    qualifier->setType(Qualifier::Reset);
+    qualifier->setType(Qualifier::Type::Reset);
     wire->setQualifier(qualifier);
     wire->setRequiresDriver(true);
     wire->setDriverType(General::SINGLESHOT);
@@ -871,7 +871,7 @@ void tst_AbstractionDefinitionWriter::testWriteSimpleTransactionalPort()
 
     testPort->setTransactional(QSharedPointer<TransactionalAbstraction>(new TransactionalAbstraction()));
     QSharedPointer<Qualifier> testQualifier(new Qualifier());
-    testQualifier->setType(Qualifier::Data);
+    testQualifier->setType(Qualifier::Type::Data);
     testPort->getTransactional()->setQualifier(testQualifier);
     
     abstractionDefinition->getLogicalPorts()->append(testPort);

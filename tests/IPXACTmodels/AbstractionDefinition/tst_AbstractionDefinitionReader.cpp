@@ -329,10 +329,10 @@ void tst_AbstractionDefinitionReader::testReadWirePort()
     QCOMPARE(port->getWire()->getDefaultValue(), QString("1"));
 
     auto wireQualifier = port->getQualifier();
-    QCOMPARE(wireQualifier->hasType(Qualifier::Data), true);
-    QCOMPARE(wireQualifier->hasType(Qualifier::Address), true);
-    QCOMPARE(wireQualifier->hasType(Qualifier::Clock), false);
-    QCOMPARE(wireQualifier->hasType(Qualifier::Reset), false);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Data), true);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Address), true);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Clock), false);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Reset), false);
 
     QSharedPointer<WirePort> master = port->getWire()->getMasterPort();
     QCOMPARE(master->getPresence(), PresenceTypes::REQUIRED);
@@ -422,11 +422,11 @@ void tst_AbstractionDefinitionReader::testReadWirePortNewStd()
     QCOMPARE(port->getWire()->getDefaultValue(), QString("1"));
 
     auto wireQualifier = port->getQualifier();
-    QCOMPARE(wireQualifier->hasType(Qualifier::FlowControl), true);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::FlowControl), true);
     QCOMPARE(wireQualifier->getAttribute(Qualifier::Attribute::FlowType), "user");
     QCOMPARE(wireQualifier->getAttribute(Qualifier::Attribute::UserFlowType), "test flow type");
-    QCOMPARE(wireQualifier->hasType(Qualifier::Data), false);
-    QCOMPARE(wireQualifier->hasType(Qualifier::Address), false);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Data), false);
+    QCOMPARE(wireQualifier->hasType(Qualifier::Type::Address), false);
     QVERIFY(wireQualifier->getAttribute(Qualifier::Attribute::UserDefined).size() == 0);
 
     auto initiator = port->getWire()->getInitiatorPort();
@@ -450,8 +450,8 @@ void tst_AbstractionDefinitionReader::testReadWirePortNewStd()
     QCOMPARE(testPacketField->getWidth(), QString("4"));
 
     auto fieldQualifier = testPacketField->getQualifier();
-    QCOMPARE(fieldQualifier->hasType(Qualifier::Opcode), true);
-    QCOMPARE(fieldQualifier->hasType(Qualifier::PowerEnable), false);
+    QCOMPARE(fieldQualifier->hasType(Qualifier::Type::Opcode), true);
+    QCOMPARE(fieldQualifier->hasType(Qualifier::Type::PowerEnable), false);
     QVERIFY(fieldQualifier->getAttribute(Qualifier::Attribute::PowerEnableLevel).size() == 0);
 }
 
@@ -625,10 +625,10 @@ void tst_AbstractionDefinitionReader::testReadTransactionalPort()
     QCOMPARE(port->hasTransactional(), true);
 
     auto transactionalQualifier = port->getQualifier();
-    QCOMPARE(transactionalQualifier->hasType(Qualifier::Data), false);
-    QCOMPARE(transactionalQualifier->hasType(Qualifier::Address), false);
-    QCOMPARE(transactionalQualifier->hasType(Qualifier::ClockEnable), true);
-    QCOMPARE(transactionalQualifier->hasType(Qualifier::Reset), false);
+    QCOMPARE(transactionalQualifier->hasType(Qualifier::Type::Data), false);
+    QCOMPARE(transactionalQualifier->hasType(Qualifier::Type::Address), false);
+    QCOMPARE(transactionalQualifier->hasType(Qualifier::Type::ClockEnable), true);
+    QCOMPARE(transactionalQualifier->hasType(Qualifier::Type::Reset), false);
     QCOMPARE(transactionalQualifier->getAttribute(Qualifier::Attribute::ClockEnableLevel), QStringLiteral("high"));
 
     QSharedPointer<TransactionalAbstraction> transactional = port->getTransactional();
