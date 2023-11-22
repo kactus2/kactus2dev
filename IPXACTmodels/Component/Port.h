@@ -321,7 +321,7 @@ public:
      *
      *      @return Pointer to a list containing the arrays.
      */
-    QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
+    QSharedPointer<QList<Array> > getArrays() const;
 
     /*!
      *  Get the wire type definitions.
@@ -356,7 +356,7 @@ private:
     QSharedPointer<Structured> structured_{ nullptr };
 
     //! The list of arrays.
-    QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_{ new QList<QSharedPointer<Array> >() };
+    QSharedPointer<QList<Array > > configurableArrays_{ new QList<Array>() };
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Port>)

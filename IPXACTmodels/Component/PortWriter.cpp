@@ -395,7 +395,7 @@ void PortWriter::writeSubPorts(QXmlStreamWriter& writer, QSharedPointer<Structur
 //-----------------------------------------------------------------------------
 // Function: PortWriter::writeArrays()
 //-----------------------------------------------------------------------------
-void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Array> > > arrays) const
+void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<Array> > arrays) const
 {
     if (arrays->isEmpty())
     {
@@ -408,8 +408,8 @@ void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSha
     {
         writer.writeStartElement(QStringLiteral("ipxact:array"));
 
-        writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray->getLeft());
-        writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray->getRight());
+        writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray.getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray.getRight());
 
         writer.writeEndElement(); // ipxact:array
     }

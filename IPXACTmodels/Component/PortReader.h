@@ -176,15 +176,21 @@ namespace  PortReader
          */
         void parseStructuredVectors(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
 
+        /*!
+         *  Parse the sub-ports in the structured port.
+         *
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
+         */
         void parseSubPorts(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
 
         /*!
          *  Parse the port arrays.
          *
-         *      @param [in] portNode    XML description of the port.
+         *      @param [in] parentNode  XML node .
          *      @param [in] newPort     The containing port item.
          */
-        void parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort);
+        QList<Array> createArrays(QDomNode const& parentNode);
 
         /*!
          *  Parse the port vendor extensions.

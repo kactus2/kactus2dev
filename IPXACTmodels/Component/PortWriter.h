@@ -167,7 +167,7 @@ private:
      *      @param [in] writer  Used XML writer.
      *      @param [in] arrays  The arrays to be written.
      */
-    void writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Array> > > arrays) const;
+    void writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<Array> > arrays) const;
 
 };
 

@@ -53,6 +53,7 @@ private slots:
     void readStructuredVectors_2022();
     void readStructuredSubPortWire_2022();
     void readNestedStructuredSubPort_2022();
+    void readSubPortArrays_2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -1076,6 +1077,65 @@ void tst_ComponentPortReader::readNestedStructuredSubPort_2022()
 
     auto const& wire = finalSubPort->getWire();
     QCOMPARE(wire->getDirection(), DirectionTypes::IN);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readSubPortArrays_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readSubPortArrays_2022()
+{
+    
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured>"
+                "<ipxact:interface/>"
+                "<ipxact:subPorts>"
+                    "<ipxact:subPort>"
+                        "<ipxact:name>arrays</ipxact:name>"
+                        "<ipxact:wire>"
+                            "<ipxact:direction>in</ipxact:direction>"
+                        "</ipxact:wire>"
+                        "<ipxact:arrays>"
+                            "<ipxact:array>"
+                            "<ipxact:left>0</ipxact:left>"
+                            "<ipxact:right>0</ipxact:right>"
+                            "</ipxact:array>"
+                            "<ipxact:array>"
+                                "<ipxact:left>1</ipxact:left>"
+                                "<ipxact:right>0</ipxact:right>"
+                            "</ipxact:array>"
+                        "</ipxact:arrays>"
+                    "</ipxact:subPort>"
+                "</ipxact:subPorts>"
+            "</ipxact:structured>"
+        "</ipxact:port>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getStructured().isNull(), false);
+
+    auto structured = testPort->getStructured();
+    QCOMPARE(structured->isPacked(), false);
+    QCOMPARE(structured->getSubPorts()->count(), 1);
+
+    auto subPort = structured->getSubPorts()->first();
+    QCOMPARE(subPort->getArrays()->count(), 2);
+
+    auto firstArray = subPort->getArrays()->first();
+    QCOMPARE(firstArray.getLeft(), "0");
+    QCOMPARE(firstArray.getRight(), "0");
+
+    auto lastArray = subPort->getArrays()->last();
+    QCOMPARE(lastArray.getLeft(), "1");
+    QCOMPARE(lastArray.getRight(), "0");
+
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortReader)

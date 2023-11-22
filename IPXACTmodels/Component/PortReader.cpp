@@ -47,7 +47,7 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Docume
         }
     }
 
-    Details::parseArrays(portNode, newPort);
+    newPort->getArrays()->append(Details::createArrays(portNode));
 
     Details::parsePortExtensions(portNode, newPort);
 
@@ -412,28 +412,33 @@ void PortReader::Details::parseSubPorts(QDomElement const& structuredElement, QS
             parsedSubPort->setStructured(Details::createStructuredFrom(nestedStructured));
         }
 
+        parsedSubPort->getArrays()->append(createArrays(subPortElement));
+
         newStructured->getSubPorts()->append(parsedSubPort);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::Details::parseArrays()
+// Function: PortReader::Details::createArrays()
 //-----------------------------------------------------------------------------
-void PortReader::Details::parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort)
+QList<Array> PortReader::Details::createArrays(QDomNode const& parentNode)
 {
-    QDomElement arraysElement = portNode.firstChildElement(QStringLiteral("ipxact:arrays"));
+    const auto arraysElement = parentNode.firstChildElement(QStringLiteral("ipxact:arrays"));
 
-    QDomNodeList arrayNodeList = arraysElement.elementsByTagName(QStringLiteral("ipxact:array"));
+    const auto arrayNodeList = arraysElement.elementsByTagName(QStringLiteral("ipxact:array"));
 
+    QList<Array> parsedArrays;
     for (int arrayIndex = 0; arrayIndex < arrayNodeList.count(); ++arrayIndex)
     {
-        QDomNode arrayNode = arrayNodeList.at(arrayIndex);
+        auto const& arrayNode = arrayNodeList.at(arrayIndex);
 
-        QString arrayLeft = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
-        QString arrayRight = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
+        auto arrayLeft = arrayNode.firstChildElement(QStringLiteral("ipxact:left")).firstChild().nodeValue();
+        auto arrayRight = arrayNode.firstChildElement(QStringLiteral("ipxact:right")).firstChild().nodeValue();
 
-        newPort->getArrays()->append(QSharedPointer<Array>(new Array(arrayLeft, arrayRight)));
+        parsedArrays.append(Array(arrayLeft, arrayRight));
     }
+
+    return parsedArrays;
 }
 
 //-----------------------------------------------------------------------------

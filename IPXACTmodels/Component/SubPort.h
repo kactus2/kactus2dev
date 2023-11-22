@@ -12,6 +12,7 @@
 #ifndef SUBPORT_H
 #define SUBPORT_H
 
+#include <IPXACTmodels/common/Array.h>
 #include <IPXACTmodels/common/NameGroup.h>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
@@ -84,6 +85,8 @@ public:
      */
     [[nodiscard]] QSharedPointer<Structured> getStructured() const { return structured_; }
 
+    [[nodiscard]] QSharedPointer<QList<Array> > getArrays() const { return arrays_; }
+
 private:
 
     //! The sub-port wire port.
@@ -91,6 +94,9 @@ private:
 
     //! The nested structured port.
     QSharedPointer<Structured> structured_{ nullptr };
+
+    //! The sub-port arrays.
+    QSharedPointer<QList<Array> > arrays_{ new QList<Array>() };
 
     //! Is the sub-port input, output or inout in an interface.
     bool isIO_;

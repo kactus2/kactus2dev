@@ -109,9 +109,9 @@ bool PortValidator::hasValidIsPresent(QSharedPointer<Port> port) const
 bool PortValidator::hasValidArrays(QSharedPointer<Port> port) const
 {
     // Any arrays must have valid left and right.
-    for ( QSharedPointer<Array> array : *port->getArrays() )
+    for ( auto const& array : *port->getArrays() )
     {
-        if (!arrayValueIsValid(array->getLeft()) || !arrayValueIsValid(array->getRight()))
+        if (!arrayValueIsValid(array.getLeft()) || !arrayValueIsValid(array.getRight()))
         {
             return false;
         }
@@ -338,17 +338,17 @@ void PortValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<Port> 
 	}
 
 	// Any arrays must have valid left and right.
-	for ( QSharedPointer<Array> array : *port->getArrays() )
+	for ( auto const& array : *port->getArrays() )
 	{
-        if (!arrayValueIsValid(array->getLeft()))
+        if (!arrayValueIsValid(array.getLeft()))
 		{
-			errors.append(QObject::tr("The left of array is invalid: %1 in port %2").arg(array->getLeft(), 
+			errors.append(QObject::tr("The left of array is invalid: %1 in port %2").arg(array.getLeft(), 
                 port->name()));
 		}
-        if (!arrayValueIsValid(array->getRight()))
+        if (!arrayValueIsValid(array.getRight()))
 		{
 			errors.append(QObject::tr("The right of array is invalid: %1 in port %2").arg(
-                array->getRight(), port->name()));
+                array.getRight(), port->name()));
 		}
 	}
 
