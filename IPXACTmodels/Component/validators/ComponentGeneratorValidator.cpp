@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 
 #include <QRegularExpression>
 
@@ -26,14 +27,6 @@ ComponentGeneratorValidator::ComponentGeneratorValidator(QSharedPointer<Expressi
     QSharedPointer<ParameterValidator> parameterValidator):
 expressionParser_(expressionParser),
 parameterValidator_(parameterValidator)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentGeneratorValidator::~ComponentGeneratorValidator()
-//-----------------------------------------------------------------------------
-ComponentGeneratorValidator::~ComponentGeneratorValidator()
 {
 
 }
@@ -51,16 +44,7 @@ bool ComponentGeneratorValidator::validate(QSharedPointer<ComponentGenerator> ge
 //-----------------------------------------------------------------------------
 bool ComponentGeneratorValidator::hasValidName(QSharedPointer<ComponentGenerator> generator) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(generator->name());
-
-    if (generator->name().isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(generator->name());
 }
 
 //-----------------------------------------------------------------------------
@@ -90,7 +74,7 @@ bool ComponentGeneratorValidator::hasValidGeneratorExe(QSharedPointer<ComponentG
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorValidator::findErrorsIn(QVector<QString>& errors,
+void ComponentGeneratorValidator::findErrorsIn(QStringList& errors,
     QSharedPointer<ComponentGenerator> generator, QString const& context) const
 {
     findErrorsInName(errors, generator, context);
@@ -101,7 +85,7 @@ void ComponentGeneratorValidator::findErrorsIn(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorValidator::findErrorsInName()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorValidator::findErrorsInName(QVector<QString>& errors,
+void ComponentGeneratorValidator::findErrorsInName(QStringList& errors,
     QSharedPointer<ComponentGenerator> generator, QString const& context) const
 {
     if (!hasValidName(generator))
@@ -114,7 +98,7 @@ void ComponentGeneratorValidator::findErrorsInName(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorValidator::findErrorsInPhase()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorValidator::findErrorsInPhase(QVector<QString>& errors,
+void ComponentGeneratorValidator::findErrorsInPhase(QStringList& errors,
     QSharedPointer<ComponentGenerator> generator, QString const& context) const
 {
     if (!hasValidPhase(generator))
@@ -127,7 +111,7 @@ void ComponentGeneratorValidator::findErrorsInPhase(QVector<QString>& errors,
 //-----------------------------------------------------------------------------
 // Function: ComponentGeneratorValidator::findErrorsInGeneratorExe()
 //-----------------------------------------------------------------------------
-void ComponentGeneratorValidator::findErrorsInGeneratorExe(QVector<QString>& errors,
+void ComponentGeneratorValidator::findErrorsInGeneratorExe(QStringList& errors,
     QSharedPointer<ComponentGenerator> generator, QString const& context) const
 {
     if (!hasValidGeneratorExe(generator))

@@ -30,6 +30,7 @@ private slots:
 	void testRead2Parameters();
 	void testReadPhase();
 	void testReadApiType();
+	void testReadApiService();
 	void testReadVendorExtension();
 	void testReadTransportMethods();
 };
@@ -61,9 +62,8 @@ void tst_ComponentGeneratorReader::testReadSimpleComponentGenerator()
 
     QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-    ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+        ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->name(), QStringLiteral("test"));
 	QCOMPARE(testComponentGenerator->displayName(), QStringLiteral("Display"));
@@ -71,9 +71,9 @@ void tst_ComponentGeneratorReader::testReadSimpleComponentGenerator()
     QCOMPARE(testComponentGenerator->getGeneratorExe(), QStringLiteral("/bin/generator.exe"));
     	
     QVERIFY(testComponentGenerator->getHidden().toString().isEmpty());
-    QVERIFY(testComponentGenerator->getScope() == ComponentGenerator::NO_SCOPE);
+    QVERIFY(testComponentGenerator->getScope() == ComponentGenerator::Scope::NO_SCOPE);
     QVERIFY(testComponentGenerator->getPhase().isEmpty());
-    QVERIFY(testComponentGenerator->getApiType() == ComponentGenerator::EMPTY_API_TYPE);    
+    QVERIFY(testComponentGenerator->getApiType() == ComponentGenerator::ApiType::EMPTY_API_TYPE);    
     QVERIFY(testComponentGenerator->getTransportMethods().isEmpty());
     QVERIFY(testComponentGenerator->getGroups().isEmpty());
 }
@@ -93,11 +93,10 @@ void tst_ComponentGeneratorReader::testReadAttributes()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator = 
-        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+        ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
-	QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::ENTITY);
+	QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::Scope::ENTITY);
 	QCOMPARE(testComponentGenerator->getHidden().toBool(), true);
 }
 
@@ -119,15 +118,14 @@ void tst_ComponentGeneratorReader::testReadGroups()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator = 
-        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+        ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getGroups().size(), 2);
 	QCOMPARE(testComponentGenerator->getGroups().first(), QStringLiteral("testGroup"));
 	QCOMPARE(testComponentGenerator->getGroups().last(), QStringLiteral("secondTestGroup"));
 
-    QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::INSTANCE);
+    QCOMPARE(testComponentGenerator->getScope(), ComponentGenerator::Scope::INSTANCE);
 }
 
 //-----------------------------------------------------------------------------
@@ -153,9 +151,8 @@ void tst_ComponentGeneratorReader::testReadParameters()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator = 
-        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+        ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getParameters()->first()->name(), QStringLiteral("testParameter"));
 	QCOMPARE(testComponentGenerator->getParameters()->first()->getValueId(), QStringLiteral("id"));
@@ -192,9 +189,8 @@ void tst_ComponentGeneratorReader::testRead2Parameters()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator = 
-        componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+        ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getParameters()->size(), 2);
 	QCOMPARE(testComponentGenerator->getParameters()->first()->name(), QStringLiteral("testParameter"));
@@ -223,9 +219,8 @@ void tst_ComponentGeneratorReader::testReadPhase()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+		ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getPhase(), QStringLiteral("13.37"));
 }
@@ -247,11 +242,35 @@ void tst_ComponentGeneratorReader::testReadApiType()
 
 	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader componentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		componentGeneratorReader.createComponentGeneratorFrom(componentGeneratorNode);
+		ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
-	QCOMPARE(testComponentGenerator->getApiType(), ComponentGenerator::TGI_2014_EXTENDED);
+	QCOMPARE(testComponentGenerator->getApiType(), ComponentGenerator::ApiType::TGI_2014_EXTENDED);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentGeneratorReader::testReadApiService()
+//-----------------------------------------------------------------------------
+void tst_ComponentGeneratorReader::testReadApiService()
+{
+	QString documentContent(
+		"<ipxact:componentGenerator>"
+		    "<ipxact:apiType>TGI_2022_BASE</ipxact:apiType>"
+		    "<ipxact:apiService>REST</ipxact:apiService>"
+		"</ipxact:componentGenerator>"
+		);
+
+
+	QDomDocument document;
+	document.setContent(documentContent);
+
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+
+	QSharedPointer<ComponentGenerator> testComponentGenerator =
+		ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std22);
+
+	QCOMPARE(testComponentGenerator->getApiType(), ComponentGenerator::ApiType::TGI_2022_BASE);
+	QCOMPARE(testComponentGenerator->getApiService(), QString("REST"));
 }
 
 //-----------------------------------------------------------------------------
@@ -271,11 +290,10 @@ void tst_ComponentGeneratorReader::testReadVendorExtension()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+		ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getVendorExtensions()->first()->type(), QStringLiteral("testExtension"));
 }
@@ -297,11 +315,10 @@ void tst_ComponentGeneratorReader::testReadTransportMethods()
 	QDomDocument document;
 	document.setContent(documentContent);
 
-	QDomNode ComponentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
+	QDomNode componentGeneratorNode = document.firstChildElement("ipxact:componentGenerator");
 
-	ComponentGeneratorReader ComponentGeneratorReader;
 	QSharedPointer<ComponentGenerator> testComponentGenerator =
-		ComponentGeneratorReader.createComponentGeneratorFrom(ComponentGeneratorNode);
+		ComponentGeneratorReader::createComponentGeneratorFrom(componentGeneratorNode, Document::Revision::Std14);
 
 	QCOMPARE(testComponentGenerator->getTransportMethods().size(), 1);
 	QCOMPARE(testComponentGenerator->getTransportMethods().first(), QStringLiteral("file"));

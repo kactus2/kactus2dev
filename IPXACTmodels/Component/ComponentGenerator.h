@@ -33,8 +33,10 @@ class IPXACTMODELS_EXPORT ComponentGenerator : public NameGroup, public Extendab
 public:
 
 	//! Indicates the type of API used by the generator.
-	enum ApiType 
-    {
+	enum class ApiType
+	{
+		TGI_2022_BASE,
+		TBGI_2022_EXTENDED,
 		TGI_2014_BASE,
 		TGI_2014_EXTENDED,
 		TGI_2009,
@@ -43,7 +45,7 @@ public:
 	};
 
 	//! Specifies if the generator shall be run once for all instances or once for each instance of this component.
-	enum Scope
+	enum class Scope
     {
 		INSTANCE,
 		ENTITY,
@@ -51,7 +53,7 @@ public:
 	};
 
 	//! The constructor.
-	ComponentGenerator();
+	ComponentGenerator() = default;
 
 	//! Copy constructor.
 	ComponentGenerator(const ComponentGenerator &other);
@@ -60,9 +62,9 @@ public:
 	ComponentGenerator &operator=(const ComponentGenerator &other);
 
 	//! The destructor.
-	~ComponentGenerator();
+	~ComponentGenerator() override = default;
 
-    	/*! Set the hidden setting for this component generator.
+    /*! Set the hidden setting for this component generator.
 	 *
 	 *      @param [in] hidden  The hidden value to set.
 	 */
@@ -151,6 +153,20 @@ public:
 	 *      @return The names of the groups this generator belongs to.
 	 */
 	QStringList getGroups() const;
+	
+	/*!
+	 *	Get the component generator transport service.
+	 *  
+	 * 	    @return The transport service used by the component generator.
+	 */
+	QString getApiService() const;
+
+	/*!
+	 *	Set the component generator transport service.
+	 *
+	 * 	    @param [in] newApiService	The transport service to set.
+	 */
+	void setApiService(QString const& newApiService);
 
 private:
 
@@ -158,16 +174,20 @@ private:
 	BooleanValue hidden_;
     
 	//! Indicates if the generator shall be run once for all instances or once for each instance of this component.
-	Scope scope_;
+	Scope scope_ = ComponentGenerator::Scope::NO_SCOPE;
 
 	//! Determines the generator phase in a sequence of generator runs. 
 	QString phase_;
 
 	// Specifies any component generator specific parameters.
-	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_;
+	QSharedPointer<QList<QSharedPointer<Parameter> > > parameters_ = 
+		QSharedPointer<QList<QSharedPointer<Parameter> > >(new QList<QSharedPointer<Parameter> >());
 
 	//! Indicates the type of API used by the generator.
-	ApiType apiType_;
+	ApiType apiType_ = ComponentGenerator::ApiType::EMPTY_API_TYPE;
+
+	//! Indicates which transport service is used.
+	QString apiService_;
     
     //! The alternate SOAP transport protocols supported by the component generator.
 	QStringList transportMethods_;
