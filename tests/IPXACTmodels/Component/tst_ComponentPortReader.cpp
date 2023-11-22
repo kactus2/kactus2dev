@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/PortReader.h>
-#include <IPXACTmodels/Component/Structural.h>
+#include <IPXACTmodels/Component/Structured.h>
 
 #include <IPXACTmodels/common/VendorExtension.h>
 
@@ -51,6 +51,8 @@ private slots:
     void readStrucuredType_2022();
     void readStrucuredType_2022_data();
     void readStructuredVectors_2022();
+    void readStructuredSubPortWire_2022();
+    void readNestedStructuredSubPort_2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -864,15 +866,15 @@ void tst_ComponentPortReader::readTransactionalConnectionMinMax()
 void tst_ComponentPortReader::readStrucuredType_2022()
 {
     QFETCH(QString, content);
-    QFETCH(Structural::Type, expectedType);
+    QFETCH(Structured::Type, expectedType);
     QFETCH(DirectionTypes::Direction, expectedDirection);
 
      QString documentContent(
         "<ipxact:port>"
             "<ipxact:name>testPort</ipxact:name>"
-            "<ipxact:structural>" +
+            "<ipxact:structured>" +
             content +
-            "</ipxact:structural>"
+            "</ipxact:structured>"
         "</ipxact:port>"
         );
 
@@ -886,11 +888,12 @@ void tst_ComponentPortReader::readStrucuredType_2022()
     QCOMPARE(testPort->name(), QString("testPort"));
     QCOMPARE(testPort->getWire().isNull(), true);
     QCOMPARE(testPort->getTransactional().isNull(), true);
-    QCOMPARE(testPort->getStructural().isNull(), false);
+    QCOMPARE(testPort->getStructured().isNull(), false);
 
-    auto structural = testPort->getStructural();
-    QCOMPARE(structural->getType(), expectedType);
-    QCOMPARE(structural->getDirection(), expectedDirection);
+    auto structured = testPort->getStructured();
+    QCOMPARE(structured->isPacked(), false);
+    QCOMPARE(structured->getType(), expectedType);
+    QCOMPARE(structured->getDirection(), expectedDirection);
 }
 
 //-----------------------------------------------------------------------------
@@ -899,25 +902,25 @@ void tst_ComponentPortReader::readStrucuredType_2022()
 void tst_ComponentPortReader::readStrucuredType_2022_data()
 {
     QTest::addColumn<QString>("content");
-    QTest::addColumn<Structural::Type>("expectedType");
+    QTest::addColumn<Structured::Type>("expectedType");
     QTest::addColumn<DirectionTypes::Direction>("expectedDirection");
 
     QTest::addRow("Struct without direction") << 
-        "<ipxact:struct>" << Structural::Type::Struct << DirectionTypes::DIRECTION_INVALID;
+        "<ipxact:struct>" << Structured::Type::Struct << DirectionTypes::DIRECTION_INVALID;
     QTest::addRow("Struct with in direction") << 
-        "<ipxact:struct direction = \"in\">" << Structural::Type::Struct << DirectionTypes::IN;
+        "<ipxact:struct direction = \"in\">" << Structured::Type::Struct << DirectionTypes::IN;
 
     QTest::addRow("Union without direction") << 
-        "<ipxact:union>" << Structural::Type::Union << DirectionTypes::DIRECTION_INVALID;
+        "<ipxact:union>" << Structured::Type::Union << DirectionTypes::DIRECTION_INVALID;
     QTest::addRow("Union with out direction") << 
-        "<ipxact:union direction = \"out\">" << Structural::Type::Union << DirectionTypes::OUT;
+        "<ipxact:union direction = \"out\">" << Structured::Type::Union << DirectionTypes::OUT;
 
     QTest::addRow("Interface without phantom attribute") <<
-        "<ipxact:interface>" << Structural::Type::Interface << DirectionTypes::DIRECTION_INVALID;
+        "<ipxact:interface>" << Structured::Type::Interface << DirectionTypes::DIRECTION_INVALID;
     QTest::addRow("Interface with true phantom attribute") <<
-        "<ipxact:interface phantom=\"true\">" << Structural::Type::Interface << DirectionTypes::DIRECTION_PHANTOM;
+        "<ipxact:interface phantom=\"true\">" << Structured::Type::Interface << DirectionTypes::DIRECTION_PHANTOM;
     QTest::addRow("Interface with false phantom attribute") <<
-        "<ipxact:interface phantom=\"false\">" << Structural::Type::Interface << DirectionTypes::DIRECTION_INVALID;
+        "<ipxact:interface phantom=\"false\">" << Structured::Type::Interface << DirectionTypes::DIRECTION_INVALID;
 }
 
 //-----------------------------------------------------------------------------
@@ -928,7 +931,7 @@ void tst_ComponentPortReader::readStructuredVectors_2022()
     QString documentContent(
         "<ipxact:port>"
             "<ipxact:name>testPort</ipxact:name>"
-            "<ipxact:structural>"
+            "<ipxact:structured packed=\"true\">"
                 "<ipxact:vectors>"
                     "<ipxact:vector>"
                         "<ipxact:left>1</ipxact:left>"
@@ -939,7 +942,7 @@ void tst_ComponentPortReader::readStructuredVectors_2022()
                         "<ipxact:right>0</ipxact:right>"
                     "</ipxact:vector>"
                 "</ipxact:vectors>"
-            "</ipxact:structural>"
+            "</ipxact:structured>"
         "</ipxact:port>"
         );
 
@@ -950,14 +953,129 @@ void tst_ComponentPortReader::readStructuredVectors_2022()
 
     QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
 
-    QCOMPARE(testPort->getStructural().isNull(), false);
+    QCOMPARE(testPort->getStructured().isNull(), false);
 
-    auto structural = testPort->getStructural();
-    QCOMPARE(structural->getVectors()->count(), 2);
+    auto structured = testPort->getStructured();
+    QCOMPARE(structured->isPacked(), true);
+    QCOMPARE(structured->getVectors()->count(), 2);
 
-    auto const& lastVector = structural->getVectors()->last();
+    auto const& lastVector = structured->getVectors()->last();
     QCOMPARE(lastVector.getLeft(), "2");
     QCOMPARE(lastVector.getRight(), "0");
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readStructuredSubPortWire_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readStructuredSubPortWire_2022()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured>"
+                "<ipxact:interface/>"
+                "<ipxact:subPorts>"
+                    "<ipxact:subPort isIO=\"true\">"
+                        "<ipxact:name>minimalWire</ipxact:name>"
+                        "<ipxact:wire>"
+                            "<ipxact:direction>in</ipxact:direction>"
+                        "</ipxact:wire>"
+                    "</ipxact:subPort>"
+                "</ipxact:subPorts>"
+            "</ipxact:structured>"
+        "</ipxact:port>"
+        );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getStructured().isNull(), false);
+
+    auto structured = testPort->getStructured();
+    QCOMPARE(structured->isPacked(), false);
+    QCOMPARE(structured->getSubPorts()->count(), 1);
+
+    auto subPort = structured->getSubPorts()->first();
+    QCOMPARE(subPort->isIO(), true);
+    QCOMPARE(subPort->name(), QString("minimalWire"));
+
+    QCOMPARE(subPort->getWire().isNull(), false);
+    QCOMPARE(subPort->getWire()->getDirection(), DirectionTypes::IN);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortReader::readNestedStructuredSubPort_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortReader::readNestedStructuredSubPort_2022()
+{
+    QString documentContent(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured>"
+                "<ipxact:interface/>"
+                "<ipxact:subPorts>"
+                    "<ipxact:subPort>"
+                    "<ipxact:name>firstLayer</ipxact:name>"
+                        "<ipxact:structured>"
+                        "<ipxact:interface/>"
+                            "<ipxact:subPorts>"
+                                "<ipxact:subPort>"
+                                "<ipxact:name>middleLayer</ipxact:name>"
+                                    "<ipxact:structured>"
+                                        "<ipxact:interface/>"
+                                        "<ipxact:subPorts>"
+                                            "<ipxact:subPort>"
+                                                "<ipxact:name>wireLayer</ipxact:name>"
+                                                "<ipxact:wire>"
+                                                    "<ipxact:direction>in</ipxact:direction>"
+                                                "</ipxact:wire>"
+                                            "</ipxact:subPort>"
+                                        "</ipxact:subPorts>"
+                                    "</ipxact:structured>"
+                                "</ipxact:subPort>"
+                            "</ipxact:subPorts>"
+                        "</ipxact:structured>"
+                    "</ipxact:subPort>"
+                "</ipxact:subPorts>"
+            "</ipxact:structured>"
+        "</ipxact:port>"
+    );
+
+    QDomDocument document;
+    document.setContent(documentContent);
+
+    QDomNode portNode = document.firstChildElement("ipxact:port");
+
+    QSharedPointer<Port> testPort = PortReader::createPortFrom(portNode, Document::Revision::Std22);
+
+    QCOMPARE(testPort->getStructured().isNull(), false);
+
+    auto structured = testPort->getStructured();
+    QCOMPARE(structured->getSubPorts()->count(), 1);
+
+    auto const& firstSubPort = structured->getSubPorts()->first();
+    QCOMPARE(firstSubPort->name(), "firstLayer");
+    QCOMPARE(firstSubPort->getWire().isNull(), true);
+    QCOMPARE(firstSubPort->getStructured().isNull(), false);
+    QCOMPARE(firstSubPort->getStructured()->getSubPorts()->count(), 1);
+
+    auto const& middleSubPort = firstSubPort->getStructured()->getSubPorts()->first();
+    QCOMPARE(middleSubPort->name(), "middleLayer");
+    QCOMPARE(middleSubPort->getWire().isNull(), true);
+    QCOMPARE(middleSubPort->getStructured().isNull(), false);
+    QCOMPARE(middleSubPort->getStructured()->getSubPorts()->count(), 1);
+
+    auto const& finalSubPort = middleSubPort->getStructured()->getSubPorts()->first();
+    QCOMPARE(finalSubPort->name(), QString("wireLayer"));
+    QCOMPARE(finalSubPort->getStructured().isNull(), true);
+    QCOMPARE(finalSubPort->getWire().isNull(), false);
+
+    auto const& wire = finalSubPort->getWire();
+    QCOMPARE(wire->getDirection(), DirectionTypes::IN);
 }
 
 QTEST_APPLESS_MAIN(tst_ComponentPortReader)

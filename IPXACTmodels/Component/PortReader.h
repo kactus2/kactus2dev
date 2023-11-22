@@ -44,9 +44,9 @@ namespace  PortReader
          *  Parses a wire port.
          *
          *      @param [in] wireElement     XML description of the wire.
-         *      @param [in] newPort         The port containing the wire.
+         *      @param [in] docRevision     The applied IP-XACT revision.
          */
-        void parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort,
+        QSharedPointer<Wire> createWireFrom(QDomElement const& wireElement, 
             Document::Revision docRevision);
 
         /*!
@@ -151,31 +151,33 @@ namespace  PortReader
             QSharedPointer<Transactional> transactional);
 
         /*!
-         *  Parse a structural port.
+         *  Parse a structured port.
          *
-         *      @param [in] structuralElement   The XML description of the structural port.
+         *      @param [in] structuredElement   The XML description of the structured port.
          *      @param [in] newPort             The containing port item.
          *
          *      @return 
          */
-        void parseStructural(QDomElement const& structuralElement, QSharedPointer<Port> newPort);
+        QSharedPointer<Structured> createStructuredFrom(QDomElement const& structuredElement);
 
         /*!
-         *  Parse the structural port type.
+         *  Parse the structured port type.
          *
-         *      @param [in] structuralElementt   The XML description of the structural port.
-         *      @param [in] newStructural        The containing structural port.
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
          */
-        void parseStructuralType(QDomElement const& structuralElement, QSharedPointer<Structural> newStructural);
+        void parseStructuredType(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
 
         /*!
-         *  Parse the vectors in the structural port.
+         *  Parse the vectors in the structured port.
          *
-         *      @param [in] structuralElementt   The XML description of the structural port.
-         *      @param [in] newStructural        The containing structural port.
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
          */
-        void parseStructuralVectors(QDomElement const& structuralElement, QSharedPointer<Structural> newStructural);
-       
+        void parseStructuredVectors(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
+
+        void parseSubPorts(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
+
         /*!
          *  Parse the port arrays.
          *

@@ -19,7 +19,7 @@
 #include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/Array.h>
 
-#include <IPXACTmodels/Component/Structural.h>
+#include <IPXACTmodels/Component/Structured.h>
 #include <IPXACTmodels/Component/Transactional.h>
 #include <IPXACTmodels/Component/Wire.h>
 
@@ -90,18 +90,18 @@ public:
     void setTransactional(QSharedPointer<Transactional> newTransactional);
 
     /*!
-     *  Get the structural element.
+     *  Get the structured element.
      *
-     *      @return The structural element.
+     *      @return The structured element.
      */
-    QSharedPointer<Structural> getStructural() const;
+    QSharedPointer<Structured> getStructured() const;
 
     /*!
-     *  Set the structural element for the port.
+     *  Set the structured element for the port.
      *
      *      @param [in] newStructural    The new structural element.
      */
-    void setStructural(QSharedPointer<Structural> newStructural);
+    void setStructured(QSharedPointer<Structured> newStructured);
 
     /*!
      *  Get the left bound of a vectored port.
@@ -353,7 +353,7 @@ private:
 	QSharedPointer<Transactional> transactional_{ nullptr };
 
     //! Structural port type.
-    QSharedPointer<Structural> structural_{ nullptr };
+    QSharedPointer<Structured> structured_{ nullptr };
 
     //! The list of arrays.
     QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_{ new QList<QSharedPointer<Array> >() };

@@ -29,7 +29,7 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Docume
     if (QDomElement wireElement = portNode.firstChildElement(QStringLiteral("ipxact:wire")); 
         !wireElement.isNull())
     {
-        Details::parseWire(wireElement, newPort, docRevision);
+        newPort->setWire(Details::createWireFrom(wireElement, docRevision));
     }
     
     if (QDomElement transactionalElement = portNode.firstChildElement(QStringLiteral("ipxact:transactional")); 
@@ -40,10 +40,10 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Docume
 
     if (docRevision == Document::Revision::Std22)
     {
-        if (QDomElement structuralElement = portNode.firstChildElement(QStringLiteral("ipxact:structural")); 
-            !structuralElement.isNull())
+        if (QDomElement structuredElement = portNode.firstChildElement(QStringLiteral("ipxact:structured")); 
+            !structuredElement.isNull())
         {
-            Details::parseStructural(structuralElement, newPort);
+            newPort->setStructured(Details::createStructuredFrom(structuredElement));
         }
     }
 
@@ -57,7 +57,7 @@ QSharedPointer<Port> PortReader::createPortFrom(QDomNode const& portNode, Docume
 //-----------------------------------------------------------------------------
 // Function: PortReader::Details::parseWire()
 //-----------------------------------------------------------------------------
-void PortReader::Details::parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort,
+QSharedPointer<Wire> PortReader::Details::createWireFrom(QDomElement const& wireElement, 
     Document::Revision docRevision)
 {
     QDomElement directionElement = wireElement.firstChildElement(QStringLiteral("ipxact:direction"));
@@ -89,7 +89,7 @@ void PortReader::Details::parseWire(QDomElement const& wireElement, QSharedPoint
 
     parseWireDefaultValue(wireElement, newWire);
 
-    newPort->setWire(newWire);
+    return newWire;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,8 +98,7 @@ void PortReader::Details::parseWire(QDomElement const& wireElement, QSharedPoint
 void PortReader::Details::parseWireVectors(QDomElement const& wireElement, QSharedPointer<Wire> newWire,
     Document::Revision docRevision)
 {
-    auto vectors = parseVectors(wireElement, docRevision);
-    newWire->getVectors()->append(vectors);
+    newWire->getVectors()->append(parseVectors(wireElement, docRevision));
 }
 
 //-----------------------------------------------------------------------------
@@ -329,45 +328,49 @@ void PortReader::Details::parseTransactionalConnectionsMinMax(QDomElement const&
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortReader::Details::parseStructural()
+// Function: PortReader::Details::parseStructured()
 //-----------------------------------------------------------------------------
-void PortReader::Details::parseStructural(QDomElement const& structuralElement, QSharedPointer<Port> newPort)
+QSharedPointer<Structured> PortReader::Details::createStructuredFrom(QDomElement const& structuredElement)
 {
-    QSharedPointer<Structural> newStructural(new Structural());
+    QSharedPointer<Structured> newStructured(new Structured());
 
-    parseStructuralType(structuralElement, newStructural);
+    newStructured->setPacked(structuredElement.attribute(QStringLiteral("packed")) == QStringLiteral("true"));
 
-    parseStructuralVectors(structuralElement, newStructural);
+    parseStructuredType(structuredElement, newStructured);
 
-    newPort->setStructural(newStructural);
+    parseStructuredVectors(structuredElement, newStructured);
+
+    parseSubPorts(structuredElement, newStructured);
+
+    return newStructured;
 }
 
 //-----------------------------------------------------------------------------
 // Function: PortReader::Details::parseStructuralType()
 //-----------------------------------------------------------------------------
-void PortReader::Details::parseStructuralType(QDomElement const& structuralElement,
-    QSharedPointer<Structural> newStructural)
+void PortReader::Details::parseStructuredType(QDomElement const& structuredElement,
+    QSharedPointer<Structured> newStructured)
 {
     using namespace DirectionTypes;
-    if (auto const structElement = structuralElement.firstChildElement(QStringLiteral("ipxact:struct"));
+    if (auto const structElement = structuredElement.firstChildElement(QStringLiteral("ipxact:struct"));
         structElement.isNull() == false)
     {
-        newStructural->setType(Structural::Type::Struct);
-        newStructural->setDirection(str2Direction(structElement.attribute(QStringLiteral("direction"))));
+        newStructured->setType(Structured::Type::Struct);
+        newStructured->setDirection(str2Direction(structElement.attribute(QStringLiteral("direction"))));
     }
-    else if (auto const unionElement = structuralElement.firstChildElement(QStringLiteral("ipxact:union"));
+    else if (auto const unionElement = structuredElement.firstChildElement(QStringLiteral("ipxact:union"));
         unionElement.isNull() == false)
     {
-        newStructural->setType(Structural::Type::Union);
-        newStructural->setDirection(str2Direction(unionElement.attribute(QStringLiteral("direction"))));
+        newStructured->setType(Structured::Type::Union);
+        newStructured->setDirection(str2Direction(unionElement.attribute(QStringLiteral("direction"))));
     }
-    else if (auto const interfaceElement = structuralElement.firstChildElement(QStringLiteral("ipxact:interface"));
+    else if (auto const interfaceElement = structuredElement.firstChildElement(QStringLiteral("ipxact:interface"));
         interfaceElement.isNull() == false)
     {
-        newStructural->setType(Structural::Type::Interface);
+        newStructured->setType(Structured::Type::Interface);
         if (interfaceElement.attribute(QStringLiteral("phantom")) == QStringLiteral("true"))
         {
-            newStructural->setDirection(DIRECTION_PHANTOM);
+            newStructured->setDirection(DIRECTION_PHANTOM);
         }
     }
 }
@@ -375,11 +378,42 @@ void PortReader::Details::parseStructuralType(QDomElement const& structuralEleme
 //-----------------------------------------------------------------------------
 // Function: PortReader::Details::parseStructuralVectors()
 //-----------------------------------------------------------------------------
-void PortReader::Details::parseStructuralVectors(QDomElement const& structuralElement,
-    QSharedPointer<Structural> newStructural)
+void PortReader::Details::parseStructuredVectors(QDomElement const& structuredElement,
+    QSharedPointer<Structured> newStructured)
 {
-    auto vectors = parseVectors(structuralElement, Document::Revision::Std22);
-    newStructural->getVectors()->append(vectors);
+    newStructured->getVectors()->append(parseVectors(structuredElement, Document::Revision::Std22));
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortReader::Details::parseSubPorts()
+//-----------------------------------------------------------------------------
+void PortReader::Details::parseSubPorts(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured)
+{
+    const auto subPortsElement = structuredElement.firstChildElement(QStringLiteral("ipxact:subPorts"));
+    const auto subPortList = subPortsElement.childNodes();
+
+    const auto SUBPORT_COUNT = subPortList.count();
+    for (int i = 0; i < SUBPORT_COUNT; ++i)
+    {
+        const auto subPortElement = subPortList.at(i).toElement();
+
+        QSharedPointer<SubPort> parsedSubPort(new SubPort());
+        parsedSubPort->setIsIO(subPortElement.attribute(QStringLiteral("isIO")) == QStringLiteral("true"));
+        NameGroupReader::parseNameGroup(subPortElement, parsedSubPort);
+
+        if (QDomElement wireElement = subPortElement.firstChildElement(QStringLiteral("ipxact:wire"));
+            !wireElement.isNull())
+        {
+            parsedSubPort->setWire(Details::createWireFrom(wireElement, Document::Revision::Std22));
+        }
+        else if (QDomElement nestedStructured = subPortElement.firstChildElement(QStringLiteral("ipxact:structured"));
+            !nestedStructured.isNull())
+        {
+            parsedSubPort->setStructured(Details::createStructuredFrom(nestedStructured));
+        }
+
+        newStructured->getSubPorts()->append(parsedSubPort);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -439,4 +473,3 @@ void PortReader::Details::parsePosition(QDomElement const& positionElement, QSha
     int positionY = positionElement.attribute(QStringLiteral("y")).toInt();
     newPort->setDefaultPos(QPointF(positionX, positionY));
 }
-

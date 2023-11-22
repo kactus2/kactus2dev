@@ -64,7 +64,7 @@ private:
      *      @param [in] vector          The vector to be written.
      *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeVector(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
+    void writeVectors(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
         Document::Revision docRevision) const;
 
     /*!
@@ -141,9 +141,25 @@ private:
      *  Write the structural port.
      *
      *      @param [in] writer          The used XML writer.
-     *      @param [in] structural      The structural port description to write.   
+     *      @param [in] structured      The structured port description to write.   
      */
-    void writeStructural(QXmlStreamWriter& writer, QSharedPointer<Structural> structural) const;
+    void writeStructured(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
+
+    /*!
+     *  Write the type of the structural port.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] structured      The structured port whose type to write.
+     */
+    void writeStructuredType(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
+
+    /*!
+     *  Write the sub-ports in a structural port.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] structured      The structured port whose sub-ports to write.
+     */
+    void writeSubPorts(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
 
     /*!
      *  Write the port arrays.

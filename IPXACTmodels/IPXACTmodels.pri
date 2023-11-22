@@ -304,7 +304,8 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
     ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/Structural.h
+    ./Component/Structured.h \
+    ./Component/SubPort.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -602,4 +603,5 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
     ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/Structural.cpp
+    ./Component/Structured.cpp \
+    ./Component/SubPort.cpp

@@ -93,7 +93,7 @@ QSharedPointer<Wire> Port::getWire() const
 void Port::setWire(QSharedPointer<Wire> newWire)
 {
     transactional_.clear();
-    structural_.clear();
+    structured_.clear();
 
     wire_ = newWire;
 }
@@ -112,28 +112,28 @@ QSharedPointer<Transactional> Port::getTransactional() const
 void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 {
     wire_.clear();
-    structural_.clear();
+    structured_.clear();
 
 	transactional_ = newTransactional;
 }
 
 //-----------------------------------------------------------------------------
-// Function: Port::getStructural()
+// Function: Port::getStructured()
 //-----------------------------------------------------------------------------
-QSharedPointer<Structural> Port::getStructural() const
+QSharedPointer<Structured> Port::getStructured() const
 {
-    return structural_;
+    return structured_;
 }
 
 //-----------------------------------------------------------------------------
 // Function: Port::setStructural()
 //-----------------------------------------------------------------------------
-void Port::setStructural(QSharedPointer<Structural> newStructural)
+void Port::setStructured(QSharedPointer<Structured> newStructured)
 {
     wire_.clear();
     transactional_.clear();
 
-    structural_ = newStructural;
+    structured_ = newStructured;
 }
 
 //-----------------------------------------------------------------------------

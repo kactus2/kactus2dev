@@ -39,9 +39,9 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, 
     {
         writeTransactional(writer, port->getTransactional(), docRevision);
     }
-    else if (port->getStructural())
+    else if (port->getStructured() && docRevision == Document::Revision::Std22)
     {
-        writeStructural(writer, port->getStructural());
+        writeStructured(writer, port->getStructured());
     }
 
     writeArrays(writer, port->getArrays());
@@ -70,9 +70,8 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
         QualifierWriter::writeQualifier(writer, wire->getQualifier());
     }
 
-        writeVector(writer, wire->getVectors(), docRevision);
+    writeVectors(writer, wire->getVectors(), docRevision);
     
-
     writeWireTypeDefinitions(writer, wire->getWireTypeDefs());
 
     writeWireDriver(writer, wire->getDriver());
@@ -83,7 +82,7 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
 //-----------------------------------------------------------------------------
 // Function: PortWriter::writeVector()
 //-----------------------------------------------------------------------------
-void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
+void PortWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
     Document::Revision docRevision) const
 {
     if (vectors->isEmpty())
@@ -317,26 +316,80 @@ void PortWriter::writeTransactionalMinMaxConnections(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortWriter::writeStructural()
+// Function: PortWriter::writeStructured()
 //-----------------------------------------------------------------------------
-void PortWriter::writeStructural(QXmlStreamWriter& writer, QSharedPointer<Structural> structural) const
+void PortWriter::writeStructured(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
 {
-    writer.writeStartElement(QStringLiteral("ipxact:structural"));
+    writer.writeStartElement(QStringLiteral("ipxact:structured"));
 
-    writer.writeStartElement(Structural::toString(structural->getType()));
-    if (structural->getType() == Structural::Type::Struct || structural->getType() == Structural::Type::Union)
+    if (structured->isPacked())
     {
-        writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structural->getDirection()));
+        writer.writeAttribute(QStringLiteral("packed"), QStringLiteral("true"));
     }
-    else if (structural->getType() == Structural::Type::Interface &&
-        structural->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+    
+    writeStructuredType(writer, structured);
+
+    writeVectors(writer, structured->getVectors(), Document::Revision::Std22);
+
+    writeSubPorts(writer, structured);
+
+    writer.writeEndElement(); // ipxact:structured
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::writeStructuredType()
+//-----------------------------------------------------------------------------
+void PortWriter::writeStructuredType(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
+{
+    writer.writeStartElement(QStringLiteral("ipxact:") + Structured::toString(structured->getType()));
+    if (structured->getType() == Structured::Type::Struct || structured->getType() == Structured::Type::Union)
+    {
+        writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structured->getDirection()));
+    }
+    else if (structured->getType() == Structured::Type::Interface &&
+        structured->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
     {
         writer.writeAttribute(QStringLiteral("phantom"), QStringLiteral("true"));
     }
+    writer.writeEndElement(); // ipxact:struct/union/interface
+}
 
-    writer.writeEndElement(); // struct/union/interface
+//-----------------------------------------------------------------------------
+// Function: PortWriter::writeSubPorts()
+//-----------------------------------------------------------------------------
+void PortWriter::writeSubPorts(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
+{
+    if (structured->getSubPorts()->isEmpty())
+    {
+        return;
+    }
 
-    writer.writeEndElement(); // ipxact:structural
+    writer.writeStartElement(QStringLiteral("ipxact:subPorts"));
+
+    for (auto const& subPort : *structured->getSubPorts())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:subPort"));
+
+        if (subPort->isIO())
+        {
+            writer.writeAttribute(QStringLiteral("isIO"), QStringLiteral("true"));
+        }
+
+        NameGroupWriter::writeNameGroup(writer, subPort, Document::Revision::Std22);
+
+        if (subPort->isWire())
+        {
+            writeWire(writer, subPort->getWire(), Document::Revision::Std22);
+        }
+        else if (subPort->isStructured())
+        {
+            writeStructured(writer, subPort->getStructured());
+        }
+
+        writer.writeEndElement(); // ipxact:subPort
+    }
+
+    writer.writeEndElement(); // ipxact:subPorts
 }
 
 //-----------------------------------------------------------------------------
