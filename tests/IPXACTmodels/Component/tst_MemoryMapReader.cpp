@@ -406,7 +406,7 @@ void tst_MemoryMapReader::readMemoryRemap2022()
     QCOMPARE(testMemoryRemap->description(), QString("describedRemap"));
     QCOMPARE(testMemoryRemap->getModeReferences()->size(), 2);
     QCOMPARE(testMemoryRemap->getModeReferences()->first()->getReference(), QString("testMode"));
-    QCOMPARE(testMemoryRemap->getModeReferences()->back()->getPriority(), QString("1"));
+    QCOMPARE(testMemoryRemap->getModeReferences()->back()->getPriority(), 1);
 
     QCOMPARE(testMemoryRemap->getMemoryRemapDefinitionReference(), QString("testRemapDef"));
     QCOMPARE(testMemoryRemap->getTypeDefinitionsReference(), QString("testDefinitions"));

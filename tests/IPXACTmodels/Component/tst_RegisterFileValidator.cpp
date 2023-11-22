@@ -21,6 +21,8 @@
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/Mode.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
@@ -439,11 +441,11 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
     QSharedPointer<RegisterFile> testRegisterFile(new RegisterFile("test", "8", "8"));
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("ref");
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("0");
+    modeRef2->setPriority(0);
     modeRef2->setReference("ref1");
 
     QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
@@ -463,12 +465,20 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
 
     RegisterFileValidator validator(parser, registerValidator, parameterValidator, Document::Revision::Std22);
 
+    QSharedPointer<Component> dummyComponent(new Component(VLNV(VLNV::COMPONENT, "vendor", "libray", "name", "1.0"), Document::Revision::Std22));
+    QSharedPointer<Mode> mode1(new Mode("ref"));
+    QSharedPointer<Mode> mode2(new Mode("ref1"));
+    dummyComponent->getModes()->append(mode1);
+    dummyComponent->getModes()->append(mode2);
+
+    validator.componentChange(dummyComponent);
+
     QStringList errors;
 
     QStringList possibleErrors(QStringList()
-        << "One or more mode references in access policies of register test within test contain duplicate priority values."
-        << "One or more mode references in access policies of register test within test contain duplicate mode reference values."
-        << "In register test in test, multiple access policies are not allowed if one of them lacks a mode reference."
+        << "One or more mode references in access policies of register file test within test contain duplicate priority values."
+        << "One or more mode references in access policies of register file test within test contain duplicate mode reference values."
+        << "In register file test in test, multiple access policies are not allowed if one of them lacks a mode reference."
     );
 
     // Test duplicate mode reference priority.
@@ -479,17 +489,30 @@ void tst_RegisterFileValidator::testAccessPoliciesAreValid()
     // Test duplicate reference.
     errors.clear();
 
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("ref");
 
     validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
     QVERIFY(errors.contains(possibleErrors.at(1)));
     QVERIFY(validator.hasValidAccessPolicies(testRegisterFile) == false);
 
-    // Test valid.
+    // Test invalid.
     errors.clear();
 
     modeRef2->setReference("ref2");
+
+    validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
+    QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)
+        {
+            return errors.contains(str);
+        }));
+
+    QVERIFY(validator.hasValidAccessPolicies(testRegisterFile) == false);
+
+    // Test valid.
+    errors.clear();
+
+    modeRef2->setReference("ref1");
 
     validator.findErrorsIn(errors, testRegisterFile, "test", "8", "32");
     QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)

@@ -433,10 +433,10 @@ void tst_AddressBlockWriter::writeAccessPolicies2022()
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
 
-    modeRef1->setPriority("1");
+    modeRef1->setPriority(1);
     modeRef1->setReference("testMode");
     
-    modeRef2->setPriority("2");
+    modeRef2->setPriority(2);
     modeRef2->setReference("testMode2");
 
     testAccessPolicy1->getModeReferences()->append(modeRef1);

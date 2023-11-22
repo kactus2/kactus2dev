@@ -76,11 +76,11 @@ void tst_FieldAccessPolicyWriter::cleanup()
 void tst_FieldAccessPolicyWriter::writeModeRefs()
 {
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("testMode1");
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("testMode2");
 
     fieldAccessPolicy_->getModeReferences()->append(modeRef1);
@@ -328,7 +328,7 @@ void tst_FieldAccessPolicyWriter::writeAccessRestrictions()
         new FieldAccessPolicy::AccessRestriction());
 
     QSharedPointer<ModeReference> testModeRef(new ModeReference());
-    testModeRef->setPriority("0");
+    testModeRef->setPriority(0);
     testModeRef->setReference("modereference");
 
     accessRestriction->modeRefs_->append(testModeRef);

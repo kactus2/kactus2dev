@@ -24,6 +24,8 @@
 #include <IPXACTmodels/Component/RegisterFile.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
+#include <IPXACTmodels/Component/Mode.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <QtTest>
@@ -1067,12 +1069,21 @@ void tst_AddressBlockValidator::testAccessPolicies2022()
     testBlock->setWidth("10");
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("ref");
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("0");
+    modeRef2->setPriority(0);
     modeRef2->setReference("ref1");
+
+    QSharedPointer<Mode> mode1(new Mode("ref"));
+    QSharedPointer<Mode> mode2(new Mode("ref1"));
+
+    QSharedPointer<Component> dummyComponent(new Component(VLNV("test", "vendor", "library", "component", "1.0"), Document::Revision::Std22));
+    dummyComponent->getModes()->append(mode1);
+    dummyComponent->getModes()->append(mode2);
+
+    validator->componentChange(dummyComponent);
 
     QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
     QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
@@ -1088,6 +1099,7 @@ void tst_AddressBlockValidator::testAccessPolicies2022()
         << "One or more mode references in access policies of address block champloo within test contain duplicate priority values."
         << "One or more mode references in access policies of address block champloo within test contain duplicate mode reference values."
         << "In address block testBlock in test, multiple access policies are not allowed if one of them lacks a mode reference."
+        << "Mode reference in access policies of address block champloo within test has invalid or empty reference value 'ref2'."
     );
 
     // Test duplicate mode reference priority.
@@ -1098,18 +1110,27 @@ void tst_AddressBlockValidator::testAccessPolicies2022()
     // Test duplicate reference.
     errors.clear();
 
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("ref");
 
     validator->findErrorsIn(errors, testBlock, "8", "test");
     QVERIFY(errors.contains(possibleErrors.at(1)));
     QVERIFY(validator->hasValidAccessPolicies(testBlock) == false);
 
-    // Test valid.
+    // Test invalid (not found in component modes).
     errors.clear();
 
     modeRef2->setReference("ref2");
 
+    validator->findErrorsIn(errors, testBlock, "8", "test");
+    QVERIFY(errors.contains(possibleErrors.back()));
+
+    QVERIFY(validator->hasValidAccessPolicies(testBlock) == false);
+
+    // Finally test valid.
+    errors.clear();
+    modeRef2->setReference("ref1");
+    
     validator->findErrorsIn(errors, testBlock, "8", "test");
     QVERIFY(std::none_of(possibleErrors.cbegin(), possibleErrors.cend(), [&errors](QString const& str)
         {
@@ -1117,6 +1138,7 @@ void tst_AddressBlockValidator::testAccessPolicies2022()
         }));
 
     QVERIFY(validator->hasValidAccessPolicies(testBlock));
+
 }
 
 //-----------------------------------------------------------------------------

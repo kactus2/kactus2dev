@@ -473,11 +473,11 @@ void tst_MemoryMapValidator::testMemoryRemapsHaveUniqueRemapStates_data()
 void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022()
 {
     QFETCH(QString, modeRef1);
-    QFETCH(QString, priority1);
+    QFETCH(int, priority1);
     QFETCH(QString, modeRef2);
-    QFETCH(QString, priority2);
+    QFETCH(int, priority2);
     QFETCH(QString, modeRef3);
-    QFETCH(QString, priority3);
+    QFETCH(int, priority3);
     QFETCH(QString, invalidRemapName);
     QFETCH(bool, refsAreValid);
     QFETCH(bool, prioritiesAreValid);
@@ -542,14 +542,7 @@ void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022()
         }
         else if (!prioritiesAreValid)
         {
-            if ((*invalidRemapIt)->getModeReferences()->first()->getPriority().isEmpty())
-            {
-                expectedError = QObject::tr("Empty mode reference priority set for memory remap %1 in memory map testMap").arg(invalidRemapName);
-            }
-            else
-            {
-                expectedError = QObject::tr("Duplicate mode reference priority set for memory remap %1 in memory map testMap").arg(invalidRemapName);
-            }
+            expectedError = QObject::tr("Duplicate mode reference priority set for memory remap %1 in memory map testMap").arg(invalidRemapName);
         }
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -565,21 +558,20 @@ void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022()
 void tst_MemoryMapValidator::testHasValidMemoryRemapModeRefs2022_data()
 {
     QTest::addColumn<QString>("modeRef1");
-    QTest::addColumn<QString>("priority1");
+    QTest::addColumn<int>("priority1");
     QTest::addColumn<QString>("modeRef2");
-    QTest::addColumn<QString>("priority2");
+    QTest::addColumn<int>("priority2");
     QTest::addColumn<QString>("modeRef3");
-    QTest::addColumn<QString>("priority3");
+    QTest::addColumn<int>("priority3");
     QTest::addColumn<QString>("invalidRemapName");
     QTest::addColumn<bool>("refsAreValid");
     QTest::addColumn<bool>("prioritiesAreValid");
 
-    QTest::addRow("Missing mode ref is invalid") << "" << "" << "testmode2" << "2" << "testmode3" << "3" << "testRemap1" << false << true;
-    QTest::addRow("Duplicate mode ref is invalid") << "testmode" << "0" << "testmode" << "1" << "testmode3" << "3" << "testRemap2" << false << true;
-    QTest::addRow("Duplicate mode ref priority in same remap is invalid") << "testmode1" << "0" << "testmode2" << "1" << "testmode3" << "1" << "testRemap2" << true << false;
-    QTest::addRow("Duplicate mode ref priority in different remaps is valid") << "testmode1" << "1" << "testmode2" << "1" << "testmode3" << "3" << "" << true << true;
-    QTest::addRow("Unique mode refs is valid") << "testmode1" << "0" << "testmode2" << "1" << "testmode3" << "2" << "" << true << true;
-    QTest::addRow("Empty priority is invalid") << "testmode1" << "" << "testmode2" << "1" << "testmode3" << "2" << "testRemap1" << true << false;
+    QTest::addRow("Missing mode ref is invalid") << "" << 0 << "testmode2" << 2 << "testmode3" << 3 << "testRemap1" << false << true;
+    QTest::addRow("Duplicate mode ref is invalid") << "testmode" << 0 << "testmode" << 1 << "testmode3" << 3 << "testRemap2" << false << true;
+    QTest::addRow("Duplicate mode ref priority in same remap is valid") << "testmode1" << 0 << "testmode2" << 1 << "testmode3" << 1 << "testRemap2" << true << true;
+    QTest::addRow("Duplicate mode ref priority in different remaps is valid") << "testmode1" << 1 << "testmode2" << 1 << "testmode3" << 3 << "" << true << true;
+    QTest::addRow("Unique mode refs is valid") << "testmode1" << 0 << "testmode2" << 1 << "testmode3" << 2 << "" << true << true;
 }
 
 //-----------------------------------------------------------------------------

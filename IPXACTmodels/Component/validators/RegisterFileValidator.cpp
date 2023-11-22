@@ -245,7 +245,7 @@ void RegisterFileValidator::findErrorsInRegisterData(QVector<QString>& errors,
 void RegisterFileValidator::findErrorsInAccessPolicies(QStringList& errors, 
     QSharedPointer<RegisterFile> selectedRegisterFile, QString const& context) const
 {
-    QString registerFileContext = QStringLiteral("register ") + selectedRegisterFile->name() + QStringLiteral(" within ") + context;
+    QString registerFileContext = QStringLiteral("register file ") + selectedRegisterFile->name() + QStringLiteral(" within ") + context;
 
     RegisterBaseValidator::findErrorsInAccessPolicies(errors, selectedRegisterFile, registerFileContext);
 }

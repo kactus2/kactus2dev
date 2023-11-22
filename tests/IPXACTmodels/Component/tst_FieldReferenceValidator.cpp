@@ -10,7 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <IPXACTmodels/Component/FieldReference.h>
-#include <IPXACTmodels/Component/FieldReferenceValidator.h>
+#include <IPXACTmodels/Component/validators/FieldReferenceValidator.h>
 
 #include <QtTest>
 
