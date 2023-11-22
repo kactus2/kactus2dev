@@ -349,11 +349,11 @@ void tst_MemoryMapWriter::writeMemoryRemap2022()
     testMemoryRemap->setTypeDefinitionsReference("testTypeDefs");
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("testMode");
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("testMode2");
 
     testMemoryRemap->getModeReferences()->append(modeRef1);

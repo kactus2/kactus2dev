@@ -79,15 +79,16 @@ masterInterfaceBindingLabel_(new QLabel(this))
 	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
     layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
 
-    if (docRevision != Document::Revision::Std22)
+    if (docRevision == Document::Revision::Std22)
     {
-        layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        layout->addRow(tr("Initiator interface binding(s):"), masterInterfaceBindingLabel_);
+        isPresentEditor_->setVisible(false);
     }
     else
     {
-        isPresentEditor_->setVisible(false);
+        layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
     }
-    layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
 
 	refresh(busInterfaceNames);
 

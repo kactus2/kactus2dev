@@ -75,7 +75,7 @@ private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
 
-    QSharedPointer<AddressSpaceValidator> createValidator();
+    QSharedPointer<AddressSpaceValidator> createValidator(Document::Revision docRevision);
 };
 
 //-----------------------------------------------------------------------------
@@ -96,7 +96,7 @@ void tst_AddressSpaceValidator::testHasValidName()
 
     QSharedPointer<AddressSpace> testSpace (new AddressSpace(name));
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidName(testSpace->name()), isValid);
 
@@ -139,7 +139,7 @@ void tst_AddressSpaceValidator::testHasValidIsPresent()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("TestAddressBlock"));
     testSpace->setIsPresent(isPresent);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidIsPresent(testSpace->getIsPresent()), isValid);
 
@@ -184,7 +184,7 @@ void tst_AddressSpaceValidator::testHasValidRange()
 
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace", range, "0"));
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidRange(testSpace), isValid);
 
@@ -232,7 +232,7 @@ void tst_AddressSpaceValidator::testHasValidWidth()
 
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace", "10", width));
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidWidth(testSpace), isValid);
 
@@ -283,7 +283,7 @@ void tst_AddressSpaceValidator::testSegmentHasValidName()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace", "100"));
     testSpace->getSegments()->append(testSegment);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
@@ -328,7 +328,7 @@ void tst_AddressSpaceValidator::testSegmentsHaveUniqueNames()
     testSpace->getSegments()->append(segmentOne);
     testSpace->getSegments()->append(segmentTwo);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidSegments(testSpace), false);
 
@@ -360,7 +360,7 @@ void tst_AddressSpaceValidator::testSegmentHasValidIsPresent()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("TestAddressBlock", "100"));
     testSpace->getSegments()->append(testSegment);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
     if (!isValid)
@@ -412,7 +412,7 @@ void tst_AddressSpaceValidator::testSegmentHasValidAddressOffset()
         testSpace->setRange("50000000000");
     }
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
     if (!isValid)
@@ -465,7 +465,7 @@ void tst_AddressSpaceValidator::testSegmentHasValidRange()
         testSpace->setRange("50000000000");
     }
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
     if (!isValid)
@@ -515,7 +515,7 @@ void tst_AddressSpaceValidator::testSegmentIsContainedWithinAddressSpace()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("Wanpan", spaceRange));
     testSpace->getSegments()->append(testSegment);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
     if (!isValid)
@@ -576,7 +576,7 @@ void tst_AddressSpaceValidator::testOverlappingSegments()
     testSpace->getSegments()->append(segmentOne);
     testSpace->getSegments()->append(segmentTwo);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidSegments(testSpace), isValid);
 
     if (!isValid)
@@ -643,7 +643,7 @@ void tst_AddressSpaceValidator::testHasValidAddressUnitBits()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("TestAddressBlock"));
     testSpace->setAddressUnitBits(addressUnitBits);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidAddressUnitBits(testSpace), isValid);
 
     if (!isValid)
@@ -688,7 +688,7 @@ void tst_AddressSpaceValidator::testHasValidLocalMemoryMap()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace"));
     testSpace->setLocalMemoryMap(testLocalMap);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidLocalMemoryMap(testSpace), false);
 
     QVector<QString> foundErrors;
@@ -719,7 +719,7 @@ void tst_AddressSpaceValidator::testHasValidParameters()
     QSharedPointer<AddressSpace> testSpace (new AddressSpace("testSpace"));
     testSpace->getParameters()->append(testParameter);
 
-    QSharedPointer<AddressSpaceValidator> validator = createValidator();
+    QSharedPointer<AddressSpaceValidator> validator = createValidator(Document::Revision::Std14);
     QCOMPARE(validator->hasValidParameters(testSpace), false);
 
     QVector<QString> errorsFound;
@@ -774,21 +774,21 @@ bool tst_AddressSpaceValidator::errorIsNotFoundInErrorList(QString const& expect
 //-----------------------------------------------------------------------------
 // Function: tst_AddressSpaceValidator::createValidator()
 //-----------------------------------------------------------------------------
-QSharedPointer<AddressSpaceValidator> tst_AddressSpaceValidator::createValidator()
+QSharedPointer<AddressSpaceValidator> tst_AddressSpaceValidator::createValidator(Document::Revision docRevision)
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(
-        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), docRevision));
     QSharedPointer<EnumeratedValueValidator> enumeratedValueValidator(new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator(
         new FieldValidator(parser, enumeratedValueValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator(
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator(new RegisterFileValidator(parser, 
-        registerValidator, parameterValidator));
+        registerValidator, parameterValidator, docRevision));
     QSharedPointer<AddressBlockValidator> addressBlockValidator(
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator));
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, docRevision));
+    QSharedPointer<SubspaceMapValidator> subspaceValidator(new SubspaceMapValidator(parser, parameterValidator, docRevision));
     QSharedPointer<MemoryMapBaseValidator> localMemoryMapValidator(
         new MemoryMapBaseValidator(parser, addressBlockValidator, subspaceValidator));
 

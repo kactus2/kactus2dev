@@ -130,6 +130,15 @@ protected:
      *      @return The data in the given index.
      */
     virtual QVariant valueForIndex(QModelIndex const& index) const override final;
+    
+    /*!
+     *  Checks if the column index is valid for expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return True, if the column can have expressions, otherwise false.
+     */
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
 
 private:
 

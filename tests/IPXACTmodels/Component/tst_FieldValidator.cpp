@@ -12,12 +12,13 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/MemoryArray.h>
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/Component/Field.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 #include <IPXACTmodels/Component/WriteValueConstraint.h>
 #include <IPXACTmodels/Component/ResetType.h>
 #include <IPXACTmodels/Component/FieldReset.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
@@ -223,7 +224,7 @@ void tst_FieldValidator::testMemoryArrayIsValid()
         QList<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testField, "test");
 
-        QString expectedError = QObject::tr("No dimensions defined for memory array in test");
+        QString expectedError = QObject::tr("No dimensions defined for memory array in field testField within test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {
             QFAIL("No error message found");
@@ -1005,10 +1006,10 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     testField->setBitWidth("8");
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
     modeRef1->setReference("ref");
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
-    modeRef2->setPriority("0");
+    modeRef2->setPriority(0);
     modeRef2->setReference("ref1");
 
     QSharedPointer<FieldAccessPolicy> testFieldAccessPolicy(new FieldAccessPolicy());
@@ -1025,6 +1026,14 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
         new ParameterValidator(parser, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     FieldValidator validator(parser, enumeratedValueValidator, parameterValidator, Document::Revision::Std22);
 
+    QSharedPointer<Component> dummyComponent(new Component(VLNV(VLNV::COMPONENT, "vendor", "library", "name", "1.0"), Document::Revision::Std22));
+    QSharedPointer<Mode> mode1(new Mode("ref"));
+    QSharedPointer<Mode> mode2(new Mode("ref1"));
+    dummyComponent->getModes()->append(mode1);
+    dummyComponent->getModes()->append(mode2);
+
+    validator.componentChange(dummyComponent);
+
     QStringList errors;
     
     // Test duplicate priority.
@@ -1036,7 +1045,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     // Test duplicate reference.
     errors.clear();
 
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
     modeRef2->setReference("ref");
 
     validator.findErrorsIn(errors, testField, "test");
@@ -1047,7 +1056,7 @@ void tst_FieldValidator::testAccessPolicyModeRefs()
     // Test valid.
     errors.clear();
 
-    modeRef2->setReference("ref2");
+    modeRef2->setReference("ref1");
 
     validator.findErrorsIn(errors, testField, "test");
     QCOMPARE(errors.size(), 0);

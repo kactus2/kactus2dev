@@ -208,6 +208,15 @@ QVariant SubspaceMapModel::valueForIndex(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: SubspaceMapModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool SubspaceMapModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    int column = index.column();
+    return column == SubspaceMapColumns::BASE || column == SubspaceMapColumns::IS_PRESENT;
+}
+
+//-----------------------------------------------------------------------------
 // Function: SubspaceMapModel::mimeTypes()
 //-----------------------------------------------------------------------------
 QStringList SubspaceMapModel::mimeTypes() const

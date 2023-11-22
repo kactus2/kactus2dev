@@ -765,14 +765,14 @@ public:
 	 *
 	 *      @return QStringList containing names of the master and mirrored master interfaces.
 	 */
-	QStringList getMasterInterfaces(const QString& addressSpace) const;
+	QStringList getInitiatorInterfaces(const QString& addressSpace) const;
 
 	/*!
      *  Get list of the master and mirrored master interface names.
 	 *
 	 *      @return QStringList containing the interface names.
 	 */
-	QStringList getMasterInterfaces() const;
+	QStringList getInitiatorInterfaces() const;
 
 	/*!
      *  Checks if the component contains bus interfaces.

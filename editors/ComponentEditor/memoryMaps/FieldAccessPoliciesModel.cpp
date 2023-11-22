@@ -20,13 +20,14 @@ using ModeRefList = std::vector<std::pair<unsigned int, std::string> >;
 // Function: FieldAccessPoliciesModel::FieldAccessPoliciesModel()
 //-----------------------------------------------------------------------------
 FieldAccessPoliciesModel::FieldAccessPoliciesModel(QString const& fieldName, 
-    QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, QObject* parent):
+    QSharedPointer<ParameterFinder> parameterFinder, FieldInterface* fieldInterface, 
+    QSharedPointer<ExpressionParser> expressionParser, QObject* parent) :
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 fieldInterface_(fieldInterface),
 fieldName_(fieldName.toStdString())
 {
-
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -216,6 +217,10 @@ QVariant FieldAccessPoliciesModel::data(const QModelIndex& index, int role /*= Q
 
             return modeRefsVariant;
         }
+    }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
     }
 
     return QVariant();

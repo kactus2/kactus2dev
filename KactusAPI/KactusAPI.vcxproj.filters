@@ -494,13 +494,13 @@
     <ClCompile Include="expressions\ComponentInstanceParameterFinder.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
-    <ClCompile Include="include\AccessPolicyInterface.cpp">
-      <Filter>Source Files\interfaces\component</Filter>
-    </ClCompile>
     <ClCompile Include="expressions\ModeConditionParser.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
     <ClCompile Include="interfaces\component\ModeReferenceInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp">
       <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
   </ItemGroup>

@@ -46,6 +46,7 @@ HEADERS += ./KactusAPI.h \
     ./include/IPluginUtility.h \
     ./include/IPXactSystemVerilogParser.h \
     ./include/LibraryInterface.h \
+    ./include/ListHelper.h \
     ./include/ListParameterFinder.h \
     ./include/MasterPortInterface.h \
     ./include/MemoryBlockInterface.h \
@@ -115,7 +116,7 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/SystemVerilogExpressionParser.cpp \
     ./interfaces/bus/AbstractionTypeInterface.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
-    ./include/AccessPolicyInterface.cpp \
+    ./interfaces/component/AccessPolicyInterface.cpp \
     ./interfaces/component/AddressBlockInterface.cpp \
     ./interfaces/component/BusInterfaceInterface.cpp \
     ./interfaces/component/BusInterfaceInterfaceFactory.cpp \

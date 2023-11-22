@@ -249,6 +249,10 @@ QVariant RegisterTableModel::data( const QModelIndex& index, int role /*= Qt::Di
             return KactusColors::REGULAR_FIELD;
 		}
 	}
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
 	else 
     {
 		return QVariant();

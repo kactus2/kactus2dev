@@ -113,7 +113,7 @@ protected:
      *
      *      @return True, if the column can have expressions, otherwise false.
      */
-    virtual bool isValidExpressionColumn(QModelIndex const& index) const override final;
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
 
     /*!
      *  validates the data in the column.

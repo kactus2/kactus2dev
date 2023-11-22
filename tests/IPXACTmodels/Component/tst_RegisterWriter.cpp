@@ -417,15 +417,15 @@ void tst_RegisterWriter::writeRegisterAlternateRegisters2022()
     
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
     modeRef1->setReference("testMode");
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
     modeRef2->setReference("testMode2");
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
 
     QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
     modeRef3->setReference("testMode3");
-    modeRef3->setPriority("2");
+    modeRef3->setPriority(2);
 
 
     QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
@@ -620,7 +620,7 @@ void tst_RegisterWriter::writeRegisterAccessPolicies2022()
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
     modeRef1->setReference("testMode");
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
 
     QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
     accessPolicy1->getModeReferences()->append(modeRef1);
@@ -629,11 +629,11 @@ void tst_RegisterWriter::writeRegisterAccessPolicies2022()
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
     modeRef2->setReference("testMode2");
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
 
     QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
     modeRef3->setReference("testMode3");
-    modeRef3->setPriority("2");
+    modeRef3->setPriority(2);
 
     QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
     accessPolicy2->getModeReferences()->append(modeRef2);
@@ -996,7 +996,7 @@ void tst_RegisterWriter::writeRegisterFileAccessPolicies2022()
 
     QSharedPointer<ModeReference> modeRef1(new ModeReference());
     modeRef1->setReference("testMode");
-    modeRef1->setPriority("0");
+    modeRef1->setPriority(0);
 
     QSharedPointer<AccessPolicy> accessPolicy1(new AccessPolicy());
     accessPolicy1->getModeReferences()->append(modeRef1);
@@ -1005,11 +1005,11 @@ void tst_RegisterWriter::writeRegisterFileAccessPolicies2022()
 
     QSharedPointer<ModeReference> modeRef2(new ModeReference());
     modeRef2->setReference("testMode2");
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
 
     QSharedPointer<ModeReference> modeRef3(new ModeReference(*modeRef1));
     modeRef3->setReference("testMode3");
-    modeRef3->setPriority("2");
+    modeRef3->setPriority(2);
 
     QSharedPointer<AccessPolicy> accessPolicy2(new AccessPolicy());
     accessPolicy2->getModeReferences()->append(modeRef2);

@@ -39,11 +39,14 @@ MemoryMapsEditor::MemoryMapsEditor(MemoryMapInterface* mapInterface, QSharedPoin
 ItemEditor(component, handler, parent),
 view_(new MemoryMapsView(this)),
 proxy_(new EditableTreeSortFilter(this)),
-model_(new MemoryMapsModel(parameterFinder, expressionParser, mapInterface, component->getRevision(), this)),
+model_(new MemoryMapsModel(parameterFinder, expressionParser, mapInterface, component->getRevision(),
+    fontMetrics().height() + 8, this)),
 delegate_(),
 interface_(mapInterface),
 component_(component)
 {
+    view_->setUniformRowHeights(true);
+
     mapInterface->setMemoryMaps(component);
 
     // display a label on top the table

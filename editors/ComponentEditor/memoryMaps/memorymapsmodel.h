@@ -50,11 +50,12 @@ public:
      *      @param [in] expressionParser    The used expression parser.
      *      @param [in] mapInterface        Interface for memory maps.
      *      @param [in] docRevision         The IP-XACT standard revision to use.
+     *      @param [in] ROWHEIGHT           Height for rows.
 	 *      @param [in] parent              The owner of the model.
 	 */
 	MemoryMapsModel( QSharedPointer<ParameterFinder> parameterFinder, 
         QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface, 
-        Document::Revision docRevision, QObject *parent);
+        Document::Revision docRevision, const int ROWHEIGHT, QObject *parent);
 
     //! No copying
     MemoryMapsModel(const MemoryMapsModel& other) = delete;
@@ -370,6 +371,9 @@ private:
 
     //! The IP-XACT standard revision to use.
     Document::Revision docRevision_;
+
+    //! Height for rows.
+    const int ROWHEIGHT_;
 };
 
 #endif // MEMORYMAPSMODEL_H

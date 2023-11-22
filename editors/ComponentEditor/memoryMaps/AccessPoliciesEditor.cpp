@@ -39,10 +39,10 @@ AccessPoliciesEditor::AccessPoliciesEditor(QSharedPointer<QList<QSharedPointer<A
 
     auto model = new AccessPoliciesModel(accessPolicyInterface, this);
     auto delegate = new AccessPoliciesDelegate(accessPolicyInterface->getModeReferenceInterface(), this);
-    auto proxy = new QSortFilterProxyModel(this);
+    proxy_ = new QSortFilterProxyModel(this);
 
-    proxy->setSourceModel(model);
-    view_->setModel(proxy);
+    proxy_->setSourceModel(model);
+    view_->setModel(proxy_);
     view_->setItemDelegate(delegate);
     view_->setSortingEnabled(true);
     view_->setItemsDraggable(false);
@@ -50,7 +50,7 @@ AccessPoliciesEditor::AccessPoliciesEditor(QSharedPointer<QList<QSharedPointer<A
     connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(model, SIGNAL(invalidateFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
+    connect(model, SIGNAL(invalidateFilter()), proxy_, SLOT(invalidate()), Qt::UniqueConnection);
 
     connect(view_, SIGNAL(addItem(QModelIndex const&)),
         model, SLOT(onAddRow(QModelIndex const&)), Qt::UniqueConnection);
@@ -64,6 +64,8 @@ AccessPoliciesEditor::AccessPoliciesEditor(QSharedPointer<QList<QSharedPointer<A
 void AccessPoliciesEditor::refresh()
 {
     view_->update();
-
     interface_->setAccessPolicies(accessPolicies_);
+    
+    // Invalidate filter to force table refresh (access values can be changed in upper level editor).
+    proxy_->invalidate();
 }

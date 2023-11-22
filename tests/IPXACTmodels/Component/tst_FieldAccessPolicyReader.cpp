@@ -80,9 +80,9 @@ void tst_FieldAccessPolicyReader::readModeRefs()
 
     QCOMPARE(fieldAccessPolicy->getModeReferences()->size(), 2);
     QCOMPARE(fieldAccessPolicy->getModeReferences()->first()->getReference(), QString("normal"));
-    QCOMPARE(fieldAccessPolicy->getModeReferences()->first()->getPriority(), QString("0"));
+    QCOMPARE(fieldAccessPolicy->getModeReferences()->first()->getPriority(), 0);
     QCOMPARE(fieldAccessPolicy->getModeReferences()->at(1)->getReference(), QString("test"));
-    QCOMPARE(fieldAccessPolicy->getModeReferences()->at(1)->getPriority(), QString("1"));
+    QCOMPARE(fieldAccessPolicy->getModeReferences()->at(1)->getPriority(), 1);
 }
 
 //-----------------------------------------------------------------------------

@@ -281,7 +281,7 @@ void GlobalHeaderSaveModel::setDesign( QSharedPointer<Component> topComp, QShare
 		}
 		
 		// create header for each master interface
-		QStringList masterInterfaces = comp->getMasterInterfaces();
+		QStringList masterInterfaces = comp->getInitiatorInterfaces();
 		foreach (QString interfaceName, masterInterfaces)
         {
 			// if the operated interface is not connected to any other instance within the design

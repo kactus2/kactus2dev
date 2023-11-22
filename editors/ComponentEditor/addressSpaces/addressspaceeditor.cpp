@@ -32,7 +32,7 @@ AddressSpaceEditor::AddressSpaceEditor(QSharedPointer<Component> component, Libr
 ItemEditor(component, handler, parent),
 addrSpace_(addrSpace),
 nameEditor_(addrSpace, component->getRevision(), this),
-generalEditor_(addrSpace, component->getMasterInterfaces(addrSpace_->name()), parameterFinder, expressionParser,
+generalEditor_(addrSpace, component->getInitiatorInterfaces(addrSpace_->name()), parameterFinder, expressionParser,
     component->getRevision(), this),
 segmentsEditor_(addrSpace, component, handler->getDirectoryPath(component->getVlnv()), parameterFinder,
     expressionParser, expressionFormatter, this),
@@ -103,7 +103,7 @@ localMemMapEditor_(addrSpace, component, handler, parameterFinder, blockInterfac
 //-----------------------------------------------------------------------------
 void AddressSpaceEditor::refresh()
 {
-    QStringList masterInterfaceList = component()->getMasterInterfaces(addrSpace_->name());
+    QStringList masterInterfaceList = component()->getInitiatorInterfaces(addrSpace_->name());
 
     // Block signals from here for the duration of refreshing editors.
     blockSignals(true);

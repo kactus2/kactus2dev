@@ -11,6 +11,7 @@
 
 #include <IPXACTmodels/Component/validators/FieldAccessPolicyValidator.h>
 #include <IPXACTmodels/Component/FieldAccessPolicy.h>
+#include <IPXACTmodels/Component/Mode.h>
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
@@ -90,17 +91,17 @@ void tst_FieldAccessPolicyValidator::testDefinitionRefIsValid()
 
     QStringList errorList;
 
-    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
 
     QCOMPARE(errorList.size(), 1); // No typedefinitions.
-    QVERIFY(validator_.validate(fieldAccessPolicy_) == false);
+    QVERIFY(validator_.validate(fieldAccessPolicy_, QSharedPointer<QList<QSharedPointer<Mode> > >()) == false);
 
     errorList.clear();
     fieldAccessPolicy_->setFieldAccessPolicyTypeDefinitionRef("testTypeDefinitions");
 
-    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
     QCOMPARE(errorList.size(), 0);
-    QVERIFY(validator_.validate(fieldAccessPolicy_));
+    QVERIFY(validator_.validate(fieldAccessPolicy_, QSharedPointer<QList<QSharedPointer<Mode> > >()));
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +125,7 @@ void tst_FieldAccessPolicyValidator::testAccessIsValid()
     if (!isValid)
     {
         QVector<QString> errorList;
-        validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test");
+        validator_.findErrorsIn(errorList, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
 
         if (fieldAccessPolicy_->getAccess() == AccessTypes::READ_ONLY &&
             fieldAccessPolicy_->getModifiedWrite() != General::MODIFIED_WRITE_COUNT)
@@ -206,7 +207,7 @@ void tst_FieldAccessPolicyValidator::testWriteValueConstraintIsValid()
     if (!isValid)
     {
         QVector<QString> foundErrors;
-        validator_.findErrorsIn(foundErrors, fieldAccessPolicy_, "test");
+        validator_.findErrorsIn(foundErrors, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
 
         if (testConstraint->getType() == WriteValueConstraint::TYPE_COUNT)
         {
@@ -297,7 +298,7 @@ void tst_FieldAccessPolicyValidator::testReadResponseIsValid()
     {
         QStringList errors;
 
-        validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+        validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
 
         QString expectedError = QObject::tr("Invalid read response value for field access policy within test");
 
@@ -345,7 +346,7 @@ void tst_FieldAccessPolicyValidator::testBroadcastsAreValid()
 
     QString expectedErrorField("Field reference in test must contain a reference to a field.");
 
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
     QCOMPARE(errors.size(), 2);
     QVERIFY(errorIsNotFoundInErrorList(expectedErrorChoice, errors) == false);
     QVERIFY(errorIsNotFoundInErrorList(expectedErrorField, errors) == false);
@@ -355,7 +356,7 @@ void tst_FieldAccessPolicyValidator::testBroadcastsAreValid()
     fieldReference->setReference(fieldRef, FieldReference::FIELD);
     fieldReference->clearReference(FieldReference::ADDRESS_SPACE);
 
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
     QCOMPARE(errors.size(), 0);
     QVERIFY(validator_.hasValidBroadcasts(fieldAccessPolicy_));
 }
@@ -377,21 +378,25 @@ void tst_FieldAccessPolicyValidator::testAccessRestrictionsAreValid()
     fieldAccessPolicy_->getAccessRestrictions()->append(accessRestriction);
     fieldAccessPolicy_->getAccessRestrictions()->append(accessRestriction2);
 
-    // No modes -> error
+    QSharedPointer<QList<QSharedPointer<Mode> > > availableModes(new QList<QSharedPointer<Mode> >());
+    availableModes->append(QSharedPointer<Mode>(new Mode("testMode")));
+    availableModes->append(QSharedPointer<Mode>(new Mode("testMode2")));
+
+    // No mode references set -> error
     QStringList errors;
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", availableModes);
     QCOMPARE(errors.size(), 1);
     
     errors.clear();
 
     // Duplicate modes in any of the access restrictions -> error
     modeRef->setReference("testMode");
-    modeRef->setPriority("0");
+    modeRef->setPriority(0);
     
     modeRef2->setReference("testMode");
-    modeRef2->setPriority("1");
+    modeRef2->setPriority(1);
 
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", availableModes);
     QCOMPARE(errors.size(), 1);
     
     errors.clear();
@@ -404,14 +409,14 @@ void tst_FieldAccessPolicyValidator::testAccessRestrictionsAreValid()
     accessRestriction->writeAccessMask_ = QString("asdasd"); // Not valid
     accessRestriction2->writeAccessMask_ = QString("2'b11");
 
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", availableModes);
     QCOMPARE(errors.size(), 2);
 
     errors.clear();
     accessRestriction2->readAccessMask_ = QString("'h2");
     accessRestriction->writeAccessMask_ = QString("'b1111");
 
-    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test");
+    validator_.findErrorsIn(errors, fieldAccessPolicy_, "test", availableModes);
     QCOMPARE(errors.size(), 0);
 }
 
@@ -430,7 +435,7 @@ void tst_FieldAccessPolicyValidator::testReserved()
     if (!isValid)
     {
         QStringList foundErrors;
-        validator_.findErrorsIn(foundErrors, fieldAccessPolicy_, "test");
+        validator_.findErrorsIn(foundErrors, fieldAccessPolicy_, "test", QSharedPointer<QList<QSharedPointer<Mode> > >());
 
         QString expectedError = QObject::tr("Invalid reserved set for field access policy within %1").arg("test");
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))

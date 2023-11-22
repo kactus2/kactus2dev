@@ -13,6 +13,7 @@
 #define ADDRESSBLOCKMODEL_H
 
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <editors/ComponentEditor/common/ParameterizableTable.h>
 #include <editors/ComponentEditor/common/ReferencingTableModel.h>
@@ -21,6 +22,7 @@
 #include <QSharedPointer>
 
 class RegisterInterface;
+class AccessPolicyInterface;
 
 //-----------------------------------------------------------------------------
 //! The model to manage the registers of a single address block or register file.
@@ -42,6 +44,7 @@ public:
     AddressBlockModel(RegisterInterface* registerInterface,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterFinder> parameterFinder,
+        Document::Revision docRevision,
         QObject *parent);
 
 	/*!
@@ -288,6 +291,11 @@ private:
 
     //! Interface for registers.
     RegisterInterface* registerInterface_;
+
+    //! Interface for register access policies.
+    AccessPolicyInterface* accessPolicyInterface_;
+
+    Document::Revision docRevision_;
 };
 
 #endif // ADDRESSBLOCKMODEL_H

@@ -132,6 +132,10 @@ QVariant AddressSpacesModel::headerData( int section, Qt::Orientation orientatio
         }
         else if (section == AddressSpaceColumns::INTERFACE_BINDING)
         {
+            if (component_->getRevision() == Document::Revision::Std22)
+            {
+                return tr("Initiator interface\nbinding(s)");
+            }
             return tr("Master interface\nbinding(s)");
         }
         else if (section == AddressSpaceColumns::DESCRIPTION)
@@ -183,7 +187,7 @@ QVariant AddressSpacesModel::data(QModelIndex const& index, int role) const
     }
 	else if (Qt::UserRole == role)
     {
-		return component_->getMasterInterfaces(addressSpaces_->at(index.row())->name());
+		return component_->getInitiatorInterfaces(addressSpaces_->at(index.row())->name());
 	}
 	else if (Qt::ForegroundRole == role)
     {
@@ -358,9 +362,9 @@ QVariant AddressSpacesModel::expressionOrValueForIndex(QModelIndex const& index)
     }
     else if (index.column() == AddressSpaceColumns::INTERFACE_BINDING)
     {
-        QStringList interfaceNames = component_->getMasterInterfaces(addressSpaces_->at(index.row())->name());
+        QStringList interfaceNames = component_->getInitiatorInterfaces(addressSpaces_->at(index.row())->name());
 
-        // if no interface refers to the memory map
+        // if no interface refers to the address space
         if (interfaceNames.isEmpty())
         {
             return tr("No binding");

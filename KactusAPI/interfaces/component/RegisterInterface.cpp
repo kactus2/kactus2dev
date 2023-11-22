@@ -434,11 +434,21 @@ bool RegisterInterface::setVolatile(std::string const& registerName, std::string
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::getAccessString()
 //-----------------------------------------------------------------------------
-std::string RegisterInterface::getAccessString(std::string const& registerName) const
+std::string RegisterInterface::getAccessString(std::string const& registerName, bool getAccessPolicyAccess /*= false*/) const
 {
     if (auto selectedRegister = getRegister(registerName))
     {
-        return AccessTypes::access2Str(selectedRegister->getAccess()).toStdString();
+        if (!getAccessPolicyAccess)
+        {
+            return AccessTypes::access2Str(selectedRegister->getAccess()).toStdString();
+        }
+        else
+        {
+            if (auto accessPolicies = selectedRegister->getAccessPolicies(); !accessPolicies->isEmpty())
+            {
+                return AccessTypes::access2Str(accessPolicies->first()->getAccess()).toStdString();
+            }
+        }
     }
 
     return string("");
@@ -460,13 +470,62 @@ AccessTypes::Access RegisterInterface::getAccess(std::string const& registerName
 //-----------------------------------------------------------------------------
 // Function: RegisterInterface::setAccess()
 //-----------------------------------------------------------------------------
-bool RegisterInterface::setAccess(std::string const& registerName, std::string const& newAccess)
+bool RegisterInterface::setAccess(std::string const& registerName, std::string const& newAccess, bool setAccessPolicyAccess /*= false*/)
+{
+    auto selectedRegister = getRegister(registerName);
+    if (!selectedRegister)
+    {
+        return false;
+    }
+
+    if (!setAccessPolicyAccess)
+    {
+        auto newAccessType = AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT);
+        selectedRegister->setAccess(newAccessType);
+        return true;
+    }
+    else
+    {
+        auto accessPolicy = selectedRegister->getAccessPolicies()->first();
+
+        // Remove access policy, if new access is empty.
+        if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
+            accessPolicy->getVendorExtensions()->isEmpty())
+        {
+            selectedRegister->getAccessPolicies()->removeFirst();
+            return true;
+        }
+
+        accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess),
+            AccessTypes::ACCESS_COUNT));
+        return true;
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::getAccessPolicyCount()
+//-----------------------------------------------------------------------------
+int RegisterInterface::getAccessPolicyCount(std::string const& registerName) const
 {
     if (auto selectedRegister = getRegister(registerName))
     {
-        auto newAccessType = AccessTypes::str2Access(QString::fromStdString(newAccess), AccessTypes::ACCESS_COUNT);
+        return selectedRegister->getAccessPolicies()->size();
+    }
 
-        selectedRegister->setAccess(newAccessType);
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: RegisterInterface::addAccessPolicy()
+//-----------------------------------------------------------------------------
+bool RegisterInterface::addAccessPolicy(std::string const& registerName)
+{
+    if (auto selectedRegister = getRegister(registerName))
+    {
+        QSharedPointer<AccessPolicy> newAccessPolicy(new AccessPolicy());
+        selectedRegister->getAccessPolicies()->append(newAccessPolicy);
         return true;
     }
 

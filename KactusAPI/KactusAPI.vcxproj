@@ -124,7 +124,6 @@
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="include\AccessPolicyInterface.cpp" />
     <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />
@@ -132,6 +131,7 @@
     <ClCompile Include="interfaces\common\NameGroupInterface.cpp" />
     <ClCompile Include="interfaces\common\ParameterizableInterface.cpp" />
     <ClCompile Include="interfaces\common\ParametersInterface.cpp" />
+    <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp" />
     <ClCompile Include="interfaces\component\AddressBlockInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp" />
