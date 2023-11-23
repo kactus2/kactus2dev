@@ -18,6 +18,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/Segment.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Component/AddressBlock.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/Parameter.h>
@@ -213,6 +214,81 @@ bool AddressSpaceValidator::segmentHasValidRange(QSharedPointer<Segment> segment
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressSpaceValidator::localMemMapaddressBlocksOverlap()
+//-----------------------------------------------------------------------------
+bool AddressSpaceValidator::addressBlocksAreContainedWithinAddressSpace(QSharedPointer<AddressSpace> addressSpace) const
+{
+    auto localMemMap = addressSpace->getLocalMemoryMap();
+
+    if (!localMemMap)
+    {
+        return true;
+    }
+
+    for (auto const& memoryBlock : *localMemMap->getMemoryBlocks())
+    {
+        auto addressBlock = memoryBlock.dynamicCast<AddressBlock>();
+
+        if (addressBlock && !addressBlockIsContainedWithinAddressSpace(addressSpace, addressBlock))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceValidator::addressBlockIsContainedWithinLocalMemMap()
+//-----------------------------------------------------------------------------
+bool AddressSpaceValidator::addressBlockIsContainedWithinAddressSpace(QSharedPointer<AddressSpace> addressSpace, QSharedPointer<AddressBlock> addressBlock) const
+{
+    if (!addressBlock)
+    {
+        return false;
+    }
+    
+    bool rangeOk = false;
+    bool baseAddrOk = false;
+
+    quint64 addressBlockRange = expressionParser_->parseExpression(addressBlock->getRange()).toULongLong(&rangeOk);
+    quint64 startPos = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toULongLong(&baseAddrOk);
+
+    if (!rangeOk || !baseAddrOk)
+    {
+        return false;
+    }
+
+    quint64 endPos = startPos + addressBlockRange;
+
+    return endPos <= expressionParser_->parseExpression(addressSpace->getRange()).toULongLong();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceValidator::findErrorsInAddressBlockRanges()
+//-----------------------------------------------------------------------------
+void AddressSpaceValidator::findErrorsInAddressBlockRanges(QStringList& errors, QSharedPointer<AddressSpace> addressSpace, QString const& context) const
+{
+    auto localMemMap = addressSpace->getLocalMemoryMap();
+
+    if (!localMemMap)
+    {
+        return;
+    }
+
+    for (auto const& memoryBlock : *localMemMap->getMemoryBlocks())
+    {
+        auto addressBlock = memoryBlock.dynamicCast<AddressBlock>();
+
+        if (addressBlock && !addressBlockIsContainedWithinAddressSpace(addressSpace, addressBlock))
+        {
+            errors.append(QObject::tr("Address block %1 is not contained within local memory map of %2.")
+                .arg(addressBlock->name()).arg(context));
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AddressSpaceValidator::hasValidAddressUnitBits()
 //-----------------------------------------------------------------------------
 bool AddressSpaceValidator::hasValidAddressUnitBits(QSharedPointer<AddressSpace> addressSpace) const
@@ -235,7 +311,7 @@ bool AddressSpaceValidator::hasValidAddressUnitBits(QSharedPointer<AddressSpace>
 //-----------------------------------------------------------------------------
 bool AddressSpaceValidator::hasValidLocalMemoryMap(QSharedPointer<AddressSpace> addressSpace) const
 {
-    if (addressSpace->getLocalMemoryMap())
+    if (auto localMemoryMap = addressSpace->getLocalMemoryMap())
     {
         QString addressUnitBits = addressSpace->getAddressUnitBits();
         if (addressUnitBits.isEmpty())
@@ -243,9 +319,11 @@ bool AddressSpaceValidator::hasValidLocalMemoryMap(QSharedPointer<AddressSpace> 
             addressUnitBits = QLatin1String("8");
         }
 
-        QSharedPointer<MemoryMapBase> localMemoryMap = addressSpace->getLocalMemoryMap();
-
-        return localMemoryMapValidator_->validate(localMemoryMap, addressUnitBits);
+        if (!localMemoryMapValidator_->validate(localMemoryMap, addressUnitBits) ||
+            !addressBlocksAreContainedWithinAddressSpace(addressSpace))
+        {
+            return false;
+        }
     }
 
     return true;
@@ -291,6 +369,7 @@ void AddressSpaceValidator::findErrorsIn(QVector<QString>& errors, QSharedPointe
     findErrorsInAddressUnitBits(errors, addressSpace, context);
     findErrorsInLocalMemoryMap(errors, addressSpace, addressSpaceContext);
     findErrorsInParameters(errors, addressSpace, addressSpaceContext);
+    findErrorsInAddressBlockRanges(errors, addressSpace, addressSpaceContext);
 }
 
 //-----------------------------------------------------------------------------
