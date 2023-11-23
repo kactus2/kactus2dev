@@ -41,6 +41,7 @@
 #include <editors/ComponentEditor/treeStructure/componenteditoritem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeSortProxyModel.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorTreeDelegate.h>
+#include <editors/ComponentEditor/treeStructure/WirePortsItem.h>
 
 #include <editors/ComponentEditor/parameterReferenceTree/ComponentParameterReferenceTree.h>
 #include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>

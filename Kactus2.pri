@@ -260,11 +260,13 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/ports/PortTypeDefinitionEditor.h \
     ./editors/ComponentEditor/ports/PortWireTypeView.h \
     ./editors/ComponentEditor/ports/TransactionalPortsDelegate.h \
+    ./editors/ComponentEditor/ports/TransactionalPortEditor.h \
     ./editors/ComponentEditor/ports/TransactionalPortsModel.h \
     ./editors/ComponentEditor/ports/TransactionalPortsFilter.h \
     ./editors/ComponentEditor/ports/WirePortsModel.h \
     ./editors/ComponentEditor/ports/WirePortsFilter.h \
     ./editors/ComponentEditor/ports/WirePortsDelegate.h \
+    ./editors/ComponentEditor/ports/WirePortEditor.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
@@ -448,6 +450,8 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/treeStructure/SingleModeItem.h \
     ./editors/ComponentEditor/treeStructure/PowerDomainsItem.h \
     ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.h \
+    ./editors/ComponentEditor/treeStructure/WirePortsItem.h \
+    ./editors/ComponentEditor/treeStructure/TransactionalPortsItem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorrootitem.h \
     ./editors/ComponentEditor/treeStructure/componenteditorswpropertiesitem.h \
     ./editors/ComponentEditor/treeStructure/ComponentEditorSystemViewItem.h \
@@ -567,7 +571,6 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/memoryMaps/MemoryBlockDelegate.h \
     ./editors/ComponentEditor/memoryMaps/MemoryBlockFilter.h \
     ./editors/ComponentEditor/memoryMaps/MemoryMapsView.h \
-    ./editors/ComponentEditor/memoryMaps/MemoryRemapModeReferenceModel.h \
     ./editors/ComponentEditor/memoryMaps/SingleMemoryMapEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h \
     ./editors/ComponentEditor/memoryMaps/SingleRegisterEditor.h \
@@ -1188,10 +1191,12 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/ports/PortWireTypeEditor.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeModel.cpp \
     ./editors/ComponentEditor/ports/PortWireTypeView.cpp \
+    ./editors/ComponentEditor/ports/TransactionalPortEditor.cpp \
     ./editors/ComponentEditor/ports/TransactionalPortsDelegate.cpp \
     ./editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.cpp \
     ./editors/ComponentEditor/ports/TransactionalPortsFilter.cpp \
     ./editors/ComponentEditor/ports/TransactionalPortsModel.cpp \
+    ./editors/ComponentEditor/ports/WirePortEditor.cpp \
     ./editors/ComponentEditor/ports/WirePortsDelegate.cpp \
     ./editors/ComponentEditor/ports/WirePortsEditorConstructor.cpp \
     ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
@@ -1354,7 +1359,9 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/treeStructure/SingleModeItem.cpp \
     ./editors/ComponentEditor/treeStructure/SingleRemapStateItem.cpp \
     ./editors/ComponentEditor/treeStructure/SubspaceMapItem.cpp \
+    ./editors/ComponentEditor/treeStructure/TransactionalPortsItem.cpp \
     ./editors/ComponentEditor/treeStructure/TypeDefinitionsItem.cpp \
+    ./editors/ComponentEditor/treeStructure/WirePortsItem.cpp \
     ./editors/ComponentEditor/visualization/AddressableItem.cpp \
     ./editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ./editors/ComponentEditor/visualization/memorygapitem.cpp \

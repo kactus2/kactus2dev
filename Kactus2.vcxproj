@@ -682,10 +682,12 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeModel.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortWireTypeView.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsFilter.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsFilter.cpp" />
@@ -775,7 +777,9 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleModeItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SingleRemapStateItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\SubspaceMapItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.cpp" />
+    <ClCompile Include="editors\ComponentEditor\treeStructure\WirePortsItem.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\envidentifiereditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\envidentifiersmodel.cpp" />
     <ClCompile Include="editors\ComponentEditor\views\vieweditor.cpp" />
@@ -1893,6 +1897,7 @@ CreateHelp
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsDelegate.h">
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortEditor.h" />
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h" />
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsModel.h">
     </QtMoc>
@@ -1907,6 +1912,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\WirePortEditor.h" />
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h" />
@@ -1961,6 +1967,8 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\treeStructure\SingleModeItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\PowerDomainsItem.h" />
     <QtMoc Include="editors\ComponentEditor\treeStructure\TypeDefinitionsItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\WirePortsItem.h" />
+    <QtMoc Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.h" />
     <ClInclude Include="editors\ComponentEditor\views\EnvIdentifiersColumns.h" />
     <QtMoc Include="editors\ConfigurationTools\ViewConfigurer.h">
     </QtMoc>

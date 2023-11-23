@@ -3340,6 +3340,18 @@
     <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.cpp">
       <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\WirePortsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6022,6 +6034,18 @@
     </QtMoc>
     <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\WirePortsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\WirePortEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

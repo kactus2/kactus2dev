@@ -35,16 +35,6 @@ class WirePortsEditorConstructor : public PortsEditorConstructor
 public:
 
     /*!
-     *  The constructor.
-     */
-    WirePortsEditorConstructor() = default;
-
-    /*!
-     *  The destructor.
-     */
-    virtual ~WirePortsEditorConstructor() = default;
-
-    /*!
      *  Construct a ports model.
      *
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
@@ -55,12 +45,12 @@ public:
      *
      *      @return The created ports model.
      */
-    virtual PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
+    PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<PortsInterface> portsInterface,
         QSharedPointer<PortAbstractionInterface> signalInterface,
         QSortFilterProxyModel* filter,
         QObject* parent = 0)
-        const override final;
+        const final;
 
     /*!
      *  Construct a filter.
@@ -70,8 +60,8 @@ public:
      *
      *      @return The created ports filter.
      */
-    virtual PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0) const
-        override final;
+    PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0) const
+        final;
 
     /*!
      *  Construct a view.
@@ -82,9 +72,9 @@ public:
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath,
+    PortsView* constructView(QString const& defaultPath,
         BusInterfaceInterface* busInterface,
-        QWidget* parent) const override final;
+        QWidget* parent) const final;
 
     /*!
      *  Construct a delegate.
@@ -97,13 +87,9 @@ public:
      *
      *      @return The created delegate.
      */
-    virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
+    PortsDelegate* constructDelegate(QSharedPointer<Component> component,
         QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const override final;
-
-    //! No copying
-    WirePortsEditorConstructor(const WirePortsEditorConstructor& other) = delete;
-    WirePortsEditorConstructor& operator=(const WirePortsEditorConstructor& other) = delete;
+        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const  final;
 };
 
 #endif // WIREPORTSEDITORCONSTRUCTOR_H

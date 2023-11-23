@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include "componenteditorportsitem.h"
+#include "WirePortsItem.h"
+#include "TransactionalPortsItem.h"
 
 #include <editors/ComponentEditor/ports/portseditor.h>
 #include <KactusAPI/include/ExpressionParser.h>
@@ -33,13 +35,17 @@ busInterface_(busInterface)
     setReferenceCounter(refCounter);
     setParameterFinder(parameterFinder);
     setExpressionFormatter(expressionFormatter);
-}
 
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorPortsItem::~ComponentEditorPortsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorPortsItem::~ComponentEditorPortsItem()
-{
+
+
+    childItems_.append(QSharedPointer<WirePortsItem>(new WirePortsItem(model,
+        libHandler, component, refCounter, parameterFinder, expressionFormatter,
+        expressionParser, busInterface, this)));
+
+    childItems_.append(QSharedPointer<TransactionalPortsItem>(new TransactionalPortsItem(model,
+        libHandler, component, refCounter, parameterFinder, expressionFormatter,
+        expressionParser, busInterface, this)));
+
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +72,7 @@ QString ComponentEditorPortsItem::text() const
 bool ComponentEditorPortsItem::isValid() const
 {
     QStringList portNames;
-	foreach (QSharedPointer<Port> port, *component_->getPorts()) 
+	for (QSharedPointer<Port> port : *component_->getPorts()) 
     {
         if (portNames.contains(port->name()) || !portValidator_->validate(port))
         {

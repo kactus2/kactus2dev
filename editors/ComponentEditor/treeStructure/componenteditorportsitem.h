@@ -54,7 +54,13 @@ public:
 		ComponentEditorItem* parent);
 
 	//! The destructor
-	virtual ~ComponentEditorPortsItem();
+	~ComponentEditorPortsItem() = default;
+
+    //! No copying
+    ComponentEditorPortsItem(const ComponentEditorPortsItem& other) = delete;
+
+    //! No assignment
+    ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other) = delete;
 
 	/*!
      *  Get the font to be used for text of this item.
@@ -99,11 +105,6 @@ signals:
     void createInterface();
 
 private:
-	//! No copying
-	ComponentEditorPortsItem(const ComponentEditorPortsItem& other);
-
-	//! No assignment
-	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;

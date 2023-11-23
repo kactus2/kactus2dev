@@ -145,7 +145,7 @@ private:
      *      @param [in] busIf   The new bus interface.
      *      @param [in] wizard  The selected interface wizard.
      */
-    void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard* wizard);
+    void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard);
 
     /*!
      *  Connect the signals.

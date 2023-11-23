@@ -63,7 +63,7 @@ busInterface_(busInterface)
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    ComponentParameterModel* componentParametersModel = new ComponentParameterModel(parameterFinder, this);
+    auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser);
 
     portsInterface_ =
@@ -72,16 +72,19 @@ busInterface_(busInterface)
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new WirePortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
+    WirePortsEditorConstructor wireFactory;
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface, &wireFactory,
+        parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
+
+    TransactionalPortsEditorConstructor transactionalFactory;
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        new TransactionalPortsEditorConstructor(), parameterFinder, portValidator, componentParametersModel, defaultPath,
+        &transactionalFactory, parameterFinder, portValidator, componentParametersModel, defaultPath,
         busInterface, this);
 
     connectSignals();
 
-	SummaryLabel* summaryLabel = new SummaryLabel(tr("Ports"), this);
+	auto summaryLabel = new SummaryLabel(tr("Ports summary"), this);
 
     portTabs_->addTab(wireEditor_, getTabNameWithPortCount(WIREPORTS, wireEditor_->getAmountOfPorts()));
     portTabs_->addTab(transactionalEditor_,
@@ -316,8 +319,8 @@ void PortsEditor::onCreateNewInteface(QStringList const& selectedPorts)
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard* wizard(new BusInterfaceWizard(component_, busIf, handler_, selectedPorts, this, absVLNV,
-        dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION));
+    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV,
+        dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
 
     openBusInterfaceWizard(busIf, wizard);
 }
@@ -330,7 +333,7 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
     // Open the bus interface wizard.
-    auto wizard(new BusInterfaceWizard(component_, busIf, handler_, selectedPorts, this));
+    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
 
     openBusInterfaceWizard(busIf, wizard);
 }
@@ -338,16 +341,16 @@ void PortsEditor::onCreateInterface(QStringList const& selectedPorts)
 //-----------------------------------------------------------------------------
 // Function: portseditor::connectBusInterfaceWizard()
 //-----------------------------------------------------------------------------
-void PortsEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard* wizard)
+void PortsEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard)
 {
     component_->getBusInterfaces()->append(busIf);
 
-    connect(wizard, SIGNAL(increaseReferences(QString)),
+    connect(&wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(wizard, SIGNAL(decreaseReferences(QString)),
+    connect(&wizard, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    if (wizard->exec() == QWizard::Accepted)
+    if (wizard.exec() == QWizard::Accepted)
     {
         emit createInterface();
         emit contentChanged();

@@ -136,7 +136,8 @@ bool MasterPortsEditor::isValid() const
 //-----------------------------------------------------------------------------
 void MasterPortsEditor::refresh()
 {
-	view_->update();
+    proxy_->invalidate();
+	//view_->update();
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +162,7 @@ void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIndex) const
 {
-    std::string portName = portInterface_->getIndexedItemName(portIndex.row());
-    return portInterface_->getPort(portName);
+    return portInterface_->getPort(portInterface_->getIndexedItemName(portIndex.row()));
 }
 
 //-----------------------------------------------------------------------------
@@ -170,7 +170,7 @@ QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIn
 //-----------------------------------------------------------------------------
 void MasterPortsEditor::onCreatePortsFromAbstraction(std::string const& busName, QString const& abstractionString)
 {
-    VLNV abstractionVLNV(VLNV::ABSTRACTIONDEFINITION, abstractionString);
+    const VLNV abstractionVLNV(VLNV::ABSTRACTIONDEFINITION, abstractionString);
     QSharedPointer<const Document> vlnvDocument = handler()->getModelReadOnly(abstractionVLNV);
     if (vlnvDocument)
     {

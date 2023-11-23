@@ -30,10 +30,7 @@ PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<ParameterF
     QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
     QSortFilterProxyModel* filter, QObject* parent) const
 {
-    WirePortsModel* wireModel =
-        new WirePortsModel(parameterFinder, portsInterface, signalInterface, filter, parent);
-
-    return wireModel;
+    return new WirePortsModel(parameterFinder, portsInterface, signalInterface, filter, parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -42,8 +39,7 @@ PortsModel* WirePortsEditorConstructor::constructModel(QSharedPointer<ParameterF
 PortsFilter* WirePortsEditorConstructor::constructFilter(QSharedPointer<PortsInterface> portsInterface,
     QObject* parent) const
 {
-    WirePortsFilter* wireFilter = new WirePortsFilter(portsInterface, parent);
-    return wireFilter;
+    return new WirePortsFilter(portsInterface, parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -52,7 +48,7 @@ PortsFilter* WirePortsEditorConstructor::constructFilter(QSharedPointer<PortsInt
 PortsView* WirePortsEditorConstructor::constructView(QString const& defaultPath,
     BusInterfaceInterface* busInterface, QWidget* parent) const
 {
-    PortsView* view = new PortsView(WirePortColumns::NAME, busInterface, parent);
+    auto view = new PortsView(WirePortColumns::NAME, busInterface, parent);
 
     view->setDefaultImportExportPath(defaultPath);
     view->setAllowImportExport(true);
@@ -71,8 +67,6 @@ PortsDelegate* WirePortsEditorConstructor::constructDelegate(QSharedPointer<Comp
     QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortValidator> portValidator, QObject* parent) const
 {
-    WirePortsDelegate* wireDelegate = new WirePortsDelegate(
-        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
-
-    return wireDelegate;
+    return new WirePortsDelegate(component, completionModel, parameterFinder, portValidator->getTypeValidator(), 
+        parent);
 }

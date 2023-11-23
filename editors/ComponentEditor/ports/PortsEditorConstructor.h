@@ -38,15 +38,7 @@ class PortsEditorConstructor
 {
 public:
 
-	/*!
-	 *  The constructor.
-	 */
-    PortsEditorConstructor() = default;
-
-	/*!
-     *  The destructor.
-     */
-    virtual ~PortsEditorConstructor() = default;
+    ~PortsEditorConstructor() = default;
 
     /*!
      *  Construct a ports model.
@@ -104,9 +96,6 @@ public:
         QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const = 0;
 
-    //! No copying.
-    PortsEditorConstructor(const PortsEditorConstructor& other) = delete;
-    PortsEditorConstructor& operator=(const PortsEditorConstructor& other) = delete;
 };
 
 #endif // PORTSEDITORCONSTRUCTOR_H
