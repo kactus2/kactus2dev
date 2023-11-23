@@ -6,7 +6,7 @@ TEMPLATE = lib
 TARGET = IPXACTmodels
 
 QT += core xml gui
-CONFIG += c++11 release dll
+CONFIG += c++17 release dll
 
 DEFINES += IPXACTMODELS_LIB QT_NO_CAST_FROM_ASCII
 INCLUDEPATH += ./GeneratedFiles \

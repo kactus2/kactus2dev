@@ -37,12 +37,13 @@
 // Function: memorymapsmodel::MemoryMapsModel()
 //-----------------------------------------------------------------------------
 MemoryMapsModel::MemoryMapsModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface, 
-    Document::Revision docRevision, QObject *parent) :
+    QSharedPointer<ExpressionParser> expressionParser, MemoryMapInterface* mapInterface,
+    Document::Revision docRevision, const int ROWHEIGHT, QObject *parent):
 QAbstractItemModel(parent),
 ParameterizableTable(parameterFinder),
 mapInterface_(mapInterface),
-docRevision_(docRevision)
+docRevision_(docRevision),
+ROWHEIGHT_(ROWHEIGHT)
 {
     setExpressionParser(expressionParser);
 }
@@ -257,6 +258,10 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
             return KactusColors::REGULAR_FIELD;
         }
 	}
+    else if (index.column() == MemoryMapsColumns::NAME_COLUMN && role == Qt::SizeHintRole)
+    {
+        return QSize(40, ROWHEIGHT_);
+    }
 
     return QVariant();
 }

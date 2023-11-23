@@ -1022,6 +1022,12 @@
     <ClCompile Include="common\validators\ChoiceValidator.cpp">
       <Filter>Source Files\common\validators</Filter>
     </ClCompile>
+    <ClCompile Include="Component\SubPort.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="Component\Structured.cpp">
+      <Filter>Source Files\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1767,6 +1773,12 @@
     </ClInclude>
     <ClInclude Include="common\validators\ChoiceValidator.h">
       <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\SubPort.h">
+      <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\Structured.h">
+      <Filter>Header Files\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

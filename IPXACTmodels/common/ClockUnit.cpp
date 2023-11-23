@@ -15,40 +15,7 @@
 // Function: ClockUnit::ClockUnit()
 //-----------------------------------------------------------------------------
 ClockUnit::ClockUnit(QString const& value) :
-value_(value),
-timeUnit_(TIMEUNIT_UNSPECIFIED)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ClockUnit::ClockUnit()
-//-----------------------------------------------------------------------------
-ClockUnit::ClockUnit(const ClockUnit& other) :
-value_(other.value_),
-timeUnit_(other.timeUnit_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ClockUnit::operator=()
-//-----------------------------------------------------------------------------
-ClockUnit& ClockUnit::operator=(const ClockUnit& other)
-{
-    if (this != &other)
-    {
-        value_ = other.value_;
-        timeUnit_ = other.timeUnit_;
-    }
-
-    return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ClockUnit::~ClockUnit()
-//-----------------------------------------------------------------------------
-ClockUnit::~ClockUnit()
+value_(value)
 {
 
 }

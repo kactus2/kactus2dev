@@ -35,7 +35,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ComponentReader();
+    ~ComponentReader() = default;
 
     /*!
      *  Creates a new component from a given component document.

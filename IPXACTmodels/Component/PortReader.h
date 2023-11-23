@@ -44,19 +44,39 @@ namespace  PortReader
          *  Parses a wire port.
          *
          *      @param [in] wireElement     XML description of the wire.
-         *      @param [in] newPort         The port containing the wire.
+         *      @param [in] docRevision     The applied IP-XACT revision.
          */
-        void parseWire(QDomElement const& wireElement, QSharedPointer<Port> newPort,
+        QSharedPointer<Wire> createWireFrom(QDomElement const& wireElement, 
             Document::Revision docRevision);
 
         /*!
          *  Parse vectors.
          *
-         *      @param [in] vectorsElement  XML description of the vectors.
+         *      @param [in] wireElement     XML description of the wire.
          *      @param [in] newWire         The containing wire item.
          */
-        void parseWireVectors(QDomElement const& vectorsElement, QSharedPointer<Wire> newWire, 
+        void parseWireVectors(QDomElement const& wireElement, QSharedPointer<Wire> newWire,
             Document::Revision docRevision);
+
+        /*!
+         *  Parse the vectors in the given element.
+         *
+         *      @param [in] parentElement   The element containing vectors.
+         *      @param [in] docRevision     The applied IP-XACT revision.
+         *
+         *      @return The parsed vectors.
+         */
+        QList<Vector> parseVectors(QDomElement const& parentElement, Document::Revision docRevision);
+
+        /*!
+         *  Parse a single vector.
+         *
+         *      @param [in] vectorNode  The xml presentation of the vector.
+         *      @param [in] docRevision The applied IP-XACT revision.
+         *
+         *      @return The parsed vector.
+         */
+        Vector parseVector(QDomNode const& vectorNode, Document::Revision docRevision);
 
         /*!
          *  Parse the wire type definitions.
@@ -67,8 +87,8 @@ namespace  PortReader
          *
          *      @return Pointer to a list containing the created type definitions.
          */
-        QSharedPointer<QList<QSharedPointer<WireTypeDef> > >parseWireTypeDefinitions
-        (QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName);
+        QSharedPointer<QList<QSharedPointer<WireTypeDef> > >parseWireTypeDefinitions(
+            QDomElement const& typeDefinitionsElement, QString const& elementName, QString const& attributeName);
 
         /*!
          *  Parse the type definitions.
@@ -131,12 +151,46 @@ namespace  PortReader
             QSharedPointer<Transactional> transactional);
 
         /*!
+         *  Parse a structured port.
+         *
+         *      @param [in] structuredElement   The XML description of the structured port.
+         *      @param [in] newPort             The containing port item.
+         *
+         *      @return 
+         */
+        QSharedPointer<Structured> createStructuredFrom(QDomElement const& structuredElement);
+
+        /*!
+         *  Parse the structured port type.
+         *
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
+         */
+        void parseStructuredType(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
+
+        /*!
+         *  Parse the vectors in the structured port.
+         *
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
+         */
+        void parseStructuredVectors(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
+
+        /*!
+         *  Parse the sub-ports in the structured port.
+         *
+         *      @param [in] structuredElementt   The XML description of the structured port.
+         *      @param [in] newStructured        The containing structured port.
+         */
+        void parseSubPorts(QDomElement const& structuredElement, QSharedPointer<Structured> newStructured);
+
+        /*!
          *  Parse the port arrays.
          *
-         *      @param [in] portNode    XML description of the port.
+         *      @param [in] parentNode  XML node .
          *      @param [in] newPort     The containing port item.
          */
-        void parseArrays(QDomNode const& portNode, QSharedPointer<Port> newPort);
+        QList<Array> createArrays(QDomNode const& parentNode);
 
         /*!
          *  Parse the port vendor extensions.

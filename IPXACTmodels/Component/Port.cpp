@@ -93,6 +93,7 @@ QSharedPointer<Wire> Port::getWire() const
 void Port::setWire(QSharedPointer<Wire> newWire)
 {
     transactional_.clear();
+    structured_.clear();
 
     wire_ = newWire;
 }
@@ -111,8 +112,28 @@ QSharedPointer<Transactional> Port::getTransactional() const
 void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 {
     wire_.clear();
+    structured_.clear();
 
 	transactional_ = newTransactional;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::getStructured()
+//-----------------------------------------------------------------------------
+QSharedPointer<Structured> Port::getStructured() const
+{
+    return structured_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: Port::setStructural()
+//-----------------------------------------------------------------------------
+void Port::setStructured(QSharedPointer<Structured> newStructured)
+{
+    wire_.clear();
+    transactional_.clear();
+
+    structured_ = newStructured;
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +141,7 @@ void Port::setTransactional(QSharedPointer<Transactional> newTransactional)
 //-----------------------------------------------------------------------------
 QString Port::getLeftBound() const
 {
-    if (wire_ && wire_->getVector())
+    if (wire_)
     {
         return wire_->getVectorLeftBound();
     }
@@ -146,7 +167,7 @@ void Port::setLeftBound(QString const& newLeftBound)
 //-----------------------------------------------------------------------------
 QString Port::getRightBound() const
 {
-    if (wire_ && wire_->getVector())
+    if (wire_)
     {
         return wire_->getVectorRightBound();
     }
@@ -469,7 +490,7 @@ QString Port::getArrayLeft() const
         return QString();
     }
 
-    return configurableArrays_->first()->getLeft();
+    return configurableArrays_->first().getLeft();
 }
 
 //-----------------------------------------------------------------------------
@@ -479,19 +500,18 @@ void Port::setArrayLeft(QString const& newArrayLeft)
 {
     if (configurableArrays_->isEmpty())
     {
-        QSharedPointer<Array> newArray (new Array(newArrayLeft, QStringLiteral("0")));
-        configurableArrays_->append(newArray);
+        configurableArrays_->append(Array(newArrayLeft, QStringLiteral("0")));
     }
     else
     {
-        QSharedPointer<Array> portArray = configurableArrays_->first();
-        if (newArrayLeft.isEmpty() && portArray->getRight().isEmpty())
+        auto& portArray = configurableArrays_->first();
+        if (newArrayLeft.isEmpty() && portArray.getRight().isEmpty())
         {
-            configurableArrays_->removeOne(portArray);
+            configurableArrays_->removeFirst();
         }
         else
         {
-            portArray->setLeft(newArrayLeft);
+            portArray.setLeft(newArrayLeft);
         }
     }
 }
@@ -506,7 +526,7 @@ QString Port::getArrayRight() const
         return QString();
     }
     
-    return configurableArrays_->first()->getRight();
+    return configurableArrays_->first().getRight();
 }
 
 //-----------------------------------------------------------------------------
@@ -516,19 +536,18 @@ void Port::setArrayRight(QString const& newArrayRight)
 {
     if (configurableArrays_->isEmpty())
     {
-        QSharedPointer<Array> newArray (new Array(QStringLiteral("0"), newArrayRight));
-        configurableArrays_->append(newArray);
+        configurableArrays_->append(Array(QStringLiteral("0"), newArrayRight));
     }
     else
     {
-        QSharedPointer<Array> portArray = configurableArrays_->first();
-        if (portArray->getLeft().isEmpty() && newArrayRight.isEmpty())
+        auto& portArray = configurableArrays_->first();
+        if (portArray.getLeft().isEmpty() && newArrayRight.isEmpty())
         {
-            configurableArrays_->removeOne(portArray);
+            configurableArrays_->removeFirst();
         }
         else
         {
-            portArray->setRight(newArrayRight);
+            portArray.setRight(newArrayRight);
         }
     }
 }
@@ -588,7 +607,7 @@ void Port::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 // Function: Port::getArrays()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<Array> > > Port::getArrays() const
+QSharedPointer<QList<Array> > Port::getArrays() const
 {
     return configurableArrays_;
 }

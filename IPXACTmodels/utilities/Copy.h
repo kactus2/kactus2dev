@@ -35,6 +35,18 @@ namespace Copy
 
     };
 
+    template <typename Item>
+    void copyList(QSharedPointer<QList<Item>  > from, QSharedPointer<QList<Item> > to)
+    {
+        if (from.isNull() || to.isNull())
+        {
+            return;
+        }
+
+        std::for_each(from->cbegin(), from->cend(), [&to](auto const& item)
+            { to->append(Item(item)); });
+
+    };
 };
 
 //-----------------------------------------------------------------------------

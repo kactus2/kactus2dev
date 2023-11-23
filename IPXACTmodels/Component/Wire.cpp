@@ -28,10 +28,7 @@ direction_(other.direction_),
 allLogicalDirectionsAllowed_(other.allLogicalDirectionsAllowed_),
 qualifier_(other.qualifier_->clone())
 {
-	if (other.vector_)
-    {
-        vector_ = QSharedPointer<Vector>(other.vector_->clone());
-	}
+    Copy::copyList(other.vectors_, vectors_);
 
     Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
 
@@ -52,11 +49,8 @@ Wire& Wire::operator=( const Wire &other )
 		allLogicalDirectionsAllowed_ = other.allLogicalDirectionsAllowed_;
         qualifier_ = QSharedPointer<Qualifier>(other.qualifier_->clone());
 
-        vector_.clear();
-		if (other.vector_)
-        {
-            vector_ = QSharedPointer<Vector>(other.vector_->clone());
-		}
+        vectors_->clear();
+        Copy:: copyList(other.vectors_, vectors_);
 
         wireTypeDefs_->clear();
         Copy::copyList(other.wireTypeDefs_, wireTypeDefs_);
@@ -95,27 +89,19 @@ QSharedPointer<Qualifier> Wire::getQualifier() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Wire::getVectors()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<Vector> > Wire::getVectors() const
+{
+    return vectors_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: Wire::getWireTypeDefs()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<WireTypeDef> > > Wire::getWireTypeDefs() const
 {
     return wireTypeDefs_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Wire::getVector()
-//-----------------------------------------------------------------------------
-QSharedPointer<Vector> Wire::getVector() const
-{
-    return vector_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: Wire::setVector()
-//-----------------------------------------------------------------------------
-void Wire::setVector(QSharedPointer<Vector> newVector)
-{
-    vector_ = newVector;
 }
 
 //-----------------------------------------------------------------------------
@@ -181,12 +167,12 @@ QString Wire::getDefaultDriverValue() const
 //-----------------------------------------------------------------------------
 void Wire::setVectorLeftBound(QString const& expression)
 {
-    if (!vector_)
+    if (vectors_->isEmpty())
     {
-        vector_ = QSharedPointer<Vector>(new Vector(QStringLiteral("0"), QStringLiteral("0")));
+        vectors_->append(Vector(QStringLiteral("0"), QStringLiteral("0")));
     }
 
-    vector_->setLeft(expression);
+    vectors_->first().setLeft(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -194,12 +180,12 @@ void Wire::setVectorLeftBound(QString const& expression)
 //-----------------------------------------------------------------------------
 void Wire::setVectorRightBound(QString const& expression)
 {
-    if (!vector_)
+    if (vectors_->isEmpty())
     {
-        vector_ = QSharedPointer<Vector>(new Vector(QStringLiteral("0"), QStringLiteral("0")));
+        vectors_->append(Vector(QStringLiteral("0"), QStringLiteral("0")));
     }
 
-    vector_->setRight(expression);
+    vectors_->first().setRight(expression);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,12 +193,12 @@ void Wire::setVectorRightBound(QString const& expression)
 //-----------------------------------------------------------------------------
 QString Wire::getVectorLeftBound() const
 {
-    if (!vector_)
+    if (vectors_->isEmpty())
     {
         return QString();
     }
 
-    return vector_->getLeft();
+    return vectors_->first().getLeft();
 }
 
 //-----------------------------------------------------------------------------
@@ -220,12 +206,12 @@ QString Wire::getVectorLeftBound() const
 //-----------------------------------------------------------------------------
 QString Wire::getVectorRightBound() const
 {
-    if (!vector_)
+    if (vectors_->isEmpty())
     {
         return QString();
     }
 
-    return vector_->getRight();
+    return vectors_->first().getRight();
 }
 
 //-----------------------------------------------------------------------------

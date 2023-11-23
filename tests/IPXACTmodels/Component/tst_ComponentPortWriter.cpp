@@ -37,7 +37,6 @@ private slots:
     void writeWirePortAllLogicalDirectionsAllowed();
     void writeWirePortVectors();
     void writeWirePortVectors_2022();
-    void emptyVectorIsNotWritten();
     void writeWireTypeDefinitions();
     void emptyWireTypeDefinitionIsNotWritten();
     void writeWireDefaultDriver();
@@ -50,6 +49,11 @@ private slots:
     void writeTransactionalProtocol();
     void writeTransactionalTypeDefinitions();
     void writeTransactionalConnectionMinMax();
+
+    void writeStructuredType_2022();
+    void writeStructuredType_2022_data();
+    void writeStructuredVectors_2022();
+    void writeStructuredWirePort_2022();
 };
 
 //-----------------------------------------------------------------------------
@@ -380,7 +384,7 @@ void tst_ComponentPortWriter::writeWirePortVectors_2022()
     testPort->setDirection(DirectionTypes::OUT);
     testPort->getWire()->setVectorLeftBound("4+18-Yaoxao");
     testPort->getWire()->setVectorRightBound("Yaoxao");
-    testPort->getWire()->getVector()->setId("testID");
+    testPort->getWire()->getVectors()->first().setId("testID");
 
     QString expectedOutput(
         "<ipxact:port>"
@@ -399,33 +403,6 @@ void tst_ComponentPortWriter::writeWirePortVectors_2022()
 
     PortWriter portWriter;
     portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
-    QCOMPARE(output, expectedOutput);
-}
-
-//-----------------------------------------------------------------------------
-// Function: tst_ComponentPortWriter::emptyVectorIsNotWritten()
-//-----------------------------------------------------------------------------
-void tst_ComponentPortWriter::emptyVectorIsNotWritten()
-{
-    QString output;
-    QXmlStreamWriter xmlStreamWriter(&output);
-
-    QSharedPointer<Port> testPort(new Port("testPort"));
-    testPort->setDirection(DirectionTypes::OUT);
-    testPort->getWire()->setVectorLeftBound("");
-    testPort->getWire()->setVectorRightBound("");
-
-    QString expectedOutput(
-        "<ipxact:port>"
-            "<ipxact:name>testPort</ipxact:name>"
-            "<ipxact:wire>"
-                "<ipxact:direction>out</ipxact:direction>"              
-            "</ipxact:wire>"
-        "</ipxact:port>"
-        );
-
-    PortWriter portWriter;
-    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -902,6 +879,161 @@ void tst_ComponentPortWriter::writeTransactionalConnectionMinMax()
 
     PortWriter portWriter;
     portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std14);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuredType_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuredType_2022()
+{
+    QFETCH(Structured::Type, type);
+    QFETCH(DirectionTypes::Direction, direction);
+    QFETCH(QString, expectedType);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Structured> testStructured(new Structured());
+    testStructured->setPacked(true);
+    testStructured->setType(type);
+    testStructured->setDirection(direction);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
+    testPort->setStructured(testStructured);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured packed=\"true\">"
+               + expectedType +
+            "</ipxact:structured>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuredType_2022_data()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuredType_2022_data()
+{
+    QTest::addColumn<Structured::Type>("type");
+    QTest::addColumn<DirectionTypes::Direction>("direction");
+    QTest::addColumn<QString>("expectedType");
+
+    QTest::addRow("Struct with out direction") << Structured::Type::Struct << DirectionTypes::OUT <<
+        "<ipxact:struct direction=\"out\"/>";
+    QTest::addRow("Struct with inout direction") << Structured::Type::Struct << DirectionTypes::INOUT <<
+        "<ipxact:struct direction=\"inout\"/>";
+    QTest::addRow("Struct with in direction") << Structured::Type::Struct << DirectionTypes::IN <<
+        "<ipxact:struct direction=\"in\"/>";
+    QTest::addRow("Struct with phantom direction") << Structured::Type::Struct << 
+        DirectionTypes::DIRECTION_PHANTOM << 
+        "<ipxact:struct direction=\"phantom\"/>";
+    QTest::addRow("Struct with invalid direction") << Structured::Type::Struct <<
+        DirectionTypes::DIRECTION_INVALID <<
+        "<ipxact:struct direction=\"\"/>";
+
+    QTest::addRow("Union with in direction") << Structured::Type::Union << DirectionTypes::IN <<
+        "<ipxact:union direction=\"in\"/>";
+
+    QTest::addRow("Interface with phantom direction") << 
+        Structured::Type::Interface << DirectionTypes::DIRECTION_PHANTOM <<
+        "<ipxact:interface phantom=\"true\"/>";
+
+    QTest::addRow("Interface with invalid direction") << Structured::Type::Interface << DirectionTypes::IN <<
+        "<ipxact:interface/>";
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuredVectors_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuredVectors_2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Structured> testStructured(new Structured());
+    testStructured->setPacked(true);
+    testStructured->setType(Structured::Type::Union);
+    testStructured->setDirection(DirectionTypes::OUT);
+
+    testStructured->getVectors()->append(Vector("1", "0"));
+    testStructured->getVectors()->append(Vector("2", "0"));
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
+    testPort->setStructured(testStructured);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured packed=\"true\">"
+            "<ipxact:union direction=\"out\"/>"
+                "<ipxact:vectors>"
+                    "<ipxact:vector>"
+                        "<ipxact:left>1</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
+                    "<ipxact:vector>"
+                        "<ipxact:left>2</ipxact:left>"
+                        "<ipxact:right>0</ipxact:right>"
+                    "</ipxact:vector>"
+                "</ipxact:vectors>"
+            "</ipxact:structured>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
+    QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentPortWriter::writeStructuredWirePort_2022()
+//-----------------------------------------------------------------------------
+void tst_ComponentPortWriter::writeStructuredWirePort_2022()
+{
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+    QSharedPointer<Structured> testStructured(new Structured());
+    testStructured->setType(Structured::Type::Interface);
+    testStructured->setPacked(false);
+
+    QSharedPointer<Port> testPort(new Port("testPort"));    
+    testPort->setStructured(testStructured);
+
+    QSharedPointer<SubPort> wireSubPort(new SubPort());
+    wireSubPort->setName("simpleWire");
+
+    QSharedPointer<Wire> testWire(new Wire);
+    testWire->setDirection(DirectionTypes::IN);
+    wireSubPort->setWire(testWire);
+    testStructured->getSubPorts()->append(wireSubPort);
+
+    QString expectedOutput(
+        "<ipxact:port>"
+            "<ipxact:name>testPort</ipxact:name>"
+            "<ipxact:structured>"
+                "<ipxact:interface/>"
+                "<ipxact:subPorts>"
+                    "<ipxact:subPort>"
+                        "<ipxact:name>simpleWire</ipxact:name>"
+                        "<ipxact:wire>"
+                            "<ipxact:direction>in</ipxact:direction>"
+                        "</ipxact:wire>"
+                    "</ipxact:subPort>"
+                "</ipxact:subPorts>"
+            "</ipxact:structured>"
+        "</ipxact:port>"
+        );
+
+    PortWriter portWriter;
+    portWriter.writePort(xmlStreamWriter, testPort, Document::Revision::Std22);
     QCOMPARE(output, expectedOutput);
 }
 
