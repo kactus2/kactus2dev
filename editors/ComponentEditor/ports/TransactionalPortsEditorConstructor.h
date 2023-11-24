@@ -33,10 +33,7 @@ class TransactionalPortsEditorConstructor : public PortsEditorConstructor
 {
 public:
 
-    /*!
-     *  The constructor.
-     */
-    TransactionalPortsEditorConstructor() = default;
+    using PortsEditorConstructor::PortsEditorConstructor;
 
     /*!
      *  The destructor.
@@ -54,12 +51,7 @@ public:
      *
      *      @return The created ports model.
      */
-    virtual PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortsInterface> portsInterface,
-        QSharedPointer<PortAbstractionInterface> signalInterface,
-        QSortFilterProxyModel* filter,
-        QObject* parent = 0)
-        const override final;
+    PortsModel* constructModel(QObject* parent = 0) const  final;
 
     /*!
      *  Construct a filter.
@@ -69,8 +61,7 @@ public:
      *
      *      @return The created ports filter.
      */
-    virtual PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0) const
-        override final;
+    PortsFilter* createFilter(QObject* parent = 0) const final;
 
     /*!
      *  Construct a view.
@@ -81,9 +72,7 @@ public:
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath,
-        BusInterfaceInterface* busInterface,
-        QWidget* parent) const override final;
+    PortsView* createView(QWidget* parent) const final;
 
     /*!
      *  Construct a delegate.
@@ -96,9 +85,7 @@ public:
      *
      *      @return The created delegate.
      */
-    virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
-        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const final;
+    PortsDelegate* constructDelegate(QObject* parent) const final;
 
     //! No copying.
     TransactionalPortsEditorConstructor(const TransactionalPortsEditorConstructor& other) = delete;

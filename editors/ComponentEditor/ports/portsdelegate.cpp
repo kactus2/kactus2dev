@@ -354,7 +354,7 @@ int PortsDelegate::getRowCountForPortTypes(QModelIndex const& index) const
     }
 
     int portTypeRowCount = 0;
-    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
     {
         portTypeRowCount += singleTypeDefinition->getViewRefs()->count() + 1;
     }

@@ -54,7 +54,6 @@ public:
      *      @param [in] parameterFinder     Locates the different parameters of the containing component.
      *      @param [in] portValidator       Validator used for ports.
      *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] defaultPath         The default import / export path.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this widget.
 	 */
@@ -62,11 +61,8 @@ public:
         LibraryInterface* handler,
         QSharedPointer<PortsInterface> portsInterface,
         QSharedPointer<PortAbstractionInterface> signalInterface,
-        PortsEditorConstructor* editorConstructor,
+        PortsEditorConstructor const* editorConstructor,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator,
-        QAbstractItemModel* completionModel,
-        QString const& defaultPath,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
 
@@ -183,11 +179,11 @@ private:
 	//! The view that displays the ports.
 	PortsView* view_;
 
-	//! The model that holds the data to be displayed to the user.
-	PortsModel* model_;
-
 	//! The proxy that is used to sort the view.
 	PortsFilter* proxy_;
+
+    //! The model that holds the data to be displayed to the user.
+    PortsModel* model_;
 
     //! The delegate for ports.
     PortsDelegate* delegate_;

@@ -27,12 +27,29 @@ portInterface_(portInterface)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsFilter::data()
+//-----------------------------------------------------------------------------
+QVariant PortsFilter::data(const QModelIndex& index, int role) const
+{
+    if (index.column() == 0)
+    {
+        if (role == Qt::DisplayRole)
+        {
+            return index.row();
+        }
+        return QVariant();
+    }
+
+    return QSortFilterProxyModel::data(index, role);
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsFilter::filterAcceptsRow()
 //-----------------------------------------------------------------------------
 bool PortsFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
 {
-    QModelIndex portNameIndex = sourceModel()->index(source_row, nameColumn(), source_parent);
-    if (!portIsAccepted(portNameIndex.data(Qt::DisplayRole).toString()))
+    if (QModelIndex portNameIndex = sourceModel()->index(source_row, nameColumn(), source_parent);
+        portIsAccepted(portNameIndex.data(Qt::DisplayRole).toString()) == false)
     {
         return false;
     }

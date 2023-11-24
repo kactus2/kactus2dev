@@ -35,19 +35,16 @@
 //-----------------------------------------------------------------------------
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
     QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    PortsEditorConstructor* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortValidator> portValidator, QAbstractItemModel* completionModel,
-    QString const& defaultPath, BusInterfaceInterface* busInterface, QWidget *parent):
+    PortsEditorConstructor const* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
+    BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
-view_(editorConstructor->constructView(defaultPath, busInterface, this)),
-model_(0),
-proxy_(editorConstructor->constructFilter(portsInterface, this)),
-delegate_(editorConstructor->constructDelegate(
-    component, completionModel, parameterFinder, portValidator, this)),
+view_(editorConstructor->createView(this)),
+proxy_(editorConstructor->createFilter(this)),
+model_(editorConstructor->constructModel(this)),
+delegate_(editorConstructor->constructDelegate(this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)
 {
-    model_ = editorConstructor->constructModel(parameterFinder, portsInterface, signalInterface, proxy_, this);
 
     view_->setItemDelegate(delegate_);
 
@@ -137,7 +134,6 @@ bool MasterPortsEditor::isValid() const
 void MasterPortsEditor::refresh()
 {
     proxy_->invalidate();
-	//view_->update();
 }
 
 //-----------------------------------------------------------------------------

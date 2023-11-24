@@ -38,12 +38,5 @@ int WirePortsFilter::nameColumn() const
 //-----------------------------------------------------------------------------
 bool WirePortsFilter::portIsAccepted(QString const& portName) const
 {
-    if (getInterface()->portIsTransactional(portName.toStdString()))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return getInterface()->portIsWire(portName.toStdString());
 }

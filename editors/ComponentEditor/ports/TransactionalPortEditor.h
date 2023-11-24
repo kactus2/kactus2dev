@@ -27,6 +27,7 @@ class MasterTransactionalPortEditor;
 class PortsInterface;
 class BusInterfaceInterface;
 class MasterPortsEditor;
+class IPXactSystemVerilogParser;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -80,12 +81,6 @@ public:
 	 */
 	void setAllowImportExport(bool allow);
 
-    /*!
-     *  Sets the edited component.
-     *
-     *      @param [in] component   The component whose ports to edit.
-     */
-    void setComponent(QSharedPointer<Component> component);
 
     //! No copying.
     TransactionalPortEditor(const TransactionalPortEditor& other) = delete;
@@ -141,28 +136,24 @@ private:
     void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard);
 
     /*!
-     *  Connect the signals.
+     *  Setup the editor layout.
      */
-    void connectSignals();
+    void setupLayout();
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! The component whose ports are being edited.
-    QSharedPointer<Component> component_; 
-
-	//! The instance that manages the library.
-	LibraryInterface* handler_;
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser_{ nullptr };
 
     //! Editor for transactional ports.
     MasterPortsEditor* transactionalEditor_;
 
     //! Interface for accessing ports.
-    QSharedPointer<PortsInterface> portsInterface_;
+    QSharedPointer<PortsInterface> portsInterface_{ nullptr };
 
     //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterface_;
+    BusInterfaceInterface* busInterface_{ nullptr };
 };
 
 #endif // TRANSACATIONAL_PORT_EDITOR_H

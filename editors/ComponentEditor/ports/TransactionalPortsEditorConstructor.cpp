@@ -25,35 +25,28 @@
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructModel()
 //-----------------------------------------------------------------------------
-PortsModel* TransactionalPortsEditorConstructor::constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    QSortFilterProxyModel* filter, QObject* parent) const
+PortsModel* TransactionalPortsEditorConstructor::constructModel(QObject* parent) const
 {
-    TransactionalPortsModel* transactionalModel =
-        new TransactionalPortsModel(parameterFinder, portsInterface, signalInterface, filter, parent);
-
-    return transactionalModel;
+    return new TransactionalPortsModel(parameterFinder_, portsInterface_, signalInterface_, parent);;
 }
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructFilter()
 //-----------------------------------------------------------------------------
-PortsFilter* TransactionalPortsEditorConstructor::constructFilter(QSharedPointer<PortsInterface> portsInterface,
-    QObject* parent) const
+PortsFilter* TransactionalPortsEditorConstructor::createFilter(QObject* parent) const
 {
-    TransactionalPortsFilter* transactionalFilter = new TransactionalPortsFilter(portsInterface, parent);
+    TransactionalPortsFilter* transactionalFilter = new TransactionalPortsFilter(portsInterface_, parent);
     return transactionalFilter;
 }
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructView()
 //-----------------------------------------------------------------------------
-PortsView* TransactionalPortsEditorConstructor::constructView(QString const& defaultPath,
-    BusInterfaceInterface* busInterface, QWidget* parent) const
+PortsView* TransactionalPortsEditorConstructor::createView(QWidget* parent) const
 {
-    PortsView* view = new PortsView(TransactionalPortColumns::NAME, busInterface, parent);
+    PortsView* view = new PortsView(TransactionalPortColumns::NAME, busInterface_, parent);
 
-    view->setDefaultImportExportPath(defaultPath);
+    view->setDefaultImportExportPath(defaultPath_);
     view->setAllowImportExport(true);
     view->setAlternatingRowColors(false);
     view->setSortingEnabled(true);
@@ -66,12 +59,8 @@ PortsView* TransactionalPortsEditorConstructor::constructView(QString const& def
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsEditorConstructor::constructDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate* TransactionalPortsEditorConstructor::constructDelegate(QSharedPointer<Component> component,
-    QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortValidator> portValidator, QObject* parent) const
+PortsDelegate* TransactionalPortsEditorConstructor::constructDelegate(QObject* parent) const
 {
-    TransactionalPortsDelegate* transactionalDelegate = new TransactionalPortsDelegate(
-        component, completionModel, parameterFinder, portValidator->getTypeValidator(), parent);
-
-    return transactionalDelegate;
+    return new TransactionalPortsDelegate(
+        component_, completionModel_, parameterFinder_, portValidator_->getTypeValidator(), parent);
 }

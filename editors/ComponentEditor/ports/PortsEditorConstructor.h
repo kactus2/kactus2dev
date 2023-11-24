@@ -38,6 +38,24 @@ class PortsEditorConstructor
 {
 public:
 
+    PortsEditorConstructor(QSharedPointer<Component> component,
+        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<PortValidator> portValidator, 
+        QSharedPointer<PortsInterface> portsInterface,
+        QSharedPointer<PortAbstractionInterface> signalInterface,
+        BusInterfaceInterface* busInterface,
+        QString const& defaultPath):
+        component_(component),
+        completionModel_(completionModel),
+        parameterFinder_(parameterFinder),
+        portValidator_(portValidator),
+        portsInterface_(portsInterface),
+        signalInterface_(signalInterface),
+        busInterface_(busInterface),
+        defaultPath_(defaultPath)
+    {
+    }
+
     ~PortsEditorConstructor() = default;
 
     /*!
@@ -51,12 +69,7 @@ public:
      *
      *      @return The created ports model.
      */
-    virtual PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortsInterface> portsInterface,
-        QSharedPointer<PortAbstractionInterface> signalInterface,
-        QSortFilterProxyModel* filter,
-        QObject* parent = 0)
-        const = 0;
+    virtual PortsModel* constructModel(QObject* parent = 0) const = 0;
 
     /*!
      *  Construct a filter.
@@ -66,8 +79,7 @@ public:
      *
      *      @return The created ports filter.
      */
-    virtual PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0)
-        const = 0;
+    virtual PortsFilter* createFilter(QObject* parent) const = 0;
 
     /*!
      *  Construct a view.
@@ -78,8 +90,7 @@ public:
      *
      *      @return The created view.
      */
-    virtual PortsView* constructView(QString const& defaultPath, BusInterfaceInterface* busInterface,
-        QWidget* parent) const = 0;
+    virtual PortsView* createView(QWidget* parent) const = 0;
 
     /*!
      *  Construct a delegate.
@@ -92,9 +103,19 @@ public:
      *
      *      @return The created delegate.
      */
-    virtual PortsDelegate* constructDelegate(QSharedPointer<Component> component,
-        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const = 0;
+    virtual PortsDelegate* constructDelegate(QObject* parent) const = 0;
+
+protected:
+
+    QSharedPointer<Component> component_;
+    QAbstractItemModel* completionModel_;
+    QSharedPointer<ParameterFinder> parameterFinder_;
+    QSharedPointer<PortValidator> portValidator_;
+    QSharedPointer<PortsInterface> portsInterface_;
+    QSharedPointer<PortAbstractionInterface> signalInterface_;
+    BusInterfaceInterface* busInterface_;
+    QString defaultPath_;
+
 
 };
 

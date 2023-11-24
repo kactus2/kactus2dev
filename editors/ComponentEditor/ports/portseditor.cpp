@@ -72,15 +72,15 @@ busInterface_(busInterface)
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    WirePortsEditorConstructor wireFactory;
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface, &wireFactory,
-        parameterFinder, portValidator, componentParametersModel, defaultPath,
-        busInterface, this);
+    WirePortsEditorConstructor wireFactory(component, componentParametersModel, parameterFinder, portValidator,
+        portsInterface_, signalInterface, busInterface_, defaultPath);
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
+        &wireFactory, parameterFinder, busInterface, this);
 
-    TransactionalPortsEditorConstructor transactionalFactory;
+    TransactionalPortsEditorConstructor transactionalFactory(component, componentParametersModel, parameterFinder, portValidator,
+        portsInterface_, signalInterface, busInterface_, defaultPath);
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &transactionalFactory, parameterFinder, portValidator, componentParametersModel, defaultPath,
-        busInterface, this);
+        &transactionalFactory, parameterFinder, busInterface, this);
 
     connectSignals();
 

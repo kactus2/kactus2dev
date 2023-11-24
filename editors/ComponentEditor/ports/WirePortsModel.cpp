@@ -25,8 +25,8 @@ using namespace std;
 //-----------------------------------------------------------------------------
 WirePortsModel::WirePortsModel(QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    QSortFilterProxyModel* filter, QObject *parent):
-PortsModel(parameterFinder, portsInterface, signalInterface, filter, parent)
+    QObject *parent):
+PortsModel(parameterFinder, portsInterface, signalInterface, parent)
 {
 
 }

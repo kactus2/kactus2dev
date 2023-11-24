@@ -42,8 +42,6 @@ WirePortEditor::WirePortEditor(QSharedPointer<Component> component, LibraryInter
     QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
     QWidget *parent):
 ItemEditor(component, handler, parent),
-component_(component),
-handler_(handler),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
 portsInterface_(new PortsInterface(portValidator, expressionParser_, expressionFormatter)),
 busInterface_(busInterface)
@@ -57,10 +55,10 @@ busInterface_(busInterface)
     auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
     componentParametersModel->setExpressionParser(expressionParser_);
 
-    WirePortsEditorConstructor wireFactory;
+    WirePortsEditorConstructor wireFactory(component, componentParametersModel, parameterFinder, portValidator,
+        portsInterface_, signalInterface, busInterface_, defaultPath);
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &wireFactory, parameterFinder, portValidator, componentParametersModel, defaultPath,
-        busInterface, this);
+        &wireFactory, parameterFinder, busInterface, this);
     
     connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(wireEditor_, SIGNAL(errorMessage(const QString&)),
@@ -81,8 +79,6 @@ busInterface_(busInterface)
     connect(wireEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(wireEditor_, SIGNAL(portCountChanged()), this, SLOT(redefineTabText()), Qt::UniqueConnection);
-
     setupLayout();
 }
 
@@ -100,7 +96,7 @@ bool WirePortEditor::isValid() const
 void WirePortEditor::refresh()
 {
     wireEditor_->refresh();
-    busInterface_->setBusInterfaces(component_);
+    busInterface_->setBusInterfaces(component());
 }
 
 //-----------------------------------------------------------------------------
@@ -122,23 +118,12 @@ void WirePortEditor::setAllowImportExport(bool allow)
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::setComponent()
-//-----------------------------------------------------------------------------
-void WirePortEditor::setComponent(QSharedPointer<Component> component)
-{
-    component_ = component;
-
-    portsInterface_->setPorts(component_->getPorts());
-    wireEditor_->setComponent(component);
-}
-
-//-----------------------------------------------------------------------------
 // Function: WirePortEditor::onCreateNewInteface()
 //-----------------------------------------------------------------------------
 void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
 {
     // Ask user for new bus definition VLNV.
-    NewBusDialog dialog(handler_, this);
+    NewBusDialog dialog(handler(), this);
     if (dialog.exec() == QDialog::Rejected)
     {
         return;
@@ -158,11 +143,11 @@ void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
     // by default the abs def and bus def are saved to same directory
     QString absDirectory = dialog.getPath();
 
-    if (handler_->contains(absVLNV))
+    if (handler()->contains(absVLNV))
     {
         VLNV newAbsDefVLNV;
 
-        if (!NewObjectDialog::saveAsDialog(this, handler_, absVLNV, newAbsDefVLNV, absDirectory,
+        if (!NewObjectDialog::saveAsDialog(this, handler(), absVLNV, newAbsDefVLNV, absDirectory,
             QStringLiteral("Set VLNV for abstraction definition")))
         {
                 return; // if user canceled
@@ -172,23 +157,23 @@ void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
     }
 
     // Create a bus definition.
-    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, component_->getRevision()));
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, component()->getRevision()));
 
     // Create the file for the bus definition.
-    if (!handler_->writeModelToFile(absDirectory, busDef))
+    if (!handler()->writeModelToFile(absDirectory, busDef))
     {
         emit errorMessage(tr("Could not write model to %1").arg(absDirectory));
         return;
     }
 
     // create an abstraction definition
-    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition(absVLNV, component_->getRevision()));
+    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition(absVLNV, component()->getRevision()));
     
     // set reference from abstraction definition to bus definition
     absDef->setBusType(busVLNV);
 
     // create the file for the abstraction definition
-    if (!handler_->writeModelToFile(absDirectory, absDef))
+    if (!handler()->writeModelToFile(absDirectory, absDef))
     {
         emit errorMessage(tr("Could not write model to %1").arg(absDirectory));
         return;
@@ -198,7 +183,7 @@ void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
     QSharedPointer<BusInterface> busIf(new BusInterface());
     QString ifName = busVLNV.getName();
     int id = 1;
-    while(component_->hasInterface(ifName))
+    while(component()->hasInterface(ifName))
     {
         ifName = busVLNV.getName() + "_" + QString::number(id);
         id++;
@@ -212,7 +197,7 @@ void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV,
+    BusInterfaceWizard wizard(component(), busIf, handler(), selectedPorts, this, absVLNV,
         dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
 
     openBusInterfaceWizard(busIf, wizard);
@@ -226,7 +211,7 @@ void WirePortEditor::onCreateInterface(QStringList const& selectedPorts)
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
+    BusInterfaceWizard wizard(component(), busIf, handler(), selectedPorts, this);
 
     openBusInterfaceWizard(busIf, wizard);
 }
@@ -236,7 +221,7 @@ void WirePortEditor::onCreateInterface(QStringList const& selectedPorts)
 //-----------------------------------------------------------------------------
 void WirePortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard)
 {
-    component_->getBusInterfaces()->append(busIf);
+    component()->getBusInterfaces()->append(busIf);
 
     connect(&wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -250,7 +235,7 @@ void WirePortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, 
     }
     else
     {
-        component_->getBusInterfaces()->removeAll(busIf);
+        component()->getBusInterfaces()->removeAll(busIf);
     }
 }
 
@@ -261,7 +246,7 @@ void WirePortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
 {
     if (!itemIndex.isValid())
     {
-        emit changeVendorExtensions(QStringLiteral("Component: ") + component_->getVlnv().toString(), component_);
+        emit changeVendorExtensions(QStringLiteral("Component: ") + component()->getVlnv().toString(), component());
     }
     else if (QSharedPointer<Port> selectedPort = wireEditor_->getIndexedPort(itemIndex); selectedPort)
     {

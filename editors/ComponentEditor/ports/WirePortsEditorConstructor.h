@@ -34,6 +34,8 @@ class WirePortsEditorConstructor : public PortsEditorConstructor
 {
 public:
 
+    using PortsEditorConstructor::PortsEditorConstructor;
+
     /*!
      *  Construct a ports model.
      *
@@ -45,12 +47,7 @@ public:
      *
      *      @return The created ports model.
      */
-    PortsModel* constructModel(QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortsInterface> portsInterface,
-        QSharedPointer<PortAbstractionInterface> signalInterface,
-        QSortFilterProxyModel* filter,
-        QObject* parent = 0)
-        const final;
+    PortsModel* constructModel(QObject* parent = 0) const final;
 
     /*!
      *  Construct a filter.
@@ -60,21 +57,17 @@ public:
      *
      *      @return The created ports filter.
      */
-    PortsFilter* constructFilter(QSharedPointer<PortsInterface> portsInterface, QObject* parent = 0) const
-        final;
+    PortsFilter* createFilter(QObject* parent) const final;
 
     /*!
      *  Construct a view.
      *
-     *      @param [in] defaultPath     Default import / export path.
      *      @param [in] busInterface    Interface for accessing bus interface.
      *      @param [in] parent          Owner of the view.
      *
      *      @return The created view.
      */
-    PortsView* constructView(QString const& defaultPath,
-        BusInterfaceInterface* busInterface,
-        QWidget* parent) const final;
+    PortsView* createView(QWidget* parent) const final;
 
     /*!
      *  Construct a delegate.
@@ -87,9 +80,7 @@ public:
      *
      *      @return The created delegate.
      */
-    PortsDelegate* constructDelegate(QSharedPointer<Component> component,
-        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator, QObject* parent = 0) const  final;
+    PortsDelegate* constructDelegate(QObject* parent) const  final;
 };
 
 #endif // WIREPORTSEDITORCONSTRUCTOR_H

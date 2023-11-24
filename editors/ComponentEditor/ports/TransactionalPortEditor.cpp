@@ -43,9 +43,6 @@ TransactionalPortEditor::TransactionalPortEditor(QSharedPointer<Component> compo
     QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
     QWidget *parent):
 ItemEditor(component, handler, parent),
-component_(component),
-handler_(handler),
-transactionalEditor_(0),
 portsInterface_(),
 busInterface_(busInterface)
 {
@@ -62,37 +59,23 @@ busInterface_(busInterface)
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    TransactionalPortsEditorConstructor transactionalFactory;
+    TransactionalPortsEditorConstructor transactionalFactory(component, componentParametersModel, parameterFinder, portValidator,
+        portsInterface_, signalInterface, busInterface_, defaultPath);
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &transactionalFactory, parameterFinder, portValidator, componentParametersModel, defaultPath,
-        busInterface, this);
-
-    connectSignals();
-
-	// create the layout, add widgets to it
-	QVBoxLayout* layout = new QVBoxLayout(this);
- 	layout->addWidget(new SummaryLabel(tr("Transactional ports"), this), 0, Qt::AlignCenter);
-    layout->addWidget(transactionalEditor_);
-	layout->setContentsMargins(0, 0, 0, 0);
-}
-
-//-----------------------------------------------------------------------------
-// Function: portseditor::connectSignals()
-//-----------------------------------------------------------------------------
-void TransactionalPortEditor::connectSignals()
-{
-   connect(transactionalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+        &transactionalFactory, parameterFinder, busInterface, this);
+   
+    connect(transactionalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-     connect(transactionalEditor_, SIGNAL(createNewInteface(QStringList const&)),
+    connect(transactionalEditor_, SIGNAL(createNewInteface(QStringList const&)),
         this, SLOT(onCreateNewInteface(QStringList const&)), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(createInterface(QStringList const&)),
         this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
 
-     connect(transactionalEditor_, SIGNAL(increaseReferences(QString)),
+    connect(transactionalEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
@@ -100,7 +83,7 @@ void TransactionalPortEditor::connectSignals()
     connect(transactionalEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
-    connect(transactionalEditor_, SIGNAL(portCountChanged()), this, SLOT(redefineTabText()), Qt::UniqueConnection);
+    setupLayout();
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +100,7 @@ bool TransactionalPortEditor::isValid() const
 void TransactionalPortEditor::refresh()
 {
     transactionalEditor_->refresh();
-    busInterface_->setBusInterfaces(component_);
+    busInterface_->setBusInterfaces(component());
 }
 
 //-----------------------------------------------------------------------------
@@ -139,23 +122,12 @@ void TransactionalPortEditor::setAllowImportExport(bool allow)
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortEditor::setComponent()
-//-----------------------------------------------------------------------------
-void TransactionalPortEditor::setComponent(QSharedPointer<Component> component)
-{
-    component_ = component;
-
-    portsInterface_->setPorts(component_->getPorts());
-    transactionalEditor_->setComponent(component);
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransactionalPortEditor::onCreateNewInteface()
 //-----------------------------------------------------------------------------
 void TransactionalPortEditor::onCreateNewInteface(QStringList const& selectedPorts)
 {
     // Ask user for new bus definition VLNV.
-    NewBusDialog dialog(handler_, this);
+    NewBusDialog dialog(handler(), this);
     if (dialog.exec() == QDialog::Rejected)
     {
         return;
@@ -175,11 +147,11 @@ void TransactionalPortEditor::onCreateNewInteface(QStringList const& selectedPor
     // by default the abs def and bus def are saved to same directory
     QString absDirectory = dialog.getPath();
 
-    if (handler_->contains(absVLNV))
+    if (handler()->contains(absVLNV))
     {
         VLNV newAbsDefVLNV;
 
-        if (!NewObjectDialog::saveAsDialog(this, handler_, absVLNV, newAbsDefVLNV, absDirectory,
+        if (!NewObjectDialog::saveAsDialog(this, handler(), absVLNV, newAbsDefVLNV, absDirectory,
             QStringLiteral("Set VLNV for abstraction definition")))
         {
                 return; // if user canceled
@@ -189,23 +161,23 @@ void TransactionalPortEditor::onCreateNewInteface(QStringList const& selectedPor
     }
 
     // Create a bus definition.
-    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, component_->getRevision()));
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(busVLNV, component()->getRevision()));
 
     // Create the file for the bus definition.
-    if (!handler_->writeModelToFile(absDirectory, busDef))
+    if (!handler()->writeModelToFile(absDirectory, busDef))
     {
         emit errorMessage(tr("Could not write model to %1").arg(absDirectory));
         return;
     }
 
     // create an abstraction definition
-    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition(absVLNV, component_->getRevision()));
+    QSharedPointer<AbstractionDefinition> absDef(new AbstractionDefinition(absVLNV, component()->getRevision()));
     
     // set reference from abstraction definition to bus definition
     absDef->setBusType(busVLNV);
 
     // create the file for the abstraction definition
-    if (!handler_->writeModelToFile(absDirectory, absDef))
+    if (!handler()->writeModelToFile(absDirectory, absDef))
     {
         emit errorMessage(tr("Could not write model to %1").arg(absDirectory));
         return;
@@ -215,7 +187,7 @@ void TransactionalPortEditor::onCreateNewInteface(QStringList const& selectedPor
     QSharedPointer<BusInterface> busIf(new BusInterface());
     QString ifName = busVLNV.getName();
     int id = 1;
-    while(component_->hasInterface(ifName))
+    while(component()->hasInterface(ifName))
     {
         ifName = busVLNV.getName() + "_" + QString::number(id);
         id++;
@@ -229,7 +201,7 @@ void TransactionalPortEditor::onCreateNewInteface(QStringList const& selectedPor
     busIf->setBusType(busVLNV);
 
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this, absVLNV,
+    BusInterfaceWizard wizard(component(), busIf, handler(), selectedPorts, this, absVLNV,
         dialog.getSignalSelection() == NewBusDialog::USE_DESCRIPTION);
 
     openBusInterfaceWizard(busIf, wizard);
@@ -243,7 +215,7 @@ void TransactionalPortEditor::onCreateInterface(QStringList const& selectedPorts
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
     // Open the bus interface wizard.
-    BusInterfaceWizard wizard(component_, busIf, handler_, selectedPorts, this);
+    BusInterfaceWizard wizard(component(), busIf, handler(), selectedPorts, this);
 
     openBusInterfaceWizard(busIf, wizard);
 }
@@ -253,7 +225,7 @@ void TransactionalPortEditor::onCreateInterface(QStringList const& selectedPorts
 //-----------------------------------------------------------------------------
 void TransactionalPortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard)
 {
-    component_->getBusInterfaces()->append(busIf);
+    component()->getBusInterfaces()->append(busIf);
 
     connect(&wizard, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
@@ -267,7 +239,7 @@ void TransactionalPortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface
     }
     else
     {
-        component_->getBusInterfaces()->removeAll(busIf);
+        component()->getBusInterfaces()->removeAll(busIf);
     }
 }
 
@@ -278,10 +250,22 @@ void TransactionalPortEditor::changeExtensionsEditorItem(QModelIndex const& item
 {
     if (!itemIndex.isValid())
     {
-        emit changeVendorExtensions(QStringLiteral("Component: ") + component_->getVlnv().toString(), component_);
+        emit changeVendorExtensions(QStringLiteral("Component: ") + component()->getVlnv().toString(), component());
     }
     else if (QSharedPointer<Port> selectedPort = transactionalEditor_->getIndexedPort(itemIndex); selectedPort)
     {
         emit changeVendorExtensions(QStringLiteral("Port: ") + selectedPort->name(), selectedPort);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: portseditor::setupLayout()
+//-----------------------------------------------------------------------------
+void TransactionalPortEditor::setupLayout()
+{
+    // create the layout, add widgets to it
+    auto layout = new QVBoxLayout(this);
+    layout->addWidget(new SummaryLabel(tr("Transactional ports"), this), 0, Qt::AlignCenter);
+    layout->addWidget(transactionalEditor_);
+    layout->setContentsMargins(0, 0, 0, 0);
 }

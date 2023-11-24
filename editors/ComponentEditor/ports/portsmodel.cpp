@@ -30,13 +30,11 @@ using namespace std;
 //-----------------------------------------------------------------------------
 PortsModel::PortsModel(QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<PortsInterface> portInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    QSortFilterProxyModel* filter, QObject *parent):
+    QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
 portsInterface_(portInterface),
-signalInterface_(signalInterface),
-lockedIndexes_(),
-filter_(filter)
+signalInterface_(signalInterface)
 {
     Q_ASSERT(portInterface);
 }
@@ -601,12 +599,6 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
 {
-    if (index.column() == rowNumberColumn())
-    {
-        QModelIndex filteredIndex = filter_->mapFromSource(index);
-        return filteredIndex.row() + 1;
-    }
-    
     string portName = portsInterface_->getIndexedItemName(index.row());
 
     if (index.column() == nameColumn())

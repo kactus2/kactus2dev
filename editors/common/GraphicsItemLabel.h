@@ -67,7 +67,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Label containing the text string.
-    QLabel* textLabel_;
+    QLabel* textLabel_ = new QLabel();
 };
 
 #endif // GRAPHICSITEMLABEL_H

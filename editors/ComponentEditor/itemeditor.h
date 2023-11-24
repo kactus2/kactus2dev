@@ -64,6 +64,11 @@ public:
      */
     virtual void setProtection(bool locked);
 
+    //! No copying. No Assignment.
+    ItemEditor(const ItemEditor& other) = delete;
+    ItemEditor& operator=(const ItemEditor& other) = delete;
+
+
 signals:
 
     /*!
@@ -141,6 +146,7 @@ protected:
      */
     QSharedPointer<Component> component() const;
 
+
     /*!
      *  Get pointer to the instance managing the library.
      *
@@ -149,10 +155,6 @@ protected:
     LibraryInterface* handler() const;
 
 private:
-
-    //! No copying. No Assignment.
-    ItemEditor(const ItemEditor& other);
-    ItemEditor& operator=(const ItemEditor& other);
 
     //! A pointer to the component that's element is being edited.
     QSharedPointer<Component> component_;

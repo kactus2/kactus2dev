@@ -39,9 +39,14 @@ public:
       */
     virtual ~PortsFilter() = default;
 
+
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
+
     // No copying. No assignments.
     PortsFilter(PortsFilter const& rhs) = delete;
     PortsFilter& operator=(PortsFilter const& rhs) = delete;
+
+
 
 public slots:
 

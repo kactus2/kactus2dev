@@ -79,13 +79,7 @@ public:
 	 *      @param [in] allow If true then import/export is enabled.
 	 */
 	void setAllowImportExport(bool allow);
-
-    /*!
-     *  Sets the edited component.
-     *
-     *      @param [in] component   The component whose ports to edit.
-     */
-    void setComponent(QSharedPointer<Component> component);
+    
 
     //! No copying.
     WirePortEditor(const WirePortEditor& other) = delete;
@@ -148,12 +142,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The component whose ports are being edited.
-    QSharedPointer<Component> component_{ nullptr };
-
-	//! The instance that manages the library.
-    LibraryInterface* handler_{ nullptr };
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser_{ nullptr };
 

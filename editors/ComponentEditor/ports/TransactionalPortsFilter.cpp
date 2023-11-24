@@ -38,12 +38,5 @@ int TransactionalPortsFilter::nameColumn() const
 //-----------------------------------------------------------------------------
 bool TransactionalPortsFilter::portIsAccepted(QString const& portName) const
 {
-    if (getInterface()->portIsWire(portName.toStdString()))
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return getInterface()->portIsTransactional(portName.toStdString());
 }
