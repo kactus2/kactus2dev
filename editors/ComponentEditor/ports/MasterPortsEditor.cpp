@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/ports/portsmodel.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/PortsFilter.h>
-#include <editors/ComponentEditor/ports/PortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/PortsEditorFactory.h>
 #include <KactusAPI/include/PortsInterface.h>
 
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -34,14 +34,14 @@
 // Function: MasterPortsEditor::MasterPortsEditor()
 //-----------------------------------------------------------------------------
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    PortsEditorConstructor const* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<PortsInterface> portsInterface,
+    PortsEditorFactory const* editorConstructor, 
     BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 view_(editorConstructor->createView(this)),
 proxy_(editorConstructor->createFilter(this)),
 model_(editorConstructor->constructModel(this)),
-delegate_(editorConstructor->constructDelegate(this)),
+delegate_(editorConstructor->createDelegate(this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)
 {
@@ -57,7 +57,7 @@ busInterface_(busInterface)
 
     connectSignals();
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(view_, 1);
     layout->setContentsMargins(0, 0, 0, 0);
 }

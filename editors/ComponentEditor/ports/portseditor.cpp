@@ -46,7 +46,7 @@ namespace
 // Function: PortsEditor::PortsEditor()
 //-----------------------------------------------------------------------------
 PortsEditor::PortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ExpressionSet expressions,
     QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
     QWidget *parent):
 ItemEditor(component, handler, parent),
@@ -55,32 +55,24 @@ handler_(handler),
 wireEditor_(0),
 transactionalEditor_(0),
 portTabs_(new QTabWidget(this)),
-portsInterface_(),
+portsInterface_(new PortsInterface(portValidator, expressions.parser, expressions.formatter)),
 busInterface_(busInterface)
 {
+    portsInterface_->setPorts(component->getPorts());
+
 	const QString componentPath = handler->getDirectoryPath(component->getVlnv());
 	QString defaultPath = QString("%1/portListing.csv").arg(componentPath);
 
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
-
-    auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
-    componentParametersModel->setExpressionParser(expressionParser);
-
-    portsInterface_ =
-        QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    portsInterface_->setPorts(component->getPorts());
-
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    WirePortsEditorConstructor wireFactory(component, componentParametersModel, parameterFinder, portValidator,
+    WirePortsEditorConstructor wireFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &wireFactory, parameterFinder, busInterface, this);
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_,  &wireFactory,  busInterface, this);
 
-    TransactionalPortsEditorConstructor transactionalFactory(component, componentParametersModel, parameterFinder, portValidator,
+    TransactionalPortsEditorConstructor transactionalFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
-    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &transactionalFactory, parameterFinder, busInterface, this);
+    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, 
+        &transactionalFactory, busInterface, this);
 
     connectSignals();
 

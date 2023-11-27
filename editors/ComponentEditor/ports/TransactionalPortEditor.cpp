@@ -42,27 +42,25 @@ TransactionalPortEditor::TransactionalPortEditor(QSharedPointer<Component> compo
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
     QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
     QWidget *parent):
-ItemEditor(component, handler, parent),
-portsInterface_(),
+    ItemEditor(component, handler, parent),
+    expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
+portsInterface_(new PortsInterface(portValidator, expressionParser_, expressionFormatter)),
 busInterface_(busInterface)
 {
+    portsInterface_->setPorts(component->getPorts());
+
     const QString defaultPath = QString("%1/transactionalListing.csv").arg(handler->getDirectoryPath(component->getVlnv()));
 
     QSharedPointer<IPXactSystemVerilogParser> expressionParser(new IPXactSystemVerilogParser(parameterFinder));
 
-    auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
-    componentParametersModel->setExpressionParser(expressionParser);
-
-    portsInterface_ =
-        QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressionParser, expressionFormatter));
-    portsInterface_->setPorts(component->getPorts());
+    ExpressionSet expressions{ parameterFinder, expressionParser_, expressionFormatter };
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    TransactionalPortsEditorConstructor transactionalFactory(component, componentParametersModel, parameterFinder, portValidator,
+    TransactionalPortsEditorConstructor transactionalFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
-    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &transactionalFactory, parameterFinder, busInterface, this);
+    transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, 
+        &transactionalFactory, busInterface, this);
    
     connect(transactionalEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(transactionalEditor_, SIGNAL(errorMessage(const QString&)),

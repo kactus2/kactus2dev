@@ -14,6 +14,8 @@
 
 #include "componenteditoritem.h"
 
+#include <editors/common/ExpressionSet.h>
+
 #include <QList>
 
 class Port;
@@ -47,9 +49,7 @@ public:
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+        ExpressionSet expressions,
         BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 
@@ -90,6 +90,9 @@ signals:
     void createInterface();
 
 private:
+
+
+	ExpressionSet expressions_;
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;

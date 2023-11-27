@@ -9,8 +9,10 @@
 // Constructs ports editor items.
 //-----------------------------------------------------------------------------
 
-#ifndef PORTSEDITORCONSTRUCTOR_H
-#define PORTSEDITORCONSTRUCTOR_H
+#ifndef PORTSEDITOR_FACTORY_H
+#define PORTSEDITOR_FACTORY_H
+
+#include <editors/common/ExpressionSet.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -34,20 +36,19 @@ class PortAbstractionInterface;
 //-----------------------------------------------------------------------------
 //! Constructs ports editor items.
 //-----------------------------------------------------------------------------
-class PortsEditorConstructor
+class PortsEditorFactory
 {
 public:
 
-    PortsEditorConstructor(QSharedPointer<Component> component,
-        QAbstractItemModel* completionModel, QSharedPointer<ParameterFinder> parameterFinder,
+    PortsEditorFactory(QSharedPointer<Component> component,
+        ExpressionSet expressions,
         QSharedPointer<PortValidator> portValidator, 
         QSharedPointer<PortsInterface> portsInterface,
         QSharedPointer<PortAbstractionInterface> signalInterface,
         BusInterfaceInterface* busInterface,
         QString const& defaultPath):
         component_(component),
-        completionModel_(completionModel),
-        parameterFinder_(parameterFinder),
+        expressions_(expressions),
         portValidator_(portValidator),
         portsInterface_(portsInterface),
         signalInterface_(signalInterface),
@@ -56,15 +57,11 @@ public:
     {
     }
 
-    ~PortsEditorConstructor() = default;
+    ~PortsEditorFactory() = default;
 
     /*!
      *  Construct a ports model.
      *
-     *      @param [in] parameterFinder     Locates the different parameters of the containing component.
-     *      @param [in] portsInterface      Interface for accessing the component ports.
-     *      @param [in] signalInterface     Interface for accessing abstraction signals.
-     *      @param [in] filter              Filter for ports model.
      *      @param [in] parent              The owner of the constructed model.
      *
      *      @return The created ports model.
@@ -74,7 +71,6 @@ public:
     /*!
      *  Construct a filter.
      *
-     *      @param [in] portsInterface      Interface for accessing the component ports.
      *      @param [in] parent              Owner of the filter.
      *
      *      @return The created ports filter.
@@ -84,8 +80,6 @@ public:
     /*!
      *  Construct a view.
      *
-     *      @param [in] defaultPath     Default import / export path.
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] parent          Owner of the view.
      *
      *      @return The created view.
@@ -95,28 +89,22 @@ public:
     /*!
      *  Construct a delegate.
      *
-     *      @param [in] component           The component being edited.
-     *      @param [in] parameterCompleter  Completer for expressions.
-     *      @param [in] parameterFinder     The parameter finder.
-     *      @param [in] portValidator       Validator used for ports.
 	 *      @param [in] parent              The owner of the delegate.
      *
      *      @return The created delegate.
      */
-    virtual PortsDelegate* constructDelegate(QObject* parent) const = 0;
+    virtual PortsDelegate* createDelegate(QObject* parent) const = 0;
 
 protected:
 
     QSharedPointer<Component> component_;
-    QAbstractItemModel* completionModel_;
-    QSharedPointer<ParameterFinder> parameterFinder_;
+    ExpressionSet expressions_;
     QSharedPointer<PortValidator> portValidator_;
     QSharedPointer<PortsInterface> portsInterface_;
     QSharedPointer<PortAbstractionInterface> signalInterface_;
     BusInterfaceInterface* busInterface_;
     QString defaultPath_;
 
-
 };
 
-#endif // PORTSEDITORCONSTRUCTOR_H
+#endif // PORTSEDITOR_FACTORY_H

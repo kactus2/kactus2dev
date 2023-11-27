@@ -15,6 +15,7 @@
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <QTabWidget>
 
@@ -49,8 +50,7 @@ public:
 	 */
 	PortsEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ExpressionSet expressions,
         QSharedPointer<PortValidator> portValidator,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);

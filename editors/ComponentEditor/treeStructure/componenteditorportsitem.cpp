@@ -25,26 +25,25 @@
 //-----------------------------------------------------------------------------
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceInterface* busInterface,
+    ExpressionSet expressions,
+    BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-portValidator_(new PortValidator(expressionParser, component->getViews())),
+expressions_(expressions),
+portValidator_(new PortValidator(expressions.parser, component->getViews())),
 busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
 
 
 
     childItems_.append(QSharedPointer<WirePortsItem>(new WirePortsItem(model,
-        libHandler, component, refCounter, parameterFinder, expressionFormatter,
-        expressionParser, busInterface, this)));
+        libHandler, component, refCounter, expressions, busInterface, this)));
 
     childItems_.append(QSharedPointer<TransactionalPortsItem>(new TransactionalPortsItem(model,
-        libHandler, component, refCounter, parameterFinder, expressionFormatter,
-        expressionParser, busInterface, this)));
+        libHandler, component, refCounter,expressions, busInterface, this)));
 
 }
 
@@ -93,7 +92,7 @@ ItemEditor* ComponentEditorPortsItem::editor()
 	if (!editor_)
     {
 		editor_ = new PortsEditor(
-            component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_, busInterface_);
+            component_, libHandler_, expressions_, portValidator_, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -15,10 +15,11 @@
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
-#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/PortsInterface.h>
+
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 #include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -38,12 +39,11 @@
 // Function: WirePortEditor::WirePortEditor()
 //-----------------------------------------------------------------------------
 WirePortEditor::WirePortEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    ExpressionSet expressions,
     QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
     QWidget *parent):
 ItemEditor(component, handler, parent),
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder)),
-portsInterface_(new PortsInterface(portValidator, expressionParser_, expressionFormatter)),
+portsInterface_(new PortsInterface(portValidator, expressions.parser, expressions.formatter)),
 busInterface_(busInterface)
 {
     portsInterface_->setPorts(component->getPorts());
@@ -52,13 +52,9 @@ busInterface_(busInterface)
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
-    componentParametersModel->setExpressionParser(expressionParser_);
-
-    WirePortsEditorConstructor wireFactory(component, componentParametersModel, parameterFinder, portValidator,
+    WirePortsEditorConstructor wireFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, signalInterface,
-        &wireFactory, parameterFinder, busInterface, this);
+    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, &wireFactory,  busInterface, this);
     
     connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(wireEditor_, SIGNAL(errorMessage(const QString&)),

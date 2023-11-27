@@ -2902,12 +2902,6 @@
     <ClCompile Include="editors\ComponentEditor\ports\MasterPortsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
@@ -3350,6 +3344,12 @@
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
   </ItemGroup>
@@ -4901,12 +4901,6 @@
     <QtMoc Include="editors\ComponentEditor\ports\MasterPortsEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\ports\PortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </CustomBuild>
     <QtMoc Include="editors\ComponentEditor\ports\WirePortsModel.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
@@ -5665,9 +5659,6 @@
     <ClInclude Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesColumns.h">
       <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\WirePortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
@@ -5784,6 +5775,15 @@
     </ClInclude>
     <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

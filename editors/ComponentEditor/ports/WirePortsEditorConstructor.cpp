@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
 #include <editors/ComponentEditor/ports/WirePortsFilter.h>
 #include <editors/ComponentEditor/ports/WirePortsDelegate.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
@@ -28,7 +29,7 @@
 //-----------------------------------------------------------------------------
 PortsModel* WirePortsEditorConstructor::constructModel(QObject* parent) const
 {
-    return new WirePortsModel(parameterFinder_, portsInterface_, signalInterface_, parent);
+    return new WirePortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -57,10 +58,13 @@ PortsView* WirePortsEditorConstructor::createView(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortsEditorConstructor::constructDelegate()
+// Function: WirePortsEditorConstructor::createDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate* WirePortsEditorConstructor::constructDelegate(QObject* parent) const
+PortsDelegate* WirePortsEditorConstructor::createDelegate(QObject* parent) const
 {
-    return new WirePortsDelegate(component_, completionModel_, parameterFinder_, portValidator_->getTypeValidator(), 
-        parent);
+    auto componentParametersModel = new ComponentParameterModel(expressions_.finder, parent);
+    componentParametersModel->setExpressionParser(expressions_.parser);
+
+    return new WirePortsDelegate(component_, componentParametersModel, expressions_.finder, 
+        portValidator_->getTypeValidator(), parent);
 }

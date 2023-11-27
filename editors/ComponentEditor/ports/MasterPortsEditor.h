@@ -29,7 +29,7 @@ class PortsView;
 class PortValidator;
 class PortsDelegate;
 class PortsFilter;
-class PortsEditorConstructor;
+class PortsEditorFactory;
 class PortsInterface;
 class BusInterfaceInterface;
 class PortAbstractionInterface;
@@ -49,10 +49,7 @@ public:
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance that manages the library.
      *      @param [in] portsInterface      Interface for accessing the component ports.
-     *      @param [in] signalInterface     Interface for accessing logical ports.
      *      @param [in] editorConstructor   Constructor for required modules.
-     *      @param [in] parameterFinder     Locates the different parameters of the containing component.
-     *      @param [in] portValidator       Validator used for ports.
      *      @param [in] completionModel     Model containing the completions used in expression editor.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this widget.
@@ -60,9 +57,7 @@ public:
     MasterPortsEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<PortsInterface> portsInterface,
-        QSharedPointer<PortAbstractionInterface> signalInterface,
-        PortsEditorConstructor const* editorConstructor,
-        QSharedPointer<ParameterFinder> parameterFinder,
+        PortsEditorFactory const* editorConstructor,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
 

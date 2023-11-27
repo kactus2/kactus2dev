@@ -13,6 +13,7 @@
 #define TRANSACTIONAL_PORTS_ITEM_H
 
 #include "componenteditoritem.h"
+#include <editors/common/ExpressionSet.h>
 
 #include <QList>
 
@@ -47,9 +48,7 @@ public:
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+		ExpressionSet expressions,
         BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 

@@ -648,7 +648,7 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     auto portMapInterface = absTypeInterface->getPortMapInterface();
     Q_ASSERT(portMapInterface);
 
-    root->addChildItem(createPortsItem(root, busInterface));
+    root->addChildItem(createPortsItem(root, busInterface, expressionsSupport));
 
     root->addChildItem(createBusInterfacesItem(root, busInterface, portMapInterface));
 
@@ -764,11 +764,11 @@ QSharedPointer<ComponentEditorViewsItem> ComponentEditor::createViewsItem(
 // Function: ComponentEditor::createPortsItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentEditorPortsItem> ComponentEditor::createPortsItem(
-    ComponentEditorRootItem* root, BusInterfaceInterface* busInterface)
+    ComponentEditorRootItem* root, BusInterfaceInterface* busInterface,
+    ExpressionSet const& expressionSupport)
 {
     QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_,
-        libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
-        expressionParser_, busInterface, root));
+        libHandler_, component_, referenceCounter_, expressionSupport, busInterface, root));
 
     connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 

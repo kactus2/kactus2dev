@@ -12,7 +12,7 @@
 #ifndef TRANSACTIONALPORTSEDITORCONSTRUCTOR_H
 #define TRANSACTIONALPORTSEDITORCONSTRUCTOR_H
 
-#include <editors/ComponentEditor/ports/PortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/PortsEditorFactory.h>
 
 #include <QSortFilterProxyModel>
 #include <QSharedPointer>
@@ -29,25 +29,21 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Constructs transactional ports editor items.
 //-----------------------------------------------------------------------------
-class TransactionalPortsEditorConstructor : public PortsEditorConstructor
+class TransactionalPortsEditorConstructor : public PortsEditorFactory
 {
 public:
 
-    using PortsEditorConstructor::PortsEditorConstructor;
+    using PortsEditorFactory::PortsEditorFactory;
 
     /*!
      *  The destructor.
      */
-    virtual ~TransactionalPortsEditorConstructor() = default;
+    ~TransactionalPortsEditorConstructor() = default;
 
     /*!
      *  Construct a ports model.
      *
-     *      @param [in] parameterFinder     Locates the different parameters of the containing component.
-     *      @param [in] portsInterface      Interface for accessing the component ports.
-     *      @param [in] signalInterface     Interface for accessing abstraction signals.
-     *      @param [in] filter              Filter for ports model.
-     *      @param [in] parent              The owner of the constructed model.
+    *      @param [in] parent              The owner of the constructed model.
      *
      *      @return The created ports model.
      */
@@ -56,7 +52,6 @@ public:
     /*!
      *  Construct a filter.
      *
-     *      @param [in] portsInterface  Interface for accessing the component ports.
      *      @param [in] parent          Owner of the filter.
      *
      *      @return The created ports filter.
@@ -66,8 +61,6 @@ public:
     /*!
      *  Construct a view.
      *
-     *      @param [in] defaultPath     Default import / export path.
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] parent          Owner of the view.
      *
      *      @return The created view.
@@ -77,15 +70,11 @@ public:
     /*!
      *  Construct a delegate.
      *
-     *      @param [in] component           The component being edited.
-     *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] parameterFinder     The parameter finder.
-     *      @param [in] portValidator       Validator used for ports.
      *      @param [in] parent              The owner of the delegate.
      *
      *      @return The created delegate.
      */
-    PortsDelegate* constructDelegate(QObject* parent) const final;
+    PortsDelegate* createDelegate(QObject* parent) const final;
 
     //! No copying.
     TransactionalPortsEditorConstructor(const TransactionalPortsEditorConstructor& other) = delete;

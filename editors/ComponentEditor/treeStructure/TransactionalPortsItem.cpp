@@ -22,18 +22,20 @@
 //-----------------------------------------------------------------------------
 // Function: TransactionalPortsItem::TransactionalPortsItem()
 //-----------------------------------------------------------------------------
-TransactionalPortsItem::TransactionalPortsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-    QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceInterface* busInterface,
+TransactionalPortsItem::TransactionalPortsItem(ComponentEditorTreeModel* model,
+    LibraryInterface* libHandler,
+    QSharedPointer<Component> component, 
+    QSharedPointer<ReferenceCounter> refCounter,
+    ExpressionSet expressions, 
+    BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-portValidator_(new PortValidator(expressionParser, component->getViews())),
+portValidator_(new PortValidator(expressions.parser, component->getViews())),
 busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
 }
 
 //-----------------------------------------------------------------------------

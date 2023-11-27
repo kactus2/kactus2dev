@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsDelegate.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsModel.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
@@ -27,7 +28,7 @@
 //-----------------------------------------------------------------------------
 PortsModel* TransactionalPortsEditorConstructor::constructModel(QObject* parent) const
 {
-    return new TransactionalPortsModel(parameterFinder_, portsInterface_, signalInterface_, parent);;
+    return new TransactionalPortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -35,8 +36,7 @@ PortsModel* TransactionalPortsEditorConstructor::constructModel(QObject* parent)
 //-----------------------------------------------------------------------------
 PortsFilter* TransactionalPortsEditorConstructor::createFilter(QObject* parent) const
 {
-    TransactionalPortsFilter* transactionalFilter = new TransactionalPortsFilter(portsInterface_, parent);
-    return transactionalFilter;
+    return new TransactionalPortsFilter(portsInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
@@ -44,7 +44,7 @@ PortsFilter* TransactionalPortsEditorConstructor::createFilter(QObject* parent) 
 //-----------------------------------------------------------------------------
 PortsView* TransactionalPortsEditorConstructor::createView(QWidget* parent) const
 {
-    PortsView* view = new PortsView(TransactionalPortColumns::NAME, busInterface_, parent);
+    auto view = new PortsView(TransactionalPortColumns::NAME, busInterface_, parent);
 
     view->setDefaultImportExportPath(defaultPath_);
     view->setAllowImportExport(true);
@@ -57,10 +57,13 @@ PortsView* TransactionalPortsEditorConstructor::createView(QWidget* parent) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorConstructor::constructDelegate()
+// Function: TransactionalPortsEditorConstructor::createDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate* TransactionalPortsEditorConstructor::constructDelegate(QObject* parent) const
+PortsDelegate* TransactionalPortsEditorConstructor::createDelegate(QObject* parent) const
 {
+    auto componentParametersModel = new ComponentParameterModel(expressions_.finder, parent);
+    componentParametersModel->setExpressionParser(expressions_.parser);
+
     return new TransactionalPortsDelegate(
-        component_, completionModel_, parameterFinder_, portValidator_->getTypeValidator(), parent);
+        component_, componentParametersModel, expressions_.finder, portValidator_->getTypeValidator(), parent);
 }

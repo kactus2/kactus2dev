@@ -15,6 +15,7 @@
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 #include <editors/ComponentEditor/itemeditor.h>
+#include <editors/common/ExpressionSet.h>
 
 #include <QTabWidget>
 
@@ -50,8 +51,7 @@ public:
 	 */
 	WirePortEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
+        ExpressionSet expressions,
         QSharedPointer<PortValidator> portValidator,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
@@ -142,8 +142,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    QSharedPointer<IPXactSystemVerilogParser> expressionParser_{ nullptr };
 
     //! Editor for wire ports.
     MasterPortsEditor* wireEditor_{ nullptr };

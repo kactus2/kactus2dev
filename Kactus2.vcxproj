@@ -1846,63 +1846,24 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\PortWireTypeDelegate.h">
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\ports\PortsEditorConstructor.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
     <QtMoc Include="editors\ComponentEditor\ports\PortsFilter.h">
     </QtMoc>
+    <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h" />
     <ClInclude Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortTypeDefinitionEditor.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\ports\PortWireTypeColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortWireTypeView.h">
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
-      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-      </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-      </Command>
-      <Message Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Outputs>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
-      </Command>
-    </CustomBuild>
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsDelegate.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortEditor.h" />
-    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h" />
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsModel.h">
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsFilter.h">
     </QtMoc>
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h" />
     <ClInclude Include="editors\ComponentEditor\ports\WirePortColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\WirePortsModel.h">
     </QtMoc>
@@ -1913,6 +1874,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.h" />
     <QtMoc Include="editors\ComponentEditor\ports\WirePortEditor.h" />
+    <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h" />
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h" />
