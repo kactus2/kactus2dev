@@ -79,7 +79,6 @@ registers_(registers)
     if (component->getRevision() == Document::Revision::Std22)
     {
         view_->hideColumn(AddressBlockColumns::REGISTER_DIMENSION);
-        view_->hideColumn(AddressBlockColumns::VOLATILE);
         view_->hideColumn(AddressBlockColumns::IS_PRESENT);
     }
 
