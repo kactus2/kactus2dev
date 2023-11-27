@@ -9,10 +9,15 @@
 // The Transactional ports-item in the component editor's navigation tree. 
 //-----------------------------------------------------------------------------
 
-
 #include "TransactionalPortsItem.h"
 
-#include <editors/ComponentEditor/ports/TransactionalPortEditor.h>
+#include <editors/ComponentEditor/ports/TypedPortEditor.h>
+#include <editors/ComponentEditor/ports/TransactionalPortsEditorFactory.h>
+
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -30,8 +35,9 @@ TransactionalPortsItem::TransactionalPortsItem(ComponentEditorTreeModel* model,
     BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
-portValidator_(new PortValidator(expressions.parser, component->getViews())),
-busInterface_(busInterface)
+    expressions_(expressions),
+    portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
     setParameterFinder(expressions.finder);
@@ -72,8 +78,20 @@ ItemEditor* TransactionalPortsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new TransactionalPortEditor(
-            component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_, busInterface_);
+        QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
+
+        QSharedPointer<PortsInterface> portsInterface(new PortsInterface(portValidator_,
+            expressions_.parser,
+            expressions_.formatter));
+        portsInterface->setPorts(component_->getPorts());
+
+        const QString defaultPath = QString("%1/transactionalList.csv").arg(libHandler_->getDirectoryPath(component_->getVlnv()));
+
+        TransactionalPortsEditorFactory transactionalFactory(component_, expressions_, portValidator_,
+            portsInterface, signalInterface, busInterface_, defaultPath);
+
+        editor_ = new TypedPortEditor(component_, libHandler_, &transactionalFactory, 
+            QStringLiteral("transactional"), portsInterface, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

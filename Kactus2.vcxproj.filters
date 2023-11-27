@@ -3340,16 +3340,13 @@
     <ClCompile Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.cpp">
       <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\WirePortEditor.cpp">
+    <ClCompile Include="editors\ComponentEditor\ports\TypedPortEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortEditor.cpp">
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorFactory.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp">
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
   </ItemGroup>
@@ -5779,10 +5776,10 @@
     <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h">
+    <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorFactory.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
   </ItemGroup>
@@ -6041,10 +6038,7 @@
     <QtMoc Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\ports\WirePortEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortEditor.h">
+    <QtMoc Include="editors\ComponentEditor\ports\TypedPortEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
   </ItemGroup>

@@ -12,8 +12,8 @@
 
 #include "WirePortsItem.h"
 
-#include <editors/ComponentEditor/ports/WirePortEditor.h>
-#include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/TypedPortEditor.h>
+#include <editors/ComponentEditor/ports/WirePortsEditorFactory.h>
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <KactusAPI/include/PortsInterface.h>
@@ -33,10 +33,10 @@ WirePortsItem::WirePortsItem(ComponentEditorTreeModel* model, LibraryInterface* 
     ExpressionSet expressions,
     BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent):
-    ComponentEditorItem(model, libHandler, component, parent),
+ComponentEditorItem(model, libHandler, component, parent),
     expressions_(expressions),
-portValidator_(new PortValidator(expressions.parser, component->getViews())),
-busInterface_(busInterface)
+    portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
     setParameterFinder(expressions.finder);
@@ -86,10 +86,10 @@ ItemEditor* WirePortsItem::editor()
 
         const QString defaultPath = QString("%1/wireList.csv").arg(libHandler_->getDirectoryPath(component_->getVlnv()));
 
-        WirePortsEditorConstructor wireFactory(component_, expressions_, portValidator_,
+        WirePortsEditorFactory wireFactory(component_, expressions_, portValidator_,
             portsInterface, signalInterface, busInterface_, defaultPath);
 
-		editor_ = new WirePortEditor(component_, libHandler_, &wireFactory, QStringLiteral("wire"),
+		editor_ = new TypedPortEditor(component_, libHandler_, &wireFactory, QStringLiteral("wire"),
             portsInterface, busInterface_);
 		editor_->setProtection(locked_);
 

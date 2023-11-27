@@ -57,7 +57,14 @@ public:
     {
     }
 
+    /*!
+     *  The destructor.
+     */
     ~PortsEditorFactory() = default;
+
+    //! No copying.
+    PortsEditorFactory(const PortsEditorFactory& other) = delete;
+    PortsEditorFactory& operator=(const PortsEditorFactory& other) = delete;
 
     /*!
      *  Construct a ports model.

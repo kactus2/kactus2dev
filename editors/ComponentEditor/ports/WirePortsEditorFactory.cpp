@@ -1,50 +1,51 @@
 //-----------------------------------------------------------------------------
-// File: TransactionalPortsEditorConstructor.cpp
+// File: WirePortsEditorFactory.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
 // Date: 29.04.2019
 //
 // Description:
-// Constructs transactional ports editor items.
+// Constructs wire ports editor items.
 //-----------------------------------------------------------------------------
 
-#include "TransactionalPortsEditorConstructor.h"
+#include "WirePortsEditorFactory.h"
 
 #include <editors/ComponentEditor/ports/PortsView.h>
-#include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsDelegate.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsModel.h>
+#include <editors/ComponentEditor/ports/WirePortsModel.h>
+#include <editors/ComponentEditor/ports/WirePortColumns.h>
+#include <editors/ComponentEditor/ports/WirePortsFilter.h>
+#include <editors/ComponentEditor/ports/WirePortsDelegate.h>
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <QCompleter>
+#include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorConstructor::constructModel()
+// Function: WirePortsEditorFactory::constructModel()
 //-----------------------------------------------------------------------------
-PortsModel* TransactionalPortsEditorConstructor::constructModel(QObject* parent) const
+PortsModel* WirePortsEditorFactory::constructModel(QObject* parent) const
 {
-    return new TransactionalPortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
+    return new WirePortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorConstructor::constructFilter()
+// Function: WirePortsEditorFactory::constructFilter()
 //-----------------------------------------------------------------------------
-PortsFilter* TransactionalPortsEditorConstructor::createFilter(QObject* parent) const
+PortsFilter* WirePortsEditorFactory::createFilter(QObject* parent) const
 {
-    return new TransactionalPortsFilter(portsInterface_, parent);
+    return new WirePortsFilter(portsInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorConstructor::constructView()
+// Function: WirePortsEditorFactory::constructView()
 //-----------------------------------------------------------------------------
-PortsView* TransactionalPortsEditorConstructor::createView(QWidget* parent) const
+PortsView* WirePortsEditorFactory::createView(QWidget* parent) const
 {
-    auto view = new PortsView(TransactionalPortColumns::NAME, busInterface_, parent);
+    auto view = new PortsView(WirePortColumns::NAME, busInterface_, parent);
 
     view->setDefaultImportExportPath(defaultPath_);
     view->setAllowImportExport(true);
@@ -57,13 +58,13 @@ PortsView* TransactionalPortsEditorConstructor::createView(QWidget* parent) cons
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorConstructor::createDelegate()
+// Function: WirePortsEditorFactory::createDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate* TransactionalPortsEditorConstructor::createDelegate(QObject* parent) const
+PortsDelegate* WirePortsEditorFactory::createDelegate(QObject* parent) const
 {
     auto componentParametersModel = new ComponentParameterModel(expressions_.finder, parent);
     componentParametersModel->setExpressionParser(expressions_.parser);
 
-    return new TransactionalPortsDelegate(
-        component_, componentParametersModel, expressions_.finder, portValidator_->getTypeValidator(), parent);
+    return new WirePortsDelegate(component_, componentParametersModel, expressions_.finder, 
+        portValidator_->getTypeValidator(), parent);
 }

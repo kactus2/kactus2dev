@@ -90,6 +90,8 @@ signals:
 
 private:
 
+	ExpressionSet expressions_;
+
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
 

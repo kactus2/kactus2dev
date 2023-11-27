@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: WirePortEditor.h
+// File: TypedPortEditor.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Esko Pekkarinen
 // Date: 23.11.2023
 //
 // Description:
-// 
+// Editor for wire/transactional/structured ports.
 //-----------------------------------------------------------------------------
 
-#ifndef WIRE_PORT_EDITOR_H
-#define WIRE_PORT_EDITOR_H
+#ifndef TYPED_PORT_EDITOR_H
+#define TYPED_PORT_EDITOR_H
 
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
@@ -33,9 +33,9 @@ class IPXactSystemVerilogParser;
 class PortsEditorFactory;
 
 //-----------------------------------------------------------------------------
-//! Editor to edit the ports of a component.
+//! Editor for wire/transactional/structured ports.
 //-----------------------------------------------------------------------------
-class WirePortEditor : public ItemEditor
+class TypedPortEditor : public ItemEditor
 {
 	Q_OBJECT
 
@@ -46,13 +46,13 @@ public:
 	 *
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] handler                 The instance that manages the library.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] portValidator           Validator used for ports.
+	 *      @param [in] editorFactory           The factory for creating editor content.
+     *      @param [in] portType                Type of the edited ports: wire/transactional/structured.
+     *      @param [in] portsInterface          Interface for accessing ports.
      *      @param [in] busInterface            Interface for accessing bus interfaces.
 	 *      @param [in] parent                  The owner of this widget.
 	 */
-	WirePortEditor(QSharedPointer<Component> component,
+	TypedPortEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         PortsEditorFactory const* editorFactory,
         QString const& portType,
@@ -63,7 +63,7 @@ public:
 	/*!
      *  The destructor.
      */
-	~WirePortEditor() = default;
+	~TypedPortEditor() = default;
 
 	/*!
      *  Check for the validity of the edited ports.
@@ -83,11 +83,6 @@ public:
 	 *      @param [in] allow If true then import/export is enabled.
 	 */
 	void setAllowImportExport(bool allow);
-    
-
-    //! No copying.
-    WirePortEditor(const WirePortEditor& other) = delete;
-    WirePortEditor& operator=(const WirePortEditor& other) = delete;
 
 signals:
 
@@ -147,14 +142,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_{ nullptr };
 
     //! Editor for the ports.
-    MasterPortsEditor wireEditor_;
+    MasterPortsEditor portEditor_;
 
+    //! Type of the edited ports: wire/transactional/structured.
     QString portType_;
 };
 
-#endif // WIRE_PORT_EDITOR_H
+#endif // TYPED_PORT_EDITOR_H

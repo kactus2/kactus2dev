@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: WirePortsEditorConstructor.h
+// File: WirePortsEditorFactory.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -30,11 +30,16 @@ class PortsInterface;
 //-----------------------------------------------------------------------------
 //! Constructs wire ports editor items.
 //-----------------------------------------------------------------------------
-class WirePortsEditorConstructor : public PortsEditorFactory
+class WirePortsEditorFactory : public PortsEditorFactory
 {
 public:
 
     using PortsEditorFactory::PortsEditorFactory;
+
+    /*!
+     *  The destructor.
+     */
+    ~WirePortsEditorFactory() = default;
 
     /*!
      *  Construct a ports model.

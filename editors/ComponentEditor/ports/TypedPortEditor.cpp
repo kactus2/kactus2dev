@@ -6,10 +6,10 @@
 // Date: 23.11.2023
 //
 // Description:
-// 
+// Editor for wire/transactional/structured ports.
 //-----------------------------------------------------------------------------
 
-#include "WirePortEditor.h"
+#include "TypedPortEditor.h"
 
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
@@ -33,9 +33,9 @@
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::WirePortEditor()
+// Function: TypedPortEditor::TypedPortEditor()
 //-----------------------------------------------------------------------------
-WirePortEditor::WirePortEditor(QSharedPointer<Component> component, 
+TypedPortEditor::TypedPortEditor(QSharedPointer<Component> component, 
     LibraryInterface* handler,
     PortsEditorFactory const* editorFactory,
     QString const& portType,
@@ -44,52 +44,52 @@ WirePortEditor::WirePortEditor(QSharedPointer<Component> component,
     QWidget *parent):
 ItemEditor(component, handler, parent),
     busInterface_(busInterface),
-    wireEditor_(component, handler, portsInterface, editorFactory, busInterface, this),
+    portEditor_(component, handler, portsInterface, editorFactory, busInterface, this),
     portType_(portType)
 {
-    connect(&wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(&wireEditor_, SIGNAL(errorMessage(const QString&)),
+    connect(&portEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&portEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(&wireEditor_, SIGNAL(noticeMessage(const QString&)),
+    connect(&portEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-    connect(&wireEditor_, SIGNAL(createNewInteface(QStringList const&)),
+    connect(&portEditor_, SIGNAL(createNewInteface(QStringList const&)),
         this, SLOT(onCreateNewInteface(QStringList const&)), Qt::UniqueConnection);
-    connect(&wireEditor_, SIGNAL(createInterface(QStringList const&)),
+    connect(&portEditor_, SIGNAL(createInterface(QStringList const&)),
         this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
 
-    connect(&wireEditor_, SIGNAL(increaseReferences(QString)),
+    connect(&portEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(&wireEditor_, SIGNAL(decreaseReferences(QString)),
+    connect(&portEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(&wireEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
+    connect(&portEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
     setupLayout();
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::isValid()
+// Function: TypedPortEditor::isValid()
 //-----------------------------------------------------------------------------
-bool WirePortEditor::isValid() const
+bool TypedPortEditor::isValid() const
 {
-    return wireEditor_.isValid();
+    return portEditor_.isValid();
 }
 
 //-----------------------------------------------------------------------------
-// Function: portseditor::refresh()
+// Function: TypedPortEditor::refresh()
 //-----------------------------------------------------------------------------
-void WirePortEditor::refresh()
+void TypedPortEditor::refresh()
 {
-    wireEditor_.refresh();
+    portEditor_.refresh();
     busInterface_->setBusInterfaces(component());
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::showEvent()
+// Function: TypedPortEditor::showEvent()
 //-----------------------------------------------------------------------------
-void WirePortEditor::showEvent(QShowEvent* event)
+void TypedPortEditor::showEvent(QShowEvent* event)
 {
     ItemEditor::showEvent(event);
 
@@ -97,17 +97,17 @@ void WirePortEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
-// Function: portseditor::setAllowImportExport()
+// Function: TypedPortEditor::setAllowImportExport()
 //-----------------------------------------------------------------------------
-void WirePortEditor::setAllowImportExport(bool allow)
+void TypedPortEditor::setAllowImportExport(bool allow)
 {
-    wireEditor_.setAllowImportExport(allow);
+    portEditor_.setAllowImportExport(allow);
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::onCreateNewInteface()
+// Function: TypedPortEditor::onCreateNewInteface()
 //-----------------------------------------------------------------------------
-void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
+void TypedPortEditor::onCreateNewInteface(QStringList const& selectedPorts)
 {
     // Ask user for new bus definition VLNV.
     NewBusDialog dialog(handler(), this);
@@ -191,9 +191,9 @@ void WirePortEditor::onCreateNewInteface(QStringList const& selectedPorts)
 }
 
 //-----------------------------------------------------------------------------
-// Function: WirePortEditor::onCreateInterface()
+// Function: TypedPortEditor::onCreateInterface()
 //-----------------------------------------------------------------------------
-void WirePortEditor::onCreateInterface(QStringList const& selectedPorts)
+void TypedPortEditor::onCreateInterface(QStringList const& selectedPorts)
 {
     QSharedPointer<BusInterface> busIf(new BusInterface());
     
@@ -204,9 +204,9 @@ void WirePortEditor::onCreateInterface(QStringList const& selectedPorts)
 }
 
 //-----------------------------------------------------------------------------
-// Function: portseditor::connectBusInterfaceWizard()
+// Function: TypedPortEditor::connectBusInterfaceWizard()
 //-----------------------------------------------------------------------------
-void WirePortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard)
+void TypedPortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard)
 {
     component()->getBusInterfaces()->append(busIf);
 
@@ -227,30 +227,30 @@ void WirePortEditor::openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: portseditor::changeExtensionsEditorItem()
+// Function: TypedPortEditor::changeExtensionsEditorItem()
 //-----------------------------------------------------------------------------
-void WirePortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
+void TypedPortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
 {
     if (!itemIndex.isValid())
     {
         emit changeVendorExtensions(QStringLiteral("Component: ") + component()->getVlnv().toString(), component());
     }
-    else if (QSharedPointer<Port> selectedPort = wireEditor_.getIndexedPort(itemIndex); selectedPort)
+    else if (QSharedPointer<Port> selectedPort = portEditor_.getIndexedPort(itemIndex); selectedPort)
     {
         emit changeVendorExtensions(QStringLiteral("Port: ") + selectedPort->name(), selectedPort);
     }
 }
 
 //-----------------------------------------------------------------------------
-// Function: portseditor::setupLayout()
+// Function: TypedPortEditor::setupLayout()
 //-----------------------------------------------------------------------------
-void WirePortEditor::setupLayout()
+void TypedPortEditor::setupLayout()
 {
     QString labelText = portType_ + " ports";
     labelText.replace(0, 1, portType_.front().toUpper());
 
     auto layout = new QVBoxLayout(this);
     layout->addWidget(new SummaryLabel(labelText, this), 0, Qt::AlignCenter);
-    layout->addWidget(&wireEditor_);
+    layout->addWidget(&portEditor_);
     layout->setContentsMargins(0, 0, 0, 0);
 }

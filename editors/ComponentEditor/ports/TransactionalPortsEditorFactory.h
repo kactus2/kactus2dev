@@ -1,5 +1,5 @@
 //-----------------------------------------------------------------------------
-// File: TransactionalPortsEditorConstructor.h
+// File: TransactionalPortsEditorFactory.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
 // Author: Mikko Teuho
@@ -9,8 +9,8 @@
 // Constructs transactional ports editor items.
 //-----------------------------------------------------------------------------
 
-#ifndef TRANSACTIONALPORTSEDITORCONSTRUCTOR_H
-#define TRANSACTIONALPORTSEDITORCONSTRUCTOR_H
+#ifndef TRANSACTIONAL_PORTS_EDITOR_FACTORY_H
+#define TRANSACTIONAL_PORTS_EDITOR_FACTORY_H
 
 #include <editors/ComponentEditor/ports/PortsEditorFactory.h>
 
@@ -29,7 +29,7 @@ class ExpressionParser;
 //-----------------------------------------------------------------------------
 //! Constructs transactional ports editor items.
 //-----------------------------------------------------------------------------
-class TransactionalPortsEditorConstructor : public PortsEditorFactory
+class TransactionalPortsEditorFactory : public PortsEditorFactory
 {
 public:
 
@@ -38,7 +38,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~TransactionalPortsEditorConstructor() = default;
+    ~TransactionalPortsEditorFactory() = default;
 
     /*!
      *  Construct a ports model.
@@ -76,9 +76,6 @@ public:
      */
     PortsDelegate* createDelegate(QObject* parent) const final;
 
-    //! No copying.
-    TransactionalPortsEditorConstructor(const TransactionalPortsEditorConstructor& other) = delete;
-    TransactionalPortsEditorConstructor& operator=(const TransactionalPortsEditorConstructor& other) = delete;
 };
 
-#endif // TRANSACTIONALPORTSEDITORCONSTRUCTOR_H
+#endif // TRANSACTIONAL_PORTS_EDITOR_FACTORY_H

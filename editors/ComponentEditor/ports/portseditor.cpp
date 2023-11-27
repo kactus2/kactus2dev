@@ -18,8 +18,8 @@
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/PortsInterface.h>
 #include <editors/ComponentEditor/ports/MasterPortsEditor.h>
-#include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/WirePortsEditorFactory.h>
+#include <editors/ComponentEditor/ports/TransactionalPortsEditorFactory.h>
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -65,11 +65,11 @@ busInterface_(busInterface)
 
     QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-    WirePortsEditorConstructor wireFactory(component, expressions, portValidator,
+    WirePortsEditorFactory wireFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
     wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_,  &wireFactory,  busInterface, this);
 
-    TransactionalPortsEditorConstructor transactionalFactory(component, expressions, portValidator,
+    TransactionalPortsEditorFactory transactionalFactory(component, expressions, portValidator,
         portsInterface_, signalInterface, busInterface_, defaultPath);
     transactionalEditor_ = new MasterPortsEditor(component, handler, portsInterface_, 
         &transactionalFactory, busInterface, this);
