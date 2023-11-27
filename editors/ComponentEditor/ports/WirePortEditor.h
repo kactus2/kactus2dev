@@ -14,8 +14,10 @@
 
 #include <KactusAPI/include/ParameterFinder.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
+
 #include <editors/ComponentEditor/itemeditor.h>
 #include <editors/common/ExpressionSet.h>
+#include <editors/ComponentEditor/ports/MasterPortsEditor.h>
 
 #include <QTabWidget>
 
@@ -28,6 +30,7 @@ class MasterPortsEditor;
 class PortsInterface;
 class BusInterfaceInterface;
 class IPXactSystemVerilogParser;
+class PortsEditorFactory;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -51,8 +54,9 @@ public:
 	 */
 	WirePortEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        ExpressionSet expressions,
-        QSharedPointer<PortValidator> portValidator,
+        PortsEditorFactory const* editorFactory,
+        QString const& portType,
+        QSharedPointer<PortsInterface> portsInterface,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
 
@@ -143,14 +147,14 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Editor for wire ports.
-    MasterPortsEditor* wireEditor_{ nullptr };
-
-    //! Interface for accessing ports.
-    QSharedPointer<PortsInterface> portsInterface_{ nullptr };
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_{ nullptr };
+
+    //! Editor for the ports.
+    MasterPortsEditor wireEditor_;
+
+    QString portType_;
 };
 
 #endif // WIRE_PORT_EDITOR_H

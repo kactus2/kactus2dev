@@ -13,6 +13,12 @@
 #include "WirePortsItem.h"
 
 #include <editors/ComponentEditor/ports/WirePortEditor.h>
+#include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
+
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/PortsInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -71,8 +77,20 @@ ItemEditor* WirePortsItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new WirePortEditor(
-            component_, libHandler_, expressions_, portValidator_, busInterface_);
+        QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
+
+        QSharedPointer<PortsInterface> portsInterface(new PortsInterface(portValidator_, 
+            expressions_.parser, 
+            expressions_.formatter));
+        portsInterface->setPorts(component_->getPorts());
+
+        const QString defaultPath = QString("%1/wireList.csv").arg(libHandler_->getDirectoryPath(component_->getVlnv()));
+
+        WirePortsEditorConstructor wireFactory(component_, expressions_, portValidator_,
+            portsInterface, signalInterface, busInterface_, defaultPath);
+
+		editor_ = new WirePortEditor(component_, libHandler_, &wireFactory, QStringLiteral("wire"),
+            portsInterface, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

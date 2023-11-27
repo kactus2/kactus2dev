@@ -16,9 +16,6 @@
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentParameterFinder.h>
 #include <KactusAPI/include/PortsInterface.h>
-
-#include <editors/ComponentEditor/ports/MasterPortsEditor.h>
-#include <editors/ComponentEditor/ports/WirePortsEditorConstructor.h>
 #include <editors/common/ExpressionSet.h>
 
 #include <common/dialogs/NewBusDialog/NewBusDialog.h>
@@ -38,41 +35,35 @@
 //-----------------------------------------------------------------------------
 // Function: WirePortEditor::WirePortEditor()
 //-----------------------------------------------------------------------------
-WirePortEditor::WirePortEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    ExpressionSet expressions,
-    QSharedPointer<PortValidator> portValidator, BusInterfaceInterface* busInterface,
+WirePortEditor::WirePortEditor(QSharedPointer<Component> component, 
+    LibraryInterface* handler,
+    PortsEditorFactory const* editorFactory,
+    QString const& portType,
+    QSharedPointer<PortsInterface> portsInterface,
+    BusInterfaceInterface* busInterface,
     QWidget *parent):
 ItemEditor(component, handler, parent),
-portsInterface_(new PortsInterface(portValidator, expressions.parser, expressions.formatter)),
-busInterface_(busInterface)
+    busInterface_(busInterface),
+    wireEditor_(component, handler, portsInterface, editorFactory, busInterface, this),
+    portType_(portType)
 {
-    portsInterface_->setPorts(component->getPorts());
-
-    const QString defaultPath = QString("%1/wireListing.csv").arg(handler->getDirectoryPath(component->getVlnv()));
-
-    QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
-
-    WirePortsEditorConstructor wireFactory(component, expressions, portValidator,
-        portsInterface_, signalInterface, busInterface_, defaultPath);
-    wireEditor_ = new MasterPortsEditor(component, handler, portsInterface_, &wireFactory,  busInterface, this);
-    
-    connect(wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
-    connect(wireEditor_, SIGNAL(errorMessage(const QString&)),
+    connect(&wireEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&wireEditor_, SIGNAL(errorMessage(const QString&)),
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
-    connect(wireEditor_, SIGNAL(noticeMessage(const QString&)),
+    connect(&wireEditor_, SIGNAL(noticeMessage(const QString&)),
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
 
-    connect(wireEditor_, SIGNAL(createNewInteface(QStringList const&)),
+    connect(&wireEditor_, SIGNAL(createNewInteface(QStringList const&)),
         this, SLOT(onCreateNewInteface(QStringList const&)), Qt::UniqueConnection);
-    connect(wireEditor_, SIGNAL(createInterface(QStringList const&)),
+    connect(&wireEditor_, SIGNAL(createInterface(QStringList const&)),
         this, SLOT(onCreateInterface(QStringList const&)), Qt::UniqueConnection);
 
-    connect(wireEditor_, SIGNAL(increaseReferences(QString)),
+    connect(&wireEditor_, SIGNAL(increaseReferences(QString)),
         this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
-    connect(wireEditor_, SIGNAL(decreaseReferences(QString)),
+    connect(&wireEditor_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
-    connect(wireEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
+    connect(&wireEditor_, SIGNAL(changeExtensionsEditorItem(QModelIndex const&)),
         this, SLOT(changeExtensionsEditorItem(QModelIndex const&)), Qt::UniqueConnection);
 
     setupLayout();
@@ -83,7 +74,7 @@ busInterface_(busInterface)
 //-----------------------------------------------------------------------------
 bool WirePortEditor::isValid() const
 {
-    return wireEditor_->isValid();
+    return wireEditor_.isValid();
 }
 
 //-----------------------------------------------------------------------------
@@ -91,7 +82,7 @@ bool WirePortEditor::isValid() const
 //-----------------------------------------------------------------------------
 void WirePortEditor::refresh()
 {
-    wireEditor_->refresh();
+    wireEditor_.refresh();
     busInterface_->setBusInterfaces(component());
 }
 
@@ -102,7 +93,7 @@ void WirePortEditor::showEvent(QShowEvent* event)
 {
     ItemEditor::showEvent(event);
 
-    emit helpUrlRequested("componenteditor/wirePorts.html");
+    emit helpUrlRequested(QString("componenteditor/%1Ports.html").arg(portType_));
 }
 
 //-----------------------------------------------------------------------------
@@ -110,7 +101,7 @@ void WirePortEditor::showEvent(QShowEvent* event)
 //-----------------------------------------------------------------------------
 void WirePortEditor::setAllowImportExport(bool allow)
 {
-    wireEditor_->setAllowImportExport(allow);
+    wireEditor_.setAllowImportExport(allow);
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +235,7 @@ void WirePortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
     {
         emit changeVendorExtensions(QStringLiteral("Component: ") + component()->getVlnv().toString(), component());
     }
-    else if (QSharedPointer<Port> selectedPort = wireEditor_->getIndexedPort(itemIndex); selectedPort)
+    else if (QSharedPointer<Port> selectedPort = wireEditor_.getIndexedPort(itemIndex); selectedPort)
     {
         emit changeVendorExtensions(QStringLiteral("Port: ") + selectedPort->name(), selectedPort);
     }
@@ -255,8 +246,11 @@ void WirePortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
 //-----------------------------------------------------------------------------
 void WirePortEditor::setupLayout()
 {
+    QString labelText = portType_ + " ports";
+    labelText.replace(0, 1, portType_.front().toUpper());
+
     auto layout = new QVBoxLayout(this);
-    layout->addWidget(new SummaryLabel(tr("Wire ports"), this), 0, Qt::AlignCenter);
-    layout->addWidget(wireEditor_);
+    layout->addWidget(new SummaryLabel(labelText, this), 0, Qt::AlignCenter);
+    layout->addWidget(&wireEditor_);
     layout->setContentsMargins(0, 0, 0, 0);
 }
