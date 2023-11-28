@@ -37,8 +37,12 @@ public:
     ComponentGeneratorValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ParameterValidator> parameterValidator);
 
+    // Disable copying.
+    ComponentGeneratorValidator(ComponentGeneratorValidator const& rhs) = delete;
+    ComponentGeneratorValidator& operator=(ComponentGeneratorValidator const& rhs) = delete;
+
 	//! The destructor.
-	~ComponentGeneratorValidator();
+	~ComponentGeneratorValidator() = default;
     
     /*!
      *  Validates the given component generator.
@@ -83,14 +87,10 @@ public:
      *      @param [in] generator   The selected component generator.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsIn(QVector<QString>& errors, QSharedPointer<ComponentGenerator> generator,
+    void findErrorsIn(QStringList& errors, QSharedPointer<ComponentGenerator> generator,
         QString const& context) const;
 
 private:
-
-	// Disable copying.
-	ComponentGeneratorValidator(ComponentGeneratorValidator const& rhs);
-	ComponentGeneratorValidator& operator=(ComponentGeneratorValidator const& rhs);
 
     /*!
      *  Find errors in name.
@@ -99,7 +99,7 @@ private:
      *      @param [in] generator   The selected component generator.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInName(QVector<QString>& errors, QSharedPointer<ComponentGenerator> generator,
+    void findErrorsInName(QStringList& errors, QSharedPointer<ComponentGenerator> generator,
         QString const& context) const;
 
     /*!
@@ -109,7 +109,7 @@ private:
      *      @param [in] generator   The selected component generator.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInPhase(QVector<QString>& errors, QSharedPointer<ComponentGenerator> generator,
+    void findErrorsInPhase(QStringList& errors, QSharedPointer<ComponentGenerator> generator,
         QString const& context) const;
 
     /*!
@@ -119,7 +119,7 @@ private:
      *      @param [in] generator   The selected component generator.
      *      @param [in] context     Context to help locate the error.
      */
-    void findErrorsInGeneratorExe(QVector<QString>& errors, QSharedPointer<ComponentGenerator> generator,
+    void findErrorsInGeneratorExe(QStringList& errors, QSharedPointer<ComponentGenerator> generator,
         QString const& context) const;
 
     //-----------------------------------------------------------------------------

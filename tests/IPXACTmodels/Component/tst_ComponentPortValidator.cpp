@@ -9,7 +9,7 @@
 // Unit test for class ComponentPortValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 

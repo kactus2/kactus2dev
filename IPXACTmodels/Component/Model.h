@@ -37,7 +37,7 @@ public:
 	/*!
      *  The default constructor.
 	 */
-	Model();
+	Model() = default;
 
 	//! Copy constructor.
 	Model(const Model &other);
@@ -48,7 +48,7 @@ public:
 	/*!
      *  The destructor.
 	 */
-	~Model();
+	~Model() = default;
 
 	/*!
      *  Get the views of this model.
@@ -246,41 +246,6 @@ public:
     bool hasContents() const;
 
 private:
-
-    /*!
-     *  Copy the views.
-     *
-     *      @param [in] other   The model being copied.
-     */
-    void copyViews(const Model& other) const;
-
-    /*!
-     *  Copy the component instantiations.
-     *
-     *      @param [in] other   The model being copied.
-     */
-    void copyComponentInstantiations(const Model& other) const;
-
-    /*!
-     *  Copy the design instantiations.
-     *
-     *      @param [in] other   The model being copied.
-     */
-    void copyDesignInstantiations(const Model& other) const;
-
-    /*!
-     *  Copy the design configurations.
-     *
-     *      @param [in] other   The model being copied.
-     */
-    void copyDesignConfigurationInstantiations(const Model& other) const;
-
-    /*!
-     *  Copy the ports.
-     *
-     *      @param [in] other   The model being copied.
-     */
-    void copyPorts(const Model& other) const;
 
 	//! Contains the views for this model.
     View::List views_ = View::List(new QList<QSharedPointer<View> >());

@@ -86,8 +86,7 @@ tst_AbstractionDefinitionValidator::tst_AbstractionDefinitionValidator() :
 library_(new LibraryMock(this)), expressionParser_(new SystemVerilogExpressionParser())
 {
 	testBusDefVlnv_ = VLNV(VLNV::BUSDEFINITION,"vendor","library","test_bus_def","version");
-	QSharedPointer<BusDefinition> testBusDef(new BusDefinition);
-	testBusDef->setVlnv(testBusDefVlnv_);
+	QSharedPointer<BusDefinition> testBusDef(new BusDefinition(testBusDefVlnv_, Document::Revision::Std14));
 	library_->addComponent(testBusDef);
 
 	port_ = QSharedPointer<PortAbstraction>(new PortAbstraction);
@@ -121,7 +120,7 @@ void tst_AbstractionDefinitionValidator::baseCase()
 //-----------------------------------------------------------------------------
 void tst_AbstractionDefinitionValidator::vlnvFail()
 {
-	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition);
+	QSharedPointer<AbstractionDefinition> abs(new AbstractionDefinition(VLNV(VLNV::INVALID, "a", "b", "c", "d"), Document::Revision::Std14));
 	AbstractionDefinitionValidator validator(library_, expressionParser_);
 
 	abs->setBusType(testBusDefVlnv_);
@@ -285,7 +284,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QSharedPointer<WireAbstraction> extendWire(new WireAbstraction());
     extendWire->getSystemPorts()->append(wirePort);
     extendWire->setDefaultValue("0");
-    extendWire->addQualifier(Qualifier::Data);
+    extendWire->addQualifier(Qualifier::Type::Data);
 
     QSharedPointer<PortAbstraction> extendWirePort(new PortAbstraction());
     extendWirePort->setName("ExtendWire");
@@ -307,7 +306,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     transactionalPort->setProtocol(transactionalProtocol);
 
     QSharedPointer<TransactionalAbstraction> extendTransactional(new TransactionalAbstraction());
-    extendTransactional->addQualifier(Qualifier::Data);
+    extendTransactional->addQualifier(Qualifier::Type::Data);
     extendTransactional->getSystemPorts()->append(transactionalPort);
 
     QSharedPointer<PortAbstraction> extendTransactionalPort(new PortAbstraction());
@@ -345,7 +344,7 @@ void tst_AbstractionDefinitionValidator::testExtendedPortsNonEditableParameters(
     QVERIFY(validator.validate(abs));
 
     wirePort->setDirection(DirectionTypes::OUT);
-    extendWire->addQualifier(Qualifier::Address);
+    extendWire->addQualifier(Qualifier::Type::Address);
     extendWirePort->setDescription("newExtendWireDescription");
     transactionalPort->setInitiative("provides");
     transactionalPort->setKind("tlm_socket");
@@ -793,8 +792,7 @@ void tst_AbstractionDefinitionValidator::systemWirePortHasGroup()
     QCOMPARE(errorList.size(), 1);
     QVERIFY(validator.validate(abstraction) == false);
 
-    QSharedPointer<BusDefinition> busDef(new BusDefinition());
-    busDef->setVlnv(testBusDefVlnv_);
+    QSharedPointer<BusDefinition> busDef(new BusDefinition(testBusDefVlnv_, Document::Revision::Std14));
     QStringList systemGroupNames({ "testSystem" });
     busDef->setSystemGroupNames(systemGroupNames);
     library_->addComponent(busDef);
@@ -828,7 +826,7 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
 	testPort->setWire(wire);
 
 	QSharedPointer<Qualifier> wireQualifier(new Qualifier());
-	wireQualifier->setType(Qualifier::Protection);
+	wireQualifier->setType(Qualifier::Type::Protection);
 	wireQualifier->setAttribute(Qualifier::Attribute::PowerEnableLevel, QStringLiteral("super high"));
 	wire->setQualifier(wireQualifier);
 
@@ -845,7 +843,7 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
     testPort2->setWire(wire2);
 
     QSharedPointer<Qualifier> wireQualifier2(new Qualifier());
-    wireQualifier2->setType(Qualifier::PowerEnable);
+    wireQualifier2->setType(Qualifier::Type::PowerEnable);
     wireQualifier2->setAttribute(Qualifier::Attribute::PowerEnableLevel, QStringLiteral("high"));
     wireQualifier2->setAttribute(Qualifier::Attribute::PowerDomainReference, QStringLiteral("testPowerDomain")); // port qualifier must not have powerDomainRef set when in an absDef
 
@@ -860,8 +858,8 @@ void tst_AbstractionDefinitionValidator::wireQualifier()
     QVERIFY(!validator.validate(abstraction2));
 
 	wireQualifier->clear();
-	wireQualifier->setType(Qualifier::Address);
-	wireQualifier->setType(Qualifier::Data);
+	wireQualifier->setType(Qualifier::Type::Address);
+	wireQualifier->setType(Qualifier::Type::Data);
 
 	wireQualifier2->setAttribute(Qualifier::Attribute::PowerDomainReference, QStringLiteral(""));
 
@@ -1006,7 +1004,7 @@ void tst_AbstractionDefinitionValidator::packetFieldValueWhenOpcode()
     testPacketField->setValue("128+64"); // error
 
     QSharedPointer<Qualifier> testQualifier(new Qualifier());
-    testQualifier->setType(Qualifier::Opcode);
+    testQualifier->setType(Qualifier::Type::Opcode);
     testPacketField->setQualifier(testQualifier);
 
     testPort->getPackets()->append(testPacket);

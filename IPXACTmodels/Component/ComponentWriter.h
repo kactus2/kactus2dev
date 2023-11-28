@@ -35,7 +35,7 @@ public:
     /*!
      *  The destructor.
      */
-    ~ComponentWriter();
+    ~ComponentWriter() = default;
 
     /*!
      *  Write a component to an XML file.

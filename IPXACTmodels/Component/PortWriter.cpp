@@ -39,6 +39,10 @@ void PortWriter::writePort(QXmlStreamWriter& writer, QSharedPointer<Port> port, 
     {
         writeTransactional(writer, port->getTransactional(), docRevision);
     }
+    else if (port->getStructured() && docRevision == Document::Revision::Std22)
+    {
+        writeStructured(writer, port->getStructured());
+    }
 
     writeArrays(writer, port->getArrays());
 
@@ -66,11 +70,8 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
         QualifierWriter::writeQualifier(writer, wire->getQualifier());
     }
 
-    if (wire->getVector() && (!wire->getVector()->getLeft().isEmpty() || !wire->getVector()->getRight().isEmpty()))
-    {
-        writeVector(writer, wire->getVector(), docRevision);
-    }
-
+    writeVectors(writer, wire->getVectors(), docRevision);
+    
     writeWireTypeDefinitions(writer, wire->getWireTypeDefs());
 
     writeWireDriver(writer, wire->getDriver());
@@ -81,27 +82,32 @@ void PortWriter::writeWire(QXmlStreamWriter& writer, QSharedPointer<Wire> wire, 
 //-----------------------------------------------------------------------------
 // Function: PortWriter::writeVector()
 //-----------------------------------------------------------------------------
-void PortWriter::writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector,
+void PortWriter::writeVectors(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
     Document::Revision docRevision) const
 {
-    if (vector)
+    if (vectors->isEmpty())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:vectors"));
+        return;
+    }
 
+    writer.writeStartElement(QStringLiteral("ipxact:vectors"));
+
+    for (auto const& vector : *vectors)
+    {
         writer.writeStartElement(QStringLiteral("ipxact:vector"));
 
-        if (docRevision == Document::Revision::Std22 && vector->getId().isEmpty() == false)
+        if (docRevision == Document::Revision::Std22 && vector.getId().isEmpty() == false)
         {
-            writer.writeAttribute(QStringLiteral("vectorId"), vector->getId());
+            writer.writeAttribute(QStringLiteral("vectorId"), vector.getId());
         }
 
-        writer.writeTextElement(QStringLiteral("ipxact:left"), vector->getLeft());
-        writer.writeTextElement(QStringLiteral("ipxact:right"), vector->getRight());
+        writer.writeTextElement(QStringLiteral("ipxact:left"), vector.getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), vector.getRight());
 
         writer.writeEndElement(); // ipxact:vector
-
-        writer.writeEndElement(); // ipxact:vectors
     }
+
+    writer.writeEndElement(); // ipxact:vectors
 }
 
 //-----------------------------------------------------------------------------
@@ -310,24 +316,103 @@ void PortWriter::writeTransactionalMinMaxConnections(QXmlStreamWriter& writer,
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortWriter::writeArrays()
+// Function: PortWriter::writeStructured()
 //-----------------------------------------------------------------------------
-void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Array> > > arrays) const
+void PortWriter::writeStructured(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
 {
-    if (!arrays->isEmpty())
+    writer.writeStartElement(QStringLiteral("ipxact:structured"));
+
+    if (structured->isPacked())
     {
-        writer.writeStartElement(QStringLiteral("ipxact:arrays"));
+        writer.writeAttribute(QStringLiteral("packed"), QStringLiteral("true"));
+    }
+    
+    writeStructuredType(writer, structured);
 
-        for (QSharedPointer<Array> singleArray : *arrays)
+    writeVectors(writer, structured->getVectors(), Document::Revision::Std22);
+
+    writeSubPorts(writer, structured);
+
+    writer.writeEndElement(); // ipxact:structured
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::writeStructuredType()
+//-----------------------------------------------------------------------------
+void PortWriter::writeStructuredType(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
+{
+    writer.writeStartElement(QStringLiteral("ipxact:") + Structured::toString(structured->getType()));
+    if (structured->getType() == Structured::Type::Struct || structured->getType() == Structured::Type::Union)
+    {
+        writer.writeAttribute(QStringLiteral("direction"), DirectionTypes::direction2Str(structured->getDirection()));
+    }
+    else if (structured->getType() == Structured::Type::Interface &&
+        structured->getDirection() == DirectionTypes::DIRECTION_PHANTOM)
+    {
+        writer.writeAttribute(QStringLiteral("phantom"), QStringLiteral("true"));
+    }
+    writer.writeEndElement(); // ipxact:struct/union/interface
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::writeSubPorts()
+//-----------------------------------------------------------------------------
+void PortWriter::writeSubPorts(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const
+{
+    if (structured->getSubPorts()->isEmpty())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:subPorts"));
+
+    for (auto const& subPort : *structured->getSubPorts())
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:subPort"));
+
+        if (subPort->isIO())
         {
-            writer.writeStartElement(QStringLiteral("ipxact:array"));
-
-            writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray->getLeft());
-            writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray->getRight());
-
-            writer.writeEndElement(); // ipxact:array
+            writer.writeAttribute(QStringLiteral("isIO"), QStringLiteral("true"));
         }
 
-        writer.writeEndElement(); // ipxact:arrays
+        NameGroupWriter::writeNameGroup(writer, subPort, Document::Revision::Std22);
+
+        if (subPort->isWire())
+        {
+            writeWire(writer, subPort->getWire(), Document::Revision::Std22);
+        }
+        else if (subPort->isStructured())
+        {
+            writeStructured(writer, subPort->getStructured());
+        }
+
+        writer.writeEndElement(); // ipxact:subPort
     }
+
+    writer.writeEndElement(); // ipxact:subPorts
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortWriter::writeArrays()
+//-----------------------------------------------------------------------------
+void PortWriter::writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<Array> > arrays) const
+{
+    if (arrays->isEmpty())
+    {
+        return;
+    }
+
+    writer.writeStartElement(QStringLiteral("ipxact:arrays"));
+
+    for (auto const& singleArray : *arrays)
+    {
+        writer.writeStartElement(QStringLiteral("ipxact:array"));
+
+        writer.writeTextElement(QStringLiteral("ipxact:left"), singleArray.getLeft());
+        writer.writeTextElement(QStringLiteral("ipxact:right"), singleArray.getRight());
+
+        writer.writeEndElement(); // ipxact:array
+    }
+
+    writer.writeEndElement(); // ipxact:arrays
 }

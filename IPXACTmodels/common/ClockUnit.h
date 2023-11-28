@@ -36,16 +36,7 @@ public:
      *
      *      @param [in] value   The contained value.
      */
-    ClockUnit(QString const& value = QString());
-
-    //! Copy constructor.
-    ClockUnit(const ClockUnit& other);
-
-    //! Assignment operator.
-    ClockUnit& operator=(const ClockUnit& other);
-
-    //! The destructor.
-    ~ClockUnit();
+    explicit ClockUnit(QString const& value = QString());
 
     /*!
      *  Get the assigned value.
@@ -95,7 +86,7 @@ private:
     QString value_;
 
     //! The used time unit.
-    TimeUnit timeUnit_;
+    TimeUnit timeUnit_{ TIMEUNIT_UNSPECIFIED };
 };
 
 #endif // CLOCKUNIT_H

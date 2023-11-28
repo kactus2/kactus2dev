@@ -58,21 +58,14 @@ private:
         Document::Revision docRevision) const;
 
     /*!
-     *  Write the port arrays.
-     *
-     *      @param [in] writer  Used XML writer.
-     *      @param [in] arrays  The arrays to be written.
-     */
-    void writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<QSharedPointer<Array> > > arrays) const;
-
-    /*!
      *  Write a vector.
      *
      *      @param [in] writer          Used XML writer.
      *      @param [in] vector          The vector to be written.
      *      @param [in] docRevision     The applied IP-XACT standard revision.
      */
-    void writeVector(QXmlStreamWriter& writer, QSharedPointer<Vector> vector, Document::Revision docRevision) const;
+    void writeVectors(QXmlStreamWriter& writer, QSharedPointer<QList<Vector> > vectors,
+        Document::Revision docRevision) const;
 
     /*!
      *  Write the wire type definitions.
@@ -143,6 +136,39 @@ private:
      */
     void writeTransactionalMinMaxConnections(QXmlStreamWriter& writer, QSharedPointer<Transactional> transactional)
         const;
+
+    /*!
+     *  Write the structural port.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] structured      The structured port description to write.   
+     */
+    void writeStructured(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
+
+    /*!
+     *  Write the type of the structural port.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] structured      The structured port whose type to write.
+     */
+    void writeStructuredType(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
+
+    /*!
+     *  Write the sub-ports in a structural port.
+     *
+     *      @param [in] writer          The used XML writer.
+     *      @param [in] structured      The structured port whose sub-ports to write.
+     */
+    void writeSubPorts(QXmlStreamWriter& writer, QSharedPointer<Structured> structured) const;
+
+    /*!
+     *  Write the port arrays.
+     *
+     *      @param [in] writer  Used XML writer.
+     *      @param [in] arrays  The arrays to be written.
+     */
+    void writeArrays(QXmlStreamWriter& writer, QSharedPointer<QList<Array> > arrays) const;
+
 };
 
 #endif // INSTANTIATIONSWRITER_H

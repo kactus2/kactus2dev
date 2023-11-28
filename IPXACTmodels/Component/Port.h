@@ -19,6 +19,7 @@
 #include <IPXACTmodels/common/Extendable.h>
 #include <IPXACTmodels/common/Array.h>
 
+#include <IPXACTmodels/Component/Structured.h>
 #include <IPXACTmodels/Component/Transactional.h>
 #include <IPXACTmodels/Component/Wire.h>
 
@@ -87,7 +88,21 @@ public:
      *      @param [in] newTransactional    The new transactional element.
      */
     void setTransactional(QSharedPointer<Transactional> newTransactional);
-    
+
+    /*!
+     *  Get the structured element.
+     *
+     *      @return The structured element.
+     */
+    QSharedPointer<Structured> getStructured() const;
+
+    /*!
+     *  Set the structured element for the port.
+     *
+     *      @param [in] newStructural    The new structural element.
+     */
+    void setStructured(QSharedPointer<Structured> newStructured);
+
     /*!
      *  Get the left bound of a vectored port.
      *
@@ -306,7 +321,7 @@ public:
      *
      *      @return Pointer to a list containing the arrays.
      */
-    QSharedPointer<QList<QSharedPointer<Array> > > getArrays() const;
+    QSharedPointer<QList<Array> > getArrays() const;
 
     /*!
      *  Get the wire type definitions.
@@ -337,8 +352,11 @@ private:
     //! Transactional port type.
 	QSharedPointer<Transactional> transactional_{ nullptr };
 
+    //! Structural port type.
+    QSharedPointer<Structured> structured_{ nullptr };
+
     //! The list of arrays.
-    QSharedPointer<QList<QSharedPointer<Array> > > configurableArrays_{ new QList<QSharedPointer<Array> >() };
+    QSharedPointer<QList<Array > > configurableArrays_{ new QList<Array>() };
 };
 
 Q_DECLARE_METATYPE(QSharedPointer<Port>)

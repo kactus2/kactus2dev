@@ -49,14 +49,6 @@ ComponentReader::ComponentReader(): DocumentReader()
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentReader::~DocumentReader()
-//-----------------------------------------------------------------------------
-ComponentReader::~ComponentReader()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentReader::createComponentFrom()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> ComponentReader::createComponentFrom(QDomDocument const& componentDocument) const
@@ -443,14 +435,12 @@ void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
 
     if (!componentGeneratorsElement.isNull())
     {
-        ComponentGeneratorReader generatorReader;
-
         QDomNodeList generatorNodeList = componentGeneratorsElement.elementsByTagName(QStringLiteral("ipxact:componentGenerator"));
         for (int generatorIndex = 0; generatorIndex < generatorNodeList.count(); ++generatorIndex)
         {
             QDomNode generatorNode = generatorNodeList.at(generatorIndex);
             QSharedPointer<ComponentGenerator> newComponentGenerator =
-                generatorReader.createComponentGeneratorFrom(generatorNode);
+                ComponentGeneratorReader::createComponentGeneratorFrom(generatorNode, newComponent->getRevision());
 
             newComponent->getComponentGenerators()->append(newComponentGenerator);
         }
@@ -462,8 +452,7 @@ void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
 //-----------------------------------------------------------------------------
 void ComponentReader::parseChoices(QDomNode const& componentNode, QSharedPointer<Component> newComponent) const
 {
-    auto parsedChoices = CommonItemsReader::parseChoices(componentNode);
-    newComponent->setChoices(parsedChoices);
+    newComponent->setChoices(CommonItemsReader::parseChoices(componentNode));
 }
 
 //-----------------------------------------------------------------------------
@@ -838,24 +827,10 @@ void ComponentReader::parseFileDependencies(QDomNode const& fileNode, QSharedPoi
         QString file2 = dependencyElement.firstChildElement(QStringLiteral("kactus2:fileRef2")).firstChild().nodeValue();
         QString description = dependencyElement.firstChildElement(QStringLiteral("ipxact:description")).firstChild().nodeValue();
 
-        bool locked = false;
-        if (dependencyElement.attribute(QStringLiteral("locked")) == QLatin1String("true"))
-        {
-            locked = true;
-        }
+        bool locked = dependencyElement.attribute(QStringLiteral("locked")) == QLatin1String("true");
+        bool biDirectional = dependencyElement.attribute(QStringLiteral("bidirectional")) == QLatin1String("true");
+        bool manual = dependencyElement.attribute(QStringLiteral("manual")) == QLatin1String("true");
 
-        bool biDirectional = false;
-        if (dependencyElement.attribute(QStringLiteral("bidirectional")) == QLatin1String("true"))
-        {
-            biDirectional = true;
-        }
-
-        bool manual = false;
-        if (dependencyElement.attribute(QStringLiteral("manual")) == QLatin1String("true"))
-        {
-            manual = true;
-        }
-        
         QSharedPointer<FileDependency> newDependency (new FileDependency());
         newDependency->setFile1(file1);
         newDependency->setFile2(file2);

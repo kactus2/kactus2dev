@@ -305,6 +305,8 @@
     <ClCompile Include="Component\RemapStateReader.cpp" />
     <ClCompile Include="Component\RemapStateWriter.cpp" />
     <ClCompile Include="Component\Segment.cpp" />
+    <ClCompile Include="Component\Structured.cpp" />
+    <ClCompile Include="Component\SubPort.cpp" />
     <ClCompile Include="Component\SubSpaceMap.cpp" />
     <ClCompile Include="Component\SubspaceMapReader.cpp" />
     <ClCompile Include="Component\SubSpaceMapWriter.cpp" />
@@ -462,6 +464,8 @@
     <ClInclude Include="Component\PowerDomainReader.h" />
     <ClInclude Include="Component\PowerDomainWriter.h" />
     <ClInclude Include="Component\Region.h" />
+    <ClInclude Include="Component\Structured.h" />
+    <ClInclude Include="Component\SubPort.h" />
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />

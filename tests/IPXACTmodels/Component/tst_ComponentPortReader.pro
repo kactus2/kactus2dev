@@ -16,7 +16,7 @@ TARGET = tst_ComponentPortReader
 QT += core xml testlib
 QT -= gui
 
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
 linux-g++ | linux-g++-64 | linux-g++-32 {
  LIBS += -L../../../executable \
@@ -24,7 +24,7 @@ linux-g++ | linux-g++-64 | linux-g++-32 {
 
 }
 win64 | win32 {
- LIBS += -L../../../x64/executable \
+ LIBS += -L../../../executable \
      -lIPXACTmodelsd
 }
 

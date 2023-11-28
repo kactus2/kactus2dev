@@ -27,6 +27,11 @@ public:
 
     /*!
      *  The constructor.
+     */
+    Vector() = default;
+
+    /*!
+     *  The constructor.
      *
      *      @param [in] left    The left side of the vector.
      *      @param [in] right   The right side of the vector.
@@ -34,7 +39,7 @@ public:
     Vector(QString const& left, QString const& right);
    
     //! The destructor.
-    ~Vector() final = default;
+    ~Vector() = default;
 
     /*!
      *  Create a copy of the Vector.

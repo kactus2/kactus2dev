@@ -273,10 +273,6 @@ void SingleMemoryMapEditor::setupLayout()
         topOfPageLayout = layout;
     }
 
-    //QHBoxLayout* topOfPageLayout = new QHBoxLayout();
-    //topOfPageLayout->addWidget(&nameEditor_, 0);
-    //topOfPageLayout->addWidget(memoryMapDefinitionGroup, 0);
-
     QWidget* topOfPageWidget = new QWidget();
     topOfPageWidget->setSizeIncrement(QSizePolicy::Expanding, QSizePolicy::Maximum);
     topOfPageWidget->setLayout(topOfPageLayout);

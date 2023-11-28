@@ -15,7 +15,7 @@
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinitionWriter.h>
