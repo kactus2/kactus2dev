@@ -73,7 +73,6 @@ RegisterFileEditor::RegisterFileEditor(QSharedPointer<QList<QSharedPointer<Regis
     if (component->getRevision() == Document::Revision::Std22)
     {
         view_->hideColumn(RegisterFileColumns::IS_PRESENT);
-        view_->hideColumn(RegisterFileColumns::DIMENSION);
     }
 
     //! Enable import/export csv file

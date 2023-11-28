@@ -222,8 +222,7 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
             qint64 registerFileBegin = getExpressionParser()->parseExpression(
                 targetRegisterFile->getAddressOffset()).toLongLong();
 
-            qint64 registerFileRangeInt = getExpressionParser()->parseExpression(
-                targetRegisterFile->getRange()).toLongLong();
+            qint64 registerFileRangeInt = getTrueRegisterFileRange(targetRegisterFile);
 
             qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
 
@@ -663,8 +662,7 @@ void AddressBlockValidator::findErrorsInRegisterData(QVector<QString>& errors,
             qint64 registerFileBegin = getExpressionParser()->parseExpression(
                 targetRegisterFile->getAddressOffset()).toLongLong();
 
-            qint64 registerFileRangeInt = getExpressionParser()->parseExpression(
-                targetRegisterFile->getRange()).toLongLong();
+            qint64 registerFileRangeInt = getTrueRegisterFileRange(targetRegisterFile);
 
             qint64 registerFileEnd = registerFileBegin + registerFileRangeInt - 1;
 
@@ -782,4 +780,25 @@ qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targ
     qint64 trueSize = dimensionlessSize * dimensionsProduct;
 
     return trueSize;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::getRealRegisterFileRange()
+//-----------------------------------------------------------------------------
+qint64 AddressBlockValidator::getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const
+{
+    qint64 dimensionsProduct = 1;
+
+    if (auto memArray = targetRegisterFile->getMemoryArray())
+    {
+        for (auto const& dimension : *memArray->getDimensions())
+        {
+            dimensionsProduct *= getExpressionParser()->parseExpression(dimension->value_).toLongLong();
+        }
+    }
+
+    qint64 dimensionlessRange = getExpressionParser()->parseExpression(targetRegisterFile->getRange()).toLongLong();
+    qint64 trueRange = dimensionlessRange * dimensionsProduct;
+
+    return trueRange;
 }
