@@ -267,19 +267,21 @@ bool AddressBlockInterface::setAccess(std::string const& blockName, std::string 
     }
     else
     {
-        auto accessPolicy = selectedBlock->getAccessPolicies()->first();
-
-        // Remove access policy, if new access is empty.
-        if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
-            accessPolicy->getVendorExtensions()->isEmpty())
+        if (auto accessPolicies = selectedBlock->getAccessPolicies(); accessPolicies->isEmpty() == false)
         {
-            selectedBlock->getAccessPolicies()->clear();
+            auto accessPolicy = selectedBlock->getAccessPolicies()->first();
+
+            // Remove access policy, if new access is empty.
+            if (accessPolicy && newAccess.empty())
+            {
+                selectedBlock->getAccessPolicies()->clear();
+                return true;
+            }
+
+            accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), 
+                AccessTypes::ACCESS_COUNT));
             return true;
         }
-
-        accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess), 
-            AccessTypes::ACCESS_COUNT));
-        return true;
     }
     
     return false;
