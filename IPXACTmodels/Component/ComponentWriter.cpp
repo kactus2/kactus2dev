@@ -341,13 +341,11 @@ void ComponentWriter::writeComponentGenerators(QXmlStreamWriter& writer, QShared
 {
     if (!component->getComponentGenerators()->isEmpty())
     {
-        ComponentGeneratorWriter generatorWriter;
-
         writer.writeStartElement(QStringLiteral("ipxact:componentGenerators"));
 
-        for (QSharedPointer<ComponentGenerator> generator : *component->getComponentGenerators())
+        for (auto const& generator : *component->getComponentGenerators())
         {
-            generatorWriter.writeComponentGenerator(writer, generator);
+            ComponentGeneratorWriter::writeComponentGenerator(writer, generator, component->getRevision());
         }
 
         writer.writeEndElement(); // ipxact:componentGenerators

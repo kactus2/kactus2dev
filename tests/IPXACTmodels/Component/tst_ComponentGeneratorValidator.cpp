@@ -9,7 +9,7 @@
 // Unit test for class ComponentGeneratorValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/ComponentGenerator.h>
 
@@ -40,7 +40,7 @@ private:
 
     bool errorIsNotFoundInErrorList(QString const& expectedError, QVector<QString> errorList);
 
-    QSharedPointer<ComponentGeneratorValidator> createComponentGeneratorValidator();
+    QSharedPointer<ComponentGeneratorValidator> createComponentGeneratorValidator(Document::Revision docRevision);
 };
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ void tst_ComponentGeneratorValidator::testHasValidName()
     QSharedPointer<ComponentGenerator> testGenerator (new ComponentGenerator());
     testGenerator->setName(name);
 
-    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator();
+    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidName(testGenerator), isValid);
 
@@ -105,7 +105,7 @@ void tst_ComponentGeneratorValidator::testHasValidPhase()
     testGenerator->setName("Phasor");
     testGenerator->setPhase(phaseValue);
 
-    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator();
+    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidPhase(testGenerator), isValid);
 
@@ -151,7 +151,7 @@ void tst_ComponentGeneratorValidator::testHasValidGeneratorExe()
     testGenerator->setName("Phazon");
     testGenerator->setGeneratorExe(generatorExe);
 
-    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator();
+    QSharedPointer<ComponentGeneratorValidator> validator = createComponentGeneratorValidator(Document::Revision::Std14);
 
     QCOMPARE(validator->hasValidGeneratorExe(testGenerator), isValid);
 
@@ -189,7 +189,7 @@ bool tst_ComponentGeneratorValidator::errorIsNotFoundInErrorList(QString const& 
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
         foreach(QString error, errorList)
         {
             qDebug() << error;
@@ -203,12 +203,12 @@ bool tst_ComponentGeneratorValidator::errorIsNotFoundInErrorList(QString const& 
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentGeneratorValidator::createGeneratorValidator()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentGeneratorValidator> tst_ComponentGeneratorValidator::createComponentGeneratorValidator()
+QSharedPointer<ComponentGeneratorValidator> tst_ComponentGeneratorValidator::createComponentGeneratorValidator(Document::Revision docRevision)
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
 
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), docRevision));
 
     QSharedPointer<ComponentGeneratorValidator> generatorValidator (
         new ComponentGeneratorValidator(parser, parameterValidator));

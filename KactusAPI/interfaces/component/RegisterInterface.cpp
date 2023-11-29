@@ -208,7 +208,7 @@ string RegisterInterface::getOffsetExpression(std::string const& registerName) c
 // Function: RegisterInterface::setOffset()
 //-----------------------------------------------------------------------------
 bool RegisterInterface::setOffset(std::string const& registerName, std::string const& newOffset)
-{
+{   
     QSharedPointer<Register> selectedRegister = getRegister(registerName);
     if (!selectedRegister)
     {
@@ -486,19 +486,21 @@ bool RegisterInterface::setAccess(std::string const& registerName, std::string c
     }
     else
     {
-        auto accessPolicy = selectedRegister->getAccessPolicies()->first();
-
-        // Remove access policy, if new access is empty.
-        if (newAccess.empty() && accessPolicy->getModeReferences()->isEmpty() &&
-            accessPolicy->getVendorExtensions()->isEmpty())
+        if (auto accessPolicies = selectedRegister->getAccessPolicies(); accessPolicies->isEmpty() == false)
         {
-            selectedRegister->getAccessPolicies()->removeFirst();
+            auto accessPolicy = selectedRegister->getAccessPolicies()->first();
+
+            // Remove access policy, if new access is empty.
+            if (accessPolicy && newAccess.empty())
+            {
+                selectedRegister->getAccessPolicies()->removeFirst();
+                return true;
+            }
+
+            accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess),
+                AccessTypes::ACCESS_COUNT));
             return true;
         }
-
-        accessPolicy->setAccess(AccessTypes::str2Access(QString::fromStdString(newAccess),
-            AccessTypes::ACCESS_COUNT));
-        return true;
     }
 
     return false;

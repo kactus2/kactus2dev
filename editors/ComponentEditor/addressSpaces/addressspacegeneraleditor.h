@@ -53,6 +53,10 @@ public:
 	//! The destructor.
 	virtual ~AddressSpaceGeneralEditor();
 
+    //! No copying. No assignment.
+    AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other) = delete;
+    AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other) = delete;
+
 	/*!
      *  Check if the editor is in valid state and can be saved.
 	 *
@@ -129,10 +133,12 @@ private slots:
     void onIsPresentChanged();
 
 private:
-	//! No copying. No assignment.
-	AddressSpaceGeneralEditor(const AddressSpaceGeneralEditor& other);
-	AddressSpaceGeneralEditor& operator=(const AddressSpaceGeneralEditor& other);
     
+    /*!
+     *  Set up the layout for the editor.
+     */
+    void setupLayout(Document::Revision docRevision);
+
     /*!
      *  Formats a given expression to human-readable format.
      *
@@ -164,8 +170,8 @@ private:
     //! Editor to set the is presence property of address space.
     ExpressionEditor* isPresentEditor_;
 
-    //! Label for the master interface binding(s).
-    QLabel* masterInterfaceBindingLabel_;
+    //! Label for the initiator/master interface binding(s).
+    QLabel* initiatorInterfaceBindingLabel_;
 };
 
 #endif // ADDRESSSPACEGENERALEDITOR_H

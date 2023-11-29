@@ -275,13 +275,13 @@ void SingleAddressBlockEditor::setupLayout()
     else
     {
         addressBlockDefinitionLayout->addRow(tr("Usage:"), usageEditor_);
+        addressBlockDefinitionLayout->addRow(tr("Volatile:"), volatileEditor_);
 
         auto spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
         addressBlockDefinitionLayout->addRow(spacer);
 
         isPresentEditor_->setVisible(false);
-        volatileEditor_->setVisible(false);
         accessEditor_->setVisible(false);
     }
     

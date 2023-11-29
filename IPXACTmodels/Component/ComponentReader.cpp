@@ -435,14 +435,12 @@ void ComponentReader::parseComponentGenerators(QDomNode const& componentNode,
 
     if (!componentGeneratorsElement.isNull())
     {
-        ComponentGeneratorReader generatorReader;
-
         QDomNodeList generatorNodeList = componentGeneratorsElement.elementsByTagName(QStringLiteral("ipxact:componentGenerator"));
         for (int generatorIndex = 0; generatorIndex < generatorNodeList.count(); ++generatorIndex)
         {
             QDomNode generatorNode = generatorNodeList.at(generatorIndex);
             QSharedPointer<ComponentGenerator> newComponentGenerator =
-                generatorReader.createComponentGeneratorFrom(generatorNode);
+                ComponentGeneratorReader::createComponentGeneratorFrom(generatorNode, newComponent->getRevision());
 
             newComponent->getComponentGenerators()->append(newComponentGenerator);
         }

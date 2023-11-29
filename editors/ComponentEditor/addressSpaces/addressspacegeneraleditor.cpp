@@ -43,7 +43,7 @@ addrUnitEditor_(this),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),
 widthEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
-masterInterfaceBindingLabel_(new QLabel(this))
+initiatorInterfaceBindingLabel_(new QLabel(this))
 {
 	Q_ASSERT(addrSpace_);
 
@@ -74,21 +74,7 @@ masterInterfaceBindingLabel_(new QLabel(this))
     widthEditor_->setAppendingCompleter(widthEditorCompleter);
     isPresentEditor_->setAppendingCompleter(isPresentEditorCompleter);
 
-	QFormLayout* layout = new QFormLayout(this);
-	layout->addRow(tr("Addressable unit bits (AUB):"),&addrUnitEditor_);
-	layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
-    layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
-
-    if (docRevision == Document::Revision::Std22)
-    {
-        layout->addRow(tr("Initiator interface binding(s):"), masterInterfaceBindingLabel_);
-        isPresentEditor_->setVisible(false);
-    }
-    else
-    {
-        layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
-        layout->addRow(tr("Master interface binding(s):"), masterInterfaceBindingLabel_);
-    }
+    setupLayout(docRevision);
 
 	refresh(busInterfaceNames);
 
@@ -160,11 +146,11 @@ void AddressSpaceGeneralEditor::refresh(QStringList masterInterfaceNames)
 
     if (masterInterfaceNames.isEmpty())
     {
-        masterInterfaceBindingLabel_->setText(tr("No binding"));
+        initiatorInterfaceBindingLabel_->setText(tr("No binding"));
     }
     else
     {
-        masterInterfaceBindingLabel_->setText(masterInterfaceNames.join(", "));
+        initiatorInterfaceBindingLabel_->setText(masterInterfaceNames.join(", "));
     }
 }
 
@@ -217,6 +203,33 @@ void AddressSpaceGeneralEditor::onIsPresentChanged()
     isPresentEditor_->setToolTip(format(isPresentEditor_->getExpression()));
 
     emit contentChanged();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGeneralEditor::setupLayout()
+//-----------------------------------------------------------------------------
+void AddressSpaceGeneralEditor::setupLayout(Document::Revision docRevision)
+{
+    QVBoxLayout* topLayout = new QVBoxLayout(this);
+
+    QFormLayout* layout = new QFormLayout();
+    layout->addRow(tr("Addressable unit bits (AUB):"), &addrUnitEditor_);
+    layout->addRow(tr("Range (=size) [AUB], f(x):"), rangeEditor_);
+    layout->addRow(tr("Width [bits], f(x):"), widthEditor_);
+
+    if (docRevision == Document::Revision::Std22)
+    {
+        layout->addRow(tr("Initiator interface binding(s):"), initiatorInterfaceBindingLabel_);
+        isPresentEditor_->setVisible(false);
+    }
+    else
+    {
+        layout->addRow(tr("Is present, f(x):"), isPresentEditor_);
+        layout->addRow(tr("Master interface binding(s):"), initiatorInterfaceBindingLabel_);
+    }
+
+    topLayout->addLayout(layout);
+    topLayout->addStretch(1); // For initiator/master interface binding label alignment
 }
 
 //-----------------------------------------------------------------------------

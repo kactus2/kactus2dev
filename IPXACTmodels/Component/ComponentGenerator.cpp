@@ -11,28 +11,13 @@
 
 #include "ComponentGenerator.h"
 
+#include <IPXACTmodels/utilities/Copy.h>
+
 #include <IPXACTmodels/common/Parameter.h>
 
 #include <QList>
 #include <QSharedPointer>
 #include <QString>
-
-//-----------------------------------------------------------------------------
-// Function: ComponentGenerator::ComponentGenerator()
-//-----------------------------------------------------------------------------
-ComponentGenerator::ComponentGenerator():
-NameGroup(),
-Extendable(),
-hidden_(),
-scope_(ComponentGenerator::NO_SCOPE),
-phase_(), 
-parameters_(new QList<QSharedPointer<Parameter> >()),
-apiType_(ComponentGenerator::EMPTY_API_TYPE),
-transportMethods_(),
-generatorExe_(),
-groups_()
-{
-}
 
 //-----------------------------------------------------------------------------
 // Function: ComponentGenerator::ComponentGenerator()
@@ -43,17 +28,13 @@ Extendable(other),
 hidden_(other.hidden_),
 scope_(other.scope_),
 phase_(other.phase_),
-parameters_(new QList<QSharedPointer<Parameter> >()),
 apiType_(other.apiType_),
+apiService_(other.apiService_),
 transportMethods_(other.transportMethods_),
 generatorExe_(other.generatorExe_),
 groups_(other.groups_)
 {
-    foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-    {
-        QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-        parameters_->append(copy);
-    }
+    Copy::copyList(other.parameters_, parameters_);
 }
 
 //-----------------------------------------------------------------------------
@@ -69,25 +50,15 @@ ComponentGenerator& ComponentGenerator::operator=(ComponentGenerator const& othe
         scope_ = other.scope_;
 		phase_ = other.phase_;
 		apiType_ = other.apiType_;
+		apiService_ = other.apiService_;
         generatorExe_ = other.generatorExe_;
         groups_ = other.groups_;
 
         parameters_->clear();
-        foreach (QSharedPointer<Parameter> parameter, *other.parameters_)
-        {
-            QSharedPointer<Parameter> copy = QSharedPointer<Parameter>(new Parameter(*parameter.data()));
-            parameters_->append(copy);
-        }
+        Copy::copyList(other.parameters_, parameters_);
     }
 
     return *this;
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentGenerator::~ComponentGenerator()
-//-----------------------------------------------------------------------------
-ComponentGenerator::~ComponentGenerator()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -207,4 +178,20 @@ void ComponentGenerator::setGroups(QStringList const& groups)
 QStringList ComponentGenerator::getGroups() const
 {
     return groups_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::getApiService()
+//-----------------------------------------------------------------------------
+QString ComponentGenerator::getApiService() const
+{
+    return apiService_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentGenerator::setApiService()
+//-----------------------------------------------------------------------------
+void ComponentGenerator::setApiService(QString const& newApiService)
+{
+    apiService_ = newApiService;
 }

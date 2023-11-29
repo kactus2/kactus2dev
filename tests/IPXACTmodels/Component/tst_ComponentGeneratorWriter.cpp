@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/common/GenericVendorExtension.h>
 #include <IPXACTmodels/common/VendorExtension.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/kactusExtensions/Kactus2Placeholder.h>
 
@@ -35,6 +36,7 @@ private slots:
 	void testWriteComponentGenerator();
 	void testWritePhase();
 	void testWriteAPI();
+	void testWriteApiService();
 	void testWriteGeneratorExe();
 	void testWriteGroups();
 	void testWriteParameter();
@@ -76,7 +78,7 @@ void tst_ComponentGeneratorWriter::testWriteAttributes()
 {
     testComponentGenerator_->setName("testGenerator");
 	testComponentGenerator_->setHidden(true);
-	testComponentGenerator_->setScope(ComponentGenerator::ENTITY);
+	testComponentGenerator_->setScope(ComponentGenerator::Scope::ENTITY);
 
 	QString expectedOutput(
 		"<ipxact:componentGenerator hidden=\"true\" scope=\"entity\">"
@@ -87,8 +89,7 @@ void tst_ComponentGeneratorWriter::testWriteAttributes()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -112,8 +113,7 @@ void tst_ComponentGeneratorWriter::testWriteComponentGenerator()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -135,8 +135,7 @@ void tst_ComponentGeneratorWriter::testWritePhase()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -146,7 +145,7 @@ void tst_ComponentGeneratorWriter::testWritePhase()
 void tst_ComponentGeneratorWriter::testWriteAPI()
 {
     testComponentGenerator_->setName("testGenerator");
-	testComponentGenerator_->setApiType(ComponentGenerator::TGI_2014_EXTENDED);
+	testComponentGenerator_->setApiType(ComponentGenerator::ApiType::TGI_2014_EXTENDED);
 
 	QString expectedOutput(
 		"<ipxact:componentGenerator>"
@@ -158,8 +157,31 @@ void tst_ComponentGeneratorWriter::testWriteAPI()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
+	QCOMPARE(output, expectedOutput);
+}
+
+//-----------------------------------------------------------------------------
+// Function: tst_ComponentGeneratorWriter::testWriteApiService()
+//-----------------------------------------------------------------------------
+void tst_ComponentGeneratorWriter::testWriteApiService()
+{
+	testComponentGenerator_->setName("testGenerator");
+	testComponentGenerator_->setApiType(ComponentGenerator::ApiType::TBGI_2022_EXTENDED);
+	testComponentGenerator_->setApiService("REST");
+
+	QString expectedOutput(
+		"<ipxact:componentGenerator>"
+		    "<ipxact:name>testGenerator</ipxact:name>"
+		    "<ipxact:apiType>TBGI_2022_EXTENDED</ipxact:apiType>"
+		    "<ipxact:apiService>REST</ipxact:apiService>"
+		"</ipxact:componentGenerator>"
+		);
+
+    QString output;
+    QXmlStreamWriter xmlStreamWriter(&output);
+
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std22);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -181,8 +203,7 @@ void tst_ComponentGeneratorWriter::testWriteGeneratorExe()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -209,8 +230,7 @@ void tst_ComponentGeneratorWriter::testWriteGroups()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -246,8 +266,7 @@ void tst_ComponentGeneratorWriter::testWriteParameter()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-	ComponentGeneratorWriter ComponentGeneratorWriter;
-	ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+	ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -257,7 +276,7 @@ void tst_ComponentGeneratorWriter::testWriteParameter()
 void tst_ComponentGeneratorWriter::testWriteCompleteGenerator()
 {
     testComponentGenerator_->setHidden(false);
-    testComponentGenerator_->setScope(ComponentGenerator::INSTANCE);
+    testComponentGenerator_->setScope(ComponentGenerator::Scope::INSTANCE);
     testComponentGenerator_->setName("fullGenerator");
     testComponentGenerator_->setPhase("id1");
     
@@ -268,7 +287,7 @@ void tst_ComponentGeneratorWriter::testWriteCompleteGenerator()
  
     testComponentGenerator_->getParameters()->append(testParameter);
 
-    testComponentGenerator_->setApiType(ComponentGenerator::TGI_2009);
+    testComponentGenerator_->setApiType(ComponentGenerator::ApiType::TGI_2009);
     
     QStringList transportMethods;
     transportMethods << "file";
@@ -308,8 +327,7 @@ void tst_ComponentGeneratorWriter::testWriteCompleteGenerator()
     QString output;
     QXmlStreamWriter xmlStreamWriter(&output);
 
-    ComponentGeneratorWriter ComponentGeneratorWriter;
-    ComponentGeneratorWriter.writeComponentGenerator(xmlStreamWriter, testComponentGenerator_);
+    ComponentGeneratorWriter::writeComponentGenerator(xmlStreamWriter, testComponentGenerator_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 

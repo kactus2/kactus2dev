@@ -74,7 +74,7 @@ void tst_BusDefinitionValidator::baseCase()
 //-----------------------------------------------------------------------------
 void tst_BusDefinitionValidator::failVLNV()
 {
-	QSharedPointer<BusDefinition> busDefinition(new BusDefinition());
+	QSharedPointer<BusDefinition> busDefinition(new BusDefinition(VLNV(VLNV::INVALID, "a", "b", "c", "d"), Document::Revision::Std14));
 
 	BusDefinitionValidator validator(nullptr, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()));
 

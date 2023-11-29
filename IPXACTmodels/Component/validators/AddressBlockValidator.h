@@ -23,6 +23,7 @@
 class ExpressionParser;
 class AddressBlock;
 class Register;
+class RegisterFile;
 class ResetType;
 class Component;
 class RegisterValidator;
@@ -253,6 +254,15 @@ private:
      *      @return The register size in LAU.
      */
     qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const;
+
+    /*!
+     *	Get register file range (size in AUB) taking dimensions into account.
+     *  
+     *      @param [in] targetRegisterFile     The register file to get range of.
+     *	    
+     * 	    @return The true register file range.
+     */
+    qint64 getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const;
 
     /*!
      *  Find errors within the address block range.

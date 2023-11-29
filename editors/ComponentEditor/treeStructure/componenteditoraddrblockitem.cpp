@@ -16,6 +16,7 @@
 #include <editors/ComponentEditor/memoryMaps/SingleAddressBlockEditor.h>
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/AddressBlockInterface.h>
+#include <KactusAPI/include/FieldInterface.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/memorymapsvisualizer.h>
 #include <editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h>
 #include <editors/ComponentEditor/visualization/memoryvisualizationitem.h>
@@ -131,10 +132,12 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 	QSharedPointer<Register> reg = regmodel.dynamicCast<Register>();
 	if (reg)
     {
-		QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg,
+        RegisterInterface* regInterface = blockInterface_->getSubInterface();
+
+        QSharedPointer<ComponentEditorRegisterItem> regItem(new ComponentEditorRegisterItem(reg,
             addrBlock_->getRegisterData(), model_, libHandler_, component_, parameterFinder_, expressionFormatter_,
             referenceCounter_, expressionParser_, addressBlockValidator_->getRegisterValidator(),
-            blockInterface_->getSubInterface(), this));
+            regInterface, this));
 
         connect(this, SIGNAL(registerNameChanged(QString const&, QString const&)),
             regItem.data(), SIGNAL(registerNameChanged(QString const&, QString const&)), Qt::UniqueConnection);
@@ -148,8 +151,9 @@ void ComponentEditorAddrBlockItem::createChild( int index )
 
         if (reg->getFields()->isEmpty())
         {
-            QSharedPointer<Field> newField (new Field());
-            reg->getFields()->append(newField);
+            FieldInterface* fieldInterface = regInterface->getSubInterface();
+            fieldInterface->setFields(reg->getFields());
+            fieldInterface->addField(0);
 
             regItem->createChild(0);
         }
