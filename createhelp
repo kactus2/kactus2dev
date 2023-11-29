@@ -1,7 +1,30 @@
 #!/bin/sh
 
+# Change this to your Qt binaries directory.
+QTBIN_PATH=""
+
+# Auto search QTBIN_PATH when empty and qmake already installed.
+if [ -z "${QTBIN_PATH}" ]; then
+    if command -v qmake6 >/dev/null 2>&1; then
+        # Default to qmake6, which will exist on some linux distributions.
+        QTBIN_PATH="$(qmake6 -query QT_INSTALL_BINS)/"
+        QTLIBEXEC_PATH="$(qmake6 -query QT_INSTALL_LIBEXECS)/"
+    elif command -v qmake >/dev/null 2>&1; then
+        # qmake exists on the vast majority of linux distributions.
+        QTBIN_PATH="$(qmake -query QT_INSTALL_BINS)/"
+        QTLIBEXEC_PATH="$(qmake -query QT_INSTALL_LIBEXECS)/"
+    fi
+fi
+
 if [ ! -f Help/Kactus2Help.qch ] || [ ! -f Help/Kactus2Help.qhc ]; then
-   qhelpgenerator Help/kactus2help.qhp -o Help/Kactus2Help.qch
+    if command -v ${QTBIN_PATH}qhelpgenerator >/dev/null 2>&1; then
+        "${QTBIN_PATH}qhelpgenerator" Help/kactus2help.qhp -o Help/Kactus2Help.qch
+    elif command -v ${QTLIBEXEC_PATH}qhelpgenerator >/dev/null 2>&1; then
+        # QT6 put qhelpgenerator at QTLIBEXEC_PATH
+        "${QTLIBEXEC_PATH}qhelpgenerator" Help/kactus2help.qhp -o Help/Kactus2Help.qch
+    else
+        echo "Qhelpgenerator not found. Please set variable QTBIN_PATH to Qt binary files."
+    fi
 fi
 
 rm -R -f executable/Help
