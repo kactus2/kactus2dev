@@ -89,6 +89,7 @@ abstractionSelector_(new QComboBox(this))
 
     portMapView_.setItemDelegate(portMapDelegate_);
     portMapView_.resizeColumnsToContents();
+    portMapView_.setDisabled(true);
 
 	setupLayout();
 
@@ -115,34 +116,17 @@ void BusInterfacePortMapTab::setupTypeFilter()
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::addItemsToDirectionFilter()
 {
-    QStringList directions;
-    directions << "In" << "Out" << "InOut";
+    QList<QPair<QString, QString> > const directions{ 
+        {"in", ":icons/common/graphics/input.png"},
+        {"out", ":icons/common/graphics/output.png"},
+        {"inout", ":icons/common/graphics/inout.png"}
+    };
 
     directionFilter_.addItem("");
-    directionFilter_.addItems(directions);
 
-    for (int directionIndex = 0; directionIndex < directions.size(); directionIndex++)
+    for (auto const& [direction, iconPath] : directions)
     {
-        QString portDirection = directions.at(directionIndex);
-        QString iconPath = ":icons/common/graphics/cross.png";
-
-        if (portDirection.compare("In", Qt::CaseInsensitive) == 0)
-        {
-            iconPath = ":icons/common/graphics/input.png";
-        }
-        else if (portDirection.compare("Out", Qt::CaseInsensitive) == 0)
-        {
-            iconPath = ":icons/common/graphics/output.png";
-        }
-        else if (portDirection.compare("Inout", Qt::CaseInsensitive) == 0)
-        {
-            iconPath = ":icons/common/graphics/inout.png";
-        }
-
-        QIcon directionIcon(iconPath);
-        int itemIndex = directionFilter_.findText(portDirection);
-
-        directionFilter_.setItemIcon(itemIndex, directionIcon);
+        directionFilter_.addItem(QIcon(iconPath), direction);
     }
 }
 
@@ -172,7 +156,7 @@ void BusInterfacePortMapTab::setAbstractionDefinitions()
 
     busInterface_->setupSubInterfaces(busName_);
 
-    AbstractionTypeInterface* abstractionInterface = busInterface_->getAbstractionTypeInterface();
+    auto abstractionInterface = busInterface_->getAbstractionTypeInterface();
     int abstractionCount = abstractionInterface->itemCount();
     if (abstractionCount > 0)
     {
@@ -261,6 +245,11 @@ void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
 
         portMapDelegate_->setBusMode(busMode);
         portMapDelegate_->setSystemGroup(systemGroup);
+        portMapView_.setEnabled(true);
+    }
+    else
+    {
+        portMapView_.setDisabled(true);
     }
 }
 
@@ -269,9 +258,7 @@ void BusInterfacePortMapTab::setAbsType(int const& abstractionIndex)
 //-----------------------------------------------------------------------------
 void BusInterfacePortMapTab::setPhysicalPorts(QStringList const& ports)
 {
-    QString filteredPorts = ports.join('|');
-
-    nameFilterEditor_->setText(filteredPorts);
+    nameFilterEditor_->setText(ports.join('|'));
 
     refresh();
 }
