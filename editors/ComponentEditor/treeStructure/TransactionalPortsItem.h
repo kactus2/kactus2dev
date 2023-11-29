@@ -21,6 +21,7 @@ class Port;
 class ExpressionParser;
 class PortValidator;
 class BusInterfaceInterface;
+class PortsInterface;
 
 //-----------------------------------------------------------------------------
 //! The Transactional ports-item in the component editor's navigation tree.
@@ -49,6 +50,7 @@ public:
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
 		ExpressionSet expressions,
+		QSharedPointer<PortsInterface> portsInterface,
         BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 
@@ -94,6 +96,9 @@ private:
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+	//! Interface for accessing ports.
+	QSharedPointer<PortsInterface> portsInterface_;
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;

@@ -1,21 +1,22 @@
 //-----------------------------------------------------------------------------
-// File: TransactionalPortsEditorFactory.cpp
+// File: PortSummaryEditorFactory.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Mikko Teuho
-// Date: 29.04.2019
+// Author: Esko Pekkarinen
+// Date: 28.11.2023
 //
 // Description:
-// Constructs transactional ports editor items.
+// Creates the components of port summary editor.
 //-----------------------------------------------------------------------------
 
-#include "TransactionalPortsEditorFactory.h"
+#include "PortSummaryEditorFactory.h"
 
-#include <editors/ComponentEditor/ports/PortsView.h>
-#include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsDelegate.h>
-#include <editors/ComponentEditor/ports/TransactionalPortsModel.h>
+#include "PortSummaryView.h"
+#include "PortSummaryColumns.h"
+#include "PortSummaryFilter.h"
+#include "PortSummaryDelegate.h"
+#include "PortSummaryModel.h"
+
 #include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 
 #include <IPXACTmodels/Component/Component.h>
@@ -24,30 +25,30 @@
 #include <QCompleter>
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorFactory::constructModel()
+// Function: PortSummaryEditorFactory::createModel()
 //-----------------------------------------------------------------------------
-PortsModel* TransactionalPortsEditorFactory::createModel(QObject* parent) const
+PortsModel* PortSummaryEditorFactory::createModel(QObject* parent) const
 {
-    return new TransactionalPortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
+    return new PortSummaryModel(expressions_.finder, portsInterface_, signalInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorFactory::constructFilter()
+// Function: PortSummaryEditorFactory::constructFilter()
 //-----------------------------------------------------------------------------
-PortsFilter* TransactionalPortsEditorFactory::createFilter(QObject* parent) const
+PortsFilter* PortSummaryEditorFactory::createFilter(QObject* parent) const
 {
-    return new TransactionalPortsFilter(portsInterface_, parent);
+    return new PortSummaryFilter(portsInterface_, parent);
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorFactory::constructView()
+// Function: PortSummaryEditorFactory::constructView()
 //-----------------------------------------------------------------------------
-PortsView* TransactionalPortsEditorFactory::createView(QWidget* parent) const
+PortsView* PortSummaryEditorFactory::createView(QWidget* parent) const
 {
-    auto view = new PortsView(TransactionalPortColumns::NAME, busInterface_, parent);
+    auto view = new PortSummaryView(PortSummaryColumns::NAME, busInterface_, parent);
 
     view->setDefaultImportExportPath(defaultPath_);
-    view->setAllowImportExport(true);
+    view->setAllowImportExport(false);
     view->setAlternatingRowColors(false);
     view->setSortingEnabled(true);
     view->setItemsDraggable(false);
@@ -57,13 +58,13 @@ PortsView* TransactionalPortsEditorFactory::createView(QWidget* parent) const
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsEditorFactory::createDelegate()
+// Function: PortSummaryEditorFactory::createDelegate()
 //-----------------------------------------------------------------------------
-PortsDelegate* TransactionalPortsEditorFactory::createDelegate(QObject* parent) const
+PortsDelegate* PortSummaryEditorFactory::createDelegate(QObject* parent) const
 {
     auto componentParametersModel = new ComponentParameterModel(expressions_.finder, parent);
     componentParametersModel->setExpressionParser(expressions_.parser);
 
-    return new TransactionalPortsDelegate(
+    return new PortSummaryDelegate(
         component_, componentParametersModel, expressions_.finder, portValidator_->getTypeValidator(), parent);
 }

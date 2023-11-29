@@ -674,6 +674,10 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\portseditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortsFilter.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\portsmodel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryDelegate.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryModel.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryView.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortsView.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortTagEditorDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.cpp" />
@@ -1848,6 +1852,12 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\ports\PortsFilter.h">
     </QtMoc>
     <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryModel.h" />
+    <ClInclude Include="editors\ComponentEditor\ports\PortSummaryColumns.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryFilter.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryDelegate.h" />
+    <ClInclude Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryView.h" />
     <ClInclude Include="editors\ComponentEditor\ports\PortTypeDefinitionDelegate.h" />
     <QtMoc Include="editors\ComponentEditor\ports\PortTypeDefinitionEditor.h">
     </QtMoc>

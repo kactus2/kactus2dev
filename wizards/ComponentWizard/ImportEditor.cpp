@@ -19,6 +19,7 @@
 #include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <KactusAPI/include/ImportRunner.h>
 
@@ -72,11 +73,13 @@ componentViews_(component->getViews())
 
     ExpressionSet expressions{ parameterFinder, expressionParser, expressionFormatter };
 
-    portEditor_ = new PortsEditor(importComponent_, handler, expressions, portValidator,
+    auto ports = QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressions.parser, expressions.formatter));
+    ports->setPorts(component->getPorts());
+
+    portEditor_ = new PortsEditor(importComponent_, handler, expressions, portValidator, ports,
         busInterface, &splitter_);
 
     // CSV import/export is disabled in the wizard.
-	portEditor_->setAllowImportExport(false);
 
     runner_->setExpressionParser(expressionParser);
     runner_->loadPlugins(PluginManager::getInstance());

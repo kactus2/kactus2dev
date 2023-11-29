@@ -23,8 +23,6 @@
 #include <QStringList>
 #include <QRegularExpression>
 
-using namespace std;
-
 //-----------------------------------------------------------------------------
 // Function: PortsModel::PortsModel()
 //-----------------------------------------------------------------------------
@@ -353,7 +351,7 @@ void PortsModel::onRemoveRow(int row)
 		return;
     }
 
-    string portName(portsInterface_->getIndexedItemName(row));
+    std::string portName(portsInterface_->getIndexedItemName(row));
 
     beginRemoveRows(QModelIndex(), row, row);
     portsInterface_->removePort(portName);
@@ -380,7 +378,7 @@ void PortsModel::onRemoveItem(QModelIndex const& index)
 	}
 
     int portRow = index.row();
-    string portName(portsInterface_->getIndexedItemName(portRow));
+    std::string portName(portsInterface_->getIndexedItemName(portRow));
 
     beginRemoveRows(QModelIndex(), portRow, portRow);
 
@@ -469,7 +467,7 @@ void PortsModel::resetModelAndLockCurrentPorts()
 
     endResetModel();
 
-    for (auto portName : getInterface()->getItemNames())
+    for (auto const& portName : getInterface()->getItemNames())
     {
         DirectionTypes::Direction portDirection = DirectionTypes::str2Direction(QString::fromStdString(
             portsInterface_->getDirection(portName)), DirectionTypes::DIRECTION_INVALID);
@@ -491,7 +489,7 @@ void PortsModel::lockPort(QString const& portName)
     QModelIndex portIndex = index(portName);
     QModelIndexList lockedPortIndexes = getLockedPortIndexes(portIndex);
 
-    for (auto index : lockedPortIndexes)
+    for (auto const& index : lockedPortIndexes)
     {
         if (index.isValid())
         {
@@ -507,7 +505,7 @@ void PortsModel::unlockPort(QString const& portName)
 {
     QModelIndex portIndex = index(portName);
     QModelIndexList lockedPortIndexes = getLockedPortIndexes(portIndex);
-    for (auto index : lockedPortIndexes)
+    for (auto const& index : lockedPortIndexes)
     {
         if (index.isValid())
         {
@@ -546,7 +544,7 @@ bool PortsModel::isLocked(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 // Function: PortsModel::rowIsLocked()
 //-----------------------------------------------------------------------------
-bool PortsModel::rowIsLocked(int row)
+bool PortsModel::rowIsLocked(int row) const
 {
     QModelIndex nameIndex = QAbstractTableModel::index(row, nameColumn(), QModelIndex());
     return nameIndex.isValid() && isLocked(nameIndex);
@@ -599,7 +597,7 @@ QVariant PortsModel::expressionForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant PortsModel::valueForIndex(QModelIndex const& index) const
 {
-    string portName = portsInterface_->getIndexedItemName(index.row());
+    std::string portName = portsInterface_->getIndexedItemName(index.row());
 
     if (index.column() == nameColumn())
     {
@@ -655,7 +653,7 @@ QVariant PortsModel::expressionOrValueForIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 bool PortsModel::validateIndex(QModelIndex const& index) const
 {
-    string portName(portsInterface_->getIndexedItemName(index.row()));
+    std::string portName(portsInterface_->getIndexedItemName(index.row()));
 
     if (index.column() == nameColumn())
     {

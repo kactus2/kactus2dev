@@ -27,6 +27,7 @@ class PortValidator;
 class MasterPortsEditor;
 class PortsInterface;
 class BusInterfaceInterface;
+class PortsFilter;
 
 //-----------------------------------------------------------------------------
 //! Editor to edit the ports of a component.
@@ -52,6 +53,7 @@ public:
         LibraryInterface* handler,
         ExpressionSet expressions,
         QSharedPointer<PortValidator> portValidator,
+        QSharedPointer<PortsInterface> portsInterface,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
 
@@ -65,19 +67,12 @@ public:
      *
      *      @return True if all ports are in valid state.
      */
-	virtual bool isValid() const;
+	bool isValid() const;
 
 	/*!
      *  Reload the information from the model to the editor.
 	 */
-	virtual void refresh();
-
-	/*!
-     *  Enable/disable the import/export csv functionality for the view.
-	 *
-	 *      @param [in] allow If true then import/export is enabled.
-	 */
-	void setAllowImportExport(bool allow);
+	void refresh() final;
 
     /*!
      *  Sets the edited component.
@@ -90,12 +85,6 @@ public:
     PortsEditor(const PortsEditor& other) = delete;
     PortsEditor& operator=(const PortsEditor& other) = delete;
 
-signals:
-
-    /*!
-     *  Emitted when a new interface should be added to the component editor tree view.
-     */
-    void createInterface();
 
 protected:
 
@@ -106,19 +95,7 @@ protected:
 
 private slots:
 
-    /*!
-     *  Handler for new interface creation for new bus definition.
-     *
-     *      @param [in] selectedPorts   Ports to be mapped in the interface.
-     */
-    virtual void onCreateNewInteface(QStringList const& selectedPorts);
-
-    /*!
-     *  Handler for new interface creation for existing bus definition.
-     *
-     *      @param [in] selectedPorts   Ports to be mapped in the interface.
-     */
-    virtual void onCreateInterface(QStringList const& selectedPorts);
+   
 
     /*!
      *  Change the vendor extensions of the vendor extensions editor.
@@ -127,64 +104,27 @@ private slots:
      */
     void changeExtensionsEditorItem(QModelIndex const& itemIndex);
 
-    /*!
-     *  Handles the changing of the help file.
-     */
-    void changeHelpFile();
-
-    /*!
-     *  Handles the redefinition of tab text.
-     */
-    void redefineTabText();
 
 private:
 
-    /*!
-     *  Open the bus interface wizard.
-     *
-     *      @param [in] busIf   The new bus interface.
-     *      @param [in] wizard  The selected interface wizard.
-     */
-    void openBusInterfaceWizard(QSharedPointer<BusInterface> busIf, BusInterfaceWizard& wizard);
-
-    /*!
-     *  Connect the signals.
-     */
-    void connectSignals();
-
-    /*!
-     *  Get the name for the tab.
-     *
-     *      @param [in] tabName     Basic name of the editor.
-     *      @param [in] portCount   Current number of editor ports.
-     *
-     *      @return The name of the tab combined with the number of ports.
-     */
-    QString getTabNameWithPortCount(QString const& tabName, int const& portCount) const;
 
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! The component whose ports are being edited.
-    QSharedPointer<Component> component_; 
+    QSharedPointer<Component> component_{ nullptr };
 
 	//! The instance that manages the library.
-	LibraryInterface* handler_;
+	LibraryInterface* handler_{ nullptr };
 
-    //! Editor for wire ports.
-    MasterPortsEditor* wireEditor_;
-
-    //! Editor for transactional ports.
-    MasterPortsEditor* transactionalEditor_;
-
-    //! Tabs for the port editors.
-    QTabWidget* portTabs_;
-
-    QSharedPointer<PortsInterface> portsInterface_;
+    QSharedPointer<PortsInterface> portsInterface_{ nullptr };
 
     //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterface_;
+    BusInterfaceInterface* busInterface_{ nullptr };
+
+
+    PortsFilter* filter_{ nullptr };
 };
 
 #endif // PORTSEDITOR_H

@@ -14,7 +14,9 @@
 #include "TransactionalPortsItem.h"
 
 #include <editors/ComponentEditor/ports/portseditor.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -27,24 +29,34 @@ ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* mod
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
     ExpressionSet expressions,
     BusInterfaceInterface* busInterface,
-    ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-expressions_(expressions),
-portValidator_(new PortValidator(expressions.parser, component->getViews())),
-busInterface_(busInterface)
+    ComponentEditorItem* parent) :
+    ComponentEditorItem(model, libHandler, component, parent),
+    expressions_(expressions),
+    portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    portsInterface_(new PortsInterface(portValidator_, expressions.parser, expressions.formatter)),
+    busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);
 
+    portsInterface_->setPorts(component->getPorts());
 
+    auto wiresItem = QSharedPointer<WirePortsItem>(new WirePortsItem(model,
+        libHandler, component, refCounter, expressions, portsInterface_, busInterface, this));
+    childItems_.append(wiresItem);
 
-    childItems_.append(QSharedPointer<WirePortsItem>(new WirePortsItem(model,
-        libHandler, component, refCounter, expressions, busInterface, this)));
+    auto transactionalItem = QSharedPointer<TransactionalPortsItem>(new TransactionalPortsItem(model,
+        libHandler, component, refCounter, expressions, portsInterface_, busInterface, this));
+    childItems_.append(transactionalItem);
 
-    childItems_.append(QSharedPointer<TransactionalPortsItem>(new TransactionalPortsItem(model,
-        libHandler, component, refCounter,expressions, busInterface, this)));
+    connect(wiresItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        Qt::UniqueConnection);
 
+    connect(transactionalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -92,14 +104,12 @@ ItemEditor* ComponentEditorPortsItem::editor()
 	if (!editor_)
     {
 		editor_ = new PortsEditor(
-            component_, libHandler_, expressions_, portValidator_, busInterface_);
+            component_, libHandler_, expressions_, portValidator_, portsInterface_, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(createInterface()), 
-            this, SIGNAL(createInterface()), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
         connectItemEditorToVendorExtensionsEditor();

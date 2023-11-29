@@ -40,7 +40,7 @@ MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, Librar
 ItemEditor(component, handler, parent),
 view_(editorConstructor->createView(this)),
 proxy_(editorConstructor->createFilter(this)),
-model_(editorConstructor->constructModel(this)),
+model_(editorConstructor->createModel(this)),
 delegate_(editorConstructor->createDelegate(this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)

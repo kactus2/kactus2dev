@@ -73,7 +73,7 @@ public:
      *
      *      @return The created ports model.
      */
-    virtual PortsModel* constructModel(QObject* parent = 0) const = 0;
+    virtual PortsModel* createModel(QObject* parent = 0) const = 0;
 
     /*!
      *  Construct a filter.

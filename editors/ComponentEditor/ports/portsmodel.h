@@ -433,7 +433,7 @@ private:
 	 *
 	 *      @return True if the row is locked, otherwise false.
      */
-    bool rowIsLocked(int row);
+    bool rowIsLocked(int row) const;
 
     /*!
      *  Check if the selected interface modes match.

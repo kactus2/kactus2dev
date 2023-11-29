@@ -47,7 +47,7 @@ public:
      *
      *      @return The created ports model.
      */
-    PortsModel* constructModel(QObject* parent = 0) const  final;
+    PortsModel* createModel(QObject* parent = 0) const  final;
 
     /*!
      *  Construct a filter.

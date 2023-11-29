@@ -260,7 +260,7 @@ bool PortsDelegate::columnAcceptsExpression(int column) const
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const
 {
-    ListEditor* tagEditor = new ListEditor(parent);
+    auto tagEditor = new ListEditor(parent);
     tagEditor->setMinimumHeight(100);
 
     QStringList existingTags;

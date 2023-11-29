@@ -31,12 +31,14 @@ TransactionalPortsItem::TransactionalPortsItem(ComponentEditorTreeModel* model,
     LibraryInterface* libHandler,
     QSharedPointer<Component> component, 
     QSharedPointer<ReferenceCounter> refCounter,
-    ExpressionSet expressions, 
+    ExpressionSet expressions,
+    QSharedPointer<PortsInterface> portsInterface,
     BusInterfaceInterface* busInterface,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
     expressions_(expressions),
     portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    portsInterface_(portsInterface),
     busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
@@ -80,18 +82,13 @@ ItemEditor* TransactionalPortsItem::editor()
     {
         QSharedPointer<PortAbstractionInterface> signalInterface(new PortAbstractionInterface());
 
-        QSharedPointer<PortsInterface> portsInterface(new PortsInterface(portValidator_,
-            expressions_.parser,
-            expressions_.formatter));
-        portsInterface->setPorts(component_->getPorts());
-
         const QString defaultPath = QString("%1/transactionalList.csv").arg(libHandler_->getDirectoryPath(component_->getVlnv()));
 
         TransactionalPortsEditorFactory transactionalFactory(component_, expressions_, portValidator_,
-            portsInterface, signalInterface, busInterface_, defaultPath);
+            portsInterface_, signalInterface, busInterface_, defaultPath);
 
         editor_ = new TypedPortEditor(component_, libHandler_, &transactionalFactory, 
-            QStringLiteral("transactional"), portsInterface, busInterface_);
+            QStringLiteral("transactional"), portsInterface_, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

@@ -46,8 +46,6 @@ public:
     PortsFilter(PortsFilter const& rhs) = delete;
     PortsFilter& operator=(PortsFilter const& rhs) = delete;
 
-
-
 public slots:
 
     /*!
@@ -76,7 +74,7 @@ protected:
      *
      *      @return True, if the row passes the filters, otherwise false.
 	 */
-    virtual bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
+    bool filterAcceptsRow(int source_row, const QModelIndex & source_parent) const override;
 
     /*!
      *  Get the interface for accessing the component ports.

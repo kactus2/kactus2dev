@@ -1,16 +1,16 @@
 //-----------------------------------------------------------------------------
-// File: WirePortsEditorFactory.h
+// File: PortSummaryEditorFactory.h
 //-----------------------------------------------------------------------------
 // Project: Kactus2
-// Author: Mikko Teuho
-// Date: 29.04.2019
+// Author: Esko Pekkarinen
+// Date: 28.11.2023
 //
 // Description:
-// Constructs wire ports editor items.
+// Creates the components of port summary editor.
 //-----------------------------------------------------------------------------
 
-#ifndef WIREPORTSEDITORCONSTRUCTOR_H
-#define WIREPORTSEDITORCONSTRUCTOR_H
+#ifndef PORT_SUMMARY_EDITOR_FACTORY_H
+#define PORT_SUMMARY_EDITOR_FACTORY_H
 
 #include <editors/ComponentEditor/ports/PortsEditorFactory.h>
 
@@ -25,12 +25,11 @@ class PortsView;
 class PortValidator;
 class PortsDelegate;
 class ExpressionParser;
-class PortsInterface;
 
 //-----------------------------------------------------------------------------
-//! Constructs wire ports editor items.
+//! Creates the components of port summary editor.
 //-----------------------------------------------------------------------------
-class WirePortsEditorFactory : public PortsEditorFactory
+class PortSummaryEditorFactory : public PortsEditorFactory
 {
 public:
 
@@ -39,16 +38,16 @@ public:
     /*!
      *  The destructor.
      */
-    ~WirePortsEditorFactory() = default;
+    ~PortSummaryEditorFactory() = default;
 
     /*!
      *  Construct a ports model.
      *
-     *      @param [in] parent              The owner of the constructed model.
+    *      @param [in] parent              The owner of the constructed model.
      *
      *      @return The created ports model.
      */
-    PortsModel* createModel(QObject* parent = 0) const final;
+    PortsModel* createModel(QObject* parent) const  final;
 
     /*!
      *  Construct a filter.
@@ -75,7 +74,8 @@ public:
      *
      *      @return The created delegate.
      */
-    PortsDelegate* createDelegate(QObject* parent) const  final;
+    PortsDelegate* createDelegate(QObject* parent) const final;
+
 };
 
-#endif // WIREPORTSEDITORCONSTRUCTOR_H
+#endif // PORT_SUMMARY_EDITOR_FACTORY_H

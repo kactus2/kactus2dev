@@ -21,6 +21,7 @@
 class Port;
 class ExpressionParser;
 class PortValidator;
+class PortsInterface;
 class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
@@ -50,6 +51,7 @@ public:
 		QSharedPointer<Component> component,
         QSharedPointer<ReferenceCounter> refCounter,
         ExpressionSet expressions,
+        QSharedPointer<PortsInterface> portsInterface,
         BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 
@@ -96,6 +98,9 @@ private:
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+	//! Interface for accessing ports.
+	QSharedPointer<PortsInterface> portsInterface_;
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;

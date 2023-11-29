@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Function: WirePortsEditorFactory::constructModel()
 //-----------------------------------------------------------------------------
-PortsModel* WirePortsEditorFactory::constructModel(QObject* parent) const
+PortsModel* WirePortsEditorFactory::createModel(QObject* parent) const
 {
     return new WirePortsModel(expressions_.finder, portsInterface_, signalInterface_, parent);
 }

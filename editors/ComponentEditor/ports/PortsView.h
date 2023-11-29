@@ -36,10 +36,10 @@ public:
      *      @param [in] busInterface    Interface for accessing bus interfaces.
 	 *      @param [in] parent          The parent widget.
 	 */
-    PortsView(int const& nameColumn, BusInterfaceInterface* busInterface, QWidget *parent);
+    PortsView(int nameColumn, BusInterfaceInterface* busInterface, QWidget *parent);
 
 	//! The destructor.
-	virtual ~PortsView();
+	virtual ~PortsView() = default;
 
 signals:
 
@@ -85,12 +85,12 @@ private slots:
 protected:
 
     //! Handler for context menu events.
-    virtual void contextMenuEvent(QContextMenuEvent* event) override final;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
     /*!
      *  Handler for mouse press events.
      */
-    virtual void mousePressEvent(QMouseEvent* event) override final;
+    void mousePressEvent(QMouseEvent* event) final;
 
     /*!
      *  Handler for index change events.
@@ -99,6 +99,7 @@ protected:
      *      @param [in] previous    The previous index.
      */
     virtual void currentChanged(const QModelIndex &current, const QModelIndex &previous);
+
 
 private:
 

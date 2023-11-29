@@ -235,7 +235,7 @@ void TypedPortEditor::changeExtensionsEditorItem(QModelIndex const& itemIndex)
     {
         emit changeVendorExtensions(QStringLiteral("Component: ") + component()->getVlnv().toString(), component());
     }
-    else if (QSharedPointer<Port> selectedPort = portEditor_.getIndexedPort(itemIndex); selectedPort)
+    else if (QSharedPointer<Port> selectedPort = portEditor_.getIndexedPort(itemIndex))
     {
         emit changeVendorExtensions(QStringLiteral("Port: ") + selectedPort->name(), selectedPort);
     }
