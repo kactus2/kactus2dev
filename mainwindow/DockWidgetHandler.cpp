@@ -344,8 +344,8 @@ void DockWidgetHandler::setupLibraryDock()
     connect(this, SIGNAL(generateIntegrityReport()), libraryWidget_,
         SLOT(onGenerateIntegrityReport()), Qt::UniqueConnection);
 
-    connect(libraryWidget_, SIGNAL(createAbsDef(const VLNV&, Document::Revision, const QString&)),
-        mainWindow_, SLOT(createAbsDef(const VLNV&, Document::Revision, const QString&)), Qt::UniqueConnection);
+    connect(libraryWidget_, SIGNAL(createAbsDef(const VLNV&, const QString&)),
+        mainWindow_, SLOT(createAbsDef(const VLNV&, const QString&)), Qt::UniqueConnection);
 
     connect(libraryWidget_, SIGNAL(createDesignForExistingComponent(const VLNV&)),
         mainWindow_, SLOT(createDesignForExistingComponent(const VLNV&)), Qt::UniqueConnection);
