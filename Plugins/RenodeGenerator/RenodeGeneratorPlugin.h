@@ -50,7 +50,7 @@ public:
     /*!
      * The destructor.
      */
-    ~RenodeGeneratorPlugin() = default;
+    ~RenodeGeneratorPlugin() final = default;
 
     /*!
      *  Returns the name of the plugin.
@@ -155,14 +155,6 @@ public:
      */
     virtual QString getOutputFormat() const;
 
-public slots:
-
-    /*!
-     *  Called when an error is reported to us.
-     *
-	 *      @param [in] report			The error message.
-	 */
-    void onErrorReport(const QString& report);
 
 private:
 
@@ -184,7 +176,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The settings model for Renode generator.
-    RenodeSettingsModel* settingsModel_ = new RenodeSettingsModel();
+    RenodeSettingsModel settingsModel_{ };
 };
 
 #endif // RENODEGENERATORPLUGIN_H

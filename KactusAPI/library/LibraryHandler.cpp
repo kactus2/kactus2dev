@@ -15,6 +15,8 @@
 
 #include "FileHandler.h"
 
+#include "ConsoleMediator.h"
+
 #include "TagManager.h"
 
 #include <IPXACTmodels/common/Document.h>
@@ -41,49 +43,33 @@
 #include <QString>
 #include <QStringList>
 
-// Singleton instance.
-LibraryHandler* LibraryHandler::instance_ = nullptr;
-
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::getInstance()
 //-----------------------------------------------------------------------------
-LibraryHandler* LibraryHandler::getInstance()
+LibraryHandler& LibraryHandler::getInstance()
 {
-    if (instance_ == nullptr)
-    {
-        initialize(nullptr, nullptr);
-    }
+    static LibraryHandler instance;
 
-    return LibraryHandler::instance_;
-}
-
-//-----------------------------------------------------------------------------
-// Function: LibraryHandler::initialize()
-//-----------------------------------------------------------------------------
-void LibraryHandler::initialize(MessageMediator* messageChannel, QObject* parent)
-{
-    if (instance_ == nullptr)
-    {
-        LibraryHandler::instance_ = new LibraryHandler(messageChannel, parent);
-    }
+    return instance;
 }
 
 //-----------------------------------------------------------------------------
 // Function: LibraryHandler::LibraryHandler()
 //-----------------------------------------------------------------------------
-LibraryHandler::LibraryHandler(MessageMediator* messageChannel, QObject* parent):
-QObject(parent),
-    messageChannel_(messageChannel),
-    loader_(messageChannel),
-    documentCache_(),
-    validator_(this),
-    treeModel_(new LibraryTreeModel(this, this)),
-    hierarchyModel_(new HierarchyModel(this, this)),
-    saveInProgress_(false),
-    checkResults_()
+LibraryHandler::LibraryHandler():
+QObject(nullptr),
+LibraryInterface()
 {
     // create the connections between models and library handler
     syncronizeModels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryHandler::setOutputChannel()
+//-----------------------------------------------------------------------------
+void LibraryHandler::setOutputChannel(MessageMediator* messageChannel)
+{
+    messageChannel_ = messageChannel;
 }
 
 //-----------------------------------------------------------------------------
@@ -187,8 +173,8 @@ bool LibraryHandler::writeModelToFile(QString const& path, QSharedPointer<Docume
     }
 
     // the hierarchy model must be re-built
-    hierarchyModel_->onResetModel();
-    treeModel_->onAddVLNV(vlnv);
+    hierarchyModel_.onResetModel();
+    treeModel_.onAddVLNV(vlnv);
     
     return true;
 }
@@ -271,7 +257,7 @@ void LibraryHandler::getDependencyFiles(VLNV const& vlnv, QStringList& list)
 //-----------------------------------------------------------------------------
 LibraryItem const* LibraryHandler::getTreeRoot() const
 {
-    return treeModel_->getRoot();
+    return treeModel_.getRoot();
 }
 
 //-----------------------------------------------------------------------------
@@ -294,7 +280,7 @@ VLNV::IPXactType LibraryHandler::getDocumentType(VLNV const& vlnv)
 int LibraryHandler::referenceCount(VLNV const& vlnv) const
 {
     QList<VLNV> list;
-    return hierarchyModel_->getOwners(list, vlnv);
+    return hierarchyModel_.getOwners(list, vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -302,7 +288,7 @@ int LibraryHandler::referenceCount(VLNV const& vlnv) const
 //-----------------------------------------------------------------------------
 int LibraryHandler::getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const
 {
-    return hierarchyModel_->getOwners(list, vlnvToSearch);
+    return hierarchyModel_.getOwners(list, vlnvToSearch);
 }
 
 //-----------------------------------------------------------------------------
@@ -315,7 +301,7 @@ int LibraryHandler::getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) con
         return 0;
     }
 
-    hierarchyModel_->getChildren(list, vlnvToSearch);
+    hierarchyModel_.getChildren(list, vlnvToSearch);
     return list.size();
 }
 
@@ -389,7 +375,7 @@ bool LibraryHandler::isValid(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 HierarchyModel* LibraryHandler::getHierarchyModel()
 {
-    return hierarchyModel_;
+    return &hierarchyModel_;
 }
 
 //-----------------------------------------------------------------------------
@@ -397,7 +383,7 @@ HierarchyModel* LibraryHandler::getHierarchyModel()
 //-----------------------------------------------------------------------------
 LibraryTreeModel* LibraryHandler::getTreeModel()
 {
-    return treeModel_;
+    return &treeModel_;
 }
 
 //-----------------------------------------------------------------------------
@@ -583,8 +569,8 @@ void LibraryHandler::removeObject(VLNV const& vlnv)
 
     documentCache_.remove(vlnv);
 
-    treeModel_->onRemoveVLNV(vlnv);
-    hierarchyModel_->onRemoveVLNV(vlnv);
+    treeModel_.onRemoveVLNV(vlnv);
+    hierarchyModel_.onRemoveVLNV(vlnv);
 
     removeFile(path);
 }
@@ -642,8 +628,8 @@ void LibraryHandler::onItemSaved(VLNV const& vlnv)
     QSharedPointer<Document> model = getModel(vlnv);
     documentCache_.insert(vlnv, DocumentInfo(getPath(vlnv), model, validateDocument(model, getPath(vlnv))));
     
-    treeModel_->onDocumentUpdated(vlnv);
-    hierarchyModel_->onDocumentUpdated(vlnv);
+    treeModel_.onDocumentUpdated(vlnv);
+    hierarchyModel_.onDocumentUpdated(vlnv);
 }
 
 //-----------------------------------------------------------------------------
@@ -653,41 +639,41 @@ void LibraryHandler::syncronizeModels()
 {
     // signals from tree model to library handler
  
-    connect(treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
+    connect(&treeModel_, SIGNAL(openDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
+    connect(&treeModel_, SIGNAL(openMemoryDesign(const VLNV&, QString const&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&, QString const&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openSWDesign(const VLNV&)),
+    connect(&treeModel_, SIGNAL(openSWDesign(const VLNV&)),
         this, SLOT(onOpenSWDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(openSystemDesign(const VLNV&)),
+    connect(&treeModel_, SIGNAL(openSystemDesign(const VLNV&)),
         this, SLOT(onOpenSystemDesign(const VLNV&)), Qt::UniqueConnection);
-    connect(treeModel_, SIGNAL(editItem(const VLNV&)),
+    connect(&treeModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
     connect(this, SIGNAL(resetModel()),
-        treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
+        &treeModel_, SLOT(onResetModel()), Qt::UniqueConnection);
 
     //-----------------------------------------------------------------------------
     // connect the signals from the hierarchy model
     //-----------------------------------------------------------------------------
 
-    connect(hierarchyModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
+    connect(&hierarchyModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
         this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
+    connect(&hierarchyModel_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(onOpenMemoryDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+    connect(&hierarchyModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-    connect(hierarchyModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+    connect(&hierarchyModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
         this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 
-    connect(hierarchyModel_, SIGNAL(editItem(const VLNV&)),
+    connect(&hierarchyModel_, SIGNAL(editItem(const VLNV&)),
         this, SLOT(onEditItem(const VLNV&)), Qt::UniqueConnection);
 
 
     connect(this, SIGNAL(resetModel()),
-        hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
+        &hierarchyModel_, SLOT(onResetModel()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -737,7 +723,7 @@ void LibraryHandler::loadAvailableVLNVs()
 
     // Read all items before validation.
     // Validation will check for VLNVs in the library, so they must be available before validation.    
-    for (auto const& target: loader_.parseLibrary())
+    for (auto const& target: loader_.parseLibrary(messageChannel_))
     {
         if (contains(target.vlnv))
         {

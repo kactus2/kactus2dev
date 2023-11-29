@@ -6,7 +6,7 @@ TEMPLATE = app
 TARGET = kactus2
 
 QT += core xml widgets gui printsupport help svg
-CONFIG += c++11 release
+CONFIG += c++17 release
 
 DEFINES += _WINDOWS QT_DLL QT_HAVE_MMX QT_HAVE_3DNOW QT_HAVE_SSE QT_HAVE_MMXEXT QT_HAVE_SSE2
 

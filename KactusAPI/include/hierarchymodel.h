@@ -165,7 +165,7 @@ public:
      *      @param [in] owner       Identifies the object that's children are searched.
      *
     */
-    void getChildren(QList<VLNV>& childList, VLNV const& owner);
+    void getChildren(QList<VLNV>& childList, VLNV const& owner) const;
 
 public slots:
 

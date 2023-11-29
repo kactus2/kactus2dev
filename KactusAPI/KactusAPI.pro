@@ -5,7 +5,7 @@
 TEMPLATE = lib
 TARGET = KactusAPI
 DESTDIR = ../executable
-CONFIG += release
+CONFIG += c++17 release
 QT += xml widgets
 DEFINES +=  KACTUS2_EXPORTS
 LIBS += -L"../executable" \

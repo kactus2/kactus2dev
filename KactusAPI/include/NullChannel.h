@@ -1,45 +1,44 @@
 //-----------------------------------------------------------------------------
-// File: ConsoleMediator.h
+// File: NullChannel.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Esko Pekkarinen
-// Date: 13.02.2018
+// Date: 09.11.2023
 //
 // Description:
-// Console output for user messages.
+// Null output for user messages.
 //-----------------------------------------------------------------------------
 
-#ifndef CONSOLEMEDIATOR_H
-#define CONSOLEMEDIATOR_H
-
-#include <KactusAPI/KactusAPIGlobal.h>
+#ifndef NULL_CHANNEL_H
+#define NULL_CHANNEL_H
 
 #include "MessageMediator.h"
+
 //-----------------------------------------------------------------------------
-//! Console output for user messages.
+//! Null output for user messages.
 //-----------------------------------------------------------------------------
-class KACTUS2_API ConsoleMediator: public MessageMediator
+class NullChannel: public MessageMediator
 {
 public:
 
     //! The constructor.
-    explicit ConsoleMediator() = default;
+    explicit NullChannel() = default;
 
     //! The destructor.
-    ~ConsoleMediator() final = default;
+    ~NullChannel() final = default;
         
     //! Show the given message to the user.
-    void showMessage(QString const& message) const final;
+    void showMessage([[maybe_unused]] QString const& message) const final;
     
     //! Show the given error to the user.
-    void showError(QString const& error) const final;
+    void showError([[maybe_unused]] QString const& error) const final;
 
     //! Show the given failure message to the user.
-    void showFailure(QString const& error) const final;
+    void showFailure([[maybe_unused]] QString const& error) const final;
 
     //! Show the given status to the user.
-    void showStatusMessage(QString const& status) const final;
+    void showStatusMessage([[maybe_unused]] QString const& status) const final;
 
 };
 
-#endif // CONSOLEMEDIATOR_H
+#endif // NULL_CHANNEL_H

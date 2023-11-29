@@ -27,62 +27,56 @@ versionLabel_(tr("Version:"), this),
 vendor_(this), library_(this),
 name_(this),
 version_(this),
-layout_(new QFormLayout()),
-compactLayout_(new QHBoxLayout()),
-pathLabel_(new QLabel(this)),
-compact_(compact)
+pathLabel_(this)
 {
-    setupLayout();
+    setupLayout(compact);
     setVLNV(vlnv);
-}
-
-//-----------------------------------------------------------------------------
-// Function: vlnvdisplayer::~VLNVDisplayer()
-//-----------------------------------------------------------------------------
-VLNVDisplayer::~VLNVDisplayer()
-{
-
 }
 
 //-----------------------------------------------------------------------------
 // Function: vlnvdisplayer::setupLayout()
 //-----------------------------------------------------------------------------
-void VLNVDisplayer::setupLayout()
+void VLNVDisplayer::setupLayout(bool compact)
 {
-    pathLabel_->hide();
+    pathLabel_.hide();
 
-    layout_->addRow(&vendorLabel_, &vendor_);
-    layout_->addRow(&libraryLabel_, &library_);
-    layout_->addRow(&nameLabel_, &name_);
-    layout_->addRow(&versionLabel_, &version_);
+    // Show the labels for non-compact layout.
+    vendorLabel_.setVisible(!compact);
+    libraryLabel_.setVisible(!compact);
+    nameLabel_.setVisible(!compact);
+    versionLabel_.setVisible(!compact);
 
-    setupCompactLayout();
-}
+    if (compact)
+    {
+        QFrame* firstLine = new QFrame();
+        firstLine->setFrameShape(QFrame::VLine);
+        firstLine->setLineWidth(1);
+        QFrame* secondLine = new QFrame();
+        secondLine->setFrameShape(QFrame::VLine);
+        secondLine->setLineWidth(1);
+        QFrame* thirdLine = new QFrame();
+        thirdLine->setFrameShape(QFrame::VLine);
+        thirdLine->setLineWidth(1);
 
-//-----------------------------------------------------------------------------
-// Function: vlnvdisplayer::setupCompactLayout()
-//-----------------------------------------------------------------------------
-void VLNVDisplayer::setupCompactLayout()
-{
-    QFrame* firstLine = new QFrame();
-    firstLine->setFrameShape(QFrame::VLine);
-    firstLine->setLineWidth(1);
-    QFrame* secondLine = new QFrame();
-    secondLine->setFrameShape(QFrame::VLine);
-    secondLine->setLineWidth(1);
-    QFrame* thirdLine = new QFrame();
-    thirdLine->setFrameShape(QFrame::VLine);
-    thirdLine->setLineWidth(1);
-
-    compactLayout_->setSpacing(1);
-    compactLayout_->addWidget(&vendor_);
-    compactLayout_->addWidget(firstLine);
-    compactLayout_->addWidget(&library_);
-    compactLayout_->addWidget(secondLine);
-    compactLayout_->addWidget(&name_);
-    compactLayout_->addWidget(thirdLine);
-    compactLayout_->addWidget(&version_);
-    compactLayout_->addStretch(1);
+        QHBoxLayout* compactLayout = new QHBoxLayout(this);
+        compactLayout->setSpacing(1);
+        compactLayout->addWidget(&vendor_);
+        compactLayout->addWidget(firstLine);
+        compactLayout->addWidget(&library_);
+        compactLayout->addWidget(secondLine);
+        compactLayout->addWidget(&name_);
+        compactLayout->addWidget(thirdLine);
+        compactLayout->addWidget(&version_);
+        compactLayout->addStretch(1);
+    }
+    else
+    {
+        QFormLayout* layout_ = new QFormLayout(this);
+        layout_->addRow(&vendorLabel_, &vendor_);
+        layout_->addRow(&libraryLabel_, &library_);
+        layout_->addRow(&nameLabel_, &name_);
+        layout_->addRow(&versionLabel_, &version_);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -115,25 +109,20 @@ void VLNVDisplayer::setVLNV(const VLNV& vlnv)
         }
     }
 
-    // Show the labels for non-compact layout.
-    vendorLabel_.setVisible(!compact_);
-    libraryLabel_.setVisible(!compact_);
-    nameLabel_.setVisible(!compact_);
-    versionLabel_.setVisible(!compact_);
 
-    if (compact_)
-    {
-        // Set the compact layout.
-        setLayout(compactLayout_);
-    }
-    else
-    {
-        vendor_.setMinimumWidth(vendor_.sizeHint().width());
-        library_.setMinimumWidth(library_.sizeHint().width());
-        
-        // Set the non-compact layout.
-        setLayout(layout_);
-    }
+//     if (compact_)
+//     {
+//         // Set the compact layout.
+//         setLayout(compactLayout_);
+//     }
+//     else
+//     {
+//         vendor_.setMinimumWidth(vendor_.sizeHint().width());
+//         library_.setMinimumWidth(library_.sizeHint().width());
+//         
+//         // Set the non-compact layout.
+//         setLayout(layout_);
+//     }
 }
 
 //-----------------------------------------------------------------------------
@@ -141,19 +130,17 @@ void VLNVDisplayer::setVLNV(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 void VLNVDisplayer::setPath(QString const& path)
 {
-    pathLabel_->setText(path);
-    pathLabel_->setToolTip(path);
+    pathLabel_.setText(path);
+    pathLabel_.setToolTip(path);
 
-    if (path.isEmpty() && pathLabel_->isVisible())
-    {
-        pathLabel_->hide();
-    }
-    if (!pathLabel_->isVisible())
-    {
-        pathLabel_->setWordWrap(true);
-        pathLabel_->setMinimumWidth(20);
+    pathLabel_.setVisible(path.isEmpty() == false);
 
-        pathLabel_->show();
-        layout_->addRow(QString("Path:"), pathLabel_);
+    if (auto activeLayout = dynamic_cast<QFormLayout*>(layout()); 
+        activeLayout)
+    {
+        pathLabel_.setWordWrap(true);
+        pathLabel_.setMinimumWidth(20);
+
+        activeLayout->addRow(QString("Path:"), &pathLabel_);
     }
 }

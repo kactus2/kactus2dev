@@ -11,7 +11,6 @@
 
 #include "PythonAPI.h"
 
-#include <KactusAPI/include/LibraryHandler.h>
 
 #include <KactusAPI/KactusAPI.h>
 
@@ -21,11 +20,6 @@
 
 #include <KactusAPI/include/BusInterfaceUtilities.h>
 
-#include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
-#include <KactusAPI/include/IPXactSystemVerilogParser.h>
-#include <KactusAPI/include/ExpressionFormatter.h>
-#include <KactusAPI/include/PortsInterface.h>
-#include <KactusAPI/include/ParametersInterface.h>
 #include <KactusAPI/include/RegisterInterface.h>
 #include <KactusAPI/include/FieldInterface.h>
 #include <KactusAPI/include/AccessPolicyInterface.h>
@@ -37,12 +31,6 @@
 #include <KactusAPI/include/FileSetInterface.h>
 #include <KactusAPI/include/FileInterface.h>
 #include <KactusAPI/include/FileBuilderInterface.h>
-#include <KactusAPI/include/BusInterfaceInterface.h>
-#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
-
-#include <KactusAPI/include/ComponentInstanceInterface.h>
-#include <KactusAPI/include/InterconnectionInterface.h>
-#include <KactusAPI/include/AdHocConnectionInterface.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -56,7 +44,6 @@
 #include <IPXACTmodels/Component/RegisterBase.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/Field.h>
-#include <IPXACTmodels/Component/validators/PortValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
@@ -74,42 +61,11 @@
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------
-PythonAPI::PythonAPI():
-library_(KactusAPI::getLibrary()),
-messager_(KactusAPI::getMessageChannel()),
-activeComponent_(),
-activeDesign_(),
-portsInterface_(),
-busInterface_(),
-componentParameterInterface_(),
-mapInterface_(),
-fileSetInterface_(),
-instanceInterface_(),
-connectionInterface_(),
-adhocConnectionInterface_(),
-parameterFinder_(new ComponentAndInstantiationsParameterFinder(QSharedPointer<Component>())),
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
-portValidator_(new PortValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<View> > >())),
-parameterValidator_(new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), 
-    Document::Revision::Unknown)),
-mapValidator_()
+PythonAPI::PythonAPI()
 {
-    portsInterface_ = new PortsInterface(portValidator_, expressionParser_, expressionFormatter_);
-    componentParameterInterface_ =
-        new ParametersInterface(parameterValidator_, expressionParser_, expressionFormatter_);
-
-    QSharedPointer<Component> temporaryComponent(new Component(VLNV(), Document::Revision::Unknown));
-    busInterface_ = BusInterfaceInterfaceFactory::createBusInterface(
-        parameterFinder_, expressionFormatter_, expressionParser_, temporaryComponent, library_);
-
     constructMemoryValidators();
     constructMemoryInterface();
     constructFileSetInterface();
-
-    connectionInterface_ = new InterconnectionInterface();
-    adhocConnectionInterface_ = new AdHocConnectionInterface();
-    instanceInterface_ = new ComponentInstanceInterface(connectionInterface_, adhocConnectionInterface_);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,8 +73,6 @@ mapValidator_()
 //-----------------------------------------------------------------------------
 void PythonAPI::setupLibrary(std::string const& settingsFileString)
 {
-  
-
     library_->searchForIPXactFiles();
 }
 
@@ -321,13 +275,11 @@ bool PythonAPI::vlnvExistsInLibrary(std::string const& vendor, std::string const
         return false;
     }
 
-    VLNV selectedVLNV;
-    selectedVLNV.setVendor(QString::fromStdString(vendor));
-    selectedVLNV.setLibrary(QString::fromStdString(library));
-    selectedVLNV.setName(QString::fromStdString(name));
-    selectedVLNV.setVersion(QString::fromStdString(version));
-
-    return library_->contains(selectedVLNV);
+    return library_->contains(VLNV(VLNV::INVALID,
+        QString::fromStdString(vendor),
+        QString::fromStdString(library),
+        QString::fromStdString(name),
+        QString::fromStdString(version)));
 }
 
 //-----------------------------------------------------------------------------
