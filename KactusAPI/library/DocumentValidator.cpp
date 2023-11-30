@@ -31,9 +31,6 @@ DocumentValidator::DocumentValidator(LibraryInterface* library) :
     library_(library),
     abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
     busValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
-    catalogValidator_(),
-    componentValidatorFinder_(new ParameterCache(QSharedPointer<Component>())),
-    designValidatorFinder_(new ListParameterFinder()),
     designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), library_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_),
     systemDesignConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_)

@@ -13,12 +13,14 @@
 #define COMPONENTEDITORPORTSITEM_H
 
 #include "componenteditoritem.h"
+#include <editors/common/ExpressionSet.h>
 
 #include <QList>
 
 class Port;
 class ExpressionParser;
 class PortValidator;
+class PortsInterface;
 class BusInterfaceInterface;
 
 //-----------------------------------------------------------------------------
@@ -46,15 +48,18 @@ public:
 	ComponentEditorPortsItem(ComponentEditorTreeModel* model,
 		LibraryInterface* libHandler,
 		QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> refCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
+        QSharedPointer<ReferenceCounter> refCounter, ExpressionSet expressions,
         BusInterfaceInterface* busInterface,
 		ComponentEditorItem* parent);
 
 	//! The destructor
-	virtual ~ComponentEditorPortsItem();
+	~ComponentEditorPortsItem() = default;
+
+    //! No copying
+    ComponentEditorPortsItem(const ComponentEditorPortsItem& other) = delete;
+
+    //! No assignment
+    ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other) = delete;
 
 	/*!
      *  Get the font to be used for text of this item.
@@ -99,14 +104,14 @@ signals:
     void createInterface();
 
 private:
-	//! No copying
-	ComponentEditorPortsItem(const ComponentEditorPortsItem& other);
 
-	//! No assignment
-	ComponentEditorPortsItem& operator=(const ComponentEditorPortsItem& other);
+	ExpressionSet expressions_;
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+	//! Interface for accessing ports.
+	QSharedPointer<PortsInterface> portsInterface_;
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;

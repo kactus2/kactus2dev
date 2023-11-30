@@ -260,7 +260,7 @@ bool PortsDelegate::columnAcceptsExpression(int column) const
 //-----------------------------------------------------------------------------
 QWidget* PortsDelegate::createListEditorForPortTags(const QModelIndex& currentIndex, QWidget* parent) const
 {
-    ListEditor* tagEditor = new ListEditor(parent);
+    auto tagEditor = new ListEditor(parent);
     tagEditor->setMinimumHeight(100);
 
     QStringList existingTags;
@@ -354,7 +354,7 @@ int PortsDelegate::getRowCountForPortTypes(QModelIndex const& index) const
     }
 
     int portTypeRowCount = 0;
-    foreach (QSharedPointer<WireTypeDef> singleTypeDefinition, *typeDefinitions)
+    for (QSharedPointer<WireTypeDef> singleTypeDefinition : *typeDefinitions)
     {
         portTypeRowCount += singleTypeDefinition->getViewRefs()->count() + 1;
     }

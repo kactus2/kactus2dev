@@ -29,13 +29,11 @@ public:
      *      @param [in] parameterFinder     Pointer to the parameter finder.
      *      @param [in] portsInterface      Interface for accessing the component ports.
      *      @param [in] signalInterface     Interface for accessing abstraction signals.
-     *      @param [in] filter              The model filter.
      *      @param [in] parent              Pointer to the owner of this model.
      */
     WirePortsModel(QSharedPointer <ParameterFinder> parameterFinder,
         QSharedPointer<PortsInterface> portsInterface,
         QSharedPointer<PortAbstractionInterface> signalInterface,
-        QSortFilterProxyModel* filter,
         QObject *parent);
 
 	/*!

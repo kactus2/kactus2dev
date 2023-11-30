@@ -656,6 +656,11 @@ bool PortMapModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
 //-----------------------------------------------------------------------------
 void PortMapModel::onRemoveAllPortMappings()
 {
+    if (portMapInterface_->itemCount() == 0)
+    {
+        return;
+    }
+
     beginRemoveRows(QModelIndex(), 0, portMapInterface_->itemCount() - 1);
 
     int itemCount = portMapInterface_->itemCount();

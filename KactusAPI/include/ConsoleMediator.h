@@ -23,28 +23,23 @@ class KACTUS2_API ConsoleMediator: public MessageMediator
 public:
 
     //! The constructor.
-    explicit ConsoleMediator();
+    explicit ConsoleMediator() = default;
 
     //! The destructor.
-    virtual ~ConsoleMediator();
+    ~ConsoleMediator() final = default;
         
     //! Show the given message to the user.
-    virtual void showMessage(QString const& message) const;
+    void showMessage(QString const& message) const final;
     
     //! Show the given error to the user.
-    virtual void showError(QString const& error) const;
+    void showError(QString const& error) const final;
 
     //! Show the given failure message to the user.
-    virtual void showFailure(QString const& error) const;
+    void showFailure(QString const& error) const final;
 
     //! Show the given status to the user.
-    virtual void showStatusMessage(QString const& status) const;
+    void showStatusMessage(QString const& status) const final;
 
-private:
-
-    // Disable copying.
-    ConsoleMediator(ConsoleMediator const& rhs);
-    ConsoleMediator& operator=(ConsoleMediator const& rhs);
 };
 
 #endif // CONSOLEMEDIATOR_H

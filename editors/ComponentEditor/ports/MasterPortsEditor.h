@@ -29,7 +29,7 @@ class PortsView;
 class PortValidator;
 class PortsDelegate;
 class PortsFilter;
-class PortsEditorConstructor;
+class PortsEditorFactory;
 class PortsInterface;
 class BusInterfaceInterface;
 class PortAbstractionInterface;
@@ -49,24 +49,15 @@ public:
 	 *      @param [in] component           The component being edited.
 	 *      @param [in] handler             The instance that manages the library.
      *      @param [in] portsInterface      Interface for accessing the component ports.
-     *      @param [in] signalInterface     Interface for accessing logical ports.
      *      @param [in] editorConstructor   Constructor for required modules.
-     *      @param [in] parameterFinder     Locates the different parameters of the containing component.
-     *      @param [in] portValidator       Validator used for ports.
      *      @param [in] completionModel     Model containing the completions used in expression editor.
-     *      @param [in] defaultPath         The default import / export path.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this widget.
 	 */
     MasterPortsEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<PortsInterface> portsInterface,
-        QSharedPointer<PortAbstractionInterface> signalInterface,
-        PortsEditorConstructor* editorConstructor,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<PortValidator> portValidator,
-        QAbstractItemModel* completionModel,
-        QString const& defaultPath,
+        PortsEditorFactory const* editorConstructor,
         BusInterfaceInterface* busInterface,
         QWidget *parent = 0);
 
@@ -183,11 +174,11 @@ private:
 	//! The view that displays the ports.
 	PortsView* view_;
 
-	//! The model that holds the data to be displayed to the user.
-	PortsModel* model_;
-
 	//! The proxy that is used to sort the view.
 	PortsFilter* proxy_;
+
+    //! The model that holds the data to be displayed to the user.
+    PortsModel* model_;
 
     //! The delegate for ports.
     PortsDelegate* delegate_;

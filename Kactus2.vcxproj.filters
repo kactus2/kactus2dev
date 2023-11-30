@@ -2902,12 +2902,6 @@
     <ClCompile Include="editors\ComponentEditor\ports\MasterPortsEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsModel.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
@@ -3330,6 +3324,33 @@
     </ClCompile>
     <ClCompile Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.cpp">
       <Filter>Source Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\WirePortsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.cpp">
+      <Filter>Source Files\editors\ComponentEditor\treeStructure</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TypedPortEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\ports\PortSummaryView.cpp">
+      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.cpp">
       <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
@@ -4889,12 +4910,6 @@
     <QtMoc Include="editors\ComponentEditor\ports\MasterPortsEditor.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
-    <CustomBuild Include="editors\ComponentEditor\ports\WirePortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </CustomBuild>
-    <CustomBuild Include="editors\ComponentEditor\ports\PortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </CustomBuild>
     <QtMoc Include="editors\ComponentEditor\ports\WirePortsModel.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
@@ -5653,9 +5668,6 @@
     <ClInclude Include="wizards\ImportWizard\ImportInstancesEditor\ImportInstancesColumns.h">
       <Filter>Header Files\wizards\ImportWizard\ImportInstancesEditor</Filter>
     </ClInclude>
-    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorConstructor.h">
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
-    </ClInclude>
     <ClInclude Include="editors\ComponentEditor\ports\WirePortColumns.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
@@ -5772,6 +5784,21 @@
     </ClInclude>
     <ClInclude Include="editors\common\ComponentInstanceEditor\PowerDomainLinkColumns.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortsEditorFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortSummaryColumns.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -6022,6 +6049,27 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.h">
       <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\WirePortsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\treeStructure\TransactionalPortsItem.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\TypedPortEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryModel.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryFilter.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\ports\PortSummaryView.h">
+      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

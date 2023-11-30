@@ -77,7 +77,7 @@ QWidget* TransactionalPortsDelegate::createSelectorForKind(QWidget* parent) cons
 {
     QComboBox* kindSelector = new QComboBox(parent);
 
-    for (auto kind : TransactionalTypes::KIND_TYPES)
+    for (auto const& kind : TransactionalTypes::KIND_TYPES)
     {
         if (kind.compare("custom", Qt::CaseInsensitive) != 0)
         {

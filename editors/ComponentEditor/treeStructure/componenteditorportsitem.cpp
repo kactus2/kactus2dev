@@ -10,9 +10,13 @@
 //-----------------------------------------------------------------------------
 
 #include "componenteditorportsitem.h"
+#include "WirePortsItem.h"
+#include "TransactionalPortsItem.h"
 
 #include <editors/ComponentEditor/ports/portseditor.h>
+
 #include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -23,23 +27,36 @@
 //-----------------------------------------------------------------------------
 ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<ReferenceCounter> refCounter,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
-    QSharedPointer<ExpressionParser> expressionParser, BusInterfaceInterface* busInterface,
-    ComponentEditorItem* parent):
-ComponentEditorItem(model, libHandler, component, parent),
-portValidator_(new PortValidator(expressionParser, component->getViews())),
-busInterface_(busInterface)
+    ExpressionSet expressions,
+    BusInterfaceInterface* busInterface,
+    ComponentEditorItem* parent) :
+    ComponentEditorItem(model, libHandler, component, parent),
+    expressions_(expressions),
+    portValidator_(new PortValidator(expressions.parser, component->getViews())),
+    portsInterface_(new PortsInterface(portValidator_, expressions.parser, expressions.formatter)),
+    busInterface_(busInterface)
 {
     setReferenceCounter(refCounter);
-    setParameterFinder(parameterFinder);
-    setExpressionFormatter(expressionFormatter);
-}
+    setParameterFinder(expressions.finder);
+    setExpressionFormatter(expressions.formatter);
 
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorPortsItem::~ComponentEditorPortsItem()
-//-----------------------------------------------------------------------------
-ComponentEditorPortsItem::~ComponentEditorPortsItem()
-{
+    portsInterface_->setPorts(component->getPorts());
+
+    auto wiresItem = QSharedPointer<WirePortsItem>(new WirePortsItem(model,
+        libHandler, component, refCounter, expressions, portsInterface_, busInterface, this));
+    childItems_.append(wiresItem);
+
+    auto transactionalItem = QSharedPointer<TransactionalPortsItem>(new TransactionalPortsItem(model,
+        libHandler, component, refCounter, expressions, portsInterface_, busInterface, this));
+    childItems_.append(transactionalItem);
+
+    connect(wiresItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        Qt::UniqueConnection);
+
+    connect(transactionalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+        Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,7 +83,7 @@ QString ComponentEditorPortsItem::text() const
 bool ComponentEditorPortsItem::isValid() const
 {
     QStringList portNames;
-	foreach (QSharedPointer<Port> port, *component_->getPorts()) 
+	for (QSharedPointer<Port> port : *component_->getPorts()) 
     {
         if (portNames.contains(port->name()) || !portValidator_->validate(port))
         {
@@ -87,14 +104,12 @@ ItemEditor* ComponentEditorPortsItem::editor()
 	if (!editor_)
     {
 		editor_ = new PortsEditor(
-            component_, libHandler_, parameterFinder_, expressionFormatter_, portValidator_, busInterface_);
+            component_, libHandler_, expressions_, portValidator_, portsInterface_, busInterface_);
 		editor_->setProtection(locked_);
 
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(helpUrlRequested(QString const&)),
 			this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-        connect(editor_, SIGNAL(createInterface()), 
-            this, SIGNAL(createInterface()), Qt::UniqueConnection);
 
         connectItemEditorToReferenceCounter();
         connectItemEditorToVendorExtensionsEditor();

@@ -39,10 +39,9 @@ PythonSourceEditor::PythonSourceEditor(QWidget* parent):
     tabs_(this),
     highlighter_(nullptr),
     scriptView_(this),
-    interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, false)),    
+    interpreter_(new PythonInterpreter(&outputChannel_, &errorChannel_, false, this)),    
     toolBar_(this),
-    progressBar_(this),
-    scriptThread_(this)
+    progressBar_(this)
 {    
     connect(&outputChannel_, SIGNAL(data(QString const&)),
         &scriptView_, SLOT(print(QString const&)), Qt::UniqueConnection);
@@ -354,9 +353,6 @@ void PythonSourceEditor::applySettings(ScriptInputEditor* editor) const
 //-----------------------------------------------------------------------------
 bool PythonSourceEditor::setupInterpreter()
 {
-    interpreter_->moveToThread(&scriptThread_);
-    connect(&scriptThread_, SIGNAL(finished()), interpreter_, SLOT(deleteLater()));
-
     bool enabled = interpreter_->initialize(false);
     if (enabled)
     {
@@ -371,7 +367,6 @@ bool PythonSourceEditor::setupInterpreter()
         connect(interpreter_, SIGNAL(executeDone()),
             this, SLOT(onRunComplete()), Qt::UniqueConnection);
 
-        scriptThread_.start();
     }
 
     return enabled;
@@ -439,7 +434,7 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), QString(),
         this, SLOT(onRunAction()));
     runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
-    runAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_R));
+    runAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
     runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
     runAction->setEnabled(enableRun);
     addAction(runAction);

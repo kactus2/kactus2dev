@@ -6,7 +6,7 @@
 // Date: 07.04.2018
 //
 // Description:
-//
+// Class for IP-XACT file search and type parsing.
 //-----------------------------------------------------------------------------
 
 #ifndef LIBRARYLOADER_H
@@ -20,19 +20,12 @@
 
 #include <QObject>
 
+//-----------------------------------------------------------------------------
+//! Class for IP-XACT file search and type parsing.
+//-----------------------------------------------------------------------------
 class LibraryLoader 
 {
 public:
-
-	/*! The constructor.
-	*
-	*      @param [in] messageChannel	The message channel for notifications.
-	*      @param [in] parent			The parent object.	
-	*/
-    explicit LibraryLoader(MessageMediator* messageChannel);
-
-	//! The destructor.
-     ~LibraryLoader() = default;
 
 	//! Struct for load targets.
     struct LoadTarget
@@ -41,7 +34,8 @@ public:
         VLNV vlnv;    //!< The VLNV defined in the file.
 
 		//! Constructor.
-        LoadTarget(VLNV targetVLNV = VLNV(), QString targetPath = QString()): path(targetPath), vlnv(targetVLNV) {}
+        LoadTarget(VLNV const& targetVLNV = VLNV(), QString targetPath = QString()): 
+            path(targetPath), vlnv(targetVLNV) {}
     };
 
 	/*! Cleans the directory structure.
@@ -54,7 +48,7 @@ public:
 	*
 	*      @return The found IP-XACT targets.
 	*/
-    QVector<LoadTarget> parseLibrary();
+    QVector<LoadTarget> parseLibrary(MessageMediator const* messageChannel) const;
 
 private:
 
@@ -64,7 +58,7 @@ private:
     *
     *      @return The VLNV found in the given file.
     */
-    VLNV getDocumentVLNV(QString const& path);
+    VLNV getDocumentVLNV(QString const& path, MessageMediator const* messageChannel) const;
 
     /*! Clear the empty directories from the disk within given path.
      *
@@ -81,9 +75,6 @@ private:
      *
     */
     bool containsPath(QString const& path, QStringList const& pathsToSearch) const;
-
-    //! Channel for user notifications.
-    MessageMediator* messageChannel_;
 };
 
 Q_DECLARE_TYPEINFO(LibraryLoader::LoadTarget, Q_MOVABLE_TYPE);

@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: PortsView::PortsView()
 //-----------------------------------------------------------------------------
-PortsView::PortsView(int const& nameColumn, BusInterfaceInterface* busInterface, QWidget *parent):
+PortsView::PortsView(int nameColumn, BusInterfaceInterface* busInterface, QWidget *parent):
 EditableTableView(parent),
 createBus_(tr("Create new bus definition"), this),
 createExistingBus_(tr("Use existing bus definition"), this),
@@ -37,19 +37,12 @@ busInterface_(busInterface)
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortsView::~PortsView()
-//-----------------------------------------------------------------------------
-PortsView::~PortsView() 
-{
-}
-
-//-----------------------------------------------------------------------------
 // Function: PortsView::onCreateBus()
 //-----------------------------------------------------------------------------
 void PortsView::onCreateNewBus()
 {
     QStringList selectedPorts;
-    foreach(QModelIndex const& portIndex, selectedIndexes())
+    for (QModelIndex const& portIndex : selectedIndexes())
     {   
         QString portName = portIndex.sibling(portIndex.row(), nameColumn_).data().toString();
         if (!selectedPorts.contains(portName))
@@ -67,7 +60,7 @@ void PortsView::onCreateNewBus()
 void PortsView::onCreateExistingBus()
 {
     QStringList selectedPorts;
-    foreach(QModelIndex const& portIndex, selectedIndexes())
+    for (QModelIndex const& portIndex : selectedIndexes())
     {   
         QString portName = portIndex.sibling(portIndex.row(), nameColumn_).data().toString();
         if (!selectedPorts.contains(portName))
@@ -114,7 +107,7 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
         menu.addSeparator();
 
         QMenu* portsFromBusMenu = menu.addMenu(tr("Create ports from..."));
-        for (auto name : busInterface_->getItemNames())
+        for (auto const& name : busInterface_->getItemNames())
         {
             QString busName = QString::fromStdString(name);
             std::vector<std::string> busAbstractions =
@@ -129,7 +122,7 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
             else
             {
                 QMenu* selectAbstractionMenu = portsFromBusMenu->addMenu(busName);
-                for (auto abstraction : busAbstractions)
+                for (auto const& abstraction : busAbstractions)
                 {
                     QAction* abstractionAction(new QAction(QString::fromStdString(abstraction), this));
                     abstractionAction->setData(QVariant(busName));
@@ -159,8 +152,7 @@ void PortsView::contextMenuEvent(QContextMenuEvent* event)
 //-----------------------------------------------------------------------------
 void PortsView::onCreatePortsFromBus()
 {
-    QAction* senderAction = dynamic_cast<QAction*>(QObject::sender());
-    if (senderAction)
+    if (auto senderAction = dynamic_cast<QAction*>(QObject::sender()))
     {
         std::string busName = senderAction->text().toStdString();
         QString abstractionVLNV =
@@ -175,8 +167,7 @@ void PortsView::onCreatePortsFromBus()
 //-----------------------------------------------------------------------------
 void PortsView::onCreatePortsFromAbstraction()
 {
-    QAction* senderAction = dynamic_cast<QAction*>(QObject::sender());
-    if (senderAction)
+    if (auto senderAction = dynamic_cast<QAction*>(QObject::sender()))
     {
         std::string busName = senderAction->data().toString().toStdString();
         QString abstractionVLNV = senderAction->text();

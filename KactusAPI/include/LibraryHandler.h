@@ -17,6 +17,9 @@
 #include "LibraryTreeModel.h"
 #include "hierarchymodel.h"
 
+#include "NullChannel.h"
+#include "utils.h"
+
 #include "DocumentFileAccess.h"
 #include "DocumentValidator.h"
 
@@ -45,18 +48,19 @@ class KACTUS2_API LibraryHandler : public QObject, public LibraryInterface
 
 public:
 
-    static LibraryHandler* getInstance();
-
-    static void initialize(MessageMediator* messageChannel, QObject* parent = nullptr);
+    //! The the instance of the library.
+    static LibraryHandler& getInstance();
 
     //! No copying
     LibraryHandler(const LibraryHandler &other) = delete;
 
-    //! The destructor
-    virtual ~LibraryHandler() = default;
-
     //! No assignment
-    LibraryHandler &operator=(const LibraryHandler &other) = delete;
+    LibraryHandler& operator=(const LibraryHandler& other) = delete;
+
+    //! The destructor
+    ~LibraryHandler() final = default;
+
+    void setOutputChannel(MessageMediator* messageChannel);
 
     /*! Get a model that matches given VLNV.
      *
@@ -66,7 +70,7 @@ public:
      *
      *      @return The model that matches the document.
     */
-    virtual QSharedPointer<Document> getModel(VLNV const& vlnv) override final;
+    QSharedPointer<Document> getModel(VLNV const& vlnv) final;
 
     /*! Get a model that matches given VLNV for read-only access.
      *
@@ -76,13 +80,13 @@ public:
      *
      *      @return The model that matches the document.
     */
-    virtual QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv) override final;
+    QSharedPointer<Document const> getModelReadOnly(VLNV const& vlnv) final;
 
     /*! Gets all the VLNVs currently in the library.
      *
      *      @return All known VLNVs in the library.
     */
-    virtual QList<VLNV> getAllVLNVs() const override final;
+    QList<VLNV> getAllVLNVs() const final;
 
     /*! Checks if the library already contains the specified vlnv.
      *
@@ -90,7 +94,7 @@ public:
      *
      *      @return True if the vlnv was found
     */
-    virtual bool contains(VLNV const& vlnv) const override final;
+    bool contains(VLNV const& vlnv) const final;
 
     /*! Get a path to the specified IP-Xact document.
      *
@@ -98,7 +102,7 @@ public:
      *
      *      @return The path to the document. If vlnv is not found then empty string is returned.
     */
-    virtual const QString getPath(VLNV const& vlnv) const override final;
+    const QString getPath(VLNV const& vlnv) const final;
 
     /*! Get the directory path to the specified IP-XACT document.
      *
@@ -106,7 +110,7 @@ public:
      *
      *      @return The directory path to the document. Does not contain the xml file name.
     */
-    virtual QString getDirectoryPath(VLNV const& vlnv) const override final;
+    QString getDirectoryPath(VLNV const& vlnv) const final;
 
     /*! Write the model to file system to given file path
      *
@@ -122,7 +126,7 @@ public:
      * 
      *      @return True if the model was in valid state and was successfully written.
      */
-    virtual bool writeModelToFile(QString const& path, QSharedPointer<Document> model) override final;
+    bool writeModelToFile(QString const& path, QSharedPointer<Document> model) final;
 
     /*! Write the already registered model to file system.
      *
@@ -135,10 +139,10 @@ public:
      * 
      *      @return True if the model was in valid state and was successfully written.
     */
-    virtual bool writeModelToFile(QSharedPointer<Document> model) override final;
+    bool writeModelToFile(QSharedPointer<Document> model) final;
 
     //! Search for IP-Xact files in the file system and add them to library
-    virtual void searchForIPXactFiles() override final;
+    void searchForIPXactFiles() final;
     
     /*! Get list of vlnvs that are needed by given document.
      *
@@ -152,7 +156,7 @@ public:
      *
      *      @return List containing all vlnvs that are referenced in any of the documents.
      */
-     virtual void getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list) override final;
+     void getNeededVLNVs(VLNV const& vlnv, QList<VLNV>& list) final;
 
      /*! Get list of files that are needed by the given document.
      *
@@ -163,13 +167,13 @@ public:
      *      @param [in] vlnv    Reference to the vlnv that is used for the search.
      *      @param [out] list   The files are appended to the list if they are not already on the list.
      */
-     virtual void getDependencyFiles(VLNV const& vlnv, QStringList& list) override final;
+     void getDependencyFiles(VLNV const& vlnv, QStringList& list) final;
 
      /*! Get the library tree's root item
      *
      *      @return The root item.
      */
-     virtual LibraryItem const* getTreeRoot() const override final;
+     LibraryItem const* getTreeRoot() const final;
 
      /*! Get the document type of given vlnv.
      * 
@@ -179,7 +183,7 @@ public:
      *
      *      @return Type of the document.
     */
-    virtual VLNV::IPXactType getDocumentType(VLNV const& vlnv) override final;
+    VLNV::IPXactType getDocumentType(VLNV const& vlnv) final;
 
     /*! Count how many times the given component is instantiated in the library.
      *
@@ -187,7 +191,7 @@ public:
      *
      *      @return Number of found instances.
      */
-    virtual int referenceCount(VLNV const& vlnv) const override final;
+    int referenceCount(VLNV const& vlnv) const final;
 
     /*! Get the items that have referenced the given vlnv in their meta data.
      *
@@ -196,7 +200,7 @@ public:
      * 
      *      @return Number of owners found.
     */
-    virtual int getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const override final;
+    int getOwners(QList<VLNV>& list, VLNV const& vlnvToSearch) const final;
 
     /*! Get the items that are needed by the specified item.
      *
@@ -205,7 +209,7 @@ public:
      *
      *      @return int The number of found children.
     */
-    virtual int getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) const override final;
+    int getChildren(QList<VLNV>& list, VLNV const& vlnvToSearch) const final;
 
     /*! Get the VLNV of the design for a given hierarchy reference.
      *
@@ -220,7 +224,7 @@ public:
      *
      *      @return VLNV The vlnv identifying the design object.
     */
-    virtual VLNV getDesignVLNV(VLNV const& hierarchyRef) override final;
+    VLNV getDesignVLNV(VLNV const& hierarchyRef) final;
 
     /*! Get pointer to the design for a given hierarchy reference.
      * 
@@ -235,7 +239,7 @@ public:
      *
      *      @return QSharedPointer<Design> The design.
     */
-    virtual QSharedPointer<Design> getDesign(VLNV const& hierarchyRef) override final;
+    QSharedPointer<Design> getDesign(VLNV const& hierarchyRef) final;
 
     /*! Check if the identified object is in valid state.
      *
@@ -243,7 +247,7 @@ public:
      *
      *      @return bool True if the object was valid. False if invalid or object was not found in library.
     */
-    virtual bool isValid(VLNV const& vlnv) override final;
+    bool isValid(VLNV const& vlnv) final;
 
     HierarchyModel* getHierarchyModel();
 
@@ -266,14 +270,14 @@ public slots:
      * This function automatically removes the invalid library items.
      *
     */
-    virtual void onCheckLibraryIntegrity() override final;
+    void onCheckLibraryIntegrity() final;
 
     /*! Edit an item in the library
      *
      *      @param [in] vlnv Reference to the vlnv that identifies the object to edit.
      *
     */
-    virtual void onEditItem(VLNV const& vlnv) override final;
+    void onEditItem(VLNV const& vlnv) final;
 
     /*! Open the specified component design
      *
@@ -281,7 +285,7 @@ public slots:
      *      @param [in] viewName     Identifies the view for the design.
      *
     */
-    virtual void onOpenDesign(VLNV const& vlnv, QString const& viewName) override final;
+    void onOpenDesign(VLNV const& vlnv, QString const& viewName) final;
 
     /*!
      *  Opens the memory design of the given HW design.
@@ -314,7 +318,7 @@ public slots:
      *      @param [in] vlnv Identifies the object.
      *
     */
-    virtual void removeObject(VLNV const& vlnv) override final;
+    void removeObject(VLNV const& vlnv) final;
 
     /*! Remove the specified library objects from the library and file system.
      * 
@@ -323,7 +327,7 @@ public slots:
      *      @param [in] vlnvList Identifies the objects to remove.
      *
     */
-    virtual void removeObjects(const QList<VLNV>& vlnvList) override final;
+    void removeObjects(const QList<VLNV>& vlnvList) final;
 
     /*! Call this function before saving several objects to library.
     *
@@ -333,13 +337,13 @@ public slots:
     * 
     * Be sure to call endSave() after all items are saved.
     */
-    virtual void beginSave();
+    void beginSave();
 
     /*! End the saving operation and update the library.
     *
     * This function must be called always after calling the beginSave().
     */
-    virtual void endSave();
+    void endSave();
 
 signals:
 
@@ -438,7 +442,7 @@ private:
  *      @param [in] dialer  The dialer that provides search options.
  *      @param [in] parent  The parent widget of this instance.
  */
-    LibraryHandler(MessageMediator* messageChannel, QObject* parent = nullptr);
+    LibraryHandler();
 
 
     //! Connect the signals and slots that keep the data models synchronized.
@@ -500,6 +504,7 @@ private:
 
     /*! Check the validity of directory references within a document.
      *
+     * 
      *      @param [in] document    The document to check.
      *      @param [in] documentPath    The path to the document XML file.
      *
@@ -540,13 +545,14 @@ private:
     //-----------------------------------------------------------------------------
 
 
-    static LibraryHandler* instance_;
-    
+    //! Default message channel for errors/informations.
+    NullChannel defaultChannel;
+
     //! Message channel for errors/informations.
-    MessageMediator* messageChannel_;
+    MessageMediator* messageChannel_{ &defaultChannel };
 
     //! Loads the library content.
-    LibraryLoader loader_;
+    LibraryLoader loader_{ };
 
     /*! Cache of documents in the library.
      *
@@ -555,17 +561,20 @@ private:
      */
     QMap<VLNV, DocumentInfo> documentCache_;
 
+    //! Checks if the given string is a URL (invalids are allowed) or not.
+    QRegularExpressionValidator urlTester_{ Utils::URL_VALIDITY_REG_EXP, this };
+
     //! Validator for IP-XACT documents in the library.
-    DocumentValidator validator_;
+    DocumentValidator validator_{ this };
 
     //! The model for the tree view
-    LibraryTreeModel* treeModel_;
+    LibraryTreeModel treeModel_{ this, this };
 
     //! The model for the hierarchy view
-    HierarchyModel* hierarchyModel_;
+    HierarchyModel hierarchyModel_{ this, this };
 
     //! If true then items are being saved and library is not refreshed
-    bool saveInProgress_;
+    bool saveInProgress_{ false };
 
     //! Statistics for library integrity check.
     DocumentStatistics checkResults_;

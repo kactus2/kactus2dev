@@ -6,7 +6,7 @@
 // Date: 07.04.2018
 //
 // Description:
-//
+// Class for IP-XACT file search and type parsing.
 //-----------------------------------------------------------------------------
 
 #include "LibraryLoader.h"
@@ -18,24 +18,14 @@
 #include <QXmlStreamReader>
 
 //-----------------------------------------------------------------------------
-// Function: LibraryLoader::LibraryLoader()
-//-----------------------------------------------------------------------------
-LibraryLoader::LibraryLoader(MessageMediator* messageChannel) : 
-    messageChannel_(messageChannel)
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: LibraryLoader::parseLibrary()
 //-----------------------------------------------------------------------------
-QVector<LibraryLoader::LoadTarget> LibraryLoader::parseLibrary()
+QVector<LibraryLoader::LoadTarget> LibraryLoader::parseLibrary(MessageMediator const* messageChannel) const
 {
     QVector<LoadTarget> vlnvPaths;
-    QStringList xmlFilter(QLatin1String("*.xml"));
+    QStringList xmlFilter{ QStringLiteral("*.xml") };
 
-    QStringList locations = QSettings().value(QStringLiteral("Library/ActiveLocations")).toStringList();    
-    for (QString const& location : locations)
+    for (QString const& location : QSettings().value(QStringLiteral("Library/ActiveLocations")).toStringList())
     {        
         QDirIterator fileIterator(location, xmlFilter, QDir::Files,
             QDirIterator::Subdirectories | QDirIterator::FollowSymlinks);
@@ -44,7 +34,7 @@ QVector<LibraryLoader::LoadTarget> LibraryLoader::parseLibrary()
         {
             QString filePath(fileIterator.next());
 
-            VLNV vlnv = getDocumentVLNV(filePath);
+            VLNV vlnv = getDocumentVLNV(filePath, messageChannel);
             if (vlnv.isValid())
             {
                 vlnvPaths.append(LoadTarget(vlnv, filePath));
@@ -71,12 +61,12 @@ void LibraryLoader::clean(QStringList const& changedDirectories) const
 //-----------------------------------------------------------------------------
 // Function: LibraryLoader::getDocumentVLNV()
 //-----------------------------------------------------------------------------
-VLNV LibraryLoader::getDocumentVLNV(QString const& path)
+VLNV LibraryLoader::getDocumentVLNV(QString const& path, MessageMediator const* messageChannel) const
 {
     QFile documentFile(path);
     if (!documentFile.open(QFile::ReadOnly))
     {
-        messageChannel_->showError(QObject::tr("File %1 could not be read.").arg(path));
+        messageChannel->showError(QObject::tr("File %1 could not be read.").arg(path));
         return VLNV();
     }
 
@@ -84,46 +74,41 @@ VLNV LibraryLoader::getDocumentVLNV(QString const& path)
     documentReader.readNextStartElement();
 
     QString type = documentReader.qualifiedName().toString();
-    if (type.startsWith(QLatin1String("spirit:")))
+    if (type.startsWith(QStringLiteral("spirit:")))
     {
-        messageChannel_->showMessage(QObject::tr("File %1 contains an IP-XACT description not compatible "
-            "with the 1685-2014 standard and could not be read.").arg(path));
+        messageChannel->showMessage(QObject::tr("File %1 contains an IP-XACT description not compatible "
+            "with the supported standards and could not be read.").arg(path));
         documentFile.close();
         return VLNV();
     }
 
-    if (!type.startsWith("ipxact:") && !type.startsWith("kactus2:"))
+    if (!type.startsWith(QStringLiteral("ipxact:")) && !type.startsWith(QStringLiteral("kactus2:")))
     {
         return VLNV();
     }
 
     // Find the first element of the VLVN.
     while (documentReader.readNextStartElement() &&
-        documentReader.qualifiedName().compare(QLatin1String("ipxact:vendor")) != 0)
+        documentReader.qualifiedName().compare(QStringLiteral("ipxact:vendor")) != 0)
     {
         // Empty loop on purpose.
     }
 
-    QString vendor = documentReader.readElementText();
-
-    QMap<QString, QString> vlnvElements;
+    QString vlnvString = documentReader.readElementText();
     for (int i = 0; i < 3; ++i)
     {
         documentReader.readNextStartElement();
-        vlnvElements.insert(documentReader.qualifiedName().toString(), documentReader.readElementText());
+        vlnvString.append(':');
+        vlnvString.append(documentReader.readElementText());
     }
 
     documentFile.close();
 
-    QString library(vlnvElements.value(QLatin1String("ipxact:library")));
-    QString name(vlnvElements.value(QLatin1String("ipxact:name")));
-    QString version(vlnvElements.value(QLatin1String("ipxact:version")));
-
-    VLNV documentVLNV(type, vendor, library, name, version);
+    VLNV documentVLNV(VLNV::string2Type(type), vlnvString);
     if (!documentVLNV.isValid())
     {
-        messageChannel_->showError(QObject::tr("File %1 contains an invalid IP-XACT identifier %2:%3:%4:%5.").
-            arg(path, vendor, library, name, version));
+        messageChannel->showError(QObject::tr("File %1 contains an invalid IP-XACT identifier %2.").arg(path,
+            vlnvString));
     }
 
     return documentVLNV;
@@ -159,16 +144,10 @@ void LibraryLoader::clearDirectoryStructure(QString const& dirPath, QStringList 
 //-----------------------------------------------------------------------------
 bool LibraryLoader::containsPath(QString const& path, QStringList const& pathsToSearch) const
 {
-    for (QString const& searchPath : pathsToSearch)
-    {
-        // As long as the path is not the same as search path but still contains the search path,
-        // it is a parent directory of the path.
-        if (path.contains(searchPath) && path.compare(searchPath) != 0)
+    // As long as the path is not the same as search path but still contains the search path,
+    // it is a parent directory of the path.
+    return std::any_of(pathsToSearch.cbegin(), pathsToSearch.cend(), [&path](auto const& searchPath)
         {
-            return true;
-        }
-    }
-
-    // None of the paths to search were contained in the path.
-    return false;
+            return path.contains(searchPath) && path.compare(searchPath) != 0;
+        });
 }

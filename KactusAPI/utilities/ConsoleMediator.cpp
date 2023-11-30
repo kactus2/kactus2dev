@@ -15,21 +15,6 @@
 
 #include <QTextStream>
 
-//-----------------------------------------------------------------------------
-// Function: ConsoleMediator::ConsoleMediator()
-//-----------------------------------------------------------------------------
-ConsoleMediator::ConsoleMediator()
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: ConsoleMediator::~ConsoleMediator()
-//-----------------------------------------------------------------------------
-ConsoleMediator::~ConsoleMediator()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: ConsoleMediator::showMessage()
@@ -37,7 +22,7 @@ ConsoleMediator::~ConsoleMediator()
 void ConsoleMediator::showMessage(QString const& message) const
 {
     static QTextStream out(stdout); 
-    out << message << Qt::endl;  
+    out << message << Qt::endl;
 }
 
 //-----------------------------------------------------------------------------

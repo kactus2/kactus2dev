@@ -43,13 +43,12 @@ public:
      *      @param [in] parameterFinder     Pointer to the parameter finder.
      *      @param [in] portInterface       Interface for accessing the component ports.
      *      @param [in] signalInterface     Interface for accessing abstraction signals.
-     *      @param [in] filter              Filter used for ports.
 	 *      @param [in] parent              Pointer to the owner of this model.
      */
     PortsModel(QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<PortsInterface> portInterface,
         QSharedPointer<PortAbstractionInterface> signalInterface,
-        QSortFilterProxyModel* filter, QObject *parent);
+        QObject *parent);
 
 	/*!
      *  The destructor.
@@ -434,7 +433,7 @@ private:
 	 *
 	 *      @return True if the row is locked, otherwise false.
      */
-    bool rowIsLocked(int row);
+    bool rowIsLocked(int row) const;
 
     /*!
      *  Check if the selected interface modes match.
@@ -482,9 +481,6 @@ private:
 
     //! The locked indexes that cannot be edited.
     QList<QPersistentModelIndex> lockedIndexes_;
-
-    //! The filter for ports.
-    QSortFilterProxyModel* filter_;
 };
 
 #endif // PORTSMODEL_H

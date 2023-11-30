@@ -44,7 +44,7 @@ public:
          QObject* parent = nullptr);
 
      // ! The destructor.
-    virtual ~PythonInterpreter();
+    ~PythonInterpreter() final = default;
 
     /*!
      * Initializes the interpreter. This function must be called before writing any commands with write().
@@ -122,29 +122,28 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Buffer to store multiple lines for command to execute.
-    std::string inputBuffer_ = std::string();
+    std::string inputBuffer_{ };
 
     //! Flag for enabling prompt printing.
-    bool printPrompt_;
+    bool printPrompt_{ true };
 
     //! True, if the current command requires multiple lines (e.g. loop).
-    bool runMultiline_;
+    bool runMultiline_{ false };
 
     //! Channel for interpreter output.
-    WriteChannel* outputChannel_;
+    WriteChannel* outputChannel_{ nullptr };
 
     //! Channel for interpreter errors.
-    WriteChannel* errorChannel_; 
+    WriteChannel* errorChannel_{ nullptr };
 
     //! The global context for the interpreter.
-    PyObject* globalContext_;
+    PyObject* globalContext_{ nullptr };
 
     //! The local context for the interpreter when running a command.
-    PyObject* localContext_;
+    PyObject* localContext_{ nullptr };
 
     //! Interpreter thread state value holder.
-    PyThreadState* threadState_;
-
+    PyThreadState* threadState_{ nullptr };
 };
 
 #endif // PYTHON_INTERPRETER_H

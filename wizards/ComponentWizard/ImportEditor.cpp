@@ -19,6 +19,7 @@
 #include <editors/ComponentEditor/ports/portseditor.h>
 
 #include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/PortsInterface.h>
 
 #include <KactusAPI/include/ImportRunner.h>
 
@@ -38,7 +39,12 @@
 //-----------------------------------------------------------------------------
 // Function: ImportEditor::ImportEditor()
 //-----------------------------------------------------------------------------
-ImportEditor::ImportEditor(QSharedPointer<Component> component, LibraryInterface* handler, QSharedPointer<ComponentParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter, BusInterfaceInterface* busInterface, QWidget *parent):
+ImportEditor::ImportEditor(QSharedPointer<Component> component, 
+    LibraryInterface* handler,
+    QSharedPointer<ComponentParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionFormatter> expressionFormatter, 
+    BusInterfaceInterface* busInterface,
+    QWidget *parent):
 QWidget(parent),
 splitter_(Qt::Vertical, this),
 componentXmlPath_(handler->getPath(component->getVlnv())),
@@ -65,11 +71,15 @@ componentViews_(component->getViews())
 
     QSharedPointer<PortValidator> portValidator (new PortValidator(expressionParser, componentViews_));
 
-    portEditor_ = new PortsEditor(importComponent_, handler, parameterFinder, expressionFormatter, portValidator,
+    ExpressionSet expressions{ parameterFinder, expressionParser, expressionFormatter };
+
+    auto ports = QSharedPointer<PortsInterface>(new PortsInterface(portValidator, expressions.parser, expressions.formatter));
+    ports->setPorts(component->getPorts());
+
+    portEditor_ = new PortsEditor(importComponent_, handler, expressions, portValidator, ports,
         busInterface, &splitter_);
 
     // CSV import/export is disabled in the wizard.
-	portEditor_->setAllowImportExport(false);
 
     runner_->setExpressionParser(expressionParser);
     runner_->loadPlugins(PluginManager::getInstance());

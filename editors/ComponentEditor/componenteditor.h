@@ -295,11 +295,12 @@ private:
 	 *
      *      @param [in] root				The root item in the navigation model.
      *      @param [in] busInterface		The interface for accessing bus interface data.
+     *		@param [in] expressionSupport	Collection of classes for handling expressions.
 	 *
 	 *      @return The created item.
 	 */
 	QSharedPointer<ComponentEditorPortsItem> createPortsItem(ComponentEditorRootItem* root, 
-		BusInterfaceInterface* busInterface);
+		BusInterfaceInterface* busInterface, ExpressionSet const& expressionSupport);
 
 	/*!
 	 *  Create the Bus Interfaces item in the navigation tree.

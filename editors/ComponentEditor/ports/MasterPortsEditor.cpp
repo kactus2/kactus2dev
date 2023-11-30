@@ -16,7 +16,7 @@
 #include <editors/ComponentEditor/ports/portsmodel.h>
 #include <editors/ComponentEditor/ports/PortsView.h>
 #include <editors/ComponentEditor/ports/PortsFilter.h>
-#include <editors/ComponentEditor/ports/PortsEditorConstructor.h>
+#include <editors/ComponentEditor/ports/PortsEditorFactory.h>
 #include <KactusAPI/include/PortsInterface.h>
 
 #include <common/widgets/summaryLabel/summarylabel.h>
@@ -34,20 +34,17 @@
 // Function: MasterPortsEditor::MasterPortsEditor()
 //-----------------------------------------------------------------------------
 MasterPortsEditor::MasterPortsEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<PortsInterface> portsInterface, QSharedPointer<PortAbstractionInterface> signalInterface,
-    PortsEditorConstructor* editorConstructor, QSharedPointer<ParameterFinder> parameterFinder,
-    QSharedPointer<PortValidator> portValidator, QAbstractItemModel* completionModel,
-    QString const& defaultPath, BusInterfaceInterface* busInterface, QWidget *parent):
+    QSharedPointer<PortsInterface> portsInterface,
+    PortsEditorFactory const* editorConstructor, 
+    BusInterfaceInterface* busInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
-view_(editorConstructor->constructView(defaultPath, busInterface, this)),
-model_(0),
-proxy_(editorConstructor->constructFilter(portsInterface, this)),
-delegate_(editorConstructor->constructDelegate(
-    component, completionModel, parameterFinder, portValidator, this)),
+view_(editorConstructor->createView(this)),
+proxy_(editorConstructor->createFilter(this)),
+model_(editorConstructor->createModel(this)),
+delegate_(editorConstructor->createDelegate(this)),
 portInterface_(portsInterface),
 busInterface_(busInterface)
 {
-    model_ = editorConstructor->constructModel(parameterFinder, portsInterface, signalInterface, proxy_, this);
 
     view_->setItemDelegate(delegate_);
 
@@ -60,7 +57,7 @@ busInterface_(busInterface)
 
     connectSignals();
 
-    QVBoxLayout* layout = new QVBoxLayout(this);
+    auto layout = new QVBoxLayout(this);
     layout->addWidget(view_, 1);
     layout->setContentsMargins(0, 0, 0, 0);
 }
@@ -136,7 +133,7 @@ bool MasterPortsEditor::isValid() const
 //-----------------------------------------------------------------------------
 void MasterPortsEditor::refresh()
 {
-	view_->update();
+    proxy_->invalidate();
 }
 
 //-----------------------------------------------------------------------------
@@ -161,8 +158,7 @@ void MasterPortsEditor::setComponent(QSharedPointer<Component> component)
 //-----------------------------------------------------------------------------
 QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIndex) const
 {
-    std::string portName = portInterface_->getIndexedItemName(portIndex.row());
-    return portInterface_->getPort(portName);
+    return portInterface_->getPort(portInterface_->getIndexedItemName(portIndex.row()));
 }
 
 //-----------------------------------------------------------------------------
@@ -170,7 +166,7 @@ QSharedPointer<Port> MasterPortsEditor::getIndexedPort(QModelIndex const& portIn
 //-----------------------------------------------------------------------------
 void MasterPortsEditor::onCreatePortsFromAbstraction(std::string const& busName, QString const& abstractionString)
 {
-    VLNV abstractionVLNV(VLNV::ABSTRACTIONDEFINITION, abstractionString);
+    const VLNV abstractionVLNV(VLNV::ABSTRACTIONDEFINITION, abstractionString);
     QSharedPointer<const Document> vlnvDocument = handler()->getModelReadOnly(abstractionVLNV);
     if (vlnvDocument)
     {

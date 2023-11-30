@@ -34,7 +34,7 @@ QWidget(parent),
 extensionsView_(new EditableTreeView(true, QString(tr("Add vendor extension")), QString(tr("Add child element")),
     QString(tr("Remove row")), QString(tr("Remove all child elements")), this)),
 extensionsModel_(new VendorExtensionsModel(this)),
-summaryLabel_(new QLabel())
+summaryLabel_(new QLabel(this))
 {
     extensionsView_->setSortingEnabled(false);
 
@@ -47,7 +47,7 @@ summaryLabel_(new QLabel())
     VendorExtensionsDelegate* extensionDelegate = new VendorExtensionsDelegate(this);
     extensionsView_->setItemDelegate(extensionDelegate);
 
-    VendorExtensionsFilter* newFilter(new VendorExtensionsFilter());
+    VendorExtensionsFilter* newFilter(new VendorExtensionsFilter(this));
     newFilter->setSourceModel(extensionsModel_);
     extensionsView_->setModel(newFilter);
 

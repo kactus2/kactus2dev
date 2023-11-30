@@ -91,7 +91,8 @@ HEADERS += ./KactusAPI.h \
     ./include/LibraryItem.h \
     ./include/LibraryLoader.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h
+    ./include/ParameterCache.h \
+    ./include/NullChannel.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -161,4 +162,5 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp
+    ./library/TagManager.cpp \
+    ./utilities/NullChannel.cpp

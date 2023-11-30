@@ -77,8 +77,10 @@
             <section title="System views" ref="componenteditor/systemviews.html">
               <section title="System view" ref="componenteditor/systemview.html" />
             </section>
-            <!--section title="Wire ports" ref="componenteditor/wirePorts.html" /-->
-            <!--section title="Transactional ports" ref="componenteditor/transactionalPorts.html" /-->
+            <section title="Ports" ref="componenteditor/ports.html">
+              <section title="Wire ports" ref="componenteditor/wirePorts.html" />
+              <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
+            </section>
             <!--section title="Bus interfaces" ref="componenteditor/businterfaces.html"-->
               <!--section title="Bus interface" ref="componenteditor/businterfacegeneral.html" /-->
               <!--section title="Portmaps" ref="componenteditor/portmaps.html" /-->
@@ -163,8 +165,10 @@
             <section title="System views" ref="componenteditor/systemviews.html">
               <section title="System view" ref="componenteditor/systemview.html" />
             </section>
-            <section title="Wire ports" ref="componenteditor/wirePorts.html" />
-            <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
+            <section title="Ports" ref="componenteditor/ports.html">
+              <section title="Wire ports" ref="componenteditor/wirePorts.html" />
+              <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
+            </section>
             <section title="Bus interfaces" ref="componenteditor/businterfaces.html">
               <section title="Bus interface" ref="componenteditor/businterfacegeneral.html" />
               <section title="Portmaps" ref="componenteditor/portmaps.html" />

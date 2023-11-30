@@ -9,9 +9,14 @@
 // Defines the operations available for accessing Kactus2 core.
 //-----------------------------------------------------------------------------
 
+#ifndef KACTUSAPI_H
+#define KACTUSAPI_H
+
 #include "KactusAPIGlobal.h"
 
-#include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/LibraryHandler.h>
+
+#include <KactusAPI/include/ConsoleMediator.h>
 
 
 class IPlugin;
@@ -19,8 +24,6 @@ class IGeneratorPlugin;
 
 class MessageMediator;
 
-#ifndef KACTUSAPI_H
-#define KACTUSAPI_H
 
 //-----------------------------------------------------------------------------
 //! Defines the operations available for accessing Kactus2 core.
@@ -30,7 +33,7 @@ class KACTUS2_API KactusAPI
 public:
 
     //! The constructor.
-    KactusAPI(LibraryInterface* library = nullptr, MessageMediator* messageChannel = nullptr);
+    KactusAPI(MessageMediator* messageChannel = nullptr);
     
     //! The destructor.
     ~KactusAPI() = default;    
@@ -82,7 +85,7 @@ public:
      *     @param [in] activeLocations  The locations that are currently available to store the files.
      *     @param [in] allLocations     All the locations available, but not all need to be active.
      */
-    static void setLibraryPaths(QStringList const&activeLocations,
+    static void setLibraryPaths(QStringList const& activeLocations,
         QStringList const& allLocations = QStringList() );
 
     /*!
@@ -143,10 +146,13 @@ private:
     // All members are defined static to enforce coherent state of the API regardless of instances.
 
     //! The active library manager in the core.
-    static LibraryInterface* library_;
+    inline static LibraryInterface* library_{ &LibraryHandler::getInstance() };
 
     //! The active message channel for output and errors.
-    static MessageMediator* messageChannel_;
+    inline static ConsoleMediator defaultChannel_{ };
+
+    //! The active message channel for output and errors.
+    inline static MessageMediator* messageChannel_{ &defaultChannel_ };
 
 };
 

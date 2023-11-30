@@ -15,12 +15,11 @@
 // Function: GraphicsItemLabel::GraphicsItemLabel()
 //-----------------------------------------------------------------------------
 GraphicsItemLabel::GraphicsItemLabel(QString const& text, QGraphicsItem* parent /* = 0 */):
-QGraphicsProxyWidget(parent),
-textLabel_(new QLabel(""))
+QGraphicsProxyWidget(parent)
 {
     setText(text);
     setWidget(textLabel_);
-    textLabel_->setStyleSheet("QLabel {border: 1px solid gray; padding: 0px 0px 1px 1px;}");
+    textLabel_->setStyleSheet(QStringLiteral("QLabel {border: 1px solid gray; padding: 0px 0px 1px 1px;}"));
 }
 
 //-----------------------------------------------------------------------------
