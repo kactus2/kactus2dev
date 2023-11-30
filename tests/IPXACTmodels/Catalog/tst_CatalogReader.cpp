@@ -89,8 +89,7 @@ void tst_CatalogReader::testReadMinimalCatalog()
             "<ipxact:description>Catalog description</ipxact:description>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader busReader;
-    QSharedPointer<Catalog> testCatalog = busReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     VLNV catalogVLNV = testCatalog->getVlnv();
     QCOMPARE(catalogVLNV.getVendor(), QString("tut.fi"));
@@ -124,8 +123,7 @@ void tst_CatalogReader::testReadTopComments()
         "</ipxact:catalog>"
         "<!--Comment not to include-->"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getTopComments().size(), 2);
     QCOMPARE(testCatalog->getTopComments().first(), QString("Commented line 1"));   
@@ -154,8 +152,7 @@ void tst_CatalogReader::testProcessingInstructionsAreParsed()
         "</ipxact:catalog>"
         "<!--Comment not to include-->"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getXmlProcessingInstructions().count(), 1);
 
@@ -198,8 +195,7 @@ void tst_CatalogReader::testReadOtherCatalogs()
             "</ipxact:catalogs>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getCatalogs()->size(), 2); 
 
@@ -248,8 +244,7 @@ void tst_CatalogReader::testReadBusDefinitions()
             "</ipxact:busDefinitions>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getBusDefinitions()->size(), 2); 
 
@@ -298,8 +293,7 @@ void tst_CatalogReader::testReadAbstractionDefinitions()
             "</ipxact:abstractionDefinitions>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getAbstractionDefinitions()->size(), 2); 
 
@@ -348,8 +342,7 @@ void tst_CatalogReader::testReadComponents()
             "</ipxact:components>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getComponents()->size(), 2); 
 
@@ -398,8 +391,7 @@ void tst_CatalogReader::testReadAbstractors()
             "</ipxact:abstractors>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getAbstractors()->size(), 2); 
 
@@ -448,8 +440,7 @@ void tst_CatalogReader::testReadDesigns()
             "</ipxact:designs>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getDesigns()->size(), 2); 
 
@@ -498,8 +489,7 @@ void tst_CatalogReader::testReadDesignConfigurations()
             "</ipxact:designConfigurations>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getDesignConfigurations()->size(), 2); 
 
@@ -548,8 +538,7 @@ void tst_CatalogReader::testReadGeneratorChains()
             "</ipxact:generatorChains>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getGeneratorChains()->size(), 2); 
 
@@ -596,8 +585,7 @@ void tst_CatalogReader::testReadTypeDefinitions()
             "</ipxact:typeDefinitions>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
     QCOMPARE(testCatalog->getTypeDefinitions()->size(), 1);
     QCOMPARE(testCatalog->getShortDescription(), QString("a short description"));
     QCOMPARE(testCatalog->getDisplayName(), QString("testDisplayName"));
@@ -679,8 +667,7 @@ void tst_CatalogReader::testReadAllElements()
         "</ipxact:vendorExtensions>"
         "</ipxact:catalog>\n"));
 
-    CatalogReader catalogReader;
-    QSharedPointer<Catalog> testCatalog = catalogReader.createCatalogFrom(document);
+    QSharedPointer<Catalog> testCatalog = CatalogReader::createCatalogFrom(document);
 
     QCOMPARE(testCatalog->getCatalogs()->size(), 1); 
     QCOMPARE(testCatalog->getBusDefinitions()->size(), 1); 
