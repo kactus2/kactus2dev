@@ -680,14 +680,12 @@ bool FieldInterface::setAccess(std::string const& fieldName, std::string const& 
             field->setAccess(newAccess);
             return true;
         }
-        else if (accessPolicyIndex >= 0)
+        
+        if (auto accessPolicies = field->getFieldAccessPolicies();
+            accessPolicyIndex <= accessPolicies->size() - 1 && accessPolicyIndex >= 0)
         {
-            if (auto accessPolicies = field->getFieldAccessPolicies();
-                accessPolicyIndex <= accessPolicies->size() - 1)
-            {
-                accessPolicies->at(accessPolicyIndex)->setAccess(newAccess);
-                return true;
-            }
+            accessPolicies->at(accessPolicyIndex)->setAccess(newAccess);
+            return true;
         }
     }
 
