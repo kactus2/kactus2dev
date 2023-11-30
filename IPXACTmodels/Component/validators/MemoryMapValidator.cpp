@@ -276,7 +276,6 @@ void MemoryMapValidator::findErrorsInRemapModeRefs(QStringList& errors, QSharedP
         for (auto const& ref : *modeRefs)
         {
             QString const& referenceValue = ref->getReference();
-            auto referencePriority = ref->getPriority();
 
             if (referenceValue.isEmpty())
             {
