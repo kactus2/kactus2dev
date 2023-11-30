@@ -106,6 +106,6 @@ SVDGenerator.depends = IPXACTmodels KactusAPI
 RenodeGenerator.file = Plugins/RenodeGenerator/RenodeGeneratorPlugin.pro
 RenodeGenerator.depends = IPXACTmodels KactusAPI
 
-test_all.subdir = tests
-test_all.depends = IPXACTmodels
+test_all.file = tests/test_all.pro
+test_all.depends = IPXACTmodels KactusAPI
 
