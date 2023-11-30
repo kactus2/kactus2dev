@@ -66,24 +66,7 @@ static const QString BLACK_BOX_ASSIGN_END = "-- ##KACTUS2_BLACK_BOX_ASSIGNMENTS_
 //-----------------------------------------------------------------------------
 VhdlGenerator2::VhdlGenerator2(QSharedPointer<ExpressionParser> parser, LibraryInterface* handler, QObject* parent):
 QObject(parent),
-handler_(handler),
-component_(),
-design_(),
-desConf_(),
-viewName_(),
-topLevelEntity_(),
-libraries_(),
-typeDefinitions_(),
-userModifiedDeclarations_(),
-userModifiedAssignments_(),
-topGenerics_(),
-topPorts_(),
-signals_(),
-components_(),
-instances_(),
-designvalidator_(),
-designConfigurationValidator_(),
-topComponentParser_()
+handler_(handler)
 {
 	Q_ASSERT(handler);
 
@@ -124,7 +107,7 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent, const Q
 	}
 
 	// get the types that are used for the ports.
-	foreach ( QSharedPointer<Port> port, *component_->getPorts() )
+	for (auto const& port : *component_->getPorts())
 	{
 		typeDefinitions_.append( port->getTypeDefinitions() );
 	}
@@ -142,13 +125,13 @@ bool VhdlGenerator2::parse( QSharedPointer<Component> topLevelComponent, const Q
 		mapPorts2Signals();
 
 		// tell each instance to use the default port value for the unconnected ports.
-		foreach (QSharedPointer<VhdlComponentInstance> instance, instances_)
+		for (auto const& instance : instances_)
         {
 			instance->useDefaultsForOtherPorts();
 		}
 
 		// tell each component declaration to check for it's ports and uncomment those that are needed
-		foreach (QSharedPointer<VhdlComponentDeclaration> comp, components_)
+		for (auto const& comp : components_)
         {
 			comp->checkPortConnections();
 		}
@@ -420,7 +403,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration()
     }
     else if (view->isHierarchical())
     {
-        VLNV designVLNV = ComponentSearch::findDesignReference(component_, view);
+        VLNV designVLNV = ComponentSearch::findDesignReference(component_, handler_, view);
         VLNV configurationVLNV = ComponentSearch::findDesignConfigurationReference(component_, view);        
 
         design_ = handler_->getDesign(designVLNV);        
@@ -435,13 +418,13 @@ bool VhdlGenerator2::parseDesignAndConfiguration()
         {
             if (!designvalidator_->validate(design_))
             {
-                QVector<QString> errorList;
+                QStringList errorList;
                 designvalidator_->findErrorsIn(errorList, design_);
 
                 emit noticeMessage(tr("The design '%1' contained the following errors:").
                     arg(design_->getVlnv().toString()));
 
-                foreach (QString designError, errorList)
+                for (auto const& designError : errorList)
                 {
                     emit errorMessage(designError);
                 }
@@ -459,7 +442,7 @@ bool VhdlGenerator2::parseDesignAndConfiguration()
             emit noticeMessage(tr("The design configuration '%1' contained the following errors:").
                 arg(desConf_->getVlnv().toString()));
 
-            foreach(QString configurationError, errorList)
+            for (auto const& configurationError : errorList)
             {
                 emit errorMessage(configurationError);
             }

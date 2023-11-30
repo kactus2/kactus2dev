@@ -19,14 +19,16 @@
 
 #include <QSharedPointer>
 
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Utilities for searching items in Component.
 //-----------------------------------------------------------------------------
 namespace ComponentSearch
 {
-    VLNV findDesignReference(QSharedPointer<Component> component, QString const& viewName);
+    VLNV findDesignReference(QSharedPointer<Component> component, LibraryInterface* libraryHandler, QString const& viewName);
 
-    VLNV findDesignReference(QSharedPointer<Component> component, QSharedPointer<View> view);
+    VLNV findDesignReference(QSharedPointer<Component> component, LibraryInterface* libraryHandler, QSharedPointer<View> view);
 
     VLNV findDesignConfigurationReference(QSharedPointer<Component> component, QSharedPointer<View> view);
 

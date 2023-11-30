@@ -14,28 +14,40 @@
 #include "Search.h"
 
 #include <IPXACTmodels/Component/Model.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/Design/Design.h>
+
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentSearch::findDesignReference()
 //-----------------------------------------------------------------------------
-VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, QString const& viewName)
+VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, LibraryInterface* libraryHandler, 
+    QString const& viewName)
 {
-    return findDesignReference(component, Search::findByName(viewName, *component->getViews()));
+    return findDesignReference(component, libraryHandler, Search::findByName(viewName, *component->getViews()));
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentSearch::findDesignReference()
 //-----------------------------------------------------------------------------
-VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, QSharedPointer<View> view)
+VLNV ComponentSearch::findDesignReference(QSharedPointer<Component> component, LibraryInterface* libraryHandler, 
+    QSharedPointer<View> view)
 {
     if (view.isNull() == false)
     {
-        auto designInstantion = Search::findByName(view->getDesignInstantiationRef(),
-            *component->getDesignInstantiations());
-
-        if (designInstantion)
+        if (auto designInstantion = Search::findByName(view->getDesignInstantiationRef(),
+            *component->getDesignInstantiations()))
         {
             return VLNV(*designInstantion->getDesignReference());
+        }
+
+        // Look for design reference in design configuration if no design instantiation.
+        auto designConfigRef = findDesignConfigurationReference(component, view);
+
+        if (auto designCfg = libraryHandler->getModelReadOnly<DesignConfiguration>(designConfigRef))
+        {
+            return designCfg->getDesignRef();
         }
     }
 
@@ -75,11 +87,9 @@ QSharedPointer<View> ComponentSearch::findView(QSharedPointer<Component> compone
 QSharedPointer<ComponentInstantiation> ComponentSearch::findComponentInstantiation(
     QSharedPointer<Component> component, QString const& viewName)
 {
-    QSharedPointer<View> view = findView(component, viewName);
-
-    if (view)
+    if (QSharedPointer<View> view = findView(component, viewName))
     {
-        foreach(QSharedPointer<ComponentInstantiation> instantiation, *component->getComponentInstantiations())
+        for (auto const& instantiation : *component->getComponentInstantiations())
         {
             if (instantiation->name() == view->getComponentInstantiationRef())
             {

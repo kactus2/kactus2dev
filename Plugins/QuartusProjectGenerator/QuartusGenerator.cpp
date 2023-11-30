@@ -393,30 +393,15 @@ void QuartusGenerator::parseFileSets(QSharedPointer<Component> component, QStrin
 //-----------------------------------------------------------------------------
 void QuartusGenerator::parseFilesFromHierarchicalView(QSharedPointer<View> view, QSharedPointer<Component> component)
 {
-    VLNV designVLNV = ComponentSearch::findDesignReference(component, view);
+    VLNV designVLNV = ComponentSearch::findDesignReference(component, handler_, view);
     VLNV desConfVLNV = ComponentSearch::findDesignConfigurationReference(component, view);
 
-    QSharedPointer<const DesignConfiguration> designConf;
-
-    if (desConfVLNV.isValid())
-    {
-        designConf = handler_->getModelReadOnly<DesignConfiguration>(desConfVLNV);
-
-        if (designVLNV.isValid() == false)
-        {
-            designVLNV = designConf->getDesignRef();
-        }
-    }
-    else if (designVLNV.isValid() == false)
-    {
-        utility_->printError(tr("Could not find valid design. Stopping generation."));
-        return;
-    }
+    QSharedPointer<const DesignConfiguration> designConf = handler_->getModelReadOnly<DesignConfiguration>(desConfVLNV);
 
     if (!handler_->contains(designVLNV))
     {
-        utility_->printError(tr("Design %1 referenced withing design configuration %2 was not found within "
-            "library. Stopping generation.").arg(designVLNV.toString(), desConfVLNV.getName()));
+        utility_->printError(tr("Design %1 was not found in library. Stopping generation.")
+            .arg(designVLNV.toString()));
         return;
     }
 
