@@ -174,7 +174,7 @@ void MemoryVisualizationItem::removeGapsAndSortChildren()
 
     for (auto item = childItems_.cbegin(); item != childItems_.cend(); ++item)
     {
-        if (auto gap = dynamic_cast<MemoryGapItem*>(*item); gap)
+        if (auto gap = dynamic_cast<MemoryGapItem*>(*item))
         {
             delete gap;
         }
@@ -230,7 +230,7 @@ void MemoryVisualizationItem::fillGapsBetweenChildren()
     }
 
     // Fill in any addresses left between children and the end of this item.
-    if (getLastAddress() > lastAddressInUse)
+    if (childItems_.isEmpty() == false && getLastAddress() > lastAddressInUse)
     {
         createMemoryGap(lastAddressInUse + 1, getLastAddress());
     }
