@@ -19,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: TreeItemEditor::TreeItemEditor()
 //-----------------------------------------------------------------------------
-TreeItemEditor::TreeItemEditor(MemoryTreeFactory* factory, QWidget* parent) : QWidget(parent)
+TreeItemEditor::TreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent) : QWidget(parent)
 {
     setAutoFillBackground(true);
 
@@ -32,7 +32,6 @@ TreeItemEditor::TreeItemEditor(MemoryTreeFactory* factory, QWidget* parent) : QW
     expandButton_->setIcon(QIcon(":/icons/common/graphics/triangle_arrow_down.png"));
 
     model_ = new TreeItemModel(factory->create(), this);
-    delete factory;
     
     proxy_->setSourceModel(model_);
     proxy_->setFilterKeyColumn(0);

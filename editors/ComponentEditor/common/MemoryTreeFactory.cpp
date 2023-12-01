@@ -92,9 +92,7 @@ void MemoryTreeFactory::createAddressBlockItem(QSharedPointer<MemoryBlockBase> m
 //-----------------------------------------------------------------------------
 void MemoryTreeFactory::createRegisterItem(QSharedPointer<RegisterBase> registerBase, TreeItem* parentItem) const
 {
-    auto const& reg = registerBase.dynamicCast<Register>();
-    auto const& registerFile = registerBase.dynamicCast<RegisterFile>();
-    if (reg)
+    if (auto const& reg = registerBase.dynamicCast<Register>())
     {
         auto registerItem = new TreeItem(reg->name(), QObject::tr("Register"));
 
@@ -106,7 +104,7 @@ void MemoryTreeFactory::createRegisterItem(QSharedPointer<RegisterBase> register
 
         parentItem->addChild(registerItem);
     }
-    else if (registerFile)
+    else if (auto const& registerFile = registerBase.dynamicCast<RegisterFile>())
     {
         auto registerFileItem = new TreeItem(registerFile->name(), QObject::tr("Register file"));
 

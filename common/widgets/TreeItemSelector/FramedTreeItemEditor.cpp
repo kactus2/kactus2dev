@@ -19,9 +19,9 @@
 //-----------------------------------------------------------------------------
 // Function: FramedTreeItemEditor::FramedTreeItemEditor()
 //-----------------------------------------------------------------------------
-FramedTreeItemEditor::FramedTreeItemEditor(MemoryTreeFactory* factory, QWidget* parent):
+FramedTreeItemEditor::FramedTreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent):
 QFrame(parent),
-editor_(new TreeItemEditor(factory,this))
+editor_(factory, this)
 {
     setFrameStyle(QFrame::StyledPanel);
     setFocusPolicy(Qt::StrongFocus);
@@ -38,12 +38,9 @@ editor_(new TreeItemEditor(factory,this))
     connect(okButton_, SIGNAL(clicked()), this, SIGNAL(finishEditing()), Qt::UniqueConnection);
     connect(cancelButton_, SIGNAL(clicked()), this, SIGNAL(cancelEditing()), Qt::UniqueConnection);
 
-    connect(editor_, SIGNAL(selectionChanged()), this, SLOT(validateSelection()), Qt::UniqueConnection);
+    connect(&editor_, SIGNAL(selectionChanged()), this, SLOT(validateSelection()), Qt::UniqueConnection);
 
     setupLayout();
-
-//     connect(enumCollectionEditor_, SIGNAL(itemStateChanged(Qt::CheckState)), 
-//         this, SLOT(onChangeCheckAllState(Qt::CheckState)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,7 +48,7 @@ editor_(new TreeItemEditor(factory,this))
 //-----------------------------------------------------------------------------
 void FramedTreeItemEditor::selectPath(QStringList const& path)
 {
-    editor_->selectPath(path);
+    editor_.selectPath(path);
     validateSelection();
 }
 
@@ -60,7 +57,7 @@ void FramedTreeItemEditor::selectPath(QStringList const& path)
 //-----------------------------------------------------------------------------
 QStringList FramedTreeItemEditor::selectedPath() const
 {
-    return editor_->selectedPath();
+    return editor_.selectedPath();
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +65,7 @@ QStringList FramedTreeItemEditor::selectedPath() const
 //-----------------------------------------------------------------------------
 void FramedTreeItemEditor::validateSelection()
 {
-    auto path = editor_->selectedPath();
+    auto path = editor_.selectedPath();
 
     okButton_->setEnabled(path.isEmpty() == false && path.last().startsWith("Field"));
 }
@@ -78,17 +75,15 @@ void FramedTreeItemEditor::validateSelection()
 //-----------------------------------------------------------------------------
 void FramedTreeItemEditor::setupLayout()
 {
-    editor_->setContentsMargins(0, 0, 0, 0);
+    editor_.setContentsMargins(0, 0, 0, 0);
 
-
-
-    QHBoxLayout* buttonLayout = new QHBoxLayout();
+    auto buttonLayout = new QHBoxLayout();
     buttonLayout->addStretch(10);
     buttonLayout->addWidget(okButton_);
     buttonLayout->addWidget(cancelButton_);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout(this);
-    mainLayout->addWidget(editor_, 10);
+    auto mainLayout = new QVBoxLayout(this);
+    mainLayout->addWidget(&editor_, 10);
     mainLayout->addLayout(buttonLayout, 0);
     mainLayout->setSpacing(1);
     mainLayout->setContentsMargins(0, 0, 0, 0);

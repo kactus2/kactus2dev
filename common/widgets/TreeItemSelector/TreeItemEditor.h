@@ -37,7 +37,7 @@ public:
      *      @param [in] factory     Factory for creating the tree.
      *      @param [in] parent      The parent widget.
      */
-    TreeItemEditor(MemoryTreeFactory* factory, QWidget* parent = nullptr);
+    TreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent = nullptr);
 
 
     //! The destructor.
