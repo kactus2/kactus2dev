@@ -313,7 +313,15 @@ void SingleMemoryMapEditor::setupLayout()
 void SingleMemoryMapEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/memorymap.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/memorymap2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/memorymap.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

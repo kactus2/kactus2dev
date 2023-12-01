@@ -128,7 +128,15 @@ void AddressSpacesEditor::refresh()
 void AddressSpacesEditor::showEvent(QShowEvent* event)
 {
 	QWidget::showEvent(event);
-	emit helpUrlRequested("componenteditor/addressspaces.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/addressspaces2022.html");
+    }
+    else
+    {
+	    emit helpUrlRequested("componenteditor/addressspaces.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -131,7 +131,15 @@ QSharedPointer<AddressSpace> SingleSubspaceMapEditor::getSpace(QString const& bu
 void SingleSubspaceMapEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/subspacemap.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/subspacemap2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/subspacemap.html");
+    }
 }
 
 //-----------------------------------------------------------------------------
