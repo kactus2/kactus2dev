@@ -36,7 +36,9 @@ public:
 	 *      @param [in] expressionParser    The parser to use for solving expressions.
      *      @param [in] parameterValidator  Validator used for parameters.
 	 */
-    MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ParameterValidator> parameterValidator, Document::Revision docRevision);
+    MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser, 
+        QSharedPointer<ParameterValidator> parameterValidator,
+        Document::Revision docRevision);
 
 	/*!
      *  The destructor.

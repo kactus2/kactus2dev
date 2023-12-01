@@ -161,7 +161,7 @@ QString VHDLGeneratorPlugin::getOutputFormat() const
 // Function: VHDLGeneratorPlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void VHDLGeneratorPlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component, 
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration, 
+    QSharedPointer<Design> /*design*/, QSharedPointer<DesignConfiguration> /*designConfiguration*/, 
     QString const& viewName, QString const& outputDirectory)
 {
     utility_ = utility;

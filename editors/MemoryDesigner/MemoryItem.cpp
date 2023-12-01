@@ -16,27 +16,7 @@
 //-----------------------------------------------------------------------------
 MemoryItem::MemoryItem(QString const& name, QString const& type):
 name_(name),
-displayName_(),
-type_(type),
-identifier_(),
-address_(),
-range_(),
-width_(),
-size_(),
-offset_(),
-childItems_(),
-dimension_(),
-usage_(General::USAGE_COUNT),
-value_(),
-isPresent_("1")
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryItem::~MemoryItem()
-//-----------------------------------------------------------------------------
-MemoryItem::~MemoryItem()
+type_(type)
 {
 
 }

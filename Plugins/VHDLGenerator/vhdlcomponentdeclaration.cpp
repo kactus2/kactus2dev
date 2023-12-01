@@ -94,14 +94,13 @@ void VhdlComponentDeclaration::write( QTextStream& stream ) const
 void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
 {
     stream << "  " << "  " << "generic (" << Qt::endl;
-    for (QMap<QString, QSharedPointer<VhdlGeneric> >::const_iterator i = generics_.begin();
-        i != generics_.end(); ++i)
+    for (auto i = generics_.cbegin(); i != generics_.cend(); ++i)
     {
         stream << "  " << "  " << "  ";
         i.value()->write(stream);
 
         // if this is not the last generic to write
-        if (i + 1 != generics_.end())
+        if (std::distance(i, generics_.cend()) != 1)
         {
             stream << ";";
         }
@@ -113,7 +112,7 @@ void VhdlComponentDeclaration::writeGenerics(QTextStream& stream) const
         }
         else
         {
-            stream << Qt::endl;
+            stream << '\n';
         }
     }
     stream << "  " << "  " << ");" << Qt::endl;
@@ -126,8 +125,7 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
 {
     stream << "  " << "  " << "port (" << Qt::endl;
     QString previousInterface;
-    for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::const_iterator i = ports_.begin();
-        i != ports_.end(); ++i)
+    for (auto i = ports_.cbegin(); i != ports_.cend(); ++i)
     {
         // if the port is first in the interface, then introduce the interface
         if (i.key().interface() != previousInterface)
@@ -162,7 +160,7 @@ void VhdlComponentDeclaration::writePorts(QTextStream& stream) const
 
 
                                   // if this is not the last port to write
-        if (i + 1 != ports_.end())
+        if (std::distance(i, ports_.end()) != 1)
         {
             stream << ";";
         }

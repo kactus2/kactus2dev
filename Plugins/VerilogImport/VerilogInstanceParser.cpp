@@ -138,7 +138,7 @@ QVector<QRegularExpressionMatch> VerilogInstanceParser::findInstances(QString co
 //-----------------------------------------------------------------------------
 // Function: VerilogInstanceParser::highlightInstance()
 //-----------------------------------------------------------------------------
-void VerilogInstanceParser::highlightInstance(QString const& input, QString const& moduleDeclaration,
+void VerilogInstanceParser::highlightInstance(QString const& input, QString const& /*moduleDeclaration*/,
     QRegularExpressionMatch const& instanceMatch, QRegularExpressionMatchIterator const& multilineCommentIterator)
 {
     QString instanceModuleName = instanceMatch.captured(1);

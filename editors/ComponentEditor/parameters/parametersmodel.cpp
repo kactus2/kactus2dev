@@ -16,8 +16,6 @@
 
 #include <KactusAPI/include/ParametersInterface.h>
 
-using namespace std;
-
 //-----------------------------------------------------------------------------
 // Function: ParametersModel::ParametersModel()
 //-----------------------------------------------------------------------------
@@ -92,7 +90,7 @@ void ParametersModel::onRemoveItem(QModelIndex const& index )
         ParametersInterface* parameterInterface = dynamic_cast<ParametersInterface*>(getInterface());
         if (parameterInterface)
         {
-            string parameterName = getInterface()->getIndexedItemName(index.row());
+            std::string parameterName = getInterface()->getIndexedItemName(index.row());
 
             // remove the specified item
             beginRemoveRows(QModelIndex(), index.row(), index.row());

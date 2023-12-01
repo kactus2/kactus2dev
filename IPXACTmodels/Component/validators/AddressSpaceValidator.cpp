@@ -130,8 +130,8 @@ bool AddressSpaceValidator::hasValidWidth(QSharedPointer<AddressSpace> addressSp
     {
         bool widthOk = true;
         bool expressionValid = false;
-        quint64 width =
-            expressionParser_->parseExpression(addressSpace->getWidth(), &expressionValid).toULongLong(&widthOk);
+        auto width =
+            expressionParser_->parseExpression(addressSpace->getWidth(), &expressionValid).toLongLong(&widthOk);
 
         return widthOk && width >= 0;
     }

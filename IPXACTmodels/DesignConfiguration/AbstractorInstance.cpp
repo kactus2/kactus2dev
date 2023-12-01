@@ -24,11 +24,12 @@ AbstractorInstance::AbstractorInstance():
 // Function: AbstractorInstance::AbstractorInstance()
 //-----------------------------------------------------------------------------
 AbstractorInstance::AbstractorInstance(const AbstractorInstance& other):
-instanceName_(other.instanceName_),
-displayName_(other.displayName_),
-description_(other.description_),
-abstractorRef_(new ConfigurableVLNVReference(*other.abstractorRef_)),
-viewName_(other.viewName_)
+    Extendable(other),
+    instanceName_(other.instanceName_),
+    displayName_(other.displayName_),
+    description_(other.description_),
+    abstractorRef_(new ConfigurableVLNVReference(*other.abstractorRef_)),
+    viewName_(other.viewName_)
 {
 
 }

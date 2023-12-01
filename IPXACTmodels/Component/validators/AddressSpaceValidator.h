@@ -62,7 +62,7 @@ public:
      *
      *      @return True, if the address space is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<AddressSpace> addressSpace) const;
+    bool validate(QSharedPointer<AddressSpace> addressSpace) const;
 
     /*!
      *	Change the containing component.
@@ -150,7 +150,7 @@ public:
      *      @param [in] addressSpace    The selected address space.
      *      @param [in] context         Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressSpace> addressSpace,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<AddressSpace> addressSpace,
         QString const& context) const;
 
 private:

@@ -748,7 +748,7 @@ bool PortAbstractionInterface::setQualifierAttributes(int const& portIndex, std:
         activeQualifier = selectedSignal->abstraction_->getTransactional()->getQualifier();
     }
 
-    for (int i = 0; i + 1 < attributes.size(); i += 2)
+    for (size_t i = 0; i + 1 < attributes.size(); i += 2)
     {
         auto const& attributeName = attributes.at(i);
         auto const& value = attributes.at(i + 1);
@@ -1864,21 +1864,15 @@ std::string PortAbstractionInterface::getIconPathForSignal(std::string const& po
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::SignalRow::SignalRow()
 //-----------------------------------------------------------------------------
-PortAbstractionInterface::SignalRow::SignalRow(bool isWirePort, bool isTransactionalPort):
-abstraction_(QSharedPointer<PortAbstraction>(new PortAbstraction())),
-mode_(General::INTERFACE_MODE_COUNT),
-transactional_(),
-wire_()
+PortAbstractionInterface::SignalRow::SignalRow(bool isWirePort, bool isTransactionalPort)
 {
     if (isWirePort)
     {
         wire_ = QSharedPointer<WirePort>(new WirePort());
-        transactional_ = 0;
     }
     else if (isTransactionalPort)
     {
         transactional_ = QSharedPointer<TransactionalPort>(new TransactionalPort());
-        wire_ = 0;
     }
 }
 

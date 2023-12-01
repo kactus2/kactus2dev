@@ -418,19 +418,19 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of available address spaces.
-    QSharedPointer<QList<QSharedPointer<AddressSpace> > > availableAddressSpaces_;
+    QSharedPointer<QList<QSharedPointer<AddressSpace> > > availableAddressSpaces_{ nullptr };
 
     //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterfaceInterface_;
+    BusInterfaceInterface* busInterfaceInterface_{ nullptr };
 
     //! List of the contained memory blocks.
-    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blockData_;
+    QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > > blockData_{ nullptr };
 
     //! The address unit bits of the containing memory map.
     QString addressUnitBits_;
 
     //! Interface for accessing parameters.
-    ParametersInterface* parameterInterface_;
+    ParametersInterface* parameterInterface_{ nullptr };
 };
 
 #endif // MEMORYBLOCKINTERFACE_H

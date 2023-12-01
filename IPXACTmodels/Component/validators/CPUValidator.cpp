@@ -81,8 +81,8 @@ bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const
 
     if (revision_ == Document::Revision::Std22 &&
         (hasValidMemoryMapReference(cpu) == false || hasValidRange(cpu) == false || 
-         hasValidWidth(cpu) == false || hasValidAddressUnitBits(cpu) == false) ||
-         hasValidRegions(cpu) == false)
+         hasValidWidth(cpu) == false || hasValidAddressUnitBits(cpu) == false ||
+         hasValidRegions(cpu) == false))
     {
         return false;
     }

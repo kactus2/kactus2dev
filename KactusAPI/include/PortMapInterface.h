@@ -742,7 +742,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of the contained port maps.
-    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_;
+    QSharedPointer<QList<QSharedPointer<PortMap> > > portMaps_{ nullptr };
 
     //! Specifies the currently active interface mode.
     General::InterfaceMode interfaceMode_;
@@ -751,16 +751,16 @@ private:
     std::string systemGroup_;
 
     //! The abstraction definition referenced by the abstraction type.
-    QSharedPointer<AbstractionDefinition const> abstractionDef_;
+    QSharedPointer<AbstractionDefinition const> abstractionDef_{ nullptr };
 
     //! Validator for port maps.
-    QSharedPointer<PortMapValidator> validator_;
+    QSharedPointer<PortMapValidator> validator_{ nullptr };
 
     //! Interface for accessing physical ports.
-    PortsInterface* physicalPortInterface_;
+    PortsInterface* physicalPortInterface_{ nullptr };
 
     //! Interface for accessing logical ports.
-    PortAbstractionInterface* logicalPortInterface_;
+    PortAbstractionInterface* logicalPortInterface_{ nullptr };
 };
 
 #endif // PORTMAPINTERFACE_H

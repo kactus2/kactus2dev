@@ -121,10 +121,10 @@ private:
 	//! Pointer to the instance that handles the library.
 	LibraryInterface* libHandler_;
 
+    DocumentNameGroupEditor nameGroup_;
+
 	//! The API definition being edited.
 	QSharedPointer<ApiDefinition> apiDef_;
-
-    DocumentNameGroupEditor nameGroup_;
 
     //! VLNV editor for the linked COM definition.
     VLNVEditor comDefVLNVEdit_;

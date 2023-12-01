@@ -22,24 +22,6 @@ TransparentBridge::TransparentBridge(QString const& masterInterfaceRef):
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransparentBridge::TransparentBridge()
-//-----------------------------------------------------------------------------
-TransparentBridge::TransparentBridge(TransparentBridge const& other) :
-    initiatorRef_(other.initiatorRef_),
-    isPresent_(other.isPresent_)
-{
-
-}
-
-//-----------------------------------------------------------------------------
-// Function: TransparentBridge::~TransparentBridge()
-//-----------------------------------------------------------------------------
-TransparentBridge::~TransparentBridge()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: TransparentBridge::setMasterRef()
 //-----------------------------------------------------------------------------
 void TransparentBridge::setMasterRef(QString const& interfaceName)

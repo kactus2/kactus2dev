@@ -14,7 +14,7 @@
 //-----------------------------------------------------------------------------
 // Function: NullChannel::showMessage()
 //-----------------------------------------------------------------------------
-void NullChannel::showMessage(QString const& message) const
+void NullChannel::showMessage(QString const& /*message*/) const
 {
     // Do nothing.
 }
@@ -22,7 +22,7 @@ void NullChannel::showMessage(QString const& message) const
 //-----------------------------------------------------------------------------
 // Function: NullChannel::showError()
 //-----------------------------------------------------------------------------
-void NullChannel::showError(QString const& error) const
+void NullChannel::showError(QString const& /*error*/) const
 {
     // Do nothing.
 }
@@ -30,7 +30,7 @@ void NullChannel::showError(QString const& error) const
 //-----------------------------------------------------------------------------
 // Function: NullChannel::showFailure()
 //-----------------------------------------------------------------------------
-void NullChannel::showFailure(QString const& error) const
+void NullChannel::showFailure(QString const& /*error*/) const
 {
     // Do nothing.
 }
@@ -38,7 +38,7 @@ void NullChannel::showFailure(QString const& error) const
 //-----------------------------------------------------------------------------
 // Function: NullChannel::showStatusMessage()
 //-----------------------------------------------------------------------------
-void NullChannel::showStatusMessage(QString const& status) const
+void NullChannel::showStatusMessage(QString const& /*status*/) const
 {
     // Do nothing.
 }

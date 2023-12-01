@@ -205,7 +205,8 @@ quint64 PortMapValidator::getLogicalPortWidth(QSharedPointer<PortAbstraction> co
 bool PortMapValidator::rangeIsWithinWidth(qint64 const& rangeLeft, qint64 const& rangeRight,
     quint64 const& width) const
 {
-    return (0 <= rangeLeft && rangeLeft <= width-1) && (0 <= rangeRight && rangeRight <= width - 1);
+    return (0 <= rangeLeft && rangeLeft < static_cast<qint64>(width)) &&
+        (0 <= rangeRight && rangeRight < static_cast<qint64>(width));
 }
 
 //-----------------------------------------------------------------------------

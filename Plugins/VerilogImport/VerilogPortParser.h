@@ -174,8 +174,7 @@ private:
      *      @return The port left and right array bound value in the declaration.
      */
     QPair<QString, QString> parseArrayBounds(QString const& portDeclaration, 
-        QSharedPointer<Component> targetComponent,
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+        QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Parses the left and right bounds of a bounds that is of format [left:right].
@@ -187,8 +186,7 @@ private:
      *      @return The left and right bound value in the bounds.
      */
     QPair<QString, QString> parseLeftAndRight(QString const& bounds,
-        QSharedPointer<Component> targetComponent, 
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+        QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Parses the port vector bounds from a Verilog port declaration.
@@ -199,8 +197,7 @@ private:
      *      @return The port left and right vector bound value in the declaration.
      */
     QPair<QString, QString> parseVectorBounds(QString const& portDeclaration,
-        QSharedPointer<Component> targetComponent,
-        QSharedPointer<ComponentInstantiation> targetComponentInstantiation) const;
+        QSharedPointer<Component> targetComponent) const;
 
     /*!
      *  Replaces any parameter names with their ids in an expression.

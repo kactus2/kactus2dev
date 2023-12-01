@@ -43,13 +43,9 @@ PortMapInterface::PortMapInterface(QSharedPointer<PortMapValidator> validator,
     PortsInterface* physicalPortInterface, PortAbstractionInterface* logicalPortInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 CommonInterface(),
-portMaps_(),
 validator_(validator),
-abstractionDef_(),
-interfaceMode_(),
-systemGroup_(""),
-logicalPortInterface_(logicalPortInterface),
-physicalPortInterface_(physicalPortInterface)
+physicalPortInterface_(physicalPortInterface),
+logicalPortInterface_(logicalPortInterface)
 {
 
 }

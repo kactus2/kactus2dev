@@ -31,9 +31,8 @@ namespace
 //-----------------------------------------------------------------------------
 AbstractionTypeInterface::AbstractionTypeInterface(PortMapInterface* portMapInterface,
     QSharedPointer<AbstractionTypeValidator> validator, LibraryInterface* library):
-abstractions_(),
-validator_(validator),
 portMapInterface_(portMapInterface),
+validator_(validator),
 library_(library)
 {
 

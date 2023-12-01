@@ -1243,9 +1243,9 @@ void AbstractionDefinitionValidator::findErrorsInExtendTransactionalPort(QVector
     else if (portProtocol && extendPortProtocol)
     {
         if (portProtocol->getProtocolType() != extendPortProtocol->getProtocolType() ||
-            portProtocol->getProtocolType() == QLatin1String("custom") &&
+            (portProtocol->getProtocolType() == QLatin1String("custom") &&
             extendPortProtocol->getProtocolType() == QLatin1String("custom") &&
-            portProtocol->getCustomProtocolType() != extendPortProtocol->getCustomProtocolType())
+            portProtocol->getCustomProtocolType() != extendPortProtocol->getCustomProtocolType()))
         {
             errors.append(QObject::tr("The protocol type of %1 cannot be edited").arg(context));
         }

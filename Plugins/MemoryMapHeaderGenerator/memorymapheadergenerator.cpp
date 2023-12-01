@@ -104,7 +104,7 @@ QIcon MemoryMapHeaderGenerator::getIcon() const
 // Function: MemoryMapHeaderGenerator::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool MemoryMapHeaderGenerator::checkGeneratorSupport(QSharedPointer<Component const> component,
-    QSharedPointer<Design const> design,
+    QSharedPointer<Design const> /*design*/,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {
 	// if there is no design then header is generated for local memory maps

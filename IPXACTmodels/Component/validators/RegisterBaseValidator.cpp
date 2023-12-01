@@ -109,7 +109,7 @@ bool RegisterBaseValidator::hasValidAddressOffset(QSharedPointer<RegisterBase> s
 
     QString solvedValue =
         expressionParser_->parseExpression(selectedRegisterBase->getAddressOffset(), &expressionValid);
-    quint64 offsetInt = solvedValue.toULongLong(&changeOk);
+    [[maybe_unused]] quint64 offsetInt = solvedValue.toULongLong(&changeOk);
 
     return changeOk && expressionValid;
 }

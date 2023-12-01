@@ -23,9 +23,9 @@
 #include <IPXACTmodels/Component/FileSetRef.h>
 
 #include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/validators/CommonItemsValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <QRegularExpression>
 #include <QStringList>
 
 //-----------------------------------------------------------------------------
@@ -73,16 +73,7 @@ bool InstantiationsValidator::validateDesignInstantiation(QSharedPointer<DesignI
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::hasValidName(QString const& name) const
 {
-    QRegularExpression whiteSpaceExpression;
-    whiteSpaceExpression.setPattern(QStringLiteral("^\\s*$"));
-    QRegularExpressionMatch whiteSpaceMatch = whiteSpaceExpression.match(name);
-
-    if (name.isEmpty() || whiteSpaceMatch.hasMatch())
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidName(name);
 }
 
 //-----------------------------------------------------------------------------

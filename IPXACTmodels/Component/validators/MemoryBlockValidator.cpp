@@ -26,9 +26,9 @@
 MemoryBlockValidator::MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterValidator> parameterValidator,
     Document::Revision docRevision) :
+docRevision_(docRevision),
 expressionParser_(expressionParser),
-parameterValidator_(parameterValidator),
-docRevision_(docRevision)
+parameterValidator_(parameterValidator)
 {
 
 }

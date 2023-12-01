@@ -506,7 +506,7 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 {
     bool selected = option->state & QStyle::State_Selected;
 
-    QStyleOptionGraphicsItem myoption = (*option);
+    QStyleOptionGraphicsItem myoption = *option;
     myoption.state &= !QStyle::State_Selected;
 
     QGraphicsPathItem::paint(painter, &myoption, widget);

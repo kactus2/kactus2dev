@@ -33,11 +33,6 @@ public:
 	 */
 	MemoryItem(QString const& name, QString const& type);
 
-	/*!
-     *  The destructor.
-     */
-	~MemoryItem();
-
     /*!
      *  Gets the name of the memory.
      *
@@ -263,11 +258,6 @@ public:
     void setIsPresent(QString const& newIsPresent);
 
 private:
-
-	// Disable copying.
-	MemoryItem(MemoryItem const& rhs);
-	MemoryItem& operator=(MemoryItem const& rhs);
-
     //! The name of the memory element.
     QString name_;
 
@@ -304,7 +294,7 @@ private:
     QString dimension_;
 
     //! The usage value of the memory item.
-    General::Usage usage_;
+    General::Usage usage_{ General::USAGE_COUNT };
 
     //! Reset value of the memory item.
     QString resetValue_;
@@ -313,7 +303,7 @@ private:
     QString resetMask_;
 
     //! Presence of the memory item.
-    QString isPresent_;
+    QString isPresent_{ "1" };
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

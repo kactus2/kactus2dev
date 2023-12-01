@@ -26,8 +26,6 @@
 #include <QApplication>
 #include <QClipboard>
 
-using namespace std;
-
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::MemoryBlockInterface()
 //-----------------------------------------------------------------------------
@@ -36,11 +34,8 @@ MemoryBlockInterface::MemoryBlockInterface(QSharedPointer<ExpressionParser> expr
     ParametersInterface* parameterInterface):
 ParameterizableInterface(expressionParser, expressionFormatter),
 NameGroupInterface(),
-blockData_(),
-addressUnitBits_(""),
-parameterInterface_(parameterInterface),
-availableAddressSpaces_(),
-busInterfaceInterface_(busInterface)
+busInterfaceInterface_(busInterface),
+parameterInterface_(parameterInterface)
 {
 
 }
@@ -105,7 +100,7 @@ QString MemoryBlockInterface::getAddressUnitBits() const
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getItemIndex()
 //-----------------------------------------------------------------------------
-int MemoryBlockInterface::getItemIndex(string const& itemName) const
+int MemoryBlockInterface::getItemIndex(std::string const& itemName) const
 {
     for (int i = 0; i < blockData_->size(); ++i)
     {
@@ -121,9 +116,9 @@ int MemoryBlockInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string MemoryBlockInterface::getIndexedItemName(int itemIndex) const
+std::string MemoryBlockInterface::getIndexedItemName(int itemIndex) const
 {
-    string blockName = "";
+    std::string blockName = "";
     if (itemIndex >= 0 && itemIndex < blockData_->size())
     {
         blockName = blockData_->at(itemIndex)->name().toStdString();
@@ -143,9 +138,9 @@ int MemoryBlockInterface::itemCount() const
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> MemoryBlockInterface::getItemNames() const
+std::vector<std::string> MemoryBlockInterface::getItemNames() const
 {
-    vector<string> names;
+    std::vector<std::string> names;
     for (auto block : *blockData_)
     {
         names.push_back(block->name().toStdString());
@@ -157,7 +152,7 @@ vector<string> MemoryBlockInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::setName()
 //-----------------------------------------------------------------------------
-bool MemoryBlockInterface::setName(string const& currentName, string const& newName)
+bool MemoryBlockInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<MemoryBlockBase> editedItem = getBlock(currentName);
     if (editedItem && nameHasChanged(newName, currentName))
@@ -184,7 +179,7 @@ std::string MemoryBlockInterface::getBaseAddressValue(std::string const& blockNa
         return parseExpressionToBaseNumber(selectedBlock->getBaseAddress(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -198,7 +193,7 @@ std::string MemoryBlockInterface::getBaseAddressFormattedExpression(std::string 
         return formattedValueFor(selectedBlock->getBaseAddress()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -212,7 +207,7 @@ std::string MemoryBlockInterface::getBaseAddressExpression(std::string const& bl
         return selectedBlock->getBaseAddress().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -241,7 +236,7 @@ std::string MemoryBlockInterface::getIsPresentValue(std::string const& blockName
         return parseExpressionToBaseNumber(selectedBlock->getIsPresent(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -255,7 +250,7 @@ std::string MemoryBlockInterface::getIsPresentFormattedExpression(std::string co
         return formattedValueFor(selectedBlock->getIsPresent()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -269,7 +264,7 @@ std::string MemoryBlockInterface::getIsPresentExpression(std::string const& bloc
         return selectedBlock->getIsPresent().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -379,7 +374,7 @@ QSharedPointer<Segment> MemoryBlockInterface::getReferencedSegment(QSharedPointe
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::getAllReferencesToIdInItem()
 //-----------------------------------------------------------------------------
-int MemoryBlockInterface::getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const
+int MemoryBlockInterface::getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
 {
     QSharedPointer<MemoryBlockBase> selectedItem = getBlock(itemName);
 

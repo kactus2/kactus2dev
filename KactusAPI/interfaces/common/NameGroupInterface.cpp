@@ -16,7 +16,7 @@
 //-----------------------------------------------------------------------------
 std::string NameGroupInterface::getDisplayName(std::string const& itemName) const
 {
-    if (QSharedPointer<NameGroup> item = getItem(itemName); item != nullptr)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
         return item->displayName().toStdString();
     }
@@ -29,13 +29,12 @@ std::string NameGroupInterface::getDisplayName(std::string const& itemName) cons
 //-----------------------------------------------------------------------------
 bool NameGroupInterface::setDisplayName(std::string const& itemName, std::string const& newDisplayName) const
 {
-    QSharedPointer<NameGroup> item = getItem(itemName);
-    if (item)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
-        return false;
+        item->setDisplayName(QString::fromStdString(newDisplayName));
+        return true;
     }
 
-    item->setDisplayName(QString::fromStdString(newDisplayName));
     return true;
 }
 
@@ -44,7 +43,7 @@ bool NameGroupInterface::setDisplayName(std::string const& itemName, std::string
 //-----------------------------------------------------------------------------
 std::string NameGroupInterface::getDescription(std::string const& itemName) const
 {
-    if (QSharedPointer<NameGroup> item = getItem(itemName); item != nullptr)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
         return item->description().toStdString();
     }
@@ -57,14 +56,13 @@ std::string NameGroupInterface::getDescription(std::string const& itemName) cons
 //-----------------------------------------------------------------------------
 bool NameGroupInterface::setDescription(std::string const& itemName, std::string const& newDescription)
 {
-    QSharedPointer<NameGroup> item = getItem(itemName);
-    if (!item)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
-        return false;
+        item->setDescription(QString::fromStdString(newDescription));
+        return true;
     }
 
-    item->setDescription(QString::fromStdString(newDescription));
-    return true;
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +70,7 @@ bool NameGroupInterface::setDescription(std::string const& itemName, std::string
 //-----------------------------------------------------------------------------
 std::string NameGroupInterface::getShortDescription(std::string const& itemName) const
 {
-    if (QSharedPointer<NameGroup> item = getItem(itemName); item != nullptr)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
         return item->shortDescription().toStdString();
     }
@@ -85,7 +83,7 @@ std::string NameGroupInterface::getShortDescription(std::string const& itemName)
 //-----------------------------------------------------------------------------
 bool NameGroupInterface::setShortDescription(std::string const& itemName, std::string const& newShortDescription) const
 {
-    if (QSharedPointer<NameGroup> item = getItem(itemName); item != nullptr)
+    if (QSharedPointer<NameGroup> item = getItem(itemName))
     {
         item->shortDescription() = QString::fromStdString(newShortDescription);
         return true;
