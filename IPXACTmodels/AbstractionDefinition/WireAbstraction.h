@@ -28,9 +28,8 @@ class WirePort;
 class IPXACTMODELS_EXPORT WireAbstraction
 {
 public:
-
-	//! The default constructor.
-	WireAbstraction();
+    //! The default constructor.
+    WireAbstraction() = default;
 
 	//! Copy constructor.
 	WireAbstraction(const WireAbstraction& other);
@@ -222,7 +221,7 @@ public:
      *  Gets the wire width for a given interface mode.
      *
      *      @param [in] mode            The mode to get the width for.
-     *      @param [in] systemGroup     The system group to get widthn for.
+     *      @param [in] systemGroup     The system group to get width for.
      *
      *      @return The width of the wire for the given interface mode.
      */
@@ -247,19 +246,19 @@ private:
     QString defaultValue_;
     
     //! Specifies whether the port requires a driver.
-    bool requiresDriver_;
+    bool requiresDriver_{ false };
 
     //! Specifies the required driver type.
-    General::DriverType driverType_;
+    General::DriverType driverType_{ General::NO_DRIVER };
 
     //! The port definition for initiator mode.
-    QSharedPointer<WirePort> onInitiator_;
+    QSharedPointer<WirePort> onInitiator_{ nullptr };
 
     //! The port definition for target mode.
-    QSharedPointer<WirePort> onTarget_;
+    QSharedPointer<WirePort> onTarget_{ nullptr };
 
     //! The port definitions for system mode.
-    QSharedPointer<QList<QSharedPointer<WirePort> > > onSystem_;
+    QSharedPointer<QList<QSharedPointer<WirePort> > > onSystem_{ new QList<QSharedPointer<WirePort> >() };
 
 };
 

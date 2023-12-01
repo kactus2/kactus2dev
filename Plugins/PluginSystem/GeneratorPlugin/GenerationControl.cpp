@@ -16,6 +16,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/Component/FileSetRef.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
