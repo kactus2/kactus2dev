@@ -23,7 +23,7 @@ class IPXACTMODELS_EXPORT FileSetRef : public Extendable
 public:
 
     //! The constructor.
-    FileSetRef();
+    explicit FileSetRef(QString const& localName = QString());
 
     ~FileSetRef() override = default;
 

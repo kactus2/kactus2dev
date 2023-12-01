@@ -562,7 +562,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createRegisterResetItem(
 
         if (currentEnd < fieldStart)
         {
-            for (int i = currentEnd; i < fieldStart; ++i )
+            for (auto i = currentEnd; i < fieldStart; ++i )
             {
                 resetValue.prepend("0");
                 resetMask.prepend("0");

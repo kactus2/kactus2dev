@@ -246,7 +246,7 @@ private:
     bool hasMemoryBlockDataGroupDefined(QSharedPointer<AddressBlock> addressBlock) const;
 
     /*!
-     *  Gets the register size in LAU.
+     *  Gets the register size in LAU (least addressable unit).
      *
      *      @param [in] targetRegister      The selected register.
      *      @param [in] addressUnitBits     The address unit bits of a memory map.

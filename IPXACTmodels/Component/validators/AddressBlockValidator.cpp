@@ -774,8 +774,8 @@ qint64 AddressBlockValidator::getRegisterSizeInLAU(QSharedPointer<Register> targ
         }
     }
 
-    qint64 topPart = size + addressUnitBits - 1;
-    qint64 dimensionlessSize = topPart / addressUnitBits;
+    // Round register size up to closest multiple of AUB to get size in least addressable units/AUB.
+    qint64 dimensionlessSize = static_cast<qint64>(std::ceil(size / static_cast<double>(addressUnitBits)));
 
     qint64 trueSize = dimensionlessSize * dimensionsProduct;
 

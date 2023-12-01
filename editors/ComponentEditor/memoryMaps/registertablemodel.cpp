@@ -746,6 +746,12 @@ bool RegisterTableModel::setStd14ColumnData(QModelIndex const& index, QVariant c
     if (index.column() == RegisterColumns::ACCESS_COLUMN)
     {
         fieldInterface_->setAccess(fieldName, value.toString().toStdString(), fieldAccessPolicyIndex);
+
+        // Remove field access policy, if new access is empty.
+        if (value.toString().isEmpty())
+        {
+            fieldInterface_->removeFieldAccessPolicy(fieldName, 0);
+        }
     }
     else if (index.column() == RegisterColumns::MOD_WRITE_COLUMN)
     {

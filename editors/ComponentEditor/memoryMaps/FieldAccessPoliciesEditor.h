@@ -19,6 +19,7 @@
 class FieldInterface;
 class ParameterFinder;
 class ExpressionParser;
+class QSortFilterProxyModel;
 
 class FieldAccessPoliciesEditor : public QGroupBox
 {
@@ -34,6 +35,8 @@ public:
 
     FieldAccessPoliciesEditor(FieldAccessPoliciesEditor& other) = delete;
     FieldAccessPoliciesEditor& operator=(FieldAccessPoliciesEditor& other) = delete;
+
+    void refresh();
 
 signals:
 
@@ -62,6 +65,9 @@ private:
 
     //! The table view to display the field access policies.
     EditableTableView* view_;
+
+    //! Proxy to sort field access policies.
+    QSortFilterProxyModel* proxy_;
 };
 
 #endif // FIELDACCESSPOLICIESEDITOR_H

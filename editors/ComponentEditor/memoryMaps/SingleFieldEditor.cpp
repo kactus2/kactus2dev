@@ -170,6 +170,7 @@ void SingleFieldEditor::refresh()
     nameEditor_.refresh();
     resetsEditor_->refresh();
     enumerationsEditor_->refresh();
+    accessPoliciesEditor_->refresh();
 
     // Block signals from here for the duration of refreshing editors.
     blockSignals(true);
@@ -206,6 +207,7 @@ void SingleFieldEditor::refresh()
     fieldValidator_->componentChange(component());
 
     changeExpressionEditorSignalBlockStatus(false);
+
 
     volatileEditor_->setCurrentValue(QString::fromStdString(fieldInterface_->getVolatile(fieldName_)));
     
@@ -295,7 +297,7 @@ void SingleFieldEditor::onVolatileSelected(QString const& newVolatileValue)
 //-----------------------------------------------------------------------------
 void SingleFieldEditor::onAccessSelected(QString const& newAccessValue)
 {
-    fieldInterface_->setAccess(fieldName_, newAccessValue.toStdString());
+    fieldInterface_->setAccess(fieldName_, newAccessValue.toStdString(), -1);
 
     emit contentChanged();
 }

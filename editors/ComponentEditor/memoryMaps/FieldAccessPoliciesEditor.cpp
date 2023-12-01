@@ -28,13 +28,14 @@ FieldAccessPoliciesEditor::FieldAccessPoliciesEditor(QString const& fieldName, F
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
     QWidget* parent):
 QGroupBox(QStringLiteral("Access policies"), parent),
-view_(new EditableTableView(this))
+view_(new EditableTableView(this)),
+proxy_(new QSortFilterProxyModel(this))
 {
     QVBoxLayout* topLayout = new QVBoxLayout(this);
     topLayout->addWidget(view_);
 
     auto model = new FieldAccessPoliciesModel(fieldName, parameterFinder, fieldInterface, expressionParser, this);
-    auto proxy = new QSortFilterProxyModel(this);
+    proxy_ = new QSortFilterProxyModel(this);
 
     ComponentParameterModel* componentParameterModel = new ComponentParameterModel(parameterFinder, this);
     componentParameterModel->setExpressionParser(expressionParser);
@@ -43,8 +44,8 @@ view_(new EditableTableView(this))
         fieldInterface->getModeReferenceInterface(), this);
 
     view_->setSortingEnabled(true);
-    proxy->setSourceModel(model);
-    view_->setModel(proxy);
+    proxy_->setSourceModel(model);
+    view_->setModel(proxy_);
     view_->setItemDelegate(delegate);
     view_->horizontalHeader()->setStretchLastSection(false);
     view_->setAllowElementCopying(true);
@@ -61,7 +62,7 @@ view_(new EditableTableView(this))
         model, SLOT(onCopyRows(QModelIndexList)), Qt::UniqueConnection);
     connect(view_, SIGNAL(pasteRows()), model, SLOT(onPasteRows()), Qt::UniqueConnection);
 
-    connect(model, SIGNAL(invalidateFilter()), proxy, SLOT(invalidate()), Qt::UniqueConnection);
+    connect(model, SIGNAL(invalidateFilter()), proxy_, SLOT(invalidate()), Qt::UniqueConnection);
     connect(model, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(model, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
@@ -74,4 +75,13 @@ view_(new EditableTableView(this))
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
     connect(delegate, SIGNAL(decreaseReferences(QString const&)),
         this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: FieldAccessPoliciesEditor::refresh()
+//-----------------------------------------------------------------------------
+void FieldAccessPoliciesEditor::refresh()
+{
+    view_->update();
+    proxy_->invalidate();
 }

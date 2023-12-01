@@ -80,6 +80,10 @@ fields_(fields)
 
     if (component->getRevision() == Document::Revision::Std22)
     {
+        view_->hideColumn(RegisterColumns::MOD_WRITE_COLUMN);
+        view_->hideColumn(RegisterColumns::READ_ACTION_COLUMN);
+        view_->hideColumn(RegisterColumns::TESTABLE_COLUMN);
+        view_->hideColumn(RegisterColumns::TEST_CONSTR_COLUMN);
         view_->hideColumn(RegisterColumns::IS_PRESENT_COLUMN);
     }
 

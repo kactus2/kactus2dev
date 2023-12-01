@@ -25,7 +25,9 @@ FileSetRef::FileSetRef(FileSetRef const& other) :
 //-----------------------------------------------------------------------------
 // Function: FileSetRef::FileSetRef()
 //-----------------------------------------------------------------------------
-FileSetRef::FileSetRef() : Extendable()
+FileSetRef::FileSetRef(QString const& localName) :
+    Extendable(),
+    localName_(localName)
 {
 
 }
