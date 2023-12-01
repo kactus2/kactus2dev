@@ -56,6 +56,7 @@ SingleModeEditor::SingleModeEditor(QSharedPointer<Component> component,
     
     connect(&nameEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&portSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&fieldSliceEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
     connect(&conditionEditor_, SIGNAL(editingFinished()), this, SLOT(onConditionChanged()), Qt::UniqueConnection);
     

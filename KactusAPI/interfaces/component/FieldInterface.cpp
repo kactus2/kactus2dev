@@ -25,8 +25,6 @@
 #include <QApplication>
 #include <QClipboard>
 
-using namespace std;
-
 namespace
 {
     QString const TRUE_STRING = QLatin1String("true");
@@ -60,7 +58,7 @@ void FieldInterface::setFields(QSharedPointer<QList<QSharedPointer<Field> > > ne
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getItemIndex()
 //-----------------------------------------------------------------------------
-int FieldInterface::getItemIndex(string const& itemName) const
+int FieldInterface::getItemIndex(std::string const& itemName) const
 {
     if (fields_)
     {
@@ -79,9 +77,9 @@ int FieldInterface::getItemIndex(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string FieldInterface::getIndexedItemName(int itemIndex) const
+std::string FieldInterface::getIndexedItemName(int itemIndex) const
 {
-    string fieldName = "";
+    std::string fieldName = "";
     if (fields_&& (itemIndex >= 0 && itemIndex < fields_->size()))
     {
         fieldName = fields_->at(itemIndex)->name().toStdString();
@@ -106,9 +104,9 @@ int FieldInterface::itemCount() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> FieldInterface::getItemNames() const
+std::vector<std::string> FieldInterface::getItemNames() const
 {
-    vector<string> names;
+    std::vector<std::string> names;
     if (fields_)
     {
         for (auto field : *fields_)
@@ -123,7 +121,7 @@ vector<string> FieldInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setName()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setName(string const& currentName, string const& newName)
+bool FieldInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<Field> editedField = getField(currentName);
     if (editedField && nameHasChanged(newName, currentName))
@@ -142,7 +140,7 @@ bool FieldInterface::setName(string const& currentName, string const& newName)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getOffsetValue()
 //-----------------------------------------------------------------------------
-string FieldInterface::getOffsetValue(string const& fieldName, int const& baseNumber) const
+std::string FieldInterface::getOffsetValue(std::string const& fieldName, int const& baseNumber) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -150,13 +148,13 @@ string FieldInterface::getOffsetValue(string const& fieldName, int const& baseNu
         return parseExpressionToBaseNumber(field->getBitOffset(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getOffsetFormattedExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getOffsetFormattedExpression(string const& fieldName) const
+std::string FieldInterface::getOffsetFormattedExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -164,13 +162,13 @@ string FieldInterface::getOffsetFormattedExpression(string const& fieldName) con
         return formattedValueFor(field->getBitOffset()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getOffsetExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getOffsetExpression(string const& fieldName) const
+std::string FieldInterface::getOffsetExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -178,13 +176,13 @@ string FieldInterface::getOffsetExpression(string const& fieldName) const
         return field->getBitOffset().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setOffset()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setOffset(string const& fieldName, string const& newOffset)
+bool FieldInterface::setOffset(std::string const& fieldName, std::string const& newOffset)
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
@@ -199,7 +197,7 @@ bool FieldInterface::setOffset(string const& fieldName, string const& newOffset)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWidthValue()
 //-----------------------------------------------------------------------------
-string FieldInterface::getWidthValue(string const& fieldName, int const& baseNumber) const
+std::string FieldInterface::getWidthValue(std::string const& fieldName, int const& baseNumber) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -207,13 +205,13 @@ string FieldInterface::getWidthValue(string const& fieldName, int const& baseNum
         return parseExpressionToBaseNumber(field->getBitWidth(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWidthFormattedExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getWidthFormattedExpression(string const& fieldName) const
+std::string FieldInterface::getWidthFormattedExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -221,13 +219,13 @@ string FieldInterface::getWidthFormattedExpression(string const& fieldName) cons
         return formattedValueFor(field->getBitWidth()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getWidthExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getWidthExpression(string const& fieldName) const
+std::string FieldInterface::getWidthExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -235,13 +233,13 @@ string FieldInterface::getWidthExpression(string const& fieldName) const
         return field->getBitWidth().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setWidth()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setWidth(string const& fieldName, string const& newWidth)
+bool FieldInterface::setWidth(std::string const& fieldName, std::string const& newWidth)
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
@@ -256,18 +254,18 @@ bool FieldInterface::setWidth(string const& fieldName, string const& newWidth)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getResets()
 //-----------------------------------------------------------------------------
-string FieldInterface::getResets(string const& fieldName) const
+std::string FieldInterface::getResets(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
     {
-        return string("");
+        return std::string();
     }
 
     QSharedPointer<QList<QSharedPointer<FieldReset> > > indexedResets = field->getResets();
     if (indexedResets->isEmpty())
     {
-        return string("");
+        return std::string();
     }
     else if (indexedResets->count() == 1)
     {
@@ -275,14 +273,14 @@ string FieldInterface::getResets(string const& fieldName) const
     }
     else
     {
-        return string("[multiple]");
+        return std::string("[multiple]");
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getResetsToolTip()
 //-----------------------------------------------------------------------------
-string FieldInterface::getResetsToolTip(string const& fieldName) const
+std::string FieldInterface::getResetsToolTip(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -316,13 +314,13 @@ string FieldInterface::getResetsToolTip(string const& fieldName) const
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getVolatile()
 //-----------------------------------------------------------------------------
-string FieldInterface::getVolatile(string const& fieldName) const
+std::string FieldInterface::getVolatile(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -330,13 +328,13 @@ string FieldInterface::getVolatile(string const& fieldName) const
         return field->getVolatile().toString().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setVolatile()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setVolatile(string const& fieldName, string const& newVolatile)
+bool FieldInterface::setVolatile(std::string const& fieldName, std::string const& newVolatile)
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
@@ -365,7 +363,7 @@ bool FieldInterface::setVolatile(string const& fieldName, string const& newVolat
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getAccessString()
 //-----------------------------------------------------------------------------
-string FieldInterface::getAccessString(string const& fieldName, int accessPolicyIndex /*= -1*/) const
+std::string FieldInterface::getAccessString(std::string const& fieldName, int accessPolicyIndex /*= -1*/) const
 {
     if (auto field = getField(fieldName); field)
     {
@@ -383,13 +381,14 @@ string FieldInterface::getAccessString(string const& fieldName, int accessPolicy
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getModeRefs()
 //-----------------------------------------------------------------------------
-std::vector<std::pair<std::string, unsigned int> > FieldInterface::getModeRefs(std::string const& fieldName, int accessPolicyIndex) const
+std::vector<std::pair<std::string, unsigned int> > FieldInterface::getModeRefs(std::string const& fieldName, 
+    int accessPolicyIndex) const
 {
     if (auto field = getField(fieldName); field)
     {
@@ -398,11 +397,11 @@ std::vector<std::pair<std::string, unsigned int> > FieldInterface::getModeRefs(s
         if (accessPolicyIndex <= fieldAccessPolicies->size() - 1)
         {
             auto modeRefs = fieldAccessPolicies->at(accessPolicyIndex)->getModeReferences();
-            vector<pair<string, unsigned int> > modeRefList;
+            std::vector<std::pair<std::string, unsigned int> > modeRefList;
             std::transform(modeRefs->cbegin(), modeRefs->cend(), std::back_inserter(modeRefList), 
                 [](QSharedPointer<ModeReference> const& modeRef)
                 {
-                    return make_pair<string, unsigned int >(modeRef->getReference().toStdString(), 
+                    return std::make_pair<std::string, unsigned int >(modeRef->getReference().toStdString(), 
                         modeRef->getPriority());
                 });
 
@@ -410,7 +409,7 @@ std::vector<std::pair<std::string, unsigned int> > FieldInterface::getModeRefs(s
         }
     }
 
-    return vector<pair<string, unsigned int> >();
+    return std::vector<std::pair<std::string, unsigned int> >();
 }
 
 //-----------------------------------------------------------------------------
@@ -435,7 +434,7 @@ std::string FieldInterface::getReadResponseExpression(std::string const& fieldNa
 
     if (!field)
     {
-        return std::string("");
+        return std::string();
     }
 
     if (auto accessPolicies = field->getFieldAccessPolicies();
@@ -444,7 +443,7 @@ std::string FieldInterface::getReadResponseExpression(std::string const& fieldNa
         return accessPolicies->at(accessPolicyIndex)->getReadResponse().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -461,7 +460,7 @@ std::string FieldInterface::getReadResponseFormattedExpression(std::string const
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -479,7 +478,7 @@ std::string FieldInterface::getReadResponseValue(std::string const& fieldName, i
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -727,7 +726,7 @@ std::string FieldInterface::getModifiedWriteString(std::string const& fieldName,
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -823,7 +822,7 @@ bool FieldInterface::setReadAction(std::string const& fieldName, std::string con
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getTestable()
 //-----------------------------------------------------------------------------
-string FieldInterface::getTestableValue(string const& fieldName, int accessPolicyIndex) const
+std::string FieldInterface::getTestableValue(std::string const& fieldName, int accessPolicyIndex) const
 {
     if (auto field = getField(fieldName); field)
     {
@@ -841,7 +840,7 @@ string FieldInterface::getTestableValue(string const& fieldName, int accessPolic
         }
     }
     
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -951,7 +950,7 @@ std::string FieldInterface::getTestConstraintString(std::string const& fieldName
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1010,7 +1009,7 @@ bool FieldInterface::setTestConstraint(std::string const& fieldName, std::string
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getIsPresentValue()
 //-----------------------------------------------------------------------------
-string FieldInterface::getIsPresentValue(string const& fieldName, int const& baseNumber) const
+std::string FieldInterface::getIsPresentValue(std::string const& fieldName, int const& baseNumber) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1018,13 +1017,13 @@ string FieldInterface::getIsPresentValue(string const& fieldName, int const& bas
         return parseExpressionToBaseNumber(field->getIsPresent(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getIsPresentFormattedExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getIsPresentFormattedExpression(string const& fieldName) const
+std::string FieldInterface::getIsPresentFormattedExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1032,13 +1031,13 @@ string FieldInterface::getIsPresentFormattedExpression(string const& fieldName) 
         return formattedValueFor(field->getIsPresent()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getIsPresentExpression()
 //-----------------------------------------------------------------------------
-string FieldInterface::getIsPresentExpression(string const& fieldName) const
+std::string FieldInterface::getIsPresentExpression(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1046,13 +1045,13 @@ string FieldInterface::getIsPresentExpression(string const& fieldName) const
         return field->getIsPresent().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::setIsPresent()
 //-----------------------------------------------------------------------------
-bool FieldInterface::setIsPresent(string const& fieldName, string const& newIsPresent)
+bool FieldInterface::setIsPresent(std::string const& fieldName, std::string const& newIsPresent)
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
@@ -1067,7 +1066,7 @@ bool FieldInterface::setIsPresent(string const& fieldName, string const& newIsPr
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getAllReferencesToIdInItem()
 //-----------------------------------------------------------------------------
-int FieldInterface::getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const
+int FieldInterface::getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
 {
     QSharedPointer<Field> field = getField(itemName);
 
@@ -1101,7 +1100,7 @@ bool FieldInterface::validateItems() const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::itemHasValidName()
 //-----------------------------------------------------------------------------
-bool FieldInterface::itemHasValidName(string const& itemName) const
+bool FieldInterface::itemHasValidName(std::string const& itemName) const
 {
     return validator_->hasValidName(getField(itemName));
 }
@@ -1109,7 +1108,7 @@ bool FieldInterface::itemHasValidName(string const& itemName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasValidOffset()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasValidOffset(string const& fieldName) const
+bool FieldInterface::hasValidOffset(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1123,7 +1122,7 @@ bool FieldInterface::hasValidOffset(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasValidWidth()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasValidWidth(string const& fieldName) const
+bool FieldInterface::hasValidWidth(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1137,7 +1136,7 @@ bool FieldInterface::hasValidWidth(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasValidResets()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasValidResets(string const& fieldName) const
+bool FieldInterface::hasValidResets(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1151,7 +1150,7 @@ bool FieldInterface::hasValidResets(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::hasValidIsPresent()
 //-----------------------------------------------------------------------------
-bool FieldInterface::hasValidIsPresent(string const& fieldName) const
+bool FieldInterface::hasValidIsPresent(std::string const& fieldName) const
 {
     QSharedPointer<Field> field = getField(fieldName);
     if (field)
@@ -1242,7 +1241,7 @@ bool FieldInterface::hasValidWriteValueConstraint(std::string const& fieldName, 
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::getField()
 //-----------------------------------------------------------------------------
-QSharedPointer<Field> FieldInterface::getField(string const& fieldName) const
+QSharedPointer<Field> FieldInterface::getField(std::string const& fieldName) const
 {
     if (fields_)
     {
@@ -1261,7 +1260,7 @@ QSharedPointer<Field> FieldInterface::getField(string const& fieldName) const
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::addField()
 //-----------------------------------------------------------------------------
-void FieldInterface::addField(int const& row, string const& newFieldName)
+void FieldInterface::addField(int const& row, std::string const& newFieldName)
 {
     QString fieldName = getUniqueName(newFieldName, FIELD_TYPE);
 
@@ -1274,7 +1273,7 @@ void FieldInterface::addField(int const& row, string const& newFieldName)
 //-----------------------------------------------------------------------------
 // Function: FieldInterface::removeField()
 //-----------------------------------------------------------------------------
-bool FieldInterface::removeField(string const& fieldName)
+bool FieldInterface::removeField(std::string const& fieldName)
 {
     QSharedPointer<Field> removedField = getField(fieldName);
     if (!removedField)
@@ -1524,7 +1523,7 @@ std::string FieldInterface::getWriteConstraintMinimumValue(std::string const& fi
         return parseExpressionToBaseNumber(constraint->getMinimum(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1538,7 +1537,7 @@ std::string FieldInterface::getWriteConstraintMinimumFormattedExpression(std::st
         return formattedValueFor(constraint->getMinimum()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1552,7 +1551,7 @@ std::string FieldInterface::getWriteConstraintMinimumExpression(std::string cons
         return constraint->getMinimum().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1583,7 +1582,7 @@ std::string FieldInterface::getWriteConstraintMaximumValue(std::string const& fi
         return parseExpressionToBaseNumber(constraint->getMaximum(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1597,7 +1596,7 @@ std::string FieldInterface::getWriteConstraintMaximumFormattedExpression(std::st
         return formattedValueFor(constraint->getMaximum()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1611,7 +1610,7 @@ std::string FieldInterface::getWriteConstraintMaximumExpression(std::string cons
         return constraint->getMaximum().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1640,7 +1639,7 @@ std::string FieldInterface::getReservedValue(std::string const& fieldName, int a
     
     if (!field)
     {
-        return string("");
+        return std::string();
     }
     
     // Std14
@@ -1659,7 +1658,7 @@ std::string FieldInterface::getReservedValue(std::string const& fieldName, int a
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1670,7 +1669,7 @@ std::string FieldInterface::getReservedFormattedExpression(std::string const& fi
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
     {
-        return string("");
+        return std::string();
     }
     
     if (accessPolicyIndex == -1)
@@ -1687,7 +1686,7 @@ std::string FieldInterface::getReservedFormattedExpression(std::string const& fi
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1698,7 +1697,7 @@ std::string FieldInterface::getReservedExpression(std::string const& fieldName, 
     QSharedPointer<Field> field = getField(fieldName);
     if (!field)
     {
-        return string("");
+        return std::string();
     }
 
     if (accessPolicyIndex == -1)
@@ -1715,7 +1714,7 @@ std::string FieldInterface::getReservedExpression(std::string const& fieldName, 
         }
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1759,7 +1758,7 @@ std::string FieldInterface::getID(std::string const& fieldName)
         return field->getId().toStdString();
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

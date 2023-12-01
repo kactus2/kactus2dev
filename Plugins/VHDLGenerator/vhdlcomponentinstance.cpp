@@ -153,14 +153,14 @@ void VhdlComponentInstance::write( QTextStream& stream ) const
 	if (!genericMap_.isEmpty())
     {
 		stream << "    generic map (" << Qt::endl;
-		for (QMap<QString, QString>::const_iterator i = genericMap_.begin(); i != genericMap_.end(); ++i)
+		for (auto i = genericMap_.cbegin(); i != genericMap_.cend(); ++i)
         {
 			stream << "  " << "  " << "  ";
 			stream << i.key().leftJustified(16, ' '); //align colons (:) at least roughly
 			stream << " => " << i.value();
 
 			// if this is not the last generic to print
-			if (i + 1 != genericMap_.end())
+			if (std::distance(i, genericMap_.cend()) != 1)
             {
 				stream << "," << Qt::endl;
 			}
@@ -173,14 +173,14 @@ void VhdlComponentInstance::write( QTextStream& stream ) const
     {
 		stream << "    port map (" << Qt::endl;
 
-        for (QMultiMap<VhdlPortMap, VhdlPortMap>::const_iterator i = portMap_.begin(); i != portMap_.end(); ++i)
+        for (auto i = portMap_.cbegin(); i != portMap_.cend(); ++i)
         {
 			stream << "  " << "  " << "  " ;
             stream << i.key().mappingWith(i.value());
 		
 
 			// if this is not the last port map to print, add comma (,)
-			if (i + 1 != portMap_.end())
+			if (std::distance(i, portMap_.cend()) != 1)
             {
 				stream << "," << Qt::endl;
 			}
@@ -240,7 +240,7 @@ void VhdlComponentInstance::addMapping(const VhdlPortMap &instancePort, const Vh
             arg(signalMapping.name()));
 	}
 
-	portMap_.insertMulti(instancePort, signalMapping);
+	portMap_.insert(instancePort, signalMapping);
 }
 
 //-----------------------------------------------------------------------------
@@ -268,7 +268,7 @@ void VhdlComponentInstance::addGenericMap( const QString& genericName, const QSt
 //-----------------------------------------------------------------------------
 bool VhdlComponentInstance::hasConnection( const QString& portName )
 {
-	for (QMultiMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin(); i != portMap_.end(); ++i)
+	for (auto i = portMap_.cbegin(); i != portMap_.cend(); ++i)
     {
         // if the mapping is for port with same name
         if (i.key().name().compare(portName, Qt::CaseInsensitive) == 0)
@@ -287,7 +287,7 @@ bool VhdlComponentInstance::hasConnection( const QString& portName )
 void VhdlComponentInstance::useDefaultsForOtherPorts()
 {
 	// check all ports that have a connection
-	for (QMultiMap<VhdlPortMap, VhdlPortMap>::iterator i = portMap_.begin(); i != portMap_.end(); ++i)
+	for (auto i = portMap_.cbegin(); i != portMap_.cend(); ++i)
     {
         defaultPortConnections_.remove(i.key().name());
 	}
@@ -295,7 +295,7 @@ void VhdlComponentInstance::useDefaultsForOtherPorts()
 	// now default values remain only for ports with no connections at all
 
 	// go through each default port value
-	for (QMap<QString, QString>::iterator i = defaultPortConnections_.begin(); i != defaultPortConnections_.end();
+	for (auto i = defaultPortConnections_.cbegin(); i != defaultPortConnections_.cend();
         ++i)
     {
         // if the default value is not set

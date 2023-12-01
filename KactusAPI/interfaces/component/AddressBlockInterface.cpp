@@ -18,8 +18,6 @@
 #include <IPXACTmodels/Component/AccessPolicy.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 
-using namespace std;
-
 namespace
 {
     std::string const BLOCK_TYPE = "addressBlock";
@@ -79,7 +77,7 @@ std::string AddressBlockInterface::getRangeFormattedExpression(std::string const
         return formattedValueFor(selectedBlock->getRange()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +91,7 @@ std::string AddressBlockInterface::getRangeExpression(std::string const& blockNa
         return selectedBlock->getRange().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +120,7 @@ std::string AddressBlockInterface::getWidthValue(std::string const& blockName, i
         return parseExpressionToBaseNumber(selectedBlock->getWidth(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +134,7 @@ std::string AddressBlockInterface::getWidthFormattedExpression(std::string const
         return formattedValueFor(selectedBlock->getWidth()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -150,7 +148,7 @@ std::string AddressBlockInterface::getWidthExpression(std::string const& blockNa
         return selectedBlock->getWidth().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +344,7 @@ bool AddressBlockInterface::setVolatile(std::string const& blockName, std::strin
 //-----------------------------------------------------------------------------
 // Function: AddressBlockInterface::getAllReferencesToIdInItem()
 //-----------------------------------------------------------------------------
-int AddressBlockInterface::getAllReferencesToIdInItem(const string& itemName, string const&  valueID) const
+int AddressBlockInterface::getAllReferencesToIdInItem(const std::string& itemName, std::string const&  valueID) const
 {
     int referencesInMemoryBlock = MemoryBlockInterface::getAllReferencesToIdInItem(itemName, valueID);
     int totalReferencesToParameter = 0;

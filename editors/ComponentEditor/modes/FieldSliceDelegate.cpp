@@ -38,8 +38,8 @@ QWidget* FieldSliceDelegate::createEditor(QWidget* parent, QStyleOptionViewItem 
 {
     if (index.column() == FieldSliceColumns::FIELD_REF)
     {
-        MemoryTreeFactory* factory = new MemoryTreeFactory(memoryMaps_, addressSpaces_);
-        auto referenceSelector = new FramedTreeItemEditor(factory, parent);
+        auto factory =  MemoryTreeFactory(memoryMaps_, addressSpaces_);
+        auto referenceSelector = new FramedTreeItemEditor(&factory, parent);
 
 
         connect(referenceSelector, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);

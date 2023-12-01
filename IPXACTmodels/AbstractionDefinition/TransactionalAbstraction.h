@@ -31,7 +31,7 @@ class IPXACTMODELS_EXPORT TransactionalAbstraction
 {
 public:
 
-	TransactionalAbstraction();
+	TransactionalAbstraction() = default;
 
 	//! \brief Copy constructor
 	TransactionalAbstraction(const TransactionalAbstraction& other);
@@ -209,16 +209,18 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The qualifier describing the information the transaction carries.
-    QSharedPointer<Qualifier> qualifier_ = QSharedPointer<Qualifier>(new Qualifier);
-
-    //! The port definitions for system mode.
-    QSharedPointer<QList<QSharedPointer<TransactionalPort> > > onSystem_;
+    QSharedPointer<Qualifier> qualifier_{ new Qualifier() };
 
     //! The port definition for initiator mode.
-	QSharedPointer<TransactionalPort> onInitiator_;
+	QSharedPointer<TransactionalPort> onInitiator_{ nullptr };
 
     //! The port definition for target mode.
-	QSharedPointer<TransactionalPort> onTarget_;
+    QSharedPointer<TransactionalPort> onTarget_{ nullptr };
+
+    //! The port definitions for system mode.
+    QSharedPointer<QList<QSharedPointer<TransactionalPort> > > onSystem_{ 
+        new QList<QSharedPointer<TransactionalPort> >() };
+    
 };
 
 #endif /* TRANSACTIONALABSTRACTION_H */

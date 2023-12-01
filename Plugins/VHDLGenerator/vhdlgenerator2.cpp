@@ -1275,14 +1275,13 @@ void VhdlGenerator2::writeGenerics( QTextStream& vhdlStream )
 		// the start tag
 		vhdlStream << "  " << "generic (" << Qt::endl;
 
-		for (QMap<QString, QSharedPointer<VhdlGeneric> >::iterator i = topGenerics_.begin();
-			i != topGenerics_.end(); ++i)
+		for (auto i = topGenerics_.cbegin(); i != topGenerics_.cend(); ++i)
         {
 			vhdlStream << "  " << "  ";
 			i.value()->write(vhdlStream);
 
 			// if this is not the last generic to write
-			if (i + 1 != topGenerics_.end())
+			if (std::distance(i, topGenerics_.cend()) != 1)
             {
 				vhdlStream << ";";
 			}
@@ -1314,8 +1313,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream )
 
 		QString previousInterface;
 		// print each port
-		for (QMap<VhdlPortSorter, QSharedPointer<VhdlPort> >::iterator i = topPorts_.begin();
-			i != topPorts_.end(); ++i)
+		for (auto i = topPorts_.cbegin(); i != topPorts_.cend(); ++i)
         {
             // if the port is first in the interface then introduce it
             if (i.key().interface() != previousInterface)
@@ -1349,7 +1347,7 @@ void VhdlGenerator2::writePorts( QTextStream& vhdlStream )
             i.value()->write(vhdlStream);
 
             // if this is not the last port to write
-            if (i + 1 != topPorts_.end())
+            if (std::distance(i, topPorts_.cend()) != 1)
             {
                 vhdlStream << ";";
             }
@@ -1378,7 +1376,7 @@ void VhdlGenerator2::writeSignalDeclarations( QTextStream& vhdlStream )
 	QList<QSharedPointer<VhdlSignal> > signalList;
 
 	// get the unique signals that exist
-	foreach (QSharedPointer<VhdlSignal> signal, signals_.values())
+	for (QSharedPointer<VhdlSignal> signal : signals_.values())
     {
 		if (!signalList.contains(signal))
         {
@@ -1386,7 +1384,7 @@ void VhdlGenerator2::writeSignalDeclarations( QTextStream& vhdlStream )
 		}
 	}
 	// when the list contains only the unique signals then write them
-	foreach (QSharedPointer<VhdlSignal> signal, signalList)
+	for (QSharedPointer<VhdlSignal> signal : signalList)
     {
 		signal->write(vhdlStream);
 	}

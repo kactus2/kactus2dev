@@ -277,7 +277,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! List of the available abstraction types.
-    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractions_;
+    QSharedPointer<QList<QSharedPointer<AbstractionType> > > abstractions_{ nullptr };
 
     //! Interface for accessing port maps.
     PortMapInterface* portMapInterface_;

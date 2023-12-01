@@ -30,13 +30,10 @@ public:
 	 *
 	 *      @param [in] masterInterfaceRef   Name reference to the bridged master interface.
 	 */
-	TransparentBridge(QString const& masterInterfaceRef = QString());
+	explicit TransparentBridge(QString const& masterInterfaceRef = QString());
     	
-    //! The copy constructor.
-    TransparentBridge(TransparentBridge const& other);
-
 	//! The destructor.
-	virtual ~TransparentBridge();
+	~TransparentBridge() = default;
 
     /*!
      *  Set the master interface reference.
@@ -81,9 +78,6 @@ public:
     QString getIsPresent() const;
   
 private:
-
-	// Disable assignment.
-	TransparentBridge& operator=(TransparentBridge const& rhs);
    
     //! Reference to an initiator interface.
     QString initiatorRef_;

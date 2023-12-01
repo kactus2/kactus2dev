@@ -20,6 +20,7 @@
 #include <IPXACTmodels/common/PresenceTypes.h>
 #include <IPXACTmodels/common/Qualifier.h>
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 
@@ -787,16 +788,16 @@ private:
     struct SignalRow
     {
         //! Defines the Port represented in the row.
-        QSharedPointer<PortAbstraction> abstraction_;
+        QSharedPointer<PortAbstraction> abstraction_{ QSharedPointer<PortAbstraction>(new PortAbstraction()) };
 
         //! Defines the mode of the signal (master, slave or system).
-        General::InterfaceMode mode_;
+        General::InterfaceMode mode_{ General::INTERFACE_MODE_COUNT };
 
         //! Defines the wirePort represented on the row.
-        QSharedPointer<WirePort> wire_;
+        QSharedPointer<WirePort> wire_{ nullptr };
 
         //! Defines the transactionalPort represented on the row.
-        QSharedPointer<TransactionalPort> transactional_;
+        QSharedPointer<TransactionalPort> transactional_{ nullptr };
 
         /*!
          *  The default constructor.

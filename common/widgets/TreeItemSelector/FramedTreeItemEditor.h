@@ -32,7 +32,7 @@ public:
      *
      *      @param [in] parent          The parent widget.
      */
-    FramedTreeItemEditor(MemoryTreeFactory* factory, QWidget* parent);
+    FramedTreeItemEditor(MemoryTreeFactory const* factory, QWidget* parent);
 
     /*!
      *  Destructor.
@@ -74,7 +74,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The editor for tree items.
-    TreeItemEditor* editor_;
+    TreeItemEditor editor_;
 
 
     QPushButton* okButton_ = new QPushButton(this);

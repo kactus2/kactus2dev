@@ -1212,7 +1212,7 @@ QStringList Component::getTargetInterfaces( const QString& memoryMap ) const
     General::InterfaceMode interfaceModeName = getRevision() == Document::Revision::Std22 
         ? General::TARGET : General::SLAVE;
 
-    for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
+    for (auto const& busif : *busInterfaces_)
     {
         if ((busif->getInterfaceMode() == interfaceModeName) && busif->getMemoryMapRef() == memoryMap)
         {
@@ -1236,7 +1236,7 @@ QStringList Component::getInitiatorInterfaces( const QString& addressSpace ) con
     General::InterfaceMode mirroredInitiatorModeName = getRevision() == Document::Revision::Std22
         ? General::MIRRORED_INITIATOR : General::MIRRORED_MASTER;
 
-    for (const QSharedPointer<BusInterface> busif : *busInterfaces_)
+    for (auto const& busif : *busInterfaces_)
     {
         if ((busif->getInterfaceMode() == initiatorModeName || busif->getInterfaceMode() == mirroredInitiatorModeName)
             && (busif->getAddressSpaceRef() == addressSpace))

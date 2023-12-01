@@ -32,7 +32,12 @@ public:
 
 		explicit BusInterfaceRef(QString const& localName) : localName_(localName) {};
 
+		~BusInterfaceRef() = default;
+
+		BusInterfaceRef& operator=(BusInterfaceRef const& other) = delete;
+
 		BusInterfaceRef(BusInterfaceRef const& other):
+			Extendable(other),
 			localName_(other.localName_)
 		{
 			copyVendorExtensions(other);

@@ -61,7 +61,8 @@ IPXACTMODELS_EXPORT void MemoryBlockBaseReader::parseParameters(QDomNode const& 
     Document::Revision docRevision)
 {
     QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters = 
-        CommonItemsReader::parseAndCreateParameters(addressBlockNode);
+        CommonItemsReader::parseAndCreateParameters(addressBlockNode, docRevision);
+
     if (!newParameters->isEmpty())
     {
         newMemoryBlock->setParameters(newParameters);

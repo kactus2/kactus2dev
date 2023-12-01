@@ -71,7 +71,7 @@ PythonAPI::PythonAPI()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setupLibrary()
 //-----------------------------------------------------------------------------
-void PythonAPI::setupLibrary(std::string const& settingsFileString)
+void PythonAPI::setupLibrary(std::string const& /*settingsFileString*/)
 {
     library_->searchForIPXactFiles();
 }
@@ -233,11 +233,11 @@ int PythonAPI::getFileCount() const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::listVLNVs()
 //-----------------------------------------------------------------------------
-std::vector<std::string> PythonAPI::listVLNVs(std::string const& vendor /* = QString("") */) const
+std::vector<std::string> PythonAPI::listVLNVs(std::string const& vendor) const
 {
     std::vector<std::string> vlnvStrings;
 
-    for (auto itemVLNV : library_->getAllVLNVs())
+    for (auto const& itemVLNV : library_->getAllVLNVs())
     {
         vlnvStrings.push_back(itemVLNV.toString().toStdString());
     }

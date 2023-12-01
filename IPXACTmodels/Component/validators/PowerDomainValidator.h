@@ -56,7 +56,7 @@ public:
      *
      *      @return True, if the power domain is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<PowerDomain> powerDomain) const;
+    bool validate(QSharedPointer<PowerDomain> powerDomain) const;
 
     /*!
      *  Check if the name is valid.
@@ -101,7 +101,7 @@ public:
      *      @param [in] PowerDomain    The selected power domain.
      *      @param [in] context         Context to help locate the error.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<PowerDomain> PowerDomain,
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<PowerDomain> PowerDomain,
         QString const& context) const;
 
     /*!

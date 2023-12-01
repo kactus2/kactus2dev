@@ -88,13 +88,8 @@ void EnumCollectionEditor::onExclusiveItemClicked(bool newState)
 {
     if (newState == true)
     {
-        QCheckBox* senderBox;
-        QObject* senderObject = sender();
-        if (senderObject)
-        {
-            senderBox = dynamic_cast<QCheckBox*>(senderObject);
-        }
-
+        auto senderBox = dynamic_cast<QCheckBox const*>(sender());
+        
         for (auto item : items_)
         {
             if (item != senderBox)

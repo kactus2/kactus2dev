@@ -36,13 +36,12 @@ int ModeReferenceInterface::getModeReferenceCount() const
 //-----------------------------------------------------------------------------
 std::string ModeReferenceInterface::getModeReferenceValue(int modeReferenceIndex) const
 {
-    std::string modeRefValue;
     if (modeReferenceIndex >= 0 && modeReferenceIndex < modeReferences_.size())
     {
-        modeRefValue = modeReferences_.at(modeReferenceIndex).second;
+        return modeReferences_.at(modeReferenceIndex).second;
     }
 
-    return modeRefValue;
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

@@ -316,7 +316,6 @@ bool PadsPartGenerator::generateCAEFile(QFile* file, QString const& partTitle, Q
     QString timestamp = timeMatch.captured();
 
     // Generate CAE decal for each gate.
-    int pos = 0;
     auto gateMatch = PadsAsciiSyntax::PART_GATE_EXP.match(partDescription);
     while(gateMatch.hasMatch())
     {

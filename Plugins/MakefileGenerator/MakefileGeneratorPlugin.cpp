@@ -97,7 +97,7 @@ QIcon MakefileGeneratorPlugin::getIcon() const
 // Function: MakefileGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
 bool MakefileGeneratorPlugin::checkGeneratorSupport(
-    QSharedPointer<Component const> component,
+    QSharedPointer<Component const> /*component*/,
     QSharedPointer<Design const> design,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {

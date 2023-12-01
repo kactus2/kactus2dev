@@ -24,8 +24,6 @@
 #include <QApplication>
 #include <QClipboard>
 
-using namespace std;
-
 namespace
 {
     std::string const MEMORYMAP_TYPE = "memoryMap";
@@ -121,7 +119,7 @@ QSharedPointer<MemoryRemap> MemoryMapInterface::getMemoryRemap(std::string const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getItemIndex()
 //-----------------------------------------------------------------------------
-int MemoryMapInterface::getItemIndex(string const& itemName) const
+int MemoryMapInterface::getItemIndex(std::string const& itemName) const
 {
     for (int i = 0; i < mapData_->size(); ++i)
     {
@@ -158,9 +156,9 @@ int MemoryMapInterface::getMemoryRemapIndex(std::string const& mapName, std::str
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getIndexedItemName()
 //-----------------------------------------------------------------------------
-string MemoryMapInterface::getIndexedItemName(int itemIndex) const
+std::string MemoryMapInterface::getIndexedItemName(int itemIndex) const
 {
-    string blockName = "";
+    std::string blockName = "";
     if (itemIndex >= 0 && itemIndex < mapData_->size())
     {
         blockName = mapData_->at(itemIndex)->name().toStdString();
@@ -216,9 +214,9 @@ int MemoryMapInterface::remapCount(std::string const& mapName) const
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getItemNames()
 //-----------------------------------------------------------------------------
-vector<string> MemoryMapInterface::getItemNames() const
+std::vector<std::string> MemoryMapInterface::getItemNames() const
 {
-    vector<string> names;
+    std::vector<std::string> names;
     for (auto map : *mapData_)
     {
         names.push_back(map->name().toStdString());
@@ -232,7 +230,7 @@ vector<string> MemoryMapInterface::getItemNames() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> MemoryMapInterface::getRemapNames(std::string const& mapName) const
 {
-    vector<string> names;
+    std::vector<std::string> names;
     QSharedPointer<MemoryMap> containingMap = getMemoryMap(mapName);
     if (containingMap)
     {
@@ -248,7 +246,7 @@ std::vector<std::string> MemoryMapInterface::getRemapNames(std::string const& ma
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::setName()
 //-----------------------------------------------------------------------------
-bool MemoryMapInterface::setName(string const& currentName, string const& newName)
+bool MemoryMapInterface::setName(std::string const& currentName, std::string const& newName)
 {
     QSharedPointer<MemoryMap> editedItem = getMemoryMap(currentName);
     if (editedItem && nameHasChanged(newName, currentName))
@@ -295,7 +293,7 @@ std::string MemoryMapInterface::getRemapDescription(std::string const& mapName, 
         return editedItem->description().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -335,7 +333,7 @@ std::string MemoryMapInterface::getIsPresentValue(std::string const& mapName, st
         return parseExpressionToBaseNumber(baseMap->getIsPresent(), baseNumber).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -359,7 +357,7 @@ std::string MemoryMapInterface::getIsPresentFormattedExpression(std::string cons
         return formattedValueFor(baseMap->getIsPresent()).toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -383,7 +381,7 @@ std::string MemoryMapInterface::getIsPresentExpression(std::string const& mapNam
         return baseMap->getIsPresent().toStdString();
     }
 
-    return string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

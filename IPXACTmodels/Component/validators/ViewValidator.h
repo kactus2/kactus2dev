@@ -57,7 +57,7 @@ public:
      *
      *      @return True, if the View is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<View> view) const;
+    bool validate(QSharedPointer<View> view) const;
 
     /*!
      *  Check if the name is valid.
@@ -129,7 +129,7 @@ public:
      *      @param [in] View        The View whose errors to find.
      *      @param [in] context     Context to help locate the errors.
      */
-    virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<View> view, QString const& contex) const;
+    void findErrorsIn(QVector<QString>& errors, QSharedPointer<View> view, QString const& contex) const;
 
 private:
 
