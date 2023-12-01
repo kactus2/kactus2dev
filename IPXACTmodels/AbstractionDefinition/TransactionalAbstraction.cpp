@@ -22,25 +22,12 @@
 #include <QString>
 #include <QSharedPointer>
 
-//-----------------------------------------------------------------------------
-// Function: TransactionalAbstraction::TransactionalAbstraction()
-//-----------------------------------------------------------------------------
-TransactionalAbstraction::TransactionalAbstraction() :
-    onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
-    onInitiator_(),
-    onTarget_()
-{
-
-}
 
 //-----------------------------------------------------------------------------
 // Function: TransactionalAbstraction::TransactionalAbstraction()
 //-----------------------------------------------------------------------------
 TransactionalAbstraction::TransactionalAbstraction(TransactionalAbstraction const& other):
-qualifier_(new Qualifier(*other.qualifier_)),
-    onSystem_(new QList<QSharedPointer<TransactionalPort> >()),
-    onInitiator_(),
-    onTarget_()
+qualifier_(new Qualifier(*other.qualifier_))
 {
 	if (other.onInitiator_)
     {
@@ -239,8 +226,12 @@ bool TransactionalAbstraction::hasMode(General::InterfaceMode mode, QString cons
 
     return (mode == General::MASTER && hasMasterPort()) ||
         (mode == General::MIRRORED_MASTER && hasMasterPort()) ||
+        (mode == General::INITIATOR && hasMasterPort()) ||
+        (mode == General::MIRRORED_INITIATOR && hasMasterPort()) ||
         (mode == General::SLAVE && hasSlavePort()) ||
-        (mode == General::MIRRORED_SLAVE && hasSlavePort());
+        (mode == General::MIRRORED_SLAVE && hasSlavePort()) ||
+        (mode == General::TARGET && hasSlavePort()) ||
+        (mode == General::MIRRORED_TARGET && hasSlavePort());
 }
 
 //-----------------------------------------------------------------------------
@@ -248,7 +239,7 @@ bool TransactionalAbstraction::hasMode(General::InterfaceMode mode, QString cons
 //-----------------------------------------------------------------------------
 QSharedPointer<TransactionalPort> TransactionalAbstraction::findSystemPort(QString const& systemGroup) const
 {
-    foreach(QSharedPointer<TransactionalPort> systemPort, *onSystem_)
+    for (QSharedPointer<TransactionalPort> systemPort : *onSystem_)
     {
         if (systemPort->getSystemGroup() == systemGroup)
         {
@@ -264,32 +255,40 @@ QSharedPointer<TransactionalPort> TransactionalAbstraction::findSystemPort(QStri
 //-----------------------------------------------------------------------------
 QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    QString initiative = QLatin1String("");
+    using namespace TransactionalTypes;
 
-    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && hasMasterPort())
+    if ((mode == General::MASTER || mode == General::INITIATOR) && hasMasterPort())
     {
-        initiative = getMasterPort()->getInitiative();
+        return getMasterPort()->getInitiative();
     }
-    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && hasSlavePort())
+    else if ((mode == General::MIRRORED_MASTER || mode == General::MIRRORED_INITIATOR) && hasMasterPort())
     {
-        initiative = getSlavePort()->getInitiative();
+        return initiativeToString(convertToMirrored(getMasterPort()->getInitiative()));
     }
-    else if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
+    else if ((mode == General::SLAVE || mode == General::TARGET) && hasSlavePort())
     {
-        QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
-        if (systemPort)
+        return getSlavePort()->getInitiative();
+    }
+    else if ((mode == General::MIRRORED_SLAVE || mode == General::MIRRORED_TARGET) && hasSlavePort())
+    {
+        return initiativeToString(convertToMirrored(getSlavePort()->getInitiative()));
+    }
+    else if (mode == General::SYSTEM)
+    {
+        if (QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup))
         {
-            initiative = systemPort->getInitiative();
+            return systemPort->getInitiative();
+        }
+    }
+    else if (mode == General::MIRRORED_SYSTEM)
+    {
+        if (QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup))
+        {
+            return initiativeToString(convertToMirrored(systemPort->getInitiative()));
         }
     }
 
-    if (mode == General::MIRRORED_MASTER || mode == General::MIRRORED_SLAVE || mode == General::MIRRORED_SYSTEM)
-    {
-        TransactionalTypes::Initiative mirroredInitiative = TransactionalTypes::convertToMirrored(initiative);
-        initiative = TransactionalTypes::initiativeToString(mirroredInitiative);
-    }
-
-    return initiative;
+    return QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -297,23 +296,23 @@ QString TransactionalAbstraction::getInitiative(General::InterfaceMode mode, QSt
 //-----------------------------------------------------------------------------
 QString TransactionalAbstraction::getWidth(General::InterfaceMode mode, QString const& systemGroup) const
 {
-    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && hasMasterPort())
+    if ((mode == General::MASTER || mode == General::MIRRORED_MASTER ||
+        mode == General::INITIATOR || mode == General::MIRRORED_INITIATOR) && hasMasterPort())
     {
         return getMasterPort()->getBusWidth();
     }
-    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && hasSlavePort())
+    else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE ||
+        mode == General::TARGET || mode == General::MIRRORED_TARGET) && hasSlavePort())
     {
         return getSlavePort()->getBusWidth();
     }
     else if (mode == General::SYSTEM || mode == General::MIRRORED_SYSTEM)
     {
-        QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup);
-
-        if (systemPort)
+        if (QSharedPointer<TransactionalPort> systemPort = findSystemPort(systemGroup))
         {
             return systemPort->getBusWidth();
         }
     }
 
-    return QStringLiteral("");
+    return QString();
 }
