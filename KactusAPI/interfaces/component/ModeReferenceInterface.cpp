@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::setModeReferences()
 //-----------------------------------------------------------------------------
-void ModeReferenceInterface::setModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences)
+void ModeReferenceInterface::setModeReferences(std::vector<std::pair<unsigned int, std::string> > const& modeReferences)
 {
     modeReferences_ = modeReferences;
 }
@@ -28,7 +28,7 @@ void ModeReferenceInterface::setModeReferences(std::vector<std::pair<unsigned in
 //-----------------------------------------------------------------------------
 int ModeReferenceInterface::getModeReferenceCount() const
 {
-    return modeReferences_.size();
+    return static_cast<int>(modeReferences_.size());
 }
 
 //-----------------------------------------------------------------------------
@@ -88,9 +88,9 @@ bool ModeReferenceInterface::setModeReferencePriority(int modeReferenceIndex, un
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::addModeReference()
 //-----------------------------------------------------------------------------
-bool ModeReferenceInterface::addModeReference()
+bool ModeReferenceInterface::addModeReference(int row)
 {
-    modeReferences_.emplace_back(0, std::string());
+    modeReferences_.emplace(modeReferences_.begin() + row, std::pair(0, std::string()));
     return true;
 }
 

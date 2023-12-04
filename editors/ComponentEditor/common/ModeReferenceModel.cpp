@@ -183,10 +183,16 @@ bool ModeReferenceModel::setData(const QModelIndex& index, const QVariant& value
 //-----------------------------------------------------------------------------
 void ModeReferenceModel::onAddRow(QModelIndex const& index)
 {
-    int lastRow = interface_->getModeReferenceCount();
+    int row = interface_->getModeReferenceCount();
 
-    beginInsertRows(QModelIndex(), lastRow, lastRow);
-    interface_->addModeReference();
+    // if the index is valid then add the item to the correct position
+    if (index.isValid())
+    {
+        row = index.row();
+    }
+
+    beginInsertRows(QModelIndex(), row, row);
+    interface_->addModeReference(row);
     endInsertRows();
 
     emit invalidateFilter();

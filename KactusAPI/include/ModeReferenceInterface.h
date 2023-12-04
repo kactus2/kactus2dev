@@ -34,7 +34,7 @@ public:
      *  
      *      @param [in] modeReferences     The mode references to set.
      */
-    void setModeReferences(std::vector<std::pair<unsigned int, std::string> > modeReferences);
+    void setModeReferences(std::vector<std::pair<unsigned int, std::string> > const& modeReferences);
 
     /*!
      *	Get the number of mode references.
@@ -86,7 +86,7 @@ public:
      *
      * 	    @return True, if the operation was successful, otherwise false.
      */
-    bool addModeReference();
+    bool addModeReference(int row);
 
     /*!
      *	Remove a selected mode reference.
