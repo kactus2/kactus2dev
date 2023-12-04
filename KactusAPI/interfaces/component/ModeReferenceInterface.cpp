@@ -166,7 +166,7 @@ bool ModeReferenceInterface::modeReferencePriorityIsValid(int modeReferenceIndex
             return tuple.first;
         });
 
-    return CommonItemsValidator::modeReferencePriorityIsValid(modeRefPrioritiesInUse, modeRefToCheck, containingElementIsRemap);
+    return CommonItemsValidator::modeReferencePriorityIsValid(modeRefPrioritiesInUse, modeRefToCheck, containingElementIsRemap_);
 }
 
 //-----------------------------------------------------------------------------
@@ -189,7 +189,7 @@ std::vector<std::string> ModeReferenceInterface::getModeReferencesString() const
 //-----------------------------------------------------------------------------
 void ModeReferenceInterface::setContainingElementIsRemap(bool isRemap)
 {
-    containingElementIsRemap = isRemap;
+    containingElementIsRemap_ = isRemap;
 }
 
 //-----------------------------------------------------------------------------

@@ -179,7 +179,7 @@ private:
     QSharedPointer<QList<QSharedPointer<Mode> > > componentModes_;
 
     //! For validation purposes. Indicates if the mode refs are within a memory remap or not.
-    bool containingElementIsRemap = false;
+    bool containingElementIsRemap_ = false;
 
 };
 

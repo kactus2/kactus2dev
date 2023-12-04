@@ -142,6 +142,11 @@ QVariant ModeReferenceModel::data(const QModelIndex& index, int role /*= Qt::Dis
 
     }
 
+    if (role == Qt::BackgroundRole)
+    {
+        return KactusColors::MANDATORY_FIELD;
+    }
+
     return QVariant();
 }
 
