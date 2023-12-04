@@ -303,7 +303,7 @@ bool CommonItemsValidator::hasValidAccessPolicies(
     QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies,
     QSharedPointer<QList<QSharedPointer<Mode> > > availableModes)
 {
-    bool hasAccessPolicyWithoutModeRef = false;
+    int accessPoliciesWithoutModeRef = 0;
 
     auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
         new QList<QSharedPointer<ModeReference> >());
@@ -313,7 +313,7 @@ bool CommonItemsValidator::hasValidAccessPolicies(
         auto modeRefs = accessPolicy->getModeReferences();
         if (modeRefs->isEmpty())
         {
-            hasAccessPolicyWithoutModeRef = true;
+            accessPoliciesWithoutModeRef++;
         }
 
         std::for_each(modeRefs->cbegin(), modeRefs->cend(), [&allModeRefs](auto modeRef)
@@ -323,17 +323,55 @@ bool CommonItemsValidator::hasValidAccessPolicies(
     }
 
     // Check if the mode references of the access policy are valid. Also check for duplicate mode refs between
-    // all address block access policies.
+    // all access policies.
     if (!hasValidModeRefs(allModeRefs, availableModes))
     {
         return false;
     }
 
-    // Number of access policies cannot be greater than one if an access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && accessPolicies->size() > 1)
+    // Number of access policies without mode references cannot be greater than one (no mode ref = applies to all
+    // other modes not explicitly defined with mode references).
+    if (accessPoliciesWithoutModeRef > 1)
     {
         return false;
     }
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CommonItemsValidator::findErrorsInAccessPolicies()
+//-----------------------------------------------------------------------------
+void CommonItemsValidator::findErrorsInAccessPolicies(QStringList& errors, 
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies, QSharedPointer<QList<QSharedPointer<Mode> > > componentModes, QString const& context)
+{
+    int accessPoliciesWithoutModeRefs = 0;
+
+    QString accessPolicyContext = QStringLiteral("access policies of ") + context;
+
+    bool duplicateModeRefErrorIssued = false;
+    bool duplicateModePriorityErrorIssued = false;
+
+    QStringList checkedModeReferences;
+    QList<unsigned int> checkedModePriorities;
+
+    for (auto const& accessPolicy : *accessPolicies)
+    {
+        if (accessPolicy->getModeReferences()->isEmpty())
+        {
+            accessPoliciesWithoutModeRefs++;
+        }
+
+        // Check mode references in current access policy, and look for duplicate references.
+        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext,
+            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued, componentModes);
+    }
+
+    // Number of access policies without mode references cannot be greater than one (no mode ref = applies to all
+    // other modes not explicitly defined with mode references).
+    if (accessPoliciesWithoutModeRefs > 1)
+    {
+        errors.append(QObject::tr("In %1: multiple access policies without mode references are not allowed.")
+            .arg(accessPolicyContext));
+    }
 }

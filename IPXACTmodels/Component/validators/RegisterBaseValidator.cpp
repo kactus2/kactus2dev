@@ -244,34 +244,7 @@ void RegisterBaseValidator::findErrorsInParameters(QVector<QString>&errors,
 //-----------------------------------------------------------------------------
 void RegisterBaseValidator::findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<RegisterBase> registerBase, QString const& context) const
 {
-    bool hasAccessPolicyWithoutModeRef = false;
-
-    QString accessPolicyContext = QStringLiteral("access policies of ") + context;
-
-    bool duplicateModeRefErrorIssued = false;
-    bool duplicateModePriorityErrorIssued = false;
-
-    QStringList checkedModeReferences;
-    QList<unsigned int> checkedModePriorities;
-
-    for (auto const& accessPolicy : *registerBase->getAccessPolicies())
-    {
-        if (accessPolicy->getModeReferences()->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        // Check mode references in current access policy, and look for duplicate references.
-        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext, 
-            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued, componentModes_);
-    }
-
-    // Number of access policies cannot be greater than one if a field access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && registerBase->getAccessPolicies()->size() > 1)
-    {
-        errors.append(QObject::tr("In %1, multiple access policies are not allowed if one "
-            "of them lacks a mode reference.").arg(registerBase->name()).arg(context));
-    }
+    CommonItemsValidator::findErrorsInAccessPolicies(errors, registerBase->getAccessPolicies(), componentModes_, context);
 }
 
 //-----------------------------------------------------------------------------
