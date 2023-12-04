@@ -87,7 +87,15 @@ registerFileValidator_(registerFileValidator)
 void SingleRegisterFileEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/addressblock.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/registerFile2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/registerFile.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

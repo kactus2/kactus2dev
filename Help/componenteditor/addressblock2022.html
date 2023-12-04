@@ -61,7 +61,9 @@
     
     <p>
         <b>Access policies</b> are optional and specify the accessability of the address block data for different operating modes,
-        specified by mode references. If no mode reference is present, then the access policy applies to all modes.
+        specified by mode references. If no mode reference is present, then the access policy applies to all modes not already 
+        referenced by other access policies (i.e. only one access policy without mode references may exist).
+        
         The possible access values for an access policy are:
     </p>
     <ul>

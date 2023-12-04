@@ -82,7 +82,8 @@
     <p>
         <b>Mode(s)</b> contains references to component modes. It is optional, and defines for which 
         component modes the field access policy is active. If a field access policy contains no mode references, 
-        it is active for all component modes and no additional field access policies may be defined.
+        it is active for all component modes not already referenced by other field access policies 
+        (i.e. only one field access policy without mode references may exist).
 
         A field access policy is active, if it references an active mode and has the highest <i>priority</i>
         (i.e. the lowest priority value) among the field access policies of the field.

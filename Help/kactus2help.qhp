@@ -45,8 +45,9 @@
                   <section title="Register" ref="componenteditor/register2022.html">
                     <section title="Field" ref="componenteditor/field2022.html" />
                   </section>
+                  <section title="Register file" ref="componenteditor/registerFile2022.html" />
                 </section>
-              <section title="Subspace map" ref="componenteditor/subspacemap.html" />
+              <section title="Subspace map" ref="componenteditor/subspacemap2022.html" />
               </section>
             </section>
             <section title="Address spaces" ref="componenteditor/addressspaces2022.html">
@@ -133,6 +134,7 @@
                   <section title="Register" ref="componenteditor/register.html">
                     <section title="Field" ref="componenteditor/field.html" />
                   </section>
+                  <section title="Register file" ref="componenteditor/registerFile.html" />
                 </section>
               <section title="Subspace map" ref="componenteditor/subspacemap.html" />
               </section>
