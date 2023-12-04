@@ -78,7 +78,8 @@ ItemEditor* SubspaceMapItem::editor()
 {
 	if (!editor_)
     {
-        editor_ = new SingleSubspaceMapEditor(subspaceInterface_, subspaceMap_, containingMap_, component_, libHandler_, parameterFinder_, expressionFormatter_, expressionParser_);
+        editor_ = new SingleSubspaceMapEditor(subspaceInterface_, subspaceMap_, containingMap_, component_, 
+            libHandler_, parameterFinder_, expressionParser_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(graphicsChanged()), this, SLOT(onGraphicsChanged()), Qt::UniqueConnection);

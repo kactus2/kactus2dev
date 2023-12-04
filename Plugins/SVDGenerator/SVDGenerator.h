@@ -184,11 +184,10 @@ private:
      *  Write address blocks of the selected memory map item.
      *
      *      @param [in] writer                  The xml stream writer.
-     *      @param [in] containingComponent     Component containing the interfaced memory map item.
      *      @param [in] mapItem                 The selected memory map item.
      *      @param [in] mapBaseAddress          Base address of the memory map.
      */
-    void writeAddressBlocks(QXmlStreamWriter& writer, QSharedPointer<const Component> containingComponent,
+    void writeAddressBlocks(QXmlStreamWriter& writer, 
         QSharedPointer<MemoryItem> mapItem, quint64 mapBaseAddress);
 
     /*!

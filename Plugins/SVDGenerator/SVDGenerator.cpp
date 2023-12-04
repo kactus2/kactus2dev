@@ -46,9 +46,9 @@
 // Function: SVDGenerator::SVDGenerator()
 //-----------------------------------------------------------------------------
 SVDGenerator::SVDGenerator(IPluginUtility* utility):
+utility_(utility),
 library_(utility->getLibraryInterface()),
-graphFactory_(utility->getLibraryInterface()),
-utility_(utility)
+graphFactory_(utility->getLibraryInterface())
 {
 
 }
@@ -330,7 +330,7 @@ void SVDGenerator::writePeripheral(QXmlStreamWriter& writer, QSharedPointer<cons
     writeOptionalElement(writer, SVDConstants::DESCRIPTION, memoryMap->description());
 
     writer.writeTextElement(SVDConstants::PERIPHERALBASEADDRESS, mapBaseAddressInHexa);
-    writeAddressBlocks(writer, component, mapItem, mapBaseAddress);
+    writeAddressBlocks(writer, mapItem, mapBaseAddress);
     writeRegisters(writer, component, mapItem, mapBaseAddress);
     writer.writeEndElement(); //! peripheral
 }
@@ -359,10 +359,10 @@ QSharedPointer<MemoryMap> SVDGenerator::getMemoryMap(QSharedPointer<MemoryItem> 
 // Function: SVDGenerator::writeAddressBlock()
 //-----------------------------------------------------------------------------
 void SVDGenerator::writeAddressBlocks(QXmlStreamWriter& writer,
-    QSharedPointer<const Component> containingComponent, QSharedPointer<MemoryItem> mapItem,
+    QSharedPointer<MemoryItem> mapItem,
     quint64 mapBaseAddress)
 {
-    for (auto blockItem : getAddressBlockItems(mapItem))
+    for (auto const& blockItem : getAddressBlockItems(mapItem))
     {
         quint64 blockBaseAddress = blockItem->getAddress().toULongLong();
         if (blockBaseAddress >= mapBaseAddress)

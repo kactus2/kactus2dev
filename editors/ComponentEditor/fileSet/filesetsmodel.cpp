@@ -137,9 +137,9 @@ QVariant FileSetsModel::data(QModelIndex const& index, int role) const
             std::vector<std::string> fileSetGroups = fileSetInterface_->getGroups(fileSetName);
 
             std::string combinedGroups;
-            for (int i = 0; i < fileSetGroups.size(); ++i)
+            for (size_t i = 0; i < fileSetGroups.size(); ++i)
             {
-                auto singleGroup = fileSetGroups.at(i);
+                auto const& singleGroup = fileSetGroups.at(i);
 
                 if (i > 0)
                 {

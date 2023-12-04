@@ -47,14 +47,14 @@ ComponentEditorFileItem::ComponentEditorFileItem(QSharedPointer<File> file,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 file_(file),
-availableFiles_(availableFiles),
-fileInterface_(fileInterface),
 validator_(validator),
 editAction_(new QAction(tr("Edit"), this)),
 editWithAction_(new QAction(tr("Edit/Run with..."), this)),
 runAction_(new QAction(tr("Run"), this)),
 openContainingFolderAction_(new QAction(tr("Open Containing Folder"), this) ),
-expressionParser_(expressionParser)
+expressionParser_(expressionParser),
+fileInterface_(fileInterface),
+availableFiles_(availableFiles)
 {
     setParameterFinder(parameterFinder);
     setReferenceCounter(referenceCounter);

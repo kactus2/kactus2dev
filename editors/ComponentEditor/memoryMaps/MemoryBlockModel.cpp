@@ -26,8 +26,8 @@ MemoryBlockModel::MemoryBlockModel(MemoryBlockInterface* blockInterface,
     Document::Revision docRevision, QObject *parent):
 ReferencingTableModel(parameterFinder, parent),
 ParameterizableTable(parameterFinder),
-blockInterface_(blockInterface),
-docRevision_(docRevision)
+docRevision_(docRevision),
+blockInterface_(blockInterface)
 {
     setExpressionParser(expressionParser);
 }
@@ -317,7 +317,7 @@ bool MemoryBlockModel::validateIndex(QModelIndex const& index) const
     }
     else if (index.column() == baseAddressColumn())
     {
-        blockInterface_->hasValidBaseAddress(blockName);
+        return blockInterface_->hasValidBaseAddress(blockName);
     }
     else if (index.column() == isPresentColumn())
     {

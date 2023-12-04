@@ -33,7 +33,7 @@
 // Function: ParametersEditor::ParametersEditor()
 //-----------------------------------------------------------------------------
 ParametersEditor::ParametersEditor(QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterValidator> validator, QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter,
     ParametersInterface* parameterInterface, QWidget *parent):
 ParameterItemEditor(component, handler, parent),

@@ -22,6 +22,7 @@
 
 #include <QBrush>
 #include <QStringBuilder>
+#include <QMapIterator>
 
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::RegisterGraphItem()
@@ -221,8 +222,9 @@ quint64 RegisterGraphItem::getSizeInAUB() const
 unsigned int RegisterGraphItem::getRegisterMSB() const
 {
     unsigned int registerMSB = 0;
-    unsigned int registerSize = getBitWidth();
-    if (registerSize != 0)
+    
+    if (unsigned int registerSize = getBitWidth(); 
+        registerSize != 0)
     {
         registerMSB = registerSize -1;
     }
@@ -233,15 +235,14 @@ unsigned int RegisterGraphItem::getRegisterMSB() const
 //-----------------------------------------------------------------------------
 // Function: RegisterGraphItem::findHighestReservedBit()
 //-----------------------------------------------------------------------------
-unsigned int RegisterGraphItem::findHighestReservedBit()
+unsigned int RegisterGraphItem::findHighestReservedBit() const
 {
     unsigned int highestBit = getRegisterMSB();
 
     if (!childItems_.isEmpty())
     {
-        for (auto i = childItems_.cend() - 1; i != childItems_.cbegin() - 1; --i)
+        for (MemoryVisualizationItem const* current: childItems_)
         {
-            MemoryVisualizationItem* current = i.value();
             if (current->getLastAddress() > highestBit && current->isPresent())
             {
                 highestBit = current->getLastAddress();
@@ -282,10 +283,9 @@ void RegisterGraphItem::fillGapsBetweenChildren()
     quint64 lowestBitHandled = findHighestReservedBit() + 1;
 
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
-
     if (!childItems_.isEmpty())
     {
-        for (auto i = childItems_.end() - 1; i != childItems_.begin() - 1; --i)
+        for (auto i = std::prev(childItems_.end()); i != childItems_.begin() - 1; --i)
         {
             MemoryVisualizationItem const* current = i.value();
             if (current->isPresent())
@@ -341,7 +341,7 @@ void RegisterGraphItem::markConflictingChildren()
     // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB).     
     if (!childItems_.isEmpty())
     {
-        for (auto child = childItems_.end() - 1; child != childItems_.begin() - 1; --child)
+        for (auto child = std::prev(childItems_.end()); child != childItems_.begin() - 1; --child)
         {
             MemoryVisualizationItem* current = child.value();
             if (current->isPresent())

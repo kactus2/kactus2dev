@@ -51,7 +51,6 @@ public:
 	 *      @param [in] component               The component being edited.
 	 *      @param [in] handler                 The instance managing the library.
 	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
 	 *      @param [in] parent                  The parent of this editor.
 	 */
@@ -61,7 +60,6 @@ public:
         QSharedPointer<Component> component,
         LibraryInterface* handler,
         QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
         QSharedPointer<ExpressionParser> expressionParser,
         QWidget* parent = 0);
 

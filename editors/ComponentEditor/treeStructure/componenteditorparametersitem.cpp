@@ -71,7 +71,7 @@ ItemEditor* ComponentEditorParametersItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new ParametersEditor(component_, libHandler_, validator_, parameterFinder_, expressionParser_,
+		editor_ = new ParametersEditor(component_, libHandler_, parameterFinder_, expressionParser_,
             expressionFormatter_, parameterInterface_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

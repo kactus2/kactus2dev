@@ -124,7 +124,7 @@ QIcon RenodeGeneratorPlugin::getIcon() const
 //-----------------------------------------------------------------------------
 // Function: RenodeGeneratorPlugin::checkGeneratorSupport()
 //-----------------------------------------------------------------------------
-bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> component,
+bool RenodeGeneratorPlugin::checkGeneratorSupport(QSharedPointer<Component const> /*component*/,
     QSharedPointer<Design const> design,
     QSharedPointer<DesignConfiguration const> designConfiguration) const
 {

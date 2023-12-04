@@ -207,7 +207,7 @@ void SingleRegisterFileEditor::setupLayout()
         newTopOfPageLayout->addWidget(registerDefinitionGroup, 0);
         topOfPageLayout = newTopOfPageLayout;
     }
-    else if (component()->getRevision() == Document::Revision::Std22)
+    else //if (component()->getRevision() == Document::Revision::Std22)
     {
         registerDefinitionLayout->addRow(tr("Offset [AUB], f(x):"), offsetEditor_);
         registerDefinitionLayout->addRow(tr("Range [AUB], f(x):"), rangeEditor_);

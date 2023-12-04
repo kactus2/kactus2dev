@@ -143,7 +143,7 @@ void ComponentEditorBusInterfacesItem::createChild(int index)
 QSharedPointer<ComponentEditorItem> ComponentEditorBusInterfacesItem::getBusInterfaceItem(
     QString const& interfaceName) const
 {
-	for (const QSharedPointer<ComponentEditorItem> child : childItems_)
+	for (auto const& child : childItems_)
     {		
 		// if the bus interface name matches the searched interface name
 		if (child->text() == interfaceName)

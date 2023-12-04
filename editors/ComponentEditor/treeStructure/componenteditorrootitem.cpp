@@ -89,13 +89,10 @@ void ComponentEditorRootItem::addChildItem(QSharedPointer<ComponentEditorItem> c
 QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem(QString const& interfaceName) const
 {
 	// check all children
-	for (const QSharedPointer<ComponentEditorItem> item : childItems_)
+	for (auto const& item : childItems_)
     {
-		const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
-			item.dynamicCast<ComponentEditorBusInterfacesItem>();
-
 		// if the child was for bus interfaces summary item
-		if (busIfsItem)
+		if (auto busIfsItem = item.dynamicCast<ComponentEditorBusInterfacesItem>())
         {
 			return busIfsItem->getBusInterfaceItem(interfaceName);
 		}
@@ -110,15 +107,13 @@ QSharedPointer<ComponentEditorItem> ComponentEditorRootItem::getBusInterfaceItem
 //-----------------------------------------------------------------------------
 void ComponentEditorRootItem::onInterfaceAdded()
 {
-    for (const QSharedPointer<ComponentEditorItem> item : childItems_)
+    for (auto const& item : childItems_)
     {
-        const QSharedPointer<ComponentEditorBusInterfacesItem> busIfsItem =
-            item.dynamicCast<ComponentEditorBusInterfacesItem>();
 
         // if the child was for bus interfaces summary item.
-        if (busIfsItem)
+        if (auto busIfsItem = item.dynamicCast<ComponentEditorBusInterfacesItem>())
         {            
-            int childIndex = busIfsItem->children().count();
+            auto childIndex = busIfsItem->children().count();
             model_->addItem(busIfsItem.data(), childIndex);
             busIfsItem->refreshEditor();
             return;

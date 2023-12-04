@@ -81,7 +81,7 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor()
 	if (!editor_)
     {
         editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, expressions_, 
-            validator_, busInterface_, portMapInterface_, 0, parentWnd_);
+            busInterface_, portMapInterface_, 0, parentWnd_);
         editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),

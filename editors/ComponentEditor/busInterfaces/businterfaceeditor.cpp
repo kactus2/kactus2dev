@@ -25,7 +25,7 @@
 //-----------------------------------------------------------------------------
 BusInterfaceEditor::BusInterfaceEditor(LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busif, ExpressionSet expressions,
-    QSharedPointer<BusInterfaceValidator> busInterfaceValidator, BusInterfaceInterface* busInterface,
+    BusInterfaceInterface* busInterface,
     PortMapInterface* portMapInterface, QWidget* parent, QWidget* parentWnd):
 ParameterItemEditor(component, libHandler, parent),
 tabs_(this), 

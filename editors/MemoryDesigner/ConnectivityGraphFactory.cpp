@@ -553,7 +553,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createRegisterResetItem(
         quint64 fieldEnd = 0;
 
         QSharedPointer<MemoryItem> fieldItem = fieldIterator.value();
-        quint64 fieldWidth = fieldItem->getWidth().toInt();
+        int fieldWidth = fieldItem->getWidth().toInt();
 
         if (fieldWidth > 0)
         {

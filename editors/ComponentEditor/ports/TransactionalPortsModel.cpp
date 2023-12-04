@@ -431,11 +431,7 @@ bool TransactionalPortsModel::indexedItemIsLocked(QModelIndex const& index) cons
 //-----------------------------------------------------------------------------
 QModelIndexList TransactionalPortsModel::getLockedPortIndexes(QModelIndex const& portIndex) const
 {
-    QModelIndexList lockedIndexes;
-
-    QModelIndex protocolIndex = portIndex.sibling(portIndex.row(), TransactionalPortColumns::PROTOCOL);
-
-    return lockedIndexes;
+    return QModelIndexList();
 }
 
 //-----------------------------------------------------------------------------

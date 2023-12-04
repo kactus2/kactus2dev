@@ -50,7 +50,6 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
      *      @param [in] expressionParser        The expression parser.
-     *      @param [in] busInterfaceValidator   The validator for bus interfaces.
      *      @param [in] busInterface            Interface for accessing bus interfaces.
      *      @param [in] portMapInterface        Interface for accessing port maps.
      *      @param [in] parent                  The owner of this container.
@@ -60,7 +59,6 @@ public:
         QSharedPointer<Component> component,
         QSharedPointer<BusInterface> busif,
 		ExpressionSet expressions,
-        QSharedPointer<BusInterfaceValidator> busInterfaceValidator,
         BusInterfaceInterface* busInterface,
         PortMapInterface* portMapInterface,
         QWidget* parent,

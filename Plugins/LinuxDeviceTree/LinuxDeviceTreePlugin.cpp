@@ -175,7 +175,7 @@ void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer
 // Function: LinuxDeviceTreePlugin::runGenerator()
 //-----------------------------------------------------------------------------
 void LinuxDeviceTreePlugin::runGenerator(IPluginUtility* utility, QSharedPointer<Component> component,
-    QSharedPointer<Design> design, QSharedPointer<DesignConfiguration> designConfiguration,
+    QSharedPointer<Design> /*design*/, QSharedPointer<DesignConfiguration> /*designConfiguration*/,
     QString const& viewName, QString const& outputDirectory)
 {
     utility_ = utility;

@@ -56,21 +56,6 @@ namespace
     }
 
     //-----------------------------------------------------------------------------
-    // Function: SVDGenerator::getAddressBlockItems()
-    //-----------------------------------------------------------------------------
-    QMultiMap<quint64, QSharedPointer<MemoryItem> > getAddressBlockItems(QSharedPointer<MemoryItem> mapItem)
-    {
-        QMultiMap<quint64, QSharedPointer<MemoryItem>> blockItems;
-
-        for (auto const& subItem : getSubMemoryItems(mapItem, MemoryDesignerConstants::ADDRESSBLOCK_TYPE))
-        {
-            blockItems.insert(subItem->getOffset().toULongLong(), mapItem);
-        }
-
-        return blockItems;
-    }
-
-    //-----------------------------------------------------------------------------
     // Function: RenodeUtilities::getOrderedChildItems()
     //-----------------------------------------------------------------------------
     QMultiMap<quint64, QSharedPointer<MemoryItem> > getOrderedChildItems(QSharedPointer<MemoryItem> mapItem)

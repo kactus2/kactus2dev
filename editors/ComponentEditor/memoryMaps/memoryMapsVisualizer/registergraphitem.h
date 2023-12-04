@@ -137,7 +137,7 @@ private:
      *
      *     @return The highest bit index in the register.
      */
-    unsigned int findHighestReservedBit();
+    unsigned int findHighestReservedBit() const;
 
 
     /*!

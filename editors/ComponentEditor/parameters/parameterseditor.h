@@ -39,7 +39,6 @@ public:
 	 *
 	 *      @param [in] component               Pointer to the component being edited.
 	 *      @param [in] handler                 Pointer to the instance managing the library.
-     *      @param [in] validator               The validator to use for checking parameter validity.
      *      @param [in] parameterFinder         Pointer to the instance searching for parameters.
      *      @param [in] expressionParser        Expression parser for configurable elements.
 	 *      @param [in] expressionFormatter     Pointer to the instance formatting the expressions.
@@ -48,7 +47,6 @@ public:
 	 */
     ParametersEditor(QSharedPointer<Component> component,
         LibraryInterface* handler,
-        QSharedPointer<ParameterValidator> validator,
         QSharedPointer<ParameterFinder> parameterFinder,
         QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<ExpressionFormatter> expressionFormatter,

@@ -241,9 +241,6 @@ bool RenodePeripheralsDelegate::handleEditorEventForPath(QEvent* event, QAbstrac
 {
     const int textMargin = QApplication::style()->pixelMetric(QStyle::PM_FocusFrameHMargin) + 1;
     
-    QStyleOptionViewItem::Position iconPosition = option.decorationPosition;
-    int iconWidth = option.decorationSize.width();
-    
     QRect rectangleIsinideCheckRect(option.rect.x() + (2 * textMargin),
         option.rect.y(),
         option.rect.width() - (2 * textMargin),

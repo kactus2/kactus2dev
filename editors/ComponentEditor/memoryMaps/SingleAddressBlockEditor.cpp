@@ -294,7 +294,7 @@ void SingleAddressBlockEditor::setupLayout()
         oldStdLayout->addWidget(addressBlockDefinitionGroup, 0);
         topOfPageLayout = oldStdLayout;
     }
-    else if (component()->getRevision() == Document::Revision::Std22)
+    else //if (component()->getRevision() == Document::Revision::Std22)
     {
         QGridLayout* newStdLayout = new QGridLayout();
 

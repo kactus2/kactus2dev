@@ -36,7 +36,7 @@
 SingleSubspaceMapEditor::SingleSubspaceMapEditor(SubspaceMapInterface* subspaceInterface,
     QSharedPointer<SubSpaceMap> subspaceMap, QSharedPointer<MemoryMapBase> containingMap,
     QSharedPointer<Component> component, LibraryInterface* handler,
-    QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionFormatter> expressionFormatter,
+    QSharedPointer<ParameterFinder> parameterFinder,
     QSharedPointer<ExpressionParser> expressionParser, QWidget* parent /* = 0 */):
 ItemEditor(component, handler, parent),
 nameEditor_(subspaceMap, component->getRevision(), this, tr("Subspace map name and description")),
