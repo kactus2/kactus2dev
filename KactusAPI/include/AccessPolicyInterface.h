@@ -68,7 +68,7 @@ public:
     /*!
      *	Add a new access policy.
      */
-    void addAccessPolicy();
+    void addAccessPolicy(int row);
 
     /*!
      *	Remove an access policy given by index.

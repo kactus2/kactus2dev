@@ -187,10 +187,16 @@ bool AccessPoliciesModel::setData(const QModelIndex& index, const QVariant& valu
 //-----------------------------------------------------------------------------
 void AccessPoliciesModel::onAddRow(QModelIndex const& index)
 {
-    int lastRow = interface_->getAccessPolicyCount();
+    int row = interface_->getAccessPolicyCount();
 
-    beginInsertRows(QModelIndex(), lastRow, lastRow);
-    interface_->addAccessPolicy();
+    // if the index is valid then add the item to the correct position
+    if (index.isValid())
+    {
+        row = index.row();
+    }
+
+    beginInsertRows(QModelIndex(), row, row);
+    interface_->addAccessPolicy(row);
     endInsertRows();
 
     emit invalidateFilter();

@@ -54,10 +54,10 @@ int AccessPolicyInterface::getAccessPolicyCount() const
 //-----------------------------------------------------------------------------
 // Function: AccessPolicyInterface::addAccessPolicy()
 //-----------------------------------------------------------------------------
-void AccessPolicyInterface::addAccessPolicy()
+void AccessPolicyInterface::addAccessPolicy(int row)
 {
     QSharedPointer<AccessPolicy> newAccessPolicy(new AccessPolicy());
-    accessPolicies_->append(newAccessPolicy);
+    accessPolicies_->insert(row, newAccessPolicy);
 }
 
 //-----------------------------------------------------------------------------
