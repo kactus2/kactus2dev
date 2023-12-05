@@ -371,7 +371,14 @@ void SingleRegisterEditor::onAccessSelected(QString const& newAccessValue)
 void SingleRegisterEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/register.html");
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/register2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/register.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

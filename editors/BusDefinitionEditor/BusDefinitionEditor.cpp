@@ -192,7 +192,15 @@ bool BusDefinitionEditor::saveAs()
 void BusDefinitionEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
-    emit helpUrlRequested("definitions/busdefinition.html");
+
+    if (busDef_->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("definitions/busdefinition2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("definitions/busdefinition.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

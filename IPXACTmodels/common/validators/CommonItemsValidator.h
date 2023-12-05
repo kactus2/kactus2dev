@@ -136,6 +136,18 @@ namespace CommonItemsValidator
      * 	    @return True, if the access policies are valid, otherwise false.
      */
     IPXACTMODELS_EXPORT bool hasValidAccessPolicies(QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies, QSharedPointer<QList<QSharedPointer<Mode> > > availableModes);
+
+    /*!
+     *	Find errors in given access policies.
+     *  
+     *      @param [in] errors              The list of found errors.
+     *      @param [in] accessPolicies      List of access policies to check.
+     *      @param [in] componentModes      List of available component modes.
+     *      @param [in] context            
+     */
+    IPXACTMODELS_EXPORT void findErrorsInAccessPolicies(QStringList& errors, 
+        QSharedPointer<QList<QSharedPointer<AccessPolicy> > > accessPolicies, 
+        QSharedPointer<QList<QSharedPointer<Mode> > > componentModes, QString const& context);
 };
 
 

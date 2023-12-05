@@ -702,34 +702,7 @@ void AddressBlockValidator::findErrorsInMemoryArray(QStringList& errors, QShared
 //-----------------------------------------------------------------------------
 void AddressBlockValidator::findErrorsInAccessPolicies(QStringList& errors, QSharedPointer<AddressBlock> addressBlock, QString const& context) const
 {
-    bool hasAccessPolicyWithoutModeRef = false;
-
-    QString accessPolicyContext = QStringLiteral("access policies of ") + context;
-
-    bool duplicateModeRefErrorIssued = false;
-    bool duplicateModePriorityErrorIssued = false;
-
-    QStringList checkedModeReferences;
-    QList<unsigned int> checkedModePriorities;
-
-    for (auto const& accessPolicy : *addressBlock->getAccessPolicies())
-    {
-        if (accessPolicy->getModeReferences()->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        // Check mode references in current access policy, and look for duplicate references.
-        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), accessPolicyContext,
-            checkedModeReferences, checkedModePriorities, &duplicateModeRefErrorIssued, &duplicateModePriorityErrorIssued, componentModes_);
-    }
-
-    // Number of access policies cannot be greater than one if one access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && addressBlock->getAccessPolicies()->size() > 1)
-    {
-        errors.append(QObject::tr("In %1, multiple access policies are not allowed if one "
-            "of them lacks a mode reference.").arg(addressBlock->name()).arg(context));
-    }
+    CommonItemsValidator::findErrorsInAccessPolicies(errors, addressBlock->getAccessPolicies(), componentModes_, context);
 }
 
 //-----------------------------------------------------------------------------

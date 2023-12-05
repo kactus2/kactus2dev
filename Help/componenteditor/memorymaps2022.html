@@ -1,0 +1,105 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Memory maps editor</title>
+  </head>
+  <body>
+    <h2>Memory maps editor</h2>
+    <p>
+      Memory maps editor contains the summary of the <i>memory maps</i> and <i>memory remaps</i> contained in the
+      component and can be used to add, remove and edit them.
+    </p>
+	<p>
+    Memory maps visualization is shown on the right of the editor. The visualization can be expandped
+    and minimized by clicking the expand arrow <img src="../images/triangle_arrow_right.png" alt="expand"> 
+    and the minimize arrow <img src="../images/triangle_arrow_down.png" alt="minimize">. Selecting any part
+    of the visualization will open the editor set for that item. The visualization can be resized by dragging 
+    the border between the editor and the visualization.
+    Holding Ctrl-key while scrolling with the mouse wheel increases/decreases the width of the items.
+	</p>
+	
+    <p>
+	    <b>Memory map</b> specifies the addressable area seen through a target <i>bus interface</i>, e.g. the data and
+      control register.
+    </p>
+    <p>
+      <b>Memory remap</b> describes additional memory map items that are mapped on the referencing target 
+	    <i>bus interface</i> in a specific <i>mode</i>. If multiple <i>memory remaps</i> or <i>mode</i> 
+	    attributes are active, then the first <i>memory remap</i> listed shall be selected.
+    </p>
+    
+    <h3>Memory map</h3>
+    <p>
+      <b>Name</b> is a mandatory identifier for the memory map.
+    </p>
+	  	  	  
+	  <p>
+      <b>Mode reference</b> applies only to memory remaps and can be edited in the memory remap editor.
+    </p>
+    	  
+	  <p>
+      <b>Address unit bits</b> (AUB) defines the number of data bits each address increment of the memory map
+      contains, e.g. 8b or 32b. The default setting for a <i>memory maps</i> is byte addressable (8 bits).
+	  E.g. if AUB=8,
+      then 32-bit registers are at addresses 0x0, 0x4, 0x8... If AUB=32, they are in addresses 0x0, 0x1, 0x2...
+      AUB is the unit for base addresses and ranges within the address map.
+    </p>
+	  
+    <p>
+      <b>Target interface binding</b> shows which target bus interfaces are used to access the memory map.
+      The binding can only be set in the bus interface editor, but is shown here for convenience.
+    </p>
+    
+	  <p>
+	    <b>Description</b> is an optional field for textual description of the memory map.
+    </p>
+
+    <h3>Memory remap</h3>
+    <p>
+      <b>Name</b> is a mandatory identifier for the memory remap.
+    </p>
+    <p>
+	    Memory remaps use the <b>address unit bits</b> and <b>interface binding</b> of the parent memory map.
+    </p>
+    
+    <p>
+      <b>Mode reference</b> identifies the name of the <i>mode reference</i> for which the optional memory remap
+      element is active. Displays the mode reference value, if only one exists, otherwise the displayed value is either '[multiple]' or 'None'.
+      The <i>mode references</i> can be edited in the memory remap editor. 
+    </p>
+
+	  <p>
+      <b>Description</b> is an optional field for textual description of the memory remap.
+    </p>
+	
+    <h3>Context menu</h3>
+    <p>
+      Memory maps editor contains a context menu (right mouse button)
+      providing following options:
+    </p>
+    <ul>
+      <li>Add new memory map (Add memory map)</li>
+      <li>Add a new memory remap to the selected memory map (Add memory remap)</li>
+      <li>Remove memory map (Remove row)</li>
+      <li>Clear the selected cells</li>
+      <li>Copy the contents of the selected cells to clipboard</li>
+      <li>Paste the contents of the clipboard to the selected cells</li> 
+      <li>Copy selected element to clipboard (Copy elements)</li>
+      <li>Paste the element from the clipboard along with its sub-elements (Paste elements)</li>	  
+      <li>Import a csv-file to the editor</li>
+      <li>Export the contents of the editor to a csv-file</li>
+    </ul>  
+
+    <hr>
+    <p> 
+      EXAMPLE. Component AccelA has two memory maps MM0 and MM1 that are accessible through
+      bus interface RegsIF. MM0 defines the hardware registers for read/write operations and
+      MM1 provides a random-access memory block.
+    </p>
+    <p>
+      <img src="../images/mem_map.png" alt="mem map's idea">
+    </p>
+  </body>
+</html>

@@ -36,20 +36,6 @@ public:
     FloatingModeReferenceEditor& operator=(FloatingModeReferenceEditor& other) = delete;
 
     /*!
-     *	Set the model mode references.
-     *
-     *      @param [in] modeRefs     The mode references to set.
-     */
-    void setModeRefs(QList<QPair<QString, int> > modeRefs) const;
-
-    /*!
-     *	Get the mode referneces from the model.
-     *
-     * 	    @return The mode references as a list.
-     */
-    QList<QPair<QString, int> > getModeRefs() const;
-
-    /*!
      *	Get the size hint of the mode reference table.
      *  
      *	    

@@ -18,25 +18,25 @@
 		all the <i>registers</i> of the containing <i>address block</i>.
      </p>
      <p>
-        <b>Display name</b> is an optional and used for a more user-friendly identifier.
+        <b>Display name</b> is an optional field and used for a more user-friendly identifier.
      </p>
      <p>
         <b>Description</b> is an optional field for textual description of the <i>register</i>.		
     </p>
 
     <p>
-        <b>Offset</b> is a mandatory value to specify the location of the <i>register</i> from the start of the
-        containing <i>address block</i> expressed as address units.</p><p>
- 
-        <b>Width</b> is mandatory and defines the number of data bits the <i>register</i> contains. 
-		Width must be less or equal to the width of the containing <i>address block</i>.
+      <b>Offset</b> is a mandatory value to specify the location of the <i>register</i> from the start of the
+      containing <i>address block</i> expressed as address units.</p><p>
+
+      <b>Size</b> is mandatory and defines the number of data bits the <i>register</i> contains. 
+      Size must be less or equal to the width of the containing <i>address block</i>.
     </p>
     <p>
       <b>Dimension</b> is optional and assigns an array dimension to the <i>register</i>. 
-	  The <i>register</i> will be repeated in the
-      <i>address block</i> as many times as indicated by the dimension value. Dimension 0 means
-      that the register is not an array and will appear exactly once.
-    </p>
+      The <i>register</i> will be repeated in the
+      <i>address block</i> as many times as indicated by the dimension value. An empty dimension (default)
+      or a dimension with value 1 means that the register is not an array and will appear exactly once.
+  </p>
     <p>
 	    <b>Is present</b> is optional and allows the enabling/disabling of a <i>register</i> presence 
 		in an <i>address block</i>. Value 1 indicates that the <i>register</i> is present in the 

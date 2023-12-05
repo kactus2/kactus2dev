@@ -10,16 +10,16 @@
     <p>
       Address space editor can be used to edit the details of an
       address space within component.  <i>Address space</i> defines a
-      logical address space seen by a master <i>bus interface</i>. It can be
+      logical address space seen by a initiator <i>bus interface</i>. It can be
       split into smaller <i>sgements</i>.
     </p>
     <p>
       On the left side are the editor fields that can be used to set
       the details of an address space. The right side contains a
       visualization displaying the address space in its current state and
-	  automatically updates on changes.
-	  It displays how the segments are positioned within the address space. 
-	  Mismatches, e.g. sum of segment ranges being greater than address block range, can 
+	    automatically updates on changes.
+	    It displays how the segments are positioned within the address space. 
+	    Mismatches, e.g. sum of segment ranges being greater than address block range, can 
       be easily spotted from the visualization.
     </p>
 	<p>
@@ -46,8 +46,8 @@
       <b>Width</b> is the data width of a row in bits. It defines the maximum size for a single transfer.
     </p>
     <p>
-      <b>Master interface binding</b> shows the master <i>bus interfaces</i> bound to the address space. 
-	  The binding can be set in the bus interface editor.
+      <b>Initiator interface binding</b> shows the initiator <i>bus interfaces</i> bound to the address space. 
+	    The binding can be set in the bus interface editor.
     </p>
 	
     <h3>Segments</h3>
@@ -71,7 +71,7 @@
     <h3>Local memory map</h3>
     <p>
       <b>Local memory map</b> is optional but some processors require specifying a memory map that is local
-      to the component. It consists of <i>address blocks</i> similarly to the <i>memory map</i> of a slave
+      to the component. It consists of <i>address blocks</i> similarly to the <i>memory map</i> of a target
       <i>bus interface</i>.
 	  Hence, the address blocks can contain either memory or registers, and registers can contain bit fields.
     </p>

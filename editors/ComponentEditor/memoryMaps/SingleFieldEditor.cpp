@@ -234,7 +234,15 @@ void SingleFieldEditor::refresh()
 void SingleFieldEditor::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/field.html");
+
+    if (component()->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/field2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("componenteditor/field.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

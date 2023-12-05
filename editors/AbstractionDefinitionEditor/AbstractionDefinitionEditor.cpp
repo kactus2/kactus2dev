@@ -195,7 +195,15 @@ bool AbstractionDefinitionEditor::saveAs()
 void AbstractionDefinitionEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
-    emit helpUrlRequested("definitions/abstractiondefinition.html");
+
+    if (absDef_->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("definitions/abstractiondefinition2022.html");
+    }
+    else
+    {
+        emit helpUrlRequested("definitions/abstractiondefinition.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

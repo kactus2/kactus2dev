@@ -64,6 +64,7 @@ void ModeReferenceDelegate::setEditorData(QWidget* editor, const QModelIndex& in
         {
             comboBox->setCurrentText(index.data(Qt::DisplayRole).toString());
             comboBox->addItems(index.data(Qt::UserRole).toStringList());
+            comboBox->addItem(QString());
         }
     }
 }

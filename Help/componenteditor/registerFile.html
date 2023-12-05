@@ -1,0 +1,138 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type"content="text/html; charset=utf-8">
+    <link href="../style.css" rel="Stylesheet" type="text/css">
+    <title>Register file editor</title>
+  </head>
+  <body>
+    <h2>Register file editor</h2>
+    <p>
+      Register file editor is used to edit the details of a single <i>register file</i> and the 
+	    <i>registers</i> and <i>register files</i> within the <i>register file</i>.
+    </p>
+	
+	  <p>
+	    <b>Name</b> is a mandatory identifier for the <i>register file</i>. The name must be unique within 
+		  all the <i>registers</i> or <i>register files</i> of the containing <i>address block</i> or <i>register file</i>.
+    </p>
+    <p>
+      <b>Display name</b> is an optional and used for a more user-friendly identifier.
+    </p>
+    <p>
+      <b>Description</b> is an optional field for textual description of the <i>register file</i>.		
+    </p>
+
+    <p>
+      <b>Offset</b> is a mandatory value to specify the location of the <i>register file</i> from the start of the
+      containing <i>address block</i> or <i>register file</i> expressed as address units.
+    </p>
+    <p>
+      <b>Range</b> is mandatory and specifies the size of the register file in <i>address units bits</i>.
+    </p>
+    <p>
+      <b>Dimension</b> is optional and assigns an array dimension to the <i>register file</i>. 
+	    The <i>register file</i> will be repeated in the containing 
+      <i>address block</i> or <i>register file</i> as many times as indicated by the dimension value. An empty dimension (default)
+      or a dimension with value 1 means that the register file is not an array and will appear exactly once.
+    </p>
+    <p>
+	    <b>Is present</b> is optional and allows the enabling/disabling of a <i>register file</i> presence 
+      in a containing <i>address block</i> or <i>register file</i>. Value 1 indicates that the <i>register file</i> is present in the 
+      containing element whereas value 0 marks the <i>register file</i> 
+      to be treated as if it does not exist. Is present can be given as a SystemVerilog expression, but 
+      it must evaluate to 1 or 0.
+    </p>
+    <p>
+      <b>Access</b> is optional and specifies the accessability of the register file.
+	    The possible values are:
+    </p>
+    <ul>
+        <li><b>read-write</b>. Both read and write transactions may have an effect on this <i>register file</i>.</li>
+        <li><b>read-only</b>. Only read transactions are allowed in this <i>register file</i>.</li>
+        <li><b>write-only</b>. Only write transactions are allowed in this <i>register file</i>.</li>
+        <li><b>read-writeOnce</b>. Both read and write transactions may have an effect on this <i>register file</i>. Only the
+            first write transaction, after an event that caused the reset value of the <i>register file</i> to be loaded, may
+            affet the contents of the <i>register file</i>, and read transactions return a value related to the values in the
+            <i>register file</i>.</li>
+        <li><b>writeOnce</b>. Only the first write transaction affects the contents of the <i>register file</i>.</li>
+    </ul>
+	
+    <h3>Registers table</h3>
+    <p>
+      The registers table enables the user to define and edit <i>registers</i> of the <i>register file</i>.
+    </p>
+    <p>
+	  <b>Name</b> is a mandatory identifier for the <i>register</i>.
+    </p>
+    <p>
+      <b>Offset</b> is a mandatory value to specify the location of the <i>register</i> 
+	    within the <i>register file</i> expressed as address units.
+    </p>
+    <p>
+      <b>Size</b> is mandatory and defines the number of data bits the <i>register</i> contains. 
+      Size must be less or equal to the width of the containing <i>address block</i>.
+    </p>
+    <p>
+      <b>Dimension</b> is optional and assigns an array dimension to the <i>register</i>. 
+      The <i>register</i> will be repeated in the containing
+      <i>register file</i> as many times as indicated by the dimension value. An empty dimension (default)
+      or a dimension with value 1 means that the register is not an array and will appear exactly once.
+    </p>
+    <p>
+      <b>Volatile</b> is optional and indicates whether the <i>register</i> value may change without 
+      a write operation to it.
+    </p>
+    <p>
+      <b>Access</b> is optional and specifies the accessability of the register.
+	  The possible values are:
+    </p>
+    <ul>
+        <li><b>read-write</b>. Both read and write transactions may have an effect on this <i>register</i>.</li>
+        <li><b>read-only</b>. Only read transactions are allowed in this <i>register</i>.</li>
+        <li><b>write-only</b>. Only write transactions are allowed in this <i>register</i>.</li>
+        <li><b>read-writeOnce</b>. Both read and write transactions may have an effect on this <i>register</i>. Only the
+            first write transaction, after an event that caused the reset value of the <i>register</i> to be loaded, may
+            affet the contents of the <i>register</i>, and read transactions return a value related to the values in the
+            <i>register</i>.</li>
+        <li><b>writeOnce</b>. Only the first write transaction affects the contents of the <i>register</i>.</li>
+    </ul>
+    <p>
+      <b>Is present</b> is optional and enables/disables a <i>register</i>'s presence in the register file. Value 1 indicates that the register 
+      is present in the register file whereas value 0 marks the register to be treated as if it did not exist. Is 
+      present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
+    </p>
+    <p>    
+		  <b>Description</b> is an optional field for textual description of the <i>register</i>.
+    </p>
+
+    <h3>Register files table</h3>
+    <p>
+      The register files table enables the user to define and edit <i>register files</i> within the <i>register file</i>.
+    </p>
+    <p>
+	  <b>Name</b> is a mandatory identifier for the <i>register file</i>.
+    </p>
+    <p>
+      <b>Offset</b> is a mandatory value to specify the location of the <i>register file</i> 
+	    within the containing <i>register file</i> expressed as address units.
+    </p>
+    <p>
+      <b>Range</b> is mandatory and specifies the size of the <i>register file</i> in <i>address units bits</i>.
+    </p>
+    <p>
+      <b>Dimension</b> is optional and assigns an array dimension to the <i>register file</i>. 
+      The <i>register file</i> will be repeated in the
+      containing <i>register file</i> as many times as indicated by the dimension value. An empty dimension (default)
+      or a dimension with value 1 means that the register file is not an array and will appear exactly once.
+    </p>
+    <p>
+      <b>Is present</b> is optional and enables/disables a <i>register</i>'s presence in the register file. Value 1 indicates that the register 
+      is present in the register file whereas value 0 marks the register to be treated as if it did not exist. Is 
+      present can be given as a SystemVerilog expression, but it must evaluate to 1 or 0.
+    </p>
+    <p>    
+		  <b>Description</b> is an optional field for textual description of the <i>register</i>.
+    </p>
+  </body>
+</html>

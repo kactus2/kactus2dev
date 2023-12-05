@@ -869,32 +869,17 @@ void FieldValidator::findErrorsInStructure(QStringList& errors, QSharedPointer<F
 //-----------------------------------------------------------------------------
 void FieldValidator::findErrorsInModeRefs(QStringList& errors, QSharedPointer<Field> field, QString const& context) const
 {
-    QStringList checkedModeReferences;
-    QList<unsigned int> checkedModePriorities;
+    QString fieldAccessPolicyContext = QObject::tr("field %1 in %2")
+        .arg(field->name()).arg(context);
 
-    bool duplicateRefErrorIssued = false;
-    bool duplicatePriorityErrorIssued = false;
-    bool hasAccessPolicyWithoutModeRef = false;
-
-    QString fieldAccessPolicyContext = QStringLiteral("field access policies of ") + context;
-
-    for (auto const& accessPolicy : *field->getFieldAccessPolicies())
+    // Slice field access policies, we only need their mode references.
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > fieldAccessPoliciesSliced(new QList<QSharedPointer<AccessPolicy> >());
+    for (auto const& fieldAP : *field->getFieldAccessPolicies())
     {
-        if (accessPolicy->getModeReferences()->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        CommonItemsValidator::findErrorsInModeRefs(errors, accessPolicy->getModeReferences(), 
-            fieldAccessPolicyContext, checkedModeReferences, checkedModePriorities, 
-            &duplicateRefErrorIssued, &duplicatePriorityErrorIssued, componentModes_);
+        fieldAccessPoliciesSliced->append(fieldAP);
     }
 
-    if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
-    {
-        errors.append(QObject::tr("In field %1 in %2, multiple field access policies are not allowed, if one "
-            "of them lacks a mode reference.").arg(field->name()).arg(context));
-    }
+    CommonItemsValidator::findErrorsInAccessPolicies(errors, fieldAccessPoliciesSliced, componentModes_, fieldAccessPolicyContext);
 }
 
 //-----------------------------------------------------------------------------
@@ -958,37 +943,14 @@ bool FieldValidator::isBitExpressionValid(QString const& expression) const
 //-----------------------------------------------------------------------------
 bool FieldValidator::hasValidFieldAccessPolicyModeRefs(QSharedPointer<Field> field) const
 {
-    bool hasAccessPolicyWithoutModeRef = false;
-    
-    auto allModeRefs = QSharedPointer<QList<QSharedPointer<ModeReference> > >(
-        new QList<QSharedPointer<ModeReference> >());
-
-    for (auto const& accessPolicy : *field->getFieldAccessPolicies())
+    // Slice field access policies, we only need their mode references.
+    QSharedPointer<QList<QSharedPointer<AccessPolicy> > > fieldAccessPoliciesSliced(new QList<QSharedPointer<AccessPolicy> >());
+    for (auto const& fieldAP : *field->getFieldAccessPolicies())
     {
-        auto modeRefs = accessPolicy->getModeReferences();
-        if (modeRefs->isEmpty())
-        {
-            hasAccessPolicyWithoutModeRef = true;
-        }
-
-        std::for_each(modeRefs->cbegin(), modeRefs->cend(), [&allModeRefs](auto modeRef)
-            {
-                allModeRefs->append(modeRef);
-            });
+        fieldAccessPoliciesSliced->append(fieldAP);
     }
 
-    if (!CommonItemsValidator::hasValidModeRefs(allModeRefs, componentModes_))
-    {
-        return false;
-    }
-    
-    // Number of field access policies cannot be greater than one if a field access policy has no mode references.
-    if (hasAccessPolicyWithoutModeRef && field->getFieldAccessPolicies()->size() > 1)
-    {
-        return false;
-    }
-
-    return true;
+    return CommonItemsValidator::hasValidAccessPolicies(fieldAccessPoliciesSliced, componentModes_);
 }
 
 //-----------------------------------------------------------------------------
