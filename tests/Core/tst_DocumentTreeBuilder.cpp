@@ -210,7 +210,7 @@ void tst_DocumentTreeBuilder::testHierarchicalReferenceToInstanceInDesign()
     createDesignConfiguration();
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     QSharedPointer<ComponentInstance> instance(new ComponentInstance());
@@ -264,7 +264,7 @@ void tst_DocumentTreeBuilder::testReferenceToInstanceInDesignWithoutDesignConfig
     component->getDesignInstantiations()->append(testInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     QSharedPointer<ComponentInstance> instance(new ComponentInstance());
@@ -305,7 +305,7 @@ void tst_DocumentTreeBuilder::testDesignInInstantiatedComponent()
     topComponent->getDesignInstantiations()->append(topDesignInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     QSharedPointer<ComponentInstance> componentInstance(new ComponentInstance());
@@ -315,11 +315,11 @@ void tst_DocumentTreeBuilder::testDesignInInstantiatedComponent()
     design->getComponentInstances()->append(componentInstance);
 
     VLNV instanceDesignVLNV(VLNV::DESIGN, "TestVendor", "TestLibrary", "BottomDesign", "TestVersion");
-    QSharedPointer<Design> instanceDesign(new Design(instanceDesignVLNV));
+    QSharedPointer<Design> instanceDesign(new Design(instanceDesignVLNV, Document::Revision::Std14));
     library_->addComponent(instanceDesign);
 
     VLNV bottomInstanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestBottomInstance", "TestVersion");
-    QSharedPointer<Component> bottomComponent(new Component(bottomInstanceVLNV));
+    QSharedPointer<Component> bottomComponent(new Component(bottomInstanceVLNV, Document::Revision::Std14));
     library_->addComponent(bottomComponent);
 
     QSharedPointer<ComponentInstance> bottomInstance(new ComponentInstance());
@@ -376,7 +376,7 @@ void tst_DocumentTreeBuilder::testMultipleInstances()
     component->getDesignInstantiations()->append(testInstantiation);
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     const int INSTANCE_COUNT = 3;
@@ -407,7 +407,7 @@ void tst_DocumentTreeBuilder::testStartFromDesign()
     QSharedPointer<Design> design = createDesign();
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     QSharedPointer<ComponentInstance> instance(new ComponentInstance());
@@ -434,7 +434,7 @@ void tst_DocumentTreeBuilder::testStartFromDesignConfiguration()
     QSharedPointer<Design> design = createDesign();
 
     VLNV instanceVLNV(VLNV::COMPONENT, "TestVendor", "TestLibrary", "TestInstance", "TestVersion");
-    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVLNV, Document::Revision::Std14));
     library_->addComponent(instanceComponent);
 
     QSharedPointer<ComponentInstance> instance(new ComponentInstance());
@@ -464,7 +464,7 @@ void tst_DocumentTreeBuilder::testStartFromDesignConfiguration()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> tst_DocumentTreeBuilder::createTopComponent()
 {
-    QSharedPointer<Component> component(new Component(topComponentVLNV()));
+    QSharedPointer<Component> component(new Component(topComponentVLNV(), Document::Revision::Std14));
     library_->addComponent(component);
 
     return component;
@@ -483,7 +483,7 @@ VLNV tst_DocumentTreeBuilder::topComponentVLNV()
 //-----------------------------------------------------------------------------
 QSharedPointer<Design> tst_DocumentTreeBuilder::createDesign()
 {
-    QSharedPointer<Design> design(new Design(topDesignVLNV()));
+    QSharedPointer<Design> design(new Design(topDesignVLNV(), Document::Revision::Std14));
     library_->addComponent(design);
 
     return design;
@@ -502,7 +502,7 @@ VLNV tst_DocumentTreeBuilder::topDesignVLNV()
 //-----------------------------------------------------------------------------
 QSharedPointer<DesignConfiguration> tst_DocumentTreeBuilder::createDesignConfiguration()
 {
-    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(topDesignConfigurationVLNV()));
+    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(topDesignConfigurationVLNV(), Document::Revision::Std14));
     designConfiguration->setDesignRef(topDesignVLNV());
     library_->addComponent(designConfiguration);
 

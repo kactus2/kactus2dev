@@ -67,7 +67,7 @@ void tst_MemoryArrayWriter::cleanup()
 void tst_MemoryArrayWriter::writeSingleDimension()
 {
     QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension);
-    dim->dimension_ = QString("8");
+    dim->value_ = QString("8");
     
     memoryArray_->getDimensions()->append(dim);
 
@@ -80,7 +80,7 @@ void tst_MemoryArrayWriter::writeSingleDimension()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -90,11 +90,11 @@ void tst_MemoryArrayWriter::writeSingleDimension()
 void tst_MemoryArrayWriter::writeMultipleDimensions()
 {
     QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension);
-    dim->dimension_ = QString("8");
+    dim->value_ = QString("8");
     dim->indexVar_ = QString("first");
 
     QSharedPointer<MemoryArray::Dimension> dim2(new MemoryArray::Dimension);
-    dim2->dimension_ = QString("16");
+    dim2->value_ = QString("16");
     dim2->indexVar_ = QString("second");
 
     memoryArray_->getDimensions()->append(dim);
@@ -110,7 +110,7 @@ void tst_MemoryArrayWriter::writeMultipleDimensions()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -120,7 +120,7 @@ void tst_MemoryArrayWriter::writeMultipleDimensions()
 void tst_MemoryArrayWriter::writeStride()
 {
     QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension);
-    dim->dimension_ = QString("8");
+    dim->value_ = QString("8");
 
     memoryArray_->getDimensions()->append(dim);
     memoryArray_->setStride("16");
@@ -135,7 +135,7 @@ void tst_MemoryArrayWriter::writeStride()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -145,7 +145,7 @@ void tst_MemoryArrayWriter::writeStride()
 void tst_MemoryArrayWriter::writeBitStride()
 {
     QSharedPointer<MemoryArray::Dimension> dim(new MemoryArray::Dimension);
-    dim->dimension_ = QString("8");
+    dim->value_ = QString("8");
 
     memoryArray_->getDimensions()->append(dim);
     memoryArray_->setStride("16");
@@ -160,7 +160,7 @@ void tst_MemoryArrayWriter::writeBitStride()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, true);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, true);
     QCOMPARE(output, expectedOutput);
 }
 

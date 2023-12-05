@@ -27,12 +27,12 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
-#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
 #include <IPXACTmodels/Component/IndirectInterface.h>
 #include <IPXACTmodels/Component/ResetType.h>
+#include <IPXACTmodels/common/Choice.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

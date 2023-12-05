@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 HEADERS += ../../../KactusAPI/include/PluginUtilityAdapter.h \
-    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../KactusAPI/include/SystemVerilogSyntax.h \
     ../../../Plugins/MakefileGenerator/MakeCommon.h \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.h \
@@ -12,8 +11,7 @@ HEADERS += ../../../KactusAPI/include/PluginUtilityAdapter.h \
     ../../../Plugins/MakefileGenerator/SWStackParser.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h
-SOURCES += ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
-    ../../../KactusAPI/plugins/PluginUtilityAdapter.cpp \
+SOURCES += ../../../KactusAPI/plugins/PluginUtilityAdapter.cpp \
     ../../MockObjects/LibraryMock.cpp \
     ../../../Plugins/MakefileGenerator/MakefileGenerator.cpp \
     ../../../Plugins/MakefileGenerator/MakefileParser.cpp \

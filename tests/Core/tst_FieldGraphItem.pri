@@ -4,6 +4,7 @@
 
 HEADERS += ../../common/graphicsItems/expandableitem.h \
     ../../editors/ComponentEditor/visualization/fieldgapitem.h \
+    ../../editors/ComponentEditor/visualization/AddressableItem.h \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ../../common/graphicsItems/graphicsexpandcollapseitem.h \
     ../../editors/ComponentEditor/visualization/memorygapitem.h \
@@ -12,6 +13,7 @@ HEADERS += ../../common/graphicsItems/expandableitem.h \
     ../../common/graphicsItems/visualizeritem.h
 SOURCES += ../../common/graphicsItems/expandableitem.cpp \
     ../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
+    ../../editors/ComponentEditor/visualization/AddressableItem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ../../common/graphicsItems/graphicsexpandcollapseitem.cpp \
     ../../editors/ComponentEditor/visualization/memorygapitem.cpp \

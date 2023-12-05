@@ -9,11 +9,11 @@
 // Unit test for class ChoiceValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 
 #include <QtTest>
@@ -143,8 +143,8 @@ bool tst_ChoiceValidator::errorIsNotFoundInErrorList(QString const& expectedErro
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }

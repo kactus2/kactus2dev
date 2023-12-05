@@ -232,7 +232,7 @@ void tst_DocumentGenerator::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
     topComponentVlnv_ = vlnv;
-    topComponent_ = QSharedPointer<Component>(new Component(topComponentVlnv_));
+    topComponent_ = QSharedPointer<Component>(new Component(topComponentVlnv_, Document::Revision::Std14));
 
     library_.clear();
 
@@ -1223,7 +1223,7 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
         "\t\t\t\t\t<th>Replace default flags</th>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
-        "\t\t\t\t\t<td>" + testFileBuilder->getFileType() + "</td>\n"
+        "\t\t\t\t\t<td>" + testFileBuilder->getFileType().type_ + "</td>\n"
         "\t\t\t\t\t<td>" + testFileBuilder->getCommand() + "</td>\n"
         "\t\t\t\t\t<td>" + testFileBuilder->getFlags() + "</td>\n"
         "\t\t\t\t\t<td>" + testFileBuilder->getReplaceDefaultFlags() + "</td>\n"
@@ -1244,7 +1244,7 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
         "\t\t\t\t\t<td>" + testFile1->getLogicalName() + "</td>\n"
         "\t\t\t\t\t<td>" + testFile1->getBuildCommand()->getCommand() + "</td>\n"
         "\t\t\t\t\t<td>" + testFile1->getBuildCommand()->getFlags() + "</td>\n"
-        "\t\t\t\t\t<td>" + testFile1->getFileTypes()->join(",<br>") + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile1->getFileTypeNames().join(",<br>") + "</td>\n"
         "\t\t\t\t\t<td>" + testFile1->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t\t<tr>\n"
@@ -1252,7 +1252,7 @@ void tst_DocumentGenerator::testFileSetsWrittenForTopComponent()
         "\t\t\t\t\t<td>" + testFile2->getLogicalName() + "</td>\n"
         "\t\t\t\t\t<td>" + testFile2->getBuildCommand()->getCommand() + "</td>\n"
         "\t\t\t\t\t<td>" + testFile2->getBuildCommand()->getFlags() + "</td>\n"
-        "\t\t\t\t\t<td>" + testFile2->getFileTypes()->join(",<br>") + "</td>\n"
+        "\t\t\t\t\t<td>" + testFile2->getFileTypeNames().join(",<br>") + "</td>\n"
         "\t\t\t\t\t<td>" + testFile2->getDescription() + "</td>\n"
         "\t\t\t\t</tr>\n"
         "\t\t\t</table>\n"
@@ -1274,7 +1274,7 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
     QSharedPointer<ConfigurableVLNVReference> instanceVLNV(new ConfigurableVLNVReference(firstVlnv));
     QSharedPointer<ComponentInstance> firstInstance(new ComponentInstance("firstInstance", instanceVLNV));
 
-    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv, Document::Revision::Std14));
 
     QList <QSharedPointer<Parameter> > componentParameters;
 
@@ -1392,12 +1392,12 @@ void tst_DocumentGenerator::testViewsWrittenForTopComponent()
 void tst_DocumentGenerator::testDesignIsWritten()
 {
     VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
-    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv));
+    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv, Document::Revision::Std14));
     library_.writeModelToFile("C:/Test/TestLibrary/TestDesign/1.0/TestDesign.1.0.xml", design);
     library_.addComponent(design);
 
     VLNV firstVlnv (VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
-    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv, Document::Revision::Std14));
 
     QList <QSharedPointer<Parameter> > componentParameters;
 

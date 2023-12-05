@@ -111,7 +111,7 @@ void tst_ComponentComparator::testComparingTwoNullsAreEquivalent()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testComparingNullToEmptyElementIsNotEquivalent()
 {
-    QSharedPointer<Component> component(new Component());
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
 
     QVERIFY2(!comparator_->compare(QSharedPointer<Component>(0), component), 
         "Comparison to null should not be equal.");
@@ -124,7 +124,7 @@ void tst_ComponentComparator::testComparingNullToEmptyElementIsNotEquivalent()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testComparingWithSelfIsEquivalent()
 {
-    QSharedPointer<Component> component(new Component());
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
     QVERIFY2(comparator_->compare(component, component), "Comparing with self should be equal.");
 }
 
@@ -135,8 +135,8 @@ void tst_ComponentComparator::testComparingWithDifferentVLNVIsNotEqual()
 {
     QFETCH(QString, vlnv);    
 
-    QSharedPointer<Component> reference(new Component(VLNV(VLNV::COMPONENT, "TUT:Tests:TestComponent:1.0")));   
-    QSharedPointer<Component> component(new Component(VLNV(VLNV::COMPONENT, vlnv)));   
+    QSharedPointer<Component> reference(new Component(VLNV(VLNV::COMPONENT, "TUT:Tests:TestComponent:1.0"), Document::Revision::Std14));   
+    QSharedPointer<Component> component(new Component(VLNV(VLNV::COMPONENT, vlnv), Document::Revision::Std14));   
 
     QVERIFY2(!comparator_->compare(reference, component), "Components with different VLVN should not be equal.");
 }
@@ -160,10 +160,10 @@ void tst_ComponentComparator::testComparingWithDifferentVLNVIsNotEqual_data()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testViewInOneComponentIsNotEqual()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View()));
 
-    QSharedPointer<Component> component(new Component());    
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
 
     QVERIFY2(!comparator_->compare(reference, component), 
         "Components with view in other should not be equal.");
@@ -174,11 +174,11 @@ void tst_ComponentComparator::testViewInOneComponentIsNotEqual()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDifferentViewsIsNotEqual()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View("view1")));
     reference->getViews()->append(QSharedPointer<View>(new View("view2")));
 
-    QSharedPointer<Component> component(new Component());    
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
     component->getViews()->append(QSharedPointer<View>(new View("view1")));
     component->getViews()->append(QSharedPointer<View>(new View("unknown view")));
 
@@ -191,10 +191,10 @@ void tst_ComponentComparator::testDifferentViewsIsNotEqual()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDifferentNumberOfViewsIsNotEqual()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View("0")));
 
-    QSharedPointer<Component> component(new Component());    
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
     component->getViews()->append(QSharedPointer<View>(new View("0")));
     component->getViews()->append(QSharedPointer<View>(new View("1")));
 
@@ -220,7 +220,7 @@ void tst_ComponentComparator::testDiffOfTwoNullsIsNoChange()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffToSameComponentIsNoChange()
 {
-    QSharedPointer<Component> component(new Component());
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(component, component);
 
@@ -233,7 +233,7 @@ void tst_ComponentComparator::testDiffToSameComponentIsNoChange()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffToNullReferenceIsAdd()
 {
-    QSharedPointer<Component> component(new Component());
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(QSharedPointer<Component>(0), component);
 
@@ -246,7 +246,7 @@ void tst_ComponentComparator::testDiffToNullReferenceIsAdd()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffToNullComponentIsRemove()
 {
-    QSharedPointer<Component> component(new Component());
+    QSharedPointer<Component> component(new Component(VLNV(), Document::Revision::Std14));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(component, QSharedPointer<Component>(0));
 
@@ -259,9 +259,9 @@ void tst_ComponentComparator::testDiffToNullComponentIsRemove()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffViewInSubjectComponentIsAdd()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     
-    QSharedPointer<Component> subject(new Component());    
+    QSharedPointer<Component> subject(new Component(VLNV(), Document::Revision::Std14));
     subject->getViews()->append(QSharedPointer<View>(new View("testView")));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
@@ -275,10 +275,10 @@ void tst_ComponentComparator::testDiffViewInSubjectComponentIsAdd()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffViewInReferenceComponentIsRemove()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View("testView")));
 
-    QSharedPointer<Component> subject(new Component());        
+    QSharedPointer<Component> subject(new Component(VLNV(), Document::Revision::Std14));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
 
@@ -291,10 +291,10 @@ void tst_ComponentComparator::testDiffViewInReferenceComponentIsRemove()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffToSameViewIsNoChange()
 {
-    QSharedPointer<Component> reference(new Component());    
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View()));
 
-    QSharedPointer<Component> subject(new Component());        
+    QSharedPointer<Component> subject(new Component(VLNV(), Document::Revision::Std14));
     subject->getViews()->append(QSharedPointer<View>(new View()));
 
     QList<QSharedPointer<IPXactDiff> > diff = comparator_->diff(reference, subject);
@@ -308,11 +308,11 @@ void tst_ComponentComparator::testDiffToSameViewIsNoChange()
 //-----------------------------------------------------------------------------
 void tst_ComponentComparator::testDiffMultipleViewsChanged()
 {
-    QSharedPointer<Component> reference(new Component());       
+    QSharedPointer<Component> reference(new Component(VLNV(), Document::Revision::Std14));
     reference->getViews()->append(QSharedPointer<View>(new View("view1")));
     reference->getViews()->append(QSharedPointer<View>(new View("view2")));
 
-    QSharedPointer<Component> subject(new Component());    
+    QSharedPointer<Component> subject(new Component(VLNV(), Document::Revision::Std14));
     subject->getViews()->append(QSharedPointer<View>(new View("view2")));    
     subject->getViews()->first()->addEnvIdentifier(
         QSharedPointer<View::EnvironmentIdentifier>(new View::EnvironmentIdentifier(QStringLiteral("lang"))));

@@ -4,7 +4,6 @@
 
 # This is a reminder that you are using a generated .pro file.
 # Remove it when you are finished editing this file.
-message("You are running qmake on a generated .pro file. This may not work!")
 
 
 HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
@@ -72,11 +71,9 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../editors/HWDesign/BusInterfaceDialog.h \
     ../../editors/HWDesign/BusInterfaceEndPoint.h \
     ../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.h \
-    ../../editors/HWDesign/views/CellEditTableView.h \
     ../../common/widgets/colorBox/ColorBox.h \
     ../../editors/common/StickyNote/ColorFillTextItem.h \
     ../../editors/HWDesign/columnview/ColumnEditDialog.h \
-    ../../editors/ComponentEditor/common/CompleterPopupTable.h \
     ../../editors/HWDesign/undoCommands/ComponentDeleteCommand.h \
     ../../editors/common/ComponentDesignDiagram.h \
     ../../common/graphicsItems/ComponentItem.h \
@@ -113,7 +110,6 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../common/dialogs/LibrarySettingsDialog/LibrarySettingsDialog.h \
     ../../editors/ComponentEditor/common/MultilineDescriptionDelegate.h \
     ../../editors/HWDesign/OffPageConnectorItem.h \
-    ../../editors/ComponentEditor/common/ParameterCompleter.h \
     ../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.h \
     ../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.h \
     ../../editors/ComponentEditor/busInterfaces/portmaps/PortListSortProxyModel.h \
@@ -151,6 +147,7 @@ HEADERS += ../../editors/HWDesign/undoCommands/AdHocConnectionAddCommand.h \
     ../../common/dialogs/LibrarySettingsDialog/librarysettingsdelegate.h \
     ../../common/delegates/LineEditDelegate/lineeditdelegate.h \
     ../../common/dialogs/newObjectDialog/newobjectdialog.h \
+    ../../editors/ComponentEditor/itemvisualizer.h \
     ../../common/widgets/vlnvEditor/vlnveditor.h
 SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../editors/HWDesign/ActivePortItem.cpp \
@@ -178,12 +175,10 @@ SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../editors/common/ComponentItemAutoConnector/BusInterfaceListFiller.cpp \
     ../../editors/ComponentEditor/busInterfaces/portmaps/BusInterfacePortMapTab.cpp \
     ../../editors/common/ComponentItemAutoConnector/BusInterfaceTableAutoConnector.cpp \
-    ../../editors/HWDesign/views/CellEditTableView.cpp \
     ../../common/widgets/colorBox/ColorBox.cpp \
     ../../editors/common/StickyNote/ColorFillTextItem.cpp \
     ../../editors/HWDesign/columnview/ColumnEditDialog.cpp \
     ../../common/graphicsItems/CommonGraphicsUndoCommands.cpp \
-    ../../editors/ComponentEditor/common/CompleterPopupTable.cpp \
     ../../editors/HWDesign/undoCommands/ComponentDeleteCommand.cpp \
     ../../editors/common/ComponentDesignDiagram.cpp \
     ../../editors/HWDesign/undoCommands/ComponentInstancePasteCommand.cpp \
@@ -246,7 +241,6 @@ SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../editors/ComponentEditor/common/MultilineDescriptionDelegate.cpp \
     ../../editors/common/NamelabelWidth.cpp \
     ../../editors/HWDesign/OffPageConnectorItem.cpp \
-    ../../editors/ComponentEditor/common/ParameterCompleter.cpp \
     ../../editors/ComponentEditor/common/ParameterizableTable.cpp \
     ../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableModel.cpp \
     ../../editors/ComponentEditor/busInterfaces/portmaps/PhysicalPortMappingTableView.cpp \
@@ -303,4 +297,5 @@ SOURCES += ../../editors/HWDesign/ActiveBusInterfaceItem.cpp \
     ../../common/delegates/LineEditDelegate/lineeditdelegate.cpp \
     ../../common/dialogs/newObjectDialog/newobjectdialog.cpp \
     ../../common/widgets/vlnvEditor/vlnveditor.cpp \
+    ../../editors/ComponentEditor/itemvisualizer.cpp \
     ./tst_documentGenerator.cpp

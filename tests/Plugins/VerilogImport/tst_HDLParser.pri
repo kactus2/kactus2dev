@@ -15,7 +15,6 @@ HEADERS += ../../../IPXACTmodels/utilities/ComponentSearch.h \
     ../../../Plugins/VerilogGenerator/ModelParameterVerilogWriter/ModelParameterVerilogWriter.h \
     ../../../Plugins/common/PortSorter/PortSorter.h \
     ../../../IPXACTmodels/utilities/Search.h \
-    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../editors/common/TopComponentParameterFinder.h \
     ../../MockObjects/LibraryMock.h \
     ../../../Plugins/PluginSystem/GeneratorPlugin/MessagePasser.h

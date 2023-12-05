@@ -28,16 +28,17 @@
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 #include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
 #include <IPXACTmodels/Component/validators/ComponentGeneratorValidator.h>
-#include <IPXACTmodels/Component/validators/ChoiceValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/CPUValidator.h>
 #include <IPXACTmodels/Component/validators/OtherClockDriverValidator.h>
-#include <IPXACTmodels/common/validators/ParameterValidator.h>
 #include <IPXACTmodels/common/validators/AssertionValidator.h>
+#include <IPXACTmodels/common/validators/ChoiceValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/common/VLNV.h>
 #include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/ClockUnit.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/Assertion.h>
@@ -57,7 +58,6 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
-#include <IPXACTmodels/Component/Choice.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
@@ -68,7 +68,7 @@
 
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <tests/MockObjects/LibraryMock.h>
 
@@ -248,8 +248,7 @@ void tst_ComponentValidator::testHasValidBusInterfaces()
         ConfigurableVLNVReference testType(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "busDefinition", "1.1");
         testBus->setBusType(testType);
 
-        QSharedPointer<BusDefinition> testDefinition (new BusDefinition());
-        testDefinition->setVlnv(testType);
+        QSharedPointer<BusDefinition> testDefinition (new BusDefinition(testType, Document::Revision::Std14));
 
         mockLibrary->addComponent(testDefinition);
     }

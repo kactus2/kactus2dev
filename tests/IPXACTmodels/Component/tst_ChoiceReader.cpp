@@ -9,7 +9,7 @@
 // Unit test for class ChoiceReader.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/ChoiceReader.h>
+#include <IPXACTmodels/common/ChoiceReader.h>
 
 #include <QtTest>
 

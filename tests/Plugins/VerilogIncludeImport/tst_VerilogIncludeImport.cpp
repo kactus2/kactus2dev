@@ -89,7 +89,7 @@ tst_VerilogIncludeImport::tst_VerilogIncludeImport(): importComponent_(0), displ
 //-----------------------------------------------------------------------------
 void tst_VerilogIncludeImport::init()
 {
-    importComponent_ = QSharedPointer<Component>(new Component());
+    importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------

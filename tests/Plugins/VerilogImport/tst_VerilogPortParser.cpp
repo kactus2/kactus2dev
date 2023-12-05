@@ -9,7 +9,7 @@
 // Unit test for class VerilogPortParser.
 //-----------------------------------------------------------------------------
 
-#include <QTest>
+#include <QTest> 
 
 #include <Plugins/VerilogImport/VerilogPortParser.h>
 
@@ -69,7 +69,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VerilogPortParser::tst_VerilogPortParser()
 //-----------------------------------------------------------------------------
-tst_VerilogPortParser::tst_VerilogPortParser(): importComponent_(new Component())
+tst_VerilogPortParser::tst_VerilogPortParser(): importComponent_(new Component(VLNV(), Document::Revision::Std14))
 {
 
 }
@@ -79,7 +79,7 @@ tst_VerilogPortParser::tst_VerilogPortParser(): importComponent_(new Component()
 //-----------------------------------------------------------------------------
 void tst_VerilogPortParser::init()
 {
-	importComponent_ = QSharedPointer<Component>(new Component());
+	importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 
 	importComponentInstantiation_ = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation_);

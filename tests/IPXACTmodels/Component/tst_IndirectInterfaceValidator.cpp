@@ -77,7 +77,7 @@ tst_IndirectInterfaceValidator::tst_IndirectInterfaceValidator():
 containingComponent_ (new Component(VLNV(), Document::Revision::Std14)),
     expressionParser_(new SystemVerilogExpressionParser()),
     parameterValidator_(new ParameterValidator(expressionParser_, 
-    QSharedPointer<QList<QSharedPointer<Choice> > >(0)))
+    QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14))
 {    
     QSharedPointer<Field> accessField(new Field("access"));
     accessField->setId("accessField");

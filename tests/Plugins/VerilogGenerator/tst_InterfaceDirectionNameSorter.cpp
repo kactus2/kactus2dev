@@ -54,7 +54,7 @@ tst_InterfaceDirectionNameSorter::tst_InterfaceDirectionNameSorter()
 //-----------------------------------------------------------------------------
 void tst_InterfaceDirectionNameSorter::init()
 {
-    component_ = QSharedPointer<Component>(new Component());
+    component_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------

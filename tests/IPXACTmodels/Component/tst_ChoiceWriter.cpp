@@ -9,7 +9,7 @@
 // Unit test for class ChoiceWriter.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/Component/ChoiceWriter.h>
+#include <IPXACTmodels/common/ChoiceWriter.h>
 
 #include <QtTest>
 
@@ -74,8 +74,7 @@ void tst_ChoiceWriter::testWriteChoiceName()
 		"</ipxact:choice>"
 		);
 
-	ChoiceWriter ChoiceWriter;
-	ChoiceWriter.writeChoice(xmlStreamWriter, testChoice_);
+	 ChoiceWriter::writeChoice(xmlStreamWriter, testChoice_);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -102,8 +101,7 @@ void tst_ChoiceWriter::testWriteEnum()
 		"</ipxact:choice>"
 		);
 
-	ChoiceWriter choiceWriter;
-	choiceWriter.writeChoice(xmlStreamWriter, testChoice_);
+	ChoiceWriter::writeChoice(xmlStreamWriter, testChoice_);
 	QCOMPARE(output, expectedOutput);
 }
 
@@ -137,8 +135,7 @@ void tst_ChoiceWriter::testWriteEnum2()
 		"</ipxact:choice>"
 		);
 
-	ChoiceWriter choiceWriter;
-	choiceWriter.writeChoice(xmlStreamWriter, testChoice_);
+	ChoiceWriter::writeChoice(xmlStreamWriter, testChoice_);
 	QCOMPARE(output, expectedOutput);
 }
 

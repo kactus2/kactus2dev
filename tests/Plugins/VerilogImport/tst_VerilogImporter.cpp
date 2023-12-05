@@ -124,7 +124,7 @@ tst_VerilogImporter::tst_VerilogImporter(): importComponent_(0), displayEditor_(
 //-----------------------------------------------------------------------------
 void tst_VerilogImporter::init()
 {
-    importComponent_ = QSharedPointer<Component>(new Component());
+    importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
     importer_.setHighlighter(highlighter_);
 }
 

@@ -13,7 +13,7 @@
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 #include <IPXACTmodels/Component/DesignInstantiation.h>
@@ -64,7 +64,8 @@ tst_InstantiationsValidator::tst_InstantiationsValidator()
     expressionParser_ = QSharedPointer<ExpressionParser> (new SystemVerilogExpressionParser());
 
     parameterValidator_ = QSharedPointer<ParameterValidator>
-        (new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        (new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > > (),
+			Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------
@@ -136,7 +137,7 @@ void tst_InstantiationsValidator::designConfigurationInstantiationFail()
 	validator.findErrorsInDesignConfigurationInstantiation(errorList, instantiation, "test");
 
 	QCOMPARE( errorList.size(), 3 );
-	QVERIFY( !validator.validateDesignConfigurationInstantiation(instantiation) );
+	QVERIFY( !validator.validateDesignConfigurationInstantiation(instantiation, Document::Revision::Std14) );
 }
 
 //-----------------------------------------------------------------------------
@@ -170,7 +171,7 @@ void tst_InstantiationsValidator::designConfigurationInstantiationSuccess()
 	validator.findErrorsInDesignConfigurationInstantiation(errorList, instantiation, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validateDesignConfigurationInstantiation(instantiation) );
+	QVERIFY( validator.validateDesignConfigurationInstantiation(instantiation, Document::Revision::Std14) );
 }
 
 //-----------------------------------------------------------------------------
@@ -197,7 +198,7 @@ void tst_InstantiationsValidator::inexistingFileSet()
 	QSharedPointer<ComponentInstantiation> instantiation( new ComponentInstantiation ("testInstantiation"));
 	InstantiationsValidator validator(expressionParser_, fileSets_, parameterValidator_, 0);
 
-	instantiation->getFileSetReferences()->append("joq");
+	instantiation->getFileSetReferences()->append(QSharedPointer<FileSetRef>(new FileSetRef("joq")));
 
 	QVector<QString> errorList;
 	validator.findErrorsInComponentInstantiation(errorList, instantiation, "test", Document::Revision::Std14);
@@ -281,7 +282,7 @@ void tst_InstantiationsValidator::succeedEveryting()
 	InstantiationsValidator validator(expressionParser_, fileSets_, parameterValidator_, 0);
 
     QSharedPointer<ComponentInstantiation> instantiation( new ComponentInstantiation ("testInstantiation"));
-	instantiation->getFileSetReferences()->append("salaiset ansiot");
+	instantiation->getFileSetReferences()->append(QSharedPointer<FileSetRef>(new FileSetRef("salaiset ansiot")));
 	QSharedPointer<FileSet> fileSet( new FileSet );
 	fileSet->setName("salaiset ansiot");
 	fileSets_->append(fileSet);

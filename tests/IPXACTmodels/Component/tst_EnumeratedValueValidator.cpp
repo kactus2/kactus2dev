@@ -12,7 +12,7 @@
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/Component/EnumeratedValue.h>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <QtTest>
 
@@ -138,8 +138,8 @@ bool tst_EnumeratedValueValidator::errorIsNotFoundInErrorList(QString const& exp
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in errorlist:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in errorlist:";
+        for (QString const& error : errorList)
         {
             qDebug() << error; 
         }

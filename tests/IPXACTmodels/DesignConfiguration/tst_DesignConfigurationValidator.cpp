@@ -746,7 +746,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationHasValidI
         QSharedPointer<BusInterface> testInterface (new BusInterface());
         testInterface->setName(busReference);
 
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
         testComponent->getBusInterfaces()->append(testInterface);
 
         mockLibrary->addComponent(testComponent);
@@ -852,7 +852,7 @@ void tst_DesignConfigurationValidator::testInterconnectionConfigurationInterface
     QSharedPointer<BusInterface> testInterface (new BusInterface());
     testInterface->setName(interfaceReference->getBusRef());
 
-    QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+    QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
     testComponent->getBusInterfaces()->append(testInterface);
 
     QSharedPointer<InterconnectionConfiguration> testConfiguration (new InterconnectionConfiguration());
@@ -1169,7 +1169,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidViewReferenc
         QSharedPointer<ConfigurableVLNVReference> componentVLNV
             (new ConfigurableVLNVReference(VLNV(VLNV::COMPONENT, "vendor", "library", "testComponent", "1")));
 
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
 		testComponent->getViews()->append(testView);
 
         mockLibrary->addComponent(testComponent);
@@ -1259,7 +1259,7 @@ void tst_DesignConfigurationValidator::testHasValidViewConfigurations()
             testView->setName("SaederKrupp");
         }
 
-        QSharedPointer<Component> testComponent (new Component(*componentVLNV.data()));
+        QSharedPointer<Component> testComponent (new Component(*componentVLNV, Document::Revision::Std14));
         testComponent->getViews()->append(testView);
 
         mockLibrary->addComponent(testComponent);

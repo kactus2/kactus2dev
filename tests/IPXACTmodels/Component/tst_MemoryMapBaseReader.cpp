@@ -62,9 +62,8 @@ void tst_MemoryMapBaseReader::readSimpleMemoryMapBase()
 
     QDomNode MemoryMapBaseNode = document.firstChildElement("ipxact:MemoryMapBase");
 
-    MemoryMapBaseReader MemoryMapBaseReader;
     QSharedPointer<MemoryMapBase> testMemoryMapBase( new MemoryMapBase );
-	MemoryMapBaseReader.readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase);
+    MemoryMapBaseReader::readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMapBase->name(), QString("testMemoryMapBase"));
     QCOMPARE(testMemoryMapBase->displayName(), QString("displayed"));
@@ -88,9 +87,8 @@ void tst_MemoryMapBaseReader::readIsPresent()
 
     QDomNode MemoryMapBaseNode = document.firstChildElement("ipxact:MemoryMapBase");
 
-	MemoryMapBaseReader MemoryMapBaseReader;
 	QSharedPointer<MemoryMapBase> testMemoryMapBase( new MemoryMapBase );
-	MemoryMapBaseReader.readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase);
+    MemoryMapBaseReader::readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMapBase->name(), QString("testMemoryMapBase"));
     QCOMPARE(testMemoryMapBase->getIsPresent(), QString("8/8-1"));
@@ -135,9 +133,8 @@ void tst_MemoryMapBaseReader::readAddressBlocks()
 
     QDomNode MemoryMapBaseNode = document.firstChildElement("ipxact:MemoryMapBase");
 
-	MemoryMapBaseReader MemoryMapBaseReader;
 	QSharedPointer<MemoryMapBase> testMemoryMapBase( new MemoryMapBase );
-	MemoryMapBaseReader.readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase);
+    MemoryMapBaseReader::readMemoryMapBase(MemoryMapBaseNode, testMemoryMapBase, Document::Revision::Std14);
 
     QCOMPARE(testMemoryMapBase->name(), QString("testMemoryMapBase"));
 

@@ -5,6 +5,7 @@
 HEADERS += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.h \
     ../../common/graphicsItems/expandableitem.h \
     ../../editors/ComponentEditor/visualization/fieldgapitem.h \
+    ../../editors/ComponentEditor/visualization/AddressableItem.h \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.h \
     ../../common/graphicsItems/graphicsexpandcollapseitem.h \
     ../../editors/ComponentEditor/visualization/memorygapitem.h \
@@ -14,6 +15,7 @@ HEADERS += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/address
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/MemoryBlockGraphItem.h
 SOURCES += ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/addressblockgraphitem.cpp \
     ../../common/graphicsItems/expandableitem.cpp \
+    ../../editors/ComponentEditor/visualization/AddressableItem.cpp \
     ../../editors/ComponentEditor/visualization/fieldgapitem.cpp \
     ../../editors/ComponentEditor/memoryMaps/memoryMapsVisualizer/fieldgraphitem.cpp \
     ../../common/graphicsItems/graphicsexpandcollapseitem.cpp \

@@ -28,14 +28,14 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/PowerDomain.h>
 #include <IPXACTmodels/Component/ComponentGenerator.h>
-#include <IPXACTmodels/Component/Choice.h>
-#include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/Component/FileSet.h>
 #include <IPXACTmodels/Component/Cpu.h>
 #include <IPXACTmodels/Component/OtherClockDriver.h>
-#include <IPXACTmodels/common/Parameter.h>
-#include <IPXACTmodels/common/Assertion.h>
 #include <IPXACTmodels/Component/ResetType.h>
+#include <IPXACTmodels/common/Assertion.h>
+#include <IPXACTmodels/common/Choice.h>
+#include <IPXACTmodels/common/Enumeration.h>
+#include <IPXACTmodels/common/Parameter.h>
 
 #include <IPXACTmodels/kactusExtensions/ComProperty.h>
 #include <IPXACTmodels/kactusExtensions/SystemView.h>

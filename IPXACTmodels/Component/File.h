@@ -120,6 +120,13 @@ public:
 	*/
     QSharedPointer<QList<FileType> > getFileTypes() const;
 
+	/*!
+	*   Get the file types as a list
+	*
+	*       @return The file types.
+	*/
+	QStringList getFileTypeNames() const;
+
 	/*! 
     *   Set the file types for this file
 	*

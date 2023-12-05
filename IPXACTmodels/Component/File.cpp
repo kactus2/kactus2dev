@@ -187,6 +187,19 @@ QSharedPointer<QList<FileType> > File::getFileTypes() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: File::getFileTypeNames()
+//-----------------------------------------------------------------------------
+QStringList File::getFileTypeNames() const
+{
+    QStringList types;
+    std::for_each(fileTypes_->cbegin(), fileTypes_->cend(), [&types](auto const& fileType) {
+        types.append(fileType.type_);
+        });
+
+    return types;
+}
+
+//-----------------------------------------------------------------------------
 // Function: File::setFileTypes()
 //-----------------------------------------------------------------------------
 void File::setFileTypes( QSharedPointer<QList<FileType> > fileTypes )

@@ -174,7 +174,7 @@ void tst_VerilogSourceAnalyzer::testFileInclude()
     QFETCH(int, expectedDependencyCount);
     QFETCH(QString, firstDependentFileName);
 
-    QSharedPointer<Component> targetComponent(new Component);
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
     writeTestFile(input, "test.v");
 
@@ -240,12 +240,12 @@ void tst_VerilogSourceAnalyzer::testFileInclude_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testFileIncludeFromFilesetReturnsRelativePath()
 {
-    QSharedPointer<Component> targetComponent(new Component);
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	QSharedPointer<FileSet> targetFileSet(new FileSet("includes"));
 	QSharedPointer<File> targetFile(new File((QStringLiteral("../includes/globals.v"))));
-	targetFile->getFileTypes()->append("verilogSource");
-
+	targetFile->addFileType("verilogSource");
+	
 	targetFileSet->addFile(targetFile);
 	targetComponent->getFileSets()->append( targetFileSet );
 
@@ -276,7 +276,7 @@ void tst_VerilogSourceAnalyzer::testFileIncludeFromFilesetReturnsRelativePath()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testAbsoluteFilePath()
 {
-   QSharedPointer<Component> targetComponent(new Component);
+   QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
     writeTestFile("`include \"globals.v\"\n", "test.v");
 
@@ -298,7 +298,7 @@ void tst_VerilogSourceAnalyzer::testSimilarFileNamesInFilesets()
 {
     QSettings settings;
 
-    QSharedPointer<Component> targetComponent(new Component);
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	QSharedPointer<QList<QSharedPointer<FileSet> > > fileSets = targetComponent->getFileSets();
 	QSharedPointer<FileSet> wrongFileSet( new FileSet("wrong") );
@@ -329,7 +329,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance()
 	QFETCH(QString, input);
 	QFETCH(QStringList, fileNames);
 
-	QSharedPointer<Component> targetComponent(new Component);
+	QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	writeTestFile(input, "test.v");
 
@@ -472,7 +472,7 @@ void tst_VerilogSourceAnalyzer::testSubmoduleInstance_data()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testSubmodulesAreSearchedInFilesets()
 {
-	QSharedPointer<Component> targetComponent(new Component);
+	QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	writeTestFile(
 		"module test();\n"
@@ -511,7 +511,7 @@ void tst_VerilogSourceAnalyzer::testSubmodulesAreSearchedInFilesets()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testMultipleModulesInFilesetFile()
 {
-	QSharedPointer<Component> targetComponent(new Component);
+	QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	writeTestFile(
 		"module test();\n"
@@ -549,7 +549,7 @@ void tst_VerilogSourceAnalyzer::testMultipleModulesInFilesetFile()
 //-----------------------------------------------------------------------------
 void tst_VerilogSourceAnalyzer::testNamedProcessIsNotSubmodule()
 {
-	QSharedPointer<Component> targetComponent(new Component);
+	QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
 	writeTestFile(
 		"module johnson #(\n"

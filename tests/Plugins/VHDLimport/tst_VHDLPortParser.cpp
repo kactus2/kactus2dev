@@ -55,7 +55,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLPortParser::tst_VHDLPortParser()
 //-----------------------------------------------------------------------------
-tst_VHDLPortParser::tst_VHDLPortParser() : parser_(this), importComponent_(new Component())
+tst_VHDLPortParser::tst_VHDLPortParser() : parser_(this), importComponent_(new Component(VLNV(), Document::Revision::Std14))
 {
 
 }
@@ -65,7 +65,7 @@ tst_VHDLPortParser::tst_VHDLPortParser() : parser_(this), importComponent_(new C
 //-----------------------------------------------------------------------------
 void tst_VHDLPortParser::init()
 {
-	importComponent_ = QSharedPointer<Component>(new Component());
+	importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 
 	importComponentInstantiation_ = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 	importComponent_->getModel()->getComponentInstantiations()->append(importComponentInstantiation_);

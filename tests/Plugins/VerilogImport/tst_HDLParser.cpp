@@ -27,7 +27,7 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 #include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 #include <IPXACTmodels/Design/ComponentInstance.h>
 
 #include <tests/MockObjects/LibraryMock.h>
@@ -200,14 +200,14 @@ void tst_HDLParser::cleanupTestCase()
 void tst_HDLParser::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    topComponent_ = QSharedPointer<Component>(new Component(vlnv));
+    topComponent_ = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 
     topView_ = QSharedPointer<View>(new View("topView"));
     topComponent_->getViews()->append(topView_);
 
     QSharedPointer<ConfigurableVLNVReference> designVlnv(
         new ConfigurableVLNVReference(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0"));
-    design_ = QSharedPointer<Design>(new Design(*designVlnv));
+    design_ = QSharedPointer<Design>(new Design(*designVlnv, Document::Revision::Std14));
 
     QSharedPointer<DesignInstantiation> di(new DesignInstantiation);
     di->setName("TestDesignInstantiation");
@@ -216,7 +216,7 @@ void tst_HDLParser::init()
     topComponent_->getDesignInstantiations()->append(di);
 
 	VLNV designConfVlnv(VLNV::DESIGNCONFIGURATION, "Test", "TestLibrary", "TestDesignConfiguration", "1.0");
-	designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfVlnv));
+	designConf_ = QSharedPointer<DesignConfiguration>(new DesignConfiguration(designConfVlnv, Document::Revision::Std14));
     designConf_->setDesignRef(*designVlnv);
 
     input_.component = topComponent_;
@@ -227,14 +227,14 @@ void tst_HDLParser::init()
     clkAbstractionVLNV_ = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "clkAbsDef", "1.0"));
 
-    clkAbstractionDefinition_ =  QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
-    clkAbstractionDefinition_->setVlnv(*clkAbstractionVLNV_.data());
+    clkAbstractionDefinition_ =  
+        QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*clkAbstractionVLNV_, Document::Revision::Std14));
 
     dataAbstractionVLNV_ = QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "dataAbsDef", "1.0"));
 
-    dataAbstractionDefinition_ =  QSharedPointer<AbstractionDefinition>(new AbstractionDefinition());
-    dataAbstractionDefinition_->setVlnv(*dataAbstractionVLNV_.data());
+    dataAbstractionDefinition_ =  
+        QSharedPointer<AbstractionDefinition>(new AbstractionDefinition(*dataAbstractionVLNV_, Document::Revision::Std14));
 
     QSharedPointer<PortAbstraction> logicalPort(new PortAbstraction());
     logicalPort->setName("CLK");
@@ -504,7 +504,7 @@ void tst_HDLParser::testHierarchicalConnectionsWithExpressions()
 
     VLNV instanceVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestInstance", "1.0");
 
-    QSharedPointer<Component> instanceComponent(new Component(instanceVlnv));
+    QSharedPointer<Component> instanceComponent(new Component(instanceVlnv, Document::Revision::Std14));
 
     QSharedPointer<Parameter> componentParameter (new Parameter());
     componentParameter->setName("componentParameter");
@@ -655,7 +655,7 @@ QSharedPointer<PortMap> tst_HDLParser::mapPortToInterface(QString const& portNam
 //-----------------------------------------------------------------------------
 QSharedPointer<View> tst_HDLParser::addTestComponentToLibrary(VLNV vlnv)
 {
-    QSharedPointer<Component> instanceComponent(new Component(vlnv));
+    QSharedPointer<Component> instanceComponent(new Component(vlnv, Document::Revision::Std14));
     addPort("clk", 1, DirectionTypes::IN, instanceComponent);
     addPort("data_in", 8, DirectionTypes::IN, instanceComponent);
     addPort("data_out", 8, DirectionTypes::OUT, instanceComponent);
@@ -874,7 +874,7 @@ void tst_HDLParser::testMasterToSlaveInterconnection()
 void tst_HDLParser::testEmptyBounds()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
 
     QSharedPointer<View> senderView(new View("view"));
     senderComponent->getViews()->append(senderView);
@@ -902,7 +902,7 @@ void tst_HDLParser::testEmptyBounds()
     addInstanceToDesign("sender", senderVLNV, senderView);
 
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV, Document::Revision::Std14));
 
     QSharedPointer<View> receiverView(new View("view"));
     receiverComponent->getViews()->append(receiverView);
@@ -972,7 +972,7 @@ void tst_HDLParser::testEmptyBounds()
 void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
 
 	QSharedPointer<View> senderView(new View("view"));
 	senderComponent->getViews()->append(senderView);
@@ -1000,7 +1000,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
     addInstanceToDesign("sender", senderVLNV, senderView);
 
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-	QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+	QSharedPointer<Component> receiverComponent(new Component(receiverVLNV, Document::Revision::Std14));
 
 	QSharedPointer<View> receiverView(new View("view"));
 	receiverComponent->getViews()->append(receiverView);
@@ -1070,7 +1070,7 @@ void tst_HDLParser::testMasterToSlaveInterconnectionWithExpressions()
 QSharedPointer<View> tst_HDLParser::addSenderComponentToLibrary(VLNV senderVLNV, General::InterfaceMode mode,
     bool createInterfaces /*= true*/)
 {
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     addPort("enable_out", 1, DirectionTypes::OUT, senderComponent);
     addPort("data_out", 8, DirectionTypes::OUT, senderComponent);
 
@@ -1106,7 +1106,7 @@ QSharedPointer<View> tst_HDLParser::addSenderComponentToLibrary(VLNV senderVLNV,
 QSharedPointer<View> tst_HDLParser::addReceiverComponentToLibrary(VLNV receiverVLNV, General::InterfaceMode mode,
     bool createInterfaces /*= true*/)
 {
-    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV, Document::Revision::Std14));
     addPort("enable_in", 1, DirectionTypes::IN, receiverComponent);
     addPort("data_in", 8, DirectionTypes::IN, receiverComponent);
 
@@ -1328,7 +1328,7 @@ void tst_HDLParser::testSlicedInterconnection()
 {
 	VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
 
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     addPort("enable_out_low", 1, DirectionTypes::OUT, senderComponent);
     addPort("enable_out_high", 1, DirectionTypes::OUT, senderComponent);
 
@@ -1390,8 +1390,7 @@ void tst_HDLParser::testSlicedInterconnection()
 	QSharedPointer<ConfigurableVLNVReference> abstractionVLNV(new ConfigurableVLNVReference(
 		VLNV::ABSTRACTIONDEFINITION, "Test", "TestLibrary", "absDef", "1.0"));
 
-	QSharedPointer<AbstractionDefinition> testAbstractionDefinition(new AbstractionDefinition());
-	testAbstractionDefinition->setVlnv(*abstractionVLNV.data());
+	QSharedPointer<AbstractionDefinition> testAbstractionDefinition(new AbstractionDefinition(*abstractionVLNV, Document::Revision::Std14));
 	library_.addComponent(testAbstractionDefinition);
 
 	QSharedPointer<PortAbstraction> logicalPort (new PortAbstraction());
@@ -1534,7 +1533,7 @@ void tst_HDLParser::testSlicedInterconnection()
 void tst_HDLParser::testPortDefaultValueInComponentInstance()
 {
     VLNV tieOffVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestTieOff", "1.0");
-    QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV));
+    QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV, Document::Revision::Std14));
 
     QSharedPointer<View> activeView(new View("rtl"));
     activeView->setComponentInstantiationRef("instance1");
@@ -1736,7 +1735,7 @@ void tst_HDLParser::testAdhocConnectionToVaryingSizePorts()
     activeView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, activeView);
     senderComponent->getViews()->append(activeView);
@@ -1787,7 +1786,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     senderView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     library_.addComponent(senderComponent);
     addInstanceToDesign("sender", senderVLNV, senderView);
     senderComponent->getViews()->append(senderView);
@@ -1801,7 +1800,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
     QSharedPointer<View> receiverView(new View("rtl"));
 
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV, Document::Revision::Std14));
     library_.addComponent(receiverComponent);
     addInstanceToDesign("receiver", receiverVLNV, receiverView);
     receiverComponent->getViews()->append(receiverView);
@@ -1864,7 +1863,7 @@ void tst_HDLParser::testAdhocConnectionWithPartSelect()
 void tst_HDLParser::testAdhocTieOffInComponentInstance()
 {
     VLNV tieOffVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestTieOff", "1.0");
-	QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV));
+	QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV, Document::Revision::Std14));
 
 	QSharedPointer<View> activeView(new View("rtl"));
 	activeView->setComponentInstantiationRef("instance1");
@@ -2075,7 +2074,7 @@ void tst_HDLParser::addHierAdhocConnection(QString const& topPort,
 void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
 {
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
 
     QSharedPointer<Port> senderPort = QSharedPointer<Port>(new Port("data_out"));
     senderPort->setDirection(DirectionTypes::OUT);
@@ -2098,7 +2097,7 @@ void tst_HDLParser::testAdHocConnectionBetweenMultipleComponentInstances()
     addInstanceToDesign("sender", senderVLNV, view1);
 
     VLNV receiverVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestReceiver", "1.0");
-    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV));
+    QSharedPointer<Component> receiverComponent(new Component(receiverVLNV, Document::Revision::Std14));
 
     QSharedPointer<Port> receiverPort = QSharedPointer<Port>(new Port("data_in"));
     receiverPort->setDirection(DirectionTypes::IN);
@@ -2181,7 +2180,7 @@ void tst_HDLParser::testInstanceParametersAreCulled()
 	activeView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     library_.addComponent(senderComponent);
     QSharedPointer<ComponentInstance> instace = addInstanceToDesign("sender", senderVLNV, activeView);
 
@@ -2238,7 +2237,7 @@ void tst_HDLParser::testDesignParametersAreUtilized()
     activeView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     library_.addComponent(senderComponent);
     QSharedPointer<ComponentInstance> senderInstance = addInstanceToDesign("sender", senderVLNV, activeView);
 
@@ -2276,7 +2275,7 @@ void tst_HDLParser::testTopComponentParametersAreUtilized()
     activeView->setComponentInstantiationRef("instance1");
 
     VLNV senderVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestSender", "1.0");    
-    QSharedPointer<Component> senderComponent(new Component(senderVLNV));
+    QSharedPointer<Component> senderComponent(new Component(senderVLNV, Document::Revision::Std14));
     library_.addComponent(senderComponent);
     QSharedPointer<ComponentInstance> senderInstance = addInstanceToDesign("sender", senderVLNV, activeView);
 

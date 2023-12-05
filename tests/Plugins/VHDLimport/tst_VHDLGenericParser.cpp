@@ -56,7 +56,7 @@ private:
 //-----------------------------------------------------------------------------
 // Function: tst_VHDLGenericParser::tst_VHDLGenericParser()
 //-----------------------------------------------------------------------------
-tst_VHDLGenericParser::tst_VHDLGenericParser(): parser_(this), importComponent_(new Component())
+tst_VHDLGenericParser::tst_VHDLGenericParser(): parser_(this), importComponent_(new Component(VLNV(), Document::Revision::Std14))
 {
 
 }
@@ -66,7 +66,7 @@ tst_VHDLGenericParser::tst_VHDLGenericParser(): parser_(this), importComponent_(
 //-----------------------------------------------------------------------------
 void tst_VHDLGenericParser::init()
 {
-	importComponent_ = QSharedPointer<Component>(new Component());
+	importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 
 	importComponentInstantiation_ = QSharedPointer<ComponentInstantiation>( new ComponentInstantiation );
 	importComponentInstantiation_->setName("module_parameter_instantiation");

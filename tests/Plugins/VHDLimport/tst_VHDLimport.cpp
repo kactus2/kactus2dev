@@ -130,7 +130,7 @@ tst_VHDLimport::tst_VHDLimport(): displayEditor_(), parser_(),
 //-----------------------------------------------------------------------------
 void tst_VHDLimport::init()
 {
-    importComponent_ = QSharedPointer<Component>(new Component());
+    importComponent_ = QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Std14));
 }
 
 //-----------------------------------------------------------------------------

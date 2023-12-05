@@ -445,7 +445,7 @@ void tst_VerilogParameterParser::testStringValue()
 //-----------------------------------------------------------------------------
 void tst_VerilogParameterParser::otherParameterAsParameterValue()
 {
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
 
     QString input = "module test #(\n"
         "parameter first = 1,\n"
@@ -707,7 +707,7 @@ void tst_VerilogParameterParser::parametersToComponent()
         "endmodule";
 
     VLNV swvlvnv(VLNV::COMPONENT,"kyytto","raision kirjasto","swName","1.0");
-	QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
+	QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv, Document::Revision::Std14));
 
 	QSharedPointer<ComponentInstantiation> instance( new ComponentInstantiation );
 	instance->setName("module_parameter_instantiation");
@@ -739,7 +739,7 @@ void tst_VerilogParameterParser::oldParametersToComponent()
         " hopo = 22; // o olololo ollllooo \n";
 
     VLNV swvlvnv(VLNV::COMPONENT,"kyytto","raision kirjasto","swName","1.0");
-    QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv));
+    QSharedPointer<Component> sw = QSharedPointer<Component>(new Component(swvlvnv, Document::Revision::Std14));
 
 	QSharedPointer<ComponentInstantiation> instance( new ComponentInstantiation );
 	instance->setName("module_parameter_instantiation");

@@ -18,11 +18,11 @@ QT -= gui widgets
 CONFIG += c++11 testcase console
 
 win32:CONFIG(release, debug|release) {
-    LIBS += -L$$PWD/../../x64/executable/ -lIPXACTmodels -lKactusAPI
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodels -lKactusAPI
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
-    LIBS += -L$$PWD/../../x64/executable/ -lIPXACTmodelsd -lKactusAPId
+    LIBS += -L$$PWD/../../executable/ -lIPXACTmodelsd -lKactusAPId
     DESTDIR = ./debug
 }
 else:unix {

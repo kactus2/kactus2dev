@@ -17,7 +17,7 @@ QT += core gui xml testlib
 
 CONFIG += c++11 testcase console
 
-LIBS += -L../../../executable -lIPXACTmodels
+LIBS += -L../../../executable -lIPXACTmodels -lKactusAPI
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

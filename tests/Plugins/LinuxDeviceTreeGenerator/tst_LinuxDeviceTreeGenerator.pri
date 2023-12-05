@@ -19,6 +19,10 @@ HEADERS += ../../../editors/MemoryDesigner/ConnectivityComponent.h \
     ../../../editors/MemoryDesigner/MemoryDesignerConstants.h \
     ../../../editors/MemoryDesigner/MemoryItem.h \
     ../../MockObjects/LibraryMock.h \
+    ../../../Plugins/common/CpuRoutesContainer.h \
+    ../../../Plugins/common/SingleCpuRoutesContainer.h \
+    ../../../Plugins/common/ConnectivityGraphUtilities.h \
+    ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCpuRoutesContainer.h \
     ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.h
 SOURCES += ../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../editors/MemoryDesigner/ConnectivityConnection.cpp \
@@ -26,10 +30,14 @@ SOURCES += ../../../editors/MemoryDesigner/ConnectivityComponent.cpp \
     ../../../editors/MemoryDesigner/ConnectivityGraphFactory.cpp \
     ../../../editors/MemoryDesigner/ConnectivityInterface.cpp \
     ../../MockObjects/LibraryMock.cpp \
+    ../../../Plugins/common/CpuRoutesContainer.cpp \
+    ../../../Plugins/common/SingleCpuRoutesContainer.cpp \
+    ../../../Plugins/common/ConnectivityGraphUtilities.cpp \
     ../../../Plugins/LinuxDeviceTree/LinuxDeviceTreeGenerator.cpp \
     ../../../editors/MemoryDesigner/MasterSlavePathSearch.cpp \
     ../../../editors/MemoryDesigner/MemoryConnectionAddressCalculator.cpp \
     ../../../editors/MemoryDesigner/MemoryDesignerConstants.cpp \
     ../../../editors/MemoryDesigner/MemoryItem.cpp \
     ./tst_LinuxDeviceTreeGenerator.cpp \
+    ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCpuRoutesContainer.cpp \
     ../../../Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCPUDetails.cpp

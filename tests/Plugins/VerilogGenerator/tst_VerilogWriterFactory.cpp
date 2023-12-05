@@ -152,7 +152,7 @@ private:
     QSharedPointer<AbstractionDefinition> createAbstractionDefinition(QString const& definitionName);
 
     QSharedPointer<Port> addPortToComponent(QString const& portName, QSharedPointer<Component> containingComponent,
-        TransactionalTypes::Initiative newInitiative = TransactionalTypes::INITIATIVE_INVALID,
+        TransactionalTypes::Initiative newInitiative = TransactionalTypes::Initiative::INITIATIVE_INVALID,
         DirectionTypes::Direction newDirection = DirectionTypes::DIRECTION_INVALID);
 
     QSharedPointer<BusInterface> addBusInterfaceToComponent(QString const& busName,
@@ -162,7 +162,7 @@ private:
 
     QSharedPointer<PortAbstraction> addLogicalPortToAbstraction(QString const& portName,
         QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
-        TransactionalTypes::Initiative logicalInitiative = TransactionalTypes::INITIATIVE_INVALID,
+        TransactionalTypes::Initiative logicalInitiative = TransactionalTypes::Initiative::INITIATIVE_INVALID,
         DirectionTypes::Direction logicalDirection = DirectionTypes::DIRECTION_INVALID,
         QString const& systemGroup = "");
 
@@ -236,7 +236,7 @@ void tst_VerilogWriterFactory::cleanupTestCase()
 void tst_VerilogWriterFactory::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 
     MessagePasser messages;
 
@@ -739,7 +739,7 @@ QSharedPointer<MetaInterface> tst_VerilogWriterFactory::addInterfaceToComponent(
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> tst_VerilogWriterFactory::addTestComponentToLibrary(VLNV vlnv)
 {
-    QSharedPointer<Component> instanceComponent(new Component(vlnv));
+    QSharedPointer<Component> instanceComponent(new Component(vlnv, Document::Revision::Std14));
 
     library_.addComponent(instanceComponent);
 
@@ -1002,7 +1002,7 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToMultiplePortsInSlave()
     QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
 
     QSharedPointer<PortAbstraction> logicalData = addLogicalPortToAbstraction("DATA", abstractionDefinition,
-        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        General::SYSTEM, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
 
     QSharedPointer<Component> instanceComponent = createComponent("Receiver");
 
@@ -1013,13 +1013,13 @@ void tst_VerilogWriterFactory::testLogicalSlicedMasterToMultiplePortsInSlave()
 
 
     QSharedPointer<Port> topPort = addPortToComponent(
-        "topPort", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        "topPort", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
     QSharedPointer<Port> dataPort0 = addPortToComponent(
-        "data0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        "data0", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
     QSharedPointer<Port> dataPort1 = addPortToComponent(
-        "data1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        "data1", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
     QSharedPointer<Port> dataPort2 = addPortToComponent(
-        "data2", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        "data2", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
 
     topPort->setLeftBound("2");
     topPort->setRightBound("0");
@@ -1101,11 +1101,11 @@ void tst_VerilogWriterFactory::testHierarchicalInOutConnectionWithMultiplePorts(
     QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
 
     QSharedPointer<PortAbstraction> logicalCSN = addLogicalPortToAbstraction("CSN", abstractionDefinition,
-        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+        General::SYSTEM, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
     QSharedPointer<PortAbstraction> logicalDATA = addLogicalPortToAbstraction("DATA", abstractionDefinition,
-        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+        General::SYSTEM, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
     QSharedPointer<PortAbstraction> logicalSCK = addLogicalPortToAbstraction("SCK", abstractionDefinition,
-        General::SYSTEM, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
+        General::SYSTEM, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT, systemName);
 
     logicalCSN->getWire()->getSystemPorts()->first()->setWidth("2");
     logicalCSN->getWire()->getSystemPorts()->first()->setPresence(PresenceTypes::REQUIRED);
@@ -1115,37 +1115,37 @@ void tst_VerilogWriterFactory::testHierarchicalInOutConnectionWithMultiplePorts(
     logicalSCK->getWire()->getSystemPorts()->first()->setPresence(PresenceTypes::REQUIRED);
 
     QSharedPointer<Port> topPortDATA0 = addPortToComponent(
-        "topPortDATA0", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortDATA0", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortDATA0->setTypeName("wire");
     topPortDATA0->setPortSize(1);
 
     QSharedPointer<Port> topPortDATA1 = addPortToComponent(
-        "topPortDATA1", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortDATA1", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortDATA1->setTypeName("wire");
     topPortDATA1->setPortSize(1);
 
     QSharedPointer<Port> topPortDATA2 = addPortToComponent(
-        "topPortDATA2", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortDATA2", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortDATA2->setTypeName("wire");
     topPortDATA2->setPortSize(1);
 
     QSharedPointer<Port> topPortDATA3 = addPortToComponent(
-        "topPortDATA3", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortDATA3", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortDATA3->setTypeName("wire");
     topPortDATA3->setPortSize(1);
 
     QSharedPointer<Port> topPortCSN1 = addPortToComponent(
-        "topPortCSN1", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortCSN1", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortCSN1->setTypeName("wire");
     topPortCSN1->setPortSize(1);
 
     QSharedPointer<Port> topPortCSN2 = addPortToComponent(
-        "topPortCSN2", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortCSN2", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortCSN2->setTypeName("wire");
     topPortCSN2->setPortSize(1);
 
     QSharedPointer<Port> topPortCLK = addPortToComponent(
-        "topPortCLK", topComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "topPortCLK", topComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     topPortCLK->setTypeName("wire");
     topPortCLK->setPortSize(1);
 
@@ -1172,37 +1172,37 @@ void tst_VerilogWriterFactory::testHierarchicalInOutConnectionWithMultiplePorts(
     QSharedPointer<Component> instanceComponent = createComponent("Receiver");
 
     QSharedPointer<Port> instanceCSN0 = addPortToComponent(
-        "instanceCSN0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceCSN0", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceCSN0->setTypeName("wire");
     instanceCSN0->setPortSize(1);
 
     QSharedPointer<Port> instanceCSN1 = addPortToComponent(
-        "instanceCSN1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceCSN1", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceCSN1->setTypeName("wire");
     instanceCSN1->setPortSize(1);
 
     QSharedPointer<Port> instanceDATA0 = addPortToComponent(
-        "instanceDATA0", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceDATA0", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceDATA0->setTypeName("wire");
     instanceDATA0->setPortSize(1);
 
     QSharedPointer<Port> instanceDATA1 = addPortToComponent(
-        "instanceDATA1", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceDATA1", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceDATA1->setTypeName("wire");
     instanceDATA1->setPortSize(1);
 
     QSharedPointer<Port> instanceDATA2 = addPortToComponent(
-        "instanceDATA2", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceDATA2", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceDATA2->setTypeName("wire");
     instanceDATA2->setPortSize(1);
 
     QSharedPointer<Port> instanceDATA3 = addPortToComponent(
-        "instanceDATA3", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceDATA3", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceDATA3->setTypeName("wire");
     instanceDATA3->setPortSize(1);
 
     QSharedPointer<Port> instanceSCK = addPortToComponent(
-        "instanceSCK", instanceComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::INOUT);
+        "instanceSCK", instanceComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::INOUT);
     instanceSCK->setTypeName("wire");
     instanceSCK->setPortSize(1);
 
@@ -1713,7 +1713,7 @@ void tst_VerilogWriterFactory::testAdhocInOutConnectionBetweenComponentInstances
 void tst_VerilogWriterFactory::testAdhocTieOffInComponentInstance()
 {
     VLNV tieOffVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "TestTieOff", "1.0");
-	QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV));
+	QSharedPointer<Component> tieOffComponent(new Component(tieOffVLNV, Document::Revision::Std14));
 
     QSharedPointer<MetaInstance> mInstance = addInstanceToDesign("tieOffer", tieOffComponent);
 
@@ -2178,10 +2178,10 @@ void tst_VerilogWriterFactory::testFlatComponentWithTypedParameter()
 //-----------------------------------------------------------------------------
 void tst_VerilogWriterFactory::testDoNotWriteTransactionalPorts()
 {
-    addTransactional("provide", TransactionalTypes::PROVIDES, flatComponent_);
-    addTransactional("require", TransactionalTypes::REQUIRES, flatComponent_);
-    addTransactional("both", TransactionalTypes::BOTH, flatComponent_);
-    addTransactional("phantom", TransactionalTypes::PHANTOM, flatComponent_);
+    addTransactional("provide", TransactionalTypes::Initiative::PROVIDES, flatComponent_);
+    addTransactional("require", TransactionalTypes::Initiative::REQUIRES, flatComponent_);
+    addTransactional("both", TransactionalTypes::Initiative::BOTH, flatComponent_);
+    addTransactional("phantom", TransactionalTypes::Initiative::PHANTOM, flatComponent_);
     addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
 
     runGenerator(false);
@@ -2206,13 +2206,13 @@ void tst_VerilogWriterFactory::testDoNotWriteTransactionalInterfaces()
         addInterfaceToComponent("transactionalInterface", topComponent_);
     QSharedPointer<MetaInterface> wireInterface = addInterfaceToComponent("wireInterface", topComponent_);
 
-    addTransactional("provide", TransactionalTypes::PROVIDES, topComponent_, transactionalInterface);
-    addTransactional("require", TransactionalTypes::REQUIRES, topComponent_, transactionalInterface);
-    addTransactional("both", TransactionalTypes::BOTH, topComponent_, transactionalInterface);
-    addTransactional("phantom", TransactionalTypes::PHANTOM, topComponent_, transactionalInterface);
+    addTransactional("provide", TransactionalTypes::Initiative::PROVIDES, topComponent_, transactionalInterface);
+    addTransactional("require", TransactionalTypes::Initiative::REQUIRES, topComponent_, transactionalInterface);
+    addTransactional("both", TransactionalTypes::Initiative::BOTH, topComponent_, transactionalInterface);
+    addTransactional("phantom", TransactionalTypes::Initiative::PHANTOM, topComponent_, transactionalInterface);
     addPort("clk", 1, DirectionTypes::IN, flatComponent_, wireInterface);
     addPort("rst_n", 1, DirectionTypes::IN, flatComponent_, wireInterface);
-    addTransactional("otherBoat", TransactionalTypes::BOTH, topComponent_, wireInterface);
+    addTransactional("otherBoat", TransactionalTypes::Initiative::BOTH, topComponent_, wireInterface);
     addPort("dataIn", 8, DirectionTypes::IN, flatComponent_);
 
     runGenerator(false);
@@ -2280,14 +2280,14 @@ void tst_VerilogWriterFactory::testDoNotWriteTransactionalConnections()
     QSharedPointer<AbstractionDefinition> abstractionDefinition = createAbstractionDefinition("testAbstraction");
 
     QSharedPointer<PortAbstraction> logicalProvider = addLogicalPortToAbstraction(
-        "logicalTransactional", abstractionDefinition, General::MASTER, TransactionalTypes::PROVIDES);
+        "logicalTransactional", abstractionDefinition, General::MASTER, TransactionalTypes::Initiative::PROVIDES);
     QSharedPointer<PortAbstraction> logicalRequirer = addLogicalPortToAbstraction(
-        "logicalTransactional", abstractionDefinition, General::SLAVE, TransactionalTypes::REQUIRES);
+        "logicalTransactional", abstractionDefinition, General::SLAVE, TransactionalTypes::Initiative::REQUIRES);
 
     QSharedPointer<PortAbstraction> logicalIn = addLogicalPortToAbstraction("logicalWire", abstractionDefinition,
-        General::MASTER, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        General::MASTER, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
     QSharedPointer<PortAbstraction> logicalOut = addLogicalPortToAbstraction("logicalWire", abstractionDefinition,
-        General::SLAVE, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::OUT);
+        General::SLAVE, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::OUT);
 
     QSharedPointer<Component> transactionProviderComponent = createComponent("TestProvider");
     QSharedPointer<Component> transactionRequirerComponent = createComponent("TestRequirer");
@@ -2303,14 +2303,14 @@ void tst_VerilogWriterFactory::testDoNotWriteTransactionalConnections()
         "wireOutBus", transactionRequirerComponent, General::SLAVE, busDefinition, abstractionDefinition);
 
     QSharedPointer<Port> providerPort =
-        addPortToComponent("providerPort", transactionProviderComponent, TransactionalTypes::PROVIDES);
+        addPortToComponent("providerPort", transactionProviderComponent, TransactionalTypes::Initiative::PROVIDES);
     QSharedPointer<Port> requirerPort =
-        addPortToComponent("requirerPort", transactionRequirerComponent, TransactionalTypes::REQUIRES);
+        addPortToComponent("requirerPort", transactionRequirerComponent, TransactionalTypes::Initiative::REQUIRES);
 
     QSharedPointer<Port> wireInPort = addPortToComponent(
-        "wireInPort", transactionProviderComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::IN);
+        "wireInPort", transactionProviderComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::IN);
     QSharedPointer<Port> wireOutPort = addPortToComponent(
-        "wireOutPort", transactionRequirerComponent, TransactionalTypes::INITIATIVE_INVALID, DirectionTypes::OUT);
+        "wireOutPort", transactionRequirerComponent, TransactionalTypes::Initiative::INITIATIVE_INVALID, DirectionTypes::OUT);
 
     mapPortsToBusInterface(providerBus, providerPort, logicalProvider);
     mapPortsToBusInterface(requirerBus, requirerPort, logicalRequirer);
@@ -2396,7 +2396,7 @@ QSharedPointer<Design> tst_VerilogWriterFactory::createDesignForComponent(QStrin
     QSharedPointer<Component> component)
 {
     VLNV designVLNV(VLNV::DESIGN, "Test", "TestLibrary", designName, "1.0");
-    QSharedPointer<Design> newDesign(new Design(designVLNV));
+    QSharedPointer<Design> newDesign(new Design(designVLNV, Document::Revision::Std14));
     library_.addComponent(newDesign);
 
     QSharedPointer<DesignInstantiation> newDesignInstantiation(new DesignInstantiation("designInstantiation"));
@@ -2415,8 +2415,7 @@ QSharedPointer<Design> tst_VerilogWriterFactory::createDesignForComponent(QStrin
 QSharedPointer<BusDefinition> tst_VerilogWriterFactory::createBusDefinition(QString const& definitionName)
 {
     VLNV busVLNV(VLNV::BUSDEFINITION, "Test", "TestLibrary", definitionName, "1.0");
-    QSharedPointer<BusDefinition> newBus(new BusDefinition());
-    newBus->setVlnv(busVLNV);
+    QSharedPointer<BusDefinition> newBus(new BusDefinition(busVLNV, Document::Revision::Std14));
     library_.addComponent(newBus);
 
     return newBus;
@@ -2429,8 +2428,7 @@ QSharedPointer<AbstractionDefinition> tst_VerilogWriterFactory::createAbstractio
     QString const& definitionName)
 {
     VLNV abstractionVLNV(VLNV::BUSDEFINITION, "Test", "TestLibrary", definitionName, "1.0");
-    QSharedPointer<AbstractionDefinition> newAbstraction(new AbstractionDefinition());
-    newAbstraction->setVlnv(abstractionVLNV);
+    QSharedPointer<AbstractionDefinition> newAbstraction(new AbstractionDefinition(abstractionVLNV, Document::Revision::Std14));
     library_.addComponent(newAbstraction);
 
     return newAbstraction;
@@ -2452,7 +2450,7 @@ QSharedPointer<Port> tst_VerilogWriterFactory::addPortToComponent(QString const&
 
         newPort->setWire(newPortWire);
     }
-    else if (newInitiative != TransactionalTypes::INITIATIVE_INVALID)
+    else if (newInitiative != TransactionalTypes::Initiative::INITIATIVE_INVALID)
     {
         QSharedPointer<Transactional> newPortTransactional(new Transactional());
         newPortTransactional->setInitiative(TransactionalTypes::initiativeToString(newInitiative));
@@ -2500,7 +2498,7 @@ QSharedPointer<BusInterface> tst_VerilogWriterFactory::addBusInterfaceToComponen
 //-----------------------------------------------------------------------------
 QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstraction(QString const& portName,
     QSharedPointer<AbstractionDefinition> containingAbstraction, General::InterfaceMode busMode,
-    TransactionalTypes::Initiative logicalInitiative /* = TransactionalTypes::INITIATIVE_INVALID */,
+    TransactionalTypes::Initiative logicalInitiative /* = TransactionalTypes::Initiative::INITIATIVE_INVALID */,
     DirectionTypes::Direction logicalDirection /* = DirectionTypes::DIRECTION_INVALID */,
     QString const& systemGroup /* = "" */)
 {
@@ -2537,7 +2535,7 @@ QSharedPointer<PortAbstraction> tst_VerilogWriterFactory::addLogicalPortToAbstra
             newWireAbstraction->addSystemPort(newWirePort);
         }
     }
-    else if (logicalInitiative != TransactionalTypes::INITIATIVE_INVALID)
+    else if (logicalInitiative != TransactionalTypes::Initiative::INITIATIVE_INVALID)
     {
         QSharedPointer<TransactionalAbstraction> newTransactionalAbstraction = newLogical->getTransactional();
         if (!newTransactionalAbstraction)

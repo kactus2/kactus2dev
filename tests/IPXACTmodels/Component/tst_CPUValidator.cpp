@@ -81,7 +81,7 @@ void tst_CPUValidator::baseCase()
 {
 	QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
     singleSpace->append(QSharedPointer<AddressSpace>(new AddressSpace("testSpace")));
@@ -120,7 +120,7 @@ void tst_CPUValidator::testNameIsNotEmpty()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
 
@@ -144,7 +144,7 @@ void tst_CPUValidator::noRef()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
 
@@ -168,7 +168,7 @@ void tst_CPUValidator::testIllegalAddressSpaceReference()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
 
@@ -199,7 +199,7 @@ void tst_CPUValidator::testMemoryMapReference2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > maps(new QList<QSharedPointer<MemoryMap> >());
@@ -255,7 +255,7 @@ void tst_CPUValidator::testRange2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > maps(new QList<QSharedPointer<MemoryMap> >());
@@ -316,7 +316,7 @@ void tst_CPUValidator::testWidth2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > maps(new QList<QSharedPointer<MemoryMap> >());
@@ -377,7 +377,7 @@ void tst_CPUValidator::testAddressUnitBits2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > maps(new QList<QSharedPointer<MemoryMap> >());
@@ -479,7 +479,7 @@ void tst_CPUValidator::testRegionsHaveUniqueNames2022()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
@@ -617,7 +617,7 @@ void tst_CPUValidator::testRegionIsContainedWithinAddressSpace2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
@@ -683,7 +683,7 @@ void tst_CPUValidator::testOverlappingRegions2022()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std22));
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > noSpaces;
 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > noMaps;
@@ -760,7 +760,7 @@ void tst_CPUValidator::failParameter()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
     singleSpace->append(QSharedPointer<AddressSpace>(new AddressSpace("testSpace")));
@@ -795,7 +795,7 @@ void tst_CPUValidator::failPresense()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
     singleSpace->append(QSharedPointer<AddressSpace>(new AddressSpace("testSpace")));
@@ -825,7 +825,7 @@ void tst_CPUValidator::failRefPresense()
 {
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator(new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > >()));
+        QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Std14));
 
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > singleSpace(new QList<QSharedPointer<AddressSpace> >());
     singleSpace->append(QSharedPointer<AddressSpace>(new AddressSpace("testSpace")));

@@ -9,7 +9,7 @@
 // Unit test for class DesignConfigurationReader.
 //-----------------------------------------------------------------------------
 
-#include <IPXACTmodels/designConfiguration/DesignConfigurationReader.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfigurationReader.h>
 
 #include <QtTest>
 #include <QDomNode>

@@ -97,7 +97,7 @@ void tst_HierarchicalSaveBuildStrategy::testVLNVIsSetAndVersionIsUpdated()
     rootObject->setProperty("VLNVType", "Component");
 
     VLNV existingVLNV(VLNV::COMPONENT, vlnv);
-    QSharedPointer<Component> existingComponent(new Component(existingVLNV));
+    QSharedPointer<Component> existingComponent(new Component(existingVLNV, Document::Revision::Std14));
     library_->addComponent(existingComponent);
 
     QTreeWidgetItem* rootItem = buildFrom(rootObject);
@@ -142,7 +142,7 @@ void tst_HierarchicalSaveBuildStrategy::testVLNVIsSetAndVersionIsUpdated_data()
 void tst_HierarchicalSaveBuildStrategy::testSuggestedNameDoesNotYetExistInLibrary()
 {
     VLNV originalVLNV(VLNV::COMPONENT, "TestVendor:TestLibrary:TestComponent:1.0");
-    QSharedPointer<Component> originalComponent(new Component(originalVLNV));
+    QSharedPointer<Component> originalComponent(new Component(originalVLNV, Document::Revision::Std14));
     library_->addComponent(originalComponent);
 
     QObject* rootObject = new QObject(0);
@@ -150,7 +150,7 @@ void tst_HierarchicalSaveBuildStrategy::testSuggestedNameDoesNotYetExistInLibrar
     rootObject->setProperty("VLNVType", "Component");
 
     VLNV existingVLNV(VLNV::COMPONENT, "TestVendor:TestLibrary:TestComponent:1.1");
-    QSharedPointer<Component> existingComponent(new Component(existingVLNV));
+    QSharedPointer<Component> existingComponent(new Component(existingVLNV, Document::Revision::Std14));
     library_->addComponent(existingComponent);
 
     QTreeWidgetItem* rootItem = buildFrom(rootObject);

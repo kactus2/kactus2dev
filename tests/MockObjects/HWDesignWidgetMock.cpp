@@ -24,7 +24,7 @@
 
 #include <IPXACTmodels/Design/Design.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <QFileInfo>
 
@@ -35,7 +35,7 @@ HWDesignWidgetMock::HWDesignWidgetMock(LibraryInterface *lh, QWidget* parent): D
 {
 	// update the supported windows 
 	supportedWindows_ = (supportedWindows_ | CONFIGURATIONWINDOW |
-		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW | ADDRESS_WINDOW);
+		CONNECTIONWINDOW | INTERFACEWINDOW |INSTANCEWINDOW | ADHOC_WINDOW);
 
     setDiagram(new HWDesignDiagram(lh, getEditProvider(), QSharedPointer<MultipleParameterFinder>(), 
         QSharedPointer<ListParameterFinder>(), this));
@@ -227,7 +227,7 @@ QSharedPointer<Component> HWDesignWidgetMock::createEmptyDesign(VLNV const& prev
 	}
 	else {
 		// create the component 
-		newComponent = QSharedPointer<Component>(new Component(vlnv));
+		newComponent = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 	}
 
     getLibraryInterface()->writeModelToFile(path, newComponent);
@@ -278,10 +278,10 @@ void HWDesignWidgetMock::createDesignForComponent(QSharedPointer<Component> comp
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(desConfVLNV)));
 
 	// create the design configuration
-	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV));
+	QSharedPointer<DesignConfiguration> designConf(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
 	designConf->setDesignRef(designVLNV);
 
-	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV));
+	QSharedPointer<Design> newDesign = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
 
 	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
 	getLibraryInterface()->writeModelToFile(dirPath, designConf);

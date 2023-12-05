@@ -21,20 +21,20 @@
 #include <IPXACTmodels/Design/ComponentInstance.h>
 #include <IPXACTmodels/Design/Interconnection.h>
 
-#include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Cpu.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryMapBase.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
@@ -159,7 +159,7 @@ void tst_MemoryMapHeaderGenerator::cleanupTestCase()
 void tst_MemoryMapHeaderGenerator::init()
 {
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TestComponent", "1.0");
-    topComponent_ = QSharedPointer<Component>(new Component(vlnv));
+    topComponent_ = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 
     library_.clear();
 
@@ -777,7 +777,7 @@ void tst_MemoryMapHeaderGenerator::testMemoryMapHeaderGenerationInDesignWithMult
     QSharedPointer<Component> slaveComponentTwo = createTestSlaveComponent("slaveComponentTwo", "8");
 
     QSharedPointer<Design> headerDesign (new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", "headerDesign",
-        "1.0")));
+        "1.0"), Document::Revision::Std14));
 
     library_.addComponent(masterComponent);
     library_.writeModelToFile("C:/Test/TestLibrary/TestComponent/1.0/masterComponent.1.0.xml", topComponent_);
@@ -1198,7 +1198,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
     QSharedPointer<Component> masterComponent = createTestMasterComponent("masterComponent", "0");
 
     QSharedPointer<Component> slaveComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
-        "slaveComponent", "1.0")));
+        "slaveComponent", "1.0"), Document::Revision::Std14));
 
     QSharedPointer<Register> slaveRegister = createTestRegister("slaveRegister", "param_ID * 6");
     QSharedPointer<Register> otherSlaveRegister = createTestRegister("otherRegister", "other_ID + 2");
@@ -1214,7 +1214,7 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
 
     QSharedPointer<BusInterface> slaveBus (new BusInterface());
     slaveBus->setName("slaveBusInterface");
-    QSharedPointer<SlaveInterface> enslavedInterface(new SlaveInterface);
+    QSharedPointer<TargetInterface> enslavedInterface(new TargetInterface);
     enslavedInterface->setMemoryMapRef(slaveMemory->name());
     slaveBus->setSlave(enslavedInterface);
 
@@ -1225,10 +1225,11 @@ void tst_MemoryMapHeaderGenerator::testDesignMemoryMapHeaderWithConfigurableElem
     slaveComponent->getParameters()->append(slaveParameter);
     slaveComponent->getParameters()->append(otherSlaveParameter);
 
-    QSharedPointer<Design> headerDesign (new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", "testDesign", "1.0")));
+    QSharedPointer<Design> headerDesign (new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", "testDesign", "1.0"), 
+        Document::Revision::Std14));
 
     QSharedPointer<DesignConfiguration> headerDesignConfiguration (new DesignConfiguration(VLNV(
-        VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", "testDesignConfiguration", "1.0")));
+        VLNV::DESIGNCONFIGURATION, "TUT", "TestLibrary", "testDesignConfiguration", "1.0"), Document::Revision::Std14));
 
     QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance("masterInstance_0",
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(masterComponent->getVlnv()))));
@@ -1990,7 +1991,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestMasterComponen
     QString const& instanceBaseAddress)
 {
     QSharedPointer<Component> newMaster (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary", componentName,
-        "1.0")));
+        "1.0"), Document::Revision::Std14));
 
     QSharedPointer<AddressSpace> localAddressSpace = createTestAddressSpace("localSpace", QSharedPointer<MemoryMap> ());
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaceList(new QList<QSharedPointer<AddressSpace> >());
@@ -2008,7 +2009,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestMasterComponen
 
     QSharedPointer<BusInterface> masterBus (new BusInterface());
     masterBus->setName("masterBusInterface");
-    QSharedPointer<MasterInterface> interfaceMaster(new MasterInterface);
+    QSharedPointer<InitiatorInterface> interfaceMaster(new InitiatorInterface);
     interfaceMaster->setBaseAddress(instanceBaseAddress);
     interfaceMaster->setAddressSpaceRef(localAddressSpace->name());
     masterBus->setMaster(interfaceMaster);
@@ -2026,7 +2027,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestSlaveComponent
     QString const& registerOffset)
 {
     QSharedPointer<Component> newSlave (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary", componentName,
-        "1.0")));
+        "1.0"), Document::Revision::Std14));
 
     QSharedPointer<Register> slaveRegister = createTestRegister("slaveRegister", registerOffset);
     QList<QSharedPointer<Register> > componentRegisters;
@@ -2043,7 +2044,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestSlaveComponent
 
     QSharedPointer<BusInterface> slaveBus (new BusInterface());
     slaveBus->setName("slaveBusInterface");
-    QSharedPointer<SlaveInterface> interfaceSlave(new SlaveInterface);
+    QSharedPointer<TargetInterface> interfaceSlave(new TargetInterface);
     interfaceSlave->setMemoryMapRef(slaveMemoryMap->name());
     slaveBus->setSlave(interfaceSlave);
 
@@ -2058,7 +2059,8 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestSlaveComponent
 QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestHWDesign(QString const& designName,
     QSharedPointer<Component> masterComponent, QSharedPointer<Component> slaveComponent)
 {
-    QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0")));
+    QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0"),
+        Document::Revision::Std14));
 
     QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance("masterInstance_0",
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(masterComponent->getVlnv()))));
@@ -2092,7 +2094,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestChannelCompone
     QString const& mirroredMasterBaseAddress, QString const& mirroredSlaveRemap, QString const& mirroredSlaveRange)
 {
     QSharedPointer<Component> newChannelComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
-        componentName, "1.0")));
+        componentName, "1.0"), Document::Revision::Std14));
 
     QSharedPointer<Register> localRegister = createTestRegister("mirroredRegister", "4");
     QList<QSharedPointer<Register> > localRegisterList;
@@ -2114,23 +2116,23 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestChannelCompone
     // Create mirrored master interface.
     QSharedPointer<BusInterface> mirroredMasterBus(new BusInterface);
     mirroredMasterBus->setName("mirroredMasterInterface");
-    QSharedPointer<MasterInterface> mirroredMasterInterface(new MasterInterface);
+    QSharedPointer<InitiatorInterface> mirroredMasterInterface(new InitiatorInterface);
     mirroredMasterInterface->setBaseAddress(mirroredMasterBaseAddress);
     mirroredMasterInterface->setAddressSpaceRef(localAddressSpace->name());
     mirroredMasterBus->setMaster(mirroredMasterInterface);
-    mirroredMasterBus->setInterfaceMode(General::MIRROREDMASTER);
+    mirroredMasterBus->setInterfaceMode(General::MIRRORED_MASTER);
 
     // Create mirrored slave interface.
-    QSharedPointer<MirroredSlaveInterface> interfaceMirroredSlave (new MirroredSlaveInterface());
-    QSharedPointer<MirroredSlaveInterface::RemapAddress> remapAddress(
-        new MirroredSlaveInterface::RemapAddress(mirroredSlaveRemap));
+    QSharedPointer<MirroredTargetInterface> interfaceMirroredSlave (new MirroredTargetInterface());
+    QSharedPointer<MirroredTargetInterface::RemapAddress> remapAddress(
+        new MirroredTargetInterface::RemapAddress(mirroredSlaveRemap));
     interfaceMirroredSlave->getRemapAddresses()->append(remapAddress);
     interfaceMirroredSlave->setRange(mirroredSlaveRange);
 
     QSharedPointer<BusInterface> mirroredSlaveBus(new BusInterface);
     mirroredSlaveBus->setName("mirroredSlaveInterface");
     mirroredSlaveBus->setMirroredSlave(interfaceMirroredSlave);
-    mirroredSlaveBus->setInterfaceMode(General::MIRROREDSLAVE);
+    mirroredSlaveBus->setInterfaceMode(General::MIRRORED_SLAVE);
 
     newChannelComponent->getBusInterfaces()->append(mirroredMasterBus);
     newChannelComponent->getBusInterfaces()->append(mirroredSlaveBus);
@@ -2155,7 +2157,8 @@ QSharedPointer<Design> tst_MemoryMapHeaderGenerator::createTestMiddleDesign(QStr
     QSharedPointer<Component> masterComponent, QSharedPointer<Component> slaveComponent,
     QSharedPointer<Component> middleComponent)
 {
-    QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0")));
+    QSharedPointer<Design> newDesign(new Design(VLNV(VLNV::DESIGN, "TUT", "TestLibrary", designName, "1.0"), 
+        Document::Revision::Std14));
 
     QSharedPointer<ComponentInstance> masterInstance (new ComponentInstance("masterInstance_0",
         QSharedPointer<ConfigurableVLNVReference>(new ConfigurableVLNVReference(masterComponent->getVlnv()))));
@@ -2202,7 +2205,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponen
     QString const& masterBaseAddress, QString const& bridgeReference)
 {
     QSharedPointer<Component> newBridgeComponent (new Component(VLNV(VLNV::COMPONENT, "TUT", "TestLibrary",
-        componentName, "1.0")));
+        componentName, "1.0"), Document::Revision::Std14));
 
     QSharedPointer<Register> masterRegister = createTestRegister("bridgeMasterRegister", "4");
     QList<QSharedPointer<Register> > masterRegisterList;
@@ -2220,7 +2223,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponen
     newBridgeComponent->getAddressSpaces()->append(masterAddressSpace);
 
     // Create master bus interface.
-    QSharedPointer<MasterInterface> bridgeMasterInterface(new MasterInterface);
+    QSharedPointer<InitiatorInterface> bridgeMasterInterface(new InitiatorInterface);
     bridgeMasterInterface->setBaseAddress(masterBaseAddress);
     bridgeMasterInterface->setAddressSpaceRef(masterAddressSpace->name());
 
@@ -2230,7 +2233,7 @@ QSharedPointer<Component> tst_MemoryMapHeaderGenerator::createTestBridgeComponen
     bridgeMasterBus->setInterfaceMode(General::MASTER);
 
     // Create slave bus interface.
-    QSharedPointer<SlaveInterface> bridgeSlaveInterface (new SlaveInterface);
+    QSharedPointer<TargetInterface> bridgeSlaveInterface (new TargetInterface);
     if (!bridgeReference.isEmpty())
     {
         bridgeSlaveInterface->setMemoryMapRef(bridgeReference);

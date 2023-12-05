@@ -193,7 +193,7 @@ void tst_MarkdownGenerator::cleanupTestCase()
 
 void tst_MarkdownGenerator::init()
 {
-    topComponent_ = QSharedPointer<Component>(new Component(topComponentVlnv_));
+    topComponent_ = QSharedPointer<Component>(new Component(topComponentVlnv_, Document::Revision::Std14));
     library_.clear();
 
     QVERIFY(!QFile::exists(targetPath_));
@@ -1031,13 +1031,13 @@ void tst_MarkdownGenerator::testFileSetsWrittenForTopComponent()
             "|" + testFile1->getLogicalName() +
             "|" + testFile1->getBuildCommand()->getCommand() +
             "|" + testFile1->getBuildCommand()->getFlags() +
-            "|" + testFile1->getFileTypes()->join(",<br>") +
+            "|" + testFile1->getFileTypeNames().join(",<br>") +
             "|" + testFile1->getDescription() + "|  \n"
         "|[" + testFile2->name() + "](" + testFile2PathFromDoc + ")"
             "|" + testFile2->getLogicalName() +
             "|" + testFile2->getBuildCommand()->getCommand() +
             "|" + testFile2->getBuildCommand()->getFlags() +
-            "|" + testFile2->getFileTypes()->join(",<br>") +
+            "|" + testFile2->getFileTypeNames().join(",<br>") +
             "|" + testFile2->getDescription() + "|  \n"
     );
 
@@ -1054,7 +1054,7 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
     QSharedPointer<ConfigurableVLNVReference> instanceVLNV(new ConfigurableVLNVReference(firstVlnv));
     QSharedPointer<ComponentInstance> firstInstance(new ComponentInstance("firstInstance", instanceVLNV));
 
-    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv, Document::Revision::Std14));
 
     QList <QSharedPointer<Parameter> > componentParameters;
 
@@ -1130,12 +1130,12 @@ void tst_MarkdownGenerator::testViewsWrittenForTopComponent()
 void tst_MarkdownGenerator::testDesignIsWritten()
 {
     VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
-    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv));
+    QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVlnv, Document::Revision::Std14));
     library_.writeModelToFile("C:/Test/TestLibrary/TestDesign/1.0/TestDesign.1.0.xml", design);
     library_.addComponent(design);
 
     VLNV firstVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "FirstComponent", "1.0");
-    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv));
+    QSharedPointer<Component> refComponent = QSharedPointer<Component>(new Component(firstVlnv, Document::Revision::Std14));
 
     QList <QSharedPointer<Parameter> > componentParameters;
 

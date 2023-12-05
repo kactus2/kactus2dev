@@ -14,8 +14,8 @@
 
 #include <KactusAPI/KactusAPIGlobal.h>
 
-#include <ParameterizableInterface.h>
-#include <NameGroupInterface.h>
+#include "ParameterizableInterface.h"
+#include "NameGroupInterface.h"
 
 class Choice;
 class Component;

@@ -4,7 +4,6 @@
 
 HEADERS += ../../../KactusAPI/include/ParameterFinder.h \
     ../../../KactusAPI/include/PluginUtilityAdapter.h \
-    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../KactusAPI/include/utils.h \
     ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.h \
     ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.h \
@@ -20,8 +19,7 @@ HEADERS += ../../../KactusAPI/include/ParameterFinder.h \
     ../../../Plugins/MemoryMapHeaderGenerator/memorymapheadergenerator.h \
     ../../../Plugins/MemoryMapHeaderGenerator/systemheadersavemodel.h \
     ../../../common/widgets/viewSelector/viewselector.h
-SOURCES += ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
-    ../../../KactusAPI/plugins/PluginUtilityAdapter.cpp \
+SOURCES += ../../../KactusAPI/plugins/PluginUtilityAdapter.cpp \
     ../../../KactusAPI/utilities/utils.cpp \
     ../../../Plugins/MemoryMapHeaderGenerator/BaseMemoryMapHeaderWriter.cpp \
     ../../../Plugins/MemoryMapHeaderGenerator/GlobalMemoryMapHeaderWriter.cpp \

@@ -275,8 +275,8 @@ void tst_BusInterfaceValidator::testHasValidBusType()
         QFAIL("No error message found");
     }
 
-    QSharedPointer<BusDefinition> testDefinition (new BusDefinition());
-    testDefinition->setVlnv(testType);
+    QSharedPointer<BusDefinition> testDefinition (new BusDefinition(testType, Document::Revision::Std14));
+
 
     mockLibrary->addComponent(testDefinition);
 
@@ -350,8 +350,8 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeAbstractionRef()
         QFAIL("Error was not found");
     }
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     mockLibrary->addComponent(abstractionDefinition);
 
@@ -382,8 +382,8 @@ void tst_BusInterfaceValidator::testHasValidAbstractionTypeViewRef()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     LibraryMock* mockLibrary (new LibraryMock(this));
     mockLibrary->addComponent(abstractionDefinition);
@@ -453,8 +453,8 @@ void tst_BusInterfaceValidator::testMultiplePortMapLogicalPortsAreValid()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference);
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<WirePort> masterWireOne(new WirePort());
     masterWireOne->setDirection(DirectionTypes::IN);
@@ -910,8 +910,7 @@ void tst_BusInterfaceValidator::testHasValidSystemInterface()
 
     ConfigurableVLNVReference testType(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "busDefinition", "1.1");
 
-    QSharedPointer<BusDefinition> testDefinition (new BusDefinition());
-    testDefinition->setVlnv(testType);
+    QSharedPointer<BusDefinition> testDefinition (new BusDefinition(testType, Document::Revision::Std14));
 
     if (hasGroupName)
     {
@@ -1103,8 +1102,7 @@ void tst_BusInterfaceValidator::testHasValidMonitorInterface()
 
     ConfigurableVLNVReference testType(VLNV::BUSDEFINITION, "testVendor", "testLibrary", "busDefinition", "1.1");
 
-    QSharedPointer<BusDefinition> testDefinition (new BusDefinition());
-    testDefinition->setVlnv(testType);
+    QSharedPointer<BusDefinition> testDefinition (new BusDefinition(testType, Document::Revision::Std14));
 
     if (createGroup)
     {

@@ -12,7 +12,6 @@ HEADERS += ../../../KactusAPI/include/ExpressionParser.h \
     ../../../KactusAPI/include/ImportColors.h \
     ../../../common/NameGenerationPolicy.h \
     ../../../IPXACTmodels/utilities/Search.h \
-    ../../../KactusAPI/include/SystemVerilogExpressionParser.h \
     ../../../Plugins/VerilogImport/VerilogInstanceParser.h \
     ../../../Plugins/VerilogImport/VerilogParameterParser.h \
     ../../../Plugins/VerilogImport/VerilogPortParser.h \
@@ -21,7 +20,6 @@ HEADERS += ../../../KactusAPI/include/ExpressionParser.h \
     ../../../Plugins/VerilogImport/VerilogImporter.h
 SOURCES += ../../../KactusAPI/plugins/ImportHighlighter.cpp \
     ../../../common/NameGenerationPolicy.cpp \
-    ../../../KactusAPI/expressions/SystemVerilogExpressionParser.cpp \
     ../../../Plugins/VerilogImport/VerilogImporter.cpp \
     ../../../Plugins/VerilogImport/VerilogInstanceParser.cpp \
     ../../../Plugins/VerilogImport/VerilogParameterParser.cpp \

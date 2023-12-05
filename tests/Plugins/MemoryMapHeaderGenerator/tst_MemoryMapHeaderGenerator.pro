@@ -33,7 +33,7 @@ else:win32:CONFIG(debug, debug|release) {
     DESTDIR = ./debug
 }
 else:unix {
-    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels
+    LIBS += -L$$PWD/../../../executable/ -lIPXACTmodels -lKactusAPI
     DESTDIR = ./release
 }
 

@@ -10,8 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include <QtTest>
-
-#include <editors/ComponentEditor/common/ParameterCompleter.h>
+#include <QCompleter>
 
 #include <KactusAPI/include/ParameterFinder.h>
 
@@ -52,14 +51,14 @@ void tst_ParameterCompleter::testNameIsFoundAsCompletion()
     QList<QSharedPointer<Parameter> > parameters;
     parameters.append(testParameter);
 
-    QSharedPointer<Component> targetComponent(new Component());
+    QSharedPointer<Component> targetComponent(new Component(VLNV(), Document::Revision::Std14));
     targetComponent->getParameters()->append(parameters);
 
     QSharedPointer<ParameterFinder> parameterFinder(new ComponentParameterFinder(targetComponent));
 
     ComponentParameterModel* model = new ComponentParameterModel(parameterFinder, this);
 
-    QCompleter* completer = new ParameterCompleter(this);
+    QCompleter* completer = new QCompleter(this);
     completer->setModel(model);
 
     QCOMPARE(completer->completionCount(), 1);

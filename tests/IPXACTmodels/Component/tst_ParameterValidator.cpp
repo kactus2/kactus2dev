@@ -12,9 +12,9 @@
 #include <QtTest>
 #include <QSharedPointer>
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
-#include <IPXACTmodels/Component/Choice.h>
+#include <IPXACTmodels/common/Choice.h>
 #include <IPXACTmodels/common/Enumeration.h>
 #include <IPXACTmodels/common/Parameter.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -412,7 +412,7 @@ ParameterValidator* tst_ParameterValidator::createValidator(QSharedPointer<QList
 {
     QSharedPointer<SystemVerilogExpressionParser> basicParser(new SystemVerilogExpressionParser());
    
-    return new ParameterValidator(basicParser, choices);
+    return new ParameterValidator(basicParser, choices, Document::Revision::Std14);
 }
 
 //-----------------------------------------------------------------------------
@@ -422,8 +422,8 @@ bool tst_ParameterValidator::errorIsNotFoundInErrorlist(QString const& expectedE
 {
     if (!errorlist.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in errorlist:";
-        foreach(QString error, errorlist)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in errorlist:";
+        for (QString const& error : errorlist)
         {
             qDebug() << error; 
         }

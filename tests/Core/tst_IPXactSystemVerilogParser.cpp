@@ -88,7 +88,7 @@ void tst_IPXactSystemVerilogParser::testParseConstant()
     QFETCH(QString, expectedResult);
     QFETCH(bool, expectedValid);
 
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
@@ -126,11 +126,11 @@ void tst_IPXactSystemVerilogParser::testParseConstant_data()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 {
-    QSharedPointer<Component> emptyComponent(new Component());
+    QSharedPointer<Component> emptyComponent(new Component(VLNV(), Document::Revision::Std14));
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(emptyComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
+    QCOMPARE(parser.parseExpression(QString("unknownParameter")), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithUnknownReference()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 {
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("");
     firstParameter->setValue("1");
@@ -146,7 +146,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression("unknownParameter"), QString("x"));
+    QCOMPARE(parser.parseExpression(QString("unknownParameter")), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ void tst_IPXactSystemVerilogParser::testParameterWithoutId()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testParameterWithGeneratedId()
 {
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValue("1");
     testComponent->getParameters()->append(firstParameter);
@@ -174,7 +174,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithParameterReferences()
     QFETCH(QString, expectedResult);
     QFETCH(bool, expectedValid);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("one");
     firstParameter->setValue("1");
@@ -229,7 +229,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRegisterParameterReference
     QFETCH(QString, expectedResult);
     QFETCH(bool, expectedValid);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
 
     QSharedPointer<MemoryMap> memoryMap(new MemoryMap());
     testComponent->getMemoryMaps()->append(memoryMap);
@@ -283,7 +283,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithBusInterfaceParameterRefer
     QFETCH(QString, expectedResult);
     QFETCH(bool, expectedValid);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("one");
     firstParameter->setValue("1");
@@ -329,7 +329,7 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter()
     QFETCH(QString, expression);
     QFETCH(QString, expectedResult);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("1");
@@ -368,7 +368,7 @@ void tst_IPXactSystemVerilogParser::testParameterDefinedUsingOtherParameter_data
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 {
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("second");
@@ -381,7 +381,7 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QTRY_COMPARE_WITH_TIMEOUT(parser.parseExpression("second"), QString("x"), 3000);
+    QTRY_COMPARE_WITH_TIMEOUT(parser.parseExpression(QString("second")), QString("x"), 3000);
 }
 
 //-----------------------------------------------------------------------------
@@ -389,7 +389,7 @@ void tst_IPXactSystemVerilogParser::testLoopTerminatesEventually()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
 {
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("\"text\"");
@@ -402,8 +402,8 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.parseExpression("first"), QString("\"text\""));
-    QCOMPARE(parser.parseExpression("second"), QString("x"));
+    QCOMPARE(parser.parseExpression(QString("first")), QString("\"text\""));
+    QCOMPARE(parser.parseExpression(QString("second")), QString("x"));
 }
 
 //-----------------------------------------------------------------------------
@@ -411,7 +411,7 @@ void tst_IPXactSystemVerilogParser::testReferenceToStringInExpression()
 //-----------------------------------------------------------------------------
 void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
 {
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("first");
     firstParameter->setValue("'h1");
@@ -419,7 +419,7 @@ void tst_IPXactSystemVerilogParser::testGetBaseForExpression()
 
     IPXactSystemVerilogParser parser(QSharedPointer<ParameterFinder>(new ComponentParameterFinder(testComponent)));
 
-    QCOMPARE(parser.baseForExpression("2*first"), 16);
+    QCOMPARE(parser.baseForExpression(QString("2*first")), 16);
 }
 
 //-----------------------------------------------------------------------------
@@ -430,7 +430,7 @@ void tst_IPXactSystemVerilogParser::testExpressionWithRealValueParameterReferenc
     QFETCH(QString, expression);
     QFETCH(QString, expectedResult);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("firstValue");
     firstParameter->setValue("30");
@@ -471,7 +471,7 @@ void tst_IPXactSystemVerilogParser::testExpressionComparison()
     QFETCH(QString, expression);
     QFETCH(int, expectedResult);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("firstValue");
     firstParameter->setValue(valueOne);
@@ -525,7 +525,7 @@ void tst_IPXactSystemVerilogParser::testLongReferenceChainPerformance()
     QFETCH(int, chainLength);
     QFETCH(bool, useCache);
 
-    QSharedPointer<Component> testComponent(new Component());
+    QSharedPointer<Component> testComponent(new Component(VLNV(), Document::Revision::Std14));
 
     QSharedPointer<Parameter> firstParameter(new Parameter());
     firstParameter->setValueId("id_0");

@@ -105,7 +105,7 @@ void tst_ComponentPortValidator::arrayFail()
 
 	port->setName("joq");
 
-	QSharedPointer<Array> arr( new Array("eka","toka") );
+	Array arr{ "eka", "toka" };
 	port->getArrays()->append(arr);
 
 	QVector<QString> errorList;

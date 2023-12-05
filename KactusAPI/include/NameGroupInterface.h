@@ -16,7 +16,7 @@
 
 #include <IPXACTmodels/common/NameGroup.h>
 
-#include <CommonInterface.h>
+#include "CommonInterface.h"
 
 #include <QString>
 

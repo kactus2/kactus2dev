@@ -1812,14 +1812,14 @@ QSharedPointer<Component> tst_MakefileGenerator::createDesign(QSharedPointer<Des
     QSharedPointer<DesignConfiguration>& desgconf)
 {
     VLNV designVLNV(VLNV::DESIGN, "vendor", "lib", "design", "1.0");
-    design = QSharedPointer<Design>(new Design(designVLNV));
+    design = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
 
     VLNV configurationVLNV(VLNV::DESIGNCONFIGURATION, "vendor", "lib", "design-conf", "1.0");
-    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(configurationVLNV));
+    desgconf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(configurationVLNV, Document::Revision::Std14));
     desgconf->setDesignRef(designVLNV);
 
     VLNV topVLNV(VLNV::COMPONENT,"vendor","lib","master-plan","1.0");
-    QSharedPointer<Component> topComponent = QSharedPointer<Component>(new Component(topVLNV));
+    QSharedPointer<Component> topComponent = QSharedPointer<Component>(new Component(topVLNV, Document::Revision::Std14));
     topComponent->setImplementation(KactusAttribute::SYSTEM);
     
     library_.addComponent(topComponent);
@@ -1855,7 +1855,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createSW(QString swName, QStrin
 {
     VLNV swvlvnv(VLNV::COMPONENT,"vendor","lib",swName,"1.0");
 	QSharedPointer<ConfigurableVLNVReference> swvlvnv2( new ConfigurableVLNVReference( swvlvnv ) );
-    QSharedPointer<Component> swComponent = QSharedPointer<Component>(new Component(swvlvnv));
+    QSharedPointer<Component> swComponent = QSharedPointer<Component>(new Component(swvlvnv, Document::Revision::Std14));
     QSharedPointer<ComponentInstance> softInstance( new ComponentInstance );
     softInstance->setInstanceName(ComponentInstanceName);
     softInstance->setComponentRef(swvlvnv2);
@@ -1886,7 +1886,7 @@ QSharedPointer<Component> tst_MakefileGenerator::createHW(QString const& hwInsta
     QSharedPointer<ComponentInstantiation>& hardInsta, QString const& hwName/*="hardware"*/)
 {
 	VLNV hwVLNV(VLNV::COMPONENT, "vendor", "lib", hwName, "1.0");
-    QSharedPointer<Component> hwComponent = QSharedPointer<Component>(new Component(hwVLNV));
+    QSharedPointer<Component> hwComponent = QSharedPointer<Component>(new Component(hwVLNV, Document::Revision::Std14));
    
     QSharedPointer<ConfigurableVLNVReference> vlnvRef(new ConfigurableVLNVReference(hwVLNV));
     QSharedPointer<ComponentInstance> hwInstance(new ComponentInstance(hwInstanceName, vlnvRef));
@@ -1997,7 +1997,7 @@ QSharedPointer<FileSet> tst_MakefileGenerator::addFileSet(QSharedPointer<Compone
 
 	if (insta)
 	{
-		insta->getFileSetReferences()->append(fileSetName);
+		insta->getFileSetReferences()->append(QSharedPointer<FileSetRef>(new FileSetRef(fileSetName)));
 	}
 	
 	component->getFileSets()->append(fileSet);

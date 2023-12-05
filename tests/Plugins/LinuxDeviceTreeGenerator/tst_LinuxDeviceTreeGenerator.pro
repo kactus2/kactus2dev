@@ -13,7 +13,7 @@ TEMPLATE = app
 
 TARGET = tst_LinuxDeviceTreeGenerator
 
-QT += core xml gui testlib
+QT += core xml gui testlib widgets
 CONFIG += c++11 testcase console
 
 DEFINES += LINUXDEVICETREEGENERATOR_LIB

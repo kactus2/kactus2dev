@@ -89,8 +89,8 @@ void tst_BusInterfacePortMapValidator::testPortMapLogicalPortIsValid()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     if (createPort)
     {
@@ -312,8 +312,8 @@ void tst_BusInterfacePortMapValidator::testPortMapPhysicalPortIsValid()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<PortAbstraction> testLogicalAbstraction (new PortAbstraction());
     testLogicalAbstraction->setLogicalName("testLogical");
@@ -528,8 +528,8 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortDirectionsAreVali
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<WirePort> masterWire (new WirePort());
     masterWire->setDirection(DirectionTypes::str2Direction(logicalDirection, DirectionTypes::DIRECTION_INVALID));
@@ -655,8 +655,8 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortInitiativesAreVal
     QSharedPointer<ConfigurableVLNVReference> abstractionReference(new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<TransactionalPort> masterTransactional(new TransactionalPort());
     masterTransactional->setInitiative(logicalInitiative);
@@ -766,8 +766,8 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveValidType()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<PortAbstraction> testLogicalAbstraction (new PortAbstraction());
     testLogicalAbstraction->setLogicalName("testLogical");
@@ -866,8 +866,8 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveSameRange()
     QSharedPointer<ConfigurableVLNVReference> abstractionReference (new ConfigurableVLNVReference(
         VLNV::ABSTRACTIONDEFINITION, "testVendor", "testLibrary", "Everett", "5.1"));
 
-    QSharedPointer<AbstractionDefinition> abstractionDefinition (new AbstractionDefinition());
-    abstractionDefinition->setVlnv(*abstractionReference.data());
+    QSharedPointer<AbstractionDefinition> abstractionDefinition(new AbstractionDefinition(*abstractionReference,
+        Document::Revision::Std14));
 
     QSharedPointer<PortAbstraction> testLogicalAbstraction(new PortAbstraction());
     testLogicalAbstraction->setLogicalName("testLogical");

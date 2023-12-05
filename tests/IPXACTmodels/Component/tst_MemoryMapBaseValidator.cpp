@@ -9,13 +9,14 @@
 // Unit test for class MemoryMapBaseValidator.
 //-----------------------------------------------------------------------------
 
-#include <editors/ComponentEditor/common/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
 #include <IPXACTmodels/Component/validators/FieldValidator.h>
+#include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/EnumeratedValueValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
@@ -67,17 +68,18 @@ void tst_MemoryMapBaseValidator::testNameIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator);
-//     MemoryMapBaseValidator validator(parser, QSharedPointer<QList<QSharedPointer<Choice> > > ());
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
+    QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
+
     QCOMPARE(validator.hasValidName(testMap), isValid);
 
     if (!isValid)
@@ -121,16 +123,17 @@ void tst_MemoryMapBaseValidator::testIsPresentIsValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator);
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
+    QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
     QCOMPARE(validator.hasValidIsPresent(testMap), isValid);
 
     if (!isValid)
@@ -176,16 +179,17 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator);
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
+    QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), false);
 
     QVector<QString> foundErrors;
@@ -247,16 +251,16 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
 
     QSharedPointer<ExpressionParser> parser(new SystemVerilogExpressionParser());
     QSharedPointer<ParameterValidator> parameterValidator (new ParameterValidator(parser,
-        QSharedPointer<QList<QSharedPointer<Choice> > > ()));
+        QSharedPointer<QList<QSharedPointer<Choice> > > (), Document::Revision::Std14));
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator));
     QSharedPointer<RegisterValidator> registerValidator (
         new RegisterValidator(parser, fieldValidator, parameterValidator));
     QSharedPointer<RegisterFileValidator> registerFileValidator (
-        new RegisterFileValidator(parser, registerValidator, parameterValidator));
+        new RegisterFileValidator(parser, registerValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
-        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator);
+        new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, nullptr);
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), isValid);
 
     if (!isValid)
@@ -308,8 +312,8 @@ bool tst_MemoryMapBaseValidator::errorIsNotFoundInErrorList(QString const& expec
 {
     if (!errorList.contains(expectedError))
     {
-        qDebug() << "The following error:" << endl << expectedError << endl << "was not found in error list:";
-        foreach(QString error, errorList)
+        qDebug() << "The following error:" << Qt::endl << expectedError << Qt::endl << "was not found in error list:";
+        for (QString const& error : errorList)
         {
             qDebug() << error;
         }

@@ -4,4 +4,5 @@
 
 HEADERS += ../../MockObjects/LibraryMock.h 
 	
-SOURCES += ./tst_BusInterfaceValidator.cpp
+SOURCES += ../../MockObjects/LibraryMock.cpp \
+./tst_BusInterfaceValidator.cpp

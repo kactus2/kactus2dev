@@ -22,8 +22,6 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
-#include <QCheckBox>
-
 class Cpu;
 class IPluginUtility;
 

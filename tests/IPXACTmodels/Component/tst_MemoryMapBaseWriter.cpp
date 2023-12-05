@@ -103,8 +103,7 @@ void tst_MemoryMapBaseWriter::writeSimpleMemoryMapBase()
             "<ipxact:description>described</ipxact:description>"
         );
 
-    MemoryMapBaseWriter MemoryMapBaseWriter;
-    MemoryMapBaseWriter.writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_);
+    MemoryMapBaseWriter::writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -123,8 +122,7 @@ void tst_MemoryMapBaseWriter::writeIsPresent()
             "<ipxact:isPresent>8/8-1</ipxact:isPresent>"
         );
 
-    MemoryMapBaseWriter MemoryMapBaseWriter;
-    MemoryMapBaseWriter.writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_);
+    MemoryMapBaseWriter::writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -184,8 +182,7 @@ void tst_MemoryMapBaseWriter::writeAddressBlocks()
             "</ipxact:addressBlock>"
 		);
 
-    MemoryMapBaseWriter MemoryMapBaseWriter;
-    MemoryMapBaseWriter.writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_);
+    MemoryMapBaseWriter::writeMemoryMapBase(xmlStreamWriter, testMemoryMapBase_, Document::Revision::Std14);
     QCOMPARE(output, expectedOutput);
 }
 
