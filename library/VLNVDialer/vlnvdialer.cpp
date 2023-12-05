@@ -101,6 +101,10 @@ void VLNVDialer::loadFilterSettings(QSettings& settings)
     filters.validity.valid_ = settings.value("ShowValid", true).toBool();
     filters.validity.invalid_ = settings.value("ShowErrors", true).toBool();
     settings.endGroup();
+    settings.beginGroup("Revision");
+    filters.revision.std14_ = settings.value("ShowStd14", true).toBool();
+    filters.revision.std22_ = settings.value("ShowStd22", true).toBool();
+    settings.endGroup();
 
     filters_.setFilters(filters);
 }
@@ -143,6 +147,10 @@ void VLNVDialer::saveFilterSettings(QSettings& settings) const
     settings.setValue("ShowValid", filters.validity.valid_);
     settings.setValue("ShowErrors", filters.validity.invalid_);
     settings.endGroup(); // Validity
+    settings.beginGroup("Revision");
+    settings.setValue("ShowStd14", filters.revision.std14_);
+    settings.setValue("ShowStd22", filters.revision.std22_);
+    settings.endGroup(); // Revision
     settings.endGroup(); // LibraryFilters
 }
 
