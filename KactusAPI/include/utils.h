@@ -22,130 +22,148 @@ namespace Utils
     struct ImplementationOptions
     {
         //! If true then hardware components should be included in search.
-        bool hw_;
+        bool hw_{ true };
 
         //! If true then software components should be included in search.
-        bool sw_;
+        bool sw_{ true };
 
         //! If true then system components should be included in search.
-        bool system_;
+        bool system_{ true };
 
         /*! The default constructor
          *
          * Constructs struct with all options set to true.
         */
-        KACTUS2_API ImplementationOptions();
+        KACTUS2_API ImplementationOptions() = default;
     };
 
     //! Contains the search settings for hierarchy.
     struct HierarchyOptions
     {
         //! If true then global objects should be included in search.
-        bool flat_;
+        bool flat_{ true };
 
         //! If true then product objects should be included in search.
-        bool product_;
+        bool product_{ true };
 
         //! If true then board objects should be included in search.
-        bool board_;
+        bool board_{ true };
 
         //! If true then chip objects should be included in search.
-        bool chip_;
+        bool chip_{ true };
 
         //! If true then soc objects should be included in search.
-        bool soc_;
+        bool soc_{ true };
 
         //! If true then ip objects should be included in search.
-        bool ip_;
+        bool ip_{ true };
 
         /*! The default constructor.
          *
          * Constructs struct with all options set to true.
         */
-        KACTUS2_API HierarchyOptions();
+        KACTUS2_API HierarchyOptions() = default;
     };
 
     //! Contains the Re-usability search filters.
     struct FirmnessOptions
     {
         //! If true then templates should be included in search.
-        bool templates_;
+        bool templates_{ true };
 
         //! If true then mutables should be included in search.
-        bool mutable_;
+        bool mutable_{ true };
 
         //! If true then fixeds should be included in search.
-        bool fixed_;
+        bool fixed_{ true };
 
         /*! The default constructor
          *
          * Constructs struct with all options set to true
         */
-        KACTUS2_API FirmnessOptions();
+        KACTUS2_API FirmnessOptions() = default;
     };
 
     //! Contains the search options for document types.
     struct TypeOptions
     {
         //! If true then components should be included in search.
-        bool components_;
+        bool components_{ true };
 
         //! If true then bus definitions should be included in search.
-        bool buses_;
+        bool buses_{ true };
 
         //! If true then catalogs should be included in search.
-        bool catalogs_;
+        bool catalogs_{ true };
 
         //! If true then APIs/Coms should be included in search.
-        bool apis_;
+        bool apis_{ true };
 
         //! If true then other IP-Xact types should be included in search.
-        bool advanced_;
+        bool advanced_{ true };
 
         /*! The default constructor
          *
          * Constructs struct with all options set to true.
         */
-        KACTUS2_API TypeOptions();
+        KACTUS2_API TypeOptions() = default;
     };
 
     struct ValidityOptions
     {
         //! If true then valid objects should be included in search.
-        bool valid_;
+        bool valid_{ true };
 
         //! If true then invalid objects should be included in search.
-        bool invalid_;
+        bool invalid_{ true };
 
         /*! The default constructor
          *
          * Constructs struct with all options set to true.
          */
-        KACTUS2_API ValidityOptions();
+        KACTUS2_API ValidityOptions() = default;
+    };
+
+    struct RevisionOptions
+    {
+        //! If true then 2014 std objects should be included in search.
+        bool std14_{ true };
+
+        //! If true then 2022 std objects should be included in search.
+        bool std22_{ true };
+
+        /*! The default constructor
+         *
+         * Constructs struct with all options set to true.
+         */
+        KACTUS2_API RevisionOptions() = default;
     };
 
     struct FilterOptions
     {
         //! Contains Type settings.
-        Utils::TypeOptions type;
+        Utils::TypeOptions type{};
 
         //! Contains Implementation settings.
-        Utils::ImplementationOptions implementation;
+        Utils::ImplementationOptions implementation{};
 
         //! Contains Hierarchy settings.
-        Utils::HierarchyOptions hierarchy;
+        Utils::HierarchyOptions hierarchy{};
 
         //! Contains Firmness settings.
-        Utils::FirmnessOptions firmness;
+        Utils::FirmnessOptions firmness{};
+
+        //! Contains Revision settings.
+        Utils::RevisionOptions revision{};
 
         //! Contains Validity settings.
-        Utils::ValidityOptions validity;
+        Utils::ValidityOptions validity{};
 
         /*! The default constructor
          *
          * Constructs struct with all options set to true.
         */
-        KACTUS2_API FilterOptions() : type(), implementation(), hierarchy(), firmness(), validity() {};
+        KACTUS2_API FilterOptions() = default;
     };
 
 

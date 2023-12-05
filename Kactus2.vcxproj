@@ -947,6 +947,7 @@ CreateHelp
     <ClCompile Include="library\VLNVDialer\firmnessgroup.cpp" />
     <ClCompile Include="library\VLNVDialer\hierarchygroup.cpp" />
     <ClCompile Include="library\VLNVDialer\implementationgroup.cpp" />
+    <ClCompile Include="library\VLNVDialer\RevisionGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\typegroup.cpp" />
     <ClCompile Include="library\VLNVDialer\ValidityGroup.cpp" />
     <ClCompile Include="library\VLNVDialer\vlnvdialer.cpp" />
@@ -2214,6 +2215,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\FilterGroup.h" />
     <QtMoc Include="library\VLNVDialer\ValidityGroup.h" />
+    <QtMoc Include="library\VLNVDialer\RevisionGroup.h" />
     <ClInclude Include="mainwindow\CommandLineParser.h" />
     <ClInclude Include="mainwindow\Ribbon\RibbonTheme.h" />
     <ClInclude Include="mainwindow\SaveHierarchy\DocumentTreeBuilder.h" />

@@ -63,6 +63,11 @@ bool LibraryTreeFilter::checkType(VLNV const& vlnv) const
     VLNV::IPXactType documentType = libraryAccess->getDocumentType(vlnv);
     QSharedPointer<Document const> document = libraryAccess->getModelReadOnly(vlnv);
     
+    if (checkRevision(document->getRevision()) == false)
+    {
+        return false;
+    }
+
     if (checkTags(document) == false)
     {
         return false;

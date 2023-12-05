@@ -888,7 +888,8 @@ HEADERS += ./editors/ComponentEditor/ports/PortSummaryColumns.h \
     ./editors/ComponentEditor/ports/PortSummaryFilter.h \
     ./editors/ComponentEditor/ports/PortSummaryDelegate.h \
     ./editors/ComponentEditor/ports/PortSummaryEditorFactory.h \
-    ./editors/ComponentEditor/ports/PortSummaryView.h
+    ./editors/ComponentEditor/ports/PortSummaryView.h \
+    ./library/VLNVDialer/RevisionGroup.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1675,5 +1676,6 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/ports/PortSummaryModel.cpp \
     ./editors/ComponentEditor/ports/PortSummaryDelegate.cpp \
     ./editors/ComponentEditor/ports/PortSummaryEditorFactory.cpp \
-    ./editors/ComponentEditor/ports/PortSummaryView.cpp
+    ./editors/ComponentEditor/ports/PortSummaryView.cpp \
+    ./library/VLNVDialer/RevisionGroup.cpp
 RESOURCES += kactus.qrc

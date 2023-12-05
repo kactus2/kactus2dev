@@ -53,10 +53,13 @@ VLNVDialer::VLNVDialer(QWidget *parent):
 		this, SIGNAL(typeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
 	connect(&filters_, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)),
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
+    connect(&filters_, SIGNAL(revisionChanged(Utils::RevisionOptions const&)),
+        this, SIGNAL(revisionChanged(Utils::RevisionOptions const&)), Qt::UniqueConnection);
     connect(&filters_, SIGNAL(validityChanged(Utils::ValidityOptions const&)),
             this, SIGNAL(validityChanged(Utils::ValidityOptions const&)), Qt::UniqueConnection);
     connect(&filters_, SIGNAL(optionsChanged(Utils::FilterOptions const&)),
         this, SIGNAL(filtersChanged(Utils::FilterOptions const&)), Qt::UniqueConnection);
+  
     connect(tagFilter_, SIGNAL(contentChanged()), this, SLOT(onHandleTagFilterChange()), Qt::UniqueConnection);
 
     setupLayout();

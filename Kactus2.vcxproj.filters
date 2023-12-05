@@ -3262,6 +3262,15 @@
     <ClCompile Include="editors\ComponentEditor\common\InstantiationConfigurableElementEditor.cpp">
       <Filter>Source Files\editors\ComponentEditor\common</Filter>
     </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.cpp">
+      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    </ClCompile>
     <ClCompile Include="common\widgets\TreeItemSelector\TreeItemEditor.cpp">
       <Filter>Source Files\common\widgets\TreeItemSelector</Filter>
     </ClCompile>
@@ -3352,14 +3361,8 @@
     <ClCompile Include="editors\ComponentEditor\ports\PortSummaryView.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
-    </ClCompile>
-    <ClCompile Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.cpp">
-      <Filter>Source Files\editors\ComponentEditor\memoryMaps</Filter>
+    <ClCompile Include="library\VLNVDialer\RevisionGroup.cpp">
+      <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5975,6 +5978,15 @@
     <QtMoc Include="editors\ComponentEditor\modes\PortSliceDelegate.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.h">
+      <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
+    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\modes\FieldSliceModel.h">
       <Filter>Header Files\editors\ComponentEditor\modes</Filter>
     </QtMoc>
@@ -6041,15 +6053,6 @@
     <QtMoc Include="editors\common\ComponentInstanceEditor\PowerDomainLinkDelegate.h">
       <Filter>Header Files\editors\common\ComponentInstanceEditor</Filter>
     </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesDelegate.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesEditor.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </QtMoc>
-    <QtMoc Include="editors\ComponentEditor\memoryMaps\AccessPoliciesModel.h">
-      <Filter>Header Files\editors\ComponentEditor\memoryMaps</Filter>
-    </QtMoc>
     <QtMoc Include="editors\ComponentEditor\treeStructure\WirePortsItem.h">
       <Filter>Header Files\editors\ComponentEditor\treeStructure</Filter>
     </QtMoc>
@@ -6070,6 +6073,9 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\PortSummaryView.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="library\VLNVDialer\RevisionGroup.h">
+      <Filter>Header Files\library\VLNVDialer</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

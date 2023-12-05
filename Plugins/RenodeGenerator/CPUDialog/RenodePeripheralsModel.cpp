@@ -14,6 +14,7 @@
 #include <common/KactusColors.h>
 
 #include <QColor>
+#include <QIcon>
 #include <QDir>
 
 #include <Plugins/RenodeGenerator/CPUDialog/RenodeColumns.h>

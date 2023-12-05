@@ -20,10 +20,6 @@
 //-----------------------------------------------------------------------------
 LibraryFilter::LibraryFilter(LibraryInterface* libraryAccess, QObject *parent):
 QSortFilterProxyModel(parent), 
-    firmness_(),
-    implementation_(),
-    hierarchy_(),
-    tags_(),
     libraryAccess_(libraryAccess)
 {
 	// set settings for filter
@@ -32,7 +28,6 @@ QSortFilterProxyModel(parent),
 
     Q_ASSERT(libraryAccess_);
 }
-
 
 //-----------------------------------------------------------------------------
 // Function: LibraryFilter::onFiltersChanged()
@@ -43,6 +38,8 @@ void LibraryFilter::onFiltersChanged(Utils::FilterOptions const& filters)
     implementation_ = filters.implementation;
     type_ = filters.type;
     hierarchy_ = filters.hierarchy;
+    revision_ = filters.revision;
+    validity_ = filters.validity;
     invalidateFilter();
 }
 
@@ -80,6 +77,15 @@ void LibraryFilter::onHierarchyChanged(Utils::HierarchyOptions const& options)
 {
 	hierarchy_ = options;
 	invalidateFilter();
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::onRevisionChanged()
+//-----------------------------------------------------------------------------
+void LibraryFilter::onRevisionChanged(Utils::RevisionOptions const& options)
+{
+    revision_ = options;
+    invalidateFilter();
 }
 
 //-----------------------------------------------------------------------------
@@ -229,6 +235,21 @@ bool LibraryFilter::checkHierarchy(QSharedPointer<Component const> component) co
     {
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: LibraryFilter::checkRevision()
+//-----------------------------------------------------------------------------
+bool LibraryFilter::checkRevision(Document::Revision revision) const
+{
+    switch (revision)
+    {
+        case Document::Revision::Std14: return revision_.std14_;
+        case Document::Revision::Std22: return revision_.std22_;
+        case Document::Revision::Unknown: return true;
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------

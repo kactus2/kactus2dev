@@ -22,14 +22,16 @@ firmness_(this),
 implementation_(this),
 type_(this),
 hierarchy_(this),
-validity_(this)
+validity_(this),
+revision_(this)
 {
 	QVBoxLayout* layout = new QVBoxLayout(this);
 	layout->addWidget(&type_);
 	layout->addWidget(&implementation_);
 	layout->addWidget(&hierarchy_);
-	layout->addWidget(&firmness_);
+    layout->addWidget(&firmness_);
     layout->addWidget(&validity_);
+    layout->addWidget(&revision_);
 	layout->addStretch();
 	layout->setSpacing(0);
 	layout->setContentsMargins(0, 0, 0, 0);
@@ -42,15 +44,10 @@ validity_(this)
 		this, SIGNAL(typeChanged(const Utils::TypeOptions&)), Qt::UniqueConnection);
 	connect(&hierarchy_, SIGNAL(optionsChanged(const Utils::HierarchyOptions&)),
 		this, SIGNAL(hierarchyChanged(const Utils::HierarchyOptions&)), Qt::UniqueConnection);
+    connect(&revision_, SIGNAL(optionsChanged(const Utils::RevisionOptions&)),
+        this, SIGNAL(revisionChanged(const Utils::RevisionOptions&)), Qt::UniqueConnection);
     connect(&validity_, SIGNAL(optionsChanged(const Utils::ValidityOptions&)),
                this, SIGNAL(validityChanged(const Utils::ValidityOptions&)), Qt::UniqueConnection);
-}
-
-//-----------------------------------------------------------------------------
-// Function: FilterWidget::~FilterWidget()
-//-----------------------------------------------------------------------------
-FilterWidget::~FilterWidget()
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -63,6 +60,7 @@ void FilterWidget::setFilters(Utils::FilterOptions options)
     implementation_.setImplementation(options.implementation);  
     hierarchy_.setHierarchy(options.hierarchy);  
     firmness_.setFirmness(options.firmness);
+    revision_.setRevision(options.revision);
     validity_.setValidity(options.validity);
     blockSignals(false);
 
@@ -79,6 +77,7 @@ Utils::FilterOptions FilterWidget::getFilters() const
     options.implementation = implementation_.getImplementation();
     options.hierarchy = hierarchy_.getHierarchy();
     options.firmness = firmness_.getFirmness();
+    options.revision = revision_.getRevision();
     options.validity = validity_.getValidity();
     return options;
 }
@@ -92,5 +91,6 @@ void FilterWidget::selectAll(bool select)
     implementation_.selectAll(select);
     hierarchy_.selectAll(select);
     firmness_.selectAll(select);
+    revision_.selectAll(select);
     validity_.selectAll(select);
 }

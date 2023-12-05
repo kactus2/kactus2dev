@@ -80,6 +80,9 @@ signals:
 	//! Emitted when hierarchy options change.
 	void hierarchyChanged(Utils::HierarchyOptions const& options);
 
+    //! Emitted when revision options change.
+    void revisionChanged(Utils::RevisionOptions const& options);
+
     //! Emitted when validity options change.
     void validityChanged(Utils::ValidityOptions const& options);
 

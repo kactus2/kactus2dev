@@ -69,6 +69,9 @@ public slots:
 	//! Handler for when hierarchy options change.
 	void onHierarchyChanged(Utils::HierarchyOptions const& options);
 
+    //! Handler for when revision options change.
+    void onRevisionChanged(Utils::RevisionOptions const& options);
+
     //! Handler for when validity options change.
     void onValidityChanged(Utils::ValidityOptions const& options);
 
@@ -120,6 +123,8 @@ protected:
 	//! Check the hierarchy matching.
 	bool checkHierarchy(QSharedPointer<Component const> component) const;
 
+    //! Check the revision matching.
+    bool checkRevision(Document::Revision revision) const;
     /*!
      * 
      *  Check the validity of the selected document.
@@ -173,7 +178,10 @@ private:
  
 	//! Contains filters for hierarchy
 	Utils::HierarchyOptions hierarchy_; 
-    
+
+    //! Contains filters for revision
+    Utils::RevisionOptions revision_;
+
     //! Contains filters for validity
     Utils::ValidityOptions validity_;
 
