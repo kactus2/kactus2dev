@@ -29,12 +29,11 @@
 // Function: ModesEditor::ModesEditor()
 //-----------------------------------------------------------------------------
 ModesEditor::ModesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-    ExpressionSet expressions,
 	QWidget* parent) :
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, expressions, this)
+    model_(component, this)
 {
     // display a label on top the table
     SummaryLabel* summaryLabel = new SummaryLabel(tr("Modes summary"), this);

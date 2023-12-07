@@ -58,7 +58,7 @@ public:
      *
      *      @return True, if the AbstractionDefinition is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<AbstractionDefinition> abstractionDefinition);
+    bool validate(QSharedPointer<AbstractionDefinition> abstractionDefinition);
 
     /*!
      *  Finds possible errors in a AbstractionDefinition and creates a list of them.
@@ -66,7 +66,7 @@ public:
      *      @param [in] errors      List of found errors.
      *      @param [in] AbstractionDefinition   The AbstractionDefinition whose errors to find.
      */
-    virtual void findErrorsIn(QVector<QString>& errors,
+    void findErrorsIn(QVector<QString>& errors,
 		QSharedPointer<AbstractionDefinition> abstractionDefinition);
 
 private:

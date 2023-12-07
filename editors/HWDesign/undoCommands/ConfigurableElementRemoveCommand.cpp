@@ -23,8 +23,8 @@ QObject(0),
 QUndoCommand(parent),
 parentName_(parentName),
 itemRow_(itemRow),
-configurableElements_(configurableElements),
 rowInConfigurableElements_(0),
+configurableElements_(configurableElements),
 removedElement_(getRemovedConfigurableElement(elementID))
 {
 

@@ -39,11 +39,9 @@ public:
 	 *      @param [in] component   The component being edited.
 	 *      @param [in] handler     The instance managing the library.
      *      @param [in] validator   The validator for Modes.
-     *      @param [in] expressions	The collection of objects for expression handling.
 	 *      @param [in] parent      The parent of this editor.
 	*/
 	ModesEditor(QSharedPointer<Component> component, LibraryInterface* handler, 
-		ExpressionSet expressions,
 		QWidget* parent = 0);
 	
 	//! The destructor

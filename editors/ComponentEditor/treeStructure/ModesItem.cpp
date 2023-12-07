@@ -70,7 +70,7 @@ ItemEditor* ModesItem::editor()
 {
     if (!editor_)
     {
-        editor_ = new ModesEditor(component_, libHandler_, expressions_);
+        editor_ = new ModesEditor(component_, libHandler_);
         editor_->setProtection(locked_);
         
         connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);

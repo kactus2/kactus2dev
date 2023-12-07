@@ -25,7 +25,6 @@
 // Function: ModesModel::ModesModel()
 //-----------------------------------------------------------------------------
 ModesModel::ModesModel(QSharedPointer<Component> component, 
-    ExpressionSet expressions,
     QObject* parent): 
     QAbstractTableModel(parent),
     modes_(component->getModes())

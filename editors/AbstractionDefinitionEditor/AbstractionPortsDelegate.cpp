@@ -207,11 +207,7 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
         Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setModelData", "Type conversion failed for qualifier editor");
 
-        auto qualifierData = qualifierEditor->getQualifierData();
-        QVariant qualifierAsVariant;
-        qualifierAsVariant.setValue(qualifierData);
-
-        model->setData(index, qualifierAsVariant, Qt::EditRole);
+        model->setData(index, QVariant::fromValue(qualifierEditor->getQualifierData()), Qt::EditRole);
     }
     else
     {

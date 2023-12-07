@@ -56,7 +56,7 @@ void CatalogFileFilter::onOpenItem(QModelIndex const& index)
 //-----------------------------------------------------------------------------
 // Function: CatalogFileFilter::filterAcceptsColumn()
 //-----------------------------------------------------------------------------
-bool CatalogFileFilter::filterAcceptsRow(int source_row, const QModelIndex& source_parent) const
+bool CatalogFileFilter::filterAcceptsRow(int source_row, const QModelIndex& /*source_parent*/) const
 {
     if (source_row == CatalogFileColumns::TYPE_DEFINITIONS && docRevision_ != Document::Revision::Std22)
     {

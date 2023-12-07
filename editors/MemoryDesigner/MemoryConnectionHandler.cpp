@@ -447,7 +447,7 @@ QVector<MainMemoryGraphicsItem*> MemoryConnectionHandler::createSpaceChain(
 
     MemoryConnectionAddressCalculator::ChainedSpace previousChainedSpace;
 
-    foreach(MemoryConnectionAddressCalculator::ChainedSpace chainedSpace, spaceChain)
+    for(auto const& chainedSpace : spaceChain)
     {
         MainMemoryGraphicsItem* connectionMiddleItem = getMainGraphicsItem(
             chainedSpace.spaceInterface_, MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME);
@@ -455,8 +455,6 @@ QVector<MainMemoryGraphicsItem*> MemoryConnectionHandler::createSpaceChain(
         if (connectionMiddleItem != spaceChainStartItem)
         {
             connectionMiddleItem->changeAddressRange(chainedSpace.spaceConnectionBaseAddress_);
-
-            QPointF middlePosition = connectionMiddleItem->scenePos();
 
             spaceItemChain.append(connectionMiddleItem);
 

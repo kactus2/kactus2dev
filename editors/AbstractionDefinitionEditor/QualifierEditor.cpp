@@ -145,7 +145,7 @@ QMap<QString, QString> QualifierEditor::getAttributes() const
 //-----------------------------------------------------------------------------
 QualifierData QualifierEditor::getQualifierData() const
 {
-    return QualifierData(getSelectedItems(), getAttributes());
+    return QualifierData{ getSelectedItems(), getAttributes() };
 }
 
 //-----------------------------------------------------------------------------

@@ -61,7 +61,7 @@ itemMatcher_(itemMatcher)
 void AutoConnectorConnectionTable::setupActions()
 {
     QList<QKeySequence> addRowShortcuts;
-    addRowShortcuts << QKeySequence::InsertLineSeparator << Qt::SHIFT + Qt::Key_Return;
+    addRowShortcuts << QKeySequence::InsertLineSeparator << QKeySequence(Qt::SHIFT | Qt::Key_Return);
 
     addAction(addRowAction_);
     addRowAction_->setToolTip(tr("Add a new row to table"));
@@ -73,7 +73,7 @@ void AutoConnectorConnectionTable::setupActions()
     addAction(removeRowAction_);
     removeRowAction_->setToolTip(tr("Remove a connection from the table"));
     removeRowAction_->setStatusTip(tr("Remove a connection from the table"));
-    removeRowAction_->setShortcut(Qt::SHIFT + Qt::Key_Delete);
+    removeRowAction_->setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeRowAction_->setShortcutContext(Qt::WidgetShortcut);
     connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
 

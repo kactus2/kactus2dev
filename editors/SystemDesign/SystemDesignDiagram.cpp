@@ -1261,7 +1261,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     // Create (HW) component instances.
     if (!onlySW_)
     {
-        for (QSharedPointer<ComponentInstance> instance : *design->getComponentInstances())
+        for (auto const& instance : *design->getComponentInstances())
         {
             QSharedPointer<Document> libComponent = getLibraryInterface()->getModel(*instance->getComponentRef());
             QSharedPointer<Component> component = libComponent.staticCast<Component>();
@@ -1317,7 +1317,7 @@ void SystemDesignDiagram::loadDesign(QSharedPointer<Design> design)
     }
 
     // Create SW instances.
-    for (QSharedPointer<ComponentInstance> const instance : *design->getComponentInstances())
+    for (auto const& instance : *design->getComponentInstances())
     {
         QSharedPointer<Component> component;
 

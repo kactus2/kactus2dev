@@ -351,39 +351,28 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
         }
     }
 
-    else if (role == Qt::UserRole)
+    else if (role == Qt::UserRole && index.column() == LogicalPortColumns::QUALIFIER)
     {
-        if (index.column() == LogicalPortColumns::QUALIFIER)
+        QStringList qualifierList;
+        for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
         {
-            QStringList qualifierList;
-            for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
-            {
-                qualifierList.append(QString::fromStdString(qualifier));
-            }
-
-            std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
-            QMap<QString, QString> attributes;
-
-            for (int i = 0; i + 1 < attributesList.size(); i += 2)
-            {
-                auto const& name = QString::fromStdString(attributesList.at(i));
-                auto const& value = QString::fromStdString(attributesList.at(i + 1));
-
-                attributes.insert(name, value);
-            }
-
-            QualifierData qualifierData;
-            QVariant qualifierAsVariant;
-
-            qualifierData.activeQualifiers_ = qualifierList;
-            qualifierData.attributes_ = attributes;
-
-            qualifierAsVariant.setValue(qualifierData);
-            
-            return qualifierAsVariant;
+            qualifierList.append(QString::fromStdString(qualifier));
         }
+
+        std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
+        QMap<QString, QString> attributes;
+
+        for (size_t i = 0; i + 1 < attributesList.size(); i += 2)
+        {
+            auto const& name = QString::fromStdString(attributesList.at(i));
+            auto const& value = QString::fromStdString(attributesList.at(i + 1));
+
+            attributes.insert(name, value);
+        }
+
+        return QVariant::fromValue(QualifierData{ qualifierList, attributes });
     }
- 
+
 
     return QVariant();
 }

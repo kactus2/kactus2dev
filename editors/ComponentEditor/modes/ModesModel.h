@@ -37,11 +37,9 @@ public:
 	/*! The constructor
 	 *
      *      @param [in] component   The component being edited.
-     *      @param [in] expressions	The collection of objects for expression handling.
 	 *      @param [in] parent      The owner of this model.
 	*/
 	ModesModel(QSharedPointer<Component> component, 
-		ExpressionSet expressions,
         QObject* parent);
 	
 	//! The destructor
