@@ -323,9 +323,15 @@ QStringList FieldAccessPoliciesModel::mimeTypes() const
 //-----------------------------------------------------------------------------
 void FieldAccessPoliciesModel::onAddRow(QModelIndex const& index)
 {
-    int lastRow = fieldInterface_->getAccessPolicyCount(fieldName_);
+    int row = fieldInterface_->getAccessPolicyCount(fieldName_);
 
-    beginInsertRows(QModelIndex(), lastRow, lastRow);
+    // if the index is valid then add the item to the correct position
+    if (index.isValid())
+    {
+        row = index.row();
+    }
+
+    beginInsertRows(QModelIndex(), row, row);
     fieldInterface_->addFieldAccessPolicy(fieldName_);
     endInsertRows();
 

@@ -18,8 +18,6 @@
 
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 
-#include <editors/ComponentEditor/remapStates/ValueOrIndexedValueEditor.h>
-
 #include <IPXACTmodels/common/Choice.h>
 
 #include <QCompleter>

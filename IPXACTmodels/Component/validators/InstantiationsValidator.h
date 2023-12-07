@@ -105,7 +105,7 @@ public:
      *
      *      @return True, if the design configuration instantiation is valid IP-XACT, otherwise false.
      */
-	bool validateDesignConfigurationInstantiation(QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision) const;
+	bool validateDesignConfigurationInstantiation(QSharedPointer<DesignConfigurationInstantiation> instantiation) const;
 	
     /*!
      *  Check if the design configuration reference is valid.
