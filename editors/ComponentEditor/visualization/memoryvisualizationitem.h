@@ -163,7 +163,7 @@ protected:
 
     //! Mark all invalid children outside item boundaries.
     virtual void markConflictingChildren();
- 
+
 	//! Handler for mouse press events
 	virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
 
@@ -181,6 +181,13 @@ private:
      *      @return True, if there is empty space, otherwise false.
      */
     bool emptySpaceBeforeChild(MemoryVisualizationItem const* current, quint64 lastAddressInUse) const;
+
+    /*!
+     *	Mark child and its preceding children conflicting, if overlapping.
+     *  
+     *      @param [in] child     The child to check.   
+     */
+    void markChildIfConflicting(MemoryVisualizationItem* child);
 
     /*!
      *  Creates a new child for representing a free memory slot.
