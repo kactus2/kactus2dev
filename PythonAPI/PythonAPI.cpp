@@ -57,6 +57,10 @@
 #include <IPXACTmodels/Design/Interconnection.h>
 #include <IPXACTmodels/Design/AdHocConnection.h>
 #include <IPXACTmodels/Design/ActiveInterface.h>
+#include <IPXACTmodels/Design/Design.h>
+
+
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
@@ -175,7 +179,7 @@ void PythonAPI::setDefaultLibraryPath(std::string const& path) const
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::setDefaultLibraryPath()
 //-----------------------------------------------------------------------------
-int PythonAPI::importFile(std::string const& path, std::string vlnv, bool overwrite /*= false*/) const
+int PythonAPI::importFile(std::string const& path, std::string const& vlnv, bool overwrite /*= false*/) const
 {
     VLNV targetVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
 
@@ -252,7 +256,7 @@ std::vector<std::string> PythonAPI::listComponentVLNVs() const
 {
     std::vector<std::string> componentVLNVs;
 
-    for (auto itemVLNV : library_->getAllVLNVs())
+    for (auto const& itemVLNV : library_->getAllVLNVs())
     {
         if (itemVLNV.getType() == VLNV::COMPONENT)
         {
@@ -267,7 +271,7 @@ std::vector<std::string> PythonAPI::listComponentVLNVs() const
 // Function: PythonAPI::vlnvExistsInLibrary()
 //-----------------------------------------------------------------------------
 bool PythonAPI::vlnvExistsInLibrary(std::string const& vendor, std::string const& library, std::string const& name,
-    std::string const& version)
+    std::string const& version) const
 {
     if (vendor.empty() || library.empty() || name.empty() || version.empty())
     {
@@ -348,7 +352,7 @@ std::string PythonAPI::getVLNVDirectory(std::string const& vendor, std::string c
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getFirstViewName()
 //-----------------------------------------------------------------------------
-std::string PythonAPI::getFirstViewName()
+std::string PythonAPI::getFirstViewName() const
 {
     if (activeComponent_)
     {
@@ -365,7 +369,7 @@ std::string PythonAPI::getFirstViewName()
         }
     }
 
-    return std::string("");
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -444,7 +448,7 @@ void PythonAPI::closeOpenComponent()
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getComponentName()
 //-----------------------------------------------------------------------------
-std::string PythonAPI::getComponentName()
+std::string PythonAPI::getComponentName() const
 {
     if (activeComponent_)
     {
@@ -452,14 +456,14 @@ std::string PythonAPI::getComponentName()
     }
     else
     {
-        return std::string("");
+        return std::string();
     }
 }
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::getComponentDescription()
 //-----------------------------------------------------------------------------
-std::string PythonAPI::getComponentDescription()
+std::string PythonAPI::getComponentDescription() const
 {
     if (activeComponent_)
     {
@@ -467,7 +471,7 @@ std::string PythonAPI::getComponentDescription()
     }
     else
     {
-        return std::string("");
+        return std::string();
     }
 }
 
@@ -829,6 +833,76 @@ void PythonAPI::setFileBuildersForInterface(std::string const& setName)
     }
 
     builderInterface->setFileBuilders(containingFileSet->getDefaultFileBuilders());
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::createDesign()
+//-----------------------------------------------------------------------------
+bool PythonAPI::createDesign(std::string const& vendor, std::string const& library, 
+    std::string const& name, std::string const& version)
+{
+    if (vendor.empty() || library.empty() || name.empty() || version.empty())
+    {
+        messager_->showError("Error in given VLNV.");
+        return false;
+    }
+
+    VLNV componentVLNV(VLNV::DESIGN, 
+        QString::fromStdString(vendor), 
+        QString::fromStdString(library),
+        QString::fromStdString(name),
+        QString::fromStdString(version));
+
+    if (createComponent(vendor, library, name, version) == false)
+    {
+        messager_->showError("Error in creating containing component.");
+        return false;
+    }
+
+    VLNV designVLNV(VLNV::DESIGN, componentVLNV.getVendor(), componentVLNV.getLibrary(),
+        componentVLNV.getName() + ".design", componentVLNV.getVersion());
+    VLNV desConfVLNV(VLNV::DESIGNCONFIGURATION, componentVLNV.getVendor(), componentVLNV.getLibrary(),
+        componentVLNV.getName()+ ".designcfg", componentVLNV.getVersion());
+
+    if (library_->contains(designVLNV))
+    {
+        return false;
+    }
+
+    QSharedPointer<DesignConfigurationInstantiation> hierarchicalInstantiation
+    (new DesignConfigurationInstantiation(desConfVLNV.getName() + "_" + desConfVLNV.getVersion()));
+
+    QSharedPointer<ConfigurableVLNVReference> tempReference(new ConfigurableVLNVReference(desConfVLNV));
+    hierarchicalInstantiation->setDesignConfigurationReference(tempReference);
+
+    QSharedPointer<View> newHierarchicalView(new View(QStringLiteral("hierarchical")));
+    newHierarchicalView->setDesignConfigurationInstantiationRef(hierarchicalInstantiation->name());
+
+    activeComponent_->getDesignConfigurationInstantiations()->append(hierarchicalInstantiation);
+    activeComponent_->getViews()->append(newHierarchicalView);
+
+    auto design = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
+    design->setVersion(KactusAPI::getVersionFileString());
+    design->setDesignImplementation(KactusAttribute::HW);
+
+
+    auto designConf = QSharedPointer<DesignConfiguration>(new DesignConfiguration(desConfVLNV, Document::Revision::Std14));
+    designConf->setDesignRef(designVLNV);
+    designConf->setDesignConfigImplementation(KactusAttribute::HW);
+    designConf->setVersion(KactusAPI::getVersionFileString());
+
+    if (QString directory = KactusAPI::getDefaultLibraryPath() + "/" + designVLNV.toString(QStringLiteral("/"));        
+        !library_->writeModelToFile(activeComponent_) ||
+        !library_->writeModelToFile(directory, design) ||
+        !library_->writeModelToFile(directory, designConf))
+    {
+        messager_->showError("Error saving file to disk.");
+        return false;
+    }
+
+    openDesign(designVLNV.toString().toStdString());
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

@@ -157,7 +157,7 @@ public:
      *
      *     @return The number of imported IP-XACT components.
      */
-    int importFile(std::string const& path, std::string vlnv, bool overwrite = false) const;
+    int importFile(std::string const& path, std::string const& vlnv, bool overwrite = false) const;
 
     /*!
      * Run a file generation for a component.
@@ -205,7 +205,7 @@ public:
      *      @return True, if the VLNV exists in the library, false otherwise.
      */
     bool vlnvExistsInLibrary(std::string const& vendor, std::string const& library, std::string const& name,
-        std::string const& version);
+        std::string const& version) const;
 
     /*!
      *  Create a new component with the selected VLNV.
@@ -238,7 +238,7 @@ public:
      *
      *      @return Name of the first view contained within the active component.
      */
-    std::string getFirstViewName();
+    std::string getFirstViewName() const;
 
     /*!
      *  Set the selected component as active component.
@@ -258,13 +258,13 @@ public:
      *  Get the name of the active component.
      */
 
-    std::string getComponentName();
+    std::string getComponentName() const;
 
     /*!
      *  Get the description of the active component.
      */
 
-    std::string getComponentDescription();
+    std::string getComponentDescription() const;
 
     /*!
      *  Save the component to the library.
@@ -321,6 +321,19 @@ public:
      *      @param [in] setName     Name of the file set containing the available file builders.
      */
     void setFileBuildersForInterface(std::string const& setName);
+        
+    /*!
+     *  Create a new design with the selected VLNV.
+     *
+     *      @param [in] vendor      Vendor of the selected VLNV.
+     *      @param [in] library     Library of the selected VLNV.
+     *      @param [in] name        Name of the selected VLNV.
+     *      @param [in] version     Version of the selected VLNV.
+     *
+     *      @return True, if the design was created successfully, false otherwise.
+     */
+    bool createDesign(std::string const& vendor, std::string const& library, std::string const& name,
+        std::string const& version);
 
     /*!
      *  Set the selected design as active design.
