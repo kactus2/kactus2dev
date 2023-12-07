@@ -158,16 +158,12 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<Range> const & lo
             return true;
         }
 
-        bool leftToIntOk = true;
-        qint64 leftValue = 0;
         auto [leftToIntOk, leftValue] = checkAndParseExpression(logicalRange->getLeft());
         if (!leftToIntOk)
         {
             return false;
         }
 
-        bool rightToIntOk = true;
-        qint64 rightValue = 0;
         auto [rightToIntOk, rightValue] = checkAndParseExpression(logicalRange->getRight());
         if (!rightToIntOk)
         {
