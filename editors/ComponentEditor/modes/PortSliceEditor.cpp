@@ -55,8 +55,8 @@ QWidget(parent),
 	view_.setDefaultImportExportPath(defPath);
 	view_.setAllowImportExport(true);
 	view_.setItemsDraggable(false);
-	view_.setSortingEnabled(true);
-
+    view_.setSortingEnabled(true);
+    view_.hideColumn(PortSliceColumns::SUB_PORT);
 
     ComponentParameterModel* parameterModel = new ComponentParameterModel(expressions.finder, this);
     parameterModel->setExpressionParser(expressions.parser);
