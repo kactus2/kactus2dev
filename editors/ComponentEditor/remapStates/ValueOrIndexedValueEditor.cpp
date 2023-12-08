@@ -43,7 +43,8 @@ arrayView_(new ArrayView(this)),
 expressionParser_(parser),
 parameterFinder_(finder),
 expressionFormatter_(formatter),
-parameterModel_(new ComponentParameterModel(finder, this))
+parameterModel_(new ComponentParameterModel(finder, this)),
+docRevision_(docRevision)
 {
     parameterModel_->setExpressionParser(parser);
 

@@ -123,7 +123,7 @@ void InstantiationsValidator::findErrorsInDesignInstantiation(QVector<QString>& 
 // Function: InstantiationsValidator::validateDesignConfigurationInstantiation()
 //-----------------------------------------------------------------------------
 bool InstantiationsValidator::validateDesignConfigurationInstantiation(
-	QSharedPointer<DesignConfigurationInstantiation> instantiation, Document::Revision docRevision) const
+	QSharedPointer<DesignConfigurationInstantiation> instantiation) const
 {
     return hasValidName(instantiation->name()) && hasValidDesignConfigurationReference(instantiation) &&
         hasValidParameters(instantiation->getParameters());

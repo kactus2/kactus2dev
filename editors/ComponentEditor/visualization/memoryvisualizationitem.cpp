@@ -240,36 +240,39 @@ void MemoryVisualizationItem::fillGapsBetweenChildren()
 // Function: MemoryVisualizationItem::markConflictingChildren()
 //-----------------------------------------------------------------------------
 void MemoryVisualizationItem::markConflictingChildren()
-{    
-    const auto offset = getOffset();
-    const auto lastAddress = getLastAddress();
-
-    quint64 highestAddressInUse = offset;
-
+{
     for (auto child = childItems_.begin(); child != childItems_.end(); ++child)
     {
-        if (auto& current = child.value(); current->isPresent())
+        markChildIfConflicting(child.value());
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryVisualizationItem::markChildIfConflicting()
+//-----------------------------------------------------------------------------
+void MemoryVisualizationItem::markChildIfConflicting(MemoryVisualizationItem* child)
+{
+    if (!child || !child->isPresent())
+    {
+        return;
+    }
+
+    auto parentOffset = getOffset();
+    auto lastAddress = getLastAddress();
+
+    auto const& currentChildOffset = child->getOffset();
+
+    bool isOutsideBounds = currentChildOffset < parentOffset || child->getLastAddress() > lastAddress;
+
+    child->setConflicted(isOutsideBounds);
+
+    // Check overlap with preceding children. Mark any overlapping items conflicted.
+    for (auto precedingChild = childItems_.begin(); precedingChild.value() != child; ++precedingChild)
+    {
+        if ((*precedingChild)->getLastAddress() >= currentChildOffset)
         {
-            auto const& currentOffset = child.key();
-
-            bool overlaps = currentOffset > offset && currentOffset <= highestAddressInUse;
-            bool isOutsideBounds = currentOffset < offset || current->getLastAddress() > lastAddress;
-
-            current->setConflicted(overlaps || isOutsideBounds);
-
-            if (overlaps)
-            {
-                // Mark any overlapping items conflicted.
-                for (auto preceding = childItems_.begin(); preceding != child; ++preceding)
-                {
-                    if ((*preceding)->getLastAddress() >= currentOffset)
-                    {
-                        (*preceding)->setConflicted(true);
-                    }
-                }
-            }
-
-            highestAddressInUse = qMax(current->getLastAddress(), highestAddressInUse);
+            (*precedingChild)->setConflicted(true);
+            child->setConflicted(true);
         }
     }
 }
