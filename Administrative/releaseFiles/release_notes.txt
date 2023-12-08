@@ -8,6 +8,18 @@
               * Changed or Information
 ===============================================================================
 
+08/12/2023 3.13.0
+----------------------------------------------------
++ Added IP-XACT 2022 standard support for existing Kactus2 workflows
+  * Now possible to create and edit IP-XACT components compliant with the new 2022 IP-XACT standard
+  * Old 2014 standard is still supported
+  * IPs can be filtered by standard revision in the library
+  * Power domains added as a new feature of the IP-XACT 2022 standard
+
+- Fixed memory map visualization not showing overlap in some cases
+- Other fixes and tweaks in memory map visualization
+- Fixed Linux build issues (community contribution)
+- Fixed crashing when starting PythonAPI from Python
 
 07/06/2023 3.12.0
 ----------------------------------------------------
