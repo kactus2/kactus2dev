@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/Component/FieldReference.h>
 
+#include <QObject>
+
 namespace FieldReferenceValidator
 {
     /*!
