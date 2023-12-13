@@ -113,7 +113,7 @@ private:
      *      @param [in] instancePath   Path of the makefile and thus the path where it is called from.
      */
      void writeMakeObjects(QTextStream& outStream,
-		 QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const;
+		 QList<QSharedPointer<MakeObjectData> > const& objects, QString instancePath) const;
 
      //-----------------------------------------------------------------------------
      // Data.

@@ -41,6 +41,9 @@ interconnectionValidator_(),
 viewConfigurationValidator_(),
 expressionParser_(parser)
 {
+    parameterValidator_ = QSharedPointer<ParameterValidator>(
+        new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), Document::Revision::Unknown));
+
     assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
 
     interconnectionValidator_ = QSharedPointer<InterconnectionConfigurationValidator>(
@@ -63,12 +66,6 @@ DesignConfigurationValidator::~DesignConfigurationValidator()
 //-----------------------------------------------------------------------------
 bool DesignConfigurationValidator::validate(QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    if (!parameterValidator_)
-    {
-        parameterValidator_ = QSharedPointer<ParameterValidator>(
-            new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), designConfiguration->getRevision()));
-    }
-
     return hasValidVLNV(designConfiguration) && hasValidDesignReference(designConfiguration) &&
         hasValidGeneratorChainConfigurations(designConfiguration) &&
         hasValidInterconnectionConfigurations(designConfiguration) &&
@@ -213,9 +210,10 @@ bool DesignConfigurationValidator::hasValidViewConfigurations(
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationValidator::hasValidParameters()
 //-----------------------------------------------------------------------------
-bool DesignConfigurationValidator::hasValidParameters(QSharedPointer<DesignConfiguration> designConfiguration)
-    const
+bool DesignConfigurationValidator::hasValidParameters(QSharedPointer<DesignConfiguration> designConfiguration) const
 {
+    parameterValidator_->setStdRevision(designConfiguration->getRevision());
+
     if (!designConfiguration->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames;
@@ -262,11 +260,7 @@ bool DesignConfigurationValidator::hasValidAssertions(QSharedPointer<DesignConfi
 void DesignConfigurationValidator::findErrorsIn(QVector<QString>& errors,
     QSharedPointer<DesignConfiguration> designConfiguration)
 {
-    if (!parameterValidator_)
-    {
-        parameterValidator_ = QSharedPointer<ParameterValidator>(
-            new ParameterValidator(expressionParser_, QSharedPointer<QList<QSharedPointer<Choice> > >(), designConfiguration->getRevision()));
-    }
+    parameterValidator_->setStdRevision(designConfiguration->getRevision());
 
     QString context = QObject::tr("design configuration %1").arg(designConfiguration->getVlnv().toString());
 
@@ -424,6 +418,8 @@ void DesignConfigurationValidator::findErrorsInViewConfigurations(QVector<QStrin
 void DesignConfigurationValidator::findErrorsInParameters(QVector<QString>& errors,
     QSharedPointer<DesignConfiguration> designConfiguration, QString const& context) const
 {
+    parameterValidator_->setStdRevision(designConfiguration->getRevision());
+
     if (!designConfiguration->getParameters()->isEmpty())
     {
         QVector<QString> parameterNames;

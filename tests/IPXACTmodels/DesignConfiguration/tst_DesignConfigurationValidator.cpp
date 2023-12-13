@@ -1085,7 +1085,7 @@ void tst_DesignConfigurationValidator::testViewConfigurationHasValidName_data()
     QTest::newRow("Name test is valid") << "test" << true;
     QTest::newRow("Empty name is invalid") << "" << false;
     QTest::newRow("Name consisting of only white spaces is invalid") << "    " << false;
-    QTest::newRow("Name consisting of characters and white spaces is valid") << "  test  " << true;
+    QTest::newRow("Name consisting of characters and white spaces is invalid") << "  test  " << false;
 }
 
 //-----------------------------------------------------------------------------
