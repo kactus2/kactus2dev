@@ -16,6 +16,8 @@
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 
+#include <QObject>
+
 class MemoryArray;
 
 class IPXACTMODELS_EXPORT MemoryArrayValidator
