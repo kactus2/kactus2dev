@@ -31,7 +31,7 @@ public:
 	 *
 	 *      @param [in] name   The name of the interface.
 	 */
-	ConnectivityInterface(QString const& name);
+	explicit ConnectivityInterface(QString const& name);
 
 	/*!
      *  The destructor.
@@ -177,6 +177,10 @@ public:
      */
     void removeChildInterface(int const& indexOfInterface);
 
+    void setParent(QSharedPointer<ConnectivityInterface> parentInterface);
+
+    [[nodiscard]] QSharedPointer<ConnectivityInterface> getParent() const;
+
 private:
 
 	// Disable copying.
@@ -212,6 +216,8 @@ private:
 
     //! List of the next interface nodes in the tree.
     QVector<QSharedPointer<ConnectivityInterface> > childInterfaceNodes_;
+
+    QSharedPointer<ConnectivityInterface> bfsParent_{ nullptr };
 };
 
 #endif // INTERFACE_H

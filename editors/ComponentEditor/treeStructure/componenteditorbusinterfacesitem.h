@@ -103,6 +103,9 @@ public:
 	*/
 	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
 
+signals:
+	void openAbsDef(VLNV const& absDefVLNV);
+
 private:
 	//! No copying
 	ComponentEditorBusInterfacesItem(const ComponentEditorBusInterfacesItem& other);

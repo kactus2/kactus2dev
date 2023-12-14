@@ -195,3 +195,19 @@ void ConnectivityInterface::removeChildInterface(int const& indexOfInterface)
 {
     childInterfaceNodes_.removeAt(indexOfInterface);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::setParent()
+//-----------------------------------------------------------------------------
+void ConnectivityInterface::setParent(QSharedPointer<ConnectivityInterface> parentInterface)
+{
+    bfsParent_ = parentInterface;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityInterface::getParent()
+//-----------------------------------------------------------------------------
+QSharedPointer<ConnectivityInterface> ConnectivityInterface::getParent() const
+{
+    return bfsParent_;
+}
