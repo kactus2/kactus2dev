@@ -39,7 +39,7 @@ int MakefileGenerator::generate(QString const& targetPath, QString const& topPat
     QStringList makeNames;
 
     // Try to create a make file out of each parsed makefile data.
-    foreach(QSharedPointer<MakeFileData> mfd, *parsedData_)
+    for (QSharedPointer<MakeFileData> mfd : *parsedData_)
     {
         generateInstanceMakefile(targetPath, topPath, mfd, makeNames);
     }
@@ -104,7 +104,7 @@ void MakefileGenerator::generateInstanceMakefile(QString const& targetPath, QStr
     // Write the paths of directories containing includes.
     outStream << "_INCLUDES=";
 
-    foreach(QString includePath, makeData->includeDirectories)
+    for (auto const& includePath : makeData->includeDirectories)
     {
         outStream << " " << General::getRelativePath(absolutePathString, includePath);
     }
@@ -186,7 +186,7 @@ void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString 
     // Default target for each directory.
     outStream << "make:";
 
-    foreach(QString directory, makeNames)
+    for (auto const& directory : makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
         outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make -f " << qfi.fileName() << ")";
@@ -195,7 +195,7 @@ void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString 
     // Needs also cleaner for each directory.
     outStream << Qt::endl << Qt::endl << "clean:";
 
-    foreach(QString directory, makeNames)
+    for (auto const& directory : makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
         outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make clean -f " << qfi.fileName() << ")";
@@ -204,7 +204,7 @@ void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString 
 	// Debug target for each directory.
 	outStream << Qt::endl << Qt::endl << "debug:";
 
-	foreach(QString directory, makeNames)
+	for (auto const& directory : makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
         outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make debug -f " << qfi.fileName() << ")";
@@ -213,7 +213,7 @@ void MakefileGenerator::generateMainMakefile(QString const& targetPath, QString 
 	// Profiling target for each directory.
 	outStream << Qt::endl << Qt::endl << "profile:";
 
-	foreach(QString directory, makeNames)
+	for (auto const& directory : makeNames)
     {
         QFileInfo qfi(targetPath + "/" + directory);
 		outStream << Qt::endl << "\t(cd " << General::getRelativePath(targetPath, qfi.absolutePath()) << "; make profile -f " << qfi.fileName() << ")";
@@ -252,7 +252,7 @@ void MakefileGenerator::writeFinalFlagsAndBuilder(QSharedPointer<MakeFileData> m
     }
 
     // All flags of all software views must be appended to the flags.
-    foreach (QString flag, mfd->componentInstantiationFlags)
+    for (auto const& flag : mfd->componentInstantiationFlags)
     {
         finalFlags += " " + flag;
     }
@@ -271,7 +271,7 @@ void MakefileGenerator::writeObjectList(QSharedPointer<MakeFileData> mfd, QTextS
     // Include files are skipped and the object file is simply original filename + ".o".
     outStream << "_OBJ=";
 
-    foreach (QSharedPointer<MakeObjectData> mod, mfd->swObjects)
+    for (QSharedPointer<MakeObjectData> mod : mfd->swObjects)
     {
         if (!mod->compiler.isEmpty())
         {
@@ -317,9 +317,9 @@ void MakefileGenerator::writeCleanRules(QTextStream& outStream) const
 // Function: MakefileGenerator::writeMakeObjects()
 //-----------------------------------------------------------------------------
 void MakefileGenerator::writeMakeObjects(QTextStream& outStream, 
-    QList<QSharedPointer<MakeObjectData> >& objects, QString instancePath) const
+    QList<QSharedPointer<MakeObjectData> > const& objects, QString instancePath) const
 {
-    foreach (QSharedPointer<MakeObjectData> mod, objects)
+    for (QSharedPointer<MakeObjectData> mod : objects)
     {
         // Compilerless files are skipped. Moreover, use may have opted for exclusion.
         if (!mod->isChosen || mod->compiler.isEmpty())

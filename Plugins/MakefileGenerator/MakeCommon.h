@@ -74,7 +74,7 @@ namespace MakeCommon
         // The part of the stack where this is based to.
         QSharedPointer<StackPart> stackPart;
         // True, if this object will be generated to the makefile.
-        bool isChosen;
+        bool isChosen = true;
     };
 
     // A struct containing needed data of a single makefile.

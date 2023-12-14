@@ -137,7 +137,7 @@ void tst_InstantiationsValidator::designConfigurationInstantiationFail()
 	validator.findErrorsInDesignConfigurationInstantiation(errorList, instantiation, "test");
 
 	QCOMPARE( errorList.size(), 3 );
-	QVERIFY( !validator.validateDesignConfigurationInstantiation(instantiation, Document::Revision::Std14) );
+	QVERIFY( !validator.validateDesignConfigurationInstantiation(instantiation) );
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ void tst_InstantiationsValidator::designConfigurationInstantiationSuccess()
 	validator.findErrorsInDesignConfigurationInstantiation(errorList, instantiation, "test");
 
 	QCOMPARE( errorList.size(), 0 );
-	QVERIFY( validator.validateDesignConfigurationInstantiation(instantiation, Document::Revision::Std14) );
+	QVERIFY( validator.validateDesignConfigurationInstantiation(instantiation) );
 }
 
 //-----------------------------------------------------------------------------
