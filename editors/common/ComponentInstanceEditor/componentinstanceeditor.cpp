@@ -179,7 +179,7 @@ void ComponentInstanceEditor::setComponentInstance(ComponentItem* componentItem,
         swComponent != nullptr)
     {
         propertyValueEditor_->setData(swComponent->getPropertyValues());
-        propertyValueEditor_->setAllowedProperties(*swComponent->componentModel()->getSWProperties());
+        propertyValueEditor_->setAllowedProperties(swComponent->componentModel()->getSWProperties());
 
         propertyValueEditor_->show();
         configurableElements_->hide();

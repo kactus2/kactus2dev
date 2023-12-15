@@ -501,7 +501,7 @@ void InterfaceEditor::setComInterface()
 
     if (comDefinition != 0)
     {
-        propertyValueEditor_.setAllowedProperties(*comDefinition->getProperties());
+        propertyValueEditor_.setAllowedProperties(comDefinition->getProperties());
     }
 
     connect(&propertyValueEditor_, SIGNAL(contentChanged()),

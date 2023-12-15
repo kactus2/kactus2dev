@@ -68,8 +68,8 @@ void tst_ComDefinitionWriter::testProperty()
 
     testComDefinition_->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
 
-    QSharedPointer<ComProperty> prop = QSharedPointer<ComProperty>( new ComProperty );
-    testComDefinition_->getProperties()->append(prop);
+    auto prop = QSharedPointer<ComProperty>( new ComProperty );
+    testComDefinition_->setProperties({ prop });
 
     prop->setName("max_transfer_size");
     prop->setRequired( true);
@@ -111,8 +111,8 @@ void tst_ComDefinitionWriter::allFields()
 
 	testComDefinition_->setVlnv(VLNV(VLNV::APIDEFINITION,"me","kurjasto","def","0.11"));
 
-	QSharedPointer<ComProperty> prop = QSharedPointer<ComProperty>( new ComProperty );
-	testComDefinition_->getProperties()->append(prop);
+	auto prop = QSharedPointer<ComProperty>( new ComProperty );
+	testComDefinition_->setProperties({prop});
 
 	prop->setName("max_transfer_size");
 	prop->setRequired( true);

@@ -55,7 +55,7 @@ bool ComDefinitionValidator::validate(QSharedPointer<const ComDefinition> comDef
     // Validate the properties.
     QStringList propertyNames;
 
-	for (QSharedPointer<ComProperty> prop : *comDefinition->getProperties())
+	for (QSharedPointer<ComProperty> prop : comDefinition->getProperties())
 	{
         if (propertyNames.contains(prop->name()))
         {
@@ -101,7 +101,7 @@ void ComDefinitionValidator::findErrorsIn(QVector<QString>& errorList,
 
     // Validate the properties.
     QStringList propertyNames;
-    for (QSharedPointer<ComProperty> comProperty : *comDefinition->getProperties())
+    for (QSharedPointer<ComProperty> comProperty : comDefinition->getProperties())
     {
         if (propertyNames.contains(comProperty->name()))
         {

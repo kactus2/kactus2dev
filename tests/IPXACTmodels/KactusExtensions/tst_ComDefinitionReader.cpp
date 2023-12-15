@@ -57,9 +57,9 @@ void tst_ComDefinitionReader::testProperty()
 
     QSharedPointer<ComDefinition> testComDefinition = ComDefinitionReader::createComDefinitionFrom(document);
 
-    QCOMPARE(testComDefinition->getProperties()->size(), 1);
+    QCOMPARE(testComDefinition->getProperties().size(), 1);
 
-    QSharedPointer<ComProperty> prop = testComDefinition->getProperties()->first();
+    QSharedPointer<ComProperty> prop = testComDefinition->getProperties().first();
 
     QCOMPARE(prop->name(), QString("default_target"));
     QCOMPARE(prop->isRequired(), true);
@@ -105,9 +105,9 @@ void tst_ComDefinitionReader::allFields()
     QCOMPARE(testComDefinition->getVlnv().getName(), QString("def"));
     QCOMPARE(testComDefinition->getVlnv().getVersion(), QString("0.11"));
 
-    QCOMPARE(testComDefinition->getProperties()->size(), 1);
+    QCOMPARE(testComDefinition->getProperties().size(), 1);
 
-    QSharedPointer<ComProperty> prop = testComDefinition->getProperties()->first();
+    QSharedPointer<ComProperty> prop = testComDefinition->getProperties().first();
 
     QCOMPARE(prop->name(), QString("max_transfer_size"));
     QCOMPARE(prop->isRequired(), true);

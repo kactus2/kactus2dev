@@ -44,7 +44,7 @@ void ComDefinitionWriter::writeComDefinition(QXmlStreamWriter& writer, QSharedPo
     // Write properties.
     writer.writeStartElement(QStringLiteral("kactus2:properties"));
 
-    for (QSharedPointer<ComProperty> prop : *comDefinition->getProperties())
+    for (QSharedPointer<ComProperty> prop : comDefinition->getProperties())
 	{
 		prop->write(writer);
     }
