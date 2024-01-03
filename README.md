@@ -1,5 +1,5 @@
                                 README : Kactus2
-				   Copyright (c) 2012-2023 Tampere University
+				   Copyright (c) 2012-2024 Tampere University
                   https://research.tuni.fi/system-on-chip/tools
 
 ## Summary
