@@ -44,7 +44,7 @@ public:
      *
      *      @param [in] properties The properties.
      */
-    void setProperties(QSharedPointer<QList< QSharedPointer<ComProperty> > > const& properties);
+    void setProperties(QList< QSharedPointer<ComProperty> > const& properties);
 
     /*!
      *  Returns the edited properties.

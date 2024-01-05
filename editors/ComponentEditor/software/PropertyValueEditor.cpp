@@ -54,7 +54,7 @@ PropertyValueEditor::~PropertyValueEditor()
 //-----------------------------------------------------------------------------
 // Function: PropertyValueEditor::setAllowedProperties()
 //-----------------------------------------------------------------------------
-void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty> > properties)
+void PropertyValueEditor::setAllowedProperties(QList< QSharedPointer<ComProperty> > const& properties)
 {
     delegate_.setAllowedProperties(properties);
     model_.setAllowedProperties(properties);

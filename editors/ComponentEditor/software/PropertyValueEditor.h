@@ -46,7 +46,7 @@ public:
      *
      *      @param [in] properties The list of allowed properties.
      */
-    void setAllowedProperties(QList< QSharedPointer<ComProperty> > properties);
+    void setAllowedProperties(QList< QSharedPointer<ComProperty> > const& properties);
 
     /*!
      *  Returns the edited data.

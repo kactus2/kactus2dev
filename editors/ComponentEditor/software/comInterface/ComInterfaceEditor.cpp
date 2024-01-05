@@ -229,7 +229,7 @@ void ComInterfaceEditor::updateEditorsForComDefinition(VLNV const& comDefinition
         return;
     }
 
-    propertyValueEditor_.setAllowedProperties(*comDef->getProperties());
+    propertyValueEditor_.setAllowedProperties(comDef->getProperties());
 
     QString type = comIf_->getTransferType();
 

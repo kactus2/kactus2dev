@@ -42,14 +42,14 @@ namespace  ComDefinitionReader
          *
          *      @param [in] node The source XML node.
          */
-        void parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition);
+        void parseTransferTypes(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition);
 
         /*!
          *  Parses all found properties from the given XML node.
          *
          *      @param [in] node The source XML node.
          */
-        void parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition);
+        void parseProperties(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition);
     }
 };
 

@@ -66,7 +66,7 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::parseTransferTypes()
 //-----------------------------------------------------------------------------
-void ComDefinitionReader::Details::parseTransferTypes(QDomNode& node, QSharedPointer<ComDefinition> comDefinition)
+void ComDefinitionReader::Details::parseTransferTypes(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition)
 {
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{
@@ -83,8 +83,9 @@ void ComDefinitionReader::Details::parseTransferTypes(QDomNode& node, QSharedPoi
 //-----------------------------------------------------------------------------
 // Function: ComDefinitionReader::parseProperties()
 //-----------------------------------------------------------------------------
-void ComDefinitionReader::Details::parseProperties(QDomNode& node, QSharedPointer<ComDefinition> comDefinition)
+void ComDefinitionReader::Details::parseProperties(QDomNode const& node, QSharedPointer<ComDefinition> comDefinition)
 {
+	QList<QSharedPointer<ComProperty> > properties;
 	for (int i = 0; i < node.childNodes().count(); ++i)
 	{
 		QDomNode propNode = node.childNodes().at(i);
@@ -92,7 +93,9 @@ void ComDefinitionReader::Details::parseProperties(QDomNode& node, QSharedPointe
 		if (propNode.nodeName() == QLatin1String("kactus2:property"))
 		{
 			QSharedPointer<ComProperty> prop(new ComProperty(propNode));
-			comDefinition->getProperties()->append(prop);
+			properties.append(prop);
 		}
 	}
+
+	comDefinition->setProperties(properties);
 }

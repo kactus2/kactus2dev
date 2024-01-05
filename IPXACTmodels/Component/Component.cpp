@@ -522,24 +522,24 @@ void Component::setResetTypes(QSharedPointer<QList<QSharedPointer<ResetType>>> n
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::getSWProperties()
+// Function: Component::getSWProperties()
 //-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<ComProperty> > > Component::getSWProperties() const
+QList<QSharedPointer<ComProperty> > Component::getSWProperties() const
 {
     QList<QSharedPointer<VendorExtension> > swPropertiesExtensionList =
         getGroupedExtensionsByType(QStringLiteral("kactus2:properties"), QStringLiteral("kactus2:property"));
 
-    QSharedPointer<QList<QSharedPointer<ComProperty> > > swProperties( new QList<QSharedPointer<ComProperty> > );
+    QList<QSharedPointer<ComProperty> >  swProperties;
     for (QSharedPointer<VendorExtension> extension : swPropertiesExtensionList)
     {
-        swProperties->append(extension.dynamicCast<ComProperty>());
+        swProperties.append(extension.dynamicCast<ComProperty>());
     }
 
     return swProperties;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComDefinition::setSWProperties()
+// Function: Component::setSWProperties()
 //-----------------------------------------------------------------------------
 void Component::setSWProperties(QList<QSharedPointer<ComProperty> > newProperties)
 {

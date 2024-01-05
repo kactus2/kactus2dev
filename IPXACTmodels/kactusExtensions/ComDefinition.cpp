@@ -142,7 +142,7 @@ QSharedPointer< QStringList > ComDefinition::getTransferTypes() const
 //-----------------------------------------------------------------------------
 // Function: ComDefinition::getProperties()
 //-----------------------------------------------------------------------------
-QSharedPointer< QList< QSharedPointer<ComProperty> > > ComDefinition::getProperties() const
+QList< QSharedPointer<ComProperty> >  ComDefinition::getProperties() const
 {
-    return properties_;
+    return *properties_;
 }
