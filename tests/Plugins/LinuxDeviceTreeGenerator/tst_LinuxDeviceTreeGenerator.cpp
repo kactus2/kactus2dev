@@ -850,27 +850,36 @@ void tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
     //! First component: space, no CPU.
     VLNV startVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testStart", "1.0");
     QSharedPointer<Component> startComponent(new Component(startVLNV, Document::Revision::Std14));
+
     QSharedPointer<AddressSpace> startSpace =
         createAddressSpace(QStringLiteral("startSpace"), "8", "8", startComponent);
+
     QSharedPointer<BusInterface> startBus = createMasterBusInterface("startBus", startSpace, startComponent);
 
     //! Second component: bridged slave-master, space, CPU.
     VLNV cpuVLNV(VLNV::COMPONENT, "Test", "TestLibrary", "testCPU", "1.0");
+
     QSharedPointer<Component> cpuComponent(new Component(cpuVLNV, Document::Revision::Std14));
+
     QSharedPointer<AddressSpace> testSpace =
         createAddressSpace(QStringLiteral("testSpace"), "16", "16", cpuComponent);
+
     QSharedPointer<Cpu> testCPU = createCPU("testCPU", testSpace->name(), cpuComponent);
+
     QSharedPointer<BusInterface> bridgedCpuBus = createMasterBusInterface("topBus", testSpace, cpuComponent);
     QSharedPointer<BusInterface> bridgedSlaveBus =
         createSlaveBusInterface("bridgeSlave", QSharedPointer<MemoryMap>(), cpuComponent);
+
     QSharedPointer<TransparentBridge> slaveCPUBridge(new TransparentBridge(bridgedCpuBus->name()));
     bridgedSlaveBus->getSlave()->getBridges()->append(slaveCPUBridge);
 
     //! Third component: slave map.
     VLNV mapVlnv(VLNV::COMPONENT, "Test", "TestLibrary", "MapComponent", "1.0");
     QSharedPointer<Component> mapComponent(new Component(mapVlnv, Document::Revision::Std14));
+
     QSharedPointer<MemoryMap> testMap = createMemoryMap("testMap", mapComponent);
     createBlockForMap(QString("testBlock"), QString("0"), QString("16"), QString("32"), testMap);
+
     QSharedPointer<BusInterface> mapBus = createSlaveBusInterface("mapBus", testMap, mapComponent);
 
     library_->addComponent(startComponent);
@@ -879,18 +888,22 @@ void tst_LinuxDeviceTreeGenerator::testCPUInMiddleOfPath()
 
     QSharedPointer<ComponentInstance> startInstance =
         createComponentInstance(startVLNV, "startInstance", "startID", design_);
+
     QSharedPointer<ComponentInstance> cpuInstance =
         createComponentInstance(cpuVLNV, "cpuInstance", "cpuID", design_);
+
     QSharedPointer<ComponentInstance> mapInstance =
         createComponentInstance(mapVlnv, "mapInstance", "mapID", design_);
 
-
     QSharedPointer<ActiveInterface> startInterface(
         new ActiveInterface(startInstance->getInstanceName(), startBus->name()));
+
     QSharedPointer<ActiveInterface> bridgeSlaveInterface(
         new ActiveInterface(cpuInstance->getInstanceName(), bridgedSlaveBus->name()));
+
     QSharedPointer<ActiveInterface> cpuInterface(
         new ActiveInterface(cpuInstance->getInstanceName(), bridgedCpuBus->name()));
+
     QSharedPointer<ActiveInterface> mapInterface(
         new ActiveInterface(mapInstance->getInstanceName(), mapBus->name()));
 
@@ -1239,14 +1252,8 @@ QString tst_LinuxDeviceTreeGenerator::runGenerator(QString const& activeView, bo
     LinuxDeviceTreeGenerator generator(library_);
     QString outPutFileName = "TopComponent_0.dts";
 
-    ConnectivityGraphFactory graphFactory(library_);
-    QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(topComponent_, activeView);
-
-    MasterSlavePathSearch searchAlgorithm;
-    QVector < QSharedPointer<ConnectivityInterface> > masterRoots = searchAlgorithm.findMasterSlaveRoots(graph);
-
-    auto cpuContainers =
-        LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(), topComponent_, activeView, library_);
+    auto cpuContainers = LinuxDeviceTreeCPUDetails::getCPUContainers(topComponent_->getVlnv().getName(),
+        topComponent_, activeView, library_);
 
     generator.generate(topComponent_, activeView, generateAddressBlocks, cpuContainers, "./");
 

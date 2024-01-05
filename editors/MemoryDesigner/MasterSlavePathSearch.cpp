@@ -12,6 +12,7 @@
 #include "MasterSlavePathSearch.h"
 
 #include <editors/MemoryDesigner/ConnectivityConnection.h>
+#include <editors/MemoryDesigner/ConnectivityComponent.h>
 #include <editors/MemoryDesigner/ConnectivityGraph.h>
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
@@ -58,8 +59,7 @@ QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findIniti
 
     for (auto const& vertex : graph->getInterfaces())
     {
-        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && vertex->getConnectedMemory() &&
-            !vertex->isBridged())
+        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && vertex->getConnectedMemory())
         {
             masterInterfaces.append(vertex);
         }
@@ -227,8 +227,10 @@ bool MasterSlavePathSearch::pathIsFullPath(MasterSlavePathSearch::Path const& cu
 
             auto overlapLength = qMin(pathLength, comparisonPathLength);
 
+            // Exclude path only if the start interface isn't bridged (e.g. if there is a CPU in middle 
+            // of a path) or the path is contained within another path.
             if (pathContainsAnotherPath(currentPath, comparisonPath, overlapLength) &&
-                pathLength < comparisonPathLength)
+                pathLength < comparisonPathLength && currentPath.first()->isBridged() == false)
             {
                 return false;
             }
