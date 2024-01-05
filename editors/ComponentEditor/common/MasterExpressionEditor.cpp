@@ -86,7 +86,7 @@ void MasterExpressionEditor::finishEditingCurrentWord()
         {
             colorCurrentWordBlack();
         }
-        else if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord))
+        else if (!finishedWord.isEmpty() && !wordIsConstant(finishedWord) && !wordIsMathFunction(finishedWord))
         {
             colorCurrentWordRed();
         }
@@ -225,6 +225,15 @@ bool MasterExpressionEditor::wordIsConstant(QString const& word)
     static QRegularExpression constant("^" + SystemVerilogSyntax::INTEGRAL_NUMBER + "|" +
         SystemVerilogSyntax::STRING_LITERAL + "$");
     return constant.match(word).hasMatch();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterExpressionEditor::wordIsMathFunction()
+//-----------------------------------------------------------------------------
+bool MasterExpressionEditor::wordIsMathFunction(QString const& word)
+{
+    static const QRegularExpression mathOperator("^" + SystemVerilogSyntax::MATH_FUNCTION + "$");
+    return mathOperator.match(word).hasMatch();
 }
 
 //-----------------------------------------------------------------------------

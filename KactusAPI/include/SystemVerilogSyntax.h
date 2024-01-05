@@ -27,4 +27,6 @@ namespace SystemVerilogSyntax
         OCTAL_NUMBER + QStringLiteral("|") + BINARY_NUMBER + QStringLiteral("|") + DECIMAL_NUMBER + QStringLiteral(")");
 
     const QString STRING_LITERAL = QStringLiteral("\"[^\"]*\"");
+
+    inline const QString MATH_FUNCTION = QStringLiteral("[$]pow|[$]clog2|[$]exp|[$]sqrt");
 }

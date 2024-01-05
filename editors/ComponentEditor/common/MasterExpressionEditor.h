@@ -183,6 +183,15 @@ protected:
     static bool wordIsConstant(QString const& word);
 
     /*!
+     *	Checks if a given word is a math function.
+     *  
+     *      @param [in] word     The word to check.
+     *	    
+     * 	    @return True, if the word is a math function, otherwise false.
+     */
+    bool wordIsMathFunction(QString const& word);
+
+    /*!
      *  Finds the index for the start of the current word.
      *
      *      @return The index for the start of the current word.

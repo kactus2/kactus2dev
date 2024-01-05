@@ -158,7 +158,7 @@ void ExpressionEditor::insertWord(QString const& word, QTextCursor& cursor)
     {
         cursor.insertText(getNameForParameterID(word), colorFormat(Qt::darkGreen));
     }
-    else if (wordIsConstant(word) || getReservedWords().contains(word, Qt::CaseInsensitive))
+    else if (wordIsConstant(word) || getReservedWords().contains(word, Qt::CaseInsensitive) || wordIsMathFunction(word))
     {
         cursor.insertText(word, colorFormat(Qt::black));
     }
