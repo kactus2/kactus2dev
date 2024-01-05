@@ -22,13 +22,13 @@
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Field.h>
-#include <IPXACTmodels/Component/MasterInterface.h>
+#include <IPXACTmodels/Component/InitiatorInterface.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
 #include <IPXACTmodels/Component/MemoryRemap.h>
-#include <IPXACTmodels/Component/MirroredSlaveInterface.h>
+#include <IPXACTmodels/Component/MirroredTargetInterface.h>
 #include <IPXACTmodels/Component/Register.h>
 #include <IPXACTmodels/Component/RemapState.h>
-#include <IPXACTmodels/Component/SlaveInterface.h>
+#include <IPXACTmodels/Component/TargetInterface.h>
 #include <IPXACTmodels/Component/TransparentBridge.h>
 
 #include <IPXACTmodels/designConfiguration/DesignConfiguration.h>
@@ -136,10 +136,10 @@ tst_MemoryViewGenerator::tst_MemoryViewGenerator(): library_(new LibraryMock(thi
 void tst_MemoryViewGenerator::init()
 {        
     VLNV vlnv(VLNV::COMPONENT, "Test", "TestLibrary", "TopComponent", "1.0");
-    topComponent_ = QSharedPointer<Component>(new Component(vlnv));
+    topComponent_ = QSharedPointer<Component>(new Component(vlnv, Document::Revision::Std14));
 
     VLNV designVlnv(VLNV::DESIGN, "Test", "TestLibrary", "TestDesign", "1.0");
-    design_ = QSharedPointer<Design>(new Design(designVlnv));
+    design_ = QSharedPointer<Design>(new Design(designVlnv, Document::Revision::Std14));
     library_->addComponent(design_);
     
     QSharedPointer<View> hierarchicalView(new View("hierarchical"));
@@ -203,7 +203,7 @@ void tst_MemoryViewGenerator::testMultipleReferencesToSameDesign()
 
     VLNV configVLNV(VLNV::DESIGNCONFIGURATION, "tut.fi", "TestLib", "TestConfiguration", "1.0");
 
-    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configVLNV));
+    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configVLNV, Document::Revision::Std14));
     designConfiguration->setDesignRef(design_->getVlnv());
     library_->addComponent(designConfiguration);
 
@@ -559,17 +559,17 @@ void tst_MemoryViewGenerator::testRemapOnBusComponent()
     slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
     QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
 
-    QSharedPointer<Component> busComponent(new Component(busVLNV));
+    QSharedPointer<Component> busComponent(new Component(busVLNV, Document::Revision::Std14));
     library_->addComponent(busComponent);
 
     QSharedPointer<BusInterface> mirroredMasterInterface(new BusInterface());
     mirroredMasterInterface->setName("mirroredMasterIf");
-    mirroredMasterInterface->setInterfaceMode(General::MIRROREDMASTER);
+    mirroredMasterInterface->setInterfaceMode(General::MIRRORED_MASTER);
     busComponent->getBusInterfaces()->append(mirroredMasterInterface);
 
     QSharedPointer<BusInterface> mirroredSlaveInterface(new BusInterface());
     mirroredSlaveInterface->setName("mirroredSlaveIf");
-    mirroredSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    mirroredSlaveInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     mirroredSlaveInterface->getMirroredSlave()->setRemapAddress("'h10");
     busComponent->getBusInterfaces()->append(mirroredSlaveInterface);
 
@@ -616,23 +616,23 @@ void tst_MemoryViewGenerator::testMultipleChannels()
     QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
 
 
-    QSharedPointer<Component> busComponent(new Component(busVLNV));
+    QSharedPointer<Component> busComponent(new Component(busVLNV, Document::Revision::Std14));
     library_->addComponent(busComponent);
 
     QSharedPointer<BusInterface> mirroredMasterInterface(new BusInterface());
     mirroredMasterInterface->setName("mirroredMasterIf");
-    mirroredMasterInterface->setInterfaceMode(General::MIRROREDMASTER);
+    mirroredMasterInterface->setInterfaceMode(General::MIRRORED_MASTER);
     busComponent->getBusInterfaces()->append(mirroredMasterInterface);
 
     QSharedPointer<BusInterface> mirroredSlaveInterface(new BusInterface());
     mirroredSlaveInterface->setName("mirroredSlaveIf");
-    mirroredSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    mirroredSlaveInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     mirroredSlaveInterface->getMirroredSlave()->setRemapAddress("8");
     busComponent->getBusInterfaces()->append(mirroredSlaveInterface);
 
     QSharedPointer<BusInterface> duplicateSlaveInterface(new BusInterface());
     duplicateSlaveInterface->setName("duplicateSlaveIf");
-    duplicateSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    duplicateSlaveInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     duplicateSlaveInterface->getMirroredSlave()->setRemapAddress("16");
     busComponent->getBusInterfaces()->append(duplicateSlaveInterface);
 
@@ -679,7 +679,7 @@ void tst_MemoryViewGenerator::testHierarchicalDesign()
     QSharedPointer<Component> masterComponent = createMasterComponent(masterVLNV);
     masterComponent->getBusInterface("masterIf")->getMaster()->setBaseAddress("2");
 
-    QSharedPointer<Component> hierarchicalComponent(new Component(hierarchicalSlaveVLNV));
+    QSharedPointer<Component> hierarchicalComponent(new Component(hierarchicalSlaveVLNV, Document::Revision::Std14));
     QSharedPointer<BusInterface> slaveIf(new BusInterface());
     slaveIf->setName("slaveIf");
     slaveIf->setInterfaceMode(General::SLAVE);
@@ -693,7 +693,7 @@ void tst_MemoryViewGenerator::testHierarchicalDesign()
     slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
     QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
 
-    QSharedPointer<Design> slaveDesign(new Design(designVLNV));
+    QSharedPointer<Design> slaveDesign(new Design(designVLNV, Document::Revision::Std14));
     library_->addComponent(slaveDesign);
 
     createComponentInstance(slaveVLNV, "slaveInstance", "slaveID", slaveDesign);
@@ -730,7 +730,7 @@ void tst_MemoryViewGenerator::testActiveViewConfiguration()
 
     QSharedPointer<Component> masterComponent = createMasterComponent(masterVLNV);
 
-    QSharedPointer<Component> hierarchicalComponent(new Component(hierarchicalSlaveVLNV));
+    QSharedPointer<Component> hierarchicalComponent(new Component(hierarchicalSlaveVLNV, Document::Revision::Std14));
     QSharedPointer<BusInterface> hierarchicalIf(new BusInterface());
     hierarchicalIf->setName("slaveIf");
     hierarchicalIf->setInterfaceMode(General::SLAVE);    
@@ -749,7 +749,7 @@ void tst_MemoryViewGenerator::testActiveViewConfiguration()
     slaveComponent->getMemoryMaps()->append(slaveMemoryMap);
     QSharedPointer<AddressBlock> slaveAddressBlock = addAddressBlock("slaveBlock", "0", "8", "32", slaveMemoryMap);
 
-    QSharedPointer<DesignConfiguration> slaveDesignConfig(new DesignConfiguration(designConfigVLNV));
+    QSharedPointer<DesignConfiguration> slaveDesignConfig(new DesignConfiguration(designConfigVLNV, Document::Revision::Std14));
     slaveDesignConfig->setDesignRef(design_->getVlnv());
 
     QSharedPointer<ViewConfiguration> activeView(new ViewConfiguration());
@@ -759,7 +759,7 @@ void tst_MemoryViewGenerator::testActiveViewConfiguration()
 
     library_->addComponent(slaveDesignConfig);
 
-    QSharedPointer<Design> slaveDesign(new Design(designVLNV));
+    QSharedPointer<Design> slaveDesign(new Design(designVLNV, Document::Revision::Std14));
     library_->addComponent(slaveDesign);
 
     createComponentInstance(slaveVLNV, "slaveInstance", "slaveID", slaveDesign);
@@ -821,7 +821,7 @@ void tst_MemoryViewGenerator::testMasterInHierarchy()
     VLNV masterDesignVLNV(VLNV::DESIGN, "tut.fi", "TestLib", "MasterDesign", "1.0");
     VLNV subMasterVLNV(VLNV::COMPONENT, "tut.fi", "TestLib", "SubMaster", "1.0");
 
-    QSharedPointer<DesignConfiguration> topConfig(new DesignConfiguration(topConfigurationVLNV));
+    QSharedPointer<DesignConfiguration> topConfig(new DesignConfiguration(topConfigurationVLNV, Document::Revision::Std14));
     topConfig->setDesignRef(design_->getVlnv());
     topConfig->addViewConfiguration("master", "hier");
     library_->addComponent(topConfig);
@@ -856,11 +856,11 @@ void tst_MemoryViewGenerator::testMasterInHierarchy()
     createMasterAndSlaveInstances(masterVLNV, slaveVLNV);
     connectMasterAndSlaveInstance();
 
-    QSharedPointer<DesignConfiguration> masterConfiguration(new DesignConfiguration(masterConfigVLNV));
+    QSharedPointer<DesignConfiguration> masterConfiguration(new DesignConfiguration(masterConfigVLNV, Document::Revision::Std14));
     masterConfiguration->setDesignRef(masterDesignVLNV);
     library_->addComponent(masterConfiguration);
 
-    QSharedPointer<Design> masterDesign(new Design(masterDesignVLNV));
+    QSharedPointer<Design> masterDesign(new Design(masterDesignVLNV, Document::Revision::Std14));
     library_->addComponent(masterDesign);
 
     QSharedPointer<Component> subMaster = createMasterComponent(subMasterVLNV);
@@ -1032,7 +1032,7 @@ void tst_MemoryViewGenerator::testBridge()
 
     createMasterComponent(masterVLNV);
 
-    QSharedPointer<Component> bridgeComponent(new Component(bridgeVLNV));
+    QSharedPointer<Component> bridgeComponent(new Component(bridgeVLNV, Document::Revision::Std14));
 
     QSharedPointer<BusInterface> bridgeMaster(new BusInterface());
     bridgeMaster->setName("bridgeMaster");
@@ -1086,23 +1086,23 @@ void tst_MemoryViewGenerator::testIdenticalHierarchies()
 
     createMasterComponent(masterVLNV);
 
-    QSharedPointer<Component> busComponent(new Component(busVLNV));
+    QSharedPointer<Component> busComponent(new Component(busVLNV, Document::Revision::Std14));
     library_->addComponent(busComponent);
 
     QSharedPointer<BusInterface> mirroredMasterInterface(new BusInterface());
     mirroredMasterInterface->setName("mirroredMasterIf");
-    mirroredMasterInterface->setInterfaceMode(General::MIRROREDMASTER);
+    mirroredMasterInterface->setInterfaceMode(General::MIRRORED_MASTER);
     busComponent->getBusInterfaces()->append(mirroredMasterInterface);
 
     QSharedPointer<BusInterface> mirroredSlaveInterface(new BusInterface());
     mirroredSlaveInterface->setName("mirroredSlaveIf");
-    mirroredSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    mirroredSlaveInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     mirroredSlaveInterface->getMirroredSlave()->setRemapAddress("8");
     busComponent->getBusInterfaces()->append(mirroredSlaveInterface);
 
     QSharedPointer<BusInterface> duplicateSlaveInterface(new BusInterface());
     duplicateSlaveInterface->setName("duplicateSlaveIf");
-    duplicateSlaveInterface->setInterfaceMode(General::MIRROREDSLAVE);
+    duplicateSlaveInterface->setInterfaceMode(General::MIRRORED_SLAVE);
     duplicateSlaveInterface->getMirroredSlave()->setRemapAddress("16");
     busComponent->getBusInterfaces()->append(duplicateSlaveInterface);
 
@@ -1114,7 +1114,7 @@ void tst_MemoryViewGenerator::testIdenticalHierarchies()
     testChannel->setInterfaces(channelInterfaces);
     busComponent->getChannels()->append(testChannel);
 
-    QSharedPointer<Component> hierarchicalSlave(new Component(slaveVLNV));
+    QSharedPointer<Component> hierarchicalSlave(new Component(slaveVLNV, Document::Revision::Std14));
     library_->addComponent(hierarchicalSlave);
 
     QSharedPointer<BusInterface> hierarchicalSlaveInterface(new BusInterface());
@@ -1122,7 +1122,7 @@ void tst_MemoryViewGenerator::testIdenticalHierarchies()
     hierarchicalSlaveInterface->setInterfaceMode(General::SLAVE);
     hierarchicalSlave->getBusInterfaces()->append(hierarchicalSlaveInterface);
 
-    QSharedPointer<Design> slaveDesign(new Design(subDesign));
+    QSharedPointer<Design> slaveDesign(new Design(subDesign, Document::Revision::Std14));
     library_->addComponent(slaveDesign);
 
     createComponentInstance(subSlave, "subSlave", "subID", slaveDesign);
@@ -1232,14 +1232,14 @@ QString tst_MemoryViewGenerator::runGenerator()
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> tst_MemoryViewGenerator::createMasterComponent(VLNV masterVLNV)
 {
-    QSharedPointer<Component> masterComponent(new Component(masterVLNV));
+    QSharedPointer<Component> masterComponent(new Component(masterVLNV, Document::Revision::Std14));
     QSharedPointer<BusInterface> masterIf(new BusInterface());
     masterIf->setName("masterIf");
     masterIf->setInterfaceMode(General::MASTER);
     masterComponent->getBusInterfaces()->append(masterIf);
 
     QSharedPointer<AddressSpace> masterSpace = createAddressSpace(masterComponent, masterIf->name() + "_space");
-    QSharedPointer<MasterInterface> masterInterfaceData(new MasterInterface());
+    QSharedPointer<InitiatorInterface> masterInterfaceData(new InitiatorInterface());
     masterInterfaceData->setAddressSpaceRef(masterSpace->name());
 
     masterIf->setMaster(masterInterfaceData);
@@ -1267,7 +1267,7 @@ QSharedPointer<AddressSpace> tst_MemoryViewGenerator::createAddressSpace(
 //-----------------------------------------------------------------------------
 QSharedPointer<Component> tst_MemoryViewGenerator::createSlaveComponent(VLNV slaveVLNV)
 {
-    QSharedPointer<Component> slaveComponent(new Component(slaveVLNV));
+    QSharedPointer<Component> slaveComponent(new Component(slaveVLNV, Document::Revision::Std14));
 
     QSharedPointer<BusInterface> slaveIf(new BusInterface());
     slaveIf->setName("slaveIf");

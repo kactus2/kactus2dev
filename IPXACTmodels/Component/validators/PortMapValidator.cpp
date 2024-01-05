@@ -151,13 +151,7 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<Range> const & lo
         {
             return false;
         }
-
-        auto logicalWidth = getLogicalPortWidth(referencedPort);
-        if (logicalWidth == 0)
-        {
-            return true;
-        }
-
+        
         auto [leftToIntOk, leftValue] = checkAndParseExpression(logicalRange->getLeft());
         if (!leftToIntOk)
         {
@@ -168,6 +162,12 @@ bool PortMapValidator::logicalPortHasValidRange(QSharedPointer<Range> const & lo
         if (!rightToIntOk)
         {
             return false;
+        }
+
+        auto logicalWidth = getLogicalPortWidth(referencedPort);
+        if (logicalWidth == 0)
+        {
+            return true;
         }
 
         return rangeIsWithinWidth(leftValue, rightValue, logicalWidth);

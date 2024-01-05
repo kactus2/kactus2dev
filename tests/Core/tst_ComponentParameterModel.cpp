@@ -34,7 +34,7 @@ public:
 private slots:
     void testHasRowForEachTopLevelParameter();
     void testHasRowForEachTopLevelParameter_data();     
-    void testHasColumnForNameValueAndId();
+    void testHasColumnForNameAndId();
     void testFunctionAsValue();
 
 private:
@@ -86,7 +86,7 @@ void tst_ComponentParameterModel::testHasRowForEachTopLevelParameter_data()
 //-----------------------------------------------------------------------------
 // Function: tst_ComponentParameterModel::testHasColumnForNameValueAndId()
 //-----------------------------------------------------------------------------
-void tst_ComponentParameterModel::testHasColumnForNameValueAndId()
+void tst_ComponentParameterModel::testHasColumnForNameAndId()
 {
     QSharedPointer<Parameter> testParameter(new Parameter());
     testParameter->setName("testParameter");
@@ -101,7 +101,7 @@ void tst_ComponentParameterModel::testHasColumnForNameValueAndId()
 
     ComponentParameterModel* model = make(component);
 
-    QCOMPARE(model->columnCount(), 3);
+    QCOMPARE(model->columnCount(), 2);
     QCOMPARE(model->data(model->index(0, ComponentParameterColumns::NAME)).toString(), QString("testParameter"));
     QCOMPARE(model->data(model->index(0, ComponentParameterColumns::ID)).toString(), QString("testId"));
 

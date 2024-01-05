@@ -155,8 +155,11 @@ void tst_BusInterfacePortMapValidator::testPortMapLogicalPortIsValid()
     else
     {
         newPort = createTransactionalPort(testPhysical->name_);
-        quint64 logicalWidth = parser->parseExpression(
-            rangeRight).toULongLong() - parser->parseExpression(rangeLeft).toULongLong() + 1;
+        
+        // Set transactional port width to smallest needed for tests.
+        quint64 logicalWidth = qMax(parser->parseExpression(rangeLeft).toULongLong(),
+            parser->parseExpression(rangeRight).toULongLong()) + 1;
+
         newPort->getTransactional()->setBusWidth(QString::number(logicalWidth));
     }
 
@@ -364,8 +367,11 @@ void tst_BusInterfacePortMapValidator::testPortMapPhysicalPortIsValid()
         else
         {
             newPort = createTransactionalPort(physicalPortName);
-            quint64 logicalWidth = parser->parseExpression(
-                portRigthBound).toULongLong() - parser->parseExpression(portLeftBound).toULongLong() + 1;
+
+            // Set transactional port width to smallest needed for tests.
+            quint64 logicalWidth = qMax(parser->parseExpression(portLeftBound).toULongLong(),
+                parser->parseExpression(portRigthBound).toULongLong()) + 1;
+
             newPort->getTransactional()->setBusWidth(QString::number(logicalWidth));
         }
 
@@ -913,8 +919,11 @@ void tst_BusInterfacePortMapValidator::testPortMapConnectedPortsHaveSameRange()
     else
     {
         newPort = createTransactionalPort(testPhysical->name_);
-        quint64 logicalWidth = parser->parseExpression(
-            physicalRangeRight).toULongLong() - parser->parseExpression(physicalRangeLeft).toULongLong() + 1;
+        
+        // Set transactional port width to smallest needed for tests.
+        quint64 logicalWidth = qMax(parser->parseExpression(physicalRangeLeft).toULongLong(),
+            parser->parseExpression(physicalRangeRight).toULongLong()) + 1;
+        
         newPort->getTransactional()->setBusWidth(QString::number(logicalWidth));
     }
 
