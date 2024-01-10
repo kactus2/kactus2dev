@@ -20,12 +20,12 @@ CONFIG += c++11 testcase console
 
 linux-g++ | linux-g++-64 | linux-g++-32 {
  LIBS += -L../../../executable \
-     -lIPXACTmodels
+     -lIPXACTmodels -lKactusAPI
 }
 
 win64 | win32 {
  LIBS += -L../../../executable \
-     -lIPXACTmodelsd
+     -lIPXACTmodelsd -lKactusAPId
 }
 
 INCLUDEPATH += $$DESTDIR
