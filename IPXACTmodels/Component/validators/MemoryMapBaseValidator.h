@@ -47,7 +47,8 @@ public:
 	 */
     MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
         QSharedPointer<AddressBlockValidator> addressBlockValidator,
-        QSharedPointer<SubspaceMapValidator> subspaceValidator);
+        QSharedPointer<SubspaceMapValidator> subspaceValidator,
+        Document::Revision docRevision = Document::Revision::Unknown);
 
 	/*!
      *  The destructor.

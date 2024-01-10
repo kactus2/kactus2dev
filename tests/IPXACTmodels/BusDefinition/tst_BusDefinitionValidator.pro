@@ -33,7 +33,6 @@ DESTDIR = ./release
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
-INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../

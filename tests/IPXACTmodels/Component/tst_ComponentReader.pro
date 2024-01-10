@@ -16,9 +16,15 @@ TARGET = tst_ComponentReader
 QT += core xml testlib
 QT -= gui
 
-CONFIG += c++11 testcase console
+CONFIG += c++17 testcase console
 
-LIBS += -L../../../executable -lIPXACTmodels
+linux-g++ | linux-g++-64 | linux-g++-32 {
+    LIBS += -L../../../executable -lIPXACTmodels
+}
+
+win64 | win32 {
+    LIBS += -L../../../executable -lIPXACTmodelsd
+}
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

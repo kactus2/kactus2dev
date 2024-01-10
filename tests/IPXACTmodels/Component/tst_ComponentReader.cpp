@@ -1249,9 +1249,9 @@ void tst_ComponentReader::readSwComProperties()
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
     QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
-    QCOMPARE(testComponent->getSWProperties()->size(), 1);
+    QCOMPARE(testComponent->getSWProperties().size(), 1);
 
-    QSharedPointer<ComProperty> swProperty = testComponent->getSWProperties()->first();
+    QSharedPointer<ComProperty> swProperty = testComponent->getSWProperties().first();
     QCOMPARE(swProperty->name(), QString("Priority"));
     QCOMPARE(swProperty->isRequired(), true);
     QCOMPARE(swProperty->getType(), QString("override."));
@@ -1301,7 +1301,7 @@ void tst_ComponentReader::readSystemViews()
     QSharedPointer<Component> testComponent = componentReader.createComponentFrom(document);
 
     QCOMPARE(testComponent->getVlnv().getName(), QString("TestComponent"));
-    QCOMPARE(testComponent->getSWProperties()->size(), 0);
+    QCOMPARE(testComponent->getSWProperties().size(), 0);
     QCOMPARE(testComponent->getSystemViews().size(), 1);
 
     QSharedPointer<SystemView> systemView = testComponent->getSystemViews().first();

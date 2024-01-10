@@ -137,7 +137,7 @@ void tst_FileValidator::failDefine()
 	validator.findErrorsIn(errorList, file, "test");
 
 	QCOMPARE( errorList.size(), 1 );
-	QCOMPARE( errorList.first(), QString("The name ' \t\r\n' of a define is invalid within file joku.txt."));
+	QCOMPARE( errorList.first(), QString("The name '' of a define is invalid within file joku.txt."));
 	QVERIFY( !validator.validate(file) );
 }
 

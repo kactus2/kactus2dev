@@ -80,7 +80,7 @@ void tst_MemoryArrayWriter::writeSingleDimension()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std22, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -110,7 +110,7 @@ void tst_MemoryArrayWriter::writeMultipleDimensions()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std22, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -135,7 +135,7 @@ void tst_MemoryArrayWriter::writeStride()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, false);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std22, false);
     QCOMPARE(output, expectedOutput);
 }
 
@@ -160,7 +160,7 @@ void tst_MemoryArrayWriter::writeBitStride()
     QString output;
     QXmlStreamWriter writer(&output);
 
-    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std14, true);
+    MemoryArrayWriter::writeMemoryArray(writer, memoryArray_, Document::Revision::Std22, true);
     QCOMPARE(output, expectedOutput);
 }
 

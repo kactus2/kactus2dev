@@ -16,7 +16,15 @@ TARGET = tst_ApiDefinitionValidator
 QT += core gui xml testlib
 CONFIG += c++11 testcase console
 
-LIBS += -L../../../executable -lIPXACTmodels
+linux-g++ | linux-g++-64 | linux-g++-32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodels
+
+}
+win64 | win32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodelsd
+}
 
 DESTDIR = ./release
 

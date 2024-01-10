@@ -1437,8 +1437,8 @@ void tst_ComponentValidator::testHasValidPowerDomains()
         validator->findErrorsIn(foundErrors, testComponent);
 
         QString expectedError = QObject::tr(
-            "Invalid name '%1' set for power domain within component Samurai:Champloo:MugenJinFuu:3.0").arg(
-                domainName);
+            "Power domain name %1 within component Samurai:Champloo:MugenJinFuu:3.0 is not unique.")
+            .arg(domainName);
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))
         {

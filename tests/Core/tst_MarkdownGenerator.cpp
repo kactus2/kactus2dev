@@ -298,8 +298,6 @@ void tst_MarkdownGenerator::testTableOfContentsIsWrittenWithOnlyTopComponent()
     targetFile.open(QFile::WriteOnly);
     QTextStream stream(&targetFile);
 
-    unsigned int runningNumber = 0;
-
     generator->writeTableOfContents(stream);
 
     targetFile.close();
@@ -1191,7 +1189,7 @@ void tst_MarkdownGenerator::testDesignIsWritten()
         "**Design:** Test:TestLibrary:TestDesign:1.0  \n"
         "**IP-Xact file:** [TestDesign.1.0.xml]()  \n"
         "Diagram of design Test:TestLibrary:TestDesign:1.0:  \n"
-        "![View: HierarchicalView preview picture](Test.TestLibrary.TestComponent.1.0.HierarchicalView.png)  \n"
+        "![View: HierarchicalView preview picture](/Test.TestLibrary.TestComponent.1.0.HierarchicalView.png)  \n"
     );
 
     checkOutputFile(expectedOutput);

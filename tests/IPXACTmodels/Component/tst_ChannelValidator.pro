@@ -17,7 +17,15 @@ QT -= gui
 
 CONFIG += c++11 testcase console
 
-LIBS += -L../../../executable -lIPXACTmodels -lKactusAPI
+linux-g++ | linux-g++-64 | linux-g++-32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodels -lKactusAPI
+
+}
+win64 | win32 {
+ LIBS += -L../../../executable \
+     -lIPXACTmodelsd -lKactusAPId
+}
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../

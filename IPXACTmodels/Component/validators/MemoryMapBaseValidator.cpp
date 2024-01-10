@@ -31,7 +31,9 @@
 //-----------------------------------------------------------------------------
 MemoryMapBaseValidator::MemoryMapBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<AddressBlockValidator> addressBlockValidator,
-    QSharedPointer<SubspaceMapValidator> subspaceValidator):
+    QSharedPointer<SubspaceMapValidator> subspaceValidator,
+    Document::Revision docRevision):
+docRevision_(docRevision),
 expressionParser_(expressionParser),
 addressBlockValidator_(addressBlockValidator),
 subspaceValidator_(subspaceValidator),

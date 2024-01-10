@@ -1450,7 +1450,7 @@ void tst_DocumentGenerator::testDesignIsWritten()
         "\t\t\t\t&nbsp;&nbsp;&nbsp;<strong>IP-Xact file: </strong><a href=\"\">TestDesign.1.0.xml</a><br>\n"
         "\t\t\t</p>\n"
         "\t\t\tDiagram of design Test:TestLibrary:TestDesign:1.0:<br>\n"
-        "\t\t\t<img src=\"Test.TestLibrary.TestComponent.1.0.HierarchicalView.png\" alt=\"View: HierarchicalView preview picture\"><br>\n"
+        "\t\t\t<img src=\"/Test.TestLibrary.TestComponent.1.0.HierarchicalView.png\" alt=\"View: HierarchicalView preview picture\"><br>\n"
         "\t\t\t<br>\n"
         );
 

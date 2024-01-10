@@ -78,7 +78,7 @@ void tst_MemoryMapBaseValidator::testNameIsValid()
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
         new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator, Document::Revision::Std14);
 
     QCOMPARE(validator.hasValidName(testMap), isValid);
 
@@ -133,7 +133,7 @@ void tst_MemoryMapBaseValidator::testIsPresentIsValid()
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
         new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator, Document::Revision::Std14);
     QCOMPARE(validator.hasValidIsPresent(testMap), isValid);
 
     if (!isValid)
@@ -189,7 +189,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
     QSharedPointer<AddressBlockValidator> addressBlockValidator (
         new AddressBlockValidator(parser, registerValidator, registerFileValidator, parameterValidator, Document::Revision::Std14));
     QSharedPointer<SubspaceMapValidator> subspaceMapValidator(new SubspaceMapValidator(parser, parameterValidator, Document::Revision::Std14));
-    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator);
+    MemoryMapBaseValidator validator(parser, addressBlockValidator, subspaceMapValidator, Document::Revision::Std14);
     QCOMPARE(validator.hasValidMemoryBlocks(testMap, ""), false);
 
     QVector<QString> foundErrors;
@@ -214,7 +214,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksAreValid()
 
     foundErrors.clear();
     validator.findErrorsIn(foundErrors, testMap, "", "test");
-    expectedError = QObject::tr("Name %1 of address blocks in memory map %2 is not unique")
+    expectedError = QObject::tr("Name %1 of memory blocks in memory map %2 is not unique")
         .arg(testBlock->name()).arg(testMap->name());
 
     if (errorIsNotFoundInErrorList(expectedError, foundErrors))
@@ -267,7 +267,7 @@ void tst_MemoryMapBaseValidator::testAddressBlocksOverlap()
     {
         QVector<QString> foundErrors;
         validator.findErrorsIn(foundErrors, testMap, "", "test");
-        QString expectedError = QObject::tr("Address blocks %1 and %2 overlap in memory map %3")
+        QString expectedError = QObject::tr("Memory blocks %1 and %2 overlap in memory map %3")
             .arg(blockOne->name()).arg(blockTwo->name()).arg(testMap->name());
 
         if (errorIsNotFoundInErrorList(expectedError, foundErrors))

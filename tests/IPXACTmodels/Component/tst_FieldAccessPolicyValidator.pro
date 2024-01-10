@@ -32,7 +32,6 @@ win64 | win32 {
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../../
-INCLUDEPATH += ../../../KactusAPI/include
 
 DEPENDPATH += .
 DEPENDPATH += ../../../
