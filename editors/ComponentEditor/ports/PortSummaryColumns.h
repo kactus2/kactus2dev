@@ -27,7 +27,7 @@ namespace PortSummaryColumns
         DESCRIPTION = 5,        //!< Column for adding a description for the port.
         ARRAY_LEFT = -1,        //!< Column for setting the left side of the array. Disabled.
         ARRAY_RIGHT = -1,       //!< Column for setting the right side of the array. Disabled.
-        TYPE_NAME = 1,          //!< Column for the port typename. Disabled.
+        TYPE_NAME = -1,         //!< Column for the port typename. Disabled.
     };
 
     constexpr static auto COLUMN_COUNT = 6;
