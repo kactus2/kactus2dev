@@ -48,7 +48,7 @@ int PortSummaryModel::columnCount(QModelIndex const& parent) const
 //-----------------------------------------------------------------------------
 QVariant PortSummaryModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if (section == PortSummaryColumns::TYPE && role == Qt::DisplayRole)
+    if (orientation == Qt::Horizontal && section == PortSummaryColumns::TYPE && role == Qt::DisplayRole)
     {
         return tr("Type");
     }
