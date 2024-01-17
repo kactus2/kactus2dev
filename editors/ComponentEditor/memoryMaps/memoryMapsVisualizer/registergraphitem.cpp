@@ -344,35 +344,49 @@ QMultiMap<quint64, MemoryVisualizationItem*>::iterator RegisterGraphItem::addMem
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::markConflictingChildren()
 {
-    unsigned int registerMSB = getRegisterMSB();
-    quint64 lowestBitHandled = registerMSB + 1;
-
-    // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB).     
-    if (!childItems_.isEmpty())
+    if (childItems_.isEmpty())
     {
-        for (auto child = std::prev(childItems_.end()); child != childItems_.begin() - 1; --child)
+        return;
+    }
+
+    auto registerMSB = getRegisterMSB();
+    quint64 highestBitHandled = 0;
+
+    // QMap sorts children by ascending offsets.
+    for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
+    {
+        auto currentChild = i.value();
+        auto currentOffset = currentChild->getOffset();
+
+        if (!currentChild->isPresent())
         {
-            MemoryVisualizationItem* current = child.value();
-            if (current->isPresent())
+            continue;
+        }
+
+        bool overlaps = currentOffset < highestBitHandled;
+        bool isOutsideRegister = currentOffset > registerMSB ||
+            currentChild->getLastAddress() > registerMSB;
+
+        currentChild->setConflicted(overlaps || isOutsideRegister);
+
+        if (overlaps && i != childItems_.begin())
+        {
+            // Walk in the opposite direction and mark any overlapping items conflicted.
+            for (auto previous = std::prev(i); previous != childItems_.begin(); --previous)
             {
-                bool overlaps = current->getLastAddress() >= lowestBitHandled;
-                bool isOutsideRegister = current->getOffset() > registerMSB || current->getLastAddress() > registerMSB;
-
-                current->setConflicted(overlaps || isOutsideRegister);
-                if (overlaps)
+                if ((*previous)->getLastAddress() >= currentOffset)
                 {
-                    // Walk in the opposite direction and mark any overlapping items conflicted.
-                    for (auto previous = child + 1; previous != childItems_.end(); ++previous)
-                    {
-                        if ((*previous)->getOffset() <= current->getLastAddress())
-                        {
-                            (*previous)->setConflicted(true);
-                        }
-                    }
+                    (*previous)->setConflicted(true);
                 }
+            }
 
-                lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+            // Check first item separately to avoid undefined iterator behavior.
+            if (childItems_.first()->getLastAddress() >= currentOffset)
+            {
+                childItems_.first()->setConflicted(true);
             }
         }
+
+        highestBitHandled = qMax(highestBitHandled, currentChild->getLastAddress() + 1);
     }
 }
