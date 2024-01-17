@@ -649,7 +649,7 @@ void tst_RegisterGraphItem::testNonPresentField()
 
     registerItem->redoChildLayout();
     expandItem(registerItem);
-    
+
     QCOMPARE(nonPresentItem->isVisible(), false);
 
     QCOMPARE(presentItem->isConflicted(), false);
@@ -657,11 +657,11 @@ void tst_RegisterGraphItem::testNonPresentField()
     QList<MemoryGapItem*> reservedSpaces = findMemoryGaps(registerItem);
 
     QCOMPARE(reservedSpaces.size(), 2);
-    MemoryGapItem* reservedMSBs = reservedSpaces.first();
+    MemoryGapItem* reservedMSBs = reservedSpaces.last();
     QCOMPARE(reservedMSBs->getDisplayOffset(), quint64(4));
     QCOMPARE(reservedMSBs->getDisplayLastAddress(), quint64(7));
 
-    MemoryGapItem* reservedLSB = reservedSpaces.last();
+    MemoryGapItem* reservedLSB = reservedSpaces.first();
     QCOMPARE(reservedLSB->getDisplayOffset(), quint64(0));
     QCOMPARE(reservedLSB->getDisplayLastAddress(), quint64(0));
 

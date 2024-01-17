@@ -268,7 +268,7 @@ void RegisterGraphItem::removeGapsAndSortChildren()
         }
         else
         {
-            sortedMap.insert((*item)->getLastAddress(), *item);
+            sortedMap.insert((*item)->getOffset(), *item);
         }
     }
 
@@ -280,30 +280,39 @@ void RegisterGraphItem::removeGapsAndSortChildren()
 //-----------------------------------------------------------------------------
 void RegisterGraphItem::fillGapsBetweenChildren()
 {
-    quint64 lowestBitHandled = findHighestReservedBit() + 1;
-
-    // QMap sorts children by ascending keys. This must iterate children from largest to smallest key (MSB). 
-    if (!childItems_.isEmpty())
+    if (childItems_.isEmpty())
     {
-        for (auto i = std::prev(childItems_.end()); i != childItems_.begin() - 1; --i)
-        {
-            MemoryVisualizationItem const* current = i.value();
-            if (current->isPresent())
-            {
-                if (emptySpaceBeforeChild(current, lowestBitHandled))
-                {
-                    i = addMemoryGap(current->getLastAddress() + 1, lowestBitHandled - 1);
-                }
+        return;
+    }
 
-                lowestBitHandled = qMin(current->getOffset(), lowestBitHandled);
+    auto parentMSB = getRegisterMSB();
+    quint64 highestBitHandled = 0;
+
+    // QMap sorts children by ascending offsets.
+    for (auto i = childItems_.begin(); i != childItems_.end(); ++i)
+    {
+        auto currentChild = i.value();
+        auto currentOffset = currentChild->getOffset();
+
+        if (currentChild->isPresent())
+        {
+            // Insert gap between fields only if they are not overlapping with a third field.
+            if (highestBitHandled < currentOffset)
+            {        
+                i = addMemoryGap(highestBitHandled, currentOffset - 1);
+                highestBitHandled = currentOffset;
+            }
+            else
+            {
+                highestBitHandled = qMax(highestBitHandled, currentChild->getLastAddress() + 1);
             }
         }
     }
 
-    // If there is a gap between the LSB of the register and the right-most item.
-    if (lowestBitHandled > 0)
+    // Insert gap between the MSB of the register and the left-most item if needed.
+    if (highestBitHandled <= parentMSB)
     {
-        addMemoryGap(0, lowestBitHandled - 1);
+        addMemoryGap(highestBitHandled, parentMSB);
     }
 }
 
