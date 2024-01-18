@@ -28,7 +28,8 @@ jobs:
       run: build-wrapper-linux-x86/build-wrapper-linux-x86-64 --out-dir bw-output make -j4
     - name: Install shared libraries
       run: |
-        sudo make -C IPXACTmodels install
+        sudo make -j 4 -C IPXACTmodels install
+        sudo make -j 4 -C KactusAPI install
         sudo bash -c 'echo /usr/lib64/ > /etc/ld.so.conf.d/kactus2.conf; ldconfig'
     - name: Build tests
       # Build without -j to avoid colliding on compiling objects shared between tests.
