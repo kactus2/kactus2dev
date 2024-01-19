@@ -16,6 +16,10 @@ TARGET = tst_MarkdownGenerator
 QT += core xml gui widgets testlib printsupport svg
 CONFIG += c++11 testcase console
 
+QMAKE_EXPORTED_VARIABLES += MAKE_TESTARGS
+MAKE_TESTARGS.name = TESTARGS
+MAKE_TESTARGS.value = "-platform offscreen"
+
 win32:CONFIG(release, debug|release) {
     LIBS += -L../../executable/ -lIPXACTmodels -lKactusAPI
     DESTDIR = ./release
