@@ -288,11 +288,11 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
 {
     if (hasWire())
     {
-        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && wire_->hasMasterPort())
+        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER || mode == General::INITIATOR || mode == General::MIRRORED_INITIATOR) && wire_->hasMasterPort())
         {
             return wire_->getMasterPort()->getPresence();
         }
-        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && wire_->hasSlavePort())
+        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE || mode == General::TARGET || mode == General::MIRRORED_TARGET) && wire_->hasSlavePort())
         {
             return wire_->getSlavePort()->getPresence();
         }
@@ -310,11 +310,11 @@ PresenceTypes::Presence PortAbstraction::getPresence(General::InterfaceMode mode
     }
     else if (hasTransactional())
     {
-        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) && transactional_->hasMasterPort())
+        if ((mode == General::MASTER || mode == General::MIRRORED_MASTER || mode == General::INITIATOR || mode == General::MIRRORED_INITIATOR) && transactional_->hasMasterPort())
         {
             return transactional_->getMasterPort()->getPresence();
         }
-        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) && transactional_->hasSlavePort())
+        else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE || mode == General::TARGET || mode == General::MIRRORED_TARGET) && transactional_->hasSlavePort())
         {
             return transactional_->getSlavePort()->getPresence();
         }
