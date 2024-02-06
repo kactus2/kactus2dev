@@ -24,7 +24,7 @@ QSharedPointer<ApiDefinition> ApiDefinitionReader::createApiDefinitionFrom(QDomN
     QDomElement apiNode = document.firstChildElement();
 	auto vlnv = DocumentReader::createVLNVFrom(apiNode, VLNV::APIDEFINITION);
 
-	auto revision = DocumentReader::getXMLDocumentRevision(document);
+	auto revision = DocumentReader::getXMLDocumentRevision(apiNode);
 	if (revision == Document::Revision::Unknown)
 	{
 		revision = Document::Revision::Std22;

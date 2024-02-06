@@ -22,7 +22,7 @@ QSharedPointer<ComDefinition> ComDefinitionReader::createComDefinitionFrom(QDomN
 {
     QDomElement comNode = document.firstChildElement();
 	auto vlnv = DocumentReader::createVLNVFrom(comNode, VLNV::COMDEFINITION);
-	auto revision = DocumentReader::getXMLDocumentRevision(document);
+	auto revision = DocumentReader::getXMLDocumentRevision(comNode);
 	if (revision == Document::Revision::Unknown)
 	{
 		revision = Document::Revision::Std22;
