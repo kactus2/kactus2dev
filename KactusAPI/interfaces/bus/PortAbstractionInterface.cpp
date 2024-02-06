@@ -1624,18 +1624,23 @@ bool PortAbstractionInterface::modeExistsForPort(General::InterfaceMode const& m
 {
     General::InterfaceMode initiatorMode = General::INITIATOR;
     General::InterfaceMode targetMode = General::TARGET;
+    General::InterfaceMode mirroredInitiatorMode = General::MIRRORED_INITIATOR;
+    General::InterfaceMode mirroredTargetMode = General::MIRRORED_TARGET;
+
     if (abstractionStandardRevision_ != Document::Revision::Std22)
     {
         initiatorMode = General::MASTER;
         targetMode = General::SLAVE;
+        mirroredInitiatorMode = General::MIRRORED_MASTER;
+        mirroredTargetMode = General::MIRRORED_SLAVE;
     }
 
     General::InterfaceMode selectedMode = mode;
-    if (selectedMode == General::MIRRORED_MASTER)
+    if (selectedMode == mirroredInitiatorMode)
     {
         selectedMode = initiatorMode;
     }
-    else if (selectedMode == General::MIRRORED_SLAVE)
+    else if (selectedMode == mirroredTargetMode)
     {
         selectedMode = targetMode;
     }
