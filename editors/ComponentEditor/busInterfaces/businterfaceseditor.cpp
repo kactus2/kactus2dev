@@ -19,6 +19,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <QMessageBox>
+#include <QCoreApplication>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
@@ -29,7 +31,7 @@ BusInterfacesEditor::BusInterfacesEditor(LibraryInterface* handler, QSharedPoint
 ItemEditor(component, handler, parent),
 view_(this),
 proxy_(this),
-model_(handler, parameterFinder, busInterface, this)
+model_(handler, component, parameterFinder, busInterface, this)
 {
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("Bus interfaces summary"), this);
 
@@ -58,6 +60,7 @@ model_(handler, parameterFinder, busInterface, this)
 	connect(&model_, SIGNAL(busifAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(busifRemoved(int)),	this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
     connect(&model_, SIGNAL(busIfMoved(int, int)), this, SIGNAL(childMoved(int, int)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(stdRevisionMismatch()), this, SLOT(stdRevisionMismatchWarning()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -82,6 +85,16 @@ model_(handler, parameterFinder, busInterface, this)
 void BusInterfacesEditor::refresh()
 {
 	view_.setModel(&model_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesEditor::stdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void BusInterfacesEditor::stdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
 }
 
 //-----------------------------------------------------------------------------

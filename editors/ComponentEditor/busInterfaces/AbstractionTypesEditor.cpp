@@ -11,6 +11,8 @@
 
 #include "AbstractionTypesEditor.h"
 
+#include <IPXACTmodels/Component/Component.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesModel.h>
@@ -18,6 +20,9 @@
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+
+#include <QMessageBox>
+#include <QCoreApplication>
 
 #include <QHeaderView>
 #include <QVBoxLayout>
@@ -30,7 +35,7 @@ AbstractionTypesEditor::AbstractionTypesEditor(QSharedPointer<Component> compone
 QGroupBox(parent),
 abstractionTypeInterface_(abstractionTypeInterface),
 abstractionView_(new EditableTableView(this)),
-abstractionModel_(new AbstractionTypesModel(abstractionTypeInterface_, this)),
+abstractionModel_(new AbstractionTypesModel(abstractionTypeInterface_, component, library, this)),
 abstractionDelegate_(new AbstractionTypesDelegate(component, library, parentWindow, this)),
 library_(library)
 {
@@ -55,6 +60,16 @@ library_(library)
 
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionTypesEditor::stdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void AbstractionTypesEditor::stdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionTypesEditor::connectSignals()
 //-----------------------------------------------------------------------------
 void AbstractionTypesEditor::connectSignals()
@@ -62,6 +77,8 @@ void AbstractionTypesEditor::connectSignals()
     connect(abstractionModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(abstractionModel_, SIGNAL(dataChanged(QModelIndex const&, QModelIndex const&)),
         this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(abstractionModel_, SIGNAL(stdRevisionMismatch()),
+        this, SLOT(stdRevisionMismatchWarning()), Qt::UniqueConnection);
 
     connect(abstractionView_, SIGNAL(addItem(QModelIndex const&)),
         abstractionModel_, SLOT(onAddItem(QModelIndex const&)), Qt::UniqueConnection);

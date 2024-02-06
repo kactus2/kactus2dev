@@ -36,6 +36,7 @@ HEADERS += ./generaldeclarations.h \
     ./common/Choice.h \
     ./common/ChoiceReader.h \
     ./common/ChoiceWriter.h \
+    ./common/DocumentUtils.h \
     ./common/FileType.h \
     ./common/QualifierReader.h \
     ./common/QualifierWriter.h \
@@ -165,6 +166,8 @@ HEADERS += ./generaldeclarations.h \
     ./Component/PowerDomainReader.h \
     ./Component/PowerDomainWriter.h \
     ./Component/Region.h \
+    ./Component/Structured.h \
+    ./Component/SubPort.h \
     ./Component/SubSpaceMap.h \
     ./Component/SubspaceMapReader.h \
     ./Component/SubSpaceMapWriter.h \
@@ -303,9 +306,7 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
-    ./Component/Structured.h \
-    ./Component/SubPort.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h
 SOURCES += ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
     ./kactusExtensions/ApiDefinitionReader.cpp \
@@ -352,6 +353,7 @@ SOURCES += ./generaldeclarations.cpp \
     ./common/DirectionTypes.cpp \
     ./common/Document.cpp \
     ./common/DocumentReader.cpp \
+    ./common/DocumentUtils.cpp \
     ./common/DocumentWriter.cpp \
     ./common/Enumeration.cpp \
     ./common/Extendable.cpp \
@@ -537,6 +539,8 @@ SOURCES += ./generaldeclarations.cpp \
     ./Component/RemapStateReader.cpp \
     ./Component/RemapStateWriter.cpp \
     ./Component/Segment.cpp \
+    ./Component/Structured.cpp \
+    ./Component/SubPort.cpp \
     ./Component/SubSpaceMap.cpp \
     ./Component/SubspaceMapReader.cpp \
     ./Component/SubSpaceMapWriter.cpp \
@@ -602,6 +606,4 @@ SOURCES += ./generaldeclarations.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
-    ./Component/Structured.cpp \
-    ./Component/SubPort.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp

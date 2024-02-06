@@ -20,6 +20,8 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
+#include <QCoreApplication>
+#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: ComInterfacesEditor::ComInterfacesEditor()
@@ -57,6 +59,7 @@ ItemEditor(component, libHandler, parent),
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(comIfAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(comIfRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(stdRevisionMismatch()), this, SLOT(showStdRevisionMismatchWarning()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)), 
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -85,6 +88,16 @@ bool ComInterfacesEditor::isValid() const
 void ComInterfacesEditor::refresh()
 {
 	view_.update();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComInterfacesEditor::showStdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void ComInterfacesEditor::showStdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
 }
 
 //-----------------------------------------------------------------------------

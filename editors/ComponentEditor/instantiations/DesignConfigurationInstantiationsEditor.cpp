@@ -21,6 +21,8 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <QVBoxLayout>
+#include <QMessageBox>
+#include <QCoreApplication>
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationsEditor::DesignConfigurationInstantiationsEditor()
@@ -31,7 +33,7 @@ DesignConfigurationInstantiationsEditor::DesignConfigurationInstantiationsEditor
 ItemEditor(component, handler, parent),
     view_(new EditableTableView(this)),
     proxy_(new QSortFilterProxyModel(this)),
-    model_(component->getDesignConfigurationInstantiations(), validator, this)
+    model_(component->getDesignConfigurationInstantiations(), validator, component, handler, this)
 {
 	proxy_->setSourceModel(&model_);	
     proxy_->setDynamicSortFilter(false);
@@ -52,6 +54,7 @@ ItemEditor(component, handler, parent),
         this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(designConfigurationInstantiationRemoved(int)),
         this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+    connect(&model_, SIGNAL(stdRevisionMismatch()), this, SLOT(stdRevisionMismatchWarning()), Qt::UniqueConnection);
 
 	connect(view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -80,6 +83,16 @@ DesignConfigurationInstantiationsEditor::~DesignConfigurationInstantiationsEdito
 void DesignConfigurationInstantiationsEditor::refresh()
 {    
     proxy_->invalidate();
+}
+
+//-----------------------------------------------------------------------------
+// Function: DesignConfigurationInstantiationsEditor::stdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void DesignConfigurationInstantiationsEditor::stdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
 }
 
 //-----------------------------------------------------------------------------

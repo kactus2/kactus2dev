@@ -57,6 +57,14 @@ public:
 	*/
 	virtual void refresh();
 
+public slots:
+
+	/*!
+	 *  Displays warning message when trying to drag and drop a hierarchy reference using different standard revision
+	 *  than the system design being edited.
+	 */
+	void showStdRevisionMismatchWarning();
+
 protected:
 
 	//! Handler for widget's show event

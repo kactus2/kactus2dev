@@ -72,6 +72,14 @@ public:
 	*/
 	virtual void refresh();
 
+public slots:
+
+	/*!
+	 *  Displays warning message when trying to drag and drop an IP-XACT file using different standard revision
+	 *  than the component.
+	 */
+	void showStdRevisionMismatchWarning();
+
 protected:
 
 	//! Handler for widget's show event

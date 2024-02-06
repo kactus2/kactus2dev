@@ -55,6 +55,7 @@ libraryHandler_(libraryHandler)
     documentNameGroupEditor_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);
+    extendEditor_->setRevisionFilter(true, absDef->getRevision());
 
     busDisplay_->setTitle(QStringLiteral("Bus Type"));
 
@@ -111,6 +112,7 @@ void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
     documentNameGroupEditor_->setDocumentNameGroup(absDef, libraryHandler_->getPath(absDef->getVlnv()));
 
     extendEditor_->setVLNV(absDef->getExtends());
+    extendEditor_->setRevisionFilter(true, absDef->getRevision());
 
     busDisplay_->setVLNV(absDef->getBusType());
 

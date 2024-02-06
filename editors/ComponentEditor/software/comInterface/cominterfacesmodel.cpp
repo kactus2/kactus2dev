@@ -22,6 +22,7 @@
 #include <IPXACTmodels/kactusExtensions/ComDefinition.h>
 #include <IPXACTmodels/kactusExtensions/ComInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <common/KactusColors.h>
 
@@ -325,6 +326,12 @@ bool ComInterfacesModel::dropMimeData(QMimeData const* data, Qt::DropAction acti
     {
         if (vlnv.getType() != VLNV::COMDEFINITION)
         {
+            return false;
+        }
+
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, component_->getVlnv(), libHandler_))
+        {
+            emit stdRevisionMismatch();
             return false;
         }
 

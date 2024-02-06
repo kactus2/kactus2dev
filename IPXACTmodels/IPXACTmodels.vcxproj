@@ -159,6 +159,7 @@
     <ClCompile Include="common\DirectionTypes.cpp" />
     <ClCompile Include="common\Document.cpp" />
     <ClCompile Include="common\DocumentReader.cpp" />
+    <ClCompile Include="common\DocumentUtils.cpp" />
     <ClCompile Include="common\DocumentWriter.cpp" />
     <ClCompile Include="common\Enumeration.cpp" />
     <ClCompile Include="common\Extendable.cpp" />
@@ -426,6 +427,7 @@
     <ClInclude Include="common\Choice.h" />
     <ClInclude Include="common\ChoiceReader.h" />
     <ClInclude Include="common\ChoiceWriter.h" />
+    <ClInclude Include="common\DocumentUtils.h" />
     <ClInclude Include="common\FileType.h" />
     <ClInclude Include="common\QualifierReader.h" />
     <ClInclude Include="common\QualifierWriter.h" />

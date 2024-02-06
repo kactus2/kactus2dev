@@ -169,6 +169,12 @@ signals:
 	*/
 	void comIfRemoved(int index);
 
+	/*!
+	 *  Emitted when a com definition with different std revision than the component being edited
+	 *  is dropped in an com interface cell in the editor.
+	 */
+	void stdRevisionMismatch() const;
+
 private:
 
 	//! The instance that manages the library.

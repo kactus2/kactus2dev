@@ -1028,6 +1028,9 @@
     <ClCompile Include="Component\Structured.cpp">
       <Filter>Source Files\Component</Filter>
     </ClCompile>
+    <ClCompile Include="common\DocumentUtils.cpp">
+      <Filter>Source Files\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1779,6 +1782,9 @@
     </ClInclude>
     <ClInclude Include="Component\Structured.h">
       <Filter>Header Files\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="common\DocumentUtils.h">
+      <Filter>Header Files\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -73,6 +73,14 @@ public:
      */
 	virtual void refresh();
 
+public slots:
+
+	/*!
+	 *  Displays warning message when trying to drag and drop a busDef or absDef using different standard revision
+	 *  than the containing component.
+	 */
+	void stdRevisionMismatchWarning();
+
 protected:
 
 	/*!

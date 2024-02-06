@@ -93,6 +93,12 @@ public slots:
 
 	//! Saves the document as new object and resets modifies state
 	virtual bool saveAs();
+
+    /*!
+     *  Displays warning message when trying to drag and drop an IP-XACT file using different standard revision
+     *  than the catalog.
+     */
+    void showStdRevisionMismatchWarning();
     
 protected:
     //! Called when the editor is shown.

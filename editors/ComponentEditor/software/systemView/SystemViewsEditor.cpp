@@ -18,6 +18,8 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
+#include <QCoreApplication>
+#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: SystemViewsEditor::SystemViewsEditor()
@@ -27,7 +29,7 @@ SystemViewsEditor::SystemViewsEditor(QSharedPointer<Component> component, Librar
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, this)
+    model_(component, handler, this)
 {
     // display a label on top the table
 	SummaryLabel* summaryLabel = new SummaryLabel(tr("System views summary"), this, true);
@@ -54,6 +56,7 @@ ItemEditor(component, handler, parent),
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewAdded(int)), this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(viewRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(stdRevisionMismatch()), this, SLOT(showStdRevisionMismatchWarning()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
 		&model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -82,6 +85,16 @@ bool SystemViewsEditor::isValid() const
 void SystemViewsEditor::refresh()
 {
 	view_.update();
+}
+
+//-----------------------------------------------------------------------------
+// Function: SystemViewsEditor::showStdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void SystemViewsEditor::showStdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
 }
 
 //-----------------------------------------------------------------------------

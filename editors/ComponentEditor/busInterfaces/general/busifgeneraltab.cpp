@@ -46,6 +46,7 @@ QWidget(parent),
     Q_ASSERT(busInterface_);
 
     busType_.setFlat(true);
+    busType_.setRevisionFilter(true, docRevision_);
     abstractionEditor_->setFlat(true);
     parameters_.setFlat(true);
 

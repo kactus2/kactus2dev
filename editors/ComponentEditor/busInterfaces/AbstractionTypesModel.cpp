@@ -15,7 +15,10 @@
 
 #include <editors/ComponentEditor/busInterfaces/AbstractionTypesConstants.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/LibraryInterface.h>
 
+#include <IPXACTmodels/common/DocumentUtils.h>
+#include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/AbstractionType.h>
 #include <IPXACTmodels/Component/validators/AbstractionTypeValidator.h>
@@ -26,9 +29,12 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::AbstractionTypesModel()
 //-----------------------------------------------------------------------------
-AbstractionTypesModel::AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, QObject* parent):
+AbstractionTypesModel::AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, 
+    QSharedPointer<Component> component, LibraryInterface* library, QObject* parent) :
 QAbstractTableModel(parent),
-abstractionInterface_(abstractionInterface)
+abstractionInterface_(abstractionInterface),
+containingComponent_(component),
+library_(library)
 {
 
 }
@@ -290,7 +296,7 @@ QStringList AbstractionTypesModel::mimeTypes() const
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesModel::dropMimeData()
 //-----------------------------------------------------------------------------
-bool AbstractionTypesModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column, 
+bool AbstractionTypesModel::dropMimeData(QMimeData const* data, Qt::DropAction action, int row, int column,
     QModelIndex const& parent)
 {
     if (action == Qt::IgnoreAction)
@@ -311,6 +317,13 @@ bool AbstractionTypesModel::dropMimeData(QMimeData const* data, Qt::DropAction a
     VLNV vlnv = variant.value<VLNV>();
     if (vlnv.getType() != VLNV::ABSTRACTIONDEFINITION)
     {
+        return false;
+    }
+
+    // Check compatibility of drag & dropped abstraction definition.
+    if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, containingComponent_->getVlnv(), library_))
+    {
+        emit stdRevisionMismatch();
         return false;
     }
 

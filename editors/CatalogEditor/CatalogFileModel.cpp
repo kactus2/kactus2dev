@@ -19,6 +19,7 @@
 #include <KactusAPI/include/LibraryInterface.h>
 
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/Catalog/Catalog.h>
@@ -419,11 +420,17 @@ bool CatalogFileModel::dropMimeData(QMimeData const* data, Qt::DropAction action
     droppedFile->setVlnv(vlnv);
     droppedFile->setName(path);
 
+    if (!DocumentUtils::documentsHaveMatchingStdRevisions(catalog_->getVlnv(), vlnv, library_))
+    {
+        emit stdRevisionMismatch();
+        return false;
+    }
+
     addFile(droppedFile);
 
     if (vlnv.getType() != VLNV::CATALOG)
     {
-        foreach (VLNV const& dependentVlnv, library_->getModelReadOnly(vlnv)->getDependentVLNVs())
+        for (VLNV const& dependentVlnv : library_->getModelReadOnly(vlnv)->getDependentVLNVs())
         {
             QSharedPointer<IpxactFile> dependentFile(new IpxactFile());
             dependentFile->setVlnv(dependentVlnv);

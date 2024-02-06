@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/VLNV.h>
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <QAbstractTableModel>
 #include <QSharedPointer>
 
@@ -22,6 +24,8 @@ class BusInterface;
 class AbstractionType;
 class AbstractionTypeValidator;
 class AbstractionTypeInterface;
+class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! Table model for bus interface abstraction types.
@@ -36,9 +40,11 @@ public:
      *  The constructor.
 	 *
      *      @param [in] abstractionInterface    Interface for accessing abstraction types.
+     *      @param [in] component               The conaining component.
 	 *      @param [in] parent                  Pointer to the owner of this model.
      */
-    AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, QObject* parent);
+    AbstractionTypesModel(AbstractionTypeInterface* abstractionInterface, QSharedPointer<Component> component, 
+        LibraryInterface* library, QObject* parent);
 
 	/*!
      *  The destructor.
@@ -177,6 +183,11 @@ signals:
      */
 	void noticeMessage(const QString& msg) const;
 
+    /*!
+     *  Emitted when a abstraction def with different std revision is dropped in the editor.
+     */
+    void stdRevisionMismatch() const;
+
 private:
 	
 	//! No copying. No assignment.
@@ -215,6 +226,12 @@ private:
 
     //! Interface for accessing abstraction types.
     AbstractionTypeInterface* abstractionInterface_;
+
+    //! The containing component.
+    QSharedPointer<Component> containingComponent_;
+
+    //! The library handler.
+    LibraryInterface* library_;
 };
 
 #endif // ABSTRACTIONTYPESMODEL_H

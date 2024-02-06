@@ -40,7 +40,7 @@ QDialog(parent),
     attributeEditor_->setVisible(showAttributes);
    
     directoryEditor_->layout()->setContentsMargins(0,0,0,0);
-    
+
     okButton_->setDefault(true);
     okButton_->setEnabled(false);
 

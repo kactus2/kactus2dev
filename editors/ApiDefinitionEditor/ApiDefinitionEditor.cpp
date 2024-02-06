@@ -45,6 +45,7 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     comDefVLNVEdit_.setTitle(tr("COM definition reference"));
     comDefVLNVEdit_.setVLNV(apiDef->getComDefinitionRef());
     comDefVLNVEdit_.setFlat(true);
+    comDefVLNVEdit_.setRevisionFilter(true, apiDef->getRevision());
     updateComDefinition();
 
     connect(&nameGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);

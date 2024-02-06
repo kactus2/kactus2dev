@@ -19,6 +19,8 @@
 #include <IPXACTmodels/Component/Component.h>
 
 #include <QVBoxLayout>
+#include <QCoreApplication>
+#include <QMessageBox>
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterfacesEditor::ApiInterfacesEditor()
@@ -28,7 +30,7 @@ ApiInterfacesEditor::ApiInterfacesEditor(QSharedPointer<Component> component,
 ItemEditor(component, handler, parent),
     view_(this),
     proxy_(this),
-    model_(component, this)
+    model_(component, handler, this)
 {
 
     // display a label on top the table
@@ -57,6 +59,7 @@ ItemEditor(component, handler, parent),
 	connect(&model_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(apiAdded(int)),	this, SIGNAL(childAdded(int)), Qt::UniqueConnection);
 	connect(&model_, SIGNAL(apiRemoved(int)), this, SIGNAL(childRemoved(int)), Qt::UniqueConnection);
+	connect(&model_, SIGNAL(stdRevisionMismatch()), this, SLOT(showStdRevisionMismatchWarning()), Qt::UniqueConnection);
 
 	connect(&view_, SIGNAL(addItem(const QModelIndex&)),
         &model_, SLOT(onAddItem(const QModelIndex&)), Qt::UniqueConnection);
@@ -79,6 +82,16 @@ void ApiInterfacesEditor::refresh()
 {
 	view_.update();
 }
+
+//-----------------------------------------------------------------------------
+// Function: ApiInterfacesEditor::showStdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void ApiInterfacesEditor::showStdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
+}	
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterfacesEditor::showEvent()

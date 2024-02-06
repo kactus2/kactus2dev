@@ -18,19 +18,24 @@
 #include <QRegularExpression>
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <common/KactusColors.h>
+
+#include <KactusAPI/include/LibraryInterface.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignConfigurationInstantiationsModel::DesignConfigurationInstantiationsModel()
 //-----------------------------------------------------------------------------
 DesignConfigurationInstantiationsModel::DesignConfigurationInstantiationsModel(
-    QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > instantiations, 
-    QSharedPointer<InstantiationsValidator> validator,
-    QObject* parent):
+    QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > instantiations,
+    QSharedPointer<InstantiationsValidator> validator, QSharedPointer<Component> component,
+    LibraryInterface* library, QObject* parent) :
 QAbstractTableModel(parent),
 instantiations_(instantiations),
-validator_(validator)
+validator_(validator),
+containingComponent_(component),
+library_(library)
 {
 
 }
@@ -293,11 +298,22 @@ bool DesignConfigurationInstantiationsModel::dropMimeData(QMimeData const* data,
     VLNV vlnv = variant.value<VLNV>();
     if (parent.column() == DesignInstantiationsColumns::VLNV_REFERENCE)
     {
+        // Check std revision compatibility.
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, containingComponent_->getVlnv(), library_))
+        {
+            emit stdRevisionMismatch();
+            return false;
+        }
+
         if (vlnv.getType() == VLNV::DESIGNCONFIGURATION)
         {
             setData(index(parent.row(), parent.column()), vlnv.toString(":"));
             emit contentChanged();
-        }       
+        }
+        else
+        {
+            return false;
+        }
     }
 
     return true;

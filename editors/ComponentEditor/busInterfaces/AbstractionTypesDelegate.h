@@ -141,6 +141,9 @@ private:
 
     //! Main window.
     QWidget* parentWindow_;
+
+    //! Containing component.
+    QSharedPointer<Component> containingComponent_;
 };
 
 #endif // ABSTRACTIONTYPESDELEGATE_H

@@ -20,6 +20,7 @@ class LibraryInterface;
 class ParameterFinder;
 class Parameter;
 class BusInterfaceInterface;
+class Component;
 
 //-----------------------------------------------------------------------------
 //! The model that manages the objects for BusInterfacesEditor.
@@ -34,14 +35,13 @@ public:
 	 *  The constructor.
 	 *
 	 *      @param [in] libHandler          The instance that manages the library.
+	 *      @param [in] component           The containing component.
 	 *      @param [in] parameterFinder     The parameter finder.
      *      @param [in] busInterface        Interface for accessing bus interfaces.
 	 *      @param [in] parent              The owner of this model.
 	 */
-    BusInterfacesModel(LibraryInterface* libHandler,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        BusInterfaceInterface* busInterface,
-        QObject *parent);
+    BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component, 
+        QSharedPointer<ParameterFinder> parameterFinder, BusInterfaceInterface* busInterface, QObject *parent);
 
 	/*!
      *  The destructor.
@@ -214,6 +214,11 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Emitted when a abstraction def or bus def with different std revision is dropped in the editor.
+     */
+    void stdRevisionMismatch() const;
+
 private:
 
     //! No copying. No assignment.
@@ -255,6 +260,9 @@ private:
 
     //! The parameter finder.
     QSharedPointer<ParameterFinder> parameterFinder_;
+
+    //! The containing component.
+    QSharedPointer<Component> containingComponent_;
 };
 
 #endif // BUSINTERFACESMODEL_H

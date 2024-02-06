@@ -52,10 +52,8 @@ extendEditor_(new VLNVEditor(VLNV::BUSDEFINITION, libraryHandler, parent, this))
     maxInitiatorsEditor_.setValidator(numberValidator);
     maxTargetsEditor_.setValidator(numberValidator);
 
-#if QT_VERSION > QT_VERSION_CHECK(5,3,0)
     maxInitiatorsEditor_.setPlaceholderText(tr("unbound"));
     maxTargetsEditor_.setPlaceholderText(tr("unbound"));
-#endif
 
     documentNameGroupEditor_.setTitle("Bus definition");
 
@@ -87,6 +85,7 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
     documentNameGroupEditor_.setDocumentNameGroup(busDef, library_->getPath(busDef->getVlnv()));
 
     extendEditor_->setVLNV(busDef_->getExtends());
+    extendEditor_->setRevisionFilter(true, busDef_->getRevision());
 
     if (busDef_->getExtends().isValid())
     {

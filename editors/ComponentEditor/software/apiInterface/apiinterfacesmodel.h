@@ -17,6 +17,7 @@
 
 class ApiInterface;
 class Component;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! The model that manages the API interfaces for API Interface editor.
@@ -30,9 +31,10 @@ public:
 	/*! The constructor
 	 *
 	 *      @param [in] component The component being edited.
-	 *      @param [in] parent The owner of the model.
+	 *      @param [in] library	  The library interface.
+	 *      @param [in] parent	  The owner of the model.
 	 */
-	ApiInterfacesModel(QSharedPointer<Component> component,	QObject* parent);
+	ApiInterfacesModel(QSharedPointer<Component> component, LibraryInterface* library, QObject* parent);
 	
 	//! The destructor
 	virtual ~ApiInterfacesModel() = default;
@@ -161,12 +163,21 @@ signals:
 	 */
 	void apiRemoved(int index);
 
+	/*!
+	 *  Emitted when an api definition with different std revision than the component being edited
+	 *  is dropped in an api interface cell in the editor.
+	 */
+	void stdRevisionMismatch() const;
+
 private:
 	
     QSharedPointer<Component> component_;
 
 	//! Contains the api interfaces being edited.
 	QList<QSharedPointer<ApiInterface> > apis_;
+
+	//! The library handler.
+	LibraryInterface* library_;
 };
 
 #endif // APIINTERFACESMODEL_H

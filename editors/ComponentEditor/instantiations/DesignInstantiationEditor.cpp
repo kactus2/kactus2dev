@@ -45,17 +45,6 @@ designEditor_(0),
 elementEditor_(0),
 designParameterFinder_(new ListParameterFinder())
 {
-    // find the main window for VLNV editor
-    QWidget* parentWindow = nullptr;
-    foreach(QWidget * widget, QApplication::topLevelWidgets())
-    {
-        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
-        if (mainWnd)
-        {
-            parentWindow = mainWnd;
-            break;
-        }
-    }
 
     QSharedPointer<ConfigurableElementFinder> elementFinder(new ConfigurableElementFinder());
 
@@ -79,10 +68,11 @@ designParameterFinder_(new ListParameterFinder())
         parameterExpressions, designExpressions,
         designParametersModel, this);
 
-    designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, parentWindow, this);
+    designEditor_ = new VLNVEditor(VLNV::DESIGN, libHandler, this, this);
     designEditor_->setTitle(tr("Design reference"));
     designEditor_->setMandatory(true);
     designEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    designEditor_->setRevisionFilter(true, component->getRevision());
 
     connect(nameGroupEditor_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(designEditor_, SIGNAL(vlnvEdited()), this, SLOT(onHierRefChange()), Qt::UniqueConnection);

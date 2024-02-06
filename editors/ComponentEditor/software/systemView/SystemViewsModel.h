@@ -18,6 +18,8 @@
 
 class Component;
 class SystemView;
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! The model to manage the system views for a table view
 //-----------------------------------------------------------------------------
@@ -29,10 +31,11 @@ public:
 
 	/*! The constructor
 	 *
-	 *      @param [in] component The component being edited.
-	 *      @param [in] parent The owner of the model
+	 *      @param [in] component	The component being edited.
+	 *      @param [in] library		The library interface.
+	 *      @param [in] parent		The owner of the model.
 	*/
-	SystemViewsModel(QSharedPointer<Component> component, QObject* parent);
+	SystemViewsModel(QSharedPointer<Component> component, LibraryInterface* library, QObject* parent);
 	
 	//! The destructor
 	virtual ~SystemViewsModel();
@@ -161,6 +164,12 @@ signals:
 	*/
 	void viewRemoved(int index);
 
+	/*!
+	 *  Emitted when a system design config with different std revision than the system design component 
+	 *  is dropped in a hierarchy reference cell in the editor.
+	 */
+	void stdRevisionMismatch() const;
+
 private:
 	
 	//! No copying
@@ -174,6 +183,9 @@ private:
 
 	//! The component being edited.
 	QSharedPointer<Component> component_;
+
+	//! The library handler.
+	LibraryInterface* library_;
 };
 
 #endif // SYSTEMVIEWSMODEL_H

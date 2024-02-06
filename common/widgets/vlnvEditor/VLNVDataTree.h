@@ -14,6 +14,7 @@
 
 #include <IPXACTmodels/kactusExtensions/KactusAttribute.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/Document.h>
 
 #include <QString>
 #include <QSharedPointer>
@@ -172,6 +173,14 @@ public:
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::HW);
 
     /*!
+     *  Sets the IP-XACT revision filter on/off.
+     *
+     *      @param [in] on              If true, the filter is turned on; otherwise it is turned off.
+     *      @param [in] revision        The allowed IP-XACT standard revision.
+     */
+    void setRevisionFilter(bool on, Document::Revision revision = Document::Revision::Std22);
+
+    /*!
      *  Adds an extension to be filtered out from the content search results.
      *
      *      @param [in] extension The extension to filter out.
@@ -195,16 +204,20 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Firmness filter data.
-    bool firmnessFilterEnabled_;
-    KactusAttribute::Firmness firmnessFilter_;
+    bool firmnessFilterEnabled_ = false;
+    KactusAttribute::Firmness firmnessFilter_ = KactusAttribute::TEMPLATE;
 
     //! Product hierarchy filter data.
-    bool hierarchyFilterEnabled_;
-    KactusAttribute::ProductHierarchy hierarchyFilter_;
+    bool hierarchyFilterEnabled_ = false;
+    KactusAttribute::ProductHierarchy hierarchyFilter_ = KactusAttribute::IP;
 
     //! Implementation filter data.
-    bool implementationFilterEnabled_;
-    KactusAttribute::Implementation implementationFilter_;
+    bool implementationFilterEnabled_ = false;
+    KactusAttribute::Implementation implementationFilter_ = KactusAttribute::HW;
+
+    //! IP-XACT standard revision filter data.
+    bool revisionFilterEnabled_ = false;
+    Document::Revision revisionFilter_ = Document::Revision::Unknown;
 
     //! The extensions to filter.
     QStringList extensions_;

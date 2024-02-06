@@ -19,6 +19,8 @@
 #include <QSharedPointer>
 
 class InstantiationsValidator;
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Model for design configuration instantiations of a component.
 //-----------------------------------------------------------------------------
@@ -31,13 +33,16 @@ public:
 	/*!
      *  The constructor.
 	 *
-	 *      @param [in] component       The component being edited.
+     *      @param [in] instantiations	The design configuration instantiations.
      *      @param [in] validator       The validator used for design configuration instantiations.
+	 *      @param [in] component       The component being edited.
+     *      @param [in] library			The library interface.
 	 *      @param [in] parent          The owner of the model.
 	 */
 	DesignConfigurationInstantiationsModel(
         QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > instantiations,
-        QSharedPointer<InstantiationsValidator> validator, QObject* parent);
+        QSharedPointer<InstantiationsValidator> validator, QSharedPointer<Component> component, 
+		LibraryInterface* library, QObject* parent);
 	
 	//! The destructor.
 	virtual ~DesignConfigurationInstantiationsModel();
@@ -156,6 +161,12 @@ signals:
 	//! Emitted when a design configuration instantiation is removed from the given index.
 	void designConfigurationInstantiationRemoved(int index);
 
+	/*!
+     *  Emitted when a design config with different std revision is dropped in a design config reference cell in 
+	 *  the editor.
+     */
+	void stdRevisionMismatch() const;
+
 private:
 	//! No copying.
 	DesignConfigurationInstantiationsModel(const DesignConfigurationInstantiationsModel& other);
@@ -166,6 +177,12 @@ private:
 
     //! The validator used for design configurations.
     QSharedPointer<InstantiationsValidator> validator_;
+
+	//! The containing component.
+	QSharedPointer<Component> containingComponent_;
+
+	//! The library handler.
+	LibraryInterface* library_;
 };
 
 #endif // DesignConfigurationINSTANTIATIONSMODEL_H

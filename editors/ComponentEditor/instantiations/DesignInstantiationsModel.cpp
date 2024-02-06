@@ -19,6 +19,10 @@
 #include <common/KactusColors.h>
 
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
+
+#include <KactusAPI/include/LibraryInterface.h>
+
 
 //-----------------------------------------------------------------------------
 // Function: DesignInstantiationsModel::DesignInstantiationsModel()
@@ -26,10 +30,14 @@
 DesignInstantiationsModel::DesignInstantiationsModel(
     QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > instantiations, 
     QSharedPointer<InstantiationsValidator> validator,
-    QObject* parent):
+    QSharedPointer<Component> component,
+    LibraryInterface* library,
+    QObject* parent) :
 QAbstractTableModel(parent),
     instantiations_(instantiations),
-    validator_(validator)
+    validator_(validator),
+    containingComponent_(component),
+    library_(library)
 {
 
 }
@@ -288,15 +296,21 @@ bool DesignInstantiationsModel::dropMimeData(QMimeData const* data, Qt::DropActi
     {
         return false;
     }
-
     VLNV vlnv = variant.value<VLNV>();
-    if (parent.column() == DesignInstantiationsColumns::VLNV_REFERENCE)
+    
+    if (parent.column() == DesignInstantiationsColumns::VLNV_REFERENCE &&
+        vlnv.getType() == VLNV::DESIGN)
     {
-        if (vlnv.getType() == VLNV::DESIGN)
+        if (DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, containingComponent_->getVlnv(), library_))
         {
             setData(index(parent.row(), parent.column()), vlnv.toString(":"));
             emit contentChanged();
-        }       
+        }
+        else
+        {
+            emit stdRevisionMismatch();
+            return false;
+        }
     }
 
     return true;
