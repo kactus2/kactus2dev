@@ -52,7 +52,7 @@ QList<QSharedPointer<GenerationOutput> > ModelSimWriterFactory::prepareDesign(QL
 
     QList<QSharedPointer<MetaInstance> > components;
 
-    foreach (QSharedPointer<MetaDesign> mDesign, designs)
+    for (QSharedPointer<MetaDesign> mDesign : designs)
     {
         components.append(mDesign->getTopInstance());
         components.append(mDesign->getInstances()->values());
@@ -63,14 +63,15 @@ QList<QSharedPointer<GenerationOutput> > ModelSimWriterFactory::prepareDesign(QL
     document->writer_ = writer;
     document->fileName_ = designs.first()->getTopInstance()->getModuleName() + ".do";
     document->vlnv_ = designs.first()->getTopInstance()->getComponent()->getVlnv().toString();
+    document->metaDesign_ = designs.first();
 
-    foreach (QSharedPointer<MetaComponent> mComponent, components)
+    for (QSharedPointer<MetaComponent> mComponent : components)
     {
         QString basePath = library_->getPath(mComponent->getComponent()->getVlnv());
 
-        foreach (QSharedPointer<FileSet> fileSet, *mComponent->getFileSets())
+        for (QSharedPointer<FileSet> fileSet : *mComponent->getFileSets())
         {
-            foreach (QSharedPointer<File> file, *fileSet->getFiles())
+            for (QSharedPointer<File> file : *fileSet->getFiles())
             {
                 // Fetch the absolute path to the file
                 QString absolutePath = General::getAbsolutePath(basePath, file->name());
