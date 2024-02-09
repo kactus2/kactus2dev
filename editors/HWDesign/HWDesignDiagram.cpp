@@ -842,6 +842,20 @@ void HWDesignDiagram::dropEvent(QGraphicsSceneDragDropEvent *event)
             msgBox.exec();
             return;
         }
+        
+        // Display error if user is trying to instantiate component of different standard revision.
+        if (dropComponent->getRevision() != getEditedComponent()->getRevision())
+        {
+            QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+                tr("Component %1 using IP-XACT %2 cannot be instantiated in the design using IP-XACT %3")
+                .arg(dropComponent->getVlnv().toString())
+                .arg(Document::toString(dropComponent->getRevision()))
+                .arg(Document::toString(getEditedComponent()->getRevision())),
+                QMessageBox::Ok, getParent());
+
+            msgBox.exec();
+            return;
+        }
 
         // Act based on the selected drop action.
         if (event->dropAction() == Qt::CopyAction)

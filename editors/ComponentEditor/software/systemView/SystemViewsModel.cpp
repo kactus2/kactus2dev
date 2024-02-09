@@ -14,8 +14,11 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <IPXACTmodels/kactusExtensions/SystemView.h>
+
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <common/KactusColors.h>
 
@@ -25,10 +28,11 @@
 //-----------------------------------------------------------------------------
 // Function: SystemViewsModel::SystemViewsModel()
 //-----------------------------------------------------------------------------
-SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component, QObject* parent):
+SystemViewsModel::SystemViewsModel(QSharedPointer<Component> component, LibraryInterface* library, QObject* parent) :
 QAbstractTableModel(parent),
     views_(component->getSystemViews()),
-    component_(component)
+    component_(component),
+    library_(library)
 {
 
 }
@@ -296,6 +300,12 @@ bool SystemViewsModel::dropMimeData(QMimeData const* data, Qt::DropAction action
     {
         if (vlnv.getType() != VLNV::DESIGNCONFIGURATION)
         {
+            return false;
+        }
+
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, component_->getVlnv(), library_))
+        {
+            emit stdRevisionMismatch();
             return false;
         }
 

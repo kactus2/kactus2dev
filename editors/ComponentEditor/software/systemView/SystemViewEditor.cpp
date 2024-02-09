@@ -49,6 +49,7 @@ ItemEditor(component, libHandler, parent),
 
 	hierRefEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentWindow, this);
 	hierRefEditor_->setTitle(tr("Hierarchy reference"));
+    hierRefEditor_->setRevisionFilter(true, component->getRevision());
 
     fileSetRefEditor_ = new FileSetRefEditor(fileSetInterface, tr("File set references"), this);
     fileSetRefEditor_->initialize();

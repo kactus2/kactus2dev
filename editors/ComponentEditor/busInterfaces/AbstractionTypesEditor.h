@@ -84,6 +84,13 @@ signals:
      */
     void contentChanged();
 
+public slots:
+
+    /*!
+     *  Displays warning message when trying to drag and drop an absDef using different standard revision.
+     */
+    void stdRevisionMismatchWarning();
+    
 private:
     /*!
      *  Connect the signals.

@@ -81,6 +81,8 @@ public:
      */
     void setImplementationFilter(bool on, KactusAttribute::Implementation implementation = KactusAttribute::HW);
 
+    void setRevisionFilter(bool on, Document::Revision revision = Document::Revision::Std22);
+
     /*!
      *  Adds a new name extension that will be shown in the dialog.
      *
@@ -285,10 +287,14 @@ private:
 	LibraryInterface* handler_;
 
     //! Implementation filter data.
-    bool implementationFilterEnabled_;
+    bool implementationFilterEnabled_ = false;
 
     //! Implementation filter.
     KactusAttribute::Implementation implementationFilter_;
+
+    //! Revision filter.
+    bool revisionFilterEnabled_ = false;
+    Document::Revision revisionFilter_;
 };
 
 //-----------------------------------------------------------------------------

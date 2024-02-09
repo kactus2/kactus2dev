@@ -31,7 +31,8 @@ AbstractionTypesDelegate::AbstractionTypesDelegate(QSharedPointer<Component> com
 EnumerationEditorConstructorDelegate(parent),
 availableViews_(component->getViews()),
 library_(library),
-parentWindow_(parentWindow)
+parentWindow_(parentWindow),
+containingComponent_(component)
 {
 
 }
@@ -112,6 +113,7 @@ QWidget* AbstractionTypesDelegate::createVLNVEditor(QWidget* parent) const
     abstractionEditor->setAutoFillBackground(true);
     abstractionEditor->setFocusPolicy(Qt::StrongFocus);
     abstractionEditor->setAttribute(Qt::WA_NoMousePropagation);
+    abstractionEditor->setRevisionFilter(true, containingComponent_->getRevision());
 
     return abstractionEditor;
 }

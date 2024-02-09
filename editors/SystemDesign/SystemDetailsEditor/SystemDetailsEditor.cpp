@@ -99,6 +99,7 @@ void SystemDetailsEditor::setSystem(DesignWidget* designWidget)
         }
     }
 
+    hwRefEditor_->setRevisionFilter(true, component_->getRevision());
     hwRefEditor_->setEnabled(!designWidget_->isProtected());
     viewSelector_->setEnabled(!designWidget_->isProtected());
     removeMappingButton_->setEnabled(!designWidget_->isProtected() && 

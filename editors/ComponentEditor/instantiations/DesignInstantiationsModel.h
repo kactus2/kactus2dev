@@ -20,6 +20,8 @@
 #include <QMimeData>
 
 class InstantiationsValidator;
+class LibraryInterface;
+
 //-----------------------------------------------------------------------------
 //! Model for desing instantiations of a component.
 //-----------------------------------------------------------------------------
@@ -32,12 +34,15 @@ public:
 	/*!
      *  The constructor.
 	 *
+     *      @param [in] instantiations	The design instantiations.
+     *      @param [in] validator		The instantiations validator.
 	 *      @param [in] component       Pointer to the component being edited.
-     *      @param [in] viewValidator   The validator used for views.
+	 *      @param [in] library			The library interface.
 	 *      @param [in] parent          Pointer to the owner of the model.
 	 */
-	DesignInstantiationsModel(QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > instantiations,
-        QSharedPointer<InstantiationsValidator> validator, QObject* parent);
+	DesignInstantiationsModel(QSharedPointer<QList<QSharedPointer<DesignInstantiation> > > instantiations, 
+		QSharedPointer<InstantiationsValidator> validator, QSharedPointer<Component> component, 
+		LibraryInterface* library, QObject* parent);
 	
 	//! The destructor.
 	virtual ~DesignInstantiationsModel();
@@ -156,6 +161,9 @@ signals:
 	//! Emitted when a design instantiation is removed from the given index.
 	void designInstantiationRemoved(int index);
 
+	//! Emitted when a design with different std revision is dropped in the design ref cell of the table.
+	void stdRevisionMismatch();
+
 private:
 	//! No copying.
 	DesignInstantiationsModel(const DesignInstantiationsModel& other);
@@ -166,6 +174,12 @@ private:
 
     //! The validator used for design instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
+
+	//! The containing component.
+	QSharedPointer<Component> containingComponent_;
+
+	//! The library handler.
+	LibraryInterface* library_;
 };
 
 #endif // DESIGNINSTANTIATIONSMODEL_H

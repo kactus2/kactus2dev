@@ -49,21 +49,10 @@ parameters_(instantiation->getParameters(), component->getChoices(), parameterFi
 elementEditor_(0),
 designConfigurationParameterFinder_(new ListParameterFinder())
 {
-    // find the main window for VLNV editor
-    QWidget* parentWindow = nullptr;
-    foreach(QWidget * widget, QApplication::topLevelWidgets())
-    {
-        QMainWindow* mainWnd = dynamic_cast<QMainWindow*>(widget);
-        if (mainWnd)
-        {
-            parentWindow = mainWnd;
-            break;
-        }
-    }
-
     createConfigurableElementEditor(parameterFinder);
 
-    designConfigurationEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, parentWindow, this);
+    designConfigurationEditor_ = new VLNVEditor(VLNV::DESIGNCONFIGURATION, libHandler, this, this);
+    designConfigurationEditor_->setRevisionFilter(true, component->getRevision());
     designConfigurationEditor_->setTitle(tr("Design configuration reference"));
     designConfigurationEditor_->setMandatory(true);
     designConfigurationEditor_->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);

@@ -54,7 +54,6 @@ nameMatcher_(),
 versionEdit_(0),
 versionMatcher_(),
 handler_(libHandler),
-implementationFilterEnabled_(false),
 implementationFilter_(KactusAttribute::HW)
 {
     Q_ASSERT(libHandler != 0);
@@ -340,6 +339,16 @@ void VLNVEditor::dropEvent(QDropEvent* event)
         }    
     }
 
+    // Check for revision mismatch on drop, if revision filtering is enabled.
+    if (auto document = handler_->getModelReadOnly(vlnv); 
+        revisionFilterEnabled_ && document->getRevision() != revisionFilter_)
+    {
+        QMessageBox::warning(this, QCoreApplication::applicationName(),
+            tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+            QMessageBox::Close, QMessageBox::Close);
+        return;
+    }
+
 	setVLNV(vlnv);
 	event->acceptProposedAction();
 
@@ -431,6 +440,17 @@ void VLNVEditor::setImplementationFilter(bool on, KactusAttribute::Implementatio
     dirty_ = true;
     implementationFilterEnabled_ = on;
     implementationFilter_ = implementation;
+}
+
+//-----------------------------------------------------------------------------
+// Function: VLNVEditor::setRevisionFilter()
+//-----------------------------------------------------------------------------
+void VLNVEditor::setRevisionFilter(bool on, Document::Revision revision /*= Document::Revision::Std22*/)
+{
+    dataTree_.setRevisionFilter(on, revision);
+    dirty_ = true;
+    revisionFilterEnabled_ = on;
+    revisionFilter_ = revision;
 }
 
 //-----------------------------------------------------------------------------

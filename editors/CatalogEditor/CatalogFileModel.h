@@ -182,6 +182,11 @@ signals:
     //! Emitted when a bus should be opened.
     void openAbsDef(VLNV const& absDefVLNV);
 
+    /*!
+     *  Emitted when an IP-XACT file using different std revision than the catalog is dropped in the editor.
+     */
+    void stdRevisionMismatch() const;
+
 public slots:
 
     //! Called when an item should be added in the given index.

@@ -15,19 +15,22 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/kactusExtensions/ApiInterface.h>
 #include <IPXACTmodels/common/VLNV.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <common/KactusColors.h>
 
+#include <KactusAPI/include/LibraryInterface.h>
 
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
 // Function: ApiInterfacesModel::ApiInterfacesModel()
 //-----------------------------------------------------------------------------
-ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component, QObject* parent):
+ApiInterfacesModel::ApiInterfacesModel(QSharedPointer<Component> component, LibraryInterface* library, QObject* parent) :
 QAbstractTableModel(parent),
     component_(component),
-    apis_(component->getApiInterfaces())
+    apis_(component->getApiInterfaces()),
+    library_(library)
 {
 
 }
@@ -283,6 +286,12 @@ bool ApiInterfacesModel::dropMimeData(const QMimeData *data, Qt::DropAction acti
     {
         if ( vlnv.getType() != VLNV::APIDEFINITION )
         {
+            return false;
+        }
+
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, component_->getVlnv(), library_))
+        {
+            emit stdRevisionMismatch();
             return false;
         }
 

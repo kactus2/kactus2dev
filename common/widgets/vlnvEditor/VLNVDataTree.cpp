@@ -117,14 +117,7 @@ void VLNVDataNode::setVLNV(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: VLNVDataTree()
 //-----------------------------------------------------------------------------
-VLNVDataTree::VLNVDataTree(): VLNVDataNode(),
-    firmnessFilterEnabled_(false),
-    firmnessFilter_(KactusAttribute::TEMPLATE),
-    hierarchyFilterEnabled_(false),
-    hierarchyFilter_(KactusAttribute::IP),
-    implementationFilterEnabled_(false),
-    implementationFilter_(KactusAttribute::HW),
-    extensions_()
+VLNVDataTree::VLNVDataTree(): VLNVDataNode()
 {
 }
 
@@ -173,6 +166,15 @@ void VLNVDataTree::setImplementationFilter(bool on, KactusAttribute::Implementat
 }
 
 //-----------------------------------------------------------------------------
+// Function: VLNVDataTree::setRevisionFilter()
+//-----------------------------------------------------------------------------
+void VLNVDataTree::setRevisionFilter(bool on, Document::Revision val)
+{
+    revisionFilterEnabled_ = on;
+    revisionFilter_ = val;
+}
+
+//-----------------------------------------------------------------------------
 // Function: parseVendor()
 //-----------------------------------------------------------------------------
 void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem, VLNVDataNode& node,
@@ -195,26 +197,34 @@ void VLNVDataTree::parseSubtree(LibraryInterface* lh, LibraryItem const* libItem
 
             VLNV const vlnv = item->getVLNV();
 
-            bool useFilters = (vlnv.getType() == VLNV::COMPONENT);
+            bool useComponentFilters = (vlnv.getType() == VLNV::COMPONENT);
             KactusAttribute::Firmness firmness = KactusAttribute::KTS_REUSE_LEVEL_COUNT;
             KactusAttribute::ProductHierarchy hierarchy = KactusAttribute::KTS_PRODHIER_COUNT;
             KactusAttribute::Implementation implementation = KactusAttribute::KTS_IMPLEMENTATION_COUNT;
-
-            if (useFilters)
+            Document::Revision revision = Document::Revision::Unknown;
+            
+            QSharedPointer<Document const> document = lh->getModelReadOnly(vlnv);
+            if (document)
             {
-                // Retrieve the library component for filtering. Filtering is possible only if the
-                // library component is an IP-XACT component.        
-                QSharedPointer<Component const> component = lh->getModelReadOnly<Component>(vlnv);
+                revision = document->getRevision();
+            }
+
+            if (useComponentFilters)
+            {
+                // Retrieve the library component for filtering.
+                QSharedPointer<Component const> component = document.dynamicCast<Component const>();
                 firmness = component->getFirmness();
                 hierarchy = component->getHierarchy();
                 implementation = component->getImplementation();
             }
 
-            // If filtering is off, just accept the item.
-            if (useFilters == false ||
-                ((!firmnessFilterEnabled_ || firmnessFilter_ == firmness) &&
+            bool passesComponentFilters = (!firmnessFilterEnabled_ || firmnessFilter_ == firmness) &&
                 (!hierarchyFilterEnabled_ || hierarchyFilter_ == hierarchy) &&
-                (!implementationFilterEnabled_ || implementationFilter_ == implementation)))
+                (!implementationFilterEnabled_ || implementationFilter_ == implementation);
+            
+            // Accept the item if it passess filters or filters are off, and the revision matches with the parent
+            // editor item revision.
+            if ((passesComponentFilters || !useComponentFilters) && (revision == revisionFilter_ || !revisionFilterEnabled_))
             {
                 VLNVDataNode* childNode = node.addChild(item->name());
                 childNode->setVLNV(vlnv);

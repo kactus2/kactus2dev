@@ -28,6 +28,8 @@
 #include <common/views/EditableTableView/editabletableview.h>
 #include <common/widgets/vlnvDisplayer/vlnvdisplayer.h>
 
+#include <QCoreApplication>
+#include <QMessageBox>
 #include <QGridLayout>
 #include <QSortFilterProxyModel>
 
@@ -85,6 +87,8 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
         this, SIGNAL(openComponent(VLNV const&)), Qt::UniqueConnection);
     connect(fileModel_, SIGNAL(openBus(VLNV const&)),
         this, SIGNAL(openBus(VLNV const&)), Qt::UniqueConnection);
+    connect(fileModel_, SIGNAL(stdRevisionMismatch()), 
+        this, SLOT(showStdRevisionMismatchWarning()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -201,6 +205,16 @@ bool CatalogEditor::saveAs()
     {
         return false;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: CatalogEditor::showStdRevisionMismatchWarning()
+//-----------------------------------------------------------------------------
+void CatalogEditor::showStdRevisionMismatchWarning()
+{
+    QMessageBox::warning(this, QCoreApplication::applicationName(),
+        tr("Dropped item cannot use different IP-XACT standard revision than the item being edited."),
+        QMessageBox::Close, QMessageBox::Close);
 }
 
 //-----------------------------------------------------------------------------

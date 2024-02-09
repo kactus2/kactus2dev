@@ -13,6 +13,7 @@
 #include "BusInterfaceColumns.h"
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <IPXACTmodels/common/DocumentUtils.h>
 
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/common/VLNV.h>
@@ -40,12 +41,13 @@
 //-----------------------------------------------------------------------------
 // Function: BusInterfacesModel::BusInterfacesModel()
 //-----------------------------------------------------------------------------
-BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler,
-    QSharedPointer<ParameterFinder> parameterFinder, BusInterfaceInterface* busInterface, QObject *parent):
+BusInterfacesModel::BusInterfacesModel(LibraryInterface* libHandler, QSharedPointer<Component> component,
+    QSharedPointer<ParameterFinder> parameterFinder, BusInterfaceInterface* busInterface, QObject *parent) :
 QAbstractTableModel(parent),
 libHandler_(libHandler),
 busInterface_(busInterface),
-parameterFinder_(parameterFinder)
+parameterFinder_(parameterFinder),
+containingComponent_(component)
 {
     Q_ASSERT(libHandler_);
 }
@@ -275,7 +277,14 @@ bool BusInterfacesModel::setData(QModelIndex const& index, const QVariant& value
             {
                 QSharedPointer<ConfigurableVLNVReference> absType(new ConfigurableVLNVReference(VLNV(
                     VLNV::ABSTRACTIONDEFINITION, value.toString(), ":")));
-                if (!absType->isValid())
+
+                // Add abs def reference only if it's unique.
+                auto const& existingAbstractionRefs = busInterface_->getAbstractionReferences(busName);
+
+                bool abstractionTypeExists = std::find(existingAbstractionRefs.cbegin(),
+                    existingAbstractionRefs.cend(), valueString) != existingAbstractionRefs.cend();
+
+                if (!absType->isValid() || abstractionTypeExists)
                 {
                     return false;
                 }
@@ -350,11 +359,20 @@ bool BusInterfacesModel::dropMimeData(QMimeData const* data, Qt::DropAction acti
     }
 
     VLNV vlnv = variant.value<VLNV>();
+    auto componentVlnv = containingComponent_->getVlnv();
 
     if (parent.column() == BusInterfaceColumns::BUSDEF)
     {
         if (vlnv.getType() != VLNV::BUSDEFINITION)
         {
+            return false;
+        }
+
+        // Check std revision compatibility.
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, componentVlnv, libHandler_))
+
+        {
+            emit stdRevisionMismatch();
             return false;
         }
 
@@ -373,6 +391,13 @@ bool BusInterfacesModel::dropMimeData(QMimeData const* data, Qt::DropAction acti
     {
         if (vlnv.getType() != VLNV::ABSTRACTIONDEFINITION)
         {
+            return false;
+        }
+
+        // Check std revision compatibility.
+        if (!DocumentUtils::documentsHaveMatchingStdRevisions(vlnv, componentVlnv, libHandler_))
+        {
+            emit stdRevisionMismatch();
             return false;
         }
 
