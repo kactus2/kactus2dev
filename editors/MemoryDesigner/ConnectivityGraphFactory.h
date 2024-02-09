@@ -15,6 +15,8 @@
 #include <IPXACTmodels/common/VLNV.h>
 
 class ActiveInterface;
+class MemoryBlockBase;
+class SubSpaceMap;
 class AddressBlock;
 class BusInterface;
 class Channel;
@@ -153,6 +155,18 @@ private:
         int addressableUnitBits, QSharedPointer<ConnectivityComponent> containingInstance) const;
 
     /*!
+     *  Create a representation of a memory block.
+     *	
+     *      @param [in] block                   The selected memory block.
+     *      @param [in] mapIdentifier           Identifier for the containing memory map.
+     *      @param [in] addressableUnitBits     The used address unit bits.
+     *
+     *      @return Representation of the memory block.
+     */
+    QSharedPointer<MemoryItem> createMemoryBlock(QSharedPointer<MemoryBlockBase> block,
+        QString const& mapIdentifier, int addressableUnitBits) const;
+
+    /*!
      *  Creates a representation for an address block.
      *
      *      @param [in] block                   The address block to transform into the graph.
@@ -161,7 +175,19 @@ private:
      *
      *      @return Representation for the address block.
      */
-    QSharedPointer<MemoryItem> createMemoryBlock(QSharedPointer<const AddressBlock> block,
+    QSharedPointer<MemoryItem> createMemoryAddressBlockItem(QSharedPointer<const AddressBlock> block,
+        QString const& mapIdentifier, int addressableUnitBits) const;
+
+    /*!
+     *  Creates a representation for a subspace map.
+     *	
+     *      @param [in] subspace                The selected subspace map.
+     *      @param [in] mapIdentifier           Identifier for the containing memory map.
+     *      @param [in] addressableUnitBits     The number of addressable unit bits in the memory map.
+     *
+     *      @return Represenation for the subspace map.
+     */
+    QSharedPointer<MemoryItem> createMemorySubSpaceMapItem(QSharedPointer<const SubSpaceMap> subspace,
         QString const& mapIdentifier, int addressableUnitBits) const;
 
     /*!

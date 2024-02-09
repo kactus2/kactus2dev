@@ -62,6 +62,15 @@ namespace General
         {MONITOR,            QStringLiteral("monitor")}
     };
 
+    /*!
+     *  Check if the selected bus interface mode is compatible with IP-XACT revision 1685-2022.
+     *	
+     *      @param [in] mode    The selected bus interface mode.
+     *
+     *      @return True, if the mode is compatible with revision 1685-2022, false otherwise.
+     */
+    IPXACTMODELS_EXPORT bool modeIsRevision2022(General::InterfaceMode mode);
+
     /*! Convert QString into boolean value
     *
     *      @param [in] str QString containing the string to be converted

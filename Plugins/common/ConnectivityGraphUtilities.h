@@ -44,17 +44,6 @@ namespace ConnectivityGraphUtilities
         QSharedPointer<const ConnectivityComponent> masterComponent);
 
     /*!
-     *  Get the list of CPUs connected to the selected interface.
-     *
-     *      @param [in] containingComponent     Component containing the interface.
-     *      @param [in] routeInterface          The selected interface.
-     *
-     *      @return List of CPUs connected to the selected interface.
-     */
-    QVector<QSharedPointer<Cpu> > getInterfacedCPUs(QSharedPointer<const Component> containingComponent,
-        QSharedPointer<const ConnectivityInterface> routeInterface);
-
-    /*!
      *  Get the CPUs of the selected component.
      *
      *      @param [in] library     The library interface containing the selected component.
@@ -64,46 +53,6 @@ namespace ConnectivityGraphUtilities
      *      @return List of the component CPU routes.
      */
     QVector<QSharedPointer<SingleCpuRoutesContainer> > getDefaultCPUs(LibraryInterface* library, QSharedPointer<Component> component, QString const& viewName);
-
-    /*!
-     *  Check if a CPU exists for the selected interface.
-     *
-     *      @param [in] master      The selected interface.
-     *      @param [in] cpuList     List of available CPUs.
-     *
-     *      @return True, if a check box exists, false otherwise.
-     */
-    bool interfacedCpuExists(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList);
-
-    /*!
-     *  Get the route container for the selected interface.
-     *
-     *      @param [in] masterInterface     The selected interface.
-     *      @param [in] cpuRoutes           List of the available route containers.
-     *
-     *      @return The route container for the selected interface.
-     */
-    QSharedPointer<CpuRouteStructs::CpuRoute> getRouteForInterface(QSharedPointer<const ConnectivityInterface> masterInterface, QVector<QSharedPointer<CpuRouteStructs::CpuRoute> > cpuRoutes);
-
-    /*!
-     *  Get the CPU containers of the selected interface.
-     *
-     *      @param [in] master      The selected interface.
-     *      @param [in] cpuList     List of available CPUs.
-     *
-     *      @return CPU containers matching the selected interface.
-     */
-    QVector<QSharedPointer<SingleCpuRoutesContainer> > getMatchingCpuContainers(QSharedPointer<const ConnectivityInterface> master, QVector<QSharedPointer<SingleCpuRoutesContainer> > cpuList);
-
-    /*!
-     *  Get the CPU route container for the selected CPU identifier.
-     *
-     *      @param [in] cpuText         The selected CPU identifier.
-     *      @param [in] existingRoutes  List of available CPU route containers.
-     *
-     *      @return The CPU route container containing the selected CPU identifier.
-     */
-	QSharedPointer<SingleCpuRoutesContainer> getCpuDetailRoute(QString const& cpuText, QVector<QSharedPointer<SingleCpuRoutesContainer> > existingRoutes);
 };
 
 #endif //CONNECTIVITYGRAPHUTILITIES_H

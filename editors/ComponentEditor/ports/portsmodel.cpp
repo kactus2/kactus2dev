@@ -782,7 +782,9 @@ bool PortsModel::modesMatch(General::InterfaceMode const& busMode, QString const
     General::InterfaceMode const& signalMode, QString const& signalSystemGroup) const
 {
     return ((busMode == General::MASTER || busMode == General::MIRRORED_MASTER) && signalMode == General::MASTER) ||
+        ((busMode == General::INITIATOR || busMode == General::MIRRORED_INITIATOR) && signalMode == General::INITIATOR) ||
         ((busMode == General::SLAVE || busMode == General::MIRRORED_SLAVE) && signalMode == General::SLAVE) ||
+        ((busMode == General::TARGET || busMode == General::MIRRORED_TARGET) && signalMode == General::TARGET) ||
         ((busMode == General::SYSTEM || busMode == General::MIRRORED_SYSTEM) && signalMode == General::SYSTEM &&
             busSystemGroup == signalSystemGroup);
 }

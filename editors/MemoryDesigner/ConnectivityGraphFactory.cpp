@@ -31,6 +31,7 @@
 #include <IPXACTmodels/generaldeclarations.h>
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
+#include <IPXACTmodels/Component/SubSpaceMap.h>
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Channel.h>
 #include <IPXACTmodels/Component/Component.h>
@@ -197,7 +198,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
             QString spaceAUB = space->getAddressUnitBits();
             QString spaceIdentifier = instanceIdentifier + "." + space->name();
 
-            QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), "addressSpace"));
+            QSharedPointer<MemoryItem> spaceItem(new MemoryItem(space->name(), MemoryDesignerConstants::ADDRESSSPACE_TYPE));
             spaceItem->setIdentifier(spaceIdentifier);
             spaceItem->setDisplayName(space->displayName());
             spaceItem->setAUB(spaceAUB);
@@ -220,7 +221,7 @@ void ConnectivityGraphFactory::addAddressSpaceMemories(QSharedPointer<Connectivi
                 if (segment->getIsPresent().isEmpty() ||
                     expressionParser_->parseExpression(segment->getIsPresent()).toInt() == 1)
                 {
-                    QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), "segment"));
+                    QSharedPointer<MemoryItem> segmentItem(new MemoryItem(segment->name(), MemoryDesignerConstants::ADDRESSSEGMENT_TYPE));
                     segmentItem->setIdentifier(spaceIdentifier + '.' + segment->name());
                     segmentItem->setDisplayName(segment->displayName());
                     segmentItem->setRange(expressionParser_->parseExpression(segment->getRange()));
@@ -276,7 +277,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
     QString mapIdentifier = containingInstance->getVlnv().replace(':', '.') + "." + 
         containingInstance->getInstanceUuid() + "." + containingInstance->getName() + "." + map->name();
 
-    QSharedPointer<MemoryItem> mapItem(new MemoryItem(map->name(), "memoryMap"));
+    QSharedPointer<MemoryItem> mapItem(new MemoryItem(map->name(), MemoryDesignerConstants::MEMORYMAP_TYPE));
     mapItem->setIdentifier(mapIdentifier);
     mapItem->setDisplayName(map->displayName());
     mapItem->setAUB(QString::number(addressableUnitBits));
@@ -287,14 +288,16 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
         if (block->getIsPresent().isEmpty() ||
             expressionParser_->parseExpression(block->getIsPresent()).toInt() == 1)
         {
-            QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
-            if (addressBlock)
+            QSharedPointer<MemoryItem> blockItem = createMemoryBlock(block, mapIdentifier, addressableUnitBits);
+            if (blockItem)
             {
-                QSharedPointer<MemoryItem> blockItem = createMemoryBlock(addressBlock, mapIdentifier, addressableUnitBits);
-                blockItem->setUsage(addressBlock->getUsage());
-                mapUsage = addressBlock->getUsage();
-
                 mapItem->addChild(blockItem);
+
+                QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
+                if (addressBlock)
+                {
+                    mapUsage = addressBlock->getUsage();
+                }
             }
         }
     }
@@ -310,13 +313,34 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryMapData(QShared
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::createMemoryBlock()
 //-----------------------------------------------------------------------------
-QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(QSharedPointer<MemoryBlockBase> block,
+    QString const& mapIdentifier, int addressableUnitBits) const
+{
+    QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
+    if (addressBlock)
+    {
+        return createMemoryAddressBlockItem(addressBlock, mapIdentifier, addressableUnitBits);
+    }
+
+    QSharedPointer<SubSpaceMap> subspace = block.dynamicCast<SubSpaceMap>();
+    if (subspace)
+    {
+        return createMemorySubSpaceMapItem(subspace, mapIdentifier, addressableUnitBits);
+    }
+
+    return QSharedPointer<MemoryItem>();
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createMemoryAddressBlockItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryAddressBlockItem(
     QSharedPointer<const AddressBlock> addressBlock, QString const& mapIdentifier, int addressableUnitBits) const
 {
     QString blockIdentifier = mapIdentifier + "." + addressBlock->name();
     int baseAddress = expressionParser_->parseExpression(addressBlock->getBaseAddress()).toInt();
 
-    QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name(), "addressBlock"));
+    QSharedPointer<MemoryItem> blockItem(new MemoryItem(addressBlock->name(), MemoryDesignerConstants::ADDRESSBLOCK_TYPE));
     blockItem->setIdentifier(blockIdentifier);
     blockItem->setDisplayName(addressBlock->displayName());
     blockItem->setAUB(QString::number(addressableUnitBits));
@@ -356,6 +380,37 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemoryBlock(
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createMemorySubSpaceMapItem()
+//-----------------------------------------------------------------------------
+QSharedPointer<MemoryItem> ConnectivityGraphFactory::createMemorySubSpaceMapItem(
+    QSharedPointer<const SubSpaceMap> subspace, QString const& mapIdentifier, int addressableUnitBits) const
+{
+    QString blockIdentifier = mapIdentifier + "." + subspace->name();
+    int baseAddress = expressionParser_->parseExpression(subspace->getBaseAddress()).toInt();
+
+    QSharedPointer<MemoryItem> blockItem(new MemoryItem(subspace->name(), MemoryDesignerConstants::SUBSPACEMAP_TYPE));
+    blockItem->setIdentifier(blockIdentifier);
+    blockItem->setAUB(QString::number(addressableUnitBits));
+    blockItem->setAddress(QString::number(baseAddress));
+
+    QString blockPresence = subspace->getIsPresent();
+    if (blockPresence.isEmpty())
+    {
+        blockPresence = "1";
+    }
+    else
+    {
+        blockPresence = expressionParser_->parseExpression(subspace->getIsPresent());
+    }
+
+    blockItem->setIsPresent(blockPresence);
+    blockItem->setInitiatorReference(subspace->getInitiatorReference());
+    blockItem->setSegmentReference(subspace->getSegmentReference());
+
+    return blockItem;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::addRegisterData()
 //-----------------------------------------------------------------------------
 void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> reg, int baseAddress, 
@@ -370,7 +425,7 @@ void ConnectivityGraphFactory::addRegisterData(QSharedPointer<const Register> re
     {
         QString registerIdentifier = blockIdentifier + "." + reg->name();
 
-        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), "register"));
+        QSharedPointer<MemoryItem> regItem(new MemoryItem(reg->name(), MemoryDesignerConstants::REGISTER_TYPE));
 
         if (!reg->getDimension().isEmpty())
         {
@@ -447,7 +502,7 @@ QSharedPointer<MemoryItem> ConnectivityGraphFactory::createField(QSharedPointer<
     QString fieldIdentifier = registerIdentifier + "." + field->name();
     int bitOffset = expressionParser_->parseExpression(field->getBitOffset()).toInt();
 
-    QSharedPointer<MemoryItem> fieldItem(new MemoryItem(field->name(), "field"));
+    QSharedPointer<MemoryItem> fieldItem(new MemoryItem(field->name(), MemoryDesignerConstants::FIELD_TYPE));
     fieldItem->setIdentifier(fieldIdentifier);
     fieldItem->setDisplayName(field->displayName());
     fieldItem->setAUB(QString::number(addressableUnitBits));
@@ -634,7 +689,7 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
     {
         QString remapIdentifier = remapPrefix + remap->name();
 
-        QSharedPointer<MemoryItem> remapItem(new MemoryItem(remap->name(), "memoryRemap"));
+        QSharedPointer<MemoryItem> remapItem(new MemoryItem(remap->name(), MemoryDesignerConstants::MEMORYREMAP_TYPE));
         remapItem->setDisplayName(remap->displayName());
         remapItem->setIdentifier(remapIdentifier);
         remapItem->setAUB(QString::number(addressableUnitBits));
@@ -646,9 +701,11 @@ void ConnectivityGraphFactory::addMemoryRemapData(QSharedPointer<const MemoryMap
             if (block->getIsPresent().isEmpty() ||
                 expressionParser_->parseExpression(block->getIsPresent()).toInt() == 1)
             {
-                QSharedPointer<AddressBlock> addressBlock = block.dynamicCast<AddressBlock>();
-
-                remapItem->addChild(createMemoryBlock(addressBlock, remapIdentifier, addressableUnitBits));
+                QSharedPointer<MemoryItem> blockItem = createMemoryBlock(block, remapIdentifier, addressableUnitBits);
+                if (blockItem)
+                {
+                    remapItem->addChild(blockItem);
+                }
             }
         }
     }
@@ -680,25 +737,23 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
     QSharedPointer<ConnectivityGraph> graph) const
 {
     QSharedPointer<ConnectivityInterface> interfaceNode(new ConnectivityInterface(busInterface->name()));
-    interfaceNode->setMode(General::interfaceMode2Str(busInterface->getInterfaceMode()));                   
+    interfaceNode->setMode(busInterface->getInterfaceMode());
     interfaceNode->setInstance(instanceNode);
 
     QString memoryReference;
+    General::InterfaceMode busMode = busInterface->getInterfaceMode();
 
-    if (busInterface->getInterfaceMode() == General::MASTER)
+    if (busMode == General::MASTER || busMode == General::INITIATOR)
     {
         interfaceNode->setBaseAddress(
             expressionParser_->parseExpression(busInterface->getMaster()->getBaseAddress()));
         memoryReference = busInterface->getAddressSpaceRef();
     }
-
-    if (busInterface->getInterfaceMode() == General::SLAVE)
+    else if (busMode == General::SLAVE || busMode == General::TARGET)
     {
         memoryReference = busInterface->getMemoryMapRef();
     }
-
-    if (busInterface->getInterfaceMode() == General::MIRRORED_SLAVE && 
-        !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
+    else if (busMode == General::MIRRORED_SLAVE && !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
     {
         interfaceNode->setRemapAddress(expressionParser_->parseExpression(
             busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_));

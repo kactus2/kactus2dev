@@ -48,6 +48,10 @@ folderLine_(new QLineEdit(this)),
 extraEditor_(extraEditor)
 {
     cpuDetailEditor_->setParent(this);
+    if (extraEditor_)
+    {
+        extraEditor_->setParent(this);
+    }
 
     setWindowTitle("File generation for " + dialogType);
 

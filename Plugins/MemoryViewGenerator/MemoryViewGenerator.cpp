@@ -81,7 +81,7 @@ void MemoryViewGenerator::writeFile(QString const& outputPath,
         int addressOffset = path.first()->getBaseAddress().toInt();
         foreach (QSharedPointer<const ConnectivityInterface> inter, path)
         {
-            if (inter->getMode() == "mirroredSlave")
+            if (inter->getMode() == General::MIRRORED_SLAVE)
             {
                 addressOffset += inter->getRemapAddress().toInt();
             }

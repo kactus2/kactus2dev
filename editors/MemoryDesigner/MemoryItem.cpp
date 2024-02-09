@@ -276,3 +276,35 @@ void MemoryItem::setIsPresent(QString const& newIsPresent)
 {
     isPresent_ = newIsPresent;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setAddressSpaceReference()
+//-----------------------------------------------------------------------------
+void MemoryItem::setInitiatorReference(QString const& newReference)
+{
+    initiatorReference_ = newReference;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getAddressSpaceReference()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getInitiatorReference() const
+{
+    return initiatorReference_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::setSegmentReference()
+//-----------------------------------------------------------------------------
+void MemoryItem::setSegmentReference(QString const& newReference)
+{
+    segmentReference_ = newReference;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryItem::getSegmentReference()
+//-----------------------------------------------------------------------------
+QString MemoryItem::getSegmentReference() const
+{
+    return segmentReference_;
+}
