@@ -91,9 +91,7 @@ bool GenerationControl::writeDocuments()
         }
 
         // If instantiation exists, make sure that the instantiation refers to the file set.
-        QStringList fileSetRefs = instantiation->getFileSetReferenceStrings();
-        
-        if (instantiation && !fileSetRefs.contains(fileSet->name()))
+        if (instantiation && instantiation->getFileSetReferenceStrings().contains(fileSet->name()))
         {
             QSharedPointer<FileSetRef> newFileSetRef(new FileSetRef());
             newFileSetRef->setReference(fileSet->name());
@@ -106,7 +104,7 @@ bool GenerationControl::writeDocuments()
     bool fails = false;
 
     // Go through each potential file.
-    foreach(QSharedPointer<GenerationOutput> output, *outputControl_->getOutputs())
+    for (QSharedPointer<GenerationOutput> output : *outputControl_->getOutputs())
     {
         // Form the path from the determined output path plus determined file name.
         QString absFilePath = outputControl_->getOutputPath() + "/" + output->fileName_;
@@ -235,7 +233,7 @@ void GenerationControl::initializeDocuments()
         QList<QSharedPointer<GenerationOutput> > documents = factory_->prepareDesign(designs);
 
         // Go through the parsed designs.
-        foreach(QSharedPointer<GenerationOutput> output, documents)
+        for (QSharedPointer<GenerationOutput> output : documents)
         {
             if (!output)
             {
@@ -421,7 +419,7 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
     }
 
     // Go through each view of the containing component and pick the eligible ones.
-    foreach(QSharedPointer<View> view, *input.component->getViews())
+    for (QSharedPointer<View> view : *input.component->getViews())
     {
         // Find the design instantiation of the view.
         QSharedPointer<DesignInstantiation> dis = input.component->getModel()->
@@ -469,7 +467,7 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
         (new QList<QSharedPointer<View> >);
 
     // In practice, go through each view, and if it is not hierarchical, append to the list.
-    foreach (QSharedPointer<View> view, *targetComponent->getViews())
+    for (QSharedPointer<View> view : *targetComponent->getViews())
     {
         if (!view->isHierarchical())
         {
