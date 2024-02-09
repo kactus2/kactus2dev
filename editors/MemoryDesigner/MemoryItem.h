@@ -257,6 +257,30 @@ public:
      */
     void setIsPresent(QString const& newIsPresent);
 
+    /*!
+     *  Set a new initiator reference for the memory item.
+     *
+     *      @param [in] newReference    The new initiator reference.
+     */
+    void setInitiatorReference(QString const& newReference);
+
+    /*!
+     *  Get the initiator reference of the memory item.
+     */
+    QString getInitiatorReference() const;
+
+    /*!
+     *  Set a new segment reference for the memory item.
+     *
+     *      @param [in] newReference    The new segment reference.
+     */
+    void setSegmentReference(QString const& newReference);
+
+    /*!
+     *  Get the segment reference of the memory item.
+     */
+    QString getSegmentReference() const;
+
 private:
     //! The name of the memory element.
     QString name_;
@@ -304,6 +328,12 @@ private:
 
     //! Presence of the memory item.
     QString isPresent_{ "1" };
+
+    //! The initiator reference.
+    QString initiatorReference_;
+
+    //! The segment reference.
+    QString segmentReference_;
 
     //! The sub-elements of the memory.
     QVector<QSharedPointer<MemoryItem> > childItems_;

@@ -16,6 +16,7 @@
 #include <editors/MemoryDesigner/ConnectivityGraph.h>
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/MemoryItem.h>
+#include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <QQueue>
 
@@ -59,7 +60,7 @@ QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findIniti
 
     for (auto const& vertex : graph->getInterfaces())
     {
-        if (vertex->getMode().compare(QStringLiteral("master")) == 0 && vertex->getConnectedMemory())
+        if ((vertex->getMode() == General::MASTER || vertex->getMode() == General::INITIATOR) && vertex->getConnectedMemory())
         {
             masterInterfaces.append(vertex);
         }
@@ -146,27 +147,45 @@ bool MasterSlavePathSearch::canConnectInterfaces(QSharedPointer<ConnectivityInte
         return true;
     }
 
-    QString startMode = startVertex->getMode();
-    QSharedPointer<ConnectivityComponent const> startInstance = startVertex->getInstance();
-    bool startIsMaster = startMode.compare(QLatin1String("master"), Qt::CaseInsensitive) == 0;
-    bool startIsSlave = startMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
-    bool startIsMirroredMaster = startMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
-    bool startIsMirroredSlave = startMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+    General::InterfaceMode initiatorMode = General::INITIATOR;
+    General::InterfaceMode mirroredInitiatorMode = General::MIRRORED_INITIATOR;
+    General::InterfaceMode targetMode = General::TARGET;
+    General::InterfaceMode mirroredTargetMode = General::MIRRORED_TARGET;
+
+    General::InterfaceMode startMode = startVertex->getMode();
+    bool startModeIsRevision2022 = General::modeIsRevision2022(startMode);
+    if (startModeIsRevision2022 == false)
+    {
+        initiatorMode = General::MASTER;
+        mirroredInitiatorMode = General::MIRRORED_MASTER;
+        targetMode = General::SLAVE;
+        mirroredTargetMode = General::MIRRORED_SLAVE;
+    }
+
+    bool startIsInitiator = startMode == initiatorMode;
+    bool startIsTarget = startMode == targetMode;
+    bool startIsMirroredInitiator = startMode == mirroredInitiatorMode;
+    bool startIsMirroredTarget = startMode == mirroredTargetMode;
     bool startIsBridged = startVertex->isBridged();
 
-    QString endMode = endVertex->getMode();
-    QSharedPointer<ConnectivityComponent const> endInstance = endVertex->getInstance();
-    bool endIsMaster = endMode.compare(QLatin1String("master"), Qt::CaseInsensitive) == 0;
-    bool endIsSlave = endMode.compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0;
-    bool endIsMirroredMaster = endMode.compare(QLatin1String("mirroredMaster"), Qt::CaseInsensitive) == 0;
-    bool endIsMirroredSlave = endMode.compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0;
+    General::InterfaceMode endMode = endVertex->getMode();
+    bool endModeIsRevision2022 = General::modeIsRevision2022(endMode);
+    bool endIsInitiator = endMode == initiatorMode;
+    bool endIsTarget = endMode == targetMode;
+    bool endIsMirroredInitiator = endMode == mirroredInitiatorMode;
+    bool endIsMirroredTarget = endMode == mirroredTargetMode;
     bool endIsBridged = endVertex->isBridged();
 
-    return (startIsMaster && ((endIsSlave && startInstance != endInstance) || endIsMirroredMaster)) ||
-        (startIsSlave && (endIsMirroredSlave ||
-            (endIsMaster && startIsBridged && endIsBridged && startInstance == endInstance))) ||
-        (startIsMirroredMaster && endIsMirroredSlave && startInstance == endInstance) ||
-        (startIsMirroredSlave && (endIsSlave || (endIsMirroredMaster && startInstance == endInstance)));
+    QSharedPointer<ConnectivityComponent const> startInstance = startVertex->getInstance();
+    QSharedPointer<ConnectivityComponent const> endInstance = endVertex->getInstance();
+
+    return
+        (startModeIsRevision2022 == endModeIsRevision2022) && (
+        (startIsInitiator && ((endIsTarget && startInstance != endInstance) || endIsMirroredInitiator)) ||
+        (startIsTarget && (endIsMirroredTarget || (endIsInitiator && startIsBridged && endIsBridged && startInstance == endInstance))) ||
+        (startIsMirroredInitiator && endIsMirroredTarget && startInstance == endInstance) ||
+        (startIsMirroredTarget && (endIsTarget || (endIsMirroredInitiator && startInstance == endInstance)))
+        );
 }
 
 //-----------------------------------------------------------------------------
@@ -269,5 +288,5 @@ bool MasterSlavePathSearch::pathEndsInMemoryMap(QVector<QSharedPointer<Connectiv
     QSharedPointer<ConnectivityInterface const> lastInterface = path.last();
 
     return lastInterface && lastInterface->getConnectedMemory() &&
-        lastInterface->getConnectedMemory()->getType().compare("memoryMap") == 0;
+        lastInterface->getConnectedMemory()->getType().compare(MemoryDesignerConstants::MEMORYMAP_TYPE) == 0;
 }

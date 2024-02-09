@@ -16,7 +16,6 @@
 //-----------------------------------------------------------------------------
 ConnectivityInterface::ConnectivityInterface(QString const& name):
 name_(name),
-mode_(),
 baseAddress_(),
 remapAddress_(),
 instance_(),
@@ -39,15 +38,15 @@ QString ConnectivityInterface::getName() const
 //-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::setMode()
 //-----------------------------------------------------------------------------
-void ConnectivityInterface::setMode(QString const& mode)
+void ConnectivityInterface::setMode(General::InterfaceMode newMode)
 {
-    mode_ = mode;
+    mode_ = newMode;
 }
 
 //-----------------------------------------------------------------------------
 // Function: ConnectivityInterface::getMode()
 //-----------------------------------------------------------------------------
-QString ConnectivityInterface::getMode() const
+General::InterfaceMode ConnectivityInterface::getMode() const
 {
     return mode_;
 }

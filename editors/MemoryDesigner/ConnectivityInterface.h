@@ -16,6 +16,8 @@
 #include <QVector>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/generaldeclarations.h>
+
 class ConnectivityComponent;
 class MemoryItem;
 
@@ -48,16 +50,16 @@ public:
     /*!
      *  Sets the mode for the interface.
      *
-     *      @param [in] mode   The mode to set.
+     *      @param [in] newMode     The mode to set.
      */
-    void setMode(QString const& mode);
+    void setMode(General::InterfaceMode newMode);
 
     /*!
      *  Gets the mode of the interface.
      *
      *      @return The mode of the interface.
      */
-    QString getMode() const;
+    General::InterfaceMode getMode() const;
 
     /*!
      *  Sets the base address for the memories connected to the interface.
@@ -191,7 +193,7 @@ private:
     QString name_;
 
     //! The mode of the interface.
-    QString mode_;
+    General::InterfaceMode mode_ = General::INTERFACE_MODE_COUNT;
 
     //! The base address for the associated memories. Applicable for master interfaces.
     QString baseAddress_;

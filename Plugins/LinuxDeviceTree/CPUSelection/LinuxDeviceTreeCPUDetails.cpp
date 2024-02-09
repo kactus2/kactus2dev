@@ -148,21 +148,22 @@ QVector<LinuxDeviceTreeCPUDetails::CpuMemory> LinuxDeviceTreeCPUDetails::getMemo
     quint64 newMemoryRange = memoryItemRange;
 
     QSharedPointer<const ConnectivityInterface> containerInterface = deviceTreeContainer->interface_;
-    if (containerInterface->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
+    if (General::InterfaceMode containerMode = containerInterface->getMode();
+        containerMode == General::MASTER || containerMode == General::INITIATOR)
     {
         newBaseAddress += containerInterface->getBaseAddress().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
+    else if (containerMode == General::MIRRORED_SLAVE || containerMode == General::MIRRORED_TARGET)
     {
         newBaseAddress += containerInterface->getRemapAddress().toULongLong();
         newMemoryRange = containerInterface->getRemapRange().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
+    else if (containerMode == General::SLAVE || containerMode == General::TARGET)
     {
         if (interfacedItemIsMemory(containerInterface))
         {
-            QPair<quint64, quint64> memoryAddress = MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(
-                containerInterface->getConnectedMemory());
+            QPair<quint64, quint64> memoryAddress =
+                MemoryConnectionAddressCalculator::getMemoryMapAddressRanges(containerInterface->getConnectedMemory());
 
             quint64 memoryBase = newBaseAddress;
             newBaseAddress += memoryAddress.first;

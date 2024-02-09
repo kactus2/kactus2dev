@@ -302,7 +302,7 @@ void LinuxDeviceTreeDialog::setupLayout()
     fileSetGroup_->setLayout(fileSetLayout);
 
     QPushButton* openFolderButton(
-        new QPushButton(QIcon(":icons/common/graphics/folder-horizontal-open.png"), QString(), this));
+        new QPushButton(QIcon(":icons/common/graphics/opened-folder.png"), QString(), this));
 
     QHBoxLayout* fileLayout = new QHBoxLayout();
     fileLayout->addWidget(new QLabel(tr("Output file:"), this));

@@ -47,7 +47,9 @@ namespace MemoryDesignerConstants
     const QString HARD_RESET_TYPE = QLatin1String("HARD");
 
     const QString MEMORYMAP_TYPE = QLatin1String("memoryMap");
+    const QString MEMORYREMAP_TYPE = QLatin1String("memoryRemap");
     const QString ADDRESSBLOCK_TYPE = QLatin1String("addressBlock");
+    const QString SUBSPACEMAP_TYPE = QLatin1String("subspaceMap");
     const QString REGISTER_TYPE = QLatin1String("register");
     const QString FIELD_TYPE = QLatin1String("field");
     const QString ENUMERATED_VALUE_TYPE = QLatin1String("enumeratedValue");

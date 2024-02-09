@@ -28,6 +28,7 @@
 #include <editors/MemoryDesigner/MasterSlavePathSearch.h>
 #include <editors/MemoryDesigner/ConnectivityInterface.h>
 #include <editors/MemoryDesigner/ConnectivityComponent.h>
+#include <editors/MemoryDesigner/MemoryDesignerConstants.h>
 
 #include <Plugins/LinuxDeviceTree/CPUSelection/LinuxDeviceTreeCpuRoutesContainer.h>
 
@@ -294,6 +295,8 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream, QSharedP
         return;
     }
 
+    General::InterfaceMode containerMode = containerInterface->getMode();
+
     quint64 newBaseAddress = baseAddress;
     quint64 newMemoryRange = memoryItemRange;
 
@@ -303,16 +306,16 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream, QSharedP
         writeBridge(outputStream, containerInterface, "channel", addressSize, rangeSize, prefix);
     }
 
-    if (containerInterface->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
+    if (containerMode == General::MASTER || containerMode == General::INITIATOR)
     {
         newBaseAddress += containerInterface->getBaseAddress().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
+    else if (containerMode == General::MIRRORED_SLAVE || containerMode == General::MIRRORED_TARGET)
     {
         newBaseAddress += containerInterface->getRemapAddress().toULongLong();
         newMemoryRange = containerInterface->getRemapRange().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
+    else if (containerMode == General::SLAVE || containerMode == General::TARGET)
     {
         if (containerInterface->isBridged())
         {
@@ -350,7 +353,7 @@ void LinuxDeviceTreeGenerator::writePathNode(QTextStream& outputStream, QSharedP
             newMemoryRange, prefix, writeAddressBlocks, addressSize, rangeSize);
     }
 
-    if ((containerInterface->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0 &&
+    if (((containerMode == General::SLAVE || containerMode == General::TARGET) &&
         containerInterface->isBridged()) ||
         (containerInterface->getInstance()->isChanneled() &&
             (!previousInterface || containerInterface->getInstance() != previousInterface->getInstance())))
@@ -445,16 +448,16 @@ QPair<quint64, quint64> LinuxDeviceTreeGenerator::getAddressAndSizeRequirements(
     quint64 newBaseAddress = baseAddress;
     quint64 newRange = memoryRange;
 
-    if (containerInterface->getMode().compare(QLatin1String("master"), Qt::CaseInsensitive) == 0)
+    if (containerInterface->getMode() == General::MASTER || containerInterface->getMode() == General::INITIATOR)
     {
         newBaseAddress += containerInterface->getBaseAddress().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("mirroredSlave"), Qt::CaseInsensitive) == 0)
+    else if (containerInterface->getMode() == General::MIRRORED_SLAVE || containerInterface->getMode() == General::MIRRORED_TARGET)
     {
         newBaseAddress += containerInterface->getRemapAddress().toULongLong();
         newRange = containerInterface->getRemapRange().toULongLong();
     }
-    else if (containerInterface->getMode().compare(QLatin1String("slave"), Qt::CaseInsensitive) == 0)
+    else if (containerInterface->getMode() == General::SLAVE || containerInterface->getMode() == General::TARGET)
     {
         if (containerInterface->isBridged())
         {
@@ -565,11 +568,10 @@ void LinuxDeviceTreeGenerator::writeAddressBlocksData(QTextStream& outputStream,
 {
     for (auto childItem : memoryNode->getConnectedMemory()->getChildItems())
     {
-        if (childItem->getType() == "addressBlock")
+        if (childItem->getType() == MemoryDesignerConstants::ADDRESSBLOCK_TYPE)
         {
             QString vendor;
-            QStringList vlnvList = memoryNode->getInstance()->getVlnv().split(":");
-            if (vlnvList.isEmpty() == false)
+            if (QStringList vlnvList = memoryNode->getInstance()->getVlnv().split(":"); vlnvList.isEmpty() == false)
             {
                 vendor = vlnvList.first();
             }

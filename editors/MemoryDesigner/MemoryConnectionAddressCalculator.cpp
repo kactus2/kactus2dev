@@ -46,7 +46,8 @@ MemoryConnectionAddressCalculator::ConnectionPathVariables MemoryConnectionAddre
     {
         if (pathInterface != startInterface && pathInterface != endInterface)
         {
-            if (pathInterface->getMode().compare(QStringLiteral("mirroredSlave"), Qt::CaseInsensitive) == 0 &&
+            General::InterfaceMode interfaceMode = pathInterface->getMode();
+            if ((interfaceMode == General::MIRRORED_SLAVE || interfaceMode == General::MIRRORED_TARGET) &&
                 !pathInterface->getRemapAddress().isEmpty() && !pathInterface->getRemapRange().isEmpty())
             {
                 newPathVariables.mirroredSlaveAddressChange_ += pathInterface->getRemapAddress().toULongLong();
@@ -54,26 +55,23 @@ MemoryConnectionAddressCalculator::ConnectionPathVariables MemoryConnectionAddre
                 newPathVariables.memoryMapEndAddress_ = pathInterface->getRemapRange().toULongLong() - 1;
                 newPathVariables.hasRemapRange_ = true;
             }
-            else if (pathInterface->getMode().compare(QStringLiteral("master"), Qt::CaseInsensitive) == 0)
+            else if ((interfaceMode == General::MASTER || interfaceMode == General::INITIATOR) &&
+                pathInterface->isConnectedToMemory())
             {
-                if (pathInterface->isConnectedToMemory())
+                newPathVariables.spaceChainBaseAddress_ += newPathVariables.baseAddressNumber_;
+
+                if (QSharedPointer<MemoryItem> middleSpace = pathInterface->getConnectedMemory(); middleSpace)
                 {
-                    newPathVariables.spaceChainBaseAddress_ += newPathVariables.baseAddressNumber_;
+                    quint64 chainOffset = newPathVariables.spaceChainBaseAddress_;
 
-                    QSharedPointer<MemoryItem> middleSpace = pathInterface->getConnectedMemory();
-                    if (middleSpace)
-                    {
-                        quint64 chainOffset = newPathVariables.spaceChainBaseAddress_;
+                    MemoryConnectionAddressCalculator::ChainedSpace middleChainedSpace;
+                    middleChainedSpace.spaceInterface_ = pathInterface;
+                    middleChainedSpace.spaceConnectionBaseAddress_ = chainOffset;
 
-                        MemoryConnectionAddressCalculator::ChainedSpace middleChainedSpace;
-                        middleChainedSpace.spaceInterface_ = pathInterface;
-                        middleChainedSpace.spaceConnectionBaseAddress_ = chainOffset;
-
-                        newPathVariables.spaceChain_.append(middleChainedSpace);
-                    }
-
-                    newPathVariables.baseAddressNumber_ = pathInterface->getBaseAddress().toULongLong();
+                    newPathVariables.spaceChain_.append(middleChainedSpace);
                 }
+
+                newPathVariables.baseAddressNumber_ = pathInterface->getBaseAddress().toULongLong();
             }
         }
     }

@@ -167,6 +167,15 @@ bool General::str2Bool(const QString str, bool defaultValue)
 }
 
 //-----------------------------------------------------------------------------
+// Function: General::modeIsRevision2022()
+//-----------------------------------------------------------------------------
+IPXACTMODELS_EXPORT bool General::modeIsRevision2022(General::InterfaceMode mode)
+{
+    return mode == General::INITIATOR || mode == General::TARGET ||
+        mode == General::MIRRORED_INITIATOR || mode == General::MIRRORED_TARGET;
+}
+
+//-----------------------------------------------------------------------------
 // Function: General::str2Interfacemode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode General::str2Interfacemode(const QString& str, InterfaceMode defaultValue)
