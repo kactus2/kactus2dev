@@ -25,9 +25,10 @@
 //-----------------------------------------------------------------------------
 // Function: BridgesDelegate::BridgesDelegate()
 //-----------------------------------------------------------------------------
-BridgesDelegate::BridgesDelegate(BusInterfaceInterface* busInterface, QObject *parent):
+BridgesDelegate::BridgesDelegate(BusInterfaceInterface* busInterface, Document::Revision revision, QObject* parent):
 QStyledItemDelegate(parent),
-busInterface_(busInterface)
+busInterface_(busInterface),
+revision_(revision)
 {
 }
 
@@ -39,7 +40,13 @@ QWidget* BridgesDelegate::createEditor(QWidget* parent, const QStyleOptionViewIt
 {
     if (index.column() == BridgeColumns::INITIATOR_COLUMN)
     {
-        return new InterfaceSelector(busInterface_, parent, General::MASTER);
+        auto busSelector(new InterfaceSelector(busInterface_, parent, General::INITIATOR));
+        if (revision_ == Document::Revision::Std14)
+        {
+            busSelector->setInterfaceMode(General::MASTER);
+        }
+
+        return busSelector;
     }
     else
     {

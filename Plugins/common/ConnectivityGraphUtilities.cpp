@@ -164,7 +164,7 @@ QVector<QSharedPointer<SingleCpuRoutesContainer> > ConnectivityGraphUtilities::g
     QSharedPointer<ConnectivityGraph> graph = graphFactory.createConnectivityGraph(component, viewName);
     MasterSlavePathSearch searchAlgorithm;
     QVector<QVector<QSharedPointer<const ConnectivityInterface>>> masterRoutes =
-        searchAlgorithm.findMasterSlavePaths(graph);
+        searchAlgorithm.findMasterSlavePaths(graph, true);
 
     for (auto masterRoute : masterRoutes)
     {

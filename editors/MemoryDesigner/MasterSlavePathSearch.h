@@ -36,12 +36,13 @@ public:
     /*!
      *  Finds all paths from master interfaces to slave interfaces.
      *
-     *      @param [in] graph   The connectivity graph to find the paths from.
+     *      @param [in] graph                   The connectivity graph to find the paths from.
+     *      @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
      *
      *      @return All paths from master interfaces.
      */
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > findMasterSlavePaths(
-        QSharedPointer<const ConnectivityGraph> graph) const;
+        QSharedPointer<const ConnectivityGraph> graph, bool allowOverlappingPaths) const;
 
 private:
 
@@ -98,11 +99,12 @@ private:
     /*!
      *  Finds the valid, longest paths in the given set of paths.
      *
-     *      @param [in] paths   The paths to search.
+     *      @param [in] paths                   The paths to search.
+     *      @param [in] allowOverlappingPaths   Flag for allowing overlapping paths in the path search.
      *
      *      @return The valid paths found in the set.
      */
-    QVector<MasterSlavePathSearch::Path> findValidPathsIn(QVector<MasterSlavePathSearch::Path> const& paths) const;
+    QVector<MasterSlavePathSearch::Path> findValidPathsIn(QVector<MasterSlavePathSearch::Path> const& paths, bool allowOverlappingPaths) const;
 
     /*!
      *  Check if the selected path should be kept in the master paths.

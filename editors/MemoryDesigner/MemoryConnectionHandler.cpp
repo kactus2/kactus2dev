@@ -93,7 +93,7 @@ void MemoryConnectionHandler::createMemoryConnections(QSharedPointer<Connectivit
     MasterSlavePathSearch pathSearcher;
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > masterSlavePaths =
-        pathSearcher.findMasterSlavePaths(connectionGraph);
+        pathSearcher.findMasterSlavePaths(connectionGraph, false);
 
     qreal spaceYPlacement = MemoryDesignerConstants::SPACEITEMINTERVAL;
 

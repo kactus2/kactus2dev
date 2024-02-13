@@ -15,6 +15,8 @@
 #include <QStyledItemDelegate>
 #include <QSharedPointer>
 
+#include <IPXACTmodels/common/Document.h>
+
 class Component;
 class BusInterfaceInterface;
 
@@ -31,9 +33,10 @@ public:
      *  The constructor.
 	 *
 	 *      @param [in] busInterface    Interface for accessing bus interfaces.
+     *      @param [in] revision        Currently active IP-XACT revision.
 	 *      @param [in] parent          The owner of this delegate.
      */
-    BridgesDelegate(BusInterfaceInterface* busInterface, QObject *parent);
+    BridgesDelegate(BusInterfaceInterface* busInterface, Document::Revision revision, QObject* parent);
 
 	/*!
      *  The destructor.
@@ -79,6 +82,8 @@ private:
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;
 
+    //! The currently active IP-XACT revision.
+    Document::Revision revision_;
 };
 
 #endif // BRIDGESDELEGATE_H

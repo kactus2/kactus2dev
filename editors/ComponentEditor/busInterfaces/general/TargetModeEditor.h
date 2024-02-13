@@ -18,6 +18,7 @@
 #include <editors/ComponentEditor/common/ReferenceSelector/ReferenceSelector.h>
 #include <editors/ComponentEditor/instantiations/filesetrefeditor.h>
 
+#include <IPXACTmodels/common/Document.h>
 #include <IPXACTmodels/Component/TargetInterface.h>
 
 #include <QSharedPointer>
@@ -41,9 +42,10 @@ public:
 	 *
      *      @param [in] busInterface    Interface for accessing bus interfaces.
      *      @param [in] busName         Name of the edited bus interface.
-     *      @param [in]   parent      The owner of this editor.
+     *      @param [in] revision        Currently active IP-XACT revision.
+     *      @param [in] parent          The owner of this editor.
      */
-    TargetModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, QWidget* parent);
+    TargetModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, Document::Revision revision, QWidget* parent);
 
 	/*!
      *  The destructor.

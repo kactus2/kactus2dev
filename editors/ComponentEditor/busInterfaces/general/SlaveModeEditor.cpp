@@ -34,14 +34,13 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: SlaveModeEditor::SlaveModeEditor()
 //-----------------------------------------------------------------------------
-SlaveModeEditor::SlaveModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
-    QWidget* parent):
+SlaveModeEditor::SlaveModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, Document::Revision revision, QWidget* parent):
 ModeEditorBase(busInterface, busName, tr("Slave"), parent),
 memoryMapSelector_(tr("Memory map"), this),
 bridgesSelector_(tr("Transparent bridge"), this),
 memoryMapReferenceSelector_(this),
 slaveBridges_(busInterface->getBridges(busName)),
-bridges_(busInterface, slaveBridges_, this),
+bridges_(busInterface, slaveBridges_, revision, this),
 fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), this)
 {
     fileSetRefs_.initialize();

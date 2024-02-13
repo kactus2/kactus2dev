@@ -55,7 +55,7 @@ endiannessSelector_(new QComboBox(this)),
 memoryMapSelection_(new QCheckBox(tr("Memory map"), this)),
 bridgeSelection_(new QCheckBox(tr("Transparent bridge"), this)),
 memoryMapSelector_(new ReferenceSelector(this)),
-transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), this)),
+transparentBridgesEditor_(new BridgesEditor(busInterface, indirectInterface->getTransparentBridges(), component->getRevision(), this)),
 parametersEditor_(new ParameterGroupBox(indirectInterface_->getParameters(), component->getChoices(), finder,
     formatter, component->getRevision(), this))
 {

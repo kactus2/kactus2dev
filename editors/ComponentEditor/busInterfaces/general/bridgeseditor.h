@@ -14,6 +14,8 @@
 
 #include "bridgesmodel.h"
 
+#include <IPXACTmodels/common/Document.h>
+
 #include <common/views/EditableTableView/editabletableview.h>
 
 #include <QGroupBox>
@@ -41,12 +43,14 @@ public:
 	/*!
      *  The constructor.
 	 *
-     *      @param [in] busInterface    Interface for accessing bus interfaces.
-	 *      @param [in] bridges         The bridges to edit in the editor.
-	 *      @param [in] parent          The parent of this editor.
+     *      @param [in] busInterface        Interface for accessing bus interfaces.
+	 *      @param [in] bridges             The bridges to edit in the editor.
+     *      @param [in] currentRevision     Currently active IP-XACT revision.
+	 *      @param [in] parent              The parent of this editor.
      */
     BridgesEditor(BusInterfaceInterface* busInterface,
         QSharedPointer<QList<QSharedPointer<TransparentBridge> > > bridges,
+        Document::Revision currentRevision,
         QWidget* parent);
 
 	/*!

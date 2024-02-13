@@ -57,7 +57,7 @@ void MemoryViewGenerator::generate(QSharedPointer<Component> topComponent, QStri
     QSharedPointer<ConnectivityGraph> graph = graphFactory_.createConnectivityGraph(topComponent, activeView);
     MasterSlavePathSearch searchAlgorithm;
 
-    writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph));
+    writeFile(outputPath, searchAlgorithm.findMasterSlavePaths(graph, true));
 }
 
 //-----------------------------------------------------------------------------

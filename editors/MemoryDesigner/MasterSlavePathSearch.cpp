@@ -23,8 +23,8 @@
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::findMasterSlavePaths()
 //-----------------------------------------------------------------------------
-QVector<QVector<QSharedPointer<ConnectivityInterface const> > > MasterSlavePathSearch::findMasterSlavePaths(
-    QSharedPointer<const ConnectivityGraph> graph) const
+QVector<QVector<QSharedPointer<ConnectivityInterface const> > > MasterSlavePathSearch::
+    findMasterSlavePaths(QSharedPointer<const ConnectivityGraph> graph, bool allowOverlappingPaths) const
 {
     QVector<MasterSlavePathSearch::Path> masterPaths;
 
@@ -33,7 +33,7 @@ QVector<QVector<QSharedPointer<ConnectivityInterface const> > > MasterSlavePathS
         masterPaths.append(findPaths(masterInterface,  graph));
     }
 
-    masterPaths = findValidPathsIn(masterPaths);
+    masterPaths = findValidPathsIn(masterPaths, allowOverlappingPaths);
 
     for (auto const& edge : graph->getConnections())
     {
@@ -211,15 +211,15 @@ MasterSlavePathSearch::Path MasterSlavePathSearch::findPathFromRoot(
 //-----------------------------------------------------------------------------
 // Function: MasterSlavePathSearch::removeDuplicatePaths()
 //-----------------------------------------------------------------------------
-QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findValidPathsIn(
-    QVector<MasterSlavePathSearch::Path> const& paths) const
+QVector<MasterSlavePathSearch::Path> MasterSlavePathSearch::findValidPathsIn(QVector<MasterSlavePathSearch::Path> const& paths,
+    bool allowOverlappingPaths) const
 {
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > highPaths;
 
     for (auto const& currentPath : paths)
     {
-        if (currentPath.size() > 1 && pathEndsInMemoryMap(currentPath) &&
-            pathIsFullPath(currentPath, paths))
+        if ((currentPath.size() > 1 && pathEndsInMemoryMap(currentPath)) &&
+            (allowOverlappingPaths == true || (allowOverlappingPaths == false && pathIsFullPath(currentPath, paths))))
         {
             highPaths.append(currentPath);
         }
@@ -248,8 +248,8 @@ bool MasterSlavePathSearch::pathIsFullPath(MasterSlavePathSearch::Path const& cu
 
             // Exclude path only if the start interface isn't bridged (e.g. if there is a CPU in middle 
             // of a path) or the path is contained within another path.
-            if (pathContainsAnotherPath(currentPath, comparisonPath, overlapLength) &&
-                pathLength < comparisonPathLength && currentPath.first()->isBridged() == false)
+            if (pathLength < comparisonPathLength &&
+                pathContainsAnotherPath(currentPath, comparisonPath, overlapLength))
             {
                 return false;
             }

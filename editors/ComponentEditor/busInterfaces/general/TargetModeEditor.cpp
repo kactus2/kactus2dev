@@ -34,14 +34,13 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: TargetModeEditor::TargetModeEditor()
 //-----------------------------------------------------------------------------
-TargetModeEditor::TargetModeEditor(BusInterfaceInterface* busInterface, std::string const& busName,
-    QWidget* parent) :
+TargetModeEditor::TargetModeEditor(BusInterfaceInterface* busInterface, std::string const& busName, Document::Revision revision, QWidget* parent):
     ModeEditorBase(busInterface, busName, tr("Target"), parent),
     memoryMapSelector_(tr("Memory map"), this),
     bridgesSelector_(tr("Transparent bridge"), this),
     memoryMapReferenceSelector_(this),
     targetBridges_(busInterface->getBridges(busName)),
-    bridges_(busInterface, targetBridges_, this),
+    bridges_(busInterface, targetBridges_, revision, this),
     modeReferences_(tr("Modes"), this),
     fileSetRefs_(busInterface->getFileSetInterface(), tr("File set references"), this)
 {
