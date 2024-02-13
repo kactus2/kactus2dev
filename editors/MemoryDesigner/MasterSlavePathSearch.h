@@ -57,6 +57,33 @@ private:
         QSharedPointer<const ConnectivityGraph> graph) const;
 
     /*!
+     *  Check if the selected interface is a starting interface.
+     *	
+     *      @param [in] vertex  The selected interface.
+     *
+     *      @return True, if the interface is a starting interface, false otherwise.
+     */
+    bool isStartInterface(QSharedPointer<const ConnectivityInterface> vertex) const;
+
+    /*!
+     *  Check if the selected interface is connected to a memory item.
+     *
+     *      @param [in] vertex  The selected interface.
+     *
+     *      @return True, if the interface is a starting interface, false otherwise.
+     */
+    bool isConnectedToMemory(QSharedPointer<const ConnectivityInterface> vertex) const;
+
+    /*!
+     *  Check if the selected interface is connected to a subspace map.
+     *	
+     *      @param [in] vertex  The selected interface.
+     *
+     *      @return True, if the interface is connected to a subspace map, false otherwise.
+     */
+    bool isConnectedToSubspaceMap(QSharedPointer<const ConnectivityInterface> vertex) const;
+
+    /*!
      *  Finds all the paths branching from the given start vertex.
      *
      *      @param [in] startVertex     The vertex to start the search from.

@@ -60,13 +60,60 @@ QVector<QSharedPointer<ConnectivityInterface> > MasterSlavePathSearch::findIniti
 
     for (auto const& vertex : graph->getInterfaces())
     {
-        if ((vertex->getMode() == General::MASTER || vertex->getMode() == General::INITIATOR) && vertex->getConnectedMemory())
+        if (isStartInterface(vertex) && isConnectedToMemory(vertex))
         {
             masterInterfaces.append(vertex);
         }
     }
 
     return masterInterfaces;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::isStartInterface()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::isStartInterface(QSharedPointer<const ConnectivityInterface> vertex) const
+{
+    return vertex->getMode() == General::MASTER || vertex->getMode() == General::INITIATOR;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::isConnectedToMemory()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::isConnectedToMemory(QSharedPointer<const ConnectivityInterface> vertex) const
+{
+    if (vertex->getMode() == General::MASTER)
+    {
+        return vertex->isConnectedToMemory();
+    }
+    else if (vertex->getMode() == General::INITIATOR && vertex->getInstance())
+    {
+        return vertex->isConnectedToMemory() || isConnectedToSubspaceMap(vertex);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MasterSlavePathSearch::isConnectedToSubspaceMap()
+//-----------------------------------------------------------------------------
+bool MasterSlavePathSearch::isConnectedToSubspaceMap(QSharedPointer<const ConnectivityInterface> vertex) const
+{
+    for (auto memoryItem : vertex->getInstance()->getMemories())
+    {
+        if (memoryItem->getType() == MemoryDesignerConstants::MEMORYMAP_TYPE)
+        {
+            for (auto memoryBlock : memoryItem->getChildItems())
+            {
+                if (memoryBlock->getType() == MemoryDesignerConstants::SUBSPACEMAP_TYPE && memoryBlock->getInitiatorReference() == vertex->getName())
+                {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
