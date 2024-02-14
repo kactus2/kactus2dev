@@ -490,8 +490,15 @@ void BusInterfacePortMapTab::onCreateRequiredSignals()
         PortMapInterface* portMapInterface = absType->getPortMapInterface();
         if (portMapInterface)
         {
+            int numSignalsBefore = portMapInterface->itemCount();
             portMapInterface->createRequiredSignals();
             portMapModel_.reset();
+            int numSignalsAfter = portMapInterface->itemCount();
+
+            if (numSignalsBefore != numSignalsAfter)
+            {
+                emit contentChanged();
+            }
         }
     }
 }
@@ -507,8 +514,17 @@ void BusInterfacePortMapTab::onCreateOptionalSignals()
         PortMapInterface* portMapInterface = absType->getPortMapInterface();
         if (portMapInterface)
         {
+            int numSignalsBefore = portMapInterface->itemCount();
+
             portMapInterface->createOptionalSignals();
             portMapModel_.reset();
+
+            int numSignalsAfter = portMapInterface->itemCount();
+
+            if (numSignalsBefore != numSignalsAfter)
+            {
+                emit contentChanged();
+            }
         }
     }
 }
@@ -524,8 +540,17 @@ void BusInterfacePortMapTab::onCreateAllSignals()
         PortMapInterface* portMapInterface = absType->getPortMapInterface();
         if (portMapInterface)
         {
+            int numSignalsBefore = portMapInterface->itemCount();
+
             portMapInterface->createAllSignals();
             portMapModel_.reset();
+
+            int numSignalsAfter = portMapInterface->itemCount();
+
+            if (numSignalsBefore != numSignalsAfter)
+            {
+                emit contentChanged();
+            }
         }
     }
 }
