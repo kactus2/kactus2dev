@@ -8,6 +8,15 @@
               * Changed or Information
 ===============================================================================
 
+13/02/2024 3.13.1
+----------------------------------------------------
++ Prevent drag & drop between cross-standard revision components, designs etc.
+- Fixed missing fields in memory map visualizer on linux
+- Fixed crash when adding generated files to fileset when using specific generators
+- Fixed modelsim generator crashing in rare cases when changing generation output directory
+- Fixed portmap editor for 2022 standard
+- Fixed connectivity graph for 2022 standard
+
 08/12/2023 3.13.0
 ----------------------------------------------------
 + Added IP-XACT 2022 standard support for existing Kactus2 workflows
