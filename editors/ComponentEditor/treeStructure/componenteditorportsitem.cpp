@@ -53,10 +53,12 @@ ComponentEditorPortsItem::ComponentEditorPortsItem(ComponentEditorTreeModel* mod
     connect(wiresItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         Qt::UniqueConnection);
+    connect(wiresItem.data(), SIGNAL(createInterface()), this, SIGNAL(createInterface()), Qt::UniqueConnection);
 
     connect(transactionalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         Qt::UniqueConnection);
+    connect(transactionalItem.data(), SIGNAL(createInterface()), this, SIGNAL(createInterface()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

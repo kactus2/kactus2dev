@@ -34,9 +34,9 @@
 //-----------------------------------------------------------------------------
 // Function: AbsDefGroup::AbsDefGroup()
 //-----------------------------------------------------------------------------
-AbsDefGroup::AbsDefGroup(QSharedPointer<AbstractionDefinition> absDef, LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
-    PortAbstractionInterface* extendInterface,
-    QWidget *parent):
+AbsDefGroup::AbsDefGroup(Document::Revision revision, QSharedPointer<AbstractionDefinition> absDef,
+    LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
+    PortAbstractionInterface* extendInterface, QWidget* parent):
 QWidget(parent),
 documentNameGroupEditor_(new DocumentNameGroupEditor(this)),
 extendEditor_(new VLNVEditor(VLNV::ABSTRACTIONDEFINITION, libraryHandler, this, this)),
@@ -45,8 +45,8 @@ portTabs_(this),
 portInterface_(portInterface),
 extendInterface_(extendInterface),
 portModel_(new AbstractionPortsModel(libraryHandler, portInterface, extendInterface, this)),
-wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, absDef->getRevision(), portModel_, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
-transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, absDef->getRevision(), portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
+wirePortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, revision, portModel_, LogicalPortColumns::AbstractionType::WIRE, &portTabs_)),
+transactionalPortsEditor_(new AbstractionPortsEditor(libraryHandler, portInterface, revision, portModel_, LogicalPortColumns::AbstractionType::TRANSACTIONAL, &portTabs_)),
 abstraction_(absDef),
 libraryHandler_(libraryHandler)
 {
@@ -55,7 +55,7 @@ libraryHandler_(libraryHandler)
     documentNameGroupEditor_->setTitle(QStringLiteral("Abstraction definition"));
     extendEditor_->setTitle(tr("Extended abstraction definition"));
     extendEditor_->setMandatory(false);
-    extendEditor_->setRevisionFilter(true, absDef->getRevision());
+    extendEditor_->setRevisionFilter(true, revision);
 
     busDisplay_->setTitle(QStringLiteral("Bus Type"));
 
@@ -99,15 +99,17 @@ void AbsDefGroup::save()
 //-----------------------------------------------------------------------------
 void AbsDefGroup::setAbsDef(QSharedPointer<AbstractionDefinition> absDef)
 {
-    wirePortsEditor_->resetPortModel();
-    transactionalPortsEditor_->resetPortModel();
+    abstraction_ = absDef;
+
+    portInterface_->setAbsDef(abstraction_);
 
     auto busDefinition = libraryHandler_->getModel<BusDefinition>(absDef->getBusType());
 
-    portInterface_->setAbsDef(absDef);
-
     wirePortsEditor_->setBusDef(busDefinition);
     transactionalPortsEditor_->setBusDef(busDefinition);
+
+    wirePortsEditor_->resetPortModel();
+    transactionalPortsEditor_->resetPortModel();
 
     documentNameGroupEditor_->setDocumentNameGroup(absDef, libraryHandler_->getPath(absDef->getVlnv()));
 

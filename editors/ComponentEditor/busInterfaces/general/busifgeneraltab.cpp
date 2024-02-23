@@ -111,6 +111,7 @@ void BusIfGeneralTab::refresh()
 
     busInterface_->setupSubInterfaces(currentName);
 
+    abstractionEditor_->refresh();
 	modeStack_.refresh();
 	details_.refresh();
 	parameters_.refresh();

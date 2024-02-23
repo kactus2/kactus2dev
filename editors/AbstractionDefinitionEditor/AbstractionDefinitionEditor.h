@@ -43,8 +43,9 @@ public:
 	 *      @param [in] parent          The owner of this widget.
 	 *      @param [in] libHandler      The instance that manages library.
 	 *      @param [in] busDef          The bus definition to edit.
+     *      @param [in] revision        Currently active IP-XACT revision.
      */
-	AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef);
+	AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef, Document::Revision revision);
 	
 	/*!
      *  The destructor.
