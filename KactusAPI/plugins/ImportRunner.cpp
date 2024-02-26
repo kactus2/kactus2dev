@@ -230,13 +230,11 @@ QStringList ImportRunner::filetypesOf(QString const& fileName, QList<QSharedPoin
 {
     QStringList fileTypes;
 
-    QRegularExpression filePattern(QStringLiteral("(?:^|[\\\\/])") + fileName + QStringLiteral("$"));
-
     for (auto const& fileSet : fileSets)
     {
         for (auto const& file : *fileSet->getFiles())
         {
-            if (filePattern.match(file->name()).hasMatch())
+            if (fileName == file->name())
             {
                 for (auto const& fileType : *file->getFileTypes())
                 {
