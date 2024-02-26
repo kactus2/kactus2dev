@@ -43,14 +43,19 @@ public:
 	/*!
      *  The constructor.
 	 *
+     *      @param [in] revision        Currently active IP-XACT revision.
      *      @param [in] absDef          The abstraction definition.
      *      @param [in] libraryHandler  Allows access to the library.
      *      @param [in] portInterface   Interface for accssing port abstractions.
 	 *      @param [in] parent          The owner of the editor.
 	 */
-	AbsDefGroup(QSharedPointer<AbstractionDefinition> absDef, LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface, 
-        PortAbstractionInterface* extendInterface, QWidget *parent);
-	
+    AbsDefGroup(Document::Revision revision,
+        QSharedPointer<AbstractionDefinition> absDef,
+        LibraryInterface* libraryHandler,
+        PortAbstractionInterface* portInterface,
+        PortAbstractionInterface* extendInterface,
+        QWidget* parent);
+
 	/*!
      *  The destructor.
      */

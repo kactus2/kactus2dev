@@ -2373,7 +2373,7 @@ void MainWindow::openAbsDef(const VLNV& absDefVLNV)
     }
 
 
-    auto editor = new AbstractionDefinitionEditor(this, libraryHandler_, absDef);
+    auto editor = new AbstractionDefinitionEditor(this, libraryHandler_, absDef, absDef->getRevision());
 
     designTabs_->addAndOpenDocument(editor);
 }

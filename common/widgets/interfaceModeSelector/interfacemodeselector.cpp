@@ -46,6 +46,8 @@ void InterfaceModeSelector::initialize(Document::Revision docRevision)
         items = General::INTERFACE_MODES_2022.values();
 	}
 
+    items.prepend("");
+
     // if monitor should not be displayed then remove it
     if (showMonitor_ == false)
     {

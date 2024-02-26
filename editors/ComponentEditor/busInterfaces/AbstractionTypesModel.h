@@ -150,6 +150,11 @@ public:
      */
     void addNewAbstractionTypeWithVLNV(VLNV const& newAbstractionVLNV);
 
+    /*!
+     *  Reset the model.
+     */
+    void resetModel();
+
 public slots:
 
 	/*!

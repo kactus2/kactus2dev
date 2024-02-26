@@ -32,12 +32,11 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionEditor::AbstractionDefinitionEditor()
 //-----------------------------------------------------------------------------
-AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
-    QSharedPointer<AbstractionDefinition> absDef):
+AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef, Document::Revision revision):
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
 absDef_(absDef),
-absDefGroup_(absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
+absDefGroup_(revision, absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
@@ -143,7 +142,8 @@ void AbstractionDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition
 // Function: AbstractionDefinitionEditor::validate()
 //-----------------------------------------------------------------------------
 bool AbstractionDefinitionEditor::validate(QVector<QString>& errorList)
-{    
+{
+    absDefGroup_.save();
     absDefinitionValidator_->findErrorsIn(errorList, absDef_);
 
     return errorList.isEmpty();

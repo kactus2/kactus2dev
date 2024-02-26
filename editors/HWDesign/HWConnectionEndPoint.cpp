@@ -76,7 +76,7 @@ void HWConnectionEndpoint::updateInterface()
         {General::SLAVE, KactusColors::SLAVE_INTERFACE},
         {General::TARGET, KactusColors::SLAVE_INTERFACE},
         {General::MIRRORED_MASTER, KactusColors::MIRROREDMASTER_INTERFACE},
-        {General::MIRRORED_INITIATOR, KactusColors::MIRROREDSLAVE_INTERFACE},
+        {General::MIRRORED_INITIATOR, KactusColors::MIRROREDMASTER_INTERFACE},
         {General::MIRRORED_SLAVE, KactusColors::MIRROREDSLAVE_INTERFACE},
         {General::MIRRORED_TARGET, KactusColors::MIRROREDSLAVE_INTERFACE},
         {General::SYSTEM, KactusColors::SYSTEM_INTERFACE},

@@ -77,6 +77,11 @@ public:
      */
     void addNewAbstraction(VLNV const& newAbstraction);
 
+    /*!
+     *  Reload the data in the editor.
+     */
+    void refresh();
+
 signals:
 
     /*!

@@ -58,6 +58,14 @@ library_(library)
     layout->setContentsMargins(4, 4, 4, 4);
 }
 
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesEditor::refresh()
+//-----------------------------------------------------------------------------
+void AbstractionTypesEditor::refresh()
+{
+    abstractionView_->update();
+    abstractionModel_->resetModel();
+}
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionTypesEditor::stdRevisionMismatchWarning()

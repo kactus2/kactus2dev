@@ -394,3 +394,12 @@ bool AbstractionTypesModel::validateIndex(QModelIndex const& index) const
 
     return true;
 }
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionTypesModel::resetModel()
+//-----------------------------------------------------------------------------
+void AbstractionTypesModel::resetModel()
+{
+    beginResetModel();
+    endResetModel();
+}
