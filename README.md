@@ -11,7 +11,8 @@ software. The tool is based on IEEE 1685-2014 "IP-XACT" standard.
 Windows installer and tar-package for Linux are available in 
 [SourceForge](https://sourceforge.net/projects/kactus2/)
 
-Guidelines for issue reporting and contributing are given in [CONTRIBUTING.md](CONTRIBUTING.md).
+Guidelines for issue reporting and contributing are given in the wiki page [Contributing to Kactus2](https://github.com/kactus2/kactus2dev/wiki/Contributing-to-Kactus2).  
+
 Other support is provided by email: kactus2@tuni.fi
 
 ### What you can do with Kactus2
@@ -67,9 +68,6 @@ users. Most of the time all required changes can be applied in the Kactus2 GUI.
 In addition, Kactus2 uses the file **configure.cfg**for updating the users' settings when
 new setting options are introduced in the tool. Please do not modify this file as it will
 break the compatibility with earlier versions.
-
-## Community Guidelines & Contributions
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for details.
 
 ## Contributors
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
