@@ -75,7 +75,12 @@ void InterfaceModeSelector::setMode(const General::InterfaceMode mode)
 
 	disconnect(this, SIGNAL(currentTextChanged(const QString&)), this, SLOT(setMode(const QString&)));
 	
-	setCurrentText(General::interfaceMode2Str(mode));
+    QString modeText = General::interfaceMode2Str(mode);
+    if (modeText == "undefined")
+    {
+        modeText = "";
+    }
+	setCurrentText(modeText);
 	
 	connect(this, SIGNAL(currentTextChanged(const QString&)),
         this, SLOT(setMode(const QString&)), Qt::UniqueConnection);

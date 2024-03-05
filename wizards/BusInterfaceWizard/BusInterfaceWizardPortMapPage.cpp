@@ -53,6 +53,8 @@ busInterface_(busInterface)
         this, SLOT(showErrorMessage(QString const&)), Qt::UniqueConnection);    
     connect(&portMapTab_, SIGNAL(contentChanged()), this, SIGNAL(completeChanged()), Qt::UniqueConnection);
 
+    connect(this, SIGNAL(busNameChanged(std::string const&)), &portMapTab_, SLOT(changeBusName(std::string const&)), Qt::UniqueConnection);
+
     setupLayout();
 }
 

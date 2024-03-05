@@ -98,6 +98,13 @@ signals:
      */
     void decreaseReferences(QString id);
 
+    /*!
+     *  Inform of a change in the name of the bus interface.
+     *	
+     *      @param [in] busName     The new name of the bus interface.
+     */
+    void busNameChanged(std::string const& busName);
+
 private:
     // Disable copying.
     BusInterfaceWizardGeneralOptionsPage(BusInterfaceWizardGeneralOptionsPage const& rhs);

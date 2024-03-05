@@ -65,20 +65,24 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
         parameterFinder, expressionFormatter, expressionParser, component, handler);
 
-    AbstractionTypeInterface* absTypeInterface = busInterface->getAbstractionTypeInterface();
+    AbstractionTypeInterface const* absTypeInterface = busInterface->getAbstractionTypeInterface();
     if (absTypeInterface)
     {
         PortMapInterface* portMapInterface = absTypeInterface->getPortMapInterface();
         if (portMapInterface)
         {
-            BusInterfaceWizardGeneralOptionsPage* optionsPage = new BusInterfaceWizardGeneralOptionsPage(
+            auto optionsPage = new BusInterfaceWizardGeneralOptionsPage(
                 component, busIf, handler, !absDefVLNV.isValid(), parameterFinder, expressionFormatter,
                 expressionParser, busInterface, this);
+            auto portMapsPage = new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
+                expressionParser, parameterFinder, busInterface, portMapInterface, this);
 
             connect(optionsPage, SIGNAL(increaseReferences(QString)),
                 this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
             connect(optionsPage, SIGNAL(decreaseReferences(QString)),
                 this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+            connect(optionsPage, SIGNAL(busNameChanged(std::string const&)), portMapsPage, SIGNAL(busNameChanged(std::string const&)), Qt::UniqueConnection);
 
             setPage(PAGE_INTRO, new BusInterfaceWizardIntroPage(this));
             setPage(PAGE_GENERALOPTIONS, optionsPage);
@@ -86,8 +90,7 @@ BusInterfaceWizard::BusInterfaceWizard(QSharedPointer<Component> component, QSha
                 component, busIf, handler, absDefVLNV.isValid(), this));
             setPage(PAGE_ABSDEFINITION, new BusInterfaceWizardAbsDefinitionPage(
                 component, busIf, handler, portNames, this, absDefVLNV, expressionParser, namingPolicy));
-            setPage(PAGE_PORTMAPS, new BusInterfaceWizardPortMapPage(component, busIf, handler, portNames,
-                expressionParser, parameterFinder, busInterface, portMapInterface, this));
+            setPage(PAGE_PORTMAPS, portMapsPage);
             setPage(PAGE_SUMMARY, new BusInterfaceWizardConclusionPage(busIf, portNames, this));
         }
     }

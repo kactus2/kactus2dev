@@ -84,6 +84,15 @@ public:
      */
     virtual bool isComplete() const;
 
+signals:
+
+    /*!
+     *  Inform of a change in the bus interface name.
+     *	
+     *      @param [in] busName     The new name of the bus interface.
+     */
+    void busNameChanged(std::string const& busName);
+
 private slots:
     
     //! Handler for error messages.
