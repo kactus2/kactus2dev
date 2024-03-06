@@ -624,6 +624,8 @@ bool PortMapModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
     QString firstPort = physicalPorts.takeFirst();
     portMapInterface_->setPhysicalPort(parent.row(), firstPort.toStdString());
 
+    emit portConnected(firstPort);
+
     endResetModel();
 
     if (physicalPorts.size() > 0)
@@ -641,6 +643,8 @@ bool PortMapModel::dropMimeData(const QMimeData *data, Qt::DropAction action, in
             portMapInterface_->setLogicalPort(portMapIndex, logicalName);
 
             portMapIndex = portMapInterface_->itemCount();
+
+            emit portConnected(currentPort);
         }
 
         endInsertRows();

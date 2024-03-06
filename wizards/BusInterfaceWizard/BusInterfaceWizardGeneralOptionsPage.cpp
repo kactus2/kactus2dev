@@ -55,6 +55,8 @@ busInterface_(busInterface)
     connect(generalTab_, SIGNAL(decreaseReferences(QString)),
         this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
+    connect(generalTab_, SIGNAL(nameChanged(std::string const&)), this, SIGNAL(busNameChanged(std::string const&)), Qt::UniqueConnection);
+
     setupLayout();
 }
 
