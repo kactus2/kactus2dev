@@ -11,7 +11,7 @@
 
 #include "TransactionalPortsEditorFactory.h"
 
-#include <editors/ComponentEditor/ports/TransactionalPortsView.h>
+#include <editors/ComponentEditor/ports/TypedPortsView.h>
 #include <editors/ComponentEditor/ports/TransactionalPortColumns.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsFilter.h>
 #include <editors/ComponentEditor/ports/TransactionalPortsDelegate.h>
@@ -44,7 +44,8 @@ PortsFilter* TransactionalPortsEditorFactory::createFilter(QObject* parent) cons
 //-----------------------------------------------------------------------------
 PortsView* TransactionalPortsEditorFactory::createView(QWidget* parent) const
 {
-    auto view = new TransactionalPortsView(TransactionalPortColumns::NAME, busInterface_, parent);
+    auto view = new TypedPortsView(TransactionalPortColumns::TYPE_NAME, TransactionalPortColumns::NAME, 
+        busInterface_, parent);
 
     view->setDefaultImportExportPath(defaultPath_);
     view->setAllowImportExport(true);

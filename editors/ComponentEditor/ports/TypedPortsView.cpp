@@ -1,28 +1,36 @@
 //-----------------------------------------------------------------------------
-// File: TransactionalPortsView.cpp
+// File: TypedPortsView.cpp
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Anton Hagqvist
-// Date: 05.03.2024
+// Date: 16.02.2024
 //
 // Description:
-// View for transactional ports editor.
+// View for typed ports editors.
 //-----------------------------------------------------------------------------
 
-#include "TransactionalPortsView.h"
-
-#include "TransactionalPortColumns.h"
+#include "TypedPortsView.h"
 
 #include <QApplication>
 #include <QClipboard>
 #include <QMimeData>
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsView::onCopyAction()
+// Function: TypedPortsView::TypedPortsView()
 //-----------------------------------------------------------------------------
-void TransactionalPortsView::onCopyAction()
+TypedPortsView::TypedPortsView(int typeColumn, int nameColumn, BusInterfaceInterface* busInterface, QWidget* parent) :
+    PortsView(nameColumn, busInterface, parent),
+    typeColumn_(typeColumn)
 {
-    if (!currentIndex().isValid() || currentIndex().column() != TransactionalPortColumns::TYPE_NAME ||
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: TypedPortsView::onCopyAction()
+//-----------------------------------------------------------------------------
+void TypedPortsView::onCopyAction()
+{
+    if (!currentIndex().isValid() || currentIndex().column() != typeColumn_ ||
         selectedIndexes().size() != 1)
     {
         PortsView::onCopyAction();
@@ -36,11 +44,11 @@ void TransactionalPortsView::onCopyAction()
 }
 
 //-----------------------------------------------------------------------------
-// Function: TransactionalPortsView::onPasteAction()
+// Function: TypedPortsView::onPasteAction()
 //-----------------------------------------------------------------------------
-void TransactionalPortsView::onPasteAction()
+void TypedPortsView::onPasteAction()
 {
-    if (!currentIndex().isValid() || currentIndex().column() != TransactionalPortColumns::TYPE_NAME ||
+    if (!currentIndex().isValid() || currentIndex().column() != typeColumn_ ||
         selectedIndexes().size() != 1)
     {
         PortsView::onPasteAction();

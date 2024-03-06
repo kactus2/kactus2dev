@@ -690,13 +690,12 @@ CreateHelp
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsFilter.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsModel.cpp" />
-    <ClCompile Include="editors\ComponentEditor\ports\TransactionalPortsView.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\TypedPortEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsEditorFactory.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsFilter.cpp" />
     <ClCompile Include="editors\ComponentEditor\ports\WirePortsModel.cpp" />
-    <ClCompile Include="editors\ComponentEditor\ports\WirePortsView.cpp" />
+    <ClCompile Include="editors\ComponentEditor\ports\TypedPortsView.cpp" />
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.cpp" />
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.cpp" />
     <ClCompile Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.cpp" />
@@ -1876,7 +1875,6 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\TypedPortEditor.h" />
     <ClInclude Include="editors\ComponentEditor\ports\TransactionalPortsEditorFactory.h" />
-    <QtMoc Include="editors\ComponentEditor\ports\TransactionalPortsView.h" />
     <ClInclude Include="editors\ComponentEditor\ports\WirePortColumns.h" />
     <QtMoc Include="editors\ComponentEditor\ports\WirePortsModel.h">
     </QtMoc>
@@ -1887,7 +1885,7 @@ CreateHelp
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsEditor.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsModel.h" />
     <ClInclude Include="editors\ComponentEditor\ports\WirePortsEditorFactory.h" />
-    <QtMoc Include="editors\ComponentEditor\ports\WirePortsView.h" />
+    <QtMoc Include="editors\ComponentEditor\ports\TypedPortsView.h" />
     <ClInclude Include="editors\ComponentEditor\powerDomains\PowerDomainColumns.h" />
     <QtMoc Include="editors\ComponentEditor\powerDomains\PowerDomainsDelegate.h" />
     <ClInclude Include="editors\ComponentEditor\remapStates\RemapConditionColumns.h" />

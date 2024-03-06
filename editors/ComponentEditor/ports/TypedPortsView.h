@@ -1,38 +1,44 @@
 //-----------------------------------------------------------------------------
-// File: WirePortsView.h
+// File: TypedPortsView.h
 //-----------------------------------------------------------------------------
 // Project: Kactus 2
 // Author: Anton Hagqvist
 // Date: 16.02.2024
 //
 // Description:
-// View for wire ports editor.
+// View for typed ports editors.
 //-----------------------------------------------------------------------------
 
-#ifndef WIREPORTSVIEW_H
-#define WIREPORTSVIEW_H
+#ifndef TYPEDPORTSVIEW_H
+#define TYPEDPORTSVIEW_H
 
 #include "PortsView.h"
 
-class WirePortsView : public PortsView
+class BusInterfaceInterface;
+
+class TypedPortsView : public PortsView
 {
     Q_OBJECT
 public:
 
     // Use base class constructor.
-    using PortsView::PortsView;
+    TypedPortsView(int typeColumn, int nameColumn, BusInterfaceInterface* busInterface, QWidget* parent);
 
-    virtual ~WirePortsView() = default;
+    virtual ~TypedPortsView() = default;
 
 private slots:
 
     //! Handler for copy action.
-    void onCopyAction() override;
+    virtual void onCopyAction() override;
 
     //! Handler for paste action
     virtual void onPasteAction() override;
 
+private:
+
+    //! The number of the column containing the type definitions information.
+    int typeColumn_;
 };
 
-#endif // WIREPORTSVIEW_H
+#endif // TYPEDPORTSVIEW_H
 
