@@ -147,6 +147,53 @@ public:
     std::string getTypeName(std::string const& portName) const;
 
     /*!
+     *	Get the type name and type view references as pairs.
+     *  
+     *      @param [in] portName     Name of the selected port.
+     *	    
+     * 	    @return Vector of pairs of type names and vectors of view references.
+     */
+    std::vector<std::pair<std::string, std::vector<std::string> > > getTypeNameViews(std::string const& portName) const;
+
+    /*!
+     *	Get the type name and type definitions as a list of pairs.
+     *  
+     *      @param [in] portName     Name of the selected port.
+     *	    
+     * 	    @return Vector containing pairs of type names and type definition vectors.
+     */
+    std::vector<std::pair<std::string, std::vector<std::string> > > getTypeDefinitions(std::string const& portName) const;
+
+    /*!
+     *	Set the port type definition view refs. Should only be used in copy pasting, updates or overwrites existing type def view refs.
+     *  
+     *      @param [in] portName            Name of the selected port.
+     *      @param [in] typeNameViews       The type def name-view reference pairs to set.
+     *	    
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool setTypeDefViewRefs(std::string const& portName, std::vector<std::pair<std::string, std::vector<std::string> > > const& typeNameViews);
+
+    /*!
+     *	Set the port type definition type definitions.
+     *  
+     *      @param [in] portName            Name of the selected port.
+     *      @param [in] typeDefinitions     The type def name-typeDef pairs to set.
+     *	    
+     * 	    @return True, if the operation was successful, otherwise false.
+     */
+    bool setTypeDefDefinitions(std::string const& portName, std::vector<std::pair<std::string, std::vector<std::string> > > const& typeDefinitions);
+
+    /*!
+     *	Clear the type definitions of a selected port.
+     *  
+     *      @param [in] portName     Name of the selected port.
+     *	    
+     * 	    @return True, if the selected port is found, otherwise false.
+     */
+    bool clearTypeDefinitions(std::string const& portName);
+
+    /*!
      *  Set a new type name for the selected port.
      *
      *      @param [in] portName    Name of the selected port.

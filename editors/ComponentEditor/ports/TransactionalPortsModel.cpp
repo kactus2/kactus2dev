@@ -285,6 +285,14 @@ bool TransactionalPortsModel::isValidExpressionColumn(QModelIndex const& index) 
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalPortsModel::isPortTypeColumn()
+//-----------------------------------------------------------------------------
+bool TransactionalPortsModel::isPortTypeColumn(QModelIndex const& index) const
+{
+    return index.column() == TransactionalPortColumns::TYPE_NAME;
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalPortsModel::expressionOrValueForIndex()
 //-----------------------------------------------------------------------------
 QVariant TransactionalPortsModel::expressionOrValueForIndex(QModelIndex const& index) const

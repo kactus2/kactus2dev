@@ -82,6 +82,22 @@ QVariant PortsModel::data(QModelIndex const& index, int role) const
         {
             return expressionForIndex(index);
         }
+        // For copy pasting type defs.
+        else if (isPortTypeColumn(index))
+        {
+            std::string portName = portsInterface_->getIndexedItemName(index.row());
+            using TypeDefList = std::vector<std::pair<std::string, std::vector<std::string> > >;
+
+            auto typeViews = portsInterface_->getTypeNameViews(portName);
+            auto typeDefs = portsInterface_->getTypeDefinitions(portName);
+
+            auto typeDefData = QPair<TypeDefList,TypeDefList>({ typeViews, typeDefs });
+
+            QVariant copyData;
+            copyData.setValue(typeDefData);
+
+            return copyData;
+        }
         else
         {
             return valueForIndex(index);
@@ -232,9 +248,26 @@ bool PortsModel::setData(QModelIndex const& index, QVariant const& value, int ro
             emit headerDataChanged(Qt::Vertical, index.row(), index.row());
             emit portExtensionDataChanged(index);
         }
+        // Copy pasting type definitions
         else if (index.column() == typeColumn())
         {
-            portsInterface_->setTypeName(portName, value.toString().toStdString());
+            using TypeDefList = std::vector<std::pair<std::string, std::vector<std::string> > >;
+
+            if (!value.canConvert<QPair<TypeDefList, TypeDefList>>())
+            {
+                return false;
+            }
+
+            auto [typeNameViews, typeDefinitions] = value.value<QPair<TypeDefList, TypeDefList>>();
+            
+            // Overwrite values on paste, if some type defs are defined
+            if (!index.data(Qt::EditRole).value<QPair<TypeDefList, TypeDefList>>().first.empty())
+            {
+                portsInterface_->clearTypeDefinitions(portName);
+            }
+
+            portsInterface_->setTypeDefViewRefs(portName, typeNameViews);
+            portsInterface_->setTypeDefDefinitions(portName, typeDefinitions);
         }
         else if (index.column() == arrayLeftColumn())
         {
@@ -605,7 +638,7 @@ QVariant PortsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == typeColumn())
     {
-        return QString::fromStdString(portsInterface_->getTypeName(portName));
+         return QString::fromStdString(portsInterface_->getTypeName(portName));
     }
     else if (index.column() == arrayLeftColumn())
     {

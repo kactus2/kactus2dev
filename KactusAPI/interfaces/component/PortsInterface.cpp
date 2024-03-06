@@ -164,6 +164,242 @@ std::string PortsInterface::getTypeName(std::string const& portName) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortsInterface::getTypeNameViews()
+//-----------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::vector<std::string> > > PortsInterface::getTypeNameViews(std::string const& portName) const
+{
+    using namespace std;
+    vector<pair<string, vector<string> > > typeNameViews;
+
+    QSharedPointer<Port> port = getPort(portName);
+    if (!port)
+    {
+        return typeNameViews;
+    }
+
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > portTypeDefs;
+
+    if (auto wire = port->getWire())
+    {
+        portTypeDefs = wire->getWireTypeDefs();
+    }
+    else if (auto transactional = port->getTransactional())
+    {
+        portTypeDefs = transactional->getTransTypeDef();
+    }
+    else
+    {
+        return typeNameViews;
+    }
+
+    for (auto const& wireTypeDef : *portTypeDefs)
+    {
+        pair<string, vector<string> > singleType;
+        singleType.first = wireTypeDef->getTypeName().toStdString();
+
+        for (auto const& view : *wireTypeDef->getViewRefs())
+        {
+            singleType.second.push_back(view.toStdString());
+        }
+        typeNameViews.push_back(singleType);
+    }
+
+    return typeNameViews;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::getTypeDefinitions()
+//-----------------------------------------------------------------------------
+std::vector<std::pair<std::string, std::vector<std::string> > > PortsInterface::getTypeDefinitions(std::string const& portName) const
+{
+    using namespace std;
+    vector<pair<string, vector<string> > > typeNameDefinitions;
+
+    QSharedPointer<Port> port = getPort(portName);
+    if (!port)
+    {
+        return typeNameDefinitions;
+    }
+
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > portTypeDefs;
+
+    if (auto wire = port->getWire())
+    {
+        portTypeDefs = wire->getWireTypeDefs();
+    }
+    else if (auto transactional = port->getTransactional())
+    {
+        portTypeDefs = transactional->getTransTypeDef();
+    }
+    else
+    {
+        return typeNameDefinitions;
+    }
+
+    for (auto const& wireTypeDef : *portTypeDefs)
+    {
+        pair<string, vector<string> > singleType;
+        singleType.first = wireTypeDef->getTypeName().toStdString();
+
+        for (auto const& typeDef : *wireTypeDef->getTypeDefinitions())
+        {
+            singleType.second.push_back(typeDef.toStdString());
+        }
+
+        typeNameDefinitions.push_back(singleType);
+    }
+
+    return typeNameDefinitions;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::setTypeNameViews()
+//-----------------------------------------------------------------------------
+bool PortsInterface::setTypeDefViewRefs(std::string const& portName, std::vector<std::pair<std::string, std::vector<std::string> > > const& typeNameViews)
+{
+    QSharedPointer<Port> port = getPort(portName);
+    if (!port)
+    {
+        return false;
+    }
+
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > portTypeDefs;
+
+    if (auto wire = port->getWire())
+    {
+        portTypeDefs = wire->getWireTypeDefs();
+    }
+    else if (auto transactional = port->getTransactional())
+    {
+        portTypeDefs = transactional->getTransTypeDef();
+    }
+    else
+    {
+        return false;
+    }
+
+    if (typeNameViews.empty())
+    {
+        portTypeDefs->clear();
+        return true;
+    }
+
+    for (auto const& [typeName, views] : typeNameViews)
+    {
+        auto typeNameQ = QString::fromStdString(typeName);
+
+        auto found_it = std::find_if(portTypeDefs->begin(), portTypeDefs->end(), 
+            [&typeNameQ](QSharedPointer<WireTypeDef> wireTypeDef)
+            {
+                return wireTypeDef->getTypeName() == typeNameQ;
+            });
+
+        // Create new type def if not existing.
+        if (found_it == portTypeDefs->end())
+        {
+            QSharedPointer<WireTypeDef> newTypeDef(new WireTypeDef);
+            newTypeDef->setTypeName(typeNameQ);
+            portTypeDefs->append(newTypeDef);
+            found_it = portTypeDefs->end();
+            --found_it;
+        }
+        
+        for (auto const& view : views)
+        {
+            (*found_it)->getViewRefs()->append(QString::fromStdString(view));
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::setTypeDefinitions()
+//-----------------------------------------------------------------------------
+bool PortsInterface::setTypeDefDefinitions(std::string const& portName, std::vector<std::pair<std::string, std::vector<std::string> > > const& typeDefinitions)
+{
+    QSharedPointer<Port> port = getPort(portName);
+    if (!port)
+    {
+        return false;
+    }
+
+    QSharedPointer<QList<QSharedPointer<WireTypeDef> > > portTypeDefs;
+
+    if (auto wire = port->getWire())
+    {
+        portTypeDefs = wire->getWireTypeDefs();
+    }
+    else if (auto transactional = port->getTransactional())
+    {
+        portTypeDefs = transactional->getTransTypeDef();
+    }
+    else
+    {
+        return false;
+    }
+
+    if (typeDefinitions.empty())
+    {
+        portTypeDefs->clear();
+        return true;
+    }
+
+    for (auto const& [typeName, typeDefs] : typeDefinitions)
+    {
+        auto typeNameQ = QString::fromStdString(typeName);
+
+        auto found_it = std::find_if(portTypeDefs->begin(), portTypeDefs->end(),
+            [&typeNameQ](QSharedPointer<WireTypeDef> wireTypeDef)
+            {
+                return wireTypeDef->getTypeName() == typeNameQ;
+            });
+
+        // Create new type def if not existing.
+        if (found_it == portTypeDefs->end())
+        {
+            QSharedPointer<WireTypeDef> newTypeDef(new WireTypeDef);
+            newTypeDef->setTypeName(typeNameQ);
+            portTypeDefs->append(newTypeDef);
+            found_it = portTypeDefs->end();
+            --found_it;
+        }
+
+        for (auto const& typeDef : typeDefs)
+        {
+            (*found_it)->getTypeDefinitions()->append(QString::fromStdString(typeDef));
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsInterface::clearTypeDefinitions()
+//-----------------------------------------------------------------------------
+bool PortsInterface::clearTypeDefinitions(std::string const& portName)
+{
+    QSharedPointer<Port> port = getPort(portName);
+    if (!port)
+    {
+        return false;
+    }
+
+    if (auto wire = port->getWire())
+    {
+        wire->getWireTypeDefs()->clear();
+        return true;
+    }
+    else if (auto transactional = port->getTransactional())
+    {
+        transactional->getTransTypeDef()->clear();
+        return true;
+    }
+    
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortsInterface::setTypeName()
 //-----------------------------------------------------------------------------
 bool PortsInterface::setTypeName(std::string const& portName, std::string const& newType) const
