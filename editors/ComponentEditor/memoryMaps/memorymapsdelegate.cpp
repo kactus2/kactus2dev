@@ -122,8 +122,11 @@ void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
 
-        int editorValue = edit->text().toUInt();
-        model->setData(index, editorValue, Qt::EditRole);
+        bool intChangeOk = false;
+        edit->text().toUInt(&intChangeOk);
+
+        QString textToSet = intChangeOk ? edit->text() : QString();
+        model->setData(index, textToSet, Qt::EditRole);
     }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {

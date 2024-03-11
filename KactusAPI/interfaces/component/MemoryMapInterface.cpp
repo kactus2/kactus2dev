@@ -454,7 +454,7 @@ std::string MemoryMapInterface::getAddressUnitBits(std::string const& mapName) c
     QSharedPointer<MemoryMap> map = getMemoryMap(mapName);
     if (map)
     {
-        return map->getAddressUnitBits().toStdString();
+        return map->getAddressUnitBits(false).toStdString();
     }
 
     return "";

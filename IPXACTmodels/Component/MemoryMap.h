@@ -72,10 +72,12 @@ public:
 
     /*!
 	 *  Get the address unit bits value.
-	 *
+	 *      
+     *      @param [in] defaultIfEmpty      Flag for returning the default AUB value (8 bits) if AUB is empty.
+     * 
      *      @return The address unit bit value.
 	 */
-    QString getAddressUnitBits() const;
+    QString getAddressUnitBits(bool defaultIfEmpty = true) const;
 
 	/*!
 	 *  Set the address unit bits for this memory map.

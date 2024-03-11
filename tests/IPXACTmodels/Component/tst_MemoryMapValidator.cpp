@@ -170,7 +170,7 @@ void tst_MemoryMapValidator::testAddressUnitBitsIsValid_data()
     QTest::newRow("Address unit bits of text is invalid") << "text" << false << false;
     QTest::newRow("Address unit bits of string is invalid") << "\"text\"" << false << false;
     QTest::newRow("Empty address unit bits is valid if there exists no address blocks") << "" << false << true;
-    QTest::newRow("Empty address unit bits is invalid if there exists address blocks") << "" << true << false;
+    QTest::newRow("Empty address unit bits is valid if there exists address blocks") << "" << true << true;
     QTest::newRow("Long address unit bit value is valid") << "40000000000" << false << true;
 }
 
@@ -194,7 +194,7 @@ void tst_MemoryMapValidator::testAddressBlockWidthIsMultipleOfAddressUnitBits()
 
     QSharedPointer<MemoryMapValidator> validator = createValidator(Document::Revision::Std14);
 
-    QCOMPARE(validator->hasValidMemoryBlocks(testMap, addressUnitBits), isValid);
+    QCOMPARE(validator->hasValidMemoryBlocks(testMap, testMap->getAddressUnitBits()), isValid);
 
     if (!isValid)
     {

@@ -74,23 +74,11 @@ bool MemoryMapValidator::validate(QSharedPointer<MemoryMap> memoryMap) const
 //-----------------------------------------------------------------------------
 bool MemoryMapValidator::hasValidAddressUnitBits(QSharedPointer<MemoryMap> memoryMap) const
 {
-    if (!memoryMap->getAddressUnitBits().isEmpty())
-    {
-        QString solvedValue = getExpressionParser()->parseExpression(memoryMap->getAddressUnitBits());
-        bool changeOk = true;
-        quint64 addressUnitBits = solvedValue.toULongLong(&changeOk);
+    QString solvedValue = getExpressionParser()->parseExpression(memoryMap->getAddressUnitBits());
+    bool changeOk = true;
+    quint64 addressUnitBits = solvedValue.toULongLong(&changeOk);
 
-        if (!changeOk || addressUnitBits <= 0)
-        {
-            return false;
-        }
-    }
-    else if (!memoryMap->getMemoryBlocks()->isEmpty())
-    {
-        return false;
-    }
-
-    return true;
+    return changeOk && addressUnitBits > 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -191,7 +179,7 @@ bool MemoryMapValidator::hasValidStructure(QSharedPointer<MemoryMap> memoryMap) 
     if (!memoryMap->getMemoryMapDefinitionReference().isEmpty() && (
         !memoryMap->getMemoryBlocks()->isEmpty() ||
         !memoryMap->getMemoryRemaps()->isEmpty() ||
-        !memoryMap->getAddressUnitBits().isEmpty() ||
+        !memoryMap->getAddressUnitBits(false).isEmpty() ||
         !memoryMap->getShared().isEmpty()))
     {
         return false;
