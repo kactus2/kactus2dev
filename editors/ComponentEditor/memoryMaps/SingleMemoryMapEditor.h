@@ -214,7 +214,7 @@ private:
     SubspaceMapsEditor* subspaceMapEditor_;
 
     //! The editor for the memory maps address unit bits [AUB].
-    QLineEdit* addressUnitBitsEditor_;
+    ExpressionEditor* addressUnitBitsEditor_;
 
     //! The editor for isPresent-property.
     ExpressionEditor* isPresentEditor_;

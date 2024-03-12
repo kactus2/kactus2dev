@@ -251,13 +251,31 @@ public:
     bool setRemapState(std::string const& mapName, std::string const& remapName, std::string const& newRemapState);
 
     /*!
-     *  Get the address unit bits of the selected memory map.
+     *  Get the address unit bits expression of the selected memory map.
      *
      *      @param [in] mapName     Name of the selected memory map.
      *
-     *      @return Address unit bits of the selected memory map.
+     *      @return Address unit bits expression of the selected memory map.
      */
-    std::string getAddressUnitBits(std::string const& mapName) const;
+    std::string getAddressUnitBitsExpression(std::string const& mapName) const;
+
+    /*!
+     *	Get the address unit bits value of the selected memory map.
+     *  
+     *      @param [in] mapName     Name of the selected memory map.
+     *	    
+     * 	    @return Address unit bits of the selected memory map.
+     */
+    std::string getAddressUnitBitsValue(std::string const& mapName) const;
+
+    /*!
+     *	Get the formatted address unit bits expression of the selected memory map.
+     *
+     *      @param [in] mapName     Name of the selected memory map.
+     *
+     * 	    @return Formatted address unit bits expression of the selected memory map.
+     */
+    std::string getAddressUnitBitsFormattedExpression(std::string const& mapName) const;
 
     /*!
      *  Set the address unit bits for the selected memory map.
