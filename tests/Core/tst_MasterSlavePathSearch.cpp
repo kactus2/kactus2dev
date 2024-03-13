@@ -104,7 +104,7 @@ void tst_MasterSlavePathSearch::testItemsWithoutConnections()
     testGraph_->getInterfaces().append(testMapInterface);
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_);
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 0);
 }
@@ -134,7 +134,7 @@ void tst_MasterSlavePathSearch::testSpaceMapConnection()
     testGraph_->getConnections().append(testConnection);
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_);
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 1);
     QCOMPARE(paths.first().count(), 2);
@@ -176,7 +176,7 @@ void tst_MasterSlavePathSearch::testAddressSpaceConnection()
     testGraph_->getConnections().append(testSpaceMapConnection);
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_);
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 1);
     QCOMPARE(paths.first().count(), 3);
@@ -230,7 +230,7 @@ void tst_MasterSlavePathSearch::testSpaceChainConnectionWithChainedItemsToDiffer
     addLocalConnection(spaceInterface2);
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_);
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 3);
 
@@ -286,7 +286,7 @@ void tst_MasterSlavePathSearch::testContainedConnectionsAreNotExamined()
     testGraph_->getConnections().append(spaceToMap);
 
     QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
-        pathSearcher_.findMasterSlavePaths(testGraph_);
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
 
     QCOMPARE(paths.count(), 1);
     QCOMPARE(paths.first().size(), 3);
@@ -313,7 +313,7 @@ QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createInterface
 
     QSharedPointer<ConnectivityInterface> testInterface(new ConnectivityInterface(interfaceName));
     testInterface->setConnectedMemory(testMemoryItem);
-    testInterface->setMode(mode);
+    testInterface->setMode(General::str2Interfacemode(mode, General::INTERFACE_MODE_COUNT));
     if (containingInstance)
     {
         testInterface->setInstance(containingInstance);
@@ -331,7 +331,7 @@ QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createInterface
 //-----------------------------------------------------------------------------
 void tst_MasterSlavePathSearch::addLocalConnection(QSharedPointer<ConnectivityInterface> masterInterface)
 {
-    if (masterInterface->getMode() != PathSearchSpace::MASTERMODE)
+    if (General::interfaceMode2Str(masterInterface->getMode()) != PathSearchSpace::MASTERMODE)
     {
         return;
     }
