@@ -150,7 +150,7 @@ void EnumerationEditorConstructorDelegate::repositionAndResizeEditor(QWidget* ed
     QStyleOptionViewItem const& option, QModelIndex const& /*index*/) const
 {
     int enumerationCount = getAvailableItems().count();
-    int editorMinimumSize = 25 * (enumerationCount + 2);
+    int editorMinimumSize = qMax(25 * (enumerationCount + 2), 80);
 
     int editorWidth =  option.rect.right() - option.rect.left();
     if (editorWidth < 150)
