@@ -741,6 +741,17 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
 }
 
 //-----------------------------------------------------------------------------
+// Function: GraphicsConnection::shape()
+//-----------------------------------------------------------------------------
+QPainterPath GraphicsConnection::shape() const
+{
+    // Widen the shape of the connection item to make it easier to select.
+    QPainterPathStroker stroker;
+    stroker.setWidth(10);
+    return stroker.createStroke(path());
+}
+
+//-----------------------------------------------------------------------------
 // Function: GraphicsConnection::beginUpdatePosition()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::beginUpdatePosition()
