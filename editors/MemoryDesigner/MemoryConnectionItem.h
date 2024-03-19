@@ -30,7 +30,6 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] connectionPath      Path of the memory connection.
      *      @param [in] startItem           The start item of the connection (address space).
      *      @param [in] firstStartValue     Start address in the start item.
      *      @param [in] firstEndValue       End address in the start item.
@@ -39,9 +38,12 @@ public:
      *      @param [in] yTransfer           Y transfer of the memory connection.
      *      @param [in] parent              Parent item of the connection.
      */
-    MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
-        MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-        MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, qreal yTransfer = 0,
+    MemoryConnectionItem(MainMemoryGraphicsItem* startItem,
+        quint64 firstStartValue,
+        quint64 firstEndValue,
+        MainMemoryGraphicsItem* endItem,
+        QGraphicsScene* containingScene,
+        qreal yTransfer = 0,
         QGraphicsItem* parent = 0);
 
     // Disable copying.
@@ -61,6 +63,13 @@ public:
     void moveConnectionWithoutConnectedItemsInY(qreal ytransfer);
 
     /*!
+     *  Change the position relative to the connection start item.
+     *	
+     *      @param [in] movementInY     Movement in the containig scene.
+     */
+    void moveItemBy(qreal const& movementInY);
+
+    /*!
      *  Get the start value of the connection.
      *
      *      @return The start value of the connection.
@@ -78,6 +87,11 @@ public:
      *  Redraw the path of this connection.
      */
     void reDrawConnection();
+
+    /*!
+     *  Redraw the memory connection.
+     */
+    void reDrawMemoryConnection();
 
     /*!
      *  Get the lowest point of the connection.
@@ -137,6 +151,17 @@ public:
      *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
     void condenseToUnCutCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
+
+    /*!
+     *  Compress this and the connected end items to the selected coordinates.
+     *	
+     *      @param [in] condensedItems              List of memory items that have been compressed.
+     *      @param [in] unCutCoordinates            List of the visible coordinates.
+     *      @param [in] CUTMODIFIER                 Maximum height for a compressed area.
+     *      @param [in] memoryItemsAreCompressed    Flag for compressing the memory items.
+     */
+    void compressToUnCutCoordinates(QVector<MainMemoryGraphicsItem*>& condensedItems,
         QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
@@ -203,7 +228,18 @@ private:
      *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
      *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    void compressEndItemToCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+    void condenseEndItemToCoordinates(QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems,
+        QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
+
+    /*!
+     *  Compress the contained end item using coordinates.
+     *	
+     *      @param [in] condensedItems              Memory items that have already been condensed.
+     *      @param [in] unCutCoordinates            The addresses tha remain after the compression.
+     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
+     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
+     */
+    void compressEndItemToCoordinates(QVector<MainMemoryGraphicsItem*>& compressedItems,
         QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed);
 
     /*!
@@ -225,6 +261,11 @@ private:
      *  Create the connection path.
      */
     void createPath();
+
+    /*!
+     *  Redraw the connection path after movement.
+     */
+    void reDrawPathAfterMovement();
 
     /*!
      *  Avoid collisions on the connection path.
@@ -365,9 +406,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! Path of the memory connection.
-    QVector<QSharedPointer<ConnectivityInterface const> > connectionPath_;
 
     //! The label containing the first item start range.
     QGraphicsTextItem* firstItemStartLabel_;

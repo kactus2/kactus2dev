@@ -28,7 +28,7 @@
 
 namespace MemoryMapItemConstants
 {
-    const int MINIMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+    const int MINIMUMSUBITEMHEIGHT = 3 * MemoryDesignerConstants::RANGEINTERVAL;
 };
 
 //-----------------------------------------------------------------------------
@@ -275,14 +275,12 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
 //-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::condenseItemAndChildItems(
-    QSharedPointer<QVector<MemoryConnectionItem*> > /*movedConnections*/, 
-    bool condenseMemoryItems)
+void MemoryMapGraphicsItem::condenseItemAndChildItems(bool condenseMemoryItems)
 {
     if (!isCompressed())
     {
-        quint64 memoryMapNewHeight = 0;
-        int subItemHeight = getMinimumHeightForSubItems();
+        qreal memoryMapNewHeight = 0;
+        qreal subItemHeight = getMinimumHeightForSubItems();
         
         if (getMemoryConnections().isEmpty())
         {
@@ -302,13 +300,13 @@ void MemoryMapGraphicsItem::condenseItemAndChildItems(
 //-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::getMinimumHeightForSubItems()
 //-----------------------------------------------------------------------------
-int MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
+qreal MemoryMapGraphicsItem::getMinimumHeightForSubItems() const
 {
-    int blockHeight = MemoryMapItemConstants::MINIMUMSUBITEMHEIGHT;
+    qreal blockHeight = MemoryMapItemConstants::MINIMUMSUBITEMHEIGHT;
     if (getSubMemoryItems().size() == 1)
     {
         MemoryDesignerChildGraphicsItem* blockItem = getSubMemoryItems().first();
-        SubMemoryLayout* blockLayout = dynamic_cast<SubMemoryLayout*>(blockItem);
+        SubMemoryLayout const* blockLayout = dynamic_cast<SubMemoryLayout*>(blockItem);
         if (blockLayout && blockLayout->getSubMemoryItems().size() == 1)
         {
             blockHeight = blockHeight * 1.5;

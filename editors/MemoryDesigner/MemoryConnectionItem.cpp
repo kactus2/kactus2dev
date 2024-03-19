@@ -28,11 +28,12 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::MemoryConnectionItem()
 //-----------------------------------------------------------------------------
-MemoryConnectionItem::MemoryConnectionItem(QVector<QSharedPointer<ConnectivityInterface const> > connectionPath,
+MemoryConnectionItem::MemoryConnectionItem(
     MainMemoryGraphicsItem* startItem, quint64 firstStartValue, quint64 firstEndValue,
-    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene, qreal yTransfer, QGraphicsItem* parent):
+    MainMemoryGraphicsItem* endItem, QGraphicsScene* containingScene,
+    qreal yTransfer,
+    QGraphicsItem* parent):
 QGraphicsPathItem(parent),
-connectionPath_(connectionPath),
 firstItemStartLabel_(new QGraphicsTextItem(this)),
 firstItemEndLabel_(new QGraphicsTextItem(this)),
 secondItemStartLabel_(new QGraphicsTextItem(this)),
@@ -69,13 +70,12 @@ void MemoryConnectionItem::createPath()
     setPath(QPainterPath());
 
     const qreal LINEWIDTH = 1;
-    qreal connectionWidth = connectionWidth_;
 
     QPointF startItemTopRight = startItem_->sceneBoundingRect().topRight();
     QPointF endItemTopLeft = endItem_->sceneBoundingRect().topLeft();
 
     QPointF highStartPoint(startItemTopRight.x(), startItemTopRight.y() + yTransfer_ + LINEWIDTH / 2);
-    QPointF lowStartPoint(highStartPoint.x(), highStartPoint.y() + connectionWidth);
+    QPointF lowStartPoint(highStartPoint.x(), highStartPoint.y() + connectionWidth_);
     QPointF highEndPoint(endItemTopLeft.x(), highStartPoint.y());
     QPointF lowEndPoint(highEndPoint.x(), lowStartPoint.y());
 
@@ -271,13 +271,13 @@ void MemoryConnectionItem::condenseToUnCutCoordinates(
         setCondensedHeight(condensedHeight);
     }
 
-    compressEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
+    condenseEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryConnectionItem::compressEndItemToCoordinates()
+// Function: MemoryConnectionItem::condenseEndItemToCoordinates()
 //-----------------------------------------------------------------------------
-void MemoryConnectionItem::compressEndItemToCoordinates(
+void MemoryConnectionItem::condenseEndItemToCoordinates(
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > condensedItems, QVector<qreal> unCutCoordinates,
     const qreal CUTMODIFIER, bool memoryItemsAreCompressed)
 {
@@ -290,6 +290,76 @@ void MemoryConnectionItem::compressEndItemToCoordinates(
     if (!condensedItems->contains(startItem_))
     {
         condensedItems->append(startItem_);
+        startItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::compressToUnCutCoordinates()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::compressToUnCutCoordinates(QVector<MainMemoryGraphicsItem*>& condensedItems,
+    QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER, bool memoryItemsAreCompressed)
+{
+    qreal cutArea = 0;
+    qreal connectionTop = sceneBoundingRect().top();
+    qreal connectionLow = sceneBoundingRect().bottom();
+    qreal previousCoordinate = connectionTop;
+    foreach(qreal coordinate, unCutCoordinates)
+    {
+        if (coordinate > connectionTop && coordinate <= connectionLow)
+        {
+            if (qreal singleCut = coordinate - previousCoordinate; singleCut > 0)
+            {
+                if (memoryItemsAreCompressed)
+                {
+                    singleCut = singleCut - CUTMODIFIER;
+                }
+                else
+                {
+                    qreal requiredArea = MemoryDesignerConstants::getRequiredAreaForUsedArea(singleCut);
+                    singleCut = singleCut - requiredArea;
+                }
+
+                if (singleCut > 0)
+                {
+                    cutArea += singleCut;
+                }
+            }
+
+            previousCoordinate = coordinate;
+        }
+
+        if (coordinate > connectionLow)
+        {
+            break;
+        }
+    }
+
+    if (cutArea > 0)
+    {
+        qreal condensedHeight = boundingRect().height() - cutArea;
+        setCondensedHeight(condensedHeight);
+    }
+
+    compressEndItemToCoordinates(condensedItems, unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::compressEndItemToCoordinates()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::compressEndItemToCoordinates(
+    QVector<MainMemoryGraphicsItem*>& compressedItems, QVector<qreal> unCutCoordinates,
+    const qreal CUTMODIFIER, bool memoryItemsAreCompressed)
+{
+    if (!compressedItems.contains(endItem_))
+    {
+        compressedItems.append(endItem_);
+        endItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
+    }
+
+    if (!compressedItems.contains(startItem_))
+    {
+        compressedItems.append(startItem_);
         startItem_->compressToUnCutCoordinates(unCutCoordinates, CUTMODIFIER, memoryItemsAreCompressed);
     }
 }
@@ -733,6 +803,18 @@ void MemoryConnectionItem::moveConnectionWithoutConnectedItemsInY(qreal ytransfe
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::moveItemBy()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::moveItemBy(qreal const& movementInY)
+{
+    qreal newPosition = sceneBoundingRect().top() + movementInY;
+    yTransfer_ = newPosition - startItem_->sceneBoundingRect().top();
+
+    createPath();
+    repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryConnectionItem::getRangeStartValue()
 //-----------------------------------------------------------------------------
 quint64 MemoryConnectionItem::getRangeStartValue() const
@@ -755,6 +837,24 @@ void MemoryConnectionItem::reDrawConnection()
 {
     createPath();
     repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::reDrawMemoryConnection()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::reDrawMemoryConnection()
+{
+    reDrawPathAfterMovement();
+    repositionLabels();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryConnectionItem::reDrawPathAfterMovement()
+//-----------------------------------------------------------------------------
+void MemoryConnectionItem::reDrawPathAfterMovement()
+{
+    QRectF rectangle = sceneBoundingRect();
+    avoidCollisionsOnPath(sceneBoundingRect().topLeft(), sceneBoundingRect().topRight(), sceneBoundingRect().bottomLeft(), sceneBoundingRect().bottomRight());
 }
 
 //-----------------------------------------------------------------------------

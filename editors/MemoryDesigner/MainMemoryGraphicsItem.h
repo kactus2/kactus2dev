@@ -82,11 +82,29 @@ public:
     /*!
      *  Compress the item and the contained sub items.
      *
-     *      @param [in] movedConnections        Connection items that have already been moved.
      *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
-        bool condenseMemoryItems) = 0;
+    virtual void condenseItemAndChildItems(bool condenseMemoryItems) = 0;
+
+    /*!
+     *  Get the used coordinates of the item and all the connected items.
+     *	
+     *      @param [in] visitedItems        List of the visited memory items.
+     *      @param [in] visitedConnections  List of the visited memory connections.
+     *
+     *      @return List of visible coordinates.
+     */
+    QVector<qreal> getUncutCoordinatesFromSet(QVector<MainMemoryGraphicsItem*>& visitedItems, QVector<MemoryConnectionItem*>& visitedConnections);
+
+    /*!
+     *  Compress the connection set.
+     *	
+     *      @param [in] visitedItems            List of visited memory items.
+     *      @param [in] visitedConnections      List of visited memory connections.
+     *      @param [in] unCutCoordinates        List of visible coordinates.
+     *      @param [in] compressMemoryItems     Flag for compressing the memory items.
+     */
+    void compressConnectionSet(QVector<MainMemoryGraphicsItem*>& visitedItems, QVector<MemoryConnectionItem const*>& visitedConnections, QVector<qreal> unCutCoordinates, bool compressMemoryItems);
 
     /*!
      *  Move memory item and all the connected memory connections and the connected memory items.
@@ -225,6 +243,11 @@ public:
      */
     quint64 getHighestConnectedLastAddress() const;
 
+    /*!
+     *  Construct a memory graphics extension for this memory item.
+     */
+    void extendMemoryItem();
+
 protected:
 
     /*!
@@ -272,6 +295,13 @@ private:
      *      @return True, if the selected label collides with range labels, false otherwise.
      */
     virtual bool labelCollidesWithRangeLabels(QGraphicsTextItem* label, qreal fontHeight) const;
+
+    /*!
+     *  Get the minimum height required to display for the memory item.
+     *
+     *      @return The minimum height required to display the memory item.
+     */
+    virtual qreal getMinimumHeightForSubItems() const = 0;
 
     //-----------------------------------------------------------------------------
     // Data.

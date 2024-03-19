@@ -61,11 +61,10 @@ public:
     /*!
      *  Compress the item and the contained sub items.
      *
-     *      @param [in] movedConnections        Connection items that have already been moved.
      *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
-        bool condenseMemoryItems);
+    virtual void condenseItemAndChildItems(bool condenseMemoryItems);
+
     /*!
      *  Change the width of this item and the contained register graphics items.
      *
@@ -132,7 +131,7 @@ private:
      *
      *      @return The minimum height for the memory map sub items.
      */
-    int getMinimumHeightForSubItems() const;
+    virtual qreal getMinimumHeightForSubItems() const override final;
 
     /*!
      *  Setup sub items for the memory map.
