@@ -51,13 +51,6 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
         connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return edit;
     }
-    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
-    {
-        QLineEdit* edit = new QLineEdit(parent);
-        connect(edit, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        edit->setValidator(new QRegularExpressionValidator(QRegularExpression("\\d*"), edit));
-        return edit;
-    }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {
         ReferenceSelector* referenceSelector = new ReferenceSelector(parent);
@@ -76,8 +69,7 @@ QWidget* MemoryMapsDelegate::createEditor( QWidget* parent, const QStyleOptionVi
 //-----------------------------------------------------------------------------
 void MemoryMapsDelegate::setEditorData( QWidget* editor, const QModelIndex& index ) const
 {
-    if (index.column() == MemoryMapsColumns::NAME_COLUMN ||
-        index.column() == MemoryMapsColumns::AUB_COLUMN)
+    if (index.column() == MemoryMapsColumns::NAME_COLUMN)
     {
         QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
         Q_ASSERT(edit);
@@ -116,14 +108,6 @@ void MemoryMapsDelegate::setModelData( QWidget* editor, QAbstractItemModel* mode
 
         QString text = edit->text();
         model->setData(index, text, Qt::EditRole);
-    }
-    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
-    {
-        QLineEdit* edit = qobject_cast<QLineEdit*>(editor);
-        Q_ASSERT(edit);
-
-        int editorValue = edit->text().toUInt();
-        model->setData(index, editorValue, Qt::EditRole);
     }
     else if (index.column() == MemoryMapsColumns::REMAPSTATE_COLUMN)
     {
@@ -167,7 +151,7 @@ void MemoryMapsDelegate::paint(QPainter *painter, const QStyleOptionViewItem &op
 //-----------------------------------------------------------------------------
 bool MemoryMapsDelegate::columnAcceptsExpression(int column) const
 {
-    return column == MemoryMapsColumns::IS_PRESENT;
+    return column == MemoryMapsColumns::IS_PRESENT || column == MemoryMapsColumns::AUB_COLUMN;
 }
 
 //-----------------------------------------------------------------------------

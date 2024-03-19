@@ -11,7 +11,7 @@
 
 #include "WirePortsEditorFactory.h"
 
-#include <editors/ComponentEditor/ports/PortsView.h>
+#include <editors/ComponentEditor/ports/TypedPortsView.h>
 #include <editors/ComponentEditor/ports/WirePortsModel.h>
 #include <editors/ComponentEditor/ports/WirePortColumns.h>
 #include <editors/ComponentEditor/ports/WirePortsFilter.h>
@@ -45,7 +45,7 @@ PortsFilter* WirePortsEditorFactory::createFilter(QObject* parent) const
 //-----------------------------------------------------------------------------
 PortsView* WirePortsEditorFactory::createView(QWidget* parent) const
 {
-    auto view = new PortsView(WirePortColumns::NAME, busInterface_, parent);
+    auto view = new TypedPortsView(WirePortColumns::TYPE_NAME, WirePortColumns::NAME, busInterface_, parent);
 
     view->setDefaultImportExportPath(defaultPath_);
     view->setAllowImportExport(true);

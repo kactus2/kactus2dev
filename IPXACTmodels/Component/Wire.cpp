@@ -276,7 +276,12 @@ void Wire::setTypeName(QString const& typeName, QString const& viewName)
     if (!typeName.isEmpty())
     {
         QSharedPointer<WireTypeDef> newWireTypeDefinition(new WireTypeDef(typeName));
-        newWireTypeDefinition->getViewRefs()->append(viewName);
+        
+        if (!viewName.isEmpty())
+        {
+            newWireTypeDefinition->getViewRefs()->append(viewName);
+        }
+        
         wireTypeDefs_->append(newWireTypeDefinition);
     }
 }

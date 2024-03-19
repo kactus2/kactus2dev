@@ -139,7 +139,7 @@ QVariant MemoryMapsModel::headerData(int section, Qt::Orientation orientation, i
         }
         else if (section == MemoryMapsColumns::AUB_COLUMN)
         {
-            return tr("Address unit\nbits (AUB)");
+            return tr("Address unit\nbits (AUB)") + getExpressionSymbol();
         }
         else if (section == MemoryMapsColumns::INTERFACE_COLUMN)
         {
@@ -261,6 +261,10 @@ QVariant MemoryMapsModel::data(QModelIndex const& index, int role) const
     else if (index.column() == MemoryMapsColumns::NAME_COLUMN && role == Qt::SizeHintRole)
     {
         return QSize(40, ROWHEIGHT_);
+    }
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
     }
 
     return QVariant();
@@ -750,7 +754,7 @@ void MemoryMapsModel::increaseReferencesInPastedMap(QStringList mapExpressions,
 //-----------------------------------------------------------------------------
 bool MemoryMapsModel::isValidExpressionColumn(QModelIndex const& index) const
 {
-    return index.column() == MemoryMapsColumns::IS_PRESENT;
+    return index.column() == MemoryMapsColumns::IS_PRESENT || index.column() == MemoryMapsColumns::AUB_COLUMN;
 }
 
 //-----------------------------------------------------------------------------
@@ -822,13 +826,17 @@ bool MemoryMapsModel::validateIndex(QModelIndex const& index) const
 //-----------------------------------------------------------------------------
 QVariant MemoryMapsModel::formattedExpressionForIndex(QModelIndex const& index) const
 {
+    QPair<QString, QString> mapRemapNames = getIndexedMapRemapNames(index);
+    std::string mapName = mapRemapNames.first.toStdString();
+    std::string remapName = mapRemapNames.second.toStdString();
+
     if (index.column() == MemoryMapsColumns::IS_PRESENT)
     {
-        QPair<QString, QString> mapRemapNames = getIndexedMapRemapNames(index);
-        std::string mapName = mapRemapNames.first.toStdString();
-        std::string remapName = mapRemapNames.second.toStdString();
-
         return QString::fromStdString(mapInterface_->getIsPresentFormattedExpression(mapName, remapName));
+    }
+    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
+    {
+        return QString::fromStdString(mapInterface_->getAddressUnitBitsFormattedExpression(mapName));
     }
 
     return valueForIndex(index);
@@ -839,13 +847,17 @@ QVariant MemoryMapsModel::formattedExpressionForIndex(QModelIndex const& index) 
 //-----------------------------------------------------------------------------
 QVariant MemoryMapsModel::expressionForIndex(QModelIndex const& index) const
 {
+    QPair<QString, QString> mapRemapNames = getIndexedMapRemapNames(index);
+    std::string mapName = mapRemapNames.first.toStdString();
+    std::string remapName = mapRemapNames.second.toStdString();
+
     if (index.column() == MemoryMapsColumns::IS_PRESENT)
     {
-        QPair<QString, QString> mapRemapNames = getIndexedMapRemapNames(index);
-        std::string mapName = mapRemapNames.first.toStdString();
-        std::string remapName = mapRemapNames.second.toStdString();
-
         return QString::fromStdString(mapInterface_->getIsPresentExpression(mapName, remapName));
+    }
+    else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
+    {
+        return QString::fromStdString(mapInterface_->getAddressUnitBitsExpression(mapName));
     }
 
     return valueForIndex(index);
@@ -877,7 +889,7 @@ QVariant MemoryMapsModel::valueForIndex(QModelIndex const& index) const
     }
     else if (index.column() == MemoryMapsColumns::AUB_COLUMN)
     {
-        return QString::fromStdString(mapInterface_->getAddressUnitBits(mapName));
+        return QString::fromStdString(mapInterface_->getAddressUnitBitsValue(mapName));
     }
     else if (index.column() == MemoryMapsColumns::INTERFACE_COLUMN)
     {

@@ -89,8 +89,13 @@ void MemoryMap::setMemoryRemaps(QSharedPointer<QList<QSharedPointer<MemoryRemap>
 //-----------------------------------------------------------------------------
 // Function: memorymap::getAddressUnitBits()
 //-----------------------------------------------------------------------------
-QString MemoryMap::getAddressUnitBits() const
+QString MemoryMap::getAddressUnitBits(bool defaultIfEmpty /*= true*/) const
 {
+    if (addressUnitBits_.isEmpty() && defaultIfEmpty)
+    {
+        return QStringLiteral("8");
+    }
+
     return addressUnitBits_;
 }
 

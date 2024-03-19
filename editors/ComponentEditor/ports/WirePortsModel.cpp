@@ -219,6 +219,14 @@ bool WirePortsModel::isValidExpressionColumn(QModelIndex const& index) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: WirePortsModel::isPortTypeColumn()
+//-----------------------------------------------------------------------------
+bool WirePortsModel::isPortTypeColumn(QModelIndex const& index) const
+{
+    return index.column() == WirePortColumns::TYPE_NAME;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePortsModel::formattedExpressionForIndex()
 //-----------------------------------------------------------------------------
 QVariant WirePortsModel::formattedExpressionForIndex(QModelIndex const& index) const

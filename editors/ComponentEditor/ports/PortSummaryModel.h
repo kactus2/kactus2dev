@@ -99,6 +99,8 @@ protected:
      */
     bool isValidExpressionColumn(QModelIndex const& index) const final;
 
+    bool isPortTypeColumn(QModelIndex const& index) const final;
+
     /*!
      *  Gets the expression for the given index, or plain value if there is no expression.
      *

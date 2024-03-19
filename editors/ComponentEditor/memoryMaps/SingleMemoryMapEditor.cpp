@@ -17,6 +17,7 @@
 #include <editors/ComponentEditor/common/ExpressionEditor.h>
 #include <editors/ComponentEditor/memoryMaps/RemapModeReferenceEditor.h>
 #include <editors/ComponentEditor/memoryMaps/SubspaceMapsEditor.h>
+#include <editors/ComponentEditor/parameters/ComponentParameterModel.h>
 #include <KactusAPI/include/MemoryMapInterface.h>
 #include <KactusAPI/include/ModeReferenceInterface.h>
 
@@ -42,7 +43,7 @@ addressBlockEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, 
     mapInterface->getAddressBlockInterface(), memoryRemap->getMemoryBlocks(), this)),
 subspaceMapEditor_(new SubspaceMapsEditor(component, parameterFinder, expressionParser,
     mapInterface->getSubspaceMapInterface() , memoryRemap->getMemoryBlocks(), this)),
-addressUnitBitsEditor_(new QLineEdit(parent)),
+addressUnitBitsEditor_(new ExpressionEditor(parameterFinder, this)),
 isPresentEditor_(new ExpressionEditor(parameterFinder, this)),
 targetInterfaceLabel_(new QLabel(this)),
 remapStateSelector_(new ReferenceSelector(this)),
@@ -58,10 +59,21 @@ isMemoryRemap_(isMemoryRemap)
 
     mapInterface_->setMemoryMaps(component);
 
-    addressUnitBitsEditor_->setValidator
-        (new QRegularExpressionValidator(QRegularExpression("\\d*"), addressUnitBitsEditor_));
+    auto componentParametersModel = new ComponentParameterModel(parameterFinder, this);
+    componentParametersModel->setExpressionParser(expressionParser);
+
+    // Different parameter completers for different editors to avoid clashes.
+    auto isPresentParameterCompleter = new QCompleter(this);
+    isPresentParameterCompleter->setModel(componentParametersModel);
+
+    auto aubParameterCompleter = new QCompleter(this);
+    aubParameterCompleter->setModel(componentParametersModel);
 
     isPresentEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    isPresentEditor_->setAppendingCompleter(isPresentParameterCompleter);
+
+    addressUnitBitsEditor_->setFixedHeight(ExpressionEditor::DEFAULT_HEIGHT);
+    addressUnitBitsEditor_->setAppendingCompleter(aubParameterCompleter);
 
     remapStateSelector_->setProperty("mandatoryField", true);
 
@@ -149,6 +161,12 @@ void SingleMemoryMapEditor::connectSignals()
 
     connect(addressUnitBitsEditor_, SIGNAL(editingFinished()),
         this, SLOT(updateAddressUnitBits()), Qt::UniqueConnection);
+    connect(addressUnitBitsEditor_, SIGNAL(increaseReference(QString const&)),
+        this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(addressUnitBitsEditor_, SIGNAL(decreaseReference(QString const&)),
+        this, SIGNAL(decreaseReferences(QString const&)), Qt::UniqueConnection);
+    connect(addressUnitBitsEditor_, SIGNAL(editingFinished()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(addressUnitBitsEditor_, SIGNAL(editingFinished()), this, SIGNAL(graphicsChanged()), Qt::UniqueConnection);
 
     connect(isPresentEditor_, SIGNAL(increaseReference(QString const&)),
         this, SIGNAL(increaseReferences(QString const&)), Qt::UniqueConnection);
@@ -177,7 +195,8 @@ void SingleMemoryMapEditor::refresh()
     subspaceMapEditor_->refresh();
 
     refreshTargetBinding();
-    addressUnitBitsEditor_->setText(QString::fromStdString(mapInterface_->getAddressUnitBits(parentMapName_)));
+    addressUnitBitsEditor_->setExpression(QString::fromStdString(mapInterface_->getAddressUnitBitsExpression(parentMapName_)));
+    addressUnitBitsEditor_->setToolTip(QString::fromStdString(mapInterface_->getAddressUnitBitsValue(parentMapName_)));
 
     if (component()->getRevision() != Document::Revision::Std22)
     {
@@ -257,7 +276,7 @@ void SingleMemoryMapEditor::setupLayout()
     }
     else if (revision == Document::Revision::Std22)
     {
-        memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB]:"), addressUnitBitsEditor_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB], f(x):"), addressUnitBitsEditor_);
         memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);
 
         QGridLayout* layout = new QGridLayout();
@@ -344,12 +363,15 @@ void SingleMemoryMapEditor::refreshTargetBinding()
 //-----------------------------------------------------------------------------
 void SingleMemoryMapEditor::updateAddressUnitBits()
 {
-    mapInterface_->setAddressUnitBits(parentMapName_, addressUnitBitsEditor_->text().toStdString());
+    addressUnitBitsEditor_->finishEditingCurrentWord();
+
+    mapInterface_->setAddressUnitBits(parentMapName_, addressUnitBitsEditor_->getExpression().toStdString());
+    addressUnitBitsEditor_->setToolTip(QString::fromStdString(mapInterface_->getAddressUnitBitsValue(parentMapName_)));
 
     emit addressUnitBitsChanged();
     emit contentChanged();
 
-    emit assignNewAddressUnitBits(addressUnitBitsEditor_->text());
+    emit assignNewAddressUnitBits(addressUnitBitsEditor_->getExpression());
 }
 
 //-----------------------------------------------------------------------------

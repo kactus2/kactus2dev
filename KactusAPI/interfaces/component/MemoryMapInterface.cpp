@@ -449,15 +449,41 @@ bool MemoryMapInterface::setRemapState(std::string const& mapName, std::string c
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getAddressUnitBits()
 //-----------------------------------------------------------------------------
-std::string MemoryMapInterface::getAddressUnitBits(std::string const& mapName) const
+std::string MemoryMapInterface::getAddressUnitBitsExpression(std::string const& mapName) const
 {
     QSharedPointer<MemoryMap> map = getMemoryMap(mapName);
     if (map)
     {
-        return map->getAddressUnitBits().toStdString();
+        return map->getAddressUnitBits(false).toStdString();
     }
 
     return "";
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getAddressUnitBitsValue()
+//-----------------------------------------------------------------------------
+std::string MemoryMapInterface::getAddressUnitBitsValue(std::string const& mapName) const
+{
+    if (auto map = getMemoryMap(mapName))
+    {
+        return parseExpressionToBaseNumber(map->getAddressUnitBits(false), 0).toStdString();
+    }
+
+    return std::string();
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapInterface::getAddressUnitBitsFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string MemoryMapInterface::getAddressUnitBitsFormattedExpression(std::string const& mapName) const
+{
+    if (auto map = getMemoryMap(mapName))
+    {
+        return formattedValueFor(map->getAddressUnitBits(false)).toStdString();
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------

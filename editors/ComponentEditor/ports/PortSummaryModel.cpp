@@ -175,6 +175,14 @@ bool PortSummaryModel::isValidExpressionColumn(QModelIndex const& /*index*/) con
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortSummaryModel::isPortTypeColumn()
+//-----------------------------------------------------------------------------
+bool PortSummaryModel::isPortTypeColumn(QModelIndex const& index) const
+{
+    return false;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortSummaryModel::formattedExpressionForIndex()
 //-----------------------------------------------------------------------------
 QVariant PortSummaryModel::formattedExpressionForIndex(QModelIndex const& index) const

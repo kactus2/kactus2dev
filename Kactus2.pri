@@ -278,6 +278,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/ComponentEditor/ports/WirePortsModel.h \
     ./editors/ComponentEditor/ports/WirePortsFilter.h \
     ./editors/ComponentEditor/ports/WirePortsDelegate.h \
+    ./editors/ComponentEditor/ports/TypedPortsView.h \
     ./editors/ComponentEditor/ports/portsdelegate.h \
     ./editors/ComponentEditor/ports/portseditor.h \
     ./editors/ComponentEditor/ports/portsmodel.h \
@@ -894,8 +895,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h \
-    ./editors/MemoryDesigner/MemoryItemConstants.h
+    ./PythonAPI/extensions/IOCatcher.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1217,6 +1217,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/ComponentEditor/ports/WirePortsEditorFactory.cpp \
     ./editors/ComponentEditor/ports/WirePortsFilter.cpp \
     ./editors/ComponentEditor/ports/WirePortsModel.cpp \
+    ./editors/ComponentEditor/ports/TypedPortsView.cpp \
     ./editors/ComponentEditor/views/envidentifiereditor.cpp \
     ./editors/ComponentEditor/views/envidentifiersmodel.cpp \
     ./editors/ComponentEditor/views/vieweditor.cpp \
