@@ -306,6 +306,13 @@ protected:
 
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
 
+    /*!
+     *	Returns the shape of this item.
+     *  
+     * 	    @return The shape of this item as a QPainterPath.
+     */
+    QPainterPath shape() const override;
+
 private:
     //-----------------------------------------------------------------------------
     //! Selection type enumeration.
