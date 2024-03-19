@@ -31,6 +31,10 @@
 #include <KactusAPI/include/FileSetInterface.h>
 #include <KactusAPI/include/FileInterface.h>
 #include <KactusAPI/include/FileBuilderInterface.h>
+#include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/AbstractionTypeInterface.h>
+#include <KactusAPI/include/PortMapInterface.h>
+#include <KactusAPI/include/LibraryHandler.h>
 
 #include <IPXACTmodels/common/ConfigurableVLNVReference.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
@@ -39,6 +43,7 @@
 #include <IPXACTmodels/Component/Port.h>
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/MemoryMap.h>
+#include <IPXACTmodels/Component/PortMap.h>
 #include <IPXACTmodels/Component/AddressBlock.h>
 #include <IPXACTmodels/Component/MemoryBlockBase.h>
 #include <IPXACTmodels/Component/RegisterBase.h>
@@ -61,6 +66,8 @@
 
 
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+
+#include <editors/InterconnectGenerator/InterconnectGenerator.h>
 
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::PythonAPI()
@@ -224,6 +231,24 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
         messager_->showError(QStringLiteral("No generator found for format %1. Available options are: %2").arg(
             fileFormat, availableFormats.join(',')));
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PythonAPI::generateInterconnect()
+//-----------------------------------------------------------------------------
+void PythonAPI::generateInterconnect(std::string const& sInterconVLNV, std::string const& sDesignVLNV)
+{
+
+    InterconnectGenerator interconGen = InterconnectGenerator(library_, messager_);
+
+    VLNV interconVLNV = interconGen.generate(sDesignVLNV, sInterconVLNV);
+
+    QString xmlPath = KactusAPI::getDefaultLibraryPath() + QStringLiteral("/") + interconVLNV.toString(QStringLiteral("/")) +
+        QStringLiteral("/");
+
+    // Generate VHDL and Verilog RTL for Interconnect
+    generate("VHDL", interconVLNV.toString(QStringLiteral(":")).toStdString(), "", xmlPath.toStdString());
+    generate("Verilog", interconVLNV.toString(QStringLiteral(":")).toStdString(), "", xmlPath.toStdString());
 }
 
 //-----------------------------------------------------------------------------

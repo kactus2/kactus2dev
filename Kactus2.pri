@@ -797,6 +797,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./editors/HWDesign/undoCommands/HWComponentAddCommand.h \
     ./editors/HWDesign/undoCommands/InterfaceDeleteCommand.h \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.h \
+    ./editors/InterconnectGenerator/InterconnectGenerator.h \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.h \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.h \
@@ -1592,6 +1593,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./editors/HWDesign/undoCommands/PortPasteCommand.cpp \
     ./editors/HWDesign/undoCommands/ReplaceComponentCommand.cpp \
     ./editors/HWDesign/undoCommands/TopAdHocVisibilityChangeCommand.cpp \
+    ./editors/InterconnectGenerator/InterconnectGenerator.cpp \
     ./editors/MemoryDesigner/AddressBlockGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSegmentGraphicsItem.cpp \
     ./editors/MemoryDesigner/AddressSpaceGraphicsItem.cpp \
