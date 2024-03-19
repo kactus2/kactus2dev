@@ -69,6 +69,7 @@ MemoryConnectionAddressCalculator::ConnectionPathVariables MemoryConnectionAddre
                     middleChainedSpace.spaceConnectionBaseAddress_ = chainOffset;
 
                     newPathVariables.spaceChain_.append(middleChainedSpace);
+                    newPathVariables.isChainedSpaceConnection_ = true;
                 }
 
                 newPathVariables.baseAddressNumber_ = pathInterface->getBaseAddress().toULongLong();

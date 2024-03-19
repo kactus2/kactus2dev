@@ -25,6 +25,7 @@ class MemoryMapGraphicsItem;
 #include <QGraphicsRectItem>
 #include <QSet>
 #include <QCursor>
+#include <QMultiMap>
 
 //-----------------------------------------------------------------------------
 //! MemoryColumn class.
@@ -70,7 +71,7 @@ public:
      *
      *      @return Map containing y-coordinate, main memory graphics item pairs.
      */
-    QMap<qreal, MainMemoryGraphicsItem*> getGraphicsItemInOrder() const;
+    QMultiMap<qreal, MainMemoryGraphicsItem*> getGraphicsItemInOrder() const;
 
     /*!
      *  Check if the memory column contains memory map graphics items.
@@ -165,6 +166,27 @@ public:
      */
     bool itemOverlapsAnotherColumnItem(MainMemoryGraphicsItem* memoryItem, QRectF itemRectangle, int lineWidth)
         const;
+
+    /*!
+     *  Check if the item overlaps another placed column item.
+     *	
+     *      @param [in] memoryItem      The selected memory item.
+     *      @param [in] itemRectangle   Scene rectangle of the memory item.
+     *      @param [in] lineWidth       Line width of the rectangle.
+     *      @param [in] placedItems     List of the placed memory items.
+     *
+     *      @return True, if the item overlaps another placed item, false otherwise.
+     */
+    bool itemOverlapsAnotherPlacedColumnItem(MainMemoryGraphicsItem const* memoryItem, QRectF const& itemRectangle, int lineWidth, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems)
+        const;
+
+    /*!
+     *  Compress the unconnected memory items.
+     *	
+     *      @param [in] compressMemoryItems     Flag for compressing the memory items.
+     *      @param [in] placedItems             List of the placed memory items.
+     */
+    void compressUnconnectedMemoryItems(bool compressMemoryItems, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems);
 
 protected:
 

@@ -563,3 +563,156 @@ quint64 MainMemoryGraphicsItem::getHighestConnectedLastAddress() const
 
     return highestLastAddress;
 }
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::getUncutCoordinatesFromSet()
+//-----------------------------------------------------------------------------
+QVector<qreal> MainMemoryGraphicsItem::getUncutCoordinatesFromSet(QVector<MainMemoryGraphicsItem*>& visitedItems, QVector<MemoryConnectionItem*>& visitedConnections)
+{
+    visitedItems.append(this);
+
+    QVector<qreal> uncutCoordinates;
+    for (auto coordinate : getUnCutCoordinates())
+    {
+        if (uncutCoordinates.contains(coordinate) == false)
+        {
+            uncutCoordinates.append(coordinate);
+        }
+    }
+
+    QMultiMapIterator connectionIterator(getMemoryConnections());
+    while (connectionIterator.hasNext())
+    {
+        connectionIterator.next();
+        MemoryConnectionItem* connectionItem = connectionIterator.value();
+
+        if (visitedConnections.contains(connectionItem) == false)
+        {
+            visitedConnections.append(connectionItem);
+
+            if (auto connectionTop = connectionItem->sceneBoundingRect().top(); uncutCoordinates.contains(connectionTop) == false)
+            {
+                uncutCoordinates.append(connectionTop);
+            }
+            if (auto connectionBottom = connectionItem->sceneBoundingRect().bottom(); uncutCoordinates.contains(connectionBottom) == false)
+            {
+                uncutCoordinates.append(connectionBottom);
+            }
+
+            auto startItem = connectionItem->getConnectionStartItem();
+            auto endItem = connectionItem->getConnectionEndItem();
+            if (startItem && startItem != this && !visitedItems.contains(startItem))
+            {
+                for (auto coordinate : startItem->getUncutCoordinatesFromSet(visitedItems, visitedConnections))
+                {
+                    if (uncutCoordinates.contains(coordinate) == false)
+                    {
+                        uncutCoordinates.append(coordinate);
+                    }
+                }
+            }
+            if (endItem && endItem != this && !visitedItems.contains(endItem))
+            {
+                for (auto coordinate : endItem->getUncutCoordinatesFromSet(visitedItems, visitedConnections))
+                {
+                    if (uncutCoordinates.contains(coordinate) == false)
+                    {
+                        uncutCoordinates.append(coordinate);
+                    }
+                }
+            }
+        }
+    }
+
+    std::sort(uncutCoordinates.begin(), uncutCoordinates.end());
+    return uncutCoordinates;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::compressConnectionSet()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::compressConnectionSet(QVector<MainMemoryGraphicsItem *>& visitedItems, QVector<MemoryConnectionItem const*>& visitedConnections, QVector<qreal> unCutCoordinates, bool compressMemoryItems)
+{
+    if (isCompressed() || visitedItems.contains(this))
+    {
+        return;
+    }
+
+    visitedItems.append(this);
+
+    qreal newHeight = 0;
+    if (getMemoryConnections().isEmpty())
+    {
+        newHeight = condenseChildItems(getBaseAddress(), getLastAddress(), getMinimumHeightForSubItems(), compressMemoryItems);
+    }
+    else
+    {
+        for (auto memoryItem : getMemoryConnections())
+        {
+            if (visitedConnections.contains(memoryItem))
+            {
+                continue;
+            }
+
+            visitedConnections.append(memoryItem);
+
+
+        }
+    }
+
+    if (newHeight > 0)
+    {
+        condense(newHeight);
+
+        setCompressed(true);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::extendMemoryItem()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::extendMemoryItem()
+{
+    auto firstConnection = getFirstConnection();
+    auto lastConnection = getLastConnection();
+
+    if (firstConnection && lastConnection)
+    {
+        QPointF itemTopLeft = boundingRect().topLeft();
+        QPointF itemLowRight = boundingRect().bottomRight();
+
+        int lineWidth = pen().width();
+
+        qreal connectionTop =
+            mapFromItem(firstConnection, firstConnection->boundingRect().topLeft()).y() + lineWidth;
+        qreal connectionLow =
+            mapFromItem(lastConnection, lastConnection->boundingRect().bottomRight()).y();
+
+        bool connectionsAreBeyond = false;
+
+        qreal extensionTop = itemLowRight.y();
+        if (connectionTop < itemTopLeft.y())
+        {
+            extensionTop = connectionTop;
+            connectionsAreBeyond = true;
+        }
+
+        qreal extensionLow = itemTopLeft.y();
+        if (connectionLow > itemLowRight.y())
+        {
+            extensionLow = connectionLow;
+            connectionsAreBeyond = true;
+        }
+
+        if (connectionsAreBeyond)
+        {
+            qreal positionX = itemTopLeft.x() + lineWidth;
+            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - lineWidth;
+            qreal positionY = extensionTop;
+            qreal extensionHeight = extensionLow - extensionTop;
+
+            auto extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY, extensionWidth, extensionHeight, getContainingInstance(), this);
+            setExtensionItem(extensionItem);
+        }
+    }
+}

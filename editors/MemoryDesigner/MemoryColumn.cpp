@@ -85,9 +85,9 @@ MainMemoryGraphicsItem* MemoryColumn::findGraphicsItemByMemoryItem(
 //-----------------------------------------------------------------------------
 // Function: MemoryColumn::getGraphicsItemInOrder()
 //-----------------------------------------------------------------------------
-QMap<qreal, MainMemoryGraphicsItem*> MemoryColumn::getGraphicsItemInOrder() const
+QMultiMap<qreal, MainMemoryGraphicsItem*> MemoryColumn::getGraphicsItemInOrder() const
 {
-    QMap<qreal, MainMemoryGraphicsItem*> orderedGraphicsItems;
+    QMultiMap<qreal, MainMemoryGraphicsItem*> orderedGraphicsItems;
 
     foreach (QGraphicsItem* graphicsItem, getItems())
     {
@@ -178,7 +178,7 @@ void MemoryColumn::compressGraphicsItems(bool condenseMemoryItems, qreal& spaceY
 
             qreal memoryItemLowBefore = memoryItem->getLowestPointOfConnectedItems();
 
-            memoryItem->condenseItemAndChildItems(movedConnectionItems, condenseMemoryItems);
+            memoryItem->condenseItemAndChildItems(condenseMemoryItems);
 
             extendMemoryItem(originalItem, spaceYPlacement);
 
@@ -480,4 +480,44 @@ bool MemoryColumn::itemOverlapsAnotherColumnItem(MainMemoryGraphicsItem* memoryI
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::itemOverlapsAnotherPlacedColumnItem()
+//-----------------------------------------------------------------------------
+bool MemoryColumn::itemOverlapsAnotherPlacedColumnItem(MainMemoryGraphicsItem const* memoryItem,
+    QRectF const& itemRectangle,
+    int lineWidth,
+    QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems) const
+{
+    foreach(MainMemoryGraphicsItem * comparisonItem, getGraphicsItemInOrder())
+    {
+        if (placedItems->contains(comparisonItem) && comparisonItem != memoryItem)
+        {
+            QRectF comparisonRectangle = comparisonItem->getSceneRectangleWithSubItems();
+            int comparisonLineWidth = comparisonItem->pen().width();
+
+            if (MemoryDesignerConstants::itemOverlapsAnotherItem(
+                itemRectangle, lineWidth, comparisonRectangle, comparisonLineWidth))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryColumn::compressUnconnectedMemoryItems()
+//-----------------------------------------------------------------------------
+void MemoryColumn::compressUnconnectedMemoryItems(bool compressMemoryItems, QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems)
+{
+    for (auto graphicsItem : getGraphicsItemInOrder())
+    {
+        if (auto memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem); memoryItem && placedItems->contains(memoryItem) == false)
+        {
+            memoryItem->condenseItemAndChildItems(compressMemoryItems);
+        }
+    }
 }

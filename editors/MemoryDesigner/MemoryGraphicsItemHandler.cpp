@@ -160,10 +160,9 @@ void MemoryGraphicsItemHandler::createMemoryItems(QSharedPointer<ConnectivityGra
     QVector<QString> memoryMapIdentifiers;
     memoryMapIdentifiers.append(QStringLiteral("Memory maps"));
 
-    for (int i = 0; i < connectionGraph->getInstances().size(); ++i)
+    for (auto componentInstance : connectionGraph->getInstances())
     {
-        QSharedPointer<ConnectivityComponent const> componentInstance = connectionGraph->getInstances().at(i);
-        foreach (QSharedPointer<MemoryItem> memoryItem, componentInstance->getMemories())
+        for (auto memoryItem : componentInstance->getMemories())
         {
             if (memoryItem->getType().compare(
                 MemoryDesignerConstants::ADDRESSSPACE_TYPE, Qt::CaseInsensitive) == 0)

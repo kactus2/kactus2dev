@@ -27,7 +27,7 @@
 
 namespace AddressSpaceItemConstants
 {
-    const int MINIMUMSUBITEMHEIGHT = 2 * MemoryDesignerConstants::RANGEINTERVAL;
+    const int MINIMUMSUBITEMHEIGHT = 3 * MemoryDesignerConstants::RANGEINTERVAL;
 };
 
 //-----------------------------------------------------------------------------
@@ -122,8 +122,7 @@ MemoryDesignerChildGraphicsItem* AddressSpaceGraphicsItem::createEmptySubItem(qu
 //-----------------------------------------------------------------------------
 // Function: AddressSpaceGraphicsItem::condenseSpaceItem()
 //-----------------------------------------------------------------------------
-void AddressSpaceGraphicsItem::condenseItemAndChildItems(
-    QSharedPointer<QVector<MemoryConnectionItem*> > /*movedConnections*/, bool condenseMemoryItems)
+void AddressSpaceGraphicsItem::condenseItemAndChildItems(bool condenseMemoryItems)
 {
     if (!isCompressed())
     {
@@ -585,4 +584,12 @@ bool AddressSpaceGraphicsItem::hasProblemConnection(
     }
 
     return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressSpaceGraphicsItem::getMinimumHeightForSubItems()
+//-----------------------------------------------------------------------------
+qreal AddressSpaceGraphicsItem::getMinimumHeightForSubItems() const
+{
+    return AddressSpaceItemConstants::MINIMUMSUBITEMHEIGHT;
 }

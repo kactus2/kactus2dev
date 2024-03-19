@@ -64,11 +64,9 @@ public:
     /*!
      *  Compress the sub items contained within the address space and the space item.
      *
-     *      @param [in] movedConnections        Connection items that have already been moved.
      *      @param [in] condenseMemoryItems     Flag for condensing memory items.
      */
-    virtual void condenseItemAndChildItems(QSharedPointer<QVector<MemoryConnectionItem*> > movedConnections,
-        bool condenseMemoryItems) override;
+    virtual void condenseItemAndChildItems(bool condenseMemoryItems) override;
 
     /*!
      *  Get all the address space graphics items connected to the origin item.
@@ -170,6 +168,13 @@ private:
      *      @return True, if a problem connection is found, false otherwise.
      */
     bool hasProblemConnection(QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
+
+    /*!
+     *  Get the minimum height required to display for the memory item.
+     *	
+     *      @return The minimum height required to display the memory item.
+     */
+    virtual qreal getMinimumHeightForSubItems() const override final;
 
     //-----------------------------------------------------------------------------
     // Data.
