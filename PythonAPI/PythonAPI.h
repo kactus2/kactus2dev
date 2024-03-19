@@ -170,6 +170,8 @@ public:
      void generate(std::string const& format, std::string const& vlnv, std::string const& viewName,
         std::string const& outputDirectory) const;
 
+     void generateInterconnect(std::string const& sInterconVLNV, std::string const& sDesignVLNV);
+
     /*!
      *  Get the number of files in the library.
      *
