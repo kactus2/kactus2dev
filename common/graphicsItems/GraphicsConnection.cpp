@@ -41,6 +41,7 @@ GraphicsConnection::GraphicsConnection(ConnectionEndpoint* endpoint1, Connection
     route_(route)
 {
     setItemSettings();
+    setAcceptHoverEvents(true);
 
     if (autoConnect)
     {
@@ -530,6 +531,62 @@ void GraphicsConnection::paint(QPainter* painter, QStyleOptionGraphicsItem const
 }
 
 //-----------------------------------------------------------------------------
+// Function: GraphicsConnection::hoverEnterEvent()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::hoverEnterEvent(QGraphicsSceneHoverEvent* hoverEvent)
+{
+    hoveredAbove_ = true;
+    setDefaultColor();
+    setZValue(-500); // Move current connection up.
+
+    auto hoverPosX = hoverEvent->pos().x();
+    auto hoverPosY = hoverEvent->pos().y();
+
+    // Look for intersections at and 2x2 pixels around hover position. Helps with highlighting 
+    // items on top of each other.
+    auto const& intersectingItems = parent_->items(hoverPosX, hoverPosY, static_cast<qreal>(2), static_cast<qreal>(2), 
+        Qt::IntersectsItemShape, Qt::DescendingOrder);
+
+    for (auto intersectingItem : intersectingItems)
+    {
+        // Highlight item and set topmost if graphics connection.
+        if (auto graphicsConnection = dynamic_cast<GraphicsConnection*>(intersectingItem))
+        {
+            graphicsConnection->setZValue(-500);
+            graphicsConnection->setHovered(true);
+            graphicsConnection->setDefaultColor();
+        }
+    }
+
+    QGraphicsPathItem::hoverEnterEvent(hoverEvent);
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::hoverLeaveEvent()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::hoverLeaveEvent(QGraphicsSceneHoverEvent* hoverEvent)
+{
+    hoveredAbove_ = false;
+    setDefaultColor();
+    setZValue(-1000); // Move current connection back to original level.
+
+    for (auto intersectingItem : parent_->items(shape(), Qt::IntersectsItemShape, Qt::DescendingOrder))
+    {
+        if (auto graphicsConnection = dynamic_cast<GraphicsConnection*>(intersectingItem))
+        {
+            bool connectionIsSelected = graphicsConnection->isSelected();
+
+            // Reset z-value, if not selected.
+            graphicsConnection->setZValue(connectionIsSelected ? -500 : -1000);
+            graphicsConnection->setHovered(false);
+            graphicsConnection->setDefaultColor();
+        }
+    }
+
+    QGraphicsPathItem::hoverLeaveEvent(hoverEvent);
+}
+
+//-----------------------------------------------------------------------------
 // Function: GraphicsConnection::setItemSettings()
 //-----------------------------------------------------------------------------
 void GraphicsConnection::setItemSettings()
@@ -666,6 +723,7 @@ QVariant GraphicsConnection::itemChange(GraphicsItemChange change, const QVarian
     if (change == ItemSelectedHasChanged)
     {
         bool selected = value.toBool();
+        setZValue(selected ? -500 : -1000); // Move up, if selected, down if unselected.
         setDefaultColor();
 
         if (endpoint1_ != nullptr)
@@ -745,6 +803,10 @@ void GraphicsConnection::setDefaultColor()
     if (isSelected())
     {
         newPen.setColor(KactusColors::DIAGRAM_SELECTION);
+    }
+    else if (hoveredAbove_)
+    {
+        newPen.setColor(KactusColors::MASTER_INTERFACE);
     }
     else if (invalid_)
     {
@@ -1093,6 +1155,22 @@ void GraphicsConnection::setEndpoint2(ConnectionEndpoint* endpoint2)
 bool GraphicsConnection::isInvalid() const
 {
     return invalid_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::setHovered()
+//-----------------------------------------------------------------------------
+void GraphicsConnection::setHovered(bool hovered)
+{
+    hoveredAbove_ = hovered;
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsConnection::getHovered()
+//-----------------------------------------------------------------------------
+bool GraphicsConnection::getHovered() const
+{
+    return hoveredAbove_;
 }
 
 //-----------------------------------------------------------------------------
