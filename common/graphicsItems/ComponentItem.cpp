@@ -40,6 +40,7 @@ QGraphicsRectItem(parent),
     setFlag(ItemSendsGeometryChanges);
     setFlag(ItemIsSelectable);
     setFlag(ItemSendsScenePositionChanges);
+    setAcceptHoverEvents(true); // Prevents hover events from propagating to interconnections beneath.
 
     setRect(size);
     setPen(QPen(Qt::black, 0));
