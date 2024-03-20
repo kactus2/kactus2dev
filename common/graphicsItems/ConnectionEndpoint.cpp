@@ -363,7 +363,12 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
         return false;
     }
 
-    return true;
+    // Prevent double connections
+    return std::none_of(other->getConnections().cbegin(), other->getConnections().cend(),
+        [this](GraphicsConnection const* connection)
+        {
+            return connection->endpoint1() == this || connection->endpoint2() == this;
+        });
 }
 
 //-----------------------------------------------------------------------------
