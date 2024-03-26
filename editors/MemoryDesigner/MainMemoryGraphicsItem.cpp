@@ -49,14 +49,6 @@ extensionItem_(0)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::~MainMemoryGraphicsItem()
-//-----------------------------------------------------------------------------
-MainMemoryGraphicsItem::~MainMemoryGraphicsItem()
-{
-
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::getInstanceNameLabel()
 //-----------------------------------------------------------------------------
 QGraphicsTextItem* MainMemoryGraphicsItem::getInstanceNameLabel() const
@@ -97,60 +89,6 @@ void MainMemoryGraphicsItem::addMemoryConnection(MemoryConnectionItem* connectio
     MemoryDesignerGraphicsItem::addMemoryConnection(connectionItem);
 
     addConnectionToSubItems(connectionItem);
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::reDrawConnections()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::reDrawConnections()
-{
-    foreach (MemoryConnectionItem* connection, getMemoryConnections())
-    {
-        if (connection->getConnectionStartItem() == this)
-        {
-            connection->reDrawConnection();
-            connection->repositionCollidingRangeLabels();
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::getSceneEndPoint()
-//-----------------------------------------------------------------------------
-quint64 MainMemoryGraphicsItem::getSceneEndPoint() const
-{
-    quint64 sceneEndPoint = sceneBoundingRect().bottom();
-
-    QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
-    while (connectionIterator.hasNext())
-    {
-        connectionIterator.next();
-        MemoryConnectionItem* connectionItem = connectionIterator.value();
-        if (connectionItem)
-        {
-            quint64 connectionEndPoint = connectionItem->getSceneEndPoint();
-            if (connectionEndPoint > sceneEndPoint)
-            {
-                sceneEndPoint = connectionEndPoint;
-            }
-        }
-    }
-
-    quint64 heightWithOverlappingSubItem = sceneBoundingRect().bottom() + getSubItemHeightAddition();
-    if (heightWithOverlappingSubItem > sceneEndPoint)
-    {
-        sceneEndPoint = heightWithOverlappingSubItem;
-    }
-
-    return sceneEndPoint;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::changeChildItemRanges()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::changeChildItemRanges(quint64 offset)
-{
-    SubMemoryLayout::changeChildItemRanges(offset);
 }
 
 //-----------------------------------------------------------------------------
@@ -255,21 +193,6 @@ bool MainMemoryGraphicsItem::hasExtensionItem() const
     else
     {
         return false;
-    }
-}
-
-//-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::hideFirstAndLastSegmentRange()
-{
-    if (getSubMemoryItems().size() > 0)
-    {
-        MemoryDesignerChildGraphicsItem* firstSubItem = getSubMemoryItems().first();
-        MemoryDesignerChildGraphicsItem* lastSubItem = getSubMemoryItems().last();
-
-        firstSubItem->hideStartRangeLabel();
-        lastSubItem->hideEndRangeLabel();
     }
 }
 
@@ -400,21 +323,6 @@ QVector<MainMemoryGraphicsItem*> MainMemoryGraphicsItem::getChainedSpaceItems() 
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::compressToUnCutAddresses()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-    bool memoryItemsAreCompressed)
-{
-    if (!subItemsAreFiltered())
-    {
-        compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
-    }
-
-    MemoryDesignerGraphicsItem::compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
-    setCompressed(true);
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::compressToUnCutCoordinates()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates, const qreal CUTMODIFIER,
@@ -451,7 +359,7 @@ QMultiMap<quint64, MemoryConnectionItem*> MainMemoryGraphicsItem::getAllConnecti
     while (connectionIterator.hasNext())
     {
         connectionIterator.next();
-        MemoryConnectionItem* currentConnection = connectionIterator.value();
+        auto currentConnection = connectionIterator.value();
 
         MainMemoryGraphicsItem* connectedItem = currentConnection->getConnectionStartItem();
         if (connectedItem == this)
@@ -516,8 +424,7 @@ qreal MainMemoryGraphicsItem::getLowestPointOfConnectedItems()
     {
         connectionIterator.next();
 
-        MemoryConnectionItem* connectionItem = connectionIterator.value();
-        
+        auto connectionItem = connectionIterator.value();
         qreal connectionLowPoint = connectionItem->getConnectionLowPoint(this);
         if (connectionLowPoint > lowestPoint)
         {
@@ -629,46 +536,6 @@ QVector<qreal> MainMemoryGraphicsItem::getUncutCoordinatesFromSet(QVector<MainMe
 }
 
 //-----------------------------------------------------------------------------
-// Function: MainMemoryGraphicsItem::compressConnectionSet()
-//-----------------------------------------------------------------------------
-void MainMemoryGraphicsItem::compressConnectionSet(QVector<MainMemoryGraphicsItem *>& visitedItems, QVector<MemoryConnectionItem const*>& visitedConnections, QVector<qreal> unCutCoordinates, bool compressMemoryItems)
-{
-    if (isCompressed() || visitedItems.contains(this))
-    {
-        return;
-    }
-
-    visitedItems.append(this);
-
-    qreal newHeight = 0;
-    if (getMemoryConnections().isEmpty())
-    {
-        newHeight = condenseChildItems(getBaseAddress(), getLastAddress(), getMinimumHeightForSubItems(), compressMemoryItems);
-    }
-    else
-    {
-        for (auto memoryItem : getMemoryConnections())
-        {
-            if (visitedConnections.contains(memoryItem))
-            {
-                continue;
-            }
-
-            visitedConnections.append(memoryItem);
-
-
-        }
-    }
-
-    if (newHeight > 0)
-    {
-        condense(newHeight);
-
-        setCompressed(true);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MainMemoryGraphicsItem::extendMemoryItem()
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::extendMemoryItem()
@@ -713,6 +580,31 @@ void MainMemoryGraphicsItem::extendMemoryItem()
 
             auto extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY, extensionWidth, extensionHeight, getContainingInstance(), this);
             setExtensionItem(extensionItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainMemoryGraphicsItem::compressItemAndChildItems()
+//-----------------------------------------------------------------------------
+void MainMemoryGraphicsItem::compressItemAndChildItems(bool compressMemoryItems)
+{
+    if (!isCompressed())
+    {
+        qreal memoryMapNewHeight = 0;
+        qreal subItemHeight = getMinimumHeightForSubItems();
+
+        if (getMemoryConnections().isEmpty())
+        {
+            memoryMapNewHeight =
+                compressChildItems(getBaseAddress(), getLastAddress(), subItemHeight, compressMemoryItems);
+        }
+
+        if (memoryMapNewHeight > 0)
+        {
+            condense(memoryMapNewHeight);
+
+            setCompressed(true);
         }
     }
 }

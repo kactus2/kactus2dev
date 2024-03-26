@@ -106,16 +106,6 @@ public:
     QVector<qreal> getUnCutCoordinates() const;
 
     /*!
-     *  Compress the contained sub memory items to contain the retained addresses.
-     *
-     *      @param [in] unCutAddresses              The retained addresses.
-     *      @param [in] CUTMODIFIER                 Modifier for the cut area.
-     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
-     */
-    void compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-        bool memoryItemsAreCompressed);
-
-    /*!
      *  Compress the contained sub memory items to contain the retained coordinates.
      *
      *      @param [in] unCutCoordinates            The retained coordinates.
@@ -175,7 +165,7 @@ protected:
      *
      *      @return The total height of the condensed sub items.
      */
-    qreal condenseChildItems(quint64 itemBaseAddress, quint64 itemLastAddress, qreal minimumSubItemHeight,
+    qreal compressChildItems(quint64 itemBaseAddress, quint64 itemLastAddress, qreal minimumSubItemHeight,
         bool memoryItemsAreCondensed);
 
     /*!
@@ -186,7 +176,7 @@ protected:
      *      @param [in] positionY                   Y-coordinate for the sub item.
      *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
      */
-    quint64 condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
+    quint64 compressSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
         quint64 positionY, bool memoryItemsAreCondensed);
 
 private:
