@@ -239,6 +239,20 @@ public:
     bool isInvalid() const;
 
     /*!
+     *	Set hovering flag indicating if the mouse is being hovered above the connection item.
+     *  
+     *      @param [in] hovered     Flag indicating if currently hovering.
+     */
+    void setHovered(bool hovered);
+
+    /*!
+     *	Get the current mouse hover status.
+     *  
+     * 	    @return True, if the mouse is hovering above the item, otherwise false.
+     */
+    bool getHovered() const;
+
+    /*!
      *  Returns true if the connection uses the default name.
      */
     bool hasDefaultName() const;
@@ -276,7 +290,28 @@ protected:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
+    /*!
+     *	Called when the mouse starts to hover above the connection item.
+     *  
+     *      @param [in] hoverEvent     The hover event.
+     */
+    virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* hoverEvent);
+    
+    /*!
+     *	Called when the mouse stops hovering above the connection item.
+     *
+     *      @param [in] hoverEvent     The hover event.
+     */
+    virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* hoverEvent);
+
     QVariant itemChange(GraphicsItemChange change, const QVariant &value);
+
+    /*!
+     *	Returns the shape of this item.
+     *  
+     * 	    @return The shape of this item as a QPainterPath.
+     */
+    QPainterPath shape() const override;
 
 private:
     //-----------------------------------------------------------------------------
@@ -551,6 +586,9 @@ private:
 
     //! If true, connection is being moved.
     bool positionUpdateInProcess_ = false;
+
+    //! If true, mouse is being hovered above connection.
+    bool hoveredAbove_ = false;
 };
 
 //-----------------------------------------------------------------------------

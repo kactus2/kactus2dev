@@ -385,6 +385,11 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
 
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
+    // Allow base class event handler to convert move event to hover event.
+    else
+    {
+        QGraphicsScene::mouseMoveEvent(mouseEvent);
+    }
 }
 
 //-----------------------------------------------------------------------------
