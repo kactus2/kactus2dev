@@ -5,8 +5,10 @@
 
 HEADERS += ./PythonAPI.h \
     ./pythonapi_global.h \
-    ../common/validators/LibraryPathValidator/librarypathvalidator.h 
+    ../common/validators/LibraryPathValidator/librarypathvalidator.h \
+    ../editors/InterconnectGenerator/InterconnectGenerator.h
 
 SOURCES += ./PythonAPI.cpp \
     ../common/validators/LibraryPathValidator/librarypathvalidator.cpp \
+    ../editors/InterconnectGenerator/InterconnectGenerator.cpp \
     ./PythonAPI_wrap.cxx

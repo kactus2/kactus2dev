@@ -39,6 +39,7 @@
 #include "../KactusAPI/include/PortAbstractionInterface.h"
 #include "../KactusAPI/include/PortMapInterface.h"
 #include "../KactusAPI/include/BusInterfaceInterface.h"
+#include "../editors/InterconnectGenerator/InterconnectGenerator.h"
 %}
 
 
@@ -73,3 +74,4 @@ namespace std {
 %include "../KactusAPI/include/PortAbstractionInterface.h"
 %include "../KactusAPI/include/PortMapInterface.h"
 %include "../KactusAPI/include/BusInterfaceInterface.h"
+%include "../editors/InterconnectGenerator/InterconnectGenerator.h"
