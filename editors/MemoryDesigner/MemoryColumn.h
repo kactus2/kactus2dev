@@ -49,7 +49,7 @@ public:
     /*!
      *  The destructor.
      */
-    virtual ~MemoryColumn();
+    virtual ~MemoryColumn() = default;
 
     /*!
      *  Find a graphics item by a given memory item.
@@ -96,32 +96,11 @@ public:
     qreal getMaximumNeededChangeInWidth() const;
 
     /*!
-     *  Compress graphics items contained within.
-     *
-     *      @param [in] condenseMemoryItems     Value for compressing graphics items.
-     *      @param [in] spaceYPlacement         Y-coordinate of the address space graphics items.
-     *      @param [in] spaceColumn             Column containing address space graphics items.
-     *      @param [in] placedSpaceItems        List of the placed address space graphics items.
-     *      @param [in] movedConnectionItems    List of already moved connections.
-     */
-    void compressGraphicsItems(bool condenseMemoryItems, qreal& spaceYPlacement, MemoryColumn* spaceColumn,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        QSharedPointer<QVector<MemoryConnectionItem*> > movedConnectionItems);
-
-    /*!
      *  Move the unconnected memory items to the bottom of the column.
      *
      *      @param [in] placedItems     List of the connected items of the column.
      */
-    void moveUnconnectedMemoryItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems);
-
-    /*!
-     *  Move a memory graphics item.
-     *
-     *      @param [in] memoryItem          The selected memory graphics item.
-     *      @param [in] currentPosition     The new y-coordinate for the graphics item.
-     */
-    void setGraphicsItemPosition(MainMemoryGraphicsItem* memoryItem, qreal currentPosition);
+    void moveUnconnectedMemoryItems(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems) const;
 
     /*!
      *  Check if a memory map overlaps within this column.
@@ -137,35 +116,9 @@ public:
      *      @return True if the memory map overlaps another item in this column, false otherwise.
      */
     bool memoryMapOverlapsInColumn(quint64 connectionBaseAddress, quint64 connectionLastAddress,
-        MainMemoryGraphicsItem* memoryGraphicsItem, QRectF memoryItemRect, int memoryPenWidth,
+        MainMemoryGraphicsItem const* memoryGraphicsItem, QRectF memoryItemRect, int memoryPenWidth,
         QVector<MainMemoryGraphicsItem*> connectedSpaceItems,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMaps) const;
-
-    /*!
-     *  Check if a main memory graphics item overlaps another item in this column.
-     *
-     *      @param [in] itemBaseAddress         Base address of the selected memory item.
-     *      @param [in] itemLastAddress         Last address of the selected memory item.
-     *      @param [in] memoryItemRect          Bounding rectangle of the selected memory item.
-     *      @param [in] memoryPenWidth          Line width of the selected memory item.
-     *      @param [in] comparisonMemoryItem    Memory item being compared to.
-     *
-     *      @return True, if the memory map items overlap, false otherwise.
-     */
-    bool itemOverlapsAnotherItem(quint64 itemBaseAddress, quint64 itemLastAddress, QRectF memoryItemRect,
-        int memoryPenWidth, MainMemoryGraphicsItem* comparisonMemoryItem) const;
-
-    /*!
-     *  Check if the selected item overlaps another main graphics item in this column.
-     *
-     *      @param [in] memoryItem      The selected memory graphics item.
-     *      @param [in] itemRectangle   Rectangle of the selected item.
-     *      @param [in] lineWidth       Line width of the selected item.
-     *
-     *      @return True if the selected item overlaps another main graphics item, false otherwise.
-     */
-    bool itemOverlapsAnotherColumnItem(MainMemoryGraphicsItem* memoryItem, QRectF itemRectangle, int lineWidth)
-        const;
 
     /*!
      *  Check if the item overlaps another placed column item.
@@ -204,14 +157,6 @@ private:
     MemoryColumn& operator=(MemoryColumn const& rhs);
 
     /*!
-     *  Construct a memory graphics extension for the selected memory item.
-     *
-     *      @param [in] graphicsItem        The selected memory graphics item.
-     *      @param [in] spaceYPlacement     Y-coordinate of the graphics item.
-     */
-    void extendMemoryItem(MainMemoryGraphicsItem* graphicsItem, qreal& spacePlacementY);
-
-    /*!
      *  Get the position for the unconnected memory items.
      *
      *      @param [in] placedItems     List of the placed memory graphics items.
@@ -219,15 +164,6 @@ private:
      *      @return Y-coordinate for the unconnected memory items.
      */
     quint64 getUnconnectedItemPosition(QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems) const;
-
-    /*!
-     *  Get the first address space graphics item connected the memory item.
-     *
-     *      @param [in] memoryItem  The selected memory item.
-     *
-     *      @return The first connected address space graphics item.
-     */
-    MainMemoryGraphicsItem* getFirstConnectedAddressSpaceItem(MainMemoryGraphicsItem* memoryItem);
 };
 
 //-----------------------------------------------------------------------------

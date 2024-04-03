@@ -59,13 +59,6 @@ public:
     int type() const { return Type; }
 
     /*!
-     *  Compress the item and the contained sub items.
-     *
-     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
-     */
-    virtual void condenseItemAndChildItems(bool condenseMemoryItems);
-
-    /*!
      *  Change the width of this item and the contained register graphics items.
      *
      *      @param [in] widthChange     The change in width.
@@ -104,7 +97,7 @@ private:
      *      @return The created address block graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createNewSubItem(QSharedPointer<MemoryItem const> subMemoryItem,
-        bool isEmpty);
+        bool isEmpty) override;
 
     /*!
      *  Get the name of the address block containing the selected register.

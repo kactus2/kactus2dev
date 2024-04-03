@@ -173,16 +173,6 @@ public:
     virtual void changeAddressRange(quint64 offset);
 
     /*!
-     *  Compress this item to contain the selected addresses.
-     *
-     *      @param [in] uncutAddresses              The addresses that remain after the compression.
-     *      @param [in] CUTMODIFIER                 Modifier for the cut areas.
-     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
-     */
-    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-        bool memoryItemsAreCompressed);
-
-    /*!
      *  Compress this item to contain the selected coordinates.
      *
      *      @param [in] unCutCoordinates            Coordinates that remain after the compression.

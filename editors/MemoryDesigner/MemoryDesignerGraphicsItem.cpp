@@ -399,56 +399,6 @@ void MemoryDesignerGraphicsItem::changeAddressRange(quint64 offset)
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryDesignerGraphicsItem::compressToUnCutAddresses()
-//-----------------------------------------------------------------------------
-void MemoryDesignerGraphicsItem::compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-    bool memoryItemsAreCompressed)
-{
-    quint64 cutArea = 0;
-    
-    quint64 baseAddress = getBaseAddress();
-    quint64 lastAddress = getLastAddress();
-
-    quint64 beginArea = unCutAddresses.first();
-    foreach (quint64 endArea, unCutAddresses)
-    {
-        if (beginArea >= baseAddress && endArea <= lastAddress)
-        {
-            quint64 addressDifference = endArea - beginArea;
-            qint64 singleCut = 0;
-
-            if (memoryItemsAreCompressed)
-            {
-                singleCut = addressDifference - CUTMODIFIER;
-            }
-            else
-            {
-                int areaRequiredRows = MemoryDesignerConstants::getRequiredRowsForRange(addressDifference + 1);
-                singleCut = addressDifference + 1 - areaRequiredRows;
-            }
-
-            if (singleCut > 0)
-            {
-                cutArea += singleCut;
-            }
-        }
-        else if (endArea > lastAddress)
-        {
-            break;
-        }
-
-        beginArea = endArea;
-    }
-
-    if (cutArea > 0)
-    {
-        qreal cutAreaHeight = cutArea * MemoryDesignerConstants::RANGEINTERVAL;
-        qreal condensedHeight = boundingRect().height() - cutAreaHeight;
-        condense(condensedHeight);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryDesignerGraphicsItem::compressToUnCutCoordinates()
 //-----------------------------------------------------------------------------
 void MemoryDesignerGraphicsItem::compressToUnCutCoordinates(QVector<qreal> unCutCoordinates,

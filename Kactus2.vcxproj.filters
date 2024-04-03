@@ -3364,8 +3364,6 @@
     <ClCompile Include="library\VLNVDialer\RevisionGroup.cpp">
       <Filter>Source Files\library\VLNVDialer</Filter>
     </ClCompile>
-      <Filter>Source Files\editors\ComponentEditor\ports</Filter>
-    </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\TypedPortsView.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
@@ -6081,8 +6079,6 @@
     </QtMoc>
     <QtMoc Include="library\VLNVDialer\RevisionGroup.h">
       <Filter>Header Files\library\VLNVDialer</Filter>
-    </QtMoc>
-      <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\TypedPortsView.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
