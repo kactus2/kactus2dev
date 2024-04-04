@@ -87,7 +87,7 @@ private:
 
     std::string prefix_;
 
-    VLNV busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, "pulp-platform.org:interface:amba_AXI4:1.0");
+    VLNV busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:AXI4LITE:1.0");
 
 };
 
