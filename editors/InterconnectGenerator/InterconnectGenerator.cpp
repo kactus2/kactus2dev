@@ -54,6 +54,7 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
     portValidator_->componentChange(component->getViews());
     portsInterface_->setPorts(component->getPorts());
     busInfInterface_->setBusInterfaces(component);
+    absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
     interconComponent_ = component;
 
     instanceInterface_->addComponentInstance("interconnect");
@@ -71,37 +72,38 @@ void InterconnectGenerator::findUnconnectedInterface()
 
     for(std::string compName : compNames)
     {
-        messager_->showMessage("In first for-loop");
-        auto compVLNV = instanceInterface_->getComponentReference(compName);
-        QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
-        QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
-        QStringList busNames = comp->getBusInterfaceNames();
-        for(QString busName : busNames)
-        {
-            messager_->showMessage("In second for-loop");
-            QSharedPointer<BusInterface> busInf = comp->getBusInterface(busName);
-            VLNV busVLNV = busInf->getBusType();
-            if(busVLNV == busDefVLNV_)
+        messager_->showMessage(QString("Comp name %1").arg(QString::fromStdString(compName)));
+        if(compName != "interconnect") {
+            auto compVLNV = instanceInterface_->getComponentReference(compName);
+            QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
+            QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
+            QStringList busNames = comp->getBusInterfaceNames();
+            for(QString busName : busNames)
             {
-                if(!design_->hasInterconnection(QString::fromStdString(compName), busName))
+                messager_->showMessage(QString("Bus name %1").arg(busName));
+                QSharedPointer<BusInterface> busInf = comp->getBusInterface(busName);
+                VLNV busVLNV = busInf->getBusType();
+                if(busVLNV == busDefVLNV_)
                 {
-                    messager_->showMessage("Unconnected interface found");
-                    prefix_ = "mirror_" + compName + "_";
-                    General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
-                    std::string modeString = General::interfaceMode2Str(newMode).toStdString();
-                    std::string newBusName = prefix_ + busName.toStdString();
+                    if(!design_->hasInterconnection(QString::fromStdString(compName), busName))
+                    {
+                        messager_->showMessage("Unconnected interface found");
+                        prefix_ = "mirror_" + compName + "_";
+                        General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
+                        std::string modeString = General::interfaceMode2Str(newMode).toStdString();
+                        std::string newBusName = prefix_ + busName.toStdString();
 
-                    createBusInterface(newBusName, modeString, index);
+                        createBusInterface(newBusName, modeString, index);
 
-                    absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
-                    createPortMaps(modeString, busInf);
+                        createPortMaps(modeString, busInf);
 
-                    createPhysPorts(comp, busName);
+                        createPhysPorts(comp, busName);
 
-                    connectionInterface_->addInterconnection(compName, busName.toStdString(), interconComponent_->getVlnv().getName().toStdString(), newBusName);
+                        connectionInterface_->addInterconnection(compName, busName.toStdString(), interconComponent_->getVlnv().getName().toStdString(), newBusName);
 
-                    index++;
-                    continue;
+                        index++;
+                        break;
+                    }
                 }
             }
         }
@@ -131,41 +133,48 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
 {
+    messager_->showMessage(QString("Interface mode name %1").arg(QString::fromStdString(modeString)));
     messager_->showMessage("Creating port maps");
-    absTypeInf_->setupAbstractionTypeForPortMapInterface(0);
-    PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
+    messager_->showMessage("Setting up port map inf");
+    if(absTypeInf_->setupAbstractionTypeForPortMapInterface(0)) {
+        PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
 
-    std::vector<std::string> logicalPortNames = portMapInf->getLogicalPortInterface()->getItemNamesWithModeAndGroup(modeString, "");
-    QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
-    for(int index=0; index < portMaps.size(); index++)
-    {
-        for(std::string logicalName : logicalPortNames)
+        std::vector<std::string> logicalPortNames = portMapInf->getLogicalPortInterface()->getItemNames();
+        messager_->showMessage(QString("Number of logical ports from inf %1").arg(logicalPortNames.size()));
+        QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
+        for(int index=0; index < portMaps.size(); index++)
         {
-            std::string portMapName = portMaps.at(index)->getLogicalPort()->name_.toStdString();
-            if(logicalName == portMapName)
+            messager_->showMessage(QString("Port map index %1").arg(index));
+            for(std::string logicalName : logicalPortNames)
             {
-                QSharedPointer<PortMap> portMap = portMaps.at(index);
-                std::string newName = prefix_ + portMap->getPhysicalPort()->name_.toStdString();
-
-                QSharedPointer<PartSelect> partSelect = portMap->getPhysicalPort()->partSelect_;
-                QSharedPointer<Range> range = portMap->getLogicalPort()->range_;
-
-                portMapInf->addPortMap(index);
-
-                portMapInf->setPhysicalPort(index, newName);
-                if(partSelect != nullptr)
+                messager_->showMessage(QString("Logical port name %1").arg(QString::fromStdString(logicalName)));
+                std::string portMapName = portMaps.at(index)->getLogicalPort()->name_.toStdString();
+                messager_->showMessage(QString("Logical port name from port map %1").arg(QString::fromStdString(portMapName)));
+                if(logicalName == portMapName)
                 {
-                    portMapInf->setPhysicalLeftBound(index, partSelect->getLeftRange().toStdString());
-                    portMapInf->setPhysicalRightBound(index, partSelect->getRightRange().toStdString());
-                }
+                    QSharedPointer<PortMap> portMap = portMaps.at(index);
+                    std::string newName = prefix_ + portMap->getPhysicalPort()->name_.toStdString();
 
-                portMapInf->setLogicalPort(index, logicalName);
-                if(range != nullptr)
-                {
-                    portMapInf->setLogicalLeftBound(index, range->getLeft().toStdString());
-                    portMapInf->setLogicalRightBound(index, range->getRight().toStdString());
+                    QSharedPointer<PartSelect> partSelect = portMap->getPhysicalPort()->partSelect_;
+                    QSharedPointer<Range> range = portMap->getLogicalPort()->range_;
+
+                    portMapInf->addPortMap(index);
+
+                    portMapInf->setPhysicalPort(index, newName);
+                    if(partSelect != nullptr)
+                    {
+                        portMapInf->setPhysicalLeftBound(index, partSelect->getLeftRange().toStdString());
+                        portMapInf->setPhysicalRightBound(index, partSelect->getRightRange().toStdString());
+                    }
+
+                    portMapInf->setLogicalPort(index, logicalName);
+                    if(range != nullptr)
+                    {
+                        portMapInf->setLogicalLeftBound(index, range->getLeft().toStdString());
+                        portMapInf->setLogicalRightBound(index, range->getRight().toStdString());
+                    }
+                    break;
                 }
-                continue;
             }
         }
     }
