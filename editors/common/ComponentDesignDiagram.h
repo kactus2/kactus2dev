@@ -653,6 +653,10 @@ private:
 
     //! Check for moving item to be located in the right edge.
     bool lastSelectedItemIsAtRightEdge_;
+
+    //! The endpoint which was last hovered over while creating a connection. Used to highligh the enpoint again
+    //  after not connecting to it. 
+    ConnectionEndpoint* lastHoveredEndpoint_ = nullptr;
 };
 
 #endif // COMPONENTDESIGNDIAGRAM_H

@@ -1350,7 +1350,12 @@ void ComponentDesignDiagram::highlightPotentialEndpointUnderCursor(QPointF const
     {
         // Highlight the end point.          
         connectionEndPoint_ = endpoint;
+        lastHoveredEndpoint_ = endpoint;
         connectionEndPoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_HOVER);
+    }
+    else if (lastHoveredEndpoint_) // Highligh endpoint again, if it wasn't connected the first time.
+    {
+        lastHoveredEndpoint_->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
     }
 }
 

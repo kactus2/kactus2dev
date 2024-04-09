@@ -34,7 +34,7 @@
 AdHocConnectionItem::AdHocConnectionItem(ConnectionEndpoint* endpoint1, ConnectionEndpoint* endpoint2, 
     QSharedPointer<AdHocConnection> adhocConnection, QSharedPointer<ConnectionRoute> route,
     DesignDiagram* parent):
-    ConnectionItem(endpoint1, endpoint2, adhocConnection, route, true, parent)
+    ConnectionItem(endpoint1, endpoint2, adhocConnection, route, false, parent)
 {
     setLineWidth(1);
 }
