@@ -177,7 +177,7 @@ QMultiMap<quint64, MemoryDesignerChildGraphicsItem*> SubMemoryLayout::getSubMemo
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::condenseChildItems()
 //-----------------------------------------------------------------------------
-qreal SubMemoryLayout::condenseChildItems(quint64 itemBaseAddress, quint64 itemLastAddress,
+qreal SubMemoryLayout::compressChildItems(quint64 itemBaseAddress, quint64 itemLastAddress,
     qreal minimumSubItemHeight, bool memoryItemsAreCondensed)
 {
     quint64 positionY = 0;
@@ -203,7 +203,7 @@ qreal SubMemoryLayout::condenseChildItems(quint64 itemBaseAddress, quint64 itemL
 
             MemoryDesignerChildGraphicsItem* subItem = subMemoryIterator.value();
 
-            positionY = condenseSubItem(subItem, minimumSubItemHeight, positionY, memoryItemsAreCondensed);
+            positionY = compressSubItem(subItem, minimumSubItemHeight, positionY, memoryItemsAreCondensed);
         }
     }
 
@@ -211,9 +211,9 @@ qreal SubMemoryLayout::condenseChildItems(quint64 itemBaseAddress, quint64 itemL
 }
 
 //-----------------------------------------------------------------------------
-// Function: SubMemoryLayout::condenseSubItem()
+// Function: SubMemoryLayout::compressSubItem()
 //-----------------------------------------------------------------------------
-quint64 SubMemoryLayout::condenseSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
+quint64 SubMemoryLayout::compressSubItem(MemoryDesignerChildGraphicsItem* subItem, qreal minimumSubItemHeight,
     quint64 positionY, bool memoryItemsAreCondensed)
 {
     quint64 subBaseAddress = subItem->getBaseAddress();
@@ -222,7 +222,7 @@ quint64 SubMemoryLayout::condenseSubItem(MemoryDesignerChildGraphicsItem* subIte
     SubMemoryLayout* subLayout = dynamic_cast<SubMemoryLayout*>(subItem);
     if (subLayout)
     {
-        quint64 newSubItemHeight = subLayout->condenseChildItems(
+        quint64 newSubItemHeight = subLayout->compressChildItems(
             subBaseAddress, subLastAddress, minimumSubItemHeight, memoryItemsAreCondensed);
         subItem->condense(newSubItemHeight);
     }
@@ -524,86 +524,6 @@ QVector<qreal> SubMemoryLayout::getUnCutCoordinates() const
     }
 
     return unCutCoordinates;
-}
-
-//-----------------------------------------------------------------------------
-// Function: SubMemoryLayout::compressSubItemsToUnCutAddresses()
-//-----------------------------------------------------------------------------
-void SubMemoryLayout::compressSubItemsToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-    bool memoryItemsAreCompressed)
-{
-    quint64 lastAddress = mainGraphicsItem_->getLastAddress();
-
-    QMultiMapIterator<quint64, MemoryDesignerChildGraphicsItem*> subItemIterator(getSubMemoryItems());
-    while (subItemIterator.hasNext())
-    {
-        subItemIterator.next();
-        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
-
-        SubMemoryLayout* subItemLayout = dynamic_cast<SubMemoryLayout*>(subItem);
-        if (subItemLayout)
-        {
-            subItemLayout->compressSubItemsToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
-        }
-
-        subItem->compressToUnCutAddresses(unCutAddresses, CUTMODIFIER, memoryItemsAreCompressed);
-
-        quint64 subItemLastAddress = subItem->getLastAddress();
-        if (subItemLastAddress > lastAddress)
-        {
-            lastAddress = subItemLastAddress;
-        }
-    }
-
-    quint64 itemBaseAddress = mainGraphicsItem_->getBaseAddress();
-
-    quint64 areaBegin = itemBaseAddress;
-    foreach (quint64 areaEnd, unCutAddresses)
-    {
-        if (areaBegin < lastAddress && areaEnd > itemBaseAddress)
-        {
-            qint64 addressDifference = areaEnd - areaBegin;
-            if (addressDifference > 0)
-            {
-                qint64 transferRows = 0;
-
-                if (memoryItemsAreCompressed)
-                {
-                    transferRows = addressDifference - CUTMODIFIER;
-                }
-                else
-                {
-                    quint64 addressRange = addressDifference + 1;
-                    int requiredRows = MemoryDesignerConstants::getRequiredRowsForRange(addressRange);
-
-                    transferRows = addressRange - requiredRows;
-                }
-
-                if (transferRows > 0)
-                {
-                    qreal transferY = -transferRows * MemoryDesignerConstants::RANGEINTERVAL;
-
-                    subItemIterator.toFront();
-                    while (subItemIterator.hasNext())
-                    {
-                        subItemIterator.next();
-                        MemoryDesignerChildGraphicsItem* subItem = subItemIterator.value();
-                        quint64 subItemBaseAddress = subItem->getBaseAddress();
-                        if (subItemBaseAddress > areaBegin)
-                        {
-                            subItem->moveBy(0, transferY);
-                        }
-                    }
-                }
-            }
-        }
-        else if (areaBegin >= lastAddress)
-        {
-            return;
-        }
-
-        areaBegin = areaEnd;
-    }
 }
 
 //-----------------------------------------------------------------------------

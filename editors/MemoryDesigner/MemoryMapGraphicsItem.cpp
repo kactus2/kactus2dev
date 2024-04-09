@@ -273,31 +273,6 @@ MemoryDesignerChildGraphicsItem* MemoryMapGraphicsItem::createEmptySubItem(quint
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapGraphicsItem::condenseItemAndChildItems()
-//-----------------------------------------------------------------------------
-void MemoryMapGraphicsItem::condenseItemAndChildItems(bool condenseMemoryItems)
-{
-    if (!isCompressed())
-    {
-        qreal memoryMapNewHeight = 0;
-        qreal subItemHeight = getMinimumHeightForSubItems();
-        
-        if (getMemoryConnections().isEmpty())
-        {
-            memoryMapNewHeight =
-                condenseChildItems(getBaseAddress(), getLastAddress(), subItemHeight, condenseMemoryItems);
-        }
-
-        if (memoryMapNewHeight > 0)
-        {
-            condense(memoryMapNewHeight);
-
-            setCompressed(true);
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
 // Function: MemoryMapGraphicsItem::getMinimumHeightForSubItems()
 //-----------------------------------------------------------------------------
 qreal MemoryMapGraphicsItem::getMinimumHeightForSubItems() const

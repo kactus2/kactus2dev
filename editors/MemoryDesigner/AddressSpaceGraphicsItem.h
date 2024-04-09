@@ -31,6 +31,7 @@ class AddressSpaceGraphicsItem : public MainMemoryGraphicsItem
 {
 
 public:
+
     //! The type of the address space graphics item.
     enum { Type = GFX_TYPE_ADDRESS_SPACE_ITEM };
 
@@ -60,13 +61,6 @@ public:
      *  Get the type of the address space graphics item.
      */
     int type() const { return Type; }
-
-    /*!
-     *  Compress the sub items contained within the address space and the space item.
-     *
-     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
-     */
-    virtual void condenseItemAndChildItems(bool condenseMemoryItems) override;
 
     /*!
      *  Get all the address space graphics items connected to the origin item.
@@ -100,74 +94,6 @@ private:
      *      @return The created address segment graphics item.
      */
     virtual MemoryDesignerChildGraphicsItem* createEmptySubItem(quint64 beginAddress, quint64 rangeEnd) override;
-
-    /*!
-     *  Get the compressed height of an address space graphics item.
-     *
-     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
-     *
-     *      @return The compressed height of an address space graphics item.
-     */
-    quint64 getFilteredCompressedHeight(bool memoryItemsAreCompressed);
-
-    /*!
-     *  Get the compressed height of an address space graphics item using coordinate positions of the connected
-     *  items.
-     *
-     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
-     *      @param [in] visitedMemoryItems          List of handled memory items.
-     *      @param [in] connectionIterator          Iterator that goes through the memory connections.
-     *
-     *      @return The compressed height of an address space graphics item.
-     */
-    qreal getFilteredCompressedHeightByCoordinates(bool memoryItemsAreCompressed,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > visitedMemoryItems,
-        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator);
-
-    /*!
-     *  Get the address space items connected to the selected memory item.
-     *
-     *      @param [in] memoryItem          The selected memory graphics item.
-     *
-     *      @return All the address space items connected to the selected item.
-     */
-    QVector<MainMemoryGraphicsItem*> getSpaceItemsConnectedToSpaceItem(MainMemoryGraphicsItem* memoryItem) const;
-
-    /*!
-     *  Get all the chained memory connection items.
-     *
-     *      @return The chained memory connection items.
-     */
-    QMultiMap<quint64, MemoryConnectionItem*> getChainedMemoryConnections() const;
-
-    /*!
-     *  Get all the addresses that must be retained after compression.
-     *
-     *      @param [in] connectionIterator  Iterator holding all the required memory connections.
-     *
-     *      @return All the addresses that are retained after compression.
-     */
-    QVector<quint64> getUnCutAddressesFromConnections(
-        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
-
-    /*!
-     *  Get the list of coordinates that must be retained after compression.
-     *
-     *      @param [in] connectionIterator  Iterator holding all the connected memory connections.
-     *
-     *      @return All the coordinates that are retained after compression.
-     */
-    QVector<qreal> getUnCutCoordinatesFromConnections(
-        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
-
-    /*!
-     *  Check if an address space has connections pointing to the same memory item with different address ranges.
-     *
-     *      @param [in] connectionIterator  Iterator holding all the connected memory connections.
-     *
-     *      @return True, if a problem connection is found, false otherwise.
-     */
-    bool hasProblemConnection(QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator) const;
 
     /*!
      *  Get the minimum height required to display for the memory item.

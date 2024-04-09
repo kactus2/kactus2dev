@@ -51,7 +51,7 @@ public:
 	/*!
      *  The destructor.
      */
-    virtual ~MainMemoryGraphicsItem();
+    virtual ~MainMemoryGraphicsItem() = default;
 
     /*!
      *  Add a memory connection to this item.
@@ -68,23 +68,11 @@ public:
     QVector<MemoryCollisionItem*> getMemoryCollisions() const;
 
     /*!
-     *  Change the ranges of the child items.
-     *
-     *      @param [in] offset  Offset of this memory item.
+     *  Compress the item and the sub items.
+     *	
+     *      @param [in] compressMemoryItems     Flag for compressing the memory items.
      */
-    virtual void changeChildItemRanges(quint64 offset);
-
-    /*!
-     *  Redraw the connected memory connections.
-     */
-    void reDrawConnections();
-
-    /*!
-     *  Compress the item and the contained sub items.
-     *
-     *      @param [in] condenseMemoryItems     Flag for condensing memory items.
-     */
-    virtual void condenseItemAndChildItems(bool condenseMemoryItems) = 0;
+    void compressItemAndChildItems(bool compressMemoryItems);
 
     /*!
      *  Get the used coordinates of the item and all the connected items.
@@ -97,28 +85,11 @@ public:
     QVector<qreal> getUncutCoordinatesFromSet(QVector<MainMemoryGraphicsItem*>& visitedItems, QVector<MemoryConnectionItem*>& visitedConnections);
 
     /*!
-     *  Compress the connection set.
-     *	
-     *      @param [in] visitedItems            List of visited memory items.
-     *      @param [in] visitedConnections      List of visited memory connections.
-     *      @param [in] unCutCoordinates        List of visible coordinates.
-     *      @param [in] compressMemoryItems     Flag for compressing the memory items.
-     */
-    void compressConnectionSet(QVector<MainMemoryGraphicsItem*>& visitedItems, QVector<MemoryConnectionItem const*>& visitedConnections, QVector<qreal> unCutCoordinates, bool compressMemoryItems);
-
-    /*!
      *  Move memory item and all the connected memory connections and the connected memory items.
      *
      *      @param [in] yTransfer   The amount of movement in the y-coordinate.
      */
     void moveItemAndConnectedItems(qreal yTransfer);
-
-    /*!
-     *  Get lowest point of the item, connection or connected item.
-     *
-     *      @return The lowest point.
-     */
-    quint64 getSceneEndPoint() const;
 
     /*!
      *  Get the last memory connection item connected to this memory graphics item.
@@ -163,11 +134,6 @@ public:
     bool hasExtensionItem() const;
 
     /*!
-     *  Hide the base address label of the first sub item and the last address label of the last sub item.
-     */
-    void hideFirstAndLastSegmentRange();
-
-    /*!
      *  Get the memory item from which this graphics item has been constructed from.
      *
      *      @return The contained memory item.
@@ -194,16 +160,6 @@ public:
      *      @return All the chained address space items connected to this item.
      */
     QVector<MainMemoryGraphicsItem*> getChainedSpaceItems() const;
-
-    /*!
-     *  Compress this item to the uncut addresses.
-     *
-     *      @param [in] unCutAddresses              List of the addresses that are retained after compression.
-     *      @param [in] CUTMODIFIER                 The modifier for the size of the cut area.
-     *      @param [in] memoryItemsAreCompressed    Flag for condensing memory items.
-     */
-    virtual void compressToUnCutAddresses(QVector<quint64> unCutAddresses, const int CUTMODIFIER,
-        bool memoryItemsAreCompressed);
 
     /*!
      *  Compress this item to the uncut coordinates.
