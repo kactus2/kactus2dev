@@ -236,11 +236,11 @@ General::InterfaceMode General::getCompatibleInterfaceMode(InterfaceMode mode)
     }
     else if (mode == General::INITIATOR)
     {
-        return MIRRORED_MASTER;
+        return MIRRORED_INITIATOR;
     }
     else if (mode == General::TARGET)
     {
-        return MIRRORED_SLAVE;
+        return MIRRORED_TARGET;
     }
     else if (mode == General::MIRRORED_INITIATOR)
     {
