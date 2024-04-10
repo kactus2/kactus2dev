@@ -43,7 +43,7 @@ void InterconnectGenerator::openDesign(VLNV designVLNV)
 void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 {
     messager_->showMessage("Creating new component");
-    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(VLNV, Document::Revision::Std14));
+    QSharedPointer<Component> component = QSharedPointer<Component>(new Component(VLNV, design_->getRevision()));
 
     component->setHierarchy(KactusAttribute::FLAT);
     component->setFirmness(KactusAttribute::MUTABLE);
@@ -89,8 +89,11 @@ void InterconnectGenerator::findUnconnectedInterface()
                     {
                         messager_->showMessage("Unconnected interface found");
                         prefix_ = "mirror_" + compName + "_";
+                        messager_->showMessage(QString("Original interface mode name %1").arg(General::interfaceMode2Str(busInf->getInterfaceMode())));
                         General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
                         std::string modeString = General::interfaceMode2Str(newMode).toStdString();
+                        messager_->showMessage(QString("Interface mode name %1").arg(QString::fromStdString(modeString)));
+
                         std::string newBusName = prefix_ + busName.toStdString();
 
                         createBusInterface(newBusName, modeString, index);
@@ -133,13 +136,12 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
 {
-    messager_->showMessage(QString("Interface mode name %1").arg(QString::fromStdString(modeString)));
     messager_->showMessage("Creating port maps");
     messager_->showMessage("Setting up port map inf");
     if(absTypeInf_->setupAbstractionTypeForPortMapInterface(0)) {
         PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
 
-        std::vector<std::string> logicalPortNames = portMapInf->getLogicalPortInterface()->getItemNames();
+        std::vector<std::string> logicalPortNames = portMapInf->getLogicalPortInterface()->getItemNamesWithModeAndGroup(modeString, "");
         messager_->showMessage(QString("Number of logical ports from inf %1").arg(logicalPortNames.size()));
         QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
         for(int index=0; index < portMaps.size(); index++)
