@@ -27,20 +27,22 @@
 //-----------------------------------------------------------------------------
 // Function: AutoConnector::AutoConnector()
 //-----------------------------------------------------------------------------
-AutoConnector::AutoConnector(QString const& firstComponentName, QString const& secondComponentName,
-    QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent, ListFiller* listFiller,
-    TableAutoConnector* tableInitializer, QString const& itemName, TableItemMatcher* itemMatcher, QWidget* parent):
+AutoConnector::AutoConnector(ComponentItemAutoConnector::AutoContainer const& firstComponentContainer, 
+    ComponentItemAutoConnector::AutoContainer const& secondComponentContainer,
+    ComponentItemAutoConnector::TableTools const& tableToolsContainer,
+    QString const& itemName, QWidget* parent /*= 0*/) :
 QWidget(parent),
-firstComponent_(firstComponent),
-secondComponent_(secondComponent),
+firstComponentContainer_(firstComponentContainer),
+secondComponentContainer_(secondComponentContainer),
+connectorTableTools_(tableToolsContainer),
 firstListFilter_(),
 secondListFilter_(),
 firstItemList_(),
 secondItemList_(),
 connectorTable_(),
-tableInitializer_(tableInitializer)
+tableInitializer_(connectorTableTools_.tableConnector_)
 {
-    setupLayout(firstComponentName, secondComponentName, listFiller, itemName, itemMatcher);
+    setupLayout(firstComponentContainer_.visibleName_, secondComponentContainer_.visibleName_, itemName);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,8 +64,7 @@ QVector<QPair<QString, QString> > AutoConnector::getConnectedItems() const
 //-----------------------------------------------------------------------------
 // Function: AutoConnector::setupLayout()
 //-----------------------------------------------------------------------------
-void AutoConnector::setupLayout(QString const& firstComponentName, QString const& secondComponentName,
-    ListFiller* listFiller, QString const& itemName, TableItemMatcher* itemMatcher)
+void AutoConnector::setupLayout(QString const& firstComponentName, QString const& secondComponentName, QString const& itemName)
 {
     firstItemList_ = new QListView(this);
     secondItemList_ = new QListView(this);
@@ -91,10 +92,10 @@ void AutoConnector::setupLayout(QString const& firstComponentName, QString const
     firstComponentGroup->setLayout(firstComponentLayout);
     secondComponentGroup->setLayout(secondComponentLayout);
 
-    connectorTable_ = new AutoConnectorConnectionTable(firstComponent_, secondComponent_, firstItemList_,
-        secondItemList_, firstComponentName, secondComponentName, itemMatcher, this);
+    connectorTable_ = new AutoConnectorConnectionTable(firstComponentContainer_.component_, secondComponentContainer_.component_, firstItemList_,
+        secondItemList_, firstComponentName, secondComponentName, connectorTableTools_.itemMatcher_, this);
     connectorTable_->setItemDelegate(new AutoConnectorConnectionDelegate(
-        firstComponent_, secondComponent_, firstItemList_, secondItemList_, itemMatcher, this));
+        firstComponentContainer_.component_, secondComponentContainer_.component_, firstItemList_, secondItemList_, connectorTableTools_.itemMatcher_, this));
 
     connect(connectorTable_->model(), SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&, const QVector<int> &)),
         this, SLOT(invalidateListFilters()), Qt::UniqueConnection);
@@ -116,8 +117,8 @@ void AutoConnector::setupLayout(QString const& firstComponentName, QString const
     QStandardItemModel* firstListModel(new QStandardItemModel(this));
     QStandardItemModel* secondListModel(new QStandardItemModel(this));
 
-    listFiller->initializeList(firstListModel, firstComponent_);
-    listFiller->initializeList(secondListModel, secondComponent_);
+    connectorTableTools_.listFiller_->initializeList(firstListModel, firstComponentContainer_.component_);
+    connectorTableTools_.listFiller_->initializeList(secondListModel, secondComponentContainer_.component_);
 
     firstListFilter_ = new AutoConnectorListFilter(connectorTable_, 0, firstHideBox);
     firstListFilter_->setSourceModel(firstListModel);
@@ -141,7 +142,9 @@ void AutoConnector::invalidateListFilters()
 //-----------------------------------------------------------------------------
 void AutoConnector::connectSelectedItems()
 {
-    tableInitializer_->connectSelectedFromLists(firstItemList_, secondItemList_, connectorTable_);
+    tableInitializer_->connectSelectedFromLists(firstComponentContainer_.component_, 
+        secondComponentContainer_.component_, firstItemList_, secondItemList_, connectorTable_, 
+        connectorTableTools_.itemMatcher_);
 }
 
 //-----------------------------------------------------------------------------
@@ -149,7 +152,8 @@ void AutoConnector::connectSelectedItems()
 //-----------------------------------------------------------------------------
 void AutoConnector::connectAutomatically()
 {
-    tableInitializer_->initializeTable(connectorTable_, firstComponent_, secondComponent_);
+    tableInitializer_->autoConnectItems(connectorTable_, firstComponentContainer_.component_, 
+        secondComponentContainer_.component_);
 }
 
 //-----------------------------------------------------------------------------
@@ -158,4 +162,23 @@ void AutoConnector::connectAutomatically()
 void AutoConnector::clearConnectedItems()
 {
     tableInitializer_->clearTable(connectorTable_);
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnector::connectAlreadyConnectedItems()
+//-----------------------------------------------------------------------------
+void AutoConnector::connectAlreadyConnectedItems(QSharedPointer<Design> design)
+{
+    tableInitializer_->populateTableWithConnectedItems(connectorTable_, firstComponentContainer_.name_, 
+        secondComponentContainer_.name_, firstComponentContainer_.component_, 
+        secondComponentContainer_.component_, design);
+    connectorTable_->enableConnectionValidation();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnector::connectionTableHasInvalidConnections()
+//-----------------------------------------------------------------------------
+bool AutoConnector::connectionTableHasInvalidConnections() const
+{
+    return connectorTable_->hasInvalidConnections();
 }

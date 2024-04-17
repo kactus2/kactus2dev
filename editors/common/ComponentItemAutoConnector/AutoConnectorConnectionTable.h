@@ -42,7 +42,7 @@ public:
      */
     AutoConnectorConnectionTable(QSharedPointer<Component> firstComponent,
         QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
-        QString const& firstItemName, QString const& secondItemName, TableItemMatcher* itemMatcher,
+        QString const& firstItemName, QString const& secondItemName, QSharedPointer<TableItemMatcher> itemMatcher,
         QWidget* parent = 0);
 
     /*!
@@ -56,6 +56,18 @@ public:
      *      @return A list of connected item pairs.
      */
     QVector<QPair<QString, QString> > getConnectedItems() const;
+
+    /*!
+     *	Enable validation of created connections. Should only be enabled after table is initialized.
+     */
+    void enableConnectionValidation();
+
+    /*!
+     *	Checks connected items for invalid connections.
+     *  
+     * 	    @return True, if invalid connections are found, otherwise false.
+     */
+    bool hasInvalidConnections() const;
 
     // No copying. No assignments.
     AutoConnectorConnectionTable(AutoConnectorConnectionTable const& rhs) = delete;
@@ -111,12 +123,23 @@ private slots:
      */
     void onClearCells();
 
+    /*!
+     *	Handles validation of rows in the table, when a cell is changed. Making invalid connections is allowed,
+     *  but they are colored red in the table.
+     */
+    void onTableItemChanged(QTableWidgetItem* item);
+
 private:
 
     /*!
      *  Setup the available actions.
      */
     void setupActions();
+
+    /*!
+     *	Checks the connector table for invalid or duplicate connections and colors rows accordingly.
+     */
+    void checkDuplicateOrInvalidConnections();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -147,7 +170,13 @@ private:
     QAction* clearAction_;
 
     //! Checks for possible matches between two items.
-    TableItemMatcher* itemMatcher_;
+    QSharedPointer<TableItemMatcher> itemMatcher_;
+
+    //! Flag indicating if connection validation is enabled.
+    bool connectionValidationEnabled_ = false;
+
+    //! Indicates if the table contains invalid or duplicate rows.
+    bool containsInvalidRows_ = false;
 };
 
 #endif // AUTOCONNECTORCONNECTIONTABLE_H

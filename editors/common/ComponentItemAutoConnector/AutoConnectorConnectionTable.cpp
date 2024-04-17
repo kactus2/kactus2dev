@@ -15,6 +15,8 @@
 
 #include <IPXACTmodels/Component/Component.h>
 
+#include <common/KactusColors.h>
+
 #include <QHeaderView>
 #include <QContextMenuEvent>
 #include <QMenu>
@@ -25,7 +27,7 @@
 //-----------------------------------------------------------------------------
 AutoConnectorConnectionTable::AutoConnectorConnectionTable(QSharedPointer<Component> firstComponent,
     QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
-    QString const& firstItemName, QString const& secondItemName, TableItemMatcher* itemMatcher, QWidget* parent):
+    QString const& firstItemName, QString const& secondItemName, QSharedPointer<TableItemMatcher> itemMatcher, QWidget* parent):
 QTableWidget(parent),
 firstComponent_(firstComponent),
 secondComponent_(secondComponent),
@@ -86,6 +88,86 @@ void AutoConnectorConnectionTable::setupActions()
 }
 
 //-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::checkDuplicateOrInvalidConnections()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::checkDuplicateOrInvalidConnections()
+{
+    QSet<QPair<QString, QString> > foundRows;
+    QSet<QPair<QString, QString> > duplicateRows;
+    containsInvalidRows_ = false;
+
+    for (int i = 0; i < rowCount(); ++i)
+    {
+        auto firstColItem = item(i, 0);
+        auto secondColItem = item(i, 1);
+
+        // Valid row, if either column is empty.
+        if (!firstColItem || !secondColItem || firstColItem->text().isEmpty() || secondColItem->text().isEmpty())
+        {
+            if (firstColItem)
+            {
+                firstColItem->setForeground(KactusColors::REGULAR_TEXT);
+            }
+            if (secondColItem)
+            {
+                secondColItem->setForeground(KactusColors::REGULAR_TEXT);
+            }
+
+            continue;
+        }
+
+        auto firstItemText = firstColItem->text();
+        auto secondItemText = secondColItem->text();
+
+        // Compare with previously found rows.
+        if (foundRows.contains({ firstItemText, secondItemText }))
+        {
+            duplicateRows.insert({ firstItemText, secondItemText });
+            continue;
+        }
+            
+        // Check if row items can be connected.
+        if (itemMatcher_->itemsCanBeConnected(firstItemText, firstComponent_, secondItemText, secondComponent_))
+        {
+            firstColItem->setForeground(KactusColors::REGULAR_TEXT);
+            secondColItem->setForeground(KactusColors::REGULAR_TEXT);
+        }
+        else
+        {
+            firstColItem->setForeground(KactusColors::ERROR);
+            secondColItem->setForeground(KactusColors::ERROR);
+            containsInvalidRows_ = true;
+        }
+
+        foundRows.insert({ firstItemText, secondItemText });
+    }
+
+    if (duplicateRows.isEmpty())
+    {
+        return;
+    }
+
+    containsInvalidRows_ = true;
+
+    for (int i = 0; i < rowCount(); ++i)
+    {
+        auto firstColItem = item(i, 0);
+        auto secondColItem = item(i, 1);
+
+        if (!firstColItem || !secondColItem || firstColItem->text().isEmpty() || secondColItem->text().isEmpty())
+        {
+            continue;
+        }
+
+        if (duplicateRows.contains({ firstColItem->text(), secondColItem->text() }))
+        {
+            firstColItem->setForeground(KactusColors::ERROR);
+            secondColItem->setForeground(KactusColors::ERROR);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
 // Function: AutoConnectorConnectionTable::getConnectedItems()
 //-----------------------------------------------------------------------------
 QVector<QPair<QString, QString> > AutoConnectorConnectionTable::getConnectedItems() const
@@ -107,6 +189,26 @@ QVector<QPair<QString, QString> > AutoConnectorConnectionTable::getConnectedItem
     }
 
     return fullConnections;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::enableConnectionValidation()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::enableConnectionValidation()
+{
+    if (!connectionValidationEnabled_)
+    {
+        connect(this, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onTableItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
+        connectionValidationEnabled_ = true;
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::hasInvalidConnections()
+//-----------------------------------------------------------------------------
+bool AutoConnectorConnectionTable::hasInvalidConnections() const
+{
+    return containsInvalidRows_;
 }
 
 //-----------------------------------------------------------------------------
@@ -141,12 +243,14 @@ void AutoConnectorConnectionTable::onAddRow()
 void AutoConnectorConnectionTable::onRemoveRow()
 {
     QModelIndexList indexlist = selectedIndexes();
-    std::sort(indexlist.begin(), indexlist.end());
+    std::sort(indexlist.rbegin(), indexlist.rend()); // Sort in reverese order to remove last indexes first.
 
     for(QModelIndex const& index : indexlist)
     {
         removeRow(index.row());
     }
+
+    checkDuplicateOrInvalidConnections();
 }
 
 //-----------------------------------------------------------------------------
@@ -160,6 +264,18 @@ void AutoConnectorConnectionTable::onClearCells()
         model()->setData(index, QVariant(), Qt::DecorationRole);
         model()->setData(index, QVariant(), Qt::EditRole);
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AutoConnectorConnectionTable::onTableItemChanged()
+//-----------------------------------------------------------------------------
+void AutoConnectorConnectionTable::onTableItemChanged(QTableWidgetItem* item)
+{
+    disconnect(this, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onTableItemChanged(QTableWidgetItem*)));
+
+    checkDuplicateOrInvalidConnections();
+
+    connect(this, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(onTableItemChanged(QTableWidgetItem*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -207,37 +323,4 @@ void AutoConnectorConnectionTable::dragEnterEvent(QDragEnterEvent *event)
 void AutoConnectorConnectionTable::dragMoveEvent(QDragMoveEvent *event)
 {
     QTableWidget::dragMoveEvent(event);
-
-    QModelIndex positionIndex = indexAt(event->position().toPoint());
-    if (positionIndex.isValid() && itemMatcher_)
-    {
-        QSharedPointer<Component> sourceComponent = firstComponent_;
-        QSharedPointer<Component> targetComponent = secondComponent_;
-        int comparisonIndexColumn = 1;
-        if (dragSourceList_ == secondItemList_)
-        {
-            sourceComponent = secondComponent_;
-            targetComponent = firstComponent_;
-            comparisonIndexColumn = 0;
-        }
-
-        if (positionIndex.column() != comparisonIndexColumn)
-        {
-            positionIndex = positionIndex.sibling(positionIndex.row(), comparisonIndexColumn);
-        }
-
-        if (itemMatcher_->canDrop(
-                dragSourceList_->currentIndex(), positionIndex, sourceComponent, targetComponent))
-        {
-            event->setDropAction(Qt::MoveAction);
-        }
-        else
-        {
-            event->setDropAction(Qt::IgnoreAction);
-        }
-    }
-    else
-    {
-        event->setDropAction(Qt::MoveAction);
-    }
 }

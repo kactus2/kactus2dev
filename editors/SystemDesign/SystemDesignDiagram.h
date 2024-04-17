@@ -480,11 +480,12 @@ private:
     /*!
      *  Creates an add command for a given connection.
      *
-     *      @param [in] connection  The connection to create a command for.     
+     *      @param [in] connection          The connection to create a command for.     
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
      *      @return The created add command.
      */
-    virtual QSharedPointer<QUndoCommand> createAddCommandForConnection(GraphicsConnection* connection);
+    virtual QUndoCommand* createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand = nullptr);
 
     /*!
      *  Adds a new top-level interface to the given diagram column.
@@ -615,11 +616,12 @@ private:
     /*!
      *  Get the connection end point for the selected auto connector item.
      *
-     *      @param [in] connectorItem   The selected auto connector item.
+     *      @param [in] connectorItem       The selected auto connector item.
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
      *      @return The end point item for the selected auto connector item.
      */
-    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem);
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem, QUndoCommand* parentCommand = nullptr);
 
     /*!
      *  Create connection between the selected end points.

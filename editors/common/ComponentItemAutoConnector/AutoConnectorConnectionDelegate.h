@@ -40,7 +40,7 @@ public:
 	 */
     AutoConnectorConnectionDelegate(QSharedPointer<Component> firstComponent,
         QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
-        TableItemMatcher* itemMatcher, QObject* parent = 0);
+        QSharedPointer<TableItemMatcher> itemMatcher, QObject* parent = 0);
 
 	/*!
      *  The destructor.
@@ -115,7 +115,7 @@ private:
     QListView* secondList_;
 
     //! Checks for possible matches between two items.
-    TableItemMatcher* itemMatcher_;
+    QSharedPointer<TableItemMatcher> itemMatcher_;
 };
 
 #endif // AUTOCONNECTORCONNECTIONDELEGATE_H

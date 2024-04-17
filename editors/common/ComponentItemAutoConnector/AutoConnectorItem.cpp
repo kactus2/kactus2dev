@@ -50,6 +50,15 @@ AutoConnectorItem & AutoConnectorItem::operator=(const AutoConnectorItem &other)
 }
 
 //-----------------------------------------------------------------------------
+// Function: AutoConnectorItem::operator==()
+//-----------------------------------------------------------------------------
+bool AutoConnectorItem::operator==(const AutoConnectorItem& other) const
+{
+    return itemName_ == other.itemName_ && containingItemName_ == other.containingItemName_ &&
+        itemType_ == other.itemType_ && containterType_ == other.containterType_;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AutoConnectorItem::~AutoConnectorItem()
 //-----------------------------------------------------------------------------
 AutoConnectorItem::~AutoConnectorItem()

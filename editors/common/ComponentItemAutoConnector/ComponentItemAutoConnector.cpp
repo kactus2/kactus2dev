@@ -12,6 +12,7 @@
 #include "ComponentItemAutoConnector.h"
 
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
 
 #include <common/graphicsItems/ComponentItem.h>
 
@@ -24,6 +25,8 @@
 #include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
 #include <editors/common/ComponentItemAutoConnector/PortItemMatcher.h>
 
+#include <QCoreApplication>
+#include <QMessageBox>
 #include <QDialogButtonBox>
 #include <QVBoxLayout>
 #include <QLabel>
@@ -33,21 +36,18 @@
 //-----------------------------------------------------------------------------
 ComponentItemAutoConnector::ComponentItemAutoConnector(AutoContainer const& firstContainer,
     AutoContainer const& secondContainer, TableTools const& busTableTools, TableTools const& portTableTools,
-    AutoConnectorItem::ContainerType secondItemType, QWidget* parent):
+    AutoConnectorItem::ContainerType secondItemType, QSharedPointer<Design> design, QWidget* parent /*= 0*/) :
 QDialog(parent),
 firstItemName_(firstContainer.name_),
 secondItemName_(secondContainer.name_),
 connectButton_(new QPushButton(QIcon(":/icons/common/graphics/connect.png"), "Connect", this)),
 autoConnectButton_(new QPushButton(QIcon(":/icons/common/graphics/configuration.png"), "Auto connect all", this)),
 clearButton_(new QPushButton(QIcon(":/icons/common/graphics/cleanup.png"), tr("Clear"), this)),
-busInterfaceConnector_(new AutoConnector(firstContainer.visibleName_, secondContainer.visibleName_,
-    firstContainer.component_, secondContainer.component_, new BusInterfaceListFiller(),
-    busTableTools.tableConnector_, tr("bus interfaces"), busTableTools.itemMatcher_, this)),
-portConnector_(new AutoConnector(firstContainer.visibleName_, secondContainer.visibleName_,
-    firstContainer.component_, secondContainer.component_, new PortListFiller(), portTableTools.tableConnector_,
-    tr("ports"), portTableTools.itemMatcher_, this)),
+busInterfaceConnector_(new AutoConnector(firstContainer, secondContainer, busTableTools, tr("bus interfaces"), this)),
+portConnector_(new AutoConnector(firstContainer, secondContainer, portTableTools, tr("ports"), this)),
 tabs_(this),
-secondContainerType_(secondItemType)
+secondContainerType_(secondItemType),
+design_(design)
 {
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
 
@@ -66,7 +66,7 @@ secondContainerType_(secondItemType)
         tabs_.setCurrentWidget(portConnector_);
     }
 
-    autoConnectItems();
+    connectAlreadyConnected();
 }
 
 //-----------------------------------------------------------------------------
@@ -120,14 +120,16 @@ QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > ComponentItemAutoConnect
 //-----------------------------------------------------------------------------
 void ComponentItemAutoConnector::setupLayout()
 {
-    QString introLabel = tr("Auto connector");
-    QString introText = tr("Connect bus interfaces and ports from two component instances automatically.") +
-        tr(" Automatic connections are created using the names of the items.\n") +
-        tr("Bus interfaces create interconnections and ports create ad-hoc connections.");
+    QString introLabel = tr("Component instance connector");
+    QString introText = tr("Connect bus interfaces or ports of two component instances.") +
+        tr(" Ports or bus interfaces can also be automatically connected. Automatic connections are created using the names of the items.\n") +
+        tr("Bus interfaces create interconnections and ports create ad-hoc connections.\n\n") +
+        tr("Create connections by selecting items in their respective lists and clicking connect, or by dragging and dropping items to the table.\n") +
+        tr("Connections can be removed by right-clicking on the respective row in the table and selecting 'Remove row'.");
     QWidget* introWidget = setupIntroWidget(introLabel, introText);
 
     QPushButton* okButton(new QPushButton(tr("Finish"), this));
-    connect(okButton, SIGNAL(released()), this, SLOT(accept()), Qt::UniqueConnection);
+    connect(okButton, SIGNAL(released()), this, SLOT(onFinishClicked()), Qt::UniqueConnection);
 
     QPushButton* cancelButton (new QPushButton(tr("Cancel"), this));
     connect(cancelButton, SIGNAL(released()), this, SLOT(reject()), Qt::UniqueConnection);
@@ -141,7 +143,7 @@ void ComponentItemAutoConnector::setupLayout()
     buttonBox->addButton(okButton, QDialogButtonBox::ActionRole);
     buttonBox->addButton(cancelButton, QDialogButtonBox::ActionRole);
 
-    setWindowTitle("Auto connect");
+    setWindowTitle("Connect component instances");
 
     connect(connectButton_, SIGNAL(released()), this, SLOT(connectSelectedItems()), Qt::UniqueConnection);
     connect(autoConnectButton_, SIGNAL(released()), this, SLOT(autoConnectItems()), Qt::UniqueConnection);
@@ -181,6 +183,25 @@ void ComponentItemAutoConnector::autoConnectItems()
     else
     {
         busInterfaceConnector_->connectAutomatically();
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::onFinishClicked()
+//-----------------------------------------------------------------------------
+void ComponentItemAutoConnector::onFinishClicked()
+{
+    if (portConnector_->connectionTableHasInvalidConnections() ||
+        busInterfaceConnector_->connectionTableHasInvalidConnections())
+    {
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
+            tr("Bus interface and/or port connection tables contain one or more invalid or duplicate connections."), QMessageBox::Ok, this);
+        msgBox.exec();
+        return;
+    }
+    else
+    {
+        accept();
     }
 }
 
@@ -226,4 +247,13 @@ QWidget* ComponentItemAutoConnector::setupIntroWidget(QString const& introName, 
     introWidget->setLayout(mainIntroLayout);
 
     return introWidget;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentItemAutoConnector::connectAlreadyConnected()
+//-----------------------------------------------------------------------------
+void ComponentItemAutoConnector::connectAlreadyConnected()
+{
+    portConnector_->connectAlreadyConnectedItems(design_);
+    busInterfaceConnector_->connectAlreadyConnectedItems(design_);
 }

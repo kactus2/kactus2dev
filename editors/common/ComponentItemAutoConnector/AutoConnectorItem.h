@@ -60,6 +60,8 @@ public:
      */
     AutoConnectorItem &operator=(const AutoConnectorItem &other);
 
+    bool operator==(const AutoConnectorItem& other) const;
+
     /*!
      *  The destructor.
      */

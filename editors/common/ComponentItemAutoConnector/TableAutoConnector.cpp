@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "TableAutoConnector.h"
+#include "TableItemMatcher.h"
 
 #include <IPXACTmodels/Component/Component.h>
 
@@ -18,7 +19,7 @@
 //-----------------------------------------------------------------------------
 // Function: TableAutoConnector::initializeTable()
 //-----------------------------------------------------------------------------
-void TableAutoConnector::initializeTable(QTableWidget* selectedTable, QSharedPointer<Component> firstComponent,
+void TableAutoConnector::autoConnectItems(QTableWidget* selectedTable, QSharedPointer<Component> firstComponent,
     QSharedPointer<Component> secondComponent) const
 {
     int currentRowCount = selectedTable->rowCount();
@@ -173,8 +174,9 @@ void TableAutoConnector::clearTable(QTableWidget* selectedTable) const
 //-----------------------------------------------------------------------------
 // Function: TableAutoConnector::connectSelectedFromLists()
 //-----------------------------------------------------------------------------
-void TableAutoConnector::connectSelectedFromLists(QListView* firstList, QListView* secondList,
-    QTableWidget* targetTable) const
+void TableAutoConnector::connectSelectedFromLists(QSharedPointer<Component> firstComponent, 
+    QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
+    QTableWidget* targetTable, QSharedPointer<TableItemMatcher> itemMatcher) const
 {
     QModelIndex firstItemIndex = firstList->currentIndex();
     QModelIndex secondItemIndex = secondList->currentIndex();
@@ -187,14 +189,40 @@ void TableAutoConnector::connectSelectedFromLists(QListView* firstList, QListVie
         QString secondItemName = secondItemIndex.data(Qt::DisplayRole).toString();
         QIcon secondItemIcon = secondItemIndex.data(Qt::DecorationRole).value<QIcon>();
 
-        QTableWidgetItem* firstItem = new QTableWidgetItem(firstItemIcon, firstItemName);
-        QTableWidgetItem* secondItem = new QTableWidgetItem(secondItemIcon, secondItemName);
+        if (itemMatcher->itemsCanBeConnected(firstItemName, firstComponent, secondItemName, secondComponent))
+        {
+            QTableWidgetItem* firstItem = new QTableWidgetItem(firstItemIcon, firstItemName);
+            QTableWidgetItem* secondItem = new QTableWidgetItem(secondItemIcon, secondItemName);
 
-        int newRow = targetTable->rowCount();
+            int newRow = targetTable->rowCount();
 
-        targetTable->setRowCount(newRow + 1);
+            targetTable->setRowCount(newRow + 1);
 
-        targetTable->setItem(newRow, 0, firstItem);
-        targetTable->setItem(newRow, 1, secondItem);
+            targetTable->setItem(newRow, 0, firstItem);
+            targetTable->setItem(newRow, 1, secondItem);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: TableAutoConnector::populateTableWithConnectedItems()
+//-----------------------------------------------------------------------------
+void TableAutoConnector::populateTableWithConnectedItems(QTableWidget* targetTable, 
+    QString const& firstInstanceName, QString const& secondInstanceName, QSharedPointer<Component> firstComponent,
+    QSharedPointer<Component> secondComponent, QSharedPointer<Design> design)
+{
+    auto connectedItems = findAlreadyConnectedItems(firstInstanceName, secondInstanceName, design);
+
+    int currentRowCount = targetTable->rowCount();
+
+    targetTable->setRowCount(targetTable->rowCount() + connectedItems.size());
+
+    for (int i = 0; i < connectedItems.size(); ++i)
+    {
+        QTableWidgetItem* firstItem = createTableWidgetItem(connectedItems.at(i).first, firstComponent);
+        QTableWidgetItem* secondItem = createTableWidgetItem(connectedItems.at(i).second, secondComponent);
+
+        targetTable->setItem(currentRowCount + i, 0, firstItem);
+        targetTable->setItem(currentRowCount + i, 1, secondItem);
     }
 }

@@ -460,11 +460,12 @@ private:
     /*!
      *  Creates an add command for a given connection.
      *
-     *      @param [in] connection  The connection to create a command for.     
+     *      @param [in] connection          The connection to create a command for.     
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created commands.
      *
      *      @return The created add command.
      */
-    virtual QSharedPointer<QUndoCommand> createAddCommandForConnection(GraphicsConnection* connection);
+    virtual QUndoCommand* createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand = nullptr);
 
     /*!
      *  Copies the interface definition to hierarchical interface from a defined interface.
@@ -854,29 +855,32 @@ private:
     /*!
      *  Get the connection end point for the selected auto connector item.
      *
-     *      @param [in] connectorItem   The selected auto connector item.
+     *      @param [in] connectorItem       The selected auto connector item.
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
      *      @return The end point item for the selected auto connector item.
      */
-    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem);
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem, QUndoCommand* parentUndoCommand = nullptr);
 
     /*!
      *  Get the component item connection end point for the selected auto connector item.
      *
-     *      @param [in] connectorItem   The selected auto connector item.
+     *      @param [in] connectorItem       The selected auto connector item.
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
      *
      *      @return The selected component item connection end point.
      */
-    ConnectionEndpoint* getEndPointFromComponentItem(AutoConnectorItem* connectorItem);
+    ConnectionEndpoint* getEndPointFromComponentItem(AutoConnectorItem* connectorItem, QUndoCommand* parentUndoCommand = nullptr);
 
     /*!
      *  Get the top component connection end point for the selected auto connector item.
      *
-     *      @param [in] connectorItem   The selected auto connector item.
-     *
+     *      @param [in] connectorItem       The selected auto connector item.
+     *      @param [in] parentUndoCommand   Optional undocommand to set as parent for created child commands.
+     * 
      *      @return The selected top component connection end point.
      */
-    ConnectionEndpoint* getEndPointForTopComponentItem(AutoConnectorItem* connectorItem);
+    ConnectionEndpoint* getEndPointForTopComponentItem(AutoConnectorItem* connectorItem, QUndoCommand* parentUndoCommand = nullptr);
 
     /*!
      *  Create connection between the selected end points.

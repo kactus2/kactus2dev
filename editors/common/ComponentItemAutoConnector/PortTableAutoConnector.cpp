@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Design/Design.h>
 
 //-----------------------------------------------------------------------------
 // Function: PortTableAutoConnector::findPossibleCombinations()
@@ -73,6 +74,51 @@ QVector<DirectionTypes::Direction> PortTableAutoConnector::getConnectableDirecti
     DirectionTypes::Direction portDirection) const
 {
     return PortUtilities::getConnectableDirections(portDirection);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortTableAutoConnector::findAlreadyConnectedItems()
+//-----------------------------------------------------------------------------
+QList<QPair<QString, QString > > PortTableAutoConnector::findAlreadyConnectedItems(QString const& firstInstanceName, QString const& secondInstanceName, QSharedPointer<Design> design) const
+{
+    QList<QPair<QString, QString > > foundConnections;
+
+    // Find connections connecting both instances.
+    for (auto const& adHocConnection : *design->getAdHocConnections())
+    {
+        bool firstComponentInstanceFound = false;
+        bool secondComponentInstanceFound = false;
+        
+        QSet<QString> firstInstancePorts;
+        QSet<QString> secondInstancePorts;
+
+        for (auto const& portReference : *adHocConnection->getInternalPortReferences())
+        {
+            if (portReference->getComponentRef() == firstInstanceName)
+            {
+                firstComponentInstanceFound = true;
+                firstInstancePorts.insert(portReference->getPortRef());
+            }
+            else if (portReference->getComponentRef() == secondInstanceName)
+            {
+                secondComponentInstanceFound = true;
+                secondInstancePorts.insert(portReference->getPortRef());
+            }
+        }
+
+        if (firstComponentInstanceFound && secondComponentInstanceFound)
+        {
+            for (auto const& firstPort : firstInstancePorts)
+            {
+                for (auto const& secondPort : secondInstancePorts)
+                {
+                    foundConnections.emplace_back(firstPort, secondPort);
+                }
+            }
+        }
+    }
+
+    return foundConnections;
 }
 
 //-----------------------------------------------------------------------------
