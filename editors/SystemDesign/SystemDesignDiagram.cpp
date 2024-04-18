@@ -2144,23 +2144,23 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createAddCommandForConnection()
 //-----------------------------------------------------------------------------
-QSharedPointer<QUndoCommand> SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection)
+QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand /*= nullptr*/)
 {
     ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
     if (apiConnection)
     {
-        return QSharedPointer<QUndoCommand>(new ApiConnectionAddCommand(this, apiConnection, getDesign()));
+        return new ApiConnectionAddCommand(this, apiConnection, getDesign());
     }
     else
     {
         ComGraphicsConnection* comConnection = dynamic_cast<ComGraphicsConnection*>(connection);
         if (comConnection)
         {
-            return QSharedPointer<QUndoCommand>(new ComConnectionAddCommand(this, comConnection, getDesign()));
+            return new ComConnectionAddCommand(this, comConnection, getDesign());
         }
     }
 
-    return QSharedPointer<QUndoCommand>(new QUndoCommand());
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -2673,7 +2673,7 @@ ComponentItemAutoConnector* SystemDesignDiagram::createAutoConnector(ComponentIt
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::getEndPointForItem()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* SystemDesignDiagram::getEndPointForItem(AutoConnectorItem*)
+ConnectionEndpoint* SystemDesignDiagram::getEndPointForItem(AutoConnectorItem*, QUndoCommand*)
 {
     return nullptr;
 }

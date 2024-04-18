@@ -16,6 +16,8 @@
 #include <QListView>
 
 class Component;
+class Design;
+class TableItemMatcher;
 
 //-----------------------------------------------------------------------------
 //! Automatically connects items of two components.
@@ -41,7 +43,7 @@ public:
      *      @param [in] firstComponent      First component.
      *      @param [in] secondComponent     Second component.
      */
-    void initializeTable(QTableWidget* selectedTable, QSharedPointer<Component> firstComponent,
+    void autoConnectItems(QTableWidget* selectedTable, QSharedPointer<Component> firstComponent,
         QSharedPointer<Component> secondComponent) const;
 
     /*!
@@ -52,11 +54,29 @@ public:
     /*!
      *  Connect the current items from the selected item lists.
      *
+     *      @param [in] firstComponent  First component to connect.
+     *      @param [in] secondComponent Second component to connect.
      *      @param [in] firstList       View of the first item list.
      *      @param [in] secondList      View of the second item list.
      *      @param [in] targetTable     The connection table.
+     *      @param [in] itemMatcher     The table item matcher to use. Validates that a connection can be made.
      */
-    void connectSelectedFromLists(QListView* firstList, QListView* secondList, QTableWidget* targetTable) const;
+    void connectSelectedFromLists(QSharedPointer<Component> firstComponent, 
+        QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList, 
+        QTableWidget* targetTable, QSharedPointer<TableItemMatcher> itemMatcher) const;
+
+    /*!
+     *	Populate the connection table with already connected items.
+     *  
+     *      @param [in] targetTable         The target table.
+     *      @param [in] firstInstanceName   The name of the first component.
+     *      @param [in] secondInstanceName  The name of the second component.
+     *      @param [in] firstComponent      The first component to connect.
+     *      @param [in] secondComponent     The second component to connect.
+     *      @param [in] design              The containing desing.
+     */
+    void populateTableWithConnectedItems(QTableWidget* targetTable, QString const& firstInstanceName,
+        QString const& secondInstanceName, QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent, QSharedPointer<Design> design);
 
     // No copying. No assignments.
     TableAutoConnector(TableAutoConnector const& rhs) = delete;
@@ -98,6 +118,19 @@ private:
      */
     virtual QVector<QPair<QString, QVector<QString> > > findPossibleCombinations(
         QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent) const = 0;
+
+    /*!
+     *	Find items that are already connected to populate the connection table with.
+     *
+     *      @param [in] firstInstanceName   The first component.
+     *      @param [in] secondInstanceName  The second component.
+     *      @param [in] design              The containing design.
+     *
+     * 	    @return List of item connected item pairs.
+     */
+    virtual QList<QPair<QString, QString > > findAlreadyConnectedItems(
+        QString const& firstInstanceName, QString const& secondInstanceName,
+        QSharedPointer<Design> design) const = 0;
 
     /*!
      *  Remove existing connections from the selected list of connections.

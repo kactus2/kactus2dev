@@ -26,6 +26,12 @@
 #include <editors/common/ComponentItemAutoConnector/AutoConnectorItem.h>
 #include <editors/common/ComponentItemAutoConnector/ComponentItemAutoConnector.h>
 
+#include <editors/HWDesign/HWConnection.h>
+#include <editors/HWDesign/HWAddCommands.h>
+#include <editors/HWDesign/undoCommands/ConnectionDeleteCommand.h>
+#include <editors/HWDesign/undoCommands/AdHocConnectionDeleteCommand.h>
+#include <editors/HWDesign/AdHocConnectionItem.h>
+
 #include <KactusAPI/include/LibraryHandler.h>
 
 #include <QGraphicsSceneMouseEvent>
@@ -236,26 +242,50 @@ void ComponentDesignDiagram::onOpenDesignAction(QAction* selectedAction)
 void ComponentDesignDiagram::onOpenAutoConnector()
 {
     ComponentItemAutoConnector* autoConnector = createAutoConnector(contextMenuItem_);
-    if (autoConnector && autoConnector->exec() == QDialog::Accepted)
+    if (!autoConnector)
     {
-        QVector<QPair<AutoConnectorItem*, AutoConnectorItem*> > autoConnections =
+        return;
+    }
+    
+    auto currentlyConnectedItems = autoConnector->getConnectedItems();
+    
+    if (autoConnector->exec() == QDialog::Accepted)
+    {
+        QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > updatedConnections =
             autoConnector->getConnectedItems();
 
-        if (!autoConnections.isEmpty())
+        removeUnchangedConnectionEditorConnections(currentlyConnectedItems, updatedConnections);
+            
+        // Now currentlyConnectedItems contain connections that have been removed, and updatedConnections
+        // contains new connections.
+
+        // Create top level undocommand
+        QSharedPointer<QUndoCommand> topUndo(new QUndoCommand());
+
+        createAddCommandsForGivenConnections(updatedConnections, topUndo.data());
+
+        createRemoveCommandsForGivenConnections(currentlyConnectedItems, topUndo.data());
+
+        if (topUndo->childCount() > 0)
         {
-            for (auto connectionItem : autoConnections)
-            {
-                ConnectionEndpoint* startPointItem = getEndPointForItem(connectionItem.first);
-                ConnectionEndpoint* endPointItem = getEndPointForItem(connectionItem.second);
-
-                if (startPointItem && endPointItem)
-                {
-                    createConnectionBetweenEndPoints(startPointItem, endPointItem);
-                }
-            }
-
-            emit contentChanged();
+            topUndo->redo();
+            getEditProvider()->addCommand(topUndo);
         }
+
+        // Delete temporary connections.
+        for (auto [startItem, endItem] : updatedConnections)
+        {
+            delete startItem;
+            delete endItem;
+        }
+
+        emit contentChanged();
+    }
+
+    for (auto [startItem, endItem] : currentlyConnectedItems)
+    {
+        delete startItem;
+        delete endItem;
     }
 }
 
@@ -280,6 +310,7 @@ QString ComponentDesignDiagram::getVisibleNameForComponentItem(ComponentItem* it
 void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     lastMousePress_ = mouseEvent->button();
+    lastHoveredEndpoint_ = nullptr; // Prevent invalid recoloring of last hovered endpoint.
 
     // if other than left button was pressed return the mode back to select
 	if (mouseEvent->button() != Qt::LeftButton)
@@ -431,6 +462,84 @@ void ComponentDesignDiagram::ensureMovedItemVisibility(QGraphicsSceneMouseEvent*
         }
 
         firstView->ensureVisible(itemRectangle, sideMargin);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::removeUnchangedConnectionEditorConnections()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::removeUnchangedConnectionEditorConnections(QList<QPair<AutoConnectorItem*, AutoConnectorItem*> >& originalConnections, QList<QPair<AutoConnectorItem*, AutoConnectorItem*> >& updatedConnections) const
+{
+    // Remove unchanged connections from updatedConnections and previously connected items
+    auto unchangedItemsEnd = std::partition(updatedConnections.begin(), updatedConnections.end(),
+        [&originalConnections](QPair<AutoConnectorItem*, AutoConnectorItem*> itemPair)
+        {
+            for (auto curr_it = originalConnections.begin(); curr_it != originalConnections.end(); curr_it++)
+            {
+                if (*curr_it->first == *itemPair.first && *curr_it->second == *itemPair.second)
+                {
+                    // Remove pair from previously connected items
+                    delete curr_it->first;
+                    delete curr_it->second;
+                    originalConnections.erase(curr_it);
+                    return true;
+                }
+            }
+
+            return false;
+        });
+
+    // Remove unchanged pairs from updated connections.
+    std::for_each(updatedConnections.begin(), unchangedItemsEnd,
+        [](QPair<AutoConnectorItem*, AutoConnectorItem*> itemPair)
+        {
+            delete itemPair.first;
+            delete itemPair.second;
+        });
+
+    updatedConnections.erase(updatedConnections.begin(), unchangedItemsEnd);
+    // originalConnections now only contains connections to be removed and updatedConnections contains connections 
+    // to be added.
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::createAddCommandsForGivenConnections()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::createAddCommandsForGivenConnections(
+    QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > const& connections, QUndoCommand* parentCommand)
+{
+    for (auto const& [startPointItem, endPointItem] : connections)
+    {
+        ConnectionEndpoint* startPoint = getEndPointForItem(startPointItem, parentCommand);
+        ConnectionEndpoint* endPoint = getEndPointForItem(endPointItem, parentCommand);
+
+        auto createdConnection = createConnection(startPoint, endPoint);
+
+        createAddCommandForConnection(createdConnection, parentCommand);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::createRemoveCommandsForGivenConnections()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::createRemoveCommandsForGivenConnections(QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > const& connections, QUndoCommand* parentCommand)
+{
+    for (auto const& [startPointItem, endPointItem] : connections)
+    {
+        ConnectionEndpoint* startPoint = getEndPointForItem(startPointItem);
+        ConnectionEndpoint* endPoint = getEndPointForItem(endPointItem);
+
+        if (auto connection = getConnectionBetweenEndpoints(startPoint, endPoint))
+        {
+            if (connection->type() == GraphicsItemTypes::GFX_TYPE_DIAGRAM_ADHOC_CONNECTION)
+            {
+                new AdHocConnectionDeleteCommand(this, static_cast<AdHocConnectionItem*>(connection), parentCommand);
+            }
+            else if (connection->type() == GraphicsItemTypes::GFX_TYPE_DIAGRAM_INTERCONNECTION)
+            {
+                new ConnectionDeleteCommand(this, static_cast<HWConnection*>(connection), parentCommand);
+            }
+        }
     }
 }
 
@@ -1000,7 +1109,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
         if (tempConnection_->endpoint1()->canConnect(tempConnection_->endpoint2()) &&
             tempConnection_->endpoint2()->canConnect(tempConnection_->endpoint1()))
         {
-            QSharedPointer<QUndoCommand> cmd = createAddCommandForConnection(tempConnection_);
+            auto cmd = QSharedPointer<QUndoCommand>(createAddCommandForConnection(tempConnection_));
             cmd->redo();
 
             tempConnection_->fixOverlap();
@@ -1032,6 +1141,42 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
     {        
         discardConnection();
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getConnectionBetweenEndpoints()
+//-----------------------------------------------------------------------------
+GraphicsConnection* ComponentDesignDiagram::getConnectionBetweenEndpoints(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
+{
+    if (startPoint && endPoint)
+    {
+        // Check off-page endpoints if no connections are found.
+        if (startPoint->getConnections().isEmpty())
+        {
+            startPoint = startPoint->getOffPageConnector();
+        }
+
+        if (endPoint->getConnections().isEmpty())
+        {
+            endPoint = endPoint->getOffPageConnector();
+        }
+
+        if (!startPoint || !endPoint)
+        {
+            return nullptr;
+        }
+
+        for (auto connection : startPoint->getConnections())
+        {
+            if ((connection->endpoint1() == startPoint && connection->endpoint2() == endPoint) ||
+                (connection->endpoint1() == endPoint && connection->endpoint2() == startPoint))
+            {
+                return connection;
+            }
+        }
+    }
+
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

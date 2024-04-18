@@ -24,6 +24,8 @@ class AutoConnector;
 class Component;
 class TableItemMatcher;
 class TableAutoConnector;
+class Design;
+class ListFiller;
 
 //-----------------------------------------------------------------------------
 //! Automatically connects the ports and bus interfaces of two component items.
@@ -51,10 +53,13 @@ public:
     struct TableTools 
     {
         //! Table Item matcher.
-        TableItemMatcher* itemMatcher_;
+        QSharedPointer<TableItemMatcher> itemMatcher_;
 
         //! Table auto connector.
-        TableAutoConnector* tableConnector_;
+        QSharedPointer<TableAutoConnector> tableConnector_;
+
+        //! The table list filler.
+        QSharedPointer<ListFiller> listFiller_;
     };
 
     /*!
@@ -65,11 +70,12 @@ public:
      *      @param [in] busTableTools       Auto connector tools for the bus interface item connector.
      *      @param [in] portTableTools      Auto connector tools for the port item connector.
      *      @param [in] secondItemType      Type of the second item container.
+     *      @param [in] design              The design containing the items to connect.
      *      @param [in] parent              The parent of this widget.
      */
-    ComponentItemAutoConnector(AutoContainer const& firstContainer, AutoContainer const& secondContainer,
-        TableTools const& busTableTools, TableTools const& portTableTools,
-        AutoConnectorItem::ContainerType secondItemType, QWidget* parent = 0);
+    ComponentItemAutoConnector(AutoContainer const& firstContainer, AutoContainer const& secondContainer, 
+        TableTools const& busTableTools, TableTools const& portTableTools, 
+        AutoConnectorItem::ContainerType secondItemType, QSharedPointer<Design> design, QWidget* parent = 0);
 
     /*!
      *  Destructor.
@@ -104,6 +110,8 @@ private slots:
      */
     void autoConnectItems();
 
+    void onFinishClicked();
+
 private:
 
     /*!
@@ -131,6 +139,11 @@ private:
      *      @return The intro widget.
      */
     QWidget* setupIntroWidget(QString const& introName, QString const& introText) const;
+
+    /*!
+     *	Populates the connection tables with already connected items.  
+     */
+    void connectAlreadyConnected();
 
     //-----------------------------------------------------------------------------
     // Data.
@@ -162,6 +175,9 @@ private:
 
     //! Type of the second item container.
     AutoConnectorItem::ContainerType secondContainerType_;
+
+    //! The design containing the items to connect.
+    QSharedPointer<Design> design_;
 };
 
 //-----------------------------------------------------------------------------

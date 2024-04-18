@@ -21,6 +21,7 @@ class BusDefinition;
 
 class Component;
 class BusInterface;
+class Design;
 
 class LibraryInterface;
 
@@ -70,6 +71,19 @@ private:
      */
     virtual QVector<QPair<QString, QVector<QString> > > findPossibleCombinations(
         QSharedPointer<Component> firstComponent, QSharedPointer<Component> secondComponent) const;
+
+    /*!
+     *	Find items that are already connected to populate the connection table with.
+     *  
+     *      @param [in] firstInstanceName   The first component.
+     *      @param [in] secondInstanceName  The second component.
+     *      @param [in] design              The containing design.
+     *	    
+     * 	    @return List of item connected item pairs.
+     */
+    virtual QList<QPair<QString, QString > > findAlreadyConnectedItems(
+        QString const& firstInstanceName, QString const& secondInstanceName,
+        QSharedPointer<Design> design) const override;
 
     /*!
      *  Get the names of the connectible bus interfaces for the selected bus interface.

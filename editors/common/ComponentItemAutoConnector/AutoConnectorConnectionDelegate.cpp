@@ -18,7 +18,7 @@
 //-----------------------------------------------------------------------------
 AutoConnectorConnectionDelegate::AutoConnectorConnectionDelegate(QSharedPointer<Component> firstComponent,
     QSharedPointer<Component> secondComponent, QListView* firstList, QListView* secondList,
-    TableItemMatcher* itemMatcher, QObject* parent):
+    QSharedPointer<TableItemMatcher> itemMatcher, QObject* parent):
 QStyledItemDelegate(parent),
 firstComponent_(firstComponent),
 secondComponent_(secondComponent),

@@ -51,6 +51,19 @@ private:
      */
     virtual QVector<General::InterfaceMode> getCompatibleInterfaceModes(General::InterfaceMode const& busMode)
         const;
+
+    /*!
+     *	Find items that are already connected to populate the connection table with.
+     *
+     *      @param [in] firstInstanceName   The first component.
+     *      @param [in] secondInstanceName  The second component.
+     *      @param [in] design              The containing design.
+     *
+     * 	    @return List of item connected item pairs.
+     */
+    virtual QList<QPair<QString, QString > > findAlreadyConnectedItems(
+        QString const& firstInstanceName, QString const& secondInstanceName,
+        QSharedPointer<Design> design) const override;
 };
 
 //-----------------------------------------------------------------------------

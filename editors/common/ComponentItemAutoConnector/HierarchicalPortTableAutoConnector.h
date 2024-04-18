@@ -16,6 +16,8 @@
 
 #include <editors/common/ComponentItemAutoConnector/PortTableAutoConnector.h>
 
+class Design;
+
 //-----------------------------------------------------------------------------
 //! Automatically connects ports of two components.
 //-----------------------------------------------------------------------------
@@ -48,6 +50,19 @@ private:
      */
     virtual QVector<DirectionTypes::Direction> getConnectableDirections(DirectionTypes::Direction portDirection)
         const;
+
+    /*!
+     *	Find items that are already connected to populate the connection table with.
+     *
+     *      @param [in] firstInstanceName   The first component.
+     *      @param [in] secondInstanceName  The second component.
+     *      @param [in] design              The containing design.
+     *
+     * 	    @return List of item connected item pairs.
+     */
+    virtual QList<QPair<QString, QString > > findAlreadyConnectedItems(
+        QString const& firstInstanceName, QString const& secondInstanceName,
+        QSharedPointer<Design> design) const override;
 };
 
 //-----------------------------------------------------------------------------

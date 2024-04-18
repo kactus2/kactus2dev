@@ -54,8 +54,6 @@ public:
     TableItemMatcher(TableItemMatcher const& rhs) = delete;
     TableItemMatcher& operator=(TableItemMatcher const& rhs) = delete;
 
-private:
-
     /*!
      *  Check if the selected items can be connected.
      *

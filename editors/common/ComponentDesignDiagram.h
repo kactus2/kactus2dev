@@ -414,7 +414,17 @@ private:
      *
      *      @return The created add command.
      */
-    virtual QSharedPointer<QUndoCommand> createAddCommandForConnection(GraphicsConnection* connection) = 0;
+    virtual QUndoCommand* createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand = nullptr) = 0;
+    
+    /*!
+     *	Get the connection between two given endpoints.
+     *  
+     *      @param [in] startPoint  The start endpoint.
+     *      @param [in] endPoint    The ending endpoint.   
+     *	    
+     * 	    @return The connection between the endpoints, or nullptr if not found or if either endpoint doesn't exist.
+     */
+    [[nodiscard]] virtual GraphicsConnection* getConnectionBetweenEndpoints(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
 
     /*!
      *  Checks if the ending point of current connection is set.
@@ -562,7 +572,7 @@ private:
      *
      *      @return The end point item for the selected auto connector item.
      */
-    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem) = 0;
+    virtual ConnectionEndpoint* getEndPointForItem(AutoConnectorItem* connectorItem, QUndoCommand* parentUndoCommand = nullptr) = 0;
 
     /*!
      *  Create connection between the selected end points.
@@ -595,6 +605,33 @@ private:
      *      @param [in] mouseEvent  The mouse event.
      */
     void ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent);
+
+    /*!
+     *	Removes pre-existing connections from list returned by connection editor.
+     *  
+     *      @param [in/out] originalConnections     List containing the original connections. 
+     *                                              Gets modified to contain only connections to be removed.
+     *      @param [in/out] updatedConnections      List containing the connections returned by connection editor. 
+     *                                              Gets modified to contain only new connections.
+     */
+    void removeUnchangedConnectionEditorConnections(QList<QPair<AutoConnectorItem*, AutoConnectorItem*> >& originalConnections,
+        QList<QPair<AutoConnectorItem*, AutoConnectorItem*> >& updatedConnections) const;
+
+    /*!
+     *	Creates add commands for given connections.
+     *  
+     *      @param [in] connections     Connections to create add commands for.
+     *      @param [in] parentCommand   The parent command for the created add commands.
+     */
+    void createAddCommandsForGivenConnections(QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > const& connections, QUndoCommand* parentCommand);
+
+    /*!
+     *	Creates remove commands for given connections.
+     *
+     *      @param [in] connections     Connections to create remove commands for.
+     *      @param [in] parentCommand   The parent command for the created remove commands.
+     */
+    void createRemoveCommandsForGivenConnections(QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > const& connections, QUndoCommand* parentCommand);
 
     //-----------------------------------------------------------------------------
     // Data.
