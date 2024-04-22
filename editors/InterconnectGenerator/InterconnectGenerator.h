@@ -38,6 +38,8 @@ public:
 
     void createPhysPorts(QSharedPointer<Component> comp, QString busName);
 
+    void createRstorClkInterface(std::string busName, int index);
+
     //! No copying. No assignment.
     InterconnectGenerator(const InterconnectGenerator& other) = delete;
     InterconnectGenerator& operator=(const InterconnectGenerator& other) = delete;
@@ -88,6 +90,8 @@ private:
     std::string prefix_;
 
     VLNV busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:AXI4LITE:1.0");
+    VLNV rstVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:reset:1.0");
+    VLNV clkVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:clock:1.0");
 
 };
 
