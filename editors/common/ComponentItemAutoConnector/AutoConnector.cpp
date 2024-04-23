@@ -120,10 +120,10 @@ void AutoConnector::setupLayout(QString const& firstComponentName, QString const
     connectorTableTools_.listFiller_->initializeList(firstListModel, firstComponentContainer_.component_);
     connectorTableTools_.listFiller_->initializeList(secondListModel, secondComponentContainer_.component_);
 
-    firstListFilter_ = new AutoConnectorListFilter(connectorTable_, 0, firstHideBox);
+    firstListFilter_ = new AutoConnectorListFilter(connectorTable_, 0, firstHideBox, this);
     firstListFilter_->setSourceModel(firstListModel);
     firstItemList_->setModel(firstListFilter_);
-    secondListFilter_ = new AutoConnectorListFilter(connectorTable_, 1, secondHideBox);
+    secondListFilter_ = new AutoConnectorListFilter(connectorTable_, 1, secondHideBox, this);
     secondListFilter_->setSourceModel(secondListModel);
     secondItemList_->setModel(secondListFilter_);
 }

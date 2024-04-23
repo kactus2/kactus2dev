@@ -192,7 +192,7 @@ void ConfigurationEditor::createAndSaveConfiguration(CreateConfigurationDialog c
     VLNV const& configurationVLNV = dialog.getConfigurationVLNV();
 
     // Create the configuration.
-    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configurationVLNV, Document::Revision::Unknown));
+    QSharedPointer<DesignConfiguration> designConfiguration(new DesignConfiguration(configurationVLNV, topComponent_->getRevision()));
     designConfiguration->setDesignConfigImplementation(KactusAttribute::HW);
     designConfiguration->setVersion(VersionHelper::versionFileStr());
 
@@ -205,7 +205,7 @@ void ConfigurationEditor::createAndSaveConfiguration(CreateConfigurationDialog c
     // Create a new design.
     else if (dialog.designSelection() == CreateConfigurationDialog::CREATE_EMPTY)
     {
-        QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV, Document::Revision::Std14));
+        QSharedPointer<Design> design = QSharedPointer<Design>(new Design(designVLNV, topComponent_->getRevision()));
         library_->writeModelToFile(directoryPath, design);
 
         designConfiguration->setDesignRef(designVLNV);
