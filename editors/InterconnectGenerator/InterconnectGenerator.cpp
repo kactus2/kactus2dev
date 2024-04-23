@@ -226,12 +226,14 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 
 void InterconnectGenerator::createRstorClkInterface(std::string busName, int index)
 {
-    std::string modeString = "target";
+    General::InterfaceMode mode = General::TARGET;
 
     if(interconComponent_->getRevision() == Document::Revision::Std14)
     {
-        modeString = "slave";
+        mode = General::SLAVE;
     }
+
+    std::string modeString = General::interfaceMode2Str(mode).toStdString();
 
     createBusInterface(busName, modeString, index);
 
@@ -239,6 +241,8 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
     PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
     PortsInterface* portInf = portMapInf->getPhysicalPortInterface();
     PortAbstractionInterface* portAbsInf = portMapInf->getLogicalPortInterface();
+
+    portMapInf->setupPhysicalPorts(interconComponent_->getPorts());
 
     messager_->showMessage(QString("Interface mode name %1").arg(General::interfaceMode2Str(portMapInf->getInterfaceMode())));
 
@@ -248,7 +252,8 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
         int portIndex = portAbsInf->getItemIndex(portName);
 
         portInf->addWirePort(portName);
-        portInf->setDirection(portName, DirectionTypes::direction2Str(portAbsInf->getDirection(portIndex)).toStdString());
+
+        portInf->setDirection(portName, DirectionTypes::direction2Str(portAbsInf->getDirection(portName,mode,"")).toStdString());
 
         uint leftBound = 0;
         bool signalIntegerOk = false;
@@ -269,8 +274,6 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
         portMapInf->setLogicalPort(portIndex, portName);
 
         portMapInf->connectPorts(portName, portName);
-
-        //portMapInf->setupPhysicalPorts(interconComponent_->getPorts());
 
     }
 }
