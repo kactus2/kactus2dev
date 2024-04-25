@@ -29,7 +29,7 @@
         <section title="IP-XACT 2022">
           <section title="Bus Definition" ref="definitions/busdefinition2022.html"/>
           <section title="Abstraction Definition" ref="definitions/abstractiondefinition2022.html"/>
-          <!--section title="Catalog" ref="definitions/catalog.html" /-->
+          <section title="Catalog" ref="definitions/catalog.html"/>
           <section title="Component" ref="componenteditor/componenteditor.html">
             <section title="General" ref="componenteditor/general2022.html" />
             <section title="File sets" ref="componenteditor/filesets.html">
@@ -82,10 +82,10 @@
               <section title="Wire ports" ref="componenteditor/wirePorts.html" />
               <section title="Transactional ports" ref="componenteditor/transactionalPorts.html" />
             </section>
-            <!--section title="Bus interfaces" ref="componenteditor/businterfaces.html"-->
-              <!--section title="Bus interface" ref="componenteditor/businterfacegeneral.html" /-->
-              <!--section title="Portmaps" ref="componenteditor/portmaps.html" /-->
-            <!--/section-->
+            <section title="Bus interfaces" ref="componenteditor/businterfaces2022.html">
+              <section title="Bus interface" ref="componenteditor/businterfacegeneral2022.html"/>
+              <section title="Portmaps" ref="componenteditor/portmaps2022.html"/>
+            </section>
             <section title="Indirect interfaces" ref="componenteditor/indirectInterfaces.html">
               <section title="Single indirect interface" ref="componenteditor/indirectInterface2022.html" />
             </section>
@@ -107,13 +107,13 @@
             </section>
             <section title="Software properties" ref="componenteditor/swproperties.html" />
           </section>
-          <!--section title="HW Design" ref="hwdesign/hwdesign.html"-->
-            <!--section title="Component Instance" ref="hwdesign/hwinstance.html" /-->
-            <!--section title="Bus Interface" ref="hwdesign/busport.html" /-->
-            <!--section title="Interconnection" ref="hwdesign/connection.html" /-->
-            <!--section title="Ad-hoc Port" ref="hwdesign/adhocport.html" /-->
-            <!--section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" /-->
-          <!--/section-->
+          <section title="HW Design" ref="hwdesign/hwdesign.html">
+            <section title="Component Instance" ref="hwdesign/hwinstance2022.html" />
+            <section title="Bus Interface" ref="hwdesign/busport2022.html" />
+            <section title="Interconnection" ref="hwdesign/connection.html" />
+            <section title="Ad-hoc Port" ref="hwdesign/adhocport.html" />
+            <section title="Ad-hoc Connection" ref="hwdesign/adhocconnection.html" />
+          </section>
         </section>
         <section title="IP-XACT 2014">
           <section title="Bus Definition" ref="definitions/busdefinition.html"/>
