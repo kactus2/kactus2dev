@@ -65,12 +65,12 @@ private:
     //! Formatter for expressions.
     QSharedPointer<ExpressionFormatter>expressionFormatter_{ new ExpressionFormatter(parameterFinder_) };
 
+    //! Interface for accessing bus interfaces.
+    BusInterfaceInterface* busInfInterface_{ nullptr };
+
     //! Validator for ports.
     QSharedPointer<PortValidator> portValidator_{ new PortValidator(expressionParser_,
         QSharedPointer<QList<QSharedPointer<View> > >()) };
-
-    //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInfInterface_{ nullptr };
 
     //! Interface for accessing the component ports.
     PortsInterface* portsInterface_{ new PortsInterface(portValidator_, expressionParser_, expressionFormatter_) };

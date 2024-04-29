@@ -13,9 +13,6 @@ InterconnectGenerator::InterconnectGenerator(LibraryInterface* library,  Message
 {
     library_ = library;
     messager_ = messager;
-    busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
-            expressionFormatter_, expressionParser_,
-            QSharedPointer<Component>(new Component(VLNV(), Document::Revision::Unknown)), library_);
 }
 
 VLNV InterconnectGenerator::generate(std::string sDesignVLNV, std::string sInterconVLNV)
@@ -49,13 +46,15 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
     component->setFirmness(KactusAttribute::MUTABLE);
     component->setImplementation(KactusAttribute::HW);
     component->setVersion("1.0");
-
-
-    portValidator_->componentChange(component->getViews());
-    portsInterface_->setPorts(component->getPorts());
-    busInfInterface_->setBusInterfaces(component);
-    absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
     interconComponent_ = component;
+
+    parameterFinder_->setComponent(interconComponent_);
+
+    busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
+            expressionFormatter_, expressionParser_, interconComponent_, library_);
+
+    busInfInterface_->setBusInterfaces(interconComponent_);
+    absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
 
     //instanceInterface_->addComponentInstance("interconnect");
     //instanceInterface_->setComponentReference("interconnect", VLNV.getVendor().toStdString(), VLNV.getLibrary().toStdString(),
@@ -210,8 +209,20 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 {
     messager_->showMessage("Populating model with ports");
 
+    parameterFinder_->setComponent(comp);
+    portValidator_->componentChange(comp->getViews());
+    portsInterface_->setPorts(comp->getPorts());
+
+    for(QString portID : parameterFinder_->getAllParameterIds()){
+         messager_->showMessage(QString("Parameter ID %1 found for comp").arg(portID));
+    }
+
     for(QSharedPointer<Port> port : comp->getPortsMappedInInterface(busName))
     {
+        std::string leftBound = portsInterface_->getLeftBoundValue(port->name().toStdString());
+
+        messager_->showMessage(QString("Port left bound %1").arg(QString::fromStdString(leftBound)));
+
         QSharedPointer<Port> newPort( new Port(*port));
 
         QString newName = QString::fromStdString(prefix_) + newPort->name();
@@ -219,9 +230,12 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
 
         DirectionTypes::Direction newDir = DirectionTypes::convert2Mirrored(newPort->getDirection());
         newPort->setDirection(newDir);
-
+        if(leftBound != ""){
+        newPort->setLeftBound(QString::fromStdString(leftBound));
+        }
         interconComponent_->getPorts()->append(newPort);
     }
+    parameterFinder_->setComponent(interconComponent_);
 }
 
 void InterconnectGenerator::createRstorClkInterface(std::string busName, int index)
