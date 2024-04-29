@@ -468,7 +468,14 @@ void BusInterfacePortMapTab::onDirectionFilterChanged(QString const& newDirectio
 void BusInterfacePortMapTab::showEvent(QShowEvent* event)
 {
     QWidget::showEvent(event);
-    emit helpUrlRequested("componenteditor/portmaps.html");
+    if (component_->getRevision() == Document::Revision::Std14)
+    {
+        emit helpUrlRequested("componenteditor/portmaps.html");
+    }
+    else if (component_->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("componenteditor/portmaps2022.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

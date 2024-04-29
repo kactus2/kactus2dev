@@ -223,7 +223,14 @@ void CatalogEditor::showStdRevisionMismatchWarning()
 void CatalogEditor::showEvent(QShowEvent* event)
 {
     TabDocument::showEvent(event);
-    emit helpUrlRequested("definitions/catalog.html");
+    if (catalog_->getRevision() == Document::Revision::Std14)
+    {
+        emit helpUrlRequested("definitions/catalog.html");
+    }
+    else if (catalog_->getRevision() == Document::Revision::Std22)
+    {
+        emit helpUrlRequested("definitions/catalog2022.html");
+    }
 }
 
 //-----------------------------------------------------------------------------

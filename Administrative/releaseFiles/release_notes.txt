@@ -8,6 +8,23 @@
               * Changed or Information
 ===============================================================================
 
+23/04/2024 3.13.2
+----------------------------------------------------
++ HW Design improvements
+  * Added interconnection highlighting when hovered over
+  * Widened interconnection hitboxes to make them easier to select
+  * Added checks for double connections between component instances
+  * Reworked component instance auto connector tool to enable editing existing connections between component instances
+* Reworked memory designer
+- Fixed source importers not detecting filetype of files with absolute paths
+- Fixed creating new design configurations in the HW design configuration editor
+- Fixed AUB editors in memory map to accept expressions, AUB defaults to 8 bits when empty
+- Fixed crash in bus interface wizard caused by non-existent abstraction definition
+- Fixed the created bus interface from bus interface wizard not appearing in the editor
+- Fixed validation in abstraction definition ports editor
+- Fixed coloring of mirrored initiator interfaces
+- Fixed logical port creation for abstraction definitions in bus interface wizard
+
 13/02/2024 3.13.1
 ----------------------------------------------------
 + Prevent drag & drop between cross-standard revision components, designs etc.

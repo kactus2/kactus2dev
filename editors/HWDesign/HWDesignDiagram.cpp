@@ -1220,26 +1220,33 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
     // Activate the correct views when something has been selected.
     if (newSelection != nullptr)
     {
+        QString revisionSuffix;
+
+        if (getDesign()->getRevision() == Document::Revision::Std22)
+        {
+            revisionSuffix = QStringLiteral("2022");
+        }
+
         // Check if the selected item was a component.
         if (newSelection->type() == HWComponentItem::Type)
         {
             auto comp = qgraphicsitem_cast<HWComponentItem *>(newSelection);
             emit componentSelected(comp);
-            emit helpUrlRequested(QStringLiteral("hwdesign/hwinstance.html"));
+            emit helpUrlRequested(tr("hwdesign/hwinstance%1.html").arg(revisionSuffix));
         }
         // Check if the selected item was a port.
         else if (newSelection->type() == ActiveBusInterfaceItem::Type)
         {
             auto port = qgraphicsitem_cast<ActiveBusInterfaceItem*>(newSelection);
             emit interfaceSelected(port);
-            emit helpUrlRequested(QStringLiteral("hwdesign/busport.html"));
+            emit helpUrlRequested(tr("hwdesign/busport%1.html").arg(revisionSuffix));
         }
         // Check if the selected item was an interface.
         else if (newSelection->type() == HierarchicalBusInterfaceItem::Type)
         {
             auto interface = qgraphicsitem_cast<HierarchicalBusInterfaceItem*>(newSelection);
             emit interfaceSelected(interface);
-            emit helpUrlRequested(QStringLiteral("hwdesign/busport.html"));
+            emit helpUrlRequested(tr("hwdesign/busport%1.html").arg(revisionSuffix));
         }
         // Check if the selected item was an ad-hoc port.
         else if (newSelection->type() == ActivePortItem::Type)

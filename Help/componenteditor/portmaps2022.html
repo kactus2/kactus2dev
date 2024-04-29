@@ -33,8 +33,8 @@
             <b>Auto connect.</b> Creates a single port map for each logical signal that does not have a port map.
             A suitable physical port is selected by matching the direction, type, size and the name of the logical
             signal to physical ports. If <b>Physical port prefix</b> has been set, physical ports starting with the
-            given string will be prioritized in the connections. For example using prefix "master" will connect
-            logical port 'CLK' to physical port 'master_clk' over ports 'clk', 'slave_clk' etc.
+            given string will be prioritized in the connections. For example using prefix "initiator" will connect
+            logical port 'CLK' to physical port 'initiator_clk' over ports 'clk', 'target_clk' etc.
         </li>
     </ul>
 
@@ -165,10 +165,10 @@
     </p>
     <p>
         Picture below depicts how the physical ports between two component instances are connected through their
-        bus interfaces.<br> <img src="../images/PortmapVisualization.png"
-        alt="The association between physical ports and logical signals"><br> The physical ports of the component
-        A are on the left and those of component B on the right. Logical signals are in the middle and the lines
-        denote port mappings.  For example component A has mapped its port 'comm_out' to the logical signal 'COMM'
+        bus interfaces (note: in this picture the interface mode names used are of the old 2014 standard).<br>
+        <img src="../images/PortmapVisualization.png" alt="The association between physical ports and logical signals"><br>
+        The physical ports of the component A are on the left and those of component B on the right. Logical signals are in the middle and the lines
+        denote port mappings. For example component A has mapped its port 'comm_out' to the logical signal 'COMM'
         and component B has mapped its port comm_in to it.  When user connects these interfaces together in a
         design, the physical ports get connected.
         <br>
@@ -176,7 +176,7 @@
         abstraction definition need to be associated with a physical port. Abstraction definition defines the
         directions of the signals in different interface modes thus making it possible to validate connections so
         that two output ports are not accidentally connected to each other. In the figure above the abstraction
-        definition could have defined the DATA signal to have direction out in master interfaces and in at slave
+        definition could have defined the DATA signal to have direction out in initiator interfaces and in at target 
         interfaces.
     </p>
     <p>
