@@ -172,7 +172,7 @@ bool Component::isOpaqueBridge() const
             for (auto const& memoryBlock : *memMap->getMemoryBlocks())
             {
                 if (auto subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();
-                    !subspaceMap->getInitiatorReference().isEmpty())
+                    subspaceMap && !subspaceMap->getInitiatorReference().isEmpty())
                 {
                     return true;
                 }
