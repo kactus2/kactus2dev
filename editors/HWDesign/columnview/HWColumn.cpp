@@ -53,7 +53,7 @@ bool HWColumn::isItemAllowed(QGraphicsItem* item, unsigned int allowedItems) con
         // Check if this is a packaged component (and has a strict type).
         if (comp->getVlnv().isValid())
         {
-            return ((comp->isBridge() && (allowedItems & ColumnTypes::BRIDGE)) ||
+            return (((comp->isTransparentBridge() || comp->isOpaqueBridge()) && (allowedItems & ColumnTypes::BRIDGE)) ||
                 (comp->isChannel() && (allowedItems & ColumnTypes::CHANNEL)) ||
                 (!comp->isBus() && (allowedItems & ColumnTypes::COMPONENT)));
         }

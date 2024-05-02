@@ -121,9 +121,9 @@ QSharedPointer<QList<QSharedPointer<TransparentBridge> > > TargetInterface::getB
 }
 
 //-----------------------------------------------------------------------------
-// Function: TargetInterface::hasBridge()
+// Function: TargetInterface::hasTransparentBridge()
 //-----------------------------------------------------------------------------
-bool TargetInterface::hasBridge() const
+bool TargetInterface::hasTransparentBridge() const
 {
     return !bridges_->isEmpty();
 }

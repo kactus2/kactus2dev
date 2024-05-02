@@ -1366,7 +1366,7 @@ bool ComponentDesignDiagram::componentItemIsAllowedInColumnAtPosition(QPointF co
     {
         ColumnTypes::ColumnItemType itemType = ColumnTypes::COMPONENT;
 
-        if (draggedComponent->isBridge())
+        if (draggedComponent->isTransparentBridge() || draggedComponent->isOpaqueBridge())
         {
             itemType = ColumnTypes::BRIDGE;
         }

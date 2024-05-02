@@ -104,11 +104,18 @@ public:
 	bool isChannel() const;
 
 	/*!
-     *  Does the component contain a bridge element.
+     *  Does the component contain a transparent bridge element.
 	 *
-	 *      @return True if a bridge-element is found.
+	 *      @return True if a transparent bridge element is found.
 	 */
-	bool isBridge() const;
+	bool isTransparentBridge() const;
+
+	/*!
+	 *  Does the component contain an opaque bridge.
+	 *
+	 *      @return True if an opaque bridge is found.
+	 */
+	bool isOpaqueBridge() const;
 
   	/*!
      *  Is this component a cpu.

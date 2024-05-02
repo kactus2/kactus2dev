@@ -322,11 +322,11 @@ public:
 	void setMirroredTarget(QSharedPointer<MirroredTargetInterface> mirroredTarget);
 
 	/*!
-     *  Does this bus interface have a bridge element defined.
+     *  Does this bus interface have a transparent bridge element defined.
 	 *
 	 *      @return True if a bridge is found, otherwise false.
 	 */
-	bool hasBridge() const;
+	bool hasTransparentBridge() const;
 
 	/*!
      *  Get the attributes of the bus interface.

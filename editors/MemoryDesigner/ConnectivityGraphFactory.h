@@ -323,7 +323,7 @@ private:
      *      @param [in] instanceInterfaces      The graph interfaces for the instanced component.
      *      @param [in/out] graph               The graph to add elements into.
      */
-    void createInteralConnectionsAndDesigns(QSharedPointer<const Component> instancedComponent,
+    void createInternalConnectionsAndDesigns(QSharedPointer<const Component> instancedComponent,
         QSharedPointer<ConnectivityComponent> instanceNode, QString const& instanceName, QString const& activeView,
         QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces,
         QSharedPointer<ConnectivityGraph> graph) const;
@@ -447,16 +447,29 @@ private:
         QSharedPointer<ConnectivityGraph> graph) const;
 
     /*!
-     *  Creates the graph edges for the given bridged bus interface.
+     *  Creates the graph edges for the given transparently bridged bus interface.
      *
-     *      @param [in] busInterface            The interface whose bridges to transform into edge(s).
+     *      @param [in] busInterface            The interface whose bridge(s) to transform into edge(s).
      *      @param [in] instanceName            The name of the containing component instance.
      *      @param [in] instanceInterfaces      The interface vertices of the instance.
      *      @param [in/out] graph               The graph to add elements into.
      */
-    void createInternalConnectionsForBridge(QSharedPointer<const BusInterface> busInterface, 
+    void createInternalConnectionsForTransparentBridge(QSharedPointer<const BusInterface> busInterface, 
         QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces, 
         QSharedPointer<ConnectivityGraph> graph) const;
+
+    /*!
+     *  Creates the graph edges for the given opaquely bridged bus interface.
+     *
+     *      @param [in] busInterface            The interface whose bridge(s) to transform into edge(s).
+     *      @param [in] instanceName            The name of the containing component instance.
+     *      @param [in] instanceInterfaces      The interface vertices of the instance.
+     *      @param [in/out] graph               The graph to add elements into.
+     *      @param [in] component               The containing component.
+     */
+    void createInternalConnectionsForOpaqueBridge(QSharedPointer<const BusInterface> busInterface,
+        QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces,
+        QSharedPointer<ConnectivityGraph> graph, QSharedPointer<const Component> component) const;
 
     /*!
      *  Get the design configuration from the selected view.

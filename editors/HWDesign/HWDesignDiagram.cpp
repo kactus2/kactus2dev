@@ -774,7 +774,7 @@ void HWDesignDiagram::dragEnterEvent(QGraphicsSceneDragDropEvent * event)
             return;
         }
 
-        if (component->isBridge())
+        if (component->isTransparentBridge() ||component->isOpaqueBridge())
         {
             dragCompType_ = ColumnTypes::BRIDGE;
         }
