@@ -181,13 +181,13 @@ bool AbstractionDefinition::hasPort(QString const& portName, General::InterfaceM
             {
                 QSharedPointer<WireAbstraction> portWire = port->getWire();
                 QSharedPointer<TransactionalAbstraction> portTransactional = port->getTransactional();
-                if ((mode == General::MASTER || mode == General::MIRRORED_MASTER) &&
+                if ((mode == General::MASTER || mode == General::MIRRORED_MASTER || mode == General::INITIATOR || mode == General::MIRRORED_INITIATOR) &&
                     ((portWire && portWire->hasMasterPort()) ||
                     (portTransactional && portTransactional->hasMasterPort())))
                 {
                     return true;
                 }
-                else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE) &&
+                else if ((mode == General::SLAVE || mode == General::MIRRORED_SLAVE || mode == General::TARGET || mode == General::MIRRORED_TARGET) &&
                     ((portWire && portWire->hasSlavePort()) ||
                     (portTransactional && portTransactional->hasSlavePort())))
                 {
