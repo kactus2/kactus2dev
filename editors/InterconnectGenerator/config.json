@@ -1,0 +1,27 @@
+{ "VLNV": {
+	"intercon": "test:gen:intercon:1.0",
+	"top": "tuni.fi:subsystem:SysCtrl_SS:1.0",
+	"busDef": "tuni.fi:interface:AXI4LITE:1.0",
+	"clk": "tuni.fi:interface:clock:1.0",
+	"rst": "tuni.fi:interface:reset:1.0" },
+  "Address width": 32,
+  "Bus type": "AXI4Lite",
+  "Id width": 8,
+  "User width": 1,
+  "Targets":[
+	{"index": 0,
+	"Name": "comp1",
+	"Data width": 32,
+	"Address regions":[
+		{"start": "0x00000000",
+		"end": "0x0000ffff"},
+		{"start": "0x00010000",
+		"end": "0x0001ffff"}]},
+	{"index": 1,
+	"Name": "comp2",
+	"Data width": 32,
+	"Address regions":[
+		{"start": "0x00020000",
+		"end": "0x0002ffff"}]}
+	]
+}
