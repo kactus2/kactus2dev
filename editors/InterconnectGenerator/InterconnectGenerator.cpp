@@ -87,7 +87,7 @@ void InterconnectGenerator::findUnconnectedInterface()
                     if(!design_->hasInterconnection(QString::fromStdString(compName), busName))
                     {
                         messager_->showMessage("Unconnected interface found");
-                        prefix_ = "mirror_" + compName + "_";
+                        prefix_ = compName + "_";
                         messager_->showMessage(QString("Original interface mode name %1").arg(General::interfaceMode2Str(busInf->getInterfaceMode())));
                         General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
                         std::string modeString = General::interfaceMode2Str(newMode).toStdString();
@@ -95,7 +95,7 @@ void InterconnectGenerator::findUnconnectedInterface()
 
                         std::string newBusName = prefix_ + busName.toStdString();
 
-                        createBusInterface(newBusName, modeString, index);
+                        createBusInterface(busName.toStdString(), modeString, index);
 
                         createPortMaps(modeString, busInf);
 
@@ -136,17 +136,19 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
         busDef = clkVLNV_;
     }
 
-    messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(busName)));
-    busInfInterface_->addBusInterface(index, busName);
-    busInfInterface_->setMode(busName, modeString);
+    std::string newBusName = prefix_ + busName;
 
-    busInfInterface_->setBustype(busName,busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
+    messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(newBusName)));
+    busInfInterface_->addBusInterface(index, newBusName);
+    busInfInterface_->setMode(newBusName, modeString);
+
+    busInfInterface_->setBustype(newBusName,busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
                                  busDef.getName().toStdString(), busDef.getVersion().toStdString());
 
-    busInfInterface_->addAbstractionType(busName, busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
+    busInfInterface_->addAbstractionType(newBusName, busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
                                          busDef.getName().toStdString()+".absDef", busDef.getVersion().toStdString());
 
-    messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(busName)));
+    messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
 }
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
