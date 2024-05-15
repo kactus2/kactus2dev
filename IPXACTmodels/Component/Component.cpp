@@ -142,7 +142,7 @@ QSharedPointer<Document> Component::clone() const
 //-----------------------------------------------------------------------------
 bool Component::isBus() const
 {
-    return isChannel() || isBridge();
+    return isChannel() || isTransparentBridge() || isOpaqueBridge();
 }
 
 //-----------------------------------------------------------------------------
@@ -156,10 +156,41 @@ bool Component::isChannel() const
 //-----------------------------------------------------------------------------
 // Function: Component::isBridge()
 //-----------------------------------------------------------------------------
-bool Component::isBridge() const
+bool Component::isTransparentBridge() const
 {
     return std::any_of(busInterfaces_->cbegin(), busInterfaces_->cend(),
-        [](auto busif) { return busif->hasBridge(); });
+        [](auto busif) { return busif->hasTransparentBridge(); });
+}
+
+//-----------------------------------------------------------------------------
+// Function: Component::isOpaqueBridge()
+//-----------------------------------------------------------------------------
+bool Component::isOpaqueBridge() const
+{
+    auto memMapHasSubspaceMapWithInitRef = [](QSharedPointer<MemoryMap> memMap)
+        {
+            for (auto const& memoryBlock : *memMap->getMemoryBlocks())
+            {
+                if (auto subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>();
+                    subspaceMap && !subspaceMap->getInitiatorReference().isEmpty())
+                {
+                    return true;
+                }
+            }
+            return false;
+        };
+
+    auto busInterfaceIsBridged = [this, memMapHasSubspaceMapWithInitRef](QSharedPointer<BusInterface> busIf)
+        {
+            if (busIf->getMemoryMapRef().isEmpty())
+            {
+                return false;
+            }
+
+            return std::any_of(memoryMaps_->cbegin(), memoryMaps_->cend(), memMapHasSubspaceMapWithInitRef);
+        };
+
+    return std::any_of(busInterfaces_->cbegin(), busInterfaces_->cend(), busInterfaceIsBridged);
 }
 
 //-----------------------------------------------------------------------------

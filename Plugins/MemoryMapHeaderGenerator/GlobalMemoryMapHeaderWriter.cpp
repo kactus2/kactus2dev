@@ -269,7 +269,7 @@ void GlobalMemoryMapHeaderWriter::parseSlaveInterface(qint64 offset, QSharedPoin
         }*/
     }
 
-    if (slave->hasBridge())
+    if (slave->hasTransparentBridge())
     {
         QStringList masterNames = slave->getMasterReferences();
         foreach (QString masterRef, masterNames)

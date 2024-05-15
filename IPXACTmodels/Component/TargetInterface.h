@@ -97,11 +97,11 @@ public:
 	 */
 	QSharedPointer<QList<QSharedPointer<TransparentBridge> > > getBridges() const;
     
-	/*! Check if the slave is connected to a master interface through bridge.
+	/*! Check if the slave is connected to a master interface through transparent bridge.
 	 *
 	 *      @return True if at least one bridge is found, otherwise false.
 	 */
-	bool hasBridge() const;
+	bool hasTransparentBridge() const;
 
 	/*! Get list of the master interfaces referred to through the contained bridge-elements.
 	 *

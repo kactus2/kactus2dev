@@ -50,6 +50,8 @@
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
+#include <IPXACTmodels/utilities/Search.h>
+
 //-----------------------------------------------------------------------------
 // Function: ConnectivityGraphFactory::ConnectivityGraphFactory()
 //-----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ void ConnectivityGraphFactory::analyzeDesign(QSharedPointer<DesignInstantiation>
             QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces =
                 createInterfacesForInstance(instancedComponent, instanceNode, graph);
 
-            createInteralConnectionsAndDesigns(instancedComponent, instanceNode,
+            createInternalConnectionsAndDesigns(instancedComponent, instanceNode,
                 componentInstance->getInstanceName(), activeView, instanceInterfaces, graph);
 
             interfacesInDesign += instanceInterfaces;
@@ -780,9 +782,9 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectivityGraphFactory::createInteralConnectionsAndDesigns()
+// Function: ConnectivityGraphFactory::createInternalConnectionsAndDesigns()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
+void ConnectivityGraphFactory::createInternalConnectionsAndDesigns(
     QSharedPointer<const Component> instancedComponent, QSharedPointer<ConnectivityComponent> instanceNode,
     QString const& instanceName, QString const& activeView,
     QVector<QSharedPointer<ConnectivityInterface> > instanceInterfaces, QSharedPointer<ConnectivityGraph> graph)
@@ -800,9 +802,13 @@ void ConnectivityGraphFactory::createInteralConnectionsAndDesigns(
 
     for (QSharedPointer<BusInterface> busInterface : *instancedComponent->getBusInterfaces())
     {
-        if (busInterface->hasBridge())
+        if (busInterface->hasTransparentBridge())
         {
-            createInternalConnectionsForBridge(busInterface, instanceName, instanceInterfaces, graph);
+            createInternalConnectionsForTransparentBridge(busInterface, instanceName, instanceInterfaces, graph);
+        }
+        else if (!busInterface->getMemoryMapRef().isEmpty())
+        {
+            createInternalConnectionsForOpaqueBridge(busInterface, instanceName, instanceInterfaces, graph, instancedComponent);
         }
     }
     
@@ -1075,9 +1081,9 @@ void ConnectivityGraphFactory::createInternalConnectionsForChannel(QSharedPointe
 }
 
 //-----------------------------------------------------------------------------
-// Function: ConnectivityGraphFactory::createInternalConnectionsForBridge()
+// Function: ConnectivityGraphFactory::createInternalConnectionsForTransparentBridge()
 //-----------------------------------------------------------------------------
-void ConnectivityGraphFactory::createInternalConnectionsForBridge(QSharedPointer<const BusInterface> busInterface,
+void ConnectivityGraphFactory::createInternalConnectionsForTransparentBridge(QSharedPointer<const BusInterface> busInterface,
     QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces,
     QSharedPointer<ConnectivityGraph> graph) const
 {
@@ -1096,6 +1102,47 @@ void ConnectivityGraphFactory::createInternalConnectionsForBridge(QSharedPointer
 
             QString bridgeName = startInterface->getName() + "_bridge_to_" + endInterface->getName();
             createConnectionData(bridgeName, startInterface, endInterface, graph);
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectivityGraphFactory::createInternalConnectionsForOpaqueBridge()
+//-----------------------------------------------------------------------------
+void ConnectivityGraphFactory::createInternalConnectionsForOpaqueBridge(QSharedPointer<const BusInterface> busInterface, 
+    QString const& instanceName, QVector<QSharedPointer<ConnectivityInterface> > const& instanceInterfaces, 
+    QSharedPointer<ConnectivityGraph> graph, QSharedPointer<const Component> component) const
+{
+    // Find memory map connected to target, look through subspace maps and their initiator references.
+    // Create connections between each referenced initiator and the target connected to memory map.
+
+    auto targetInterface = busInterface->getTarget();
+    auto memMapRef = targetInterface->getMemoryMapRef();
+
+    auto memoryMap = Search::findByName(memMapRef, component->getMemoryMaps());
+    if (!memoryMap)
+    {
+        return;
+    }
+
+    QSharedPointer<ConnectivityInterface> startInterface =
+        getInterface(busInterface->name(), instanceName, instanceInterfaces);
+
+    for (auto const& memoryBlock : *memoryMap->getMemoryBlocks())
+    {
+        if (auto subspaceMap = memoryBlock.dynamicCast<SubSpaceMap>())
+        {
+            startInterface->setBridged();
+
+            QSharedPointer<ConnectivityInterface> endInterface =
+                getInterface(subspaceMap->getInitiatorReference(), instanceName, instanceInterfaces);
+
+            if (endInterface)
+            {
+                QString bridgeName = startInterface->getName() + "_bridge_to_" + endInterface->getName();
+                createConnectionData(bridgeName, startInterface, endInterface, graph);
+                endInterface->setBridged();
+            }
         }
     }
 }

@@ -514,16 +514,16 @@ void BusInterface::setMirroredTarget(QSharedPointer<MirroredTargetInterface> mir
 }
 
 //-----------------------------------------------------------------------------
-// Function: BusInterface::hasBridge()
+// Function: BusInterface::hasTransparentBridge()
 //-----------------------------------------------------------------------------
-bool BusInterface::hasBridge() const
+bool BusInterface::hasTransparentBridge() const
 {
     if (!target_)
     {
         return false;
     }
 
-    return target_->hasBridge();
+    return target_->hasTransparentBridge();
 }
 
 //-----------------------------------------------------------------------------

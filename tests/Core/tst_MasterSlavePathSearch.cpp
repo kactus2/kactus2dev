@@ -23,8 +23,12 @@ namespace PathSearchSpace
 {
     QString const MASTERMODE = "master";
     QString const SLAVEMODE = "slave";
+    QString const INITIATORMODE = "initiator";
+    QString const TARGETMODE = "target";
     QString const MIRROREDMASTERMODE = "mirroredMaster";
     QString const MIRROREDSLAVEMODE = "mirroredSlave";
+    QString const MIRROREDINITIATORMODE = "mirroredInitiator";
+    QString const MIRROREDTARGETMODE = "mirroredTarget";
 }
 
 class tst_MasterSlavePathSearch : public QObject
@@ -48,6 +52,8 @@ private slots:
     void testSpaceChainConnectionWithChainedItemsToDifferentMemoryMaps();
 
     void testContainedConnectionsAreNotExamined();
+
+    void testOpaqueBridgeConnection();
 
 private:
 
@@ -296,6 +302,58 @@ void tst_MasterSlavePathSearch::testContainedConnectionsAreNotExamined()
 }
 
 //-----------------------------------------------------------------------------
+// Function: tst_MasterSlavePathSearch::testOpaqueBridgeConnection()
+//-----------------------------------------------------------------------------
+void tst_MasterSlavePathSearch::testOpaqueBridgeConnection()
+{
+    // Test path search from initiator component initiator to target component target through opaque bridge component.
+    QSharedPointer<ConnectivityComponent> initiatorComponent(new ConnectivityComponent("initiatorComp"));
+    QSharedPointer<ConnectivityComponent> targetComponent(new ConnectivityComponent("targetComp"));
+    QSharedPointer<ConnectivityComponent> bridgeComponent(new ConnectivityComponent("bridgeComp"));
+
+    QSharedPointer<ConnectivityInterface> testInitiatorInterface =
+        createInterfaceWithMemoryItem("initiatorInterface", PathSearchSpace::INITIATORMODE, initiatorComponent, false);
+
+    QSharedPointer<ConnectivityInterface> testTargetInterface =
+        createInterfaceWithMemoryItem("targetInterface", PathSearchSpace::TARGETMODE, targetComponent, false);
+
+    QSharedPointer<ConnectivityInterface> testBridgeTarget =
+        createInterfaceWithMemoryItem("bridgeTarget", PathSearchSpace::TARGETMODE, bridgeComponent, false);
+    QSharedPointer<ConnectivityInterface> testBridgeInitiator =
+        createInterfaceWithMemoryItem("bridgeInitiator", PathSearchSpace::INITIATORMODE, bridgeComponent, false);
+    testBridgeInitiator->setBridged();
+    testBridgeTarget->setBridged();
+
+    testGraph_->getInstances().append(initiatorComponent);
+    testGraph_->getInstances().append(targetComponent);
+    testGraph_->getInstances().append(bridgeComponent);
+
+    testGraph_->getInterfaces().append(testInitiatorInterface);
+    testGraph_->getInterfaces().append(testTargetInterface);
+    testGraph_->getInterfaces().append(testBridgeInitiator);
+    testGraph_->getInterfaces().append(testBridgeTarget);
+
+    QSharedPointer<ConnectivityConnection> initiatorToBridge(
+        new ConnectivityConnection("initToBridge", testInitiatorInterface, testBridgeTarget));
+    QSharedPointer<ConnectivityConnection> internalBridge(
+        new ConnectivityConnection("internalBridge", testBridgeTarget, testBridgeInitiator));
+    QSharedPointer<ConnectivityConnection> bridgeToTarget(
+        new ConnectivityConnection("bridgeToTarget", testBridgeInitiator, testTargetInterface));
+
+    testGraph_->getConnections().append(initiatorToBridge);
+    testGraph_->getConnections().append(internalBridge);
+    testGraph_->getConnections().append(bridgeToTarget);
+
+    QVector<QVector<QSharedPointer<ConnectivityInterface const> > > paths =
+        pathSearcher_.findMasterSlavePaths(testGraph_, false);
+
+    QCOMPARE(paths.count(), 1);
+    QCOMPARE(paths.first().count(), 4);
+    QCOMPARE(paths.first().first(), QSharedPointer<ConnectivityInterface const>(testInitiatorInterface));
+    QCOMPARE(paths.first().last(), QSharedPointer<ConnectivityInterface const>(testTargetInterface));
+}
+
+//-----------------------------------------------------------------------------
 // Function: tst_MasterSlavePathSearch::createInterfaceWithMemoryItem()
 //-----------------------------------------------------------------------------
 QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createInterfaceWithMemoryItem(
@@ -303,7 +361,8 @@ QSharedPointer<ConnectivityInterface> tst_MasterSlavePathSearch::createInterface
     bool isHierarchical) const
 {
     QString memoryType("memoryMap");
-    if (mode.contains(PathSearchSpace::MASTERMODE, Qt::CaseInsensitive))
+    if (mode.contains(PathSearchSpace::MASTERMODE, Qt::CaseInsensitive) ||
+        mode.contains(PathSearchSpace::INITIATORMODE, Qt::CaseInsensitive))
     {
         memoryType = "addressSpace";
     }
