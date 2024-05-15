@@ -1,9 +1,11 @@
 #include "InterconnectGenerator.h"
+#include "ConfigJsonParser.h"
 #include <KactusAPI/KactusAPI.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/PortMapInterface.h>
@@ -15,12 +17,22 @@ InterconnectGenerator::InterconnectGenerator(LibraryInterface* library,  Message
     messager_ = messager;
 }
 
-VLNV InterconnectGenerator::generate(std::string sDesignVLNV, std::string sInterconVLNV)
+VLNV InterconnectGenerator::generate()
 {
-    VLNV designVLNV(VLNV::DESIGN, QString::fromStdString(sDesignVLNV));
-    VLNV interconVLNV(VLNV::COMPONENT, QString::fromStdString(sInterconVLNV));
+    ConfigJsonParser parser;
+    ConfigJsonParser::ConfigStruct* config = parser.readFile();
+    VLNV designVLNV(VLNV::COMPONENT, config->DesignVLNV);
+    VLNV interconVLNV(VLNV::COMPONENT, config->InterconVLNV);
+
+    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config->BusVLNV);
+    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config->RstVLNV);
+    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config->ClkVLNV);
+
+    messager_->showMessage("Wheres the fire part 1");
     openDesign(designVLNV);
+    messager_->showMessage("Wheres the fire part 2");
     createInterconComponent(interconVLNV);
+    messager_->showMessage("Wheres the fire part 3");
     findUnconnectedInterface();
 
     return interconVLNV;
@@ -28,13 +40,22 @@ VLNV InterconnectGenerator::generate(std::string sDesignVLNV, std::string sInter
 
 void InterconnectGenerator::openDesign(VLNV designVLNV)
 {
-    QSharedPointer<Document> designDocument = library_->getModel(designVLNV);
+    QSharedPointer<Document> designCompDocument = library_->getModel(designVLNV);
+    QSharedPointer<Component> designComp = designCompDocument.dynamicCast<Component>();
+
+    QSharedPointer<QList<QSharedPointer<DesignConfigurationInstantiation> > > list = designComp->getDesignConfigurationInstantiations();
+    QSharedPointer<DesignConfigurationInstantiation> inst = list->at(0);
+    QSharedPointer<ConfigurableVLNVReference> vlnv = inst->getDesignConfigurationReference();
+
+    QSharedPointer<Document> designConfDocument = library_->getModel(*vlnv);
+    QSharedPointer<DesignConfiguration> designConf = designConfDocument.dynamicCast<DesignConfiguration>();
+
+    QSharedPointer<Document> designDocument = library_->getModel(designConf->getDesignRef());
     design_ = designDocument.dynamicCast<Design>();
 
     instanceInterface_->setComponentInstances(design_);
     connectionInterface_->setInterconnections(design_);
     adhocConnectionInterface_->setConnections(design_);
-    messager_->showMessage("Design opened and connected");
 }
 
 void InterconnectGenerator::createInterconComponent(VLNV VLNV)

@@ -1,9 +1,9 @@
-{ "VLNV": {
-	"intercon": "test:gen:intercon:1.0",
-	"top": "tuni.fi:subsystem:SysCtrl_SS:1.0",
-	"busDef": "tuni.fi:interface:AXI4LITE:1.0",
-	"clk": "tuni.fi:interface:clock:1.0",
-	"rst": "tuni.fi:interface:reset:1.0" },
+{
+  "intercon": "test:gen:intercon:1.0",
+  "top": "tuni.fi:subsystem:SysCtrl_SS:1.0",
+  "bus": "tuni.fi:interface:AXI4LITE:1.0",
+  "clk": "tuni.fi:interface:clock:1.0",
+  "rst": "tuni.fi:interface:reset:1.0",
   "Address width": 32,
   "Bus type": "AXI4Lite",
   "Id width": 8,
