@@ -24,7 +24,7 @@ public:
     //! The destructor
     ~InterconnectGenerator() = default;
 
-    VLNV generate(std::string sDesignVLNV, std::string sInterconVLNV);
+    VLNV generate();
 
     void openDesign(VLNV designVLNV);
 
@@ -89,9 +89,9 @@ private:
 
     std::string prefix_;
 
-    VLNV busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:AXI4LITE:1.0");
-    VLNV rstVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:reset:1.0");
-    VLNV clkVLNV_ = VLNV(VLNV::BUSDEFINITION, "tuni.fi:interface:clock:1.0");
+    VLNV busDefVLNV_;
+    VLNV rstVLNV_;
+    VLNV clkVLNV_;
 
 };
 

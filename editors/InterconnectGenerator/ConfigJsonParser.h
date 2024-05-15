@@ -2,6 +2,7 @@
 #define CONFIGJSONPARSER_H
 
 #include <QtCore>
+#include <QDir>
 
 
 class ConfigJsonParser
@@ -26,7 +27,11 @@ public:
 
     struct ConfigStruct {
 
-        QMap<QString,QString> VLNVs;
+        QString InterconVLNV;
+        QString DesignVLNV;
+        QString BusVLNV;
+        QString ClkVLNV;
+        QString RstVLNV;
         int AddressWidth;
         int IDWidth;
         int UserWidth;
@@ -49,7 +54,7 @@ public:
 private:
 
     ConfigStruct config_;
-    QString path_ = "./config.json";
+    QString path_ = QDir::currentPath() + "/editors/InterconnectGenerator/config.json";
 };
 
 #endif // CONFIGJSONPARSER_H

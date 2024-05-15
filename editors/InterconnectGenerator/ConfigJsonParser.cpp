@@ -19,16 +19,13 @@ ConfigJsonParser::ConfigStruct* ConfigJsonParser::readFile() {
 
             if(document.isObject()) {
                 QJsonObject jsonObj = document.object();
-                QJsonObject VLNVObj = jsonObj.value("VLNVs").toObject();
-                QMap<QString,QString> map;
 
-                QStringList keys = VLNVObj.keys();
+                config_.InterconVLNV = jsonObj.value("intercon").toString();
+                config_.DesignVLNV = jsonObj.value("top").toString();
+                config_.BusVLNV = jsonObj.value("bus").toString();
+                config_.ClkVLNV = jsonObj.value("clk").toString();
+                config_.RstVLNV = jsonObj.value("rst").toString();
 
-                for(auto key : keys){
-                    map.insert(key, VLNVObj.value(key).toString());
-                }
-
-                config_.VLNVs = map;
                 config_.AddressWidth = jsonObj.value("Address width").toInt();
                 config_.IDWidth = jsonObj.value("ID width").toInt();
                 config_.UserWidth = jsonObj.value("User width").toInt();

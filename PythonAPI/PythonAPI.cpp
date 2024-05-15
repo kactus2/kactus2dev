@@ -236,12 +236,12 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
 //-----------------------------------------------------------------------------
 // Function: PythonAPI::generateInterconnect()
 //-----------------------------------------------------------------------------
-void PythonAPI::generateInterconnect(std::string const& sInterconVLNV, std::string const& sDesignVLNV)
+void PythonAPI::generateInterconnect()
 {
 
     InterconnectGenerator interconGen = InterconnectGenerator(library_, messager_);
 
-    VLNV interconVLNV = interconGen.generate(sDesignVLNV, sInterconVLNV);
+    VLNV interconVLNV = interconGen.generate();
 
     QString xmlPath = KactusAPI::getDefaultLibraryPath() + QStringLiteral("/") + interconVLNV.toString(QStringLiteral("/")) +
         QStringLiteral("/");
