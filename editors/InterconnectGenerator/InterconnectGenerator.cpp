@@ -28,11 +28,8 @@ VLNV InterconnectGenerator::generate()
     rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config->RstVLNV);
     clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config->ClkVLNV);
 
-    messager_->showMessage("Wheres the fire part 1");
     openDesign(designVLNV);
-    messager_->showMessage("Wheres the fire part 2");
     createInterconComponent(interconVLNV);
-    messager_->showMessage("Wheres the fire part 3");
     findUnconnectedInterface();
 
     return interconVLNV;
@@ -100,7 +97,6 @@ void InterconnectGenerator::findUnconnectedInterface()
             QStringList busNames = comp->getBusInterfaceNames();
             for(QString busName : busNames)
             {
-                messager_->showMessage(QString("Bus name %1").arg(busName));
                 QSharedPointer<BusInterface> busInf = comp->getBusInterface(busName);
                 VLNV busVLNV = busInf->getBusType();
                 if(busVLNV == busDefVLNV_)
@@ -109,10 +105,8 @@ void InterconnectGenerator::findUnconnectedInterface()
                     {
                         messager_->showMessage("Unconnected interface found");
                         prefix_ = compName + "_";
-                        messager_->showMessage(QString("Original interface mode name %1").arg(General::interfaceMode2Str(busInf->getInterfaceMode())));
                         General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
                         std::string modeString = General::interfaceMode2Str(newMode).toStdString();
-                        messager_->showMessage(QString("Interface mode name %1").arg(QString::fromStdString(modeString)));
 
                         std::string newBusName = prefix_ + busName.toStdString();
 
@@ -175,24 +169,19 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
 {
     messager_->showMessage("Creating port maps");
-    messager_->showMessage("Setting up port map inf");
 
     if(absTypeInf_->setupAbstractionTypeForPortMapInterface(0)) {
         PortMapInterface* portMapInf = absTypeInf_->getPortMapInterface();
 
         std::vector<std::string> logicalPortNames = portMapInf->getLogicalPortInterface()->getItemNamesWithModeAndGroup(modeString, "");
-        messager_->showMessage(QString("Number of logical ports from inf %1").arg(logicalPortNames.size()));
         QList<QSharedPointer<PortMap> > portMaps = busInf->getPortMapsForView("");
 
         for(int index=0; index < portMaps.size(); index++)
         {
-            messager_->showMessage(QString("Port map index %1").arg(index));
 
             for(std::string logicalName : logicalPortNames)
             {
-                messager_->showMessage(QString("Logical port name %1").arg(QString::fromStdString(logicalName)));
                 std::string portMapName = portMaps.at(index)->getLogicalPort()->name_.toStdString();
-                messager_->showMessage(QString("Logical port name from port map %1").arg(QString::fromStdString(portMapName)));
 
                 if(logicalName == portMapName)
                 {
@@ -237,14 +226,11 @@ void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QStr
     portsInterface_->setPorts(comp->getPorts());
 
     for(QString portID : parameterFinder_->getAllParameterIds()){
-         messager_->showMessage(QString("Parameter ID %1 found for comp").arg(portID));
     }
 
     for(QSharedPointer<Port> port : comp->getPortsMappedInInterface(busName))
     {
         std::string leftBound = portsInterface_->getLeftBoundValue(port->name().toStdString());
-
-        messager_->showMessage(QString("Port left bound %1").arg(QString::fromStdString(leftBound)));
 
         QSharedPointer<Port> newPort( new Port(*port));
 
@@ -281,11 +267,8 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 
     portMapInf->setupPhysicalPorts(interconComponent_->getPorts());
 
-    messager_->showMessage(QString("Interface mode name %1").arg(General::interfaceMode2Str(portMapInf->getInterfaceMode())));
-
     for (std::string portName : portAbsInf->getItemNamesWithModeAndGroup(modeString,""))
     {
-        messager_->showMessage(QString("Port name %1").arg(QString::fromStdString(portName)));
         int portIndex = portAbsInf->getItemIndex(portName);
 
         portInf->addWirePort(portName);
