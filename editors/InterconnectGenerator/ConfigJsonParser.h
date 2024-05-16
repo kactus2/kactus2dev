@@ -16,6 +16,12 @@ public:
 
     };
 
+    struct InitStruct {
+        int Index;
+        QString Name;
+        int DataWidth;
+    };
+
     struct TargetStruct {
 
         int Index;
@@ -35,6 +41,7 @@ public:
         int AddressWidth;
         int IDWidth;
         int UserWidth;
+        QList<InitStruct> InitList;
         QList<TargetStruct> TargetList;
 
     };

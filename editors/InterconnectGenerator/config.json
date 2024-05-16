@@ -8,17 +8,24 @@
   "Bus type": "AXI4Lite",
   "Id width": 8,
   "User width": 1,
+  "Initiators": [
+  	{"Index": 0,
+  	"Name": "initComp1",
+  	"Data width": 32},
+  	{"Index": 1,
+  	"Name": "initComp2",
+  	"Data width": 32}],
   "Targets":[
-	{"index": 0,
-	"Name": "comp1",
+	{"Index": 0,
+	"Name": "targComp1",
 	"Data width": 32,
 	"Address regions":[
 		{"start": "0x00000000",
 		"end": "0x0000ffff"},
 		{"start": "0x00010000",
 		"end": "0x0001ffff"}]},
-	{"index": 1,
-	"Name": "comp2",
+	{"Index": 1,
+	"Name": "targComp2",
 	"Data width": 32,
 	"Address regions":[
 		{"start": "0x00020000",
