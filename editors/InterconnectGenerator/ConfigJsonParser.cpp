@@ -30,10 +30,25 @@ ConfigJsonParser::ConfigStruct* ConfigJsonParser::readFile() {
                 config_.IDWidth = jsonObj.value("ID width").toInt();
                 config_.UserWidth = jsonObj.value("User width").toInt();
 
-                QJsonArray compListArr = jsonObj.value("Targets").toArray();
+                QJsonArray initListArr = jsonObj.value("Inits").toArray();
+                config_.InitList.resize(initListArr.size());
 
-                for(int i=0; i<compListArr.size(); i++){
-                    QJsonObject targetObj = compListArr.at(i).toObject();
+                for(int n=0; n<initListArr.size(); n++){
+                    QJsonObject initObj = initListArr.at(n).toObject();
+                    InitStruct init;
+
+                    init.Index = initObj.value("Index").toInt();
+                    init.Name = initObj.value("Name").toString();
+                    init.DataWidth = initObj.value("Data width").toInt();
+
+                    config_.InitList[init.Index] = init;
+               }
+
+                QJsonArray targetListArr = jsonObj.value("Targets").toArray();
+                config_.TargetList.resize(targetListArr.size());
+
+                for(int i=0; i<targetListArr.size(); i++){
+                    QJsonObject targetObj = targetListArr.at(i).toObject();
                     TargetStruct target;
 
                     target.Index = targetObj.value("Index").toInt();
@@ -49,7 +64,7 @@ ConfigJsonParser::ConfigStruct* ConfigJsonParser::readFile() {
                         addrPair.End = addrObj.value("End").toString();
                         target.AddressRegions.append(addrPair);
                     }
-                    config_.TargetList.append(target);
+                    config_.TargetList[target.Index] = target;
                 }
             }
         }
