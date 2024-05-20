@@ -1110,6 +1110,13 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_->endpoint2()->canConnect(tempConnection_->endpoint1()))
         {
             auto cmd = QSharedPointer<QUndoCommand>(createAddCommandForConnection(tempConnection_));
+
+            if (!cmd)
+            {
+                discardConnection();
+                return;
+            }
+
             cmd->redo();
 
             tempConnection_->fixOverlap();
