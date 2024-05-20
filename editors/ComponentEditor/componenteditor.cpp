@@ -263,6 +263,7 @@ void ComponentEditor::refresh()
 //-----------------------------------------------------------------------------
 void ComponentEditor::applySettings(QSettings& settings)
 {
+    TabDocument::applySettings(settings);
 	setRowVisibility(settings);
 }
 

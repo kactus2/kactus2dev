@@ -18,6 +18,8 @@
 #include <QLineEdit>
 #include <QSettings>
 
+class QCheckBox;
+
 //-----------------------------------------------------------------------------
 //! GeneralSettingsPage class.
 //-----------------------------------------------------------------------------
@@ -63,6 +65,9 @@ private:
 
     //! Default revision selector.
     QComboBox* revisionEdit_;
+
+    //! Checkbox for enabling/disabling the editor lock feature.
+    QCheckBox* lockEnabledBox_;
 };
 
 //-----------------------------------------------------------------------------

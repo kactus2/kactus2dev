@@ -102,6 +102,8 @@ CSourceWidget::~CSourceWidget()
 //-----------------------------------------------------------------------------
 void CSourceWidget::applySettings(QSettings& settings)
 {
+    TabDocument::applySettings(settings);
+
     // Read indentation settings.
     IndentStyle style = static_cast<IndentStyle>(settings.value("Editor/IndentStyle",
                                                                 INDENT_STYLE_SPACES).toInt());

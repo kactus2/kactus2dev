@@ -62,7 +62,7 @@ public:
     /*!
      *  Applies the current settings into use.
      */
-    void applySettings(QSettings& settings);
+    void applySettings(QSettings& settings) override;
 
     /*!
      *  Returns the name of the source file.

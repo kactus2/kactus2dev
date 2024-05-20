@@ -899,6 +899,7 @@ void MainWindow::onConnectionSelected(GraphicsConnection* connection)
 //-----------------------------------------------------------------------------
 void MainWindow::updateMenuStrip()
 {
+    QSettings settings;
     TabDocument* doc = static_cast<TabDocument*>(designTabs_->currentWidget());
     bool unlocked = doc != 0 && (!(doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) || !doc->isProtected());
 
@@ -959,7 +960,8 @@ void MainWindow::updateMenuStrip()
 
     bool oldProtectionState = actProtect_->isChecked();
 
-    protectAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
+    protectAction_->setVisible(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
+        settings.value("General/EnableLocking").toBool());
     actProtect_->setEnabled(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT));
     actProtect_->setChecked(doc != 0 && (doc->getFlags() & TabDocument::DOC_PROTECTION_SUPPORT) &&
         doc->isProtected());
@@ -1887,6 +1889,7 @@ void MainWindow::openSettings()
         updateGeneratorPluginActions();
         dockHandler_->applySettings();
         scriptEditor_->applySettings();
+        updateMenuStrip();
     }
 }
 
