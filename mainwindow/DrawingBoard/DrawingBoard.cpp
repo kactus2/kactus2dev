@@ -21,6 +21,7 @@
 #include <QMessageBox>
 #include <QMenu>
 #include <QTabBar>
+#include <QSettings>
 
 //-----------------------------------------------------------------------------
 // Function: DrawingBoard::DrawingBoard()
@@ -37,8 +38,9 @@ DrawingBoard::DrawingBoard(QWidget* parent) : QTabWidget(parent)
 //-----------------------------------------------------------------------------
 void DrawingBoard::addAndOpenDocument(TabDocument* doc)
 {    
-    // Open in unlocked mode by default only if the version is draft.
-    doc->setProtection(doc->getDocumentVLNV().getVersion() != "draft");
+    // Open in unlocked mode by default if locking isn't enabled in settings.
+    QSettings settings; 
+    doc->setProtection(settings.value("General/EnableLocking").toBool());
 
     connect(doc, SIGNAL(errorMessage(QString const&)),
         this, SIGNAL(errorMessage(QString const&)), Qt::UniqueConnection);

@@ -41,7 +41,6 @@
 #include <editors/ComponentEditor/treeStructure/RemapStatesItem.h>
 #include <editors/ComponentEditor/treeStructure/ModesItem.h>
 #include <editors/ComponentEditor/treeStructure/PowerDomainsItem.h>
-#include <editors/ComponentEditor/treeStructure/componenteditortreemodel.h>
 #include <editors/ComponentEditor/treeStructure/InstantiationsItem.h>
 #include <editors/ComponentEditor/treeStructure/ComponentEditorIndirectInterfacesItem.h>
 
@@ -128,7 +127,7 @@ public:
 	 *
 	 *      @param [in] settings   The settings file.
 	 */
-	void applySettings(QSettings& settings);
+	void applySettings(QSettings& settings) override;
 
 	/*!
 	 *  Gets the names of all component editor items for HW component.
