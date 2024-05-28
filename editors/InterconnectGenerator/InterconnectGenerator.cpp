@@ -1,11 +1,7 @@
 #include "InterconnectGenerator.h"
 #include "ConfigJsonParser.h"
+#include "InterconnectRTLWriter.h"
 #include <KactusAPI/KactusAPI.h>
-
-#include <IPXACTmodels/Component/BusInterface.h>
-#include <IPXACTmodels/Component/Component.h>
-#include <IPXACTmodels/Design/Design.h>
-#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/PortMapInterface.h>
@@ -20,17 +16,28 @@ InterconnectGenerator::InterconnectGenerator(LibraryInterface* library,  Message
 VLNV InterconnectGenerator::generate()
 {
     ConfigJsonParser parser;
-    ConfigJsonParser::ConfigStruct* config = parser.readFile();
-    VLNV designVLNV(VLNV::COMPONENT, config->DesignVLNV);
-    VLNV interconVLNV(VLNV::COMPONENT, config->InterconVLNV);
+    config_ = parser.readFile();
+    VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
+    VLNV interconVLNV(VLNV::COMPONENT, config_->InterconVLNV);
 
-    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config->BusVLNV);
-    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config->RstVLNV);
-    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config->ClkVLNV);
+    busDefVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->BusVLNV);
+    rstVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->RstVLNV);
+    clkVLNV_ = VLNV(VLNV::BUSDEFINITION, config_->ClkVLNV);
 
     openDesign(designVLNV);
     createInterconComponent(interconVLNV);
-    findUnconnectedInterface();
+    findUnconnectedInterfaces();
+
+    directory_ = KactusAPI::getDefaultLibraryPath();
+    QString vlnvDir = "/" + interconComponent_->getVlnv().getVendor() + "/" + interconComponent_->getVlnv().getLibrary() + "/" +
+        interconComponent_->getVlnv().getName() + "/" + interconComponent_->getVlnv().getVersion();
+
+    directory_ += vlnvDir;
+    messager_->showMessage(QString("Writing component %1 to file").arg(interconComponent_->getVlnv().toString()));
+    library_->writeModelToFile(directory_,interconComponent_);
+
+    InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_, config_);
+    writer.generateRTL();
 
     return interconVLNV;
 }
@@ -45,9 +52,9 @@ void InterconnectGenerator::openDesign(VLNV designVLNV)
     QSharedPointer<ConfigurableVLNVReference> vlnv = inst->getDesignConfigurationReference();
 
     QSharedPointer<Document> designConfDocument = library_->getModel(*vlnv);
-    QSharedPointer<DesignConfiguration> designConf = designConfDocument.dynamicCast<DesignConfiguration>();
+    QSharedPointer<DesignConfiguration> designConfig = designConfDocument.dynamicCast<DesignConfiguration>();
 
-    QSharedPointer<Document> designDocument = library_->getModel(designConf->getDesignRef());
+    QSharedPointer<Document> designDocument = library_->getModel(designConfig->getDesignRef());
     design_ = designDocument.dynamicCast<Design>();
 
     instanceInterface_->setComponentInstances(design_);
@@ -81,7 +88,7 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
     messager_->showMessage("Component created and linked");
 }
 
-void InterconnectGenerator::findUnconnectedInterface()
+void InterconnectGenerator::findUnconnectedInterfaces()
 {
     messager_->showMessage("Seaching for interfaces..");
     int index = 0;
@@ -128,14 +135,6 @@ void InterconnectGenerator::findUnconnectedInterface()
 
     createRstorClkInterface("rst", index);
     createRstorClkInterface("clk", index+1);
-
-    QString directory = KactusAPI::getDefaultLibraryPath();
-    QString vlnvDir = "/" + interconComponent_->getVlnv().getVendor() + "/" + interconComponent_->getVlnv().getLibrary() + "/" +
-        interconComponent_->getVlnv().getName() + "/" + interconComponent_->getVlnv().getVersion();
-
-    directory += vlnvDir;
-    messager_->showMessage(QString("Writing component %1 to file").arg(interconComponent_->getVlnv().toString()));
-    library_->writeModelToFile(directory,interconComponent_);
 }
 
 void InterconnectGenerator::createBusInterface(std::string busName, std::string modeString, int index)
@@ -297,4 +296,3 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 
     }
 }
-
