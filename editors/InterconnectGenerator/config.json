@@ -4,8 +4,8 @@
   "bus": "tuni.fi:interface:AXI4LITE:1.0",
   "clk": "tuni.fi:interface:clock:1.0",
   "rst": "tuni.fi:interface:reset:1.0",
+  "Bus type": "AXI4LITE",
   "Address width": 32,
-  "Bus type": "AXI4Lite",
   "Id width": 8,
   "User width": 1,
   "Initiators": [
