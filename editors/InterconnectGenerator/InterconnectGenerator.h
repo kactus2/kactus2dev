@@ -1,8 +1,13 @@
 #ifndef INTERCONNECTGENERATOR_H
 #define INTERCONNECTGENERATOR_H
 
+#include "ConfigJsonParser.h"
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/Design/Design.h>
+#include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
 
 #include <KactusAPI/include/BusInterfaceInterface.h>
 #include <KactusAPI/include/LibraryInterface.h>
@@ -30,7 +35,7 @@ public:
 
     void createInterconComponent(VLNV VLNV);
 
-    void findUnconnectedInterface();
+    void findUnconnectedInterfaces();
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
@@ -86,6 +91,10 @@ private:
         adhocConnectionInterface_) };
 
     AbstractionTypeInterface* absTypeInf_{ nullptr };
+
+    ConfigJsonParser::ConfigStruct* config_;
+
+    QString directory_;
 
     std::string prefix_;
 

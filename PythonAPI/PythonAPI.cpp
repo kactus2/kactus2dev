@@ -242,13 +242,6 @@ void PythonAPI::generateInterconnect()
     InterconnectGenerator interconGen = InterconnectGenerator(library_, messager_);
 
     VLNV interconVLNV = interconGen.generate();
-
-    QString xmlPath = KactusAPI::getDefaultLibraryPath() + QStringLiteral("/") + interconVLNV.toString(QStringLiteral("/")) +
-        QStringLiteral("/");
-
-    // Generate VHDL and Verilog RTL for Interconnect
-    generate("VHDL", interconVLNV.toString(QStringLiteral(":")).toStdString(), "", xmlPath.toStdString());
-    generate("Verilog", interconVLNV.toString(QStringLiteral(":")).toStdString(), "", xmlPath.toStdString());
 }
 
 //-----------------------------------------------------------------------------

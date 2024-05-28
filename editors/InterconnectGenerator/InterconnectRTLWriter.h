@@ -37,6 +37,9 @@ private:
     ConfigJsonParser::ConfigStruct* config_;
 
     QString directory_;
+
+    QString axi_target_str_ = "AXI_TARGETS";
+    QString axi_init_str_ = "AXI_INITIATORS";
 };
 
 #endif // INTERCONNECTRTLWRITER_H
