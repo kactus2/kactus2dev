@@ -26,11 +26,12 @@ ConfigJsonParser::ConfigStruct* ConfigJsonParser::readFile() {
                 config_.ClkVLNV = jsonObj.value("clk").toString();
                 config_.RstVLNV = jsonObj.value("rst").toString();
 
+                config_.BusType = jsonObj.value("Bus type").toString();
                 config_.AddressWidth = jsonObj.value("Address width").toInt();
                 config_.IDWidth = jsonObj.value("ID width").toInt();
                 config_.UserWidth = jsonObj.value("User width").toInt();
 
-                QJsonArray initListArr = jsonObj.value("Inits").toArray();
+                QJsonArray initListArr = jsonObj.value("Initiators").toArray();
                 config_.InitList.resize(initListArr.size());
 
                 for(int n=0; n<initListArr.size(); n++){

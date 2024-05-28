@@ -38,6 +38,7 @@ public:
         QString BusVLNV;
         QString ClkVLNV;
         QString RstVLNV;
+        QString BusType;
         int AddressWidth;
         int IDWidth;
         int UserWidth;
