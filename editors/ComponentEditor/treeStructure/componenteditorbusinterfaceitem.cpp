@@ -32,7 +32,7 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     ParameterizableItem(model, libHandler, component, parent),
     busIf_(busif),
     parentWnd_(parentWnd),
-    editBusDefAction_(new QAction(tr("Edit Bus definition"), this)),
+    editBusDefAction_(new QAction(tr(""), this)),
     expressions_(expressions),
     validator_(validator),
     busInterface_(busInterface),
@@ -112,6 +112,7 @@ QList<QAction*> ComponentEditorBusInterfaceItem::actions()
     QList<QAction*> actionList;
     if (validator_->hasValidBusType(busIf_))
     {
+        editBusDefAction_->setText("Edit "+busIf_->getBusType().toString());
         actionList.append(editBusDefAction_);
     }
 
@@ -163,7 +164,7 @@ void ComponentEditorBusInterfaceItem::setAbstractionDefinitionActions(QList<QAct
             VLNV* absDefVLNV = dynamic_cast<VLNV*>(abstractionRef.data());
             if (absDefVLNV && absDefVLNV->isValid())
             {
-                QString actionName = "Edit " + absDefVLNV->getName();
+                QString actionName = "Edit " + absDefVLNV->toString();
 
                 QAction* openAbsDefAction = new QAction(actionName, this);
                 //editAbsDef->absRefVLNV = absDefVLNV;
