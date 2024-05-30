@@ -435,20 +435,6 @@ public:
 	 */
 	QString getAddressSpaceRef() const;
 
-	/*!
-	 *  Get the list of valid abstraction Types in a Bus Interface
-	 *
-	 *      @return List of to AbstractionTypes of the Bus Interface.
-	 */
-	QSharedPointer<QList<QSharedPointer<AbstractionType> > > getValidAbstractionTypes() const;
-
-	/*!
-	 *  Get the vlnv to the first abstraction definition.
-	 *
-	 *      @return The First Valid Abstraction Definition in Bus Interface
-	 */
-	QSharedPointer<AbstractionType> getFirstValidAbstractionType() const;
-
 private:
 
 	/*!

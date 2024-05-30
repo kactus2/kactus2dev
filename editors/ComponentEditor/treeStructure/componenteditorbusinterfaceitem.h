@@ -111,8 +111,8 @@ public slots:
 	 */
 	virtual bool openAbsDefSlot();
 
-	/*! Opens and the Bus Definition by emmitting the signal openBus.
-	 *
+	/*! 
+	 *  Opens and the Bus Definition by emmitting the signal openBus.	
 	 */
 	virtual void openBusSlot();
 
@@ -124,8 +124,10 @@ private:
 	//! No assignment
 	ComponentEditorBusInterfaceItem& operator=(const ComponentEditorBusInterfaceItem& other);
 
-	/*! Sets the actions to Abstract Definitions in context menu
-	 *
+	/*! 
+	 *  Sets the actions to Abstract Definitions in context menu.
+	 * 
+	 *		@param [in] actionList               The list of actions to be filled
 	 */
 	void setAbstractionDefinitionActions(QList<QAction*>& actionList);
 

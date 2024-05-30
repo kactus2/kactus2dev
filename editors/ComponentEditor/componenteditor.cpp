@@ -80,27 +80,25 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::ComponentEditor()
 //-----------------------------------------------------------------------------
-ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
-    QSharedPointer<Component> component,
-    QWidget* parent) :
-    TabDocument(parent, DOC_PROTECTION_SUPPORT),
-    libHandler_(libHandler),
-    component_(component),
-    navigationSplitter_(Qt::Horizontal, this),
-    editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_),
-    navigationModel_(this),
-    navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
-    proxy_(this),
-    editorSlot_(&editorVisualizerSplitter_),
-    visualizerSlot_(&editorVisualizerSplitter_),
-    parameterFinder_(new ParameterCache(component_)),
-    fullParameterFinder_(QSharedPointer<ComponentAndInstantiationsParameterFinder>(
-        new ComponentAndInstantiationsParameterFinder(component))),
-    referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new ComponentParameterReferenceCounter(
-        fullParameterFinder_, component))),
-    expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
-    expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-    validator_(expressionParser_, libHandler_, component->getRevision())
+ComponentEditor::ComponentEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
+TabDocument(parent, DOC_PROTECTION_SUPPORT),
+libHandler_(libHandler),
+component_(component),
+navigationSplitter_(Qt::Horizontal, this),
+editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_),
+navigationModel_(this),
+navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
+proxy_(this),
+editorSlot_(&editorVisualizerSplitter_),
+visualizerSlot_(&editorVisualizerSplitter_),
+parameterFinder_(new ParameterCache(component_)),
+fullParameterFinder_(QSharedPointer<ComponentAndInstantiationsParameterFinder>(
+    new ComponentAndInstantiationsParameterFinder(component))),
+referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new ComponentParameterReferenceCounter(
+    fullParameterFinder_, component))),
+expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+validator_(expressionParser_, libHandler_, component->getRevision())
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =

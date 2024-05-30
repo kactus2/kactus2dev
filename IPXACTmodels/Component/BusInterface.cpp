@@ -740,47 +740,6 @@ QString BusInterface::getAddressSpaceRef() const
         return QString();
     }
 }
-//-----------------------------------------------------------------------------
-// Function: BusInterface::getValidAbstractionTypes()
-//-----------------------------------------------------------------------------
-QSharedPointer<QList<QSharedPointer<AbstractionType>>> BusInterface::getValidAbstractionTypes() const
-{
-    QSharedPointer<QList<QSharedPointer<AbstractionType>>> notEmptyAbstractTypes = QSharedPointer<QList<QSharedPointer<AbstractionType>>>(new QList<QSharedPointer<AbstractionType>>());
-    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = getAbstractionTypes();
-    if (absDefs)
-    {
-        for (const QSharedPointer<AbstractionType> absDef : *absDefs)
-        {
-            QSharedPointer<ConfigurableVLNVReference> abstractionRef = absDef->getAbstractionRef();
-            if (abstractionRef)
-            {
-                VLNV* absDefVLNV = dynamic_cast<VLNV*>(abstractionRef.data());
-                if (absDefVLNV->isValid())
-                {
-                    notEmptyAbstractTypes->append(absDef);
-                }
-            }
-        }
-    }
-    if (notEmptyAbstractTypes->isEmpty())
-    {
-        return nullptr;
-    }
-    return notEmptyAbstractTypes;
-}
-
-//-----------------------------------------------------------------------------
-// Function: BusInterface::getFirstValidAbstractionType()
-//-----------------------------------------------------------------------------
-QSharedPointer<AbstractionType> BusInterface::getFirstValidAbstractionType() const
-{
-    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = getValidAbstractionTypes();
-    if (absDefs)
-    {
-        return absDefs->first();
-    }
-    return nullptr;
-}
 
 //-----------------------------------------------------------------------------
 // Function: BusInterface::setDefaultPos()

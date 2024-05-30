@@ -154,22 +154,25 @@ void ComponentEditorBusInterfaceItem::openBusSlot()
 //-----------------------------------------------------------------------------
 void ComponentEditorBusInterfaceItem::setAbstractionDefinitionActions(QList<QAction*>& actionList)
 {
-    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = busIf_->getValidAbstractionTypes();
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = busIf_->getAbstractionTypes();
     if (absDefs)
     {
         for (const QSharedPointer<AbstractionType> absDef : *absDefs)
         {
             QSharedPointer<ConfigurableVLNVReference> abstractionRef = absDef->getAbstractionRef();
             VLNV* absDefVLNV = dynamic_cast<VLNV*>(abstractionRef.data());
-            QString actionName = "Edit " + absDefVLNV->getName();
+            if (absDefVLNV && absDefVLNV->isValid())
+            {
+                QString actionName = "Edit " + absDefVLNV->getName();
 
-            QAction* openAbsDefAction = new QAction(actionName, this);
-            //editAbsDef->absRefVLNV = absDefVLNV;
-            QVariant v = QVariant::fromValue(absDefVLNV);
-            openAbsDefAction->setData(v);
-            actionList.append(openAbsDefAction);
+                QAction* openAbsDefAction = new QAction(actionName, this);
+                //editAbsDef->absRefVLNV = absDefVLNV;
+                QVariant v = QVariant::fromValue(absDefVLNV);
+                openAbsDefAction->setData(v);
+                actionList.append(openAbsDefAction);
 
-            connect(openAbsDefAction, SIGNAL(triggered(bool)), this, SLOT(openAbsDefSlot()), Qt::UniqueConnection);
+                connect(openAbsDefAction, SIGNAL(triggered(bool)), this, SLOT(openAbsDefSlot()), Qt::UniqueConnection);
+            }           
         }
     }
 }
