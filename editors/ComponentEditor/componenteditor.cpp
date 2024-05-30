@@ -80,14 +80,12 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::ComponentEditor()
 //-----------------------------------------------------------------------------
-ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
-								 QSharedPointer<Component> component,
-								 QWidget *parent):
+ComponentEditor::ComponentEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
 TabDocument(parent, DOC_PROTECTION_SUPPORT),
 libHandler_(libHandler),
 component_(component),
 navigationSplitter_(Qt::Horizontal, this),
-editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
+editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_),
 navigationModel_(this),
 navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
 proxy_(this),
@@ -144,7 +142,7 @@ validator_(expressionParser_, libHandler_, component->getRevision())
 
 	QSettings settings;
 	setRowVisibility(settings);
-	
+
     // Set source model for the proxy.
     proxy_.setSourceModel(&navigationModel_);
 
@@ -179,8 +177,13 @@ validator_(expressionParser_, libHandler_, component->getRevision())
 		this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
 		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(&navigationModel_, SIGNAL(openAbsDef(const VLNV&)),
+        this, SIGNAL(openAbsDef(const VLNV&)), Qt::UniqueConnection);
+
 	connect(&navigationModel_, SIGNAL(openBus(const VLNV&)),
 		this, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
+
 	connect(&navigationModel_, SIGNAL(openComDefinition(const VLNV&)),
 		this, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 	connect(&navigationModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
@@ -222,8 +225,8 @@ void ComponentEditor::refresh()
 
 	// remember the locked state
 	bool locked = isProtected();
-	
-	// clear the slots 
+
+	// clear the slots
 	editorSlot_.setWidget(nullptr);
 	visualizerSlot_.setWidget(nullptr);
 
@@ -274,7 +277,7 @@ QStringList ComponentEditor::getHwItemNames()
 {
 	QStringList itemNames;
 
-	itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" << 
+	itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" <<
 		"Address_spaces" << "Instantiations" << "Views" << "Software_views" << "System_views" << "Ports" <<
         "Bus_interfaces" << "Indirect_interfaces" << "Channels" << "Remap_states" << "Cpus" <<
         "Other_clock_drivers" << "Reset_types" << "COM_interfaces" << "Software_properties";
@@ -289,7 +292,7 @@ QStringList ComponentEditor::getSwItemNames()
 {
 	QStringList itemNames;
 
-	itemNames << "File_sets" << "Choices" << "Parameters" << "Software_views" << "COM_interfaces" << 
+	itemNames << "File_sets" << "Choices" << "Parameters" << "Software_views" << "COM_interfaces" <<
 		"API_interfaces" << "Software_properties";
 
 	return itemNames;
@@ -409,14 +412,14 @@ void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index )
 // Function: ComponentEditor::onExpand()
 //-----------------------------------------------------------------------------
 void ComponentEditor::onExpand(const QModelIndex& index)
-{    
-    // Expand parents until root is hit.            
+{
+    // Expand parents until root is hit.
     QModelIndex parentIndex = index;
     while(parentIndex.isValid())
     {
         navigationView_.expand(proxy_.mapFromSource(parentIndex));
         parentIndex = parentIndex.parent();
-    }    
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -528,7 +531,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 
     // List of the hidden rows in component editor.
     QStringList hiddenRows;
-    for (auto name : settings.childKeys()) 
+    for (auto name : settings.childKeys())
     {
         if (settings.value(name, true).toBool() == false)
         {
@@ -602,7 +605,7 @@ void ComponentEditor::addSWItems(ComponentEditorRootItem* root)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::addHWItems()
 //-----------------------------------------------------------------------------
-void ComponentEditor::addHWItems(ComponentEditorRootItem* root, 
+void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     ExpressionSet const& expressionsSupport)
 {
     root->addChildItem(createGeneralItem(root));
@@ -641,7 +644,7 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
         &navigationModel_, libHandler_, component_, parameterFinder_, expressionParser_, expressionFormatter_,
         root)));
 
-    auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_, 
+    auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_,
         expressionParser_, component_, libHandler_);
 
     auto absTypeInterface = busInterface->getAbstractionTypeInterface();
@@ -790,7 +793,7 @@ QSharedPointer<ComponentEditorBusInterfacesItem> ComponentEditor::createBusInter
 {
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
         new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
-            libHandler_, component_, referenceCounter_, 
+            libHandler_, component_, referenceCounter_,
             ExpressionSet({ parameterFinder_, expressionParser_, expressionFormatter_ }),
             root, parentWidget()));
 
@@ -838,7 +841,7 @@ void ComponentEditor::setupLayout()
     navigationSplitter_.addWidget(&editorVisualizerSplitter_);
     navigationSplitter_.setStretchFactor(1, 1);
 
-    // The navigation tree takes 1/5 of the space available and editor and 
+    // The navigation tree takes 1/5 of the space available and editor and
     // visualizer take the rest
     QList<int> navigationSize;
     navigationSize.append(ComponentTreeView::DEFAULT_WIDTH);
