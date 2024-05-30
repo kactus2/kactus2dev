@@ -26,20 +26,20 @@
 // Function: componenteditoritem::ComponentEditorItem()
 //-----------------------------------------------------------------------------
 ComponentEditorItem::ComponentEditorItem(ComponentEditorTreeModel* model,
-										 LibraryInterface* libHandler,
-										 QSharedPointer<Component> component,
-										 ComponentEditorItem* parent ):
-QObject(parent),
-libHandler_(libHandler),
-component_(component), 
-model_(model),
-parent_(parent)
+	LibraryInterface* libHandler,
+	QSharedPointer<Component> component,
+	ComponentEditorItem* parent) :
+	QObject(parent),
+	libHandler_(libHandler),
+	component_(component),
+	model_(model),
+	parent_(parent)
 {
 
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		model, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
-    connect(this, SIGNAL(contentChanged()),
-        model, SIGNAL(contentChanged()), Qt::UniqueConnection);
+	connect(this, SIGNAL(contentChanged()),
+		model, SIGNAL(contentChanged()), Qt::UniqueConnection);
 
 	connect(this, SIGNAL(createChild(ComponentEditorItem*, int)),
 		model, SLOT(addItem(ComponentEditorItem*, int)), Qt::UniqueConnection);
@@ -51,8 +51,8 @@ parent_(parent)
 	connect(this, SIGNAL(selectItem(ComponentEditorItem*)),
 		model, SLOT(onSelectItem(ComponentEditorItem*)), Qt::UniqueConnection);
 
-    connect(this, SIGNAL(helpUrlRequested(QString const&)),
-            model, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(helpUrlRequested(QString const&)),
+		model, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(errorMessage(const QString&)),
 		model, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
 
@@ -64,6 +64,8 @@ parent_(parent)
 		model, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(openBus(const VLNV&)),
 		model, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
+	connect(this, SIGNAL(openAbsDef(const VLNV&)),
+		model, SIGNAL(openAbsDef(const VLNV&)), Qt::UniqueConnection);
 	connect(this, SIGNAL(openComDefinition(const VLNV&)),
 		model, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
 }
@@ -71,13 +73,13 @@ parent_(parent)
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::ComponentEditorItem()
 //-----------------------------------------------------------------------------
-ComponentEditorItem::ComponentEditorItem( LibraryInterface* libHandler, 
-										 QSharedPointer<Component> component, 
-										 ComponentEditorTreeModel* parent ):
-QObject(parent),
-libHandler_(libHandler),
-component_(component),
-model_(parent)
+ComponentEditorItem::ComponentEditorItem(LibraryInterface* libHandler,
+	QSharedPointer<Component> component,
+	ComponentEditorTreeModel* parent) :
+	QObject(parent),
+	libHandler_(libHandler),
+	component_(component),
+	model_(parent)
 {
 	connect(this, SIGNAL(contentChanged(ComponentEditorItem*)),
 		parent, SLOT(onContentChanged(ComponentEditorItem*)), Qt::UniqueConnection);
@@ -89,7 +91,7 @@ model_(parent)
 ComponentEditorItem::~ComponentEditorItem()
 {
 	if (editor_)
-    {
+	{
 		editor_->deleteLater();
 		editor_ = nullptr;
 	}
@@ -101,7 +103,7 @@ ComponentEditorItem::~ComponentEditorItem()
 int ComponentEditorItem::row() const
 {
 	if (parent_)
-    {
+	{
 		return parent_->getIndexOf(this);
 	}
 	return -1;
@@ -110,12 +112,12 @@ int ComponentEditorItem::row() const
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::getIndexOf()
 //-----------------------------------------------------------------------------
-int ComponentEditorItem::getIndexOf( const ComponentEditorItem* child ) const
+int ComponentEditorItem::getIndexOf(const ComponentEditorItem* child) const
 {
 	for (int i = 0; i < childItems_.size(); ++i)
-    {
+	{
 		if (childItems_.at(i).data() == child)
-        {
+		{
 			return i;
 		}
 	}
@@ -141,10 +143,10 @@ bool ComponentEditorItem::hasChildren() const
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::child()
 //-----------------------------------------------------------------------------
-QSharedPointer<ComponentEditorItem> ComponentEditorItem::child( const int index )
+QSharedPointer<ComponentEditorItem> ComponentEditorItem::child(const int index)
 {
 	if (index < 0 || childItems_.count() < index)
-    {
+	{
 		return QSharedPointer<ComponentEditorItem>();
 	}
 
@@ -164,7 +166,7 @@ ComponentEditorItem* ComponentEditorItem::parent()
 //-----------------------------------------------------------------------------
 QFont ComponentEditorItem::getFont() const
 {
-	return QApplication::font();	
+	return QApplication::font();
 }
 
 //-----------------------------------------------------------------------------
@@ -173,7 +175,7 @@ QFont ComponentEditorItem::getFont() const
 bool ComponentEditorItem::isValid() const
 {
 	// if at least one child is not valid then this is not valid
-	return std::all_of(childItems_.cbegin(), childItems_.cend(), 
+	return std::all_of(childItems_.cbegin(), childItems_.cend(),
 		[](auto const& childItem) { return childItem->isValid(); });
 }
 
@@ -182,7 +184,7 @@ bool ComponentEditorItem::isValid() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorItem::isModified() const
 {
-    return modified_;
+	return modified_;
 }
 
 //-----------------------------------------------------------------------------
@@ -199,10 +201,10 @@ void ComponentEditorItem::clearModified()
 		child->clearModified();
 	}
 
-    if (changed)
-    {
-        emit contentChanged(this);
-    }
+	if (changed)
+	{
+		emit contentChanged(this);
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -210,12 +212,12 @@ void ComponentEditorItem::clearModified()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::setModified()
 {
-    modified_ = true;
+	modified_ = true;
 
-    if (parent_)
-    {
-        parent_->setModified();
-    }
+	if (parent_)
+	{
+		parent_->setModified();
+	}
 }
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::visualizer()
@@ -234,17 +236,17 @@ void ComponentEditorItem::onEditorChanged()
 
 	// if there is a valid parent then update it also
 	if (parent_)
-    {
+	{
 		emit contentChanged(parent_);
 	}
-	
+
 	// update this item
 	emit contentChanged(this);
 
-    for (auto const& childItem : childItems_)
-    {
-        emit contentChanged(childItem.data());
-    }
+	for (auto const& childItem : childItems_)
+	{
+		emit contentChanged(childItem.data());
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -252,14 +254,14 @@ void ComponentEditorItem::onEditorChanged()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::onGraphicsChanged()
 {
-    QApplication::setOverrideCursor(Qt::WaitCursor);
-    for (auto const& childItem : childItems_)
-    {
-        childItem->updateGraphics();
-    }
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	for (auto const& childItem : childItems_)
+	{
+		childItem->updateGraphics();
+	}
 
-    updateGraphics();
-    QApplication::restoreOverrideCursor();
+	updateGraphics();
+	QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -269,13 +271,13 @@ void ComponentEditorItem::setLocked(bool locked)
 {
 	// if this item contains an editor
 	if (editor_)
-    {
+	{
 		editor_->setProtection(locked);
 	}
 
 	// also tell child items
-	for (auto const& childItem :childItems_)
-    {
+	for (auto const& childItem : childItems_)
+	{
 		childItem->setLocked(locked);
 	}
 
@@ -288,7 +290,7 @@ void ComponentEditorItem::setLocked(bool locked)
 void ComponentEditorItem::refreshEditor()
 {
 	if (editor_)
-    {
+	{
 		editor_->refresh();
 	}
 }
@@ -296,7 +298,7 @@ void ComponentEditorItem::refreshEditor()
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::onAddChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::onAddChild( int index )
+void ComponentEditorItem::onAddChild(int index)
 {
 	emit createChild(this, index);
 }
@@ -304,7 +306,7 @@ void ComponentEditorItem::onAddChild( int index )
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::onRemoveChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::onRemoveChild( int index )
+void ComponentEditorItem::onRemoveChild(int index)
 {
 	emit removeChild(this, index);
 }
@@ -312,7 +314,7 @@ void ComponentEditorItem::onRemoveChild( int index )
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::onMoveChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::onMoveChild( int source, int target )
+void ComponentEditorItem::onMoveChild(int source, int target)
 {
 	emit moveChild(this, source, target);
 }
@@ -320,11 +322,11 @@ void ComponentEditorItem::onMoveChild( int source, int target )
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::moveChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex )
+void ComponentEditorItem::moveChild(const int sourceIndex, int targetIndex)
 {
 	// if the source index can not be used to identify an item
 	if (sourceIndex < 0 || sourceIndex >= childItems_.count())
-    {
+	{
 		return;
 	}
 
@@ -337,7 +339,7 @@ void ComponentEditorItem::moveChild( const int sourceIndex, int targetIndex )
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::createChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::createChild( int /*index*/ )
+void ComponentEditorItem::createChild(int /*index*/)
 {
 	// This must be implemented in sub classes to create the correct type of child.
 }
@@ -345,7 +347,7 @@ void ComponentEditorItem::createChild( int /*index*/ )
 //-----------------------------------------------------------------------------
 // Function: componenteditoritem::removeChild()
 //-----------------------------------------------------------------------------
-void ComponentEditorItem::removeChild( int index )
+void ComponentEditorItem::removeChild(int index)
 {
 	Q_ASSERT(index >= 0);
 	Q_ASSERT(index < childItems_.size());
@@ -378,9 +380,9 @@ void ComponentEditorItem::openItem()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorItem::actions()
 //-----------------------------------------------------------------------------
-QList<QAction* > ComponentEditorItem::actions() const
+QList<QAction* > ComponentEditorItem::actions()
 {
-    return QList<QAction*>();
+	return QList<QAction*>();
 }
 
 //-----------------------------------------------------------------------------
@@ -412,8 +414,8 @@ void ComponentEditorItem::removeGraphicsItem()
 //-----------------------------------------------------------------------------
 bool ComponentEditorItem::hasIcon() const
 {
-    // Normally items have no icon.
-    return false;
+	// Normally items have no icon.
+	return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -421,8 +423,8 @@ bool ComponentEditorItem::hasIcon() const
 //-----------------------------------------------------------------------------
 QIcon ComponentEditorItem::getIcon() const
 {
-    // Normally items have no default icon.
-    return QIcon();
+	// Normally items have no default icon.
+	return QIcon();
 }
 
 //-----------------------------------------------------------------------------
@@ -438,7 +440,7 @@ void ComponentEditorItem::onSelectRequest()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::setReferenceCounter(QSharedPointer<ReferenceCounter> newReferenceCounter)
 {
-    referenceCounter_ = newReferenceCounter;
+	referenceCounter_ = newReferenceCounter;
 }
 
 //-----------------------------------------------------------------------------
@@ -446,7 +448,7 @@ void ComponentEditorItem::setReferenceCounter(QSharedPointer<ReferenceCounter> n
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::setParameterFinder(QSharedPointer<ParameterFinder> parameterFinder)
 {
-    parameterFinder_ = parameterFinder;
+	parameterFinder_ = parameterFinder;
 }
 
 //-----------------------------------------------------------------------------
@@ -454,7 +456,7 @@ void ComponentEditorItem::setParameterFinder(QSharedPointer<ParameterFinder> par
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::setExpressionFormatter(QSharedPointer<ExpressionFormatter> expressionFormatter)
 {
-    expressionFormatter_ = expressionFormatter;
+	expressionFormatter_ = expressionFormatter;
 }
 
 //-----------------------------------------------------------------------------
@@ -462,10 +464,10 @@ void ComponentEditorItem::setExpressionFormatter(QSharedPointer<ExpressionFormat
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::connectItemEditorToReferenceCounter()
 {
-    connect(editor_, SIGNAL(increaseReferences(QString)), 
-        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
-    connect(editor_, SIGNAL(decreaseReferences(QString)),
-        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+	connect(editor_, SIGNAL(increaseReferences(QString)),
+		referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+	connect(editor_, SIGNAL(decreaseReferences(QString)),
+		referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -473,6 +475,6 @@ void ComponentEditorItem::connectItemEditorToReferenceCounter()
 //-----------------------------------------------------------------------------
 void ComponentEditorItem::connectItemEditorToVendorExtensionsEditor()
 {
-    connect(editor_, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
-        this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
+	connect(editor_, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
+		this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
 }

@@ -81,26 +81,26 @@
 // Function: ComponentEditor::ComponentEditor()
 //-----------------------------------------------------------------------------
 ComponentEditor::ComponentEditor(LibraryInterface* libHandler,
-								 QSharedPointer<Component> component,
-								 QWidget *parent):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-libHandler_(libHandler),
-component_(component),
-navigationSplitter_(Qt::Horizontal, this),
-editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_), 
-navigationModel_(this),
-navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
-proxy_(this),
-editorSlot_(&editorVisualizerSplitter_),
-visualizerSlot_(&editorVisualizerSplitter_),
-parameterFinder_(new ParameterCache(component_)),
-fullParameterFinder_(QSharedPointer<ComponentAndInstantiationsParameterFinder>(
-    new ComponentAndInstantiationsParameterFinder(component))),
-referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new ComponentParameterReferenceCounter(
-    fullParameterFinder_, component))),
-expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
-expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(expressionParser_, libHandler_, component->getRevision())
+    QSharedPointer<Component> component,
+    QWidget* parent) :
+    TabDocument(parent, DOC_PROTECTION_SUPPORT),
+    libHandler_(libHandler),
+    component_(component),
+    navigationSplitter_(Qt::Horizontal, this),
+    editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_),
+    navigationModel_(this),
+    navigationView_(libHandler, component->getVlnv(), &navigationSplitter_),
+    proxy_(this),
+    editorSlot_(&editorVisualizerSplitter_),
+    visualizerSlot_(&editorVisualizerSplitter_),
+    parameterFinder_(new ParameterCache(component_)),
+    fullParameterFinder_(QSharedPointer<ComponentAndInstantiationsParameterFinder>(
+        new ComponentAndInstantiationsParameterFinder(component))),
+    referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new ComponentParameterReferenceCounter(
+        fullParameterFinder_, component))),
+    expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
+    expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
+    validator_(expressionParser_, libHandler_, component->getRevision())
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =
@@ -110,21 +110,21 @@ validator_(expressionParser_, libHandler_, component->getRevision())
     supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
 
     // these can be used when debugging to identify the objects
-	setObjectName(tr("ComponentEditor"));
-	navigationSplitter_.setObjectName(tr("NavigationSplitter"));
-	editorVisualizerSplitter_.setObjectName(tr("EditorVisualizerSplitter"));
-	editorSlot_.setObjectName(tr("EditorSlot"));
-	visualizerSlot_.setObjectName(tr("VisualizerSlot"));
+    setObjectName(tr("ComponentEditor"));
+    navigationSplitter_.setObjectName(tr("NavigationSplitter"));
+    editorVisualizerSplitter_.setObjectName(tr("EditorVisualizerSplitter"));
+    editorSlot_.setObjectName(tr("EditorSlot"));
+    visualizerSlot_.setObjectName(tr("VisualizerSlot"));
 
-	Q_ASSERT(component_);
-	Q_ASSERT(libHandler_);
+    Q_ASSERT(component_);
+    Q_ASSERT(libHandler_);
 
-	// set the name and type for the tab
+    // set the name and type for the tab
     setDocumentName(QString("%1 (%2)").arg(component_->getVlnv().getName(), component_->getVlnv().getVersion()));
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    setDocumentType(tr("HW Component"));
+        setDocumentType(tr("HW Component"));
     }
     else if (component_->getImplementation() == KactusAttribute::SW)
     {
@@ -139,54 +139,59 @@ validator_(expressionParser_, libHandler_, component->getRevision())
 
     setupLayout();
 
-	// set the component to be displayed in the navigation model
+    // set the component to be displayed in the navigation model
     navigationModel_.setRootItem(createNavigationRootForComponent());
 
-	QSettings settings;
-	setRowVisibility(settings);
-	
+    QSettings settings;
+    setRowVisibility(settings);
+
     // Set source model for the proxy.
     proxy_.setSourceModel(&navigationModel_);
 
     navigationView_.setItemDelegate(new ComponentEditorTreeDelegate(this));
 
-	// connect the view with the model (proxy) and sort.
-	navigationView_.setModel(&proxy_);
+    // connect the view with the model (proxy) and sort.
+    navigationView_.setModel(&proxy_);
     navigationView_.sortByColumn(0, Qt::AscendingOrder);
 
-	// when starting the component editor open the general editor.
-	onItemActivated(proxy_.index(0, 0, QModelIndex()));
+    // when starting the component editor open the general editor.
+    onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
-	// navigation model may request an item to be expanded
-	connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
-		this, SLOT(onExpand(const QModelIndex&)), Qt::UniqueConnection);
+    // navigation model may request an item to be expanded
+    connect(&navigationModel_, SIGNAL(expandItem(const QModelIndex&)),
+        this, SLOT(onExpand(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
-		this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&navigationView_, SIGNAL(activated(const QModelIndex&)),
+        this, SLOT(onItemActivated(const QModelIndex&)), Qt::UniqueConnection);
 
-	connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
-		    this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(dataChanged(const QModelIndex&, const QModelIndex&)),
+        this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&navigationModel_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
     connect(&navigationModel_, SIGNAL(helpUrlRequested(QString const&)),
-            this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(errorMessage(const QString&)),
-		this, SLOT(onErrorDialog(const QString&)), Qt::UniqueConnection);
+        this, SIGNAL(helpUrlRequested(QString const&)), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(errorMessage(const QString&)),
+        this, SLOT(onErrorDialog(const QString&)), Qt::UniqueConnection);
 
     connect(&navigationModel_, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
-            this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
+        this, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
 
-	connect(&navigationModel_, SIGNAL(selectItem(const QModelIndex&)),
-		this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
-		this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openBus(const VLNV&)),
-		this, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openComDefinition(const VLNV&)),
-		this, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
-		this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
-	connect(&navigationModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
-		this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(selectItem(const QModelIndex&)),
+        this, SLOT(onNavigationTreeSelection(const QModelIndex&)), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(openDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+
+    connect(&navigationModel_, SIGNAL(openAbsDef(const VLNV&)),
+        this, SIGNAL(openAbsDef(const VLNV&)), Qt::UniqueConnection);
+
+    connect(&navigationModel_, SIGNAL(openBus(const VLNV&)),
+        this, SIGNAL(openBus(const VLNV&)), Qt::UniqueConnection);
+
+    connect(&navigationModel_, SIGNAL(openComDefinition(const VLNV&)),
+        this, SIGNAL(openComDefinition(const VLNV&)), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(openSWDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+    connect(&navigationModel_, SIGNAL(openSystemDesign(const VLNV&, const QString&)),
+        this, SIGNAL(openSystemDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -202,7 +207,7 @@ VLNV ComponentEditor::getIdentifyingVLNV() const
 //-----------------------------------------------------------------------------
 VLNV ComponentEditor::getDocumentVLNV() const
 {
-	return component_->getVlnv();
+    return component_->getVlnv();
 }
 
 //-----------------------------------------------------------------------------
@@ -218,26 +223,26 @@ bool ComponentEditor::isHWImplementation() const
 //-----------------------------------------------------------------------------
 void ComponentEditor::refresh()
 {
-	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-	// remember the locked state
-	bool locked = isProtected();
-	
-	// clear the slots 
-	editorSlot_.setWidget(nullptr);
-	visualizerSlot_.setWidget(nullptr);
+    // remember the locked state
+    bool locked = isProtected();
 
-	// get the VLNV of the component
-	VLNV compVLNV = component_->getVlnv();
+    // clear the slots 
+    editorSlot_.setWidget(nullptr);
+    visualizerSlot_.setWidget(nullptr);
 
-	// get the original model of the component
-	QSharedPointer<Component> comp = libHandler_->getModel<Component>(compVLNV);
-	Q_ASSERT(comp.isNull() == false);
+    // get the VLNV of the component
+    VLNV compVLNV = component_->getVlnv();
 
-	// rebuild the navigation tree
-	component_ = comp;
-	navigationModel_.setRootItem(createNavigationRootForComponent());
-	//component_.clear();
+    // get the original model of the component
+    QSharedPointer<Component> comp = libHandler_->getModel<Component>(compVLNV);
+    Q_ASSERT(comp.isNull() == false);
+
+    // rebuild the navigation tree
+    component_ = comp;
+    navigationModel_.setRootItem(createNavigationRootForComponent());
+    //component_.clear();
 
     referenceCounter_->setComponent(component_);
     parameterReferenceTree_->setComponent(component_);
@@ -245,17 +250,17 @@ void ComponentEditor::refresh()
     parameterFinder_->setComponent(comp);
     fullParameterFinder_->setComponent(comp);
 
-	// open the general editor.
-	onItemActivated(proxy_.index(0, 0, QModelIndex()));
+    // open the general editor.
+    onItemActivated(proxy_.index(0, 0, QModelIndex()));
 
-	// the document is no longer modified
-	setModified(false);
-	TabDocument::refresh();
+    // the document is no longer modified
+    setModified(false);
+    TabDocument::refresh();
 
-	// set the protection state to same as before refreshing
-	setProtection(locked);
+    // set the protection state to same as before refreshing
+    setProtection(locked);
 
-	QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 }
 
 //-----------------------------------------------------------------------------
@@ -263,7 +268,7 @@ void ComponentEditor::refresh()
 //-----------------------------------------------------------------------------
 void ComponentEditor::applySettings(QSettings& settings)
 {
-	setRowVisibility(settings);
+    setRowVisibility(settings);
 }
 
 //-----------------------------------------------------------------------------
@@ -271,14 +276,14 @@ void ComponentEditor::applySettings(QSettings& settings)
 //-----------------------------------------------------------------------------
 QStringList ComponentEditor::getHwItemNames()
 {
-	QStringList itemNames;
+    QStringList itemNames;
 
-	itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" << 
-		"Address_spaces" << "Instantiations" << "Views" << "Software_views" << "System_views" << "Ports" <<
+    itemNames << "File_sets" << "Choices" << "Parameters" << "Memory_maps" <<
+        "Address_spaces" << "Instantiations" << "Views" << "Software_views" << "System_views" << "Ports" <<
         "Bus_interfaces" << "Indirect_interfaces" << "Channels" << "Remap_states" << "Cpus" <<
         "Other_clock_drivers" << "Reset_types" << "COM_interfaces" << "Software_properties";
 
-	return itemNames;
+    return itemNames;
 }
 
 //-----------------------------------------------------------------------------
@@ -286,12 +291,12 @@ QStringList ComponentEditor::getHwItemNames()
 //-----------------------------------------------------------------------------
 QStringList ComponentEditor::getSwItemNames()
 {
-	QStringList itemNames;
+    QStringList itemNames;
 
-	itemNames << "File_sets" << "Choices" << "Parameters" << "Software_views" << "COM_interfaces" << 
-		"API_interfaces" << "Software_properties";
+    itemNames << "File_sets" << "Choices" << "Parameters" << "Software_views" << "COM_interfaces" <<
+        "API_interfaces" << "Software_properties";
 
-	return itemNames;
+    return itemNames;
 }
 
 //-----------------------------------------------------------------------------
@@ -313,16 +318,16 @@ bool ComponentEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool ComponentEditor::save()
 {
-	if (libHandler_->writeModelToFile(component_))
+    if (libHandler_->writeModelToFile(component_))
     {
         navigationModel_.clearItemsModified();
-		return TabDocument::save();
-	}
-	else
+        return TabDocument::save();
+    }
+    else
     {
-		emit errorMessage(tr("Component was not saved to disk."));
-		return false;
-	}
+        emit errorMessage(tr("Component was not saved to disk."));
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -330,21 +335,21 @@ bool ComponentEditor::save()
 //-----------------------------------------------------------------------------
 bool ComponentEditor::saveAs()
 {
-	// Ask the user for a new VLNV along with attributes and directory.
+    // Ask the user for a new VLNV along with attributes and directory.
     KactusAttribute::ProductHierarchy prodHier = component_->getHierarchy();
     KactusAttribute::Firmness firmness = component_->getFirmness();
     QVector<TagData> tags = component_->getTags();
 
-	VLNV vlnv;
-	QString directory;
+    VLNV vlnv;
+    QString directory;
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    if (!NewObjectDialog::saveAsDialog(
+        if (!NewObjectDialog::saveAsDialog(
             parentWidget(), libHandler_, component_->getVlnv(), prodHier, firmness, tags, vlnv, directory))
         {
-		    return false;
-	    }
+            return false;
+        }
     }
     else
     {
@@ -354,40 +359,40 @@ bool ComponentEditor::saveAs()
         }
     }
 
-	// save pointer to the old component
-	QSharedPointer<Component> oldComponent = component_;
+    // save pointer to the old component
+    QSharedPointer<Component> oldComponent = component_;
 
-	// create copies of the objects so saving is not done to the original component
-	component_ = QSharedPointer<Component>(new Component(*component_));
+    // create copies of the objects so saving is not done to the original component
+    component_ = QSharedPointer<Component>(new Component(*component_));
 
-	// make sure the vlnv type is correct
-	VLNV compVLNV = vlnv;
-	compVLNV.setType(VLNV::COMPONENT);
+    // make sure the vlnv type is correct
+    VLNV compVLNV = vlnv;
+    compVLNV.setType(VLNV::COMPONENT);
 
-	// update the vlnv
-	component_->setVlnv(vlnv);
+    // update the vlnv
+    component_->setVlnv(vlnv);
     component_->setHierarchy(prodHier);
     component_->setFirmness(firmness);
 
-	// get the paths to the original xml file
-	QFileInfo sourceInfo(libHandler_->getPath(oldComponent->getVlnv()));
-	QString sourcePath = sourceInfo.absolutePath();
+    // get the paths to the original xml file
+    QFileInfo sourceInfo(libHandler_->getPath(oldComponent->getVlnv()));
+    QString sourcePath = sourceInfo.absolutePath();
 
-	// update the file paths and copy necessary files
+    // update the file paths and copy necessary files
     updateComponentFiles(component_, oldComponent, sourcePath, directory);
 
-	// Write the component to a file.
-	if (libHandler_->writeModelToFile(directory, component_))
+    // Write the component to a file.
+    if (libHandler_->writeModelToFile(directory, component_))
     {
-		setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
+        setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
         navigationModel_.clearItemsModified();
-		return TabDocument::saveAs();
-	}
-	else
+        return TabDocument::saveAs();
+    }
+    else
     {
-		emit errorMessage(tr("Component was not saved to disk."));
-		return false;
-	}
+        emit errorMessage(tr("Component was not saved to disk."));
+        return false;
+    }
 
     clearRelatedVLNVs();
     addRelatedVLNV(compVLNV);
@@ -398,24 +403,24 @@ bool ComponentEditor::saveAs()
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::onNavigationTreeSelection()
 //-----------------------------------------------------------------------------
-void ComponentEditor::onNavigationTreeSelection( const QModelIndex& index )
+void ComponentEditor::onNavigationTreeSelection(const QModelIndex& index)
 {
-	navigationView_.setCurrentIndex(index);
-	onItemActivated(index);
+    navigationView_.setCurrentIndex(index);
+    onItemActivated(index);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::onExpand()
 //-----------------------------------------------------------------------------
 void ComponentEditor::onExpand(const QModelIndex& index)
-{    
+{
     // Expand parents until root is hit.            
     QModelIndex parentIndex = index;
-    while(parentIndex.isValid())
+    while (parentIndex.isValid())
     {
         navigationView_.expand(proxy_.mapFromSource(parentIndex));
         parentIndex = parentIndex.parent();
-    }    
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -429,12 +434,12 @@ void ComponentEditor::onErrorDialog(const QString& message)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::onItemActivated()
 //-----------------------------------------------------------------------------
-void ComponentEditor::onItemActivated( const QModelIndex& index )
+void ComponentEditor::onItemActivated(const QModelIndex& index)
 {
     // If tree proxy model index is used, the item must be retrieved from the source model.
     auto const indexModel = dynamic_cast<const ComponentEditorTreeProxyModel*>(index.model());
-	ComponentEditorItem* item = nullptr;
-    if ( indexModel == nullptr )
+    ComponentEditorItem* item = nullptr;
+    if (indexModel == nullptr)
     {
         item = static_cast<ComponentEditorItem*>(index.internalPointer());
     }
@@ -445,60 +450,60 @@ void ComponentEditor::onItemActivated( const QModelIndex& index )
 
     Q_ASSERT(item);
 
-	QList<int> editorVisualizerSizes;
+    QList<int> editorVisualizerSizes;
 
-	ItemEditor* editor = item->editor();
-	if (editor)
+    ItemEditor* editor = item->editor();
+    if (editor)
     {
-		// the width of the previous editor
-		if (QWidget* prevEditor = editorSlot_.getWidget(); prevEditor != nullptr)
+        // the width of the previous editor
+        if (QWidget* prevEditor = editorSlot_.getWidget(); prevEditor != nullptr)
         {
-			int prevWidth = prevEditor->size().width();
-			editorVisualizerSizes.append(prevWidth);
-		}
-		// if there was no previous editor then use the size hint
-		else
+            int prevWidth = prevEditor->size().width();
+            editorVisualizerSizes.append(prevWidth);
+        }
+        // if there was no previous editor then use the size hint
+        else
         {
-			editorVisualizerSizes.append(editor->sizeHint().width());
-		}
-		editor->refresh();
-	}
-	// if there is no editor then hide the editor slot
-	else
+            editorVisualizerSizes.append(editor->sizeHint().width());
+        }
+        editor->refresh();
+    }
+    // if there is no editor then hide the editor slot
+    else
     {
-		editorVisualizerSizes.append(0);
-	}
-	editorSlot_.setWidget(editor);
+        editorVisualizerSizes.append(0);
+    }
+    editorSlot_.setWidget(editor);
 
-	ItemVisualizer* visualizer = item->visualizer();
-	if (visualizer)
+    ItemVisualizer* visualizer = item->visualizer();
+    if (visualizer)
     {
-		// the width of the previous visualizer
-		if (QWidget* prevVisualizer = visualizerSlot_.getWidget(); prevVisualizer)
+        // the width of the previous visualizer
+        if (QWidget* prevVisualizer = visualizerSlot_.getWidget(); prevVisualizer)
         {
-			int prevWidth = prevVisualizer->size().width();
-			editorVisualizerSizes.append(prevWidth);
-		}
-		// if there was no previous visualizer then use the size hint
-		else
+            int prevWidth = prevVisualizer->size().width();
+            editorVisualizerSizes.append(prevWidth);
+        }
+        // if there was no previous visualizer then use the size hint
+        else
         {
-			editorVisualizerSizes.append(visualizer->sizeHint().width());
-		}
-	}
-	// if there is no visualizer then hide the visualizer slot
-	else
+            editorVisualizerSizes.append(visualizer->sizeHint().width());
+        }
+    }
+    // if there is no visualizer then hide the visualizer slot
+    else
     {
-		editorVisualizerSizes.append(0);
-	}
-	visualizerSlot_.setWidget(visualizer);
+        editorVisualizerSizes.append(0);
+    }
+    visualizerSlot_.setWidget(visualizer);
 
-	editorVisualizerSplitter_.setSizes(editorVisualizerSizes);
+    editorVisualizerSplitter_.setSizes(editorVisualizerSizes);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::setProtection()
 //-----------------------------------------------------------------------------
-void ComponentEditor::setProtection( bool locked )
+void ComponentEditor::setProtection(bool locked)
 {
     TabDocument::setProtection(locked);
 
@@ -527,11 +532,11 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 
     // List of the hidden rows in component editor.
     QStringList hiddenRows;
-    for (auto name : settings.childKeys()) 
+    for (auto name : settings.childKeys())
     {
         if (settings.value(name, true).toBool() == false)
         {
-            QString wordReplaced = name.replace("_"," ");
+            QString wordReplaced = name.replace("_", " ");
             hiddenRows.append(wordReplaced);
         }
     }
@@ -548,7 +553,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
     // End Workspace/CurrentWorkspace/ComponentEditorFilters group.
     settings.endGroup();
 
-    proxy_.setRowVisibility( hiddenRows );
+    proxy_.setRowVisibility(hiddenRows);
 }
 
 //-----------------------------------------------------------------------------
@@ -556,7 +561,7 @@ void ComponentEditor::setRowVisibility(QSettings& settings)
 //-----------------------------------------------------------------------------
 QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootForComponent()
 {
-    ExpressionSet expressionsSupport({ parameterFinder_, expressionParser_, expressionFormatter_});
+    ExpressionSet expressionsSupport({ parameterFinder_, expressionParser_, expressionFormatter_ });
 
     auto root = new ComponentEditorRootItem(libHandler_, component_, &navigationModel_);
 
@@ -601,7 +606,7 @@ void ComponentEditor::addSWItems(ComponentEditorRootItem* root)
 //-----------------------------------------------------------------------------
 // Function: ComponentEditor::addHWItems()
 //-----------------------------------------------------------------------------
-void ComponentEditor::addHWItems(ComponentEditorRootItem* root, 
+void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     ExpressionSet const& expressionsSupport)
 {
     root->addChildItem(createGeneralItem(root));
@@ -640,7 +645,7 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
         &navigationModel_, libHandler_, component_, parameterFinder_, expressionParser_, expressionFormatter_,
         root)));
 
-    auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_, 
+    auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_,
         expressionParser_, component_, libHandler_);
 
     auto absTypeInterface = busInterface->getAbstractionTypeInterface();
@@ -789,7 +794,7 @@ QSharedPointer<ComponentEditorBusInterfacesItem> ComponentEditor::createBusInter
 {
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
         new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
-            libHandler_, component_, referenceCounter_, 
+            libHandler_, component_, referenceCounter_,
             ExpressionSet({ parameterFinder_, expressionParser_, expressionFormatter_ }),
             root, parentWidget()));
 
@@ -904,7 +909,7 @@ QStringList ComponentEditor::getComponentFileNames(QSharedPointer<Component> com
 // Function: componenteditor::changeFileName()
 //-----------------------------------------------------------------------------
 void ComponentEditor::changeFileName(QString const& from, QString const& to, QSharedPointer<Component> component)
-    const
+const
 {
     for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
     {

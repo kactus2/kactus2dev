@@ -37,9 +37,9 @@ BusInterface::MonitorInterface::MonitorInterface()
 //-----------------------------------------------------------------------------
 // Function: BusInterface::BusInterface()
 //-----------------------------------------------------------------------------
-BusInterface::BusInterface():
-NameGroup(),
-Extendable()
+BusInterface::BusInterface() :
+    NameGroup(),
+    Extendable()
 {
 
 }
@@ -47,19 +47,19 @@ Extendable()
 //-----------------------------------------------------------------------------
 // Function: BusInterface::BusInterface()
 //-----------------------------------------------------------------------------
-BusInterface::BusInterface( const BusInterface &other ):
-NameGroup(other),
-Extendable(other),
-isPresent_(other.isPresent_),
-attributes_(other.attributes_),
-busType_(other.busType_),
-interfaceMode_(other.interfaceMode_),
-connectionRequired_(other.connectionRequired_),
-bitsInLau_(other.bitsInLau_),
-bitSteering_(other.bitSteering_),
-bitSteeringAttributes_(other.bitSteeringAttributes_),
-endianness_(other.endianness_),
-systemGroup_(other.systemGroup_)
+BusInterface::BusInterface(const BusInterface& other) :
+    NameGroup(other),
+    Extendable(other),
+    isPresent_(other.isPresent_),
+    attributes_(other.attributes_),
+    busType_(other.busType_),
+    interfaceMode_(other.interfaceMode_),
+    connectionRequired_(other.connectionRequired_),
+    bitsInLau_(other.bitsInLau_),
+    bitSteering_(other.bitSteering_),
+    bitSteeringAttributes_(other.bitSteeringAttributes_),
+    endianness_(other.endianness_),
+    systemGroup_(other.systemGroup_)
 {
     copyAbstractionTypes(other);
     copyParameters(other);
@@ -69,21 +69,21 @@ systemGroup_(other.systemGroup_)
 //-----------------------------------------------------------------------------
 // Function: BusInterface::operator=()
 //-----------------------------------------------------------------------------
-BusInterface & BusInterface::operator=( const BusInterface &other )
+BusInterface& BusInterface::operator=(const BusInterface& other)
 {
-	if (this != &other)
-    {	
-		NameGroup::operator=(other);
+    if (this != &other)
+    {
+        NameGroup::operator=(other);
         Extendable::operator=(other);
-		attributes_ = other.attributes_;
-		busType_ = other.busType_;
-		interfaceMode_ = other.interfaceMode_;
-		connectionRequired_ = other.connectionRequired_;
-		bitsInLau_ = other.bitsInLau_;
-		bitSteering_ = other.bitSteering_;
-		bitSteeringAttributes_ = other.bitSteeringAttributes_;
-		endianness_ = other.endianness_;
-		systemGroup_ = other.systemGroup_;
+        attributes_ = other.attributes_;
+        busType_ = other.busType_;
+        interfaceMode_ = other.interfaceMode_;
+        connectionRequired_ = other.connectionRequired_;
+        bitsInLau_ = other.bitsInLau_;
+        bitSteering_ = other.bitSteering_;
+        bitSteeringAttributes_ = other.bitSteeringAttributes_;
+        endianness_ = other.endianness_;
+        systemGroup_ = other.systemGroup_;
 
         abstractionTypes_->clear();
         copyAbstractionTypes(other);
@@ -92,8 +92,8 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
         copyParameters(other);
 
         copyInterfaceModes(other);
-	}
-	return *this;
+    }
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -101,12 +101,12 @@ BusInterface & BusInterface::operator=( const BusInterface &other )
 //-----------------------------------------------------------------------------
 BusInterface::~BusInterface()
 {
-	abstractionTypes_.clear();
-	bitSteeringAttributes_.clear();
-	parameters_.clear();
-	initiator_.clear();
-	target_.clear();
-	monitor_.clear();
+    abstractionTypes_.clear();
+    bitSteeringAttributes_.clear();
+    parameters_.clear();
+    initiator_.clear();
+    target_.clear();
+    monitor_.clear();
 }
 
 //-----------------------------------------------------------------------------
@@ -114,7 +114,7 @@ BusInterface::~BusInterface()
 //-----------------------------------------------------------------------------
 QString BusInterface::getIsPresent() const
 {
-	return isPresent_;
+    return isPresent_;
 }
 
 //-----------------------------------------------------------------------------
@@ -122,7 +122,7 @@ QString BusInterface::getIsPresent() const
 //-----------------------------------------------------------------------------
 void BusInterface::setIsPresent(QString const& newIsPresent)
 {
-	isPresent_ = newIsPresent;
+    isPresent_ = newIsPresent;
 }
 
 //-----------------------------------------------------------------------------
@@ -130,7 +130,7 @@ void BusInterface::setIsPresent(QString const& newIsPresent)
 //-----------------------------------------------------------------------------
 QString BusInterface::getBitSteering() const
 {
-	return bitSteering_;
+    return bitSteering_;
 }
 
 //-----------------------------------------------------------------------------
@@ -138,7 +138,7 @@ QString BusInterface::getBitSteering() const
 //-----------------------------------------------------------------------------
 General::InterfaceMode BusInterface::getInterfaceMode() const
 {
-	return interfaceMode_;
+    return interfaceMode_;
 }
 
 //-----------------------------------------------------------------------------
@@ -171,7 +171,7 @@ void BusInterface::clearConnectionRequired()
 //-----------------------------------------------------------------------------
 void BusInterface::setEndianness(BusInterface::Endianness endianness)
 {
-	endianness_ = endianness;
+    endianness_ = endianness;
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +179,7 @@ void BusInterface::setEndianness(BusInterface::Endianness endianness)
 //-----------------------------------------------------------------------------
 QString BusInterface::getBitsInLau() const
 {
-	return bitsInLau_;
+    return bitsInLau_;
 }
 
 //-----------------------------------------------------------------------------
@@ -187,7 +187,7 @@ QString BusInterface::getBitsInLau() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getConnectionRequired() const
 {
-	return connectionRequired_.toString();
+    return connectionRequired_.toString();
 }
 
 //-----------------------------------------------------------------------------
@@ -195,7 +195,7 @@ QString BusInterface::getConnectionRequired() const
 //-----------------------------------------------------------------------------
 void BusInterface::setBitsInLau(QString const& newBitsInLau)
 {
-	bitsInLau_ = newBitsInLau;
+    bitsInLau_ = newBitsInLau;
 }
 
 //-----------------------------------------------------------------------------
@@ -203,7 +203,7 @@ void BusInterface::setBitsInLau(QString const& newBitsInLau)
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters() const
 {
-	return parameters_;
+    return parameters_;
 }
 
 //-----------------------------------------------------------------------------
@@ -211,7 +211,7 @@ QSharedPointer<QList<QSharedPointer<Parameter> > > BusInterface::getParameters()
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<AbstractionType> > > BusInterface::getAbstractionTypes() const
 {
-	return abstractionTypes_;
+    return abstractionTypes_;
 }
 
 //-----------------------------------------------------------------------------
@@ -219,8 +219,8 @@ QSharedPointer<QList<QSharedPointer<AbstractionType> > > BusInterface::getAbstra
 //-----------------------------------------------------------------------------
 void BusInterface::setBitSteeringAttributes(QMap<QString, QString> const& bitSteeringAttributes)
 {
-	bitSteeringAttributes_.clear();
-	bitSteeringAttributes_ = bitSteeringAttributes;
+    bitSteeringAttributes_.clear();
+    bitSteeringAttributes_ = bitSteeringAttributes;
 }
 
 //-----------------------------------------------------------------------------
@@ -228,7 +228,7 @@ void BusInterface::setBitSteeringAttributes(QMap<QString, QString> const& bitSte
 //-----------------------------------------------------------------------------
 ConfigurableVLNVReference BusInterface::getBusType() const
 {
-	return busType_;
+    return busType_;
 }
 
 //-----------------------------------------------------------------------------
@@ -236,7 +236,7 @@ ConfigurableVLNVReference BusInterface::getBusType() const
 //-----------------------------------------------------------------------------
 QMap<QString, QString> BusInterface::getBitSteeringAttributes()
 {
-	return bitSteeringAttributes_;
+    return bitSteeringAttributes_;
 }
 
 //-----------------------------------------------------------------------------
@@ -244,7 +244,7 @@ QMap<QString, QString> BusInterface::getBitSteeringAttributes()
 //-----------------------------------------------------------------------------
 BusInterface::Endianness BusInterface::getEndianness() const
 {
-	return endianness_;
+    return endianness_;
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +252,7 @@ BusInterface::Endianness BusInterface::getEndianness() const
 //-----------------------------------------------------------------------------
 void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
 {
-	interfaceMode_ = interfaceMode;
+    interfaceMode_ = interfaceMode;
 
     if (interfaceMode == General::MASTER || interfaceMode == General::INITIATOR)
     {
@@ -329,7 +329,7 @@ void BusInterface::setInterfaceMode(General::InterfaceMode interfaceMode)
         initiator_.clear();
         systemGroup_.clear();
         mirroredTarget_.clear();
-	}
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -345,7 +345,7 @@ void BusInterface::setBusType(ConfigurableVLNVReference const& newBusType)
 //-----------------------------------------------------------------------------
 void BusInterface::setBitSteering(QString const& bitSteering)
 {
-	bitSteering_ = bitSteering;
+    bitSteering_ = bitSteering;
 }
 
 //-----------------------------------------------------------------------------
@@ -353,15 +353,15 @@ void BusInterface::setBitSteering(QString const& bitSteering)
 //-----------------------------------------------------------------------------
 QSharedPointer<InitiatorInterface> BusInterface::getMaster() const
 {
-	return getInitiator();
+    return getInitiator();
 }
 
 //-----------------------------------------------------------------------------
 // Function: BusInterface::setMaster()
 //-----------------------------------------------------------------------------
-void BusInterface::setMaster( QSharedPointer<InitiatorInterface> master )
+void BusInterface::setMaster(QSharedPointer<InitiatorInterface> master)
 {
-    setInitiator(master); 
+    setInitiator(master);
     interfaceMode_ = General::MASTER;
 }
 
@@ -393,7 +393,7 @@ void BusInterface::setInitiator(QSharedPointer<InitiatorInterface> initiator)
 //-----------------------------------------------------------------------------
 QSharedPointer<TargetInterface> BusInterface::getSlave() const
 {
-	return target_;
+    return target_;
 }
 
 //-----------------------------------------------------------------------------
@@ -433,7 +433,7 @@ void BusInterface::setTarget(QSharedPointer<TargetInterface> target)
 //-----------------------------------------------------------------------------
 QString BusInterface::getSystem() const
 {
-	return systemGroup_;
+    return systemGroup_;
 }
 
 //-----------------------------------------------------------------------------
@@ -441,13 +441,13 @@ QString BusInterface::getSystem() const
 //-----------------------------------------------------------------------------
 void BusInterface::setSystem(QString const& systemGroupName)
 {
-	monitor_.clear();
-	target_.clear();
-	initiator_.clear();
-	systemGroup_.clear();
-	mirroredTarget_.clear();
-    
-	systemGroup_ = systemGroupName;
+    monitor_.clear();
+    target_.clear();
+    initiator_.clear();
+    systemGroup_.clear();
+    mirroredTarget_.clear();
+
+    systemGroup_ = systemGroupName;
 }
 
 //-----------------------------------------------------------------------------
@@ -455,7 +455,7 @@ void BusInterface::setSystem(QString const& systemGroupName)
 //-----------------------------------------------------------------------------
 QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor() const
 {
-	return monitor_;
+    return monitor_;
 }
 
 //-----------------------------------------------------------------------------
@@ -463,14 +463,14 @@ QSharedPointer<BusInterface::MonitorInterface> BusInterface::getMonitor() const
 //-----------------------------------------------------------------------------
 void BusInterface::setMonitor(QSharedPointer<BusInterface::MonitorInterface> monitor)
 {
-	monitor_.clear();
-	target_.clear();
-	initiator_.clear();
-	systemGroup_.clear();
-	mirroredTarget_.clear();
+    monitor_.clear();
+    target_.clear();
+    initiator_.clear();
+    systemGroup_.clear();
+    mirroredTarget_.clear();
 
-	interfaceMode_ = General::MONITOR;
-	monitor_ = monitor;
+    interfaceMode_ = General::MONITOR;
+    monitor_ = monitor;
 }
 
 //-----------------------------------------------------------------------------
@@ -484,7 +484,7 @@ QSharedPointer<MirroredTargetInterface> BusInterface::getMirroredSlave() const
 //-----------------------------------------------------------------------------
 // Function: BusInterface::setMirroredSlave()
 //-----------------------------------------------------------------------------
-void BusInterface::setMirroredSlave( QSharedPointer<MirroredTargetInterface> mirroredSlave )
+void BusInterface::setMirroredSlave(QSharedPointer<MirroredTargetInterface> mirroredSlave)
 {
     setMirroredTarget(mirroredSlave);
     interfaceMode_ = General::MIRRORED_SLAVE;
@@ -531,7 +531,7 @@ bool BusInterface::hasTransparentBridge() const
 //-----------------------------------------------------------------------------
 QMap<QString, QString> BusInterface::getAttributes() const
 {
-	return attributes_;
+    return attributes_;
 }
 
 //-----------------------------------------------------------------------------
@@ -539,7 +539,7 @@ QMap<QString, QString> BusInterface::getAttributes() const
 //-----------------------------------------------------------------------------
 void BusInterface::setAttributes(QMap<QString, QString> const& attributes)
 {
-	attributes_ = attributes;
+    attributes_ = attributes;
 }
 
 //-----------------------------------------------------------------------------
@@ -576,7 +576,7 @@ bool BusInterface::containsMappedlogicalPort(QString const& portName) const
             }
         }
     }
-    
+
     return false;
 }
 
@@ -603,7 +603,7 @@ QStringList BusInterface::getAllMappedPhysicalPorts() const
 //-----------------------------------------------------------------------------
 QSharedPointer<QList<QSharedPointer<PortMap> > > BusInterface::getAllPortMaps() const
 {
-    QSharedPointer<QList<QSharedPointer<PortMap> > > containedPortMaps(new QList<QSharedPointer<PortMap> > ());
+    QSharedPointer<QList<QSharedPointer<PortMap> > > containedPortMaps(new QList<QSharedPointer<PortMap> >());
 
     for (QSharedPointer<AbstractionType> abstraction : *abstractionTypes_)
     {
@@ -680,7 +680,7 @@ void BusInterface::setMCAPIPortID(int portID)
             return;
         }
     }
-    
+
     QSharedPointer<Parameter> param(new Parameter());
     param->setName(QStringLiteral("kts_port_id"));
     param->setValue(QString::number(portID));
@@ -708,14 +708,14 @@ int BusInterface::getMCAPIPortID() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getMemoryMapRef() const
 {
-	if ((interfaceMode_ != General::SLAVE && interfaceMode_ != General::TARGET) || !target_)
+    if ((interfaceMode_ != General::SLAVE && interfaceMode_ != General::TARGET) || !target_)
     {
-		return QString();
-	}
-	else
+        return QString();
+    }
+    else
     {
-		return target_->getMemoryMapRef();
-	}
+        return target_->getMemoryMapRef();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -723,7 +723,7 @@ QString BusInterface::getMemoryMapRef() const
 //-----------------------------------------------------------------------------
 QString BusInterface::getAddressSpaceRef() const
 {
-	if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRRORED_MASTER ||
+    if (interfaceMode_ == General::MASTER || interfaceMode_ == General::MIRRORED_MASTER ||
         interfaceMode_ == General::INITIATOR || interfaceMode_ == General::MIRRORED_INITIATOR)
     {
         if (!initiator_)
@@ -734,11 +734,52 @@ QString BusInterface::getAddressSpaceRef() const
         {
             return initiator_->getAddressSpaceRef();
         }
-	}
-	else
+    }
+    else
     {
-		return QString();
-	}
+        return QString();
+    }
+}
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getValidAbstractionTypes()
+//-----------------------------------------------------------------------------
+QSharedPointer<QList<QSharedPointer<AbstractionType>>> BusInterface::getValidAbstractionTypes() const
+{
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> notEmptyAbstractTypes = QSharedPointer<QList<QSharedPointer<AbstractionType>>>(new QList<QSharedPointer<AbstractionType>>());
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = getAbstractionTypes();
+    if (absDefs)
+    {
+        for (const QSharedPointer<AbstractionType> absDef : *absDefs)
+        {
+            QSharedPointer<ConfigurableVLNVReference> abstractionRef = absDef->getAbstractionRef();
+            if (abstractionRef)
+            {
+                VLNV* absDefVLNV = dynamic_cast<VLNV*>(abstractionRef.data());
+                if (absDefVLNV->isValid())
+                {
+                    notEmptyAbstractTypes->append(absDef);
+                }
+            }
+        }
+    }
+    if (notEmptyAbstractTypes->isEmpty())
+    {
+        return nullptr;
+    }
+    return notEmptyAbstractTypes;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterface::getFirstValidAbstractionType()
+//-----------------------------------------------------------------------------
+QSharedPointer<AbstractionType> BusInterface::getFirstValidAbstractionType() const
+{
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = getValidAbstractionTypes();
+    if (absDefs)
+    {
+        return absDefs->first();
+    }
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -756,7 +797,7 @@ void BusInterface::setDefaultPos(QPointF const& pos)
 
     if (!pos.isNull())
     {
-        QSharedPointer<Kactus2Position> newDefaultPosition (new Kactus2Position(pos));
+        QSharedPointer<Kactus2Position> newDefaultPosition(new Kactus2Position(pos));
         getVendorExtensions()->append(newDefaultPosition);
     }
 }

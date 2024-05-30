@@ -28,21 +28,22 @@ ComponentEditorBusInterfaceItem::ComponentEditorBusInterfaceItem(QSharedPointer<
     ComponentEditorTreeModel* model, LibraryInterface* libHandler, QSharedPointer<Component> component,
     QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions,
     QSharedPointer<BusInterfaceValidator> validator, BusInterfaceInterface* busInterface,
-    PortMapInterface* portMapInterface, ComponentEditorItem* parent, QWidget* parentWnd):
-ParameterizableItem(model, libHandler, component, parent),
-busif_(busif),
-parentWnd_(parentWnd),
-editAction_(new QAction(tr("Edit"), this)),
-expressions_(expressions),
-validator_(validator),
-busInterface_(busInterface),
-portMapInterface_(portMapInterface)
+    PortMapInterface* portMapInterface, ComponentEditorItem* parent, QWidget* parentWnd) :
+    ParameterizableItem(model, libHandler, component, parent),
+    busIf_(busif),
+    parentWnd_(parentWnd),
+    editBusDefAction_(new QAction(tr("Edit Bus definition"), this)),
+    expressions_(expressions),
+    validator_(validator),
+    busInterface_(busInterface),
+    portMapInterface_(portMapInterface)
 {
     setParameterFinder(expressions.finder);
     setExpressionFormatter(expressions.formatter);
     setReferenceCounter(referenceCounter);
 
-    connect(editAction_, SIGNAL(triggered(bool)), this, SLOT(openItem()), Qt::UniqueConnection);
+    connect(editBusDefAction_, SIGNAL(triggered(bool)), this, SLOT(openBusSlot()), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -57,7 +58,7 @@ ComponentEditorBusInterfaceItem::~ComponentEditorBusInterfaceItem()
 //-----------------------------------------------------------------------------
 QString ComponentEditorBusInterfaceItem::text() const
 {
-	return busif_->name();
+    return busIf_->name();
 }
 
 //-----------------------------------------------------------------------------
@@ -65,12 +66,12 @@ QString ComponentEditorBusInterfaceItem::text() const
 //-----------------------------------------------------------------------------
 bool ComponentEditorBusInterfaceItem::isValid() const
 {
-    if (!validator_->validate(busif_, component_->getRevision()))
+    if (!validator_->validate(busIf_, component_->getRevision()))
     {
         return false;
     }
 
-	return true;
+    return true;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,21 +79,21 @@ bool ComponentEditorBusInterfaceItem::isValid() const
 //-----------------------------------------------------------------------------
 ItemEditor* ComponentEditorBusInterfaceItem::editor()
 {
-	if (!editor_)
+    if (!editor_)
     {
-        editor_ = new BusInterfaceEditor(libHandler_, component_, busif_, expressions_, 
+        editor_ = new BusInterfaceEditor(libHandler_, component_, busIf_, expressions_,
             busInterface_, portMapInterface_, 0, parentWnd_);
         editor_->setProtection(locked_);
-		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
         connect(editor_, SIGNAL(errorMessage(const QString&)),
-            this, SIGNAL(errorMessage(const QString&)),Qt::UniqueConnection);
-		connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
+            this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
+        connect(editor_, SIGNAL(helpUrlRequested(QString const&)), this, SIGNAL(helpUrlRequested(QString const&)));
 
         connectItemEditorToReferenceCounter();
 
         connectReferenceTree();
-	}
-	return editor_;
+    }
+    return editor_;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,41 +101,75 @@ ItemEditor* ComponentEditorBusInterfaceItem::editor()
 //-----------------------------------------------------------------------------
 QString ComponentEditorBusInterfaceItem::getTooltip() const
 {
-	return tr("Defines properties of a specific interface in a component");
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentEditorBusInterfaceItem::canBeOpened()
-//-----------------------------------------------------------------------------
-bool ComponentEditorBusInterfaceItem::canBeOpened() const
-{
-	if (busif_->getBusType().isValid())
-    {
-		return libHandler_->contains(busif_->getBusType());
-	}
-	else
-    {
-		return false;
-	}
+    return tr("Defines properties of a specific interface in a component");
 }
 
 //-----------------------------------------------------------------------------
 // Function: ComponentEditorBusInterfaceItem::actions()
 //-----------------------------------------------------------------------------
-QList<QAction*> ComponentEditorBusInterfaceItem::actions() const
+QList<QAction*> ComponentEditorBusInterfaceItem::actions()
 {
     QList<QAction*> actionList;
-    actionList.append(editAction_);
-    
-    return actionList;   
+    if (validator_->hasValidBusType(busIf_))
+    {
+        actionList.append(editBusDefAction_);
+    }
+
+    setAbstractionDefinitionActions(actionList);
+
+    return actionList;
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentEditorBusInterfaceItem::openItem()
+// Function: ComponentEditorBusInterfaceItem::openAbsDefSlot()
 //-----------------------------------------------------------------------------
-void ComponentEditorBusInterfaceItem::openItem() 
+bool ComponentEditorBusInterfaceItem::openAbsDefSlot()
 {
-	VLNV busdefVLNV = busif_->getBusType();
+    // Checking if the function was called by action (from the drop down menu on right 
+    // click on bus interface under Bus interface in Component editor tree).
+    QAction* action = qobject_cast<QAction*>(QObject::sender());
+    if (action && action->data().value<VLNV*>())
+    {
+        emit openAbsDef(*(action->data().value<VLNV*>()));
+        return true;
+    }
 
-    emit openBus(busdefVLNV);
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::openBusDef()
+//-----------------------------------------------------------------------------
+void ComponentEditorBusInterfaceItem::openBusSlot()
+{
+    if (validator_->hasValidBusType(busIf_))
+    {
+        VLNV busdefVLNV = busIf_->getBusType();
+        emit openBus(busdefVLNV);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorBusInterfaceItem::setAbstractionDefinitionActions()
+//-----------------------------------------------------------------------------
+void ComponentEditorBusInterfaceItem::setAbstractionDefinitionActions(QList<QAction*>& actionList)
+{
+    QSharedPointer<QList<QSharedPointer<AbstractionType>>> absDefs = busIf_->getValidAbstractionTypes();
+    if (absDefs)
+    {
+        for (const QSharedPointer<AbstractionType> absDef : *absDefs)
+        {
+            QSharedPointer<ConfigurableVLNVReference> abstractionRef = absDef->getAbstractionRef();
+            VLNV* absDefVLNV = dynamic_cast<VLNV*>(abstractionRef.data());
+            QString actionName = "Edit " + absDefVLNV->getName();
+
+            QAction* openAbsDefAction = new QAction(actionName, this);
+            //editAbsDef->absRefVLNV = absDefVLNV;
+            QVariant v = QVariant::fromValue(absDefVLNV);
+            openAbsDefAction->setData(v);
+            actionList.append(openAbsDefAction);
+
+            connect(openAbsDefAction, SIGNAL(triggered(bool)), this, SLOT(openAbsDefSlot()), Qt::UniqueConnection);
+        }
+    }
 }
