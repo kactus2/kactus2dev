@@ -69,7 +69,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
         shape = getInterfaceShapeWithDirection(direction);
     }
 
-    if (busInterface_->getAllPortMaps()->isEmpty())
+    if (busInterface_->getAllPortMaps()->isEmpty() && !isDraft_)
     {
         portMapWarning_->setVisible(true);
     }
@@ -80,6 +80,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
 
     setPolygon(shape);
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getInterfaceShapeWithDirection()

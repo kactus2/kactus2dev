@@ -490,10 +490,11 @@ private:
     /*!
      *  Adds a new top-level interface to the given diagram column.
      *
-     *      @param [in] column The column where to add the interface.
-     *      @param [in] pos    The interface position.
+     *      @param [in] column      The column where to add the interface.
+     *      @param [in] pos         The interface position.
+     *      @param [in] isDraft     Determines if Bus Interface is draft or not.
      */
-    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
+    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft = false);
 
     /*!
      *  Create a unique name for the interface.

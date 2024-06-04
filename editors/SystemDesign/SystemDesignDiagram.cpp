@@ -2166,7 +2166,7 @@ QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnect
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::addTopLevelInterface()
 //-----------------------------------------------------------------------------
-void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
+void SystemDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft)
 {
     QString interfaceName = createDraftInterfaceName("interface");
     QSharedPointer<InterfaceGraphicsData> graphicsData (new InterfaceGraphicsData(interfaceName));

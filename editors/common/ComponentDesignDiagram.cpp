@@ -1259,7 +1259,7 @@ void ComponentDesignDiagram::addInterfaceAt(QPointF const& position)
     // Add a new diagram interface to the column it it is allowed.
     if (column != nullptr && column->getColumnDesc()->getAllowedItems() & ColumnTypes::INTERFACE)
     {
-        addTopLevelInterface(column, position);
+        addTopLevelInterface(column, position, true);
     }
 }
 

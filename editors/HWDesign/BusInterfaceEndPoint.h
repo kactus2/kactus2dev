@@ -250,6 +250,13 @@ protected:
      */
     LibraryInterface* getLibraryAccess() const;
 
+    //-----------------------------------------------------------------------------
+    // Data.
+    //-----------------------------------------------------------------------------
+
+    //! Determines if Bus Interface is draft or not.
+    bool isDraft_ = false;
+
 private:
 
     /*!
