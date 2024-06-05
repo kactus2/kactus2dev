@@ -158,6 +158,13 @@ public:
      */
     std::vector<std::pair<unsigned int, std::string> > getModeReferences() const;
 
+    /*!
+     *	Checks if all mode references are errorless.
+     *
+     * 	    @return Boolean true if componentModes_ is not empty and every item is errorless, overwise false
+     */
+    bool areAllModeReferencesValid();
+
 private:
     
     /*!

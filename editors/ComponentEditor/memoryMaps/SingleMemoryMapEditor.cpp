@@ -30,6 +30,7 @@
 #include <QFormLayout>
 #include <QSplitter>
 
+
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
@@ -108,7 +109,7 @@ isMemoryRemap_(isMemoryRemap)
         }
     }
 
-    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefInterface_, this);
+    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefInterface_, this, isMemoryRemap_);
 
     connectSignals();
     setupLayout();
@@ -285,7 +286,7 @@ void SingleMemoryMapEditor::setupLayout()
     {
         memoryMapDefinitionGroup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
         memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB], f(x):"), addressUnitBitsEditor_);
-        memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);            
+        memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);    
 
         QGridLayout* layout = new QGridLayout();
         layout->addWidget(&nameEditor_, 0, 0, 4, 1);
