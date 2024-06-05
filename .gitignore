@@ -19,3 +19,5 @@ PythonAPI/x64/Debug
 
 *.obj
 *.tlog
+**/x64/Release/
+

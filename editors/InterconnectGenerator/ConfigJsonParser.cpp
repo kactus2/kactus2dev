@@ -3,7 +3,7 @@
 
 ConfigJsonParser::ConfigJsonParser(){}
 
-ConfigJsonParser::ConfigStruct* ConfigJsonParser::readFile() {
+ConfigStruct* ConfigJsonParser::readFile() {
 
     QFile configFile(path_);
 

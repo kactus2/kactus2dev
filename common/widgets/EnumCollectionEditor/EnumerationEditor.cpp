@@ -13,7 +13,6 @@
 
 #include <common/widgets/EnumCollectionEditor/EnumCollectionEditor.h>
 
-#include <QPushButton>
 #include <QScrollArea>
 
 //-----------------------------------------------------------------------------
@@ -22,7 +21,9 @@
 EnumerationEditor::EnumerationEditor(bool hideCheckAll, QWidget* parent):
 QFrame(parent),
 enumCollectionEditor_(new EnumCollectionEditor(this)),
-selectAllCheck_(new QCheckBox("All"))
+selectAllCheck_(new QCheckBox("All")),
+okButton_(new QPushButton()),
+cancelButton_(new QPushButton())
 {
     if (hideCheckAll)
     {
@@ -58,22 +59,20 @@ void EnumerationEditor::setupLayout()
 
     connect(selectAllCheck_, SIGNAL(clicked(bool)), this, SLOT(onCheckAllStateChange(bool)), Qt::UniqueConnection);
 
-    QPushButton* okButton = new QPushButton();
-    okButton->setIcon(QIcon(":/icons/common/graphics/checkMark.png"));
-    okButton->setToolTip("Accept");
+    okButton_->setIcon(QIcon(":/icons/common/graphics/checkMark.png"));
+    okButton_->setToolTip("Accept");
 
-    QPushButton* cancelButton = new QPushButton();
-    cancelButton->setIcon(QIcon(":/icons/common/graphics/grey_cross.png"));
-    cancelButton->setToolTip("Cancel");
+    cancelButton_->setIcon(QIcon(":/icons/common/graphics/grey_cross.png"));
+    cancelButton_->setToolTip("Cancel");
 
-    connect(okButton, SIGNAL(clicked()), this, SIGNAL(finishEditing()), Qt::UniqueConnection);
-    connect(cancelButton, SIGNAL(clicked()), this, SIGNAL(cancelEditing()), Qt::UniqueConnection);
+    connect(okButton_, SIGNAL(clicked()), this, SIGNAL(finishEditing()), Qt::UniqueConnection);
+    connect(cancelButton_, SIGNAL(clicked()), this, SIGNAL(cancelEditing()), Qt::UniqueConnection);
 
     QHBoxLayout* buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget(selectAllCheck_);
     buttonLayout->addStretch(10);
-    buttonLayout->addWidget(okButton);
-    buttonLayout->addWidget(cancelButton);
+    buttonLayout->addWidget(okButton_);
+    buttonLayout->addWidget(cancelButton_);
 
     QFrame* line = new QFrame();
     line->setLineWidth(1);
@@ -154,4 +153,22 @@ void EnumerationEditor::setupItems(QStringList const& availableItems, QStringLis
     }
 
     selectAllCheck_->setCheckState(selectAllState);
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumerationEditor::hideOkAndCancelButtons()
+//-----------------------------------------------------------------------------
+void EnumerationEditor::hideOkAndCancelButtons()
+{
+    okButton_->hide();
+    cancelButton_->hide();
+}
+
+//-----------------------------------------------------------------------------
+// Function: EnumerationEditor::showOkAndCancelButtons()
+//-----------------------------------------------------------------------------
+void EnumerationEditor::showOkAndCancelButtons()
+{
+    okButton_->show();
+    cancelButton_->show();
 }

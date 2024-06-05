@@ -53,6 +53,7 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./common/widgets/fileTypeSelector/filetypeselector.h \
     ./common/widgets/EnumCollectionEditor/EnumerationEditor.h \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.h \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.h \
     ./common/widgets/FileSelector/fileselector.h \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.h \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.h \
@@ -957,6 +958,7 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./common/widgets/fileTypeSelector/filetypeselector.cpp \
     ./common/widgets/EnumCollectionEditor/EnumCollectionEditor.cpp \
     ./common/widgets/EnumCollectionEditor/EnumerationEditor.cpp \
+    ./common/widgets/EnumCollectionEditor/InterfaceEnumEditor.cpp \
     ./common/widgets/FileSelector/fileselector.cpp \
     ./common/widgets/LibrarySelectorWidget/LibrarySelectorWidget.cpp \
     ./common/widgets/LibrarySelectorWidget/LibraryPathEditor/librarypatheditor.cpp \

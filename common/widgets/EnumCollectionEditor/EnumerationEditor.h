@@ -14,6 +14,7 @@
 
 #include <QFrame>
 #include <QCheckBox>
+#include <QPushButton>
 
 class EnumCollectionEditor;
 
@@ -51,6 +52,16 @@ public:
      *      @param [in] selectedItems   List of the selected enumerations.
      */
     void setupItems(QStringList const& availableItems, QStringList const& exclusiveItems, QStringList const& selectedItems);
+
+    /*!
+     *  Hide accept and cancel buttons.
+     */
+    void hideOkAndCancelButtons();
+
+    /*!
+     *  Show accept and cancel buttons.
+     */
+    void showOkAndCancelButtons();
 
 signals:
 
@@ -99,6 +110,12 @@ private:
 
     //! Check box for selecting / deselecting all enumerations.
     QCheckBox* selectAllCheck_;
+
+    //! Button for accepting selected enumerations.
+    QPushButton* okButton_;
+
+    //! Button for canceling selected enumerations.
+    QPushButton* cancelButton_;
 };
 
 #endif // ENUMERATIONEDITOR_H

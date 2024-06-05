@@ -998,6 +998,15 @@
     <Filter Include="Header Files\editors\ComponentEditor\powerDomains">
       <UniqueIdentifier>{45dc464a-4192-4641-8242-c0b1f055534f}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
+=======
+    <Filter Include="Header Files\editors\InterconnectGenerator">
+      <UniqueIdentifier>{9efa3739-e980-44d2-8c02-e49ed97a06d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\editors\InterconnectGenerator">
+      <UniqueIdentifier>{1359ba69-8f2e-4174-84bc-0b0da441717b}</UniqueIdentifier>
+    </Filter>
+>>>>>>> bc6325de1 (commit before merging)
     <Filter Include="Header Files\common\widgets\GroupBoxWithAlertSign">
       <UniqueIdentifier>{3c58c97d-2039-4bdd-8c31-12f7920606d2}</UniqueIdentifier>
     </Filter>
@@ -3373,6 +3382,30 @@
     <ClCompile Include="editors\ComponentEditor\ports\TypedPortsView.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
     </ClCompile>
+<<<<<<< HEAD
+=======
+    <ClCompile Include="editors\InterconnectGenerator\ConfigJsonParser.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectRTLWriter.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGenerator.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="KactusAPI\plugins\PluginUtilityAdapter.cpp">
+      <Filter>Source Files\library</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+    <ClCompile Include="mainwindow\DeleteWorkspaceDialog.cpp">
+      <Filter>Source Files\mainwindow</Filter>
+    </ClCompile>
+    <ClCompile Include="editors\InterconnectGenerator\InstanceWidgets.cpp">
+      <Filter>Source Files\editors\InterconnectGenerator</Filter>
+    </ClCompile>
+>>>>>>> bc6325de1 (commit before merging)
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.cpp">
       <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClCompile>
@@ -3382,6 +3415,7 @@
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp">
       <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.cpp">
       <Filter>Source Files\editors\BusDefinitionEditor</Filter>
     </ClCompile>
@@ -3390,6 +3424,10 @@
     </ClCompile>
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.cpp">
       <Filter>Source Files\editors\AbstractionDefinitionEditor</Filter>
+=======
+    <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp">
+      <Filter>Source Files\common\widgets\EnumCollectionEditor</Filter>
+>>>>>>> bc6325de1 (commit before merging)
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5830,6 +5868,21 @@
     <ClInclude Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
+<<<<<<< HEAD
+=======
+    <ClInclude Include="editors\InterconnectGenerator\ConfigJsonParser.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectGenerator.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="editors\InterconnectGenerator\InterconnectRTLWriter.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </ClInclude>
+    <ClInclude Include="KactusAPI\include\PluginUtilityAdapter.h">
+      <Filter>Header Files\library</Filter>
+    </ClInclude>
+>>>>>>> bc6325de1 (commit before merging)
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClInclude>
@@ -6110,12 +6163,22 @@
     <QtMoc Include="editors\ComponentEditor\ports\TypedPortsView.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </QtMoc>
+<<<<<<< HEAD
+=======
+    <QtMoc Include="editors\InterconnectGenerator\InterconnectGeneratorDialog.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\InterconnectGenerator\InstanceWidgets.h">
+      <Filter>Header Files\editors\InterconnectGenerator</Filter>
+    </QtMoc>
+>>>>>>> bc6325de1 (commit before merging)
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </QtMoc>
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </QtMoc>
+<<<<<<< HEAD
     <QtMoc Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.h">
       <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </QtMoc>
@@ -6124,6 +6187,10 @@
     </QtMoc>
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h">
       <Filter>Header Files\editors\AbstractionDefinitionEditor</Filter>
+=======
+    <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h">
+      <Filter>Header Files\common\widgets\EnumCollectionEditor</Filter>
+>>>>>>> bc6325de1 (commit before merging)
     </QtMoc>
   </ItemGroup>
 </Project>

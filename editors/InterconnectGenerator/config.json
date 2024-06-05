@@ -1,34 +1,34 @@
 {
   "intercon": "test:gen:intercon:1.0",
-  "top": "tuni.fi:subsystem:SysCtrl_SS:1.0",
-  "bus": "tuni.fi:interface:AXI4LITE:1.0",
-  "clk": "tuni.fi:interface:clock:1.0",
-  "rst": "tuni.fi:interface:reset:1.0",
+  "top": "tut.fi:cpu.structure:cpu_example:1.0",
+  "bus": "tut.fi:interface:AXI4LITE:1.0",
+  "clk": "tut.fi:interface:clock:1.0",
+  "rst": "tut.fi:interface:reset:1.0",
   "Bus type": "AXI4LITE",
   "Address width": 32,
-  "Id width": 8,
+  "ID width": 8,
   "User width": 1,
   "Initiators": [
   	{"Index": 0,
-  	"Name": "initComp1",
+  	"Name": "i_SysCtrl_peripherals",
   	"Data width": 32},
   	{"Index": 1,
   	"Name": "initComp2",
   	"Data width": 32}],
   "Targets":[
 	{"Index": 0,
-	"Name": "targComp1",
+	"Name": "core_imem_bridge",
 	"Data width": 32,
 	"Address regions":[
-		{"start": "0x00000000",
-		"end": "0x0000ffff"},
-		{"start": "0x00010000",
-		"end": "0x0001ffff"}]},
+		{"Start": "0x00000000",
+		"End": "0x0000ffff"},
+		{"Start": "0x00010000",
+		"End": "0x0001ffff"}]},
 	{"Index": 1,
-	"Name": "targComp2",
+	"Name": "jtag_dbg_wrapper",
 	"Data width": 32,
 	"Address regions":[
-		{"start": "0x00020000",
-		"end": "0x0002ffff"}]}
+		{"Start": "0x00020000",
+		"End": "0x0002ffff"}]}
 	]
 }

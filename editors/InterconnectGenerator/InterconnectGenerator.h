@@ -2,6 +2,7 @@
 #define INTERCONNECTGENERATOR_H
 
 #include "ConfigJsonParser.h"
+#include "InterconnectGeneratorDialog.h"
 #include <IPXACTmodels/Component/validators/PortValidator.h>
 
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -20,6 +21,7 @@
 #include <KactusAPI/include/MessageMediator.h>
 #include <KactusAPI/include/AbstractionTypeInterface.h>
 
+
 class InterconnectGenerator
 {
 public:
@@ -31,11 +33,18 @@ public:
 
     VLNV generate();
 
+    VLNV generate(ConfigStruct* config, const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
+
     void openDesign(VLNV designVLNV);
 
     void createInterconComponent(VLNV VLNV);
 
     void findUnconnectedInterfaces();
+
+    void processInitiatorsAndTargets(
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& initiators,
+        const QHash<QString, QList<QSharedPointer<BusInterface>>>& targets);
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
@@ -92,7 +101,7 @@ private:
 
     AbstractionTypeInterface* absTypeInf_{ nullptr };
 
-    ConfigJsonParser::ConfigStruct* config_;
+    ConfigStruct* config_;
 
     QString directory_;
 
@@ -101,6 +110,8 @@ private:
     VLNV busDefVLNV_;
     VLNV rstVLNV_;
     VLNV clkVLNV_;
+    QString clkPort_;
+    QString rstPort_;
 
 };
 

@@ -274,6 +274,7 @@ CreateHelp
     <ClCompile Include="common\widgets\DirectoryListSelector\DirectoryListSelector.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumCollectionEditor.cpp" />
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp" />
+    <ClCompile Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.cpp" />
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp" />
@@ -1298,6 +1299,7 @@ CreateHelp
     <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h" />
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\EnumCollectionEditor\InterfaceEnumEditor.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />

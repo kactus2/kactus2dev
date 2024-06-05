@@ -45,9 +45,33 @@
     <ClCompile Include="PythonAPI_wrap.cxx">
       <Filter>Generated Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\editors\InterconnectGenerator\ConfigJsonParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\InterconnectGenerator\InterconnectGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\editors\InterconnectGenerator\InterconnectRTLWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\KactusAPI\plugins\PluginUtilityAdapter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PythonAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\InterconnectGenerator\ConfigJsonParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\InterconnectGenerator\InterconnectGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\editors\InterconnectGenerator\InterconnectRTLWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\KactusAPI\include\PluginUtilityAdapter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -63,5 +87,10 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="PythonAPI.i" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\editors\InterconnectGenerator\config.json">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
