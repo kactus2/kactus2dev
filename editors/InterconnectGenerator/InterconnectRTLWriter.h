@@ -9,6 +9,11 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/MessageMediator.h>
+#include <KactusAPI/include/PluginManager.h>
+#include <KactusAPI/include/CLIGenerator.h>
+#include <KactusAPI/include/IPlugin.h>
+#include <KactusAPI/include/PluginUtilityAdapter.h>
+#include <KactusAPI/include/VersionHelper.h>
 
 class InterconnectRTLWriter
 {
@@ -21,6 +26,10 @@ public:
     void generateRTL();
 
     void writeBus(QTextStream& stream, QString type);
+
+    void writeAddrMap(QTextStream& stream);
+
+    void writeXbar(QTextStream& stream);
 
     //! No copying. No assignment.
     InterconnectRTLWriter(const InterconnectRTLWriter& other) = delete;
@@ -38,8 +47,15 @@ private:
 
     QString directory_;
 
-    QString axi_target_str_ = "AXI_TARGETS";
-    QString axi_init_str_ = "AXI_INITIATORS";
+    QString axiTargetBus_;
+    QString axiInitBus_;
+
+    QString axiTargetParam_ = "AXI_TARGETS";
+    QString axiInitParam_ = "AXI_INITIATORS";
+    QString addrRulesParam_ = "NoAddrRules";
+    QString ruleType_ = "rule_t";
+    QString addrMapXBAR_ = "AddrMapXBAR";
+    QString axiCfg_ = "xbar_cfg";
 };
 
 #endif // INTERCONNECTRTLWRITER_H
