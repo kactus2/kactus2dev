@@ -39,11 +39,10 @@
 //-----------------------------------------------------------------------------
 ActiveBusInterfaceItem::ActiveBusInterfaceItem(QSharedPointer<BusInterface> busIf, LibraryInterface* library,
     HWComponentItem* parent):
-BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent)
+BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent->isDraft(), parent)
 {
     Q_ASSERT_X(busIf, "ActiveBusInterfaceItem constructor", "Null BusInterface pointer given as parameter");
 
-    setIsDraft(parent->isDraft());
 
     ActiveBusInterfaceItem::updateInterface();
 

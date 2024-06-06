@@ -46,7 +46,7 @@ public:
      *      @param [in] dir         Direction for the end point graphics.
      */
     BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-        LibraryInterface* library, QGraphicsItem *parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+        LibraryInterface* library, bool isDraft, QGraphicsItem *parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
@@ -260,7 +260,7 @@ protected:
     /*!
      *  Set isDraft_ parameter.
      * 
-     *      @param [in] isDraft   value to be set to isDraft_.
+     *      @param [in] isDraft   Value to be set to isDraft_.
      */
     void setIsDraft(bool isDraft);
 

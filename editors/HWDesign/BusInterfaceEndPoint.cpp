@@ -32,10 +32,11 @@
 // Function: BusInterfaceEndPoint::BusInterfaceEndPoint()
 //-----------------------------------------------------------------------------
 BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-    LibraryInterface* library, QGraphicsItem* parent, QVector2D const& dir) :
+    LibraryInterface* library, bool isDraft, QGraphicsItem* parent, QVector2D const& dir) :
     HWConnectionEndpoint(busIf->name(), component, parent, dir),
     busInterface_(busIf),
-    library_(library)
+    library_(library),
+    isDraft_(isDraft)
 {
     portMapWarning_->setVisible(false);
 }
