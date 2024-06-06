@@ -54,7 +54,8 @@ GroupBoxWithAlertSign::GroupBoxWithAlertSign(QString title, QWidget* parent) :
 	offset_(5),
 	leftSpace_(3),
 	rightSpace_(3),
-	verticalIconOffset_(-5)
+	verticalIconOffset_(-3),
+	isAlerted_(false)
 {
 
 }
@@ -159,7 +160,11 @@ void GroupBoxWithAlertSign::paintEvent(QPaintEvent* /*event*/)
 //-----------------------------------------------------------------------------
 void GroupBoxWithAlertSign::setAlertIcon()
 {
-	setPixmap(QIcon(":/icons/common/graphics/exclamation--frame.png").pixmap(QSize(22, 22)));
+	if (!isAlerted_)
+	{
+		setPixmap(QIcon(":/icons/common/graphics/exclamation--frame.png").pixmap(QSize(22, 22)));
+		isAlerted_ = true;
+	}	
 }
 
 //-----------------------------------------------------------------------------
@@ -167,7 +172,11 @@ void GroupBoxWithAlertSign::setAlertIcon()
 //-----------------------------------------------------------------------------
 void GroupBoxWithAlertSign::removeAlertIcon()
 {
-	setPixmap(QPixmap());
+	if (isAlerted_)
+	{
+		setPixmap(QPixmap());
+		isAlerted_ = false;
+	}
 }
 
 //-----------------------------------------------------------------------------

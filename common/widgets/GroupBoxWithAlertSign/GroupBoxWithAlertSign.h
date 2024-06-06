@@ -172,6 +172,9 @@ private:
 
 	//! Vertical offset for the icon.
 	int verticalIconOffset_;
+
+	//! Determines if alert sign is present in the UI of the group box
+	bool isAlerted_;
 };
 
 #endif // GROUPBOXWITHALERTSIGN_H

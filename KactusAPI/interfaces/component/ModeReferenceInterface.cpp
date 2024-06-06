@@ -241,13 +241,10 @@ bool ModeReferenceInterface::areAllModeReferencesValid()
     {
         return false;
     }
+
     for ( int i = 0; i < modeReferences_.size(); i++)
     {
-        if (!modeReferenceValueIsValid(i))
-        {
-            return false;
-        }
-        if(!modeReferencePriorityIsValid(i))
+        if (!modeReferenceValueIsValid(i) || !modeReferencePriorityIsValid(i))
         {
             return false;
         }

@@ -36,6 +36,7 @@ RemapModeReferenceEditor::RemapModeReferenceEditor(ModeReferenceInterface* modeR
         checkForAlert();
     }
 }
+
 void RemapModeReferenceEditor::checkForAlert()
 {
     if (modeRefInterface_->areAllModeReferencesValid())

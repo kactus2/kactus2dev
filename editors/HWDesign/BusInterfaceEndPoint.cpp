@@ -492,11 +492,17 @@ LibraryInterface* BusInterfaceEndPoint::getLibraryAccess() const
     return library_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getIsDraft()
+//-----------------------------------------------------------------------------
 bool BusInterfaceEndPoint::getIsDraft() const
 {
     return isDraft_;
 }
 
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::setIsDraft()
+//-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::setIsDraft(bool isDraft)
 {
     isDraft_ = isDraft;
