@@ -69,7 +69,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
         shape = getInterfaceShapeWithDirection(direction);
     }
 
-    if (busInterface_->getAllPortMaps()->isEmpty() && !isDraft_)
+    if (busInterface_->getAllPortMaps()->isEmpty() && !getIsDraft())
     {
         portMapWarning_->setVisible(true);
     }
@@ -489,4 +489,14 @@ QPolygonF BusInterfaceEndPoint::getInitiativeRequiresProvidesShape()
 LibraryInterface* BusInterfaceEndPoint::getLibraryAccess() const
 {
     return library_;
+}
+
+bool BusInterfaceEndPoint::getIsDraft() const
+{
+    return isDraft_;
+}
+
+void BusInterfaceEndPoint::setIsDraft(bool isDraft)
+{
+    isDraft_ = isDraft;
 }

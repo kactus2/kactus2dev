@@ -43,7 +43,7 @@ BusInterfaceEndPoint(busIf, parent->componentModel(), library, parent)
 {
     Q_ASSERT_X(busIf, "ActiveBusInterfaceItem constructor", "Null BusInterface pointer given as parameter");
 
-    isDraft_ = parent->isDraft();
+    setIsDraft(parent->isDraft());
 
     ActiveBusInterfaceItem::updateInterface();
 

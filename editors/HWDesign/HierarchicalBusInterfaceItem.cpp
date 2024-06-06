@@ -62,7 +62,7 @@ dataGroup_(dataGroup)
 
 	getNameLabel()->setRotation(-rotation());
 
-    isDraft_ = isDraft;
+    setIsDraft(isDraft);
 
     HierarchicalBusInterfaceItem::updateInterface();
 }

@@ -250,12 +250,19 @@ protected:
      */
     LibraryInterface* getLibraryAccess() const;
 
-    //-----------------------------------------------------------------------------
-    // Data.
-    //-----------------------------------------------------------------------------
+    /*!
+     *  Get isDraft_ parameter.
+     *
+     *      @return Boolean isDraft_ parameter.
+     */
+    bool getIsDraft() const;
 
-    //! Determines if Bus Interface is draft or not.
-    bool isDraft_ = false;
+    /*!
+     *  Set isDraft_ parameter.
+     * 
+     *      @param [in] isDraft   value to be set to isDraft_.
+     */
+    void setIsDraft(bool isDraft);
 
 private:
 
@@ -344,6 +351,9 @@ private:
 
     //! Access to the library.
     LibraryInterface* library_ = nullptr;
+
+    //! Determines if Bus Interface is draft or not.
+    bool isDraft_ = false;
 };
 
 #endif // BUSINTERFACEENDPOINT_H
