@@ -148,6 +148,7 @@ QString BusInterfaceEndPoint::name() const
 //-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::setName(QString const& name)
 {
+    HWConnectionEndpoint::setName(name);
     beginUpdateConnectionNames();
 
     QString previousName = busInterface_->name();
