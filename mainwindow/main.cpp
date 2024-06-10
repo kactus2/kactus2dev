@@ -154,6 +154,19 @@ int main(int argc, char *argv[])
         // Create the main window and close the splash after 1.5 seconds.
         MainWindow mainWindow(&library, mediator.data());
 
+#ifdef Q_OS_WIN
+        // Hide console window if launched by non-interactive console
+        if (!isatty(fileno(stdin)))
+        {
+            ShowWindow(GetConsoleWindow(), SW_HIDE);
+        }
+        else
+        {
+            // Separate console from gui and autoclose console if not launched from command line.
+            FreeConsole();
+        }
+#endif
+
         // the release mode
 #ifdef NDEBUG
 
