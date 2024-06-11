@@ -107,9 +107,10 @@ QSharedPointer<Component> HWConnectionEndpoint::getOwnerComponent() const
 //-----------------------------------------------------------------------------
 // Function: HWConnectionEndPoint::setName()
 //-----------------------------------------------------------------------------
-void HWConnectionEndpoint::setName(QString const& /*name*/)
+void HWConnectionEndpoint::setName(QString const& name)
 {
-    // Intentionally empty.
+    nameLabel_->setText(name);
+    updateInterface();
 }
 
 //-----------------------------------------------------------------------------

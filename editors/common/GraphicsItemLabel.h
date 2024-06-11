@@ -54,6 +54,21 @@ public:
      */
     void updateLabelGeometry();
 
+protected:
+
+    /*!
+     *  Handle hover move event.
+     *
+     *      @param [in] event     the event being processed.
+     *      
+     *      @remarks    The function is reimplemented in order to fix the bug.
+     *                  The bug was lock on certain type of cursor after hovering 
+     *                  the GraphicsItemLabel.
+     *                  Reimplemented function only displays tooltip of the first 
+                        parent with non-empty tooltip.
+     */
+    void hoverMoveEvent(QGraphicsSceneHoverEvent* event) override;
+
 private:
 
 	//! No copying

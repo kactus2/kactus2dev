@@ -166,9 +166,10 @@ void HWDesignDiagram::loadDesign(QSharedPointer<Design> design)
         QSharedPointer<InterfaceGraphicsData> dataGroup =
             findOrCreateInterfaceExtensionGroup(design, busIf->name());
 
+        // If the mode of the bus interface is not set, then it is considered as draft port (e.g. warning sign is not displayed)
         auto topInterface =
-            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, getLibraryInterface());
-
+            new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, getLibraryInterface(),0, 
+                busIf->getInterfaceMode() == General::InterfaceMode::INTERFACE_MODE_COUNT);
         GraphicsColumn* targetColumn = getLayout()->findColumnAt(topInterface->scenePos());
         if (targetColumn && targetColumn->isItemAllowed(topInterface))
         {
@@ -1740,7 +1741,7 @@ bool HWDesignDiagram::createPortMapsManually(ConnectionEndpoint* sourcePoint, Co
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::addTopLevelInterface()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos)
+void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft)
 {
     QStringList reservedNames = getTopLevelInterfaceNames();
     QString draftInterfaceName = generateUniqueName("bus", reservedNames);
@@ -1754,7 +1755,7 @@ void HWDesignDiagram::addTopLevelInterface(GraphicsColumn* column, QPointF const
     dataGroup->setPosition(newPosition);
     getDesign()->getVendorExtensions()->append(dataGroup);
 
-    auto newItem = new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup, getLibraryInterface());
+    auto newItem = new HierarchicalBusInterfaceItem(getEditedComponent(), busif, dataGroup, getLibraryInterface(), 0,isDraft);
     newItem->setPos(newPosition);
 
     // Save the positions of the other diagram interfaces.
@@ -1814,7 +1815,7 @@ void HWDesignDiagram::draftAt(QPointF const& clickedPosition)
             if (unsigned int itemType = findColumnItemType(column); 
                 itemType == ColumnTypes::INTERFACE)
             {
-                addTopLevelInterface(column, clickedPosition);
+                addTopLevelInterface(column, clickedPosition, true);
             }
             else if (itemType != ColumnTypes::NONE)
             {

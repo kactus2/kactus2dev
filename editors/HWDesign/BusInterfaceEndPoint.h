@@ -46,7 +46,7 @@ public:
      *      @param [in] dir         Direction for the end point graphics.
      */
     BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-        LibraryInterface* library, QGraphicsItem *parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
+        LibraryInterface* library, bool isDraft, QGraphicsItem *parent = nullptr, QVector2D const& dir = QVector2D(0.0f, -1.0f));
 
 	/*!
      *  The destructor.
@@ -250,6 +250,20 @@ protected:
      */
     LibraryInterface* getLibraryAccess() const;
 
+    /*!
+     *  Get isDraft_ parameter.
+     *
+     *      @return Boolean isDraft_ parameter.
+     */
+    bool getIsDraft() const;
+
+    /*!
+     *  Set isDraft_ parameter.
+     * 
+     *      @param [in] isDraft   Value to be set to isDraft_.
+     */
+    void setIsDraft(bool isDraft);
+
 private:
 
     /*!
@@ -337,6 +351,9 @@ private:
 
     //! Access to the library.
     LibraryInterface* library_ = nullptr;
+
+    //! Determines if Bus Interface is draft or not.
+    bool isDraft_ = false;
 };
 
 #endif // BUSINTERFACEENDPOINT_H

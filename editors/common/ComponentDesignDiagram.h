@@ -455,10 +455,11 @@ private:
     /*!
      *  Adds a new top-level interface to the given diagram column.
      *
-     *      @param [in] column The column where to add the interface.
-     *      @param [in] pos    The interface position.
+     *      @param [in] column      The column where to add the interface.
+     *      @param [in] pos         The interface position.
+     *      @param [in] isDraft     Determines if Top level interface is draft or not.
      */
-    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos) = 0;
+    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft) = 0;
 
     /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the

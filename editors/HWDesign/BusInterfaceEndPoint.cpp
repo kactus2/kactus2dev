@@ -32,10 +32,11 @@
 // Function: BusInterfaceEndPoint::BusInterfaceEndPoint()
 //-----------------------------------------------------------------------------
 BusInterfaceEndPoint::BusInterfaceEndPoint(QSharedPointer<BusInterface> busIf, QSharedPointer<Component> component,
-    LibraryInterface* library, QGraphicsItem* parent, QVector2D const& dir) :
+    LibraryInterface* library, bool isDraft, QGraphicsItem* parent, QVector2D const& dir) :
     HWConnectionEndpoint(busIf->name(), component, parent, dir),
     busInterface_(busIf),
-    library_(library)
+    library_(library),
+    isDraft_(isDraft)
 {
     portMapWarning_->setVisible(false);
 }
@@ -69,7 +70,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
         shape = getInterfaceShapeWithDirection(direction);
     }
 
-    if (busInterface_->getAllPortMaps()->isEmpty())
+    if (busInterface_->getAllPortMaps()->isEmpty() && !getIsDraft())
     {
         portMapWarning_->setVisible(true);
     }
@@ -80,6 +81,7 @@ void BusInterfaceEndPoint::updateEndPointGraphics()
 
     setPolygon(shape);
 }
+
 
 //-----------------------------------------------------------------------------
 // Function: BusInterfaceEndPoint::getInterfaceShapeWithDirection()
@@ -146,6 +148,7 @@ QString BusInterfaceEndPoint::name() const
 //-----------------------------------------------------------------------------
 void BusInterfaceEndPoint::setName(QString const& name)
 {
+    HWConnectionEndpoint::setName(name);
     beginUpdateConnectionNames();
 
     QString previousName = busInterface_->name();
@@ -488,4 +491,20 @@ QPolygonF BusInterfaceEndPoint::getInitiativeRequiresProvidesShape()
 LibraryInterface* BusInterfaceEndPoint::getLibraryAccess() const
 {
     return library_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::getIsDraft()
+//-----------------------------------------------------------------------------
+bool BusInterfaceEndPoint::getIsDraft() const
+{
+    return isDraft_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfaceEndPoint::setIsDraft()
+//-----------------------------------------------------------------------------
+void BusInterfaceEndPoint::setIsDraft(bool isDraft)
+{
+    isDraft_ = isDraft;
 }

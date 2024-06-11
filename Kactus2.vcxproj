@@ -275,6 +275,9 @@ CreateHelp
     <ClCompile Include="common\widgets\EnumCollectionEditor\EnumerationEditor.cpp" />
     <ClCompile Include="common\widgets\FileSelector\fileselector.cpp" />
     <ClCompile Include="common\widgets\fileTypeSelector\filetypeselector.cpp" />
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp" />
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.cpp" />
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathEditor\librarypatheditor.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibraryPathSelector\librarypathselector.cpp" />
     <ClCompile Include="common\widgets\LibrarySelectorWidget\LibrarySelectorWidget.cpp" />
@@ -1289,6 +1292,9 @@ CreateHelp
     <QtMoc Include="common\widgets\TreeItemSelector\TreeItemEditor.h" />
     <QtMoc Include="common\widgets\TreeItemSelector\TreeItemModel.h" />
     <QtMoc Include="common\widgets\TreeItemSelector\FramedTreeItemEditor.h" />
+    <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h" />
+    <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
+    <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.h" />

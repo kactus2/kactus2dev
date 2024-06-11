@@ -30,6 +30,7 @@
 #include <QFormLayout>
 #include <QSplitter>
 
+
 //-----------------------------------------------------------------------------
 // Function: SingleMemoryMapEditor::SingleMemoryMapEditor()
 //-----------------------------------------------------------------------------
@@ -38,7 +39,7 @@ SingleMemoryMapEditor::SingleMemoryMapEditor(QSharedPointer<Component> component
     QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<ExpressionParser> expressionParser,
     MemoryMapInterface* mapInterface, bool isMemoryRemap, QWidget* parent):
 ItemEditor(component, libHandler, parent),
-nameEditor_(memoryRemap, component->getRevision(), this, tr("Memory remap name and description")),
+nameEditor_(memoryRemap, component->getRevision(), this),
 addressBlockEditor_(new MemoryMapEditor(component, libHandler, parameterFinder, expressionParser,
     mapInterface->getAddressBlockInterface(), memoryRemap->getMemoryBlocks(), this)),
 subspaceMapEditor_(new SubspaceMapsEditor(component, parameterFinder, expressionParser,
@@ -52,10 +53,17 @@ parentMapName_(parentMapName.toStdString()),
 mapInterface_(mapInterface),
 isMemoryRemap_(isMemoryRemap)
 {
+    QString nameEditorTitle;
     if (!isMemoryRemap_)
     {
         remapName_ = "";
+        nameEditorTitle = "Memory map name and description";
     }
+    else 
+    {
+        nameEditorTitle = "Memory remap name and description";
+    }
+    nameEditor_.setTitle(nameEditorTitle);
 
     mapInterface_->setMemoryMaps(component);
 
@@ -101,7 +109,7 @@ isMemoryRemap_(isMemoryRemap)
         }
     }
 
-    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefInterface_, this);
+    modeReferenceEditor_ = new RemapModeReferenceEditor(modeRefInterface_, this, isMemoryRemap_);
 
     connectSignals();
     setupLayout();
@@ -276,13 +284,14 @@ void SingleMemoryMapEditor::setupLayout()
     }
     else if (revision == Document::Revision::Std22)
     {
+        memoryMapDefinitionGroup->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
         memoryMapDefinitionGroupLayout->addRow(tr("Address Unit Bits [AUB], f(x):"), addressUnitBitsEditor_);
-        memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);
+        memoryMapDefinitionGroupLayout->addRow(tr("Target interface binding:"), targetInterfaceLabel_);    
 
         QGridLayout* layout = new QGridLayout();
-        layout->addWidget(&nameEditor_, 0, 0, 2, 1);
+        layout->addWidget(&nameEditor_, 0, 0, 4, 1);
         layout->addWidget(memoryMapDefinitionGroup, 0, 1, 1, 1);
-        layout->addWidget(modeReferenceEditor_, 1, 1, 1, 1);
+        layout->addWidget(modeReferenceEditor_, 1, 1, 3, 1);
 
         if (!isMemoryRemap_)
         {
