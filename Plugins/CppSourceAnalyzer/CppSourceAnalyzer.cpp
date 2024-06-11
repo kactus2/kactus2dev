@@ -201,17 +201,33 @@ QString CppSourceAnalyzer::getSourceData(QFile& file)
 QString CppSourceAnalyzer::removeComments(QString const& source)
 {
     QString finalData = source;
+    QStringList includes;
 
-    QRegularExpression tokenExp("(/\\*|//|\")");
+    QRegularExpression tokenExp("(/\\*|//|\"|#include)");
     QRegularExpression stringEndExp("(\\\\\"|\"|\n)");
-    
+
     int index = finalData.indexOf(tokenExp);
     auto tokenMatch = tokenExp.match(finalData);
 
     while (tokenMatch.hasMatch())
     {
         auto token = tokenMatch.captured(1);
-        if (token == "//")
+        
+        if (token == "#include")
+        {
+            // Extract include
+            int endIndex = finalData.indexOf('\n', index + tokenMatch.capturedLength());
+
+            if (endIndex == -1)
+            {
+                endIndex = finalData.length();
+            }
+
+            includes.append(finalData.sliced(index, endIndex - index));
+            finalData.remove(index, endIndex - index);
+            index = index + 1;
+        }
+        else if (token == "//")
         {
             // Single-line comment. Strip to the end of the line.
             int endIndex = finalData.indexOf('\n', index + tokenMatch.capturedLength());
@@ -243,31 +259,29 @@ QString CppSourceAnalyzer::removeComments(QString const& source)
         }
         else if (token == "\"")
         {
-            // String begins. Just skip the string to its end.
-            int endIndex = finalData.indexOf(stringEndExp, index + 1);
-            auto stringEndMatch = stringEndExp.match(finalData, index + 1);
-
-            while (stringEndMatch.hasMatch() && stringEndMatch.captured(1) != "\n")
-            {
-                if (stringEndMatch.captured(1) == "\"")
-                {
-                    ++endIndex;
-                    break;
-                }
-
-                endIndex = finalData.indexOf(stringEndExp, endIndex + stringEndMatch.capturedLength());
-                stringEndMatch = stringEndExp.match(finalData, endIndex);
-            }
+            // Strip entire string
+            int endIndex = finalData.indexOf("\"", index + tokenMatch.capturedLength());
 
             if (endIndex == -1)
             {
                 endIndex = finalData.length();
             }
+            else
+            {
+                endIndex += 1;
+            }
 
+            finalData.remove(index, endIndex - index);
             index = endIndex;
         }
 
         index = finalData.indexOf(tokenExp, index);
+        tokenMatch = tokenExp.match(finalData);
+    }
+
+    for (auto it = includes.crbegin(); it != includes.crend(); ++it)
+    {
+        finalData.prepend(*it + "\n");
     }
 
     return finalData;

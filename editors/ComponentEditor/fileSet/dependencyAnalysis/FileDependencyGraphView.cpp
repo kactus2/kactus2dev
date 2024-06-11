@@ -562,6 +562,7 @@ void FileDependencyGraphView::createContextMenuForDependency(QMouseEvent* event)
             if (selectedItem->getType() == FileDependencyItem::ITEM_TYPE_FILE && selectedItem->isExternal())
             {
                 QMenu contextMenu;               
+                contextMenuItem_ = selectedItem;
 
                 if (selectedItem->getParent()->getType() == FileDependencyItem::ITEM_TYPE_UNKNOWN_LOCATION)
                 {
