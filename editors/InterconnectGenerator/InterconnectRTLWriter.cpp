@@ -51,10 +51,16 @@ void InterconnectRTLWriter::generateRTL()
     verilogFile.close();
 
     if(verilogFile.open(QIODevice::WriteOnly | QIODevice::Append)){
+
         verilogRTL << "  localparam " << axiTargetParam_ << " = " << config_->TargetList.size() << ";" << Qt::endl;
-        verilogRTL << "  localparam " << axiInitParam_ << " = " << config_->InitList.size() << ";\n" << Qt::endl;
+        verilogRTL << "  localparam " << axiInitParam_ << " = " << config_->InitList.size() << ";" << Qt::endl;
+        verilogRTL << "  localparam " << axiIdWidthInits_ << " = ";
+        verilogRTL << config_->IDWidth << " + " << "$clog2(" << axiTargetParam_ << ");\n" << Qt::endl;
+
         writeBus(verilogRTL, "target");
         writeBus(verilogRTL, "init");
+        writeAddrMap(verilogRTL);
+        writeXbarCfg(verilogRTL);
         writeXbar(verilogRTL);
         verilogRTL << "endmodule" << Qt::endl;
     }
@@ -64,11 +70,6 @@ void InterconnectRTLWriter::generateRTL()
 
 void InterconnectRTLWriter::writeBus(QTextStream &stream, QString type)
 {
-    QString param = axiTargetParam_;
-    if(type=="init"){
-        param = axiInitParam_;
-    }
-
     if(config_->BusType == "AXI4"){
         stream << "  AXI_BUS #(" << Qt::endl;
     }else if(config_->BusType == "AXI4LITE"){
@@ -76,14 +77,18 @@ void InterconnectRTLWriter::writeBus(QTextStream &stream, QString type)
     }
 
     if(config_->BusType == "AXI4") {
-        stream << "    .AXI_ID_WIDTH(" << config_->IDWidth<< ")," << Qt::endl;
+        stream << "    .AXI_ID_WIDTH(" << axiIdWidthInits_ << ")," << Qt::endl;
         stream << "    .AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
 
     }
     stream << "    .AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
     stream << "    .AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
     stream << "  ) " << config_->BusType.toLower() << "_" << type.toLower();
-    stream << " [" << param << "-1:0]();\n" << Qt::endl;
+    if(type=="target"){
+        stream << " [" << axiTargetParam_ << "-1:0]();\n" << Qt::endl;
+    } else {
+        stream << " [" << axiInitParam_ << "-1:0]();\n" << Qt::endl;
+    }
 }
 
 void InterconnectRTLWriter::writeAddrMap(QTextStream &stream)
@@ -113,42 +118,53 @@ void InterconnectRTLWriter::writeAddrMap(QTextStream &stream)
             stream << ", start_addr: " << config_->AddressWidth << "'h" << QString::number( start, 16 );
             stream << ", end_addr: " << config_->AddressWidth << "'h" << QString::number( end, 16 );
             if(regionCounter == targetRegions + config_->TargetList.size()){
-                stream << "}" << Qt::endl;
+                stream << "}";
             } else {
-                stream << "}," << Qt::endl;
+                stream << "},";
             }
+            stream << " //" << target.Name << Qt::endl;
         }
     }
     stream << "    };\n" << Qt::endl;
 }
 
-void InterconnectRTLWriter::writeXbar(QTextStream &stream)
+void InterconnectRTLWriter::writeXbarCfg(QTextStream &stream)
 {
     stream << "  localparam axi_pkg::xbar_cfg_t " << axiCfg_ << " = '{" << Qt::endl;
     stream << "    NoSlvPorts:         " << axiTargetParam_ << "," << Qt::endl;
     stream << "    NoMstPorts:         " << axiInitParam_ << "," << Qt::endl;
     stream << "    MaxMstTrans:        1," << Qt::endl;
     stream << "    MaxSlvTrans:        1," << Qt::endl;
-    stream << "    FallThrough:        " << Qt::endl;
-    stream << "    LatencyMode:        " << Qt::endl;
-    stream << "    PipelineStages:     " << Qt::endl;
-    stream << "    AxiIdWidthSlvPorts: " << Qt::endl;
-    stream << "    AxiIdUsedSlvPorts:  " << Qt::endl;
-    stream << "    UniqueIds:          " << Qt::endl;
-    stream << "    AxiAddrWidth:       " << Qt::endl;
-    stream << "    AxiDataWidth:       " << Qt::endl;
-    stream << "    NoAddrRules:        " << addrRulesParam_ << "," << Qt::endl;
-    stream << "  };" << Qt::endl;
+    stream << "    FallThrough:        1'b0," << Qt::endl;
+    stream << "    LatencyMode:        axi_pkg::CUT_ALL_AX," << Qt::endl;
+    stream << "    AxiIdWidthSlvPorts: " << config_->IDWidth << "," << Qt::endl;
+    stream << "    AxiIdUsedSlvPorts:  0," << Qt::endl;
+    stream << "    UniqueIds:          1'b1," << Qt::endl;
+    stream << "    AxiAddrWidth:       " << config_->AddressWidth << "," << Qt::endl;
+    stream << "    AxiDataWidth:       " << config_->TargetList[0].DataWidth << "," << Qt::endl;
+    stream << "    NoAddrRules:        " << addrRulesParam_ << Qt::endl;
+    stream << "  };\n" << Qt::endl;
+}
 
-    //MaxMstTrans:        1,
-    //MaxSlvTrans:        1,
-    //FallThrough:        1'b0,
-    //LatencyMode:        axi_pkg::CUT_ALL_AX,
-    //PipelineStages:     0,
-    //AxiIdWidthSlvPorts: 11,
-    //AxiIdUsedSlvPorts:  0,
-    //UniqueIds:          1,
-    //AxiAddrWidth:       AXI_AW,
-    //AxiDataWidth:       AXI_DW,
-    //NoAddrRules:        AXI4LITE_TARGETS
+void InterconnectRTLWriter::writeXbar(QTextStream &stream) {
+    if(config_->BusType == "AXI4") {
+        axiXbar_ = "i_axi_xbar";
+        stream << "  axi_xbar_intf #(" << Qt::endl;
+        stream << "    .AXI_USER_WIDTH(" << config_->UserWidth << ")," << Qt::endl;
+    } else if(config_->BusType == "AXI4LITE"){
+        axiXbar_ = "i_axi_lite_xbar";
+        stream << "  axi_lite_xbar_intf #(" << Qt::endl;
+    }
+    stream << "    .Cfg(" << axiCfg_ << ")," << Qt::endl;
+    stream << "    .rule_t(" << ruleType_ << ")" << Qt::endl;
+
+    stream << "  ) " << axiXbar_ << "(" << Qt::endl;
+    stream << "    .clk_i(" << Qt::endl;
+    stream << "    .rst_ni(" << Qt::endl;
+    stream << "    .test_i(1'b0)" << Qt::endl;
+    stream << "    .slv_ports(" << Qt::endl;
+    stream << "    .mst_ports(" << Qt::endl;
+    stream << "    .addr_map_i(" << Qt::endl;
+    stream << "    .en_default_mst_port_i('0)" << Qt::endl;
+    stream << "    .default_mst_port_i('0)" << Qt::endl;
 }

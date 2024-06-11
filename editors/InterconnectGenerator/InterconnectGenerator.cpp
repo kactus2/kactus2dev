@@ -64,6 +64,9 @@ void InterconnectGenerator::openDesign(VLNV designVLNV)
 
 void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 {
+    if(library_->contains(VLNV)){
+        library_->removeObject(VLNV);
+    }
     messager_->showMessage("Creating new component");
     QSharedPointer<Component> component = QSharedPointer<Component>(new Component(VLNV, design_->getRevision()));
 

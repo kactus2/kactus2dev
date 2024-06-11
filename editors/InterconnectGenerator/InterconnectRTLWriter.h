@@ -29,6 +29,8 @@ public:
 
     void writeAddrMap(QTextStream& stream);
 
+    void writeXbarCfg(QTextStream& stream);
+
     void writeXbar(QTextStream& stream);
 
     //! No copying. No assignment.
@@ -49,9 +51,11 @@ private:
 
     QString axiTargetBus_;
     QString axiInitBus_;
+    QString axiXbar_;
 
     QString axiTargetParam_ = "AXI_TARGETS";
     QString axiInitParam_ = "AXI_INITIATORS";
+    QString axiIdWidthInits_ = "IdWidthInits";
     QString addrRulesParam_ = "NoAddrRules";
     QString ruleType_ = "rule_t";
     QString addrMapXBAR_ = "AddrMapXBAR";
