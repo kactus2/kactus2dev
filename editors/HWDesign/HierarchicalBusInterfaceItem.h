@@ -48,9 +48,10 @@ public:
      *      @param [in] dataGroup   The container for the item data.
      *      @param [in] library     Access to the library.
      *      @param [in] parent      The parent object.
+     *      @param [in] isDraft     Determines if Bus Interface is draft or not.
      */
     HierarchicalBusInterfaceItem(QSharedPointer<Component> component, QSharedPointer<BusInterface> busIf,
-        QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library, QGraphicsItem *parent = 0);
+        QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library, QGraphicsItem *parent = 0, bool isDraft=false);
 
 	/*!
      *  The destructor.

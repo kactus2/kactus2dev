@@ -43,8 +43,8 @@
 //-----------------------------------------------------------------------------
 HierarchicalBusInterfaceItem::HierarchicalBusInterfaceItem(QSharedPointer<Component> component,
     QSharedPointer<BusInterface> busIf, QSharedPointer<InterfaceGraphicsData> dataGroup, LibraryInterface* library,
-    QGraphicsItem *parent):
-BusInterfaceEndPoint(busIf, component, library, parent),
+    QGraphicsItem *parent, bool isDraft):
+BusInterfaceEndPoint(busIf, component, library, isDraft, parent),
 dataGroup_(dataGroup)
 {
     HierarchicalBusInterfaceItem::setTemporary(busIf == 0);
@@ -57,15 +57,8 @@ dataGroup_(dataGroup)
     {
         setPos(dataGroup_->getPosition());
     }
-
-    if (dataGroup_->hasDirection())
-    {
-        HierarchicalBusInterfaceItem::setDirection(dataGroup_->getDirection());
-    }
-    else
-    {
-        dataGroup_->setDirection(HierarchicalBusInterfaceItem::getDirection());
-    }
+  
+    HierarchicalBusInterfaceItem::setDirection(QVector2D(1,0));
 
 	getNameLabel()->setRotation(-rotation());
 

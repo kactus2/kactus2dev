@@ -233,6 +233,26 @@ std::vector<std::pair<unsigned int, std::string> > ModeReferenceInterface::getMo
 }
 
 //-----------------------------------------------------------------------------
+// Function: ModeReferenceInterface::areAllModeReferencesValid()
+//-----------------------------------------------------------------------------
+bool ModeReferenceInterface::areAllModeReferencesValid()
+{
+    if (modeReferences_.empty())
+    {
+        return false;
+    }
+
+    for ( int i = 0; i < modeReferences_.size(); i++)
+    {
+        if (!modeReferenceValueIsValid(i) || !modeReferencePriorityIsValid(i))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+//-----------------------------------------------------------------------------
 // Function: ModeReferenceInterface::getModeReferencesInUse()
 //-----------------------------------------------------------------------------
 std::vector<std::pair<unsigned int, std::string> > ModeReferenceInterface::getModeReferencesInUse(int modeReferenceIndex) const
