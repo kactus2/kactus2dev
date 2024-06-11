@@ -10,6 +10,7 @@
 //-----------------------------------------------------------------------------
 
 #include "GraphicsItemLabel.h"
+#include <QToolTip>
 
 //-----------------------------------------------------------------------------
 // Function: GraphicsItemLabel::GraphicsItemLabel()
@@ -50,4 +51,24 @@ QString GraphicsItemLabel::getText() const
 void GraphicsItemLabel::updateLabelGeometry()
 {
     updateGeometry();
+}
+
+//-----------------------------------------------------------------------------
+// Function: GraphicsItemLabel::hoverMoveEvent()
+//-----------------------------------------------------------------------------
+void GraphicsItemLabel::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+{
+    QGraphicsItem* tooltip_parent = parentItem();
+    while (tooltip_parent != nullptr)
+    {
+        if (tooltip_parent->toolTip().isEmpty())
+        {
+            tooltip_parent = tooltip_parent->parentItem();
+        }
+        else
+        {
+            QToolTip::showText(QCursor::pos(), tooltip_parent->toolTip());
+            break;
+        }
+    }
 }
