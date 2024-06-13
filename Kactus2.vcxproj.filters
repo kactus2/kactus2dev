@@ -998,6 +998,12 @@
     <Filter Include="Header Files\editors\ComponentEditor\powerDomains">
       <UniqueIdentifier>{45dc464a-4192-4641-8242-c0b1f055534f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\common\widgets\GroupBoxWithAlertSign">
+      <UniqueIdentifier>{3c58c97d-2039-4bdd-8c31-12f7920606d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\common\widgets\GroupBoxWithAlertSign">
+      <UniqueIdentifier>{8783df90-961a-4171-916f-62da55f95112}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="common\GenericEditProvider.cpp">
@@ -3366,6 +3372,15 @@
     </ClCompile>
     <ClCompile Include="editors\ComponentEditor\ports\TypedPortsView.cpp">
       <Filter>Source Files\editors\ComponentEditor\ports</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.cpp">
+      <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.cpp">
+      <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </ClCompile>
+    <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp">
+      <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -5806,6 +5821,9 @@
     <ClInclude Include="editors\ComponentEditor\ports\PortSummaryEditorFactory.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
     </ClInclude>
+    <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h">
+      <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="wizards\common\IPXactElementComparator.inl">
@@ -6082,6 +6100,12 @@
     </QtMoc>
     <QtMoc Include="editors\ComponentEditor\ports\TypedPortsView.h">
       <Filter>Header Files\editors\ComponentEditor\ports</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h">
+      <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </QtMoc>
+    <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h">
+      <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

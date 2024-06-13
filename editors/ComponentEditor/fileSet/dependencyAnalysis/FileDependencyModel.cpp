@@ -509,33 +509,41 @@ void FileDependencyModel::performAnalysisStep()
     // Otherwise scan one file on each step.
     else
     {
-        // Run the dependency analysis for the current file.
-        if (curFileIndex_ < root_->getChild(curFolderIndex_)->getChildCount())
+        // Don't scan external files
+        if (root_->getChild(curFolderIndex_)->getType() != FileDependencyItem::ITEM_TYPE_FOLDER)
         {
-            FileDependencyItem* fileItem = root_->getChild(curFolderIndex_)->getChild(curFileIndex_);
-            analyze(fileItem);
-
-            curFileIndex_++;
-            progressValue_++;
-        }
-
-        // Check if all files in the current folder have been analyzed.
-        while (curFileIndex_ == root_->getChild(curFolderIndex_)->getChildCount())
-        {
-            // Update the status of the folder and continue to the next folder.
-            FileDependencyItem* folderItem = root_->getChild(curFolderIndex_);
-            folderItem->updateStatus();
-
-            emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem, 
-                FileDependencyColumns::DEPENDENCIES));
-
             curFolderIndex_++;
-            curFileIndex_ = 0;
-
-            if (curFolderIndex_ == root_->getChildCount() ||
-                root_->getChild(curFolderIndex_)->getType() != FileDependencyItem::ITEM_TYPE_FOLDER)
+        }
+        else
+        {
+            // Run the dependency analysis for the current file.
+            if (curFileIndex_ < root_->getChild(curFolderIndex_)->getChildCount())
             {
-                break;
+                FileDependencyItem* fileItem = root_->getChild(curFolderIndex_)->getChild(curFileIndex_);
+                analyze(fileItem);
+
+                curFileIndex_++;
+                progressValue_++;
+            }
+
+            // Check if all files in the current folder have been analyzed.
+            while (curFileIndex_ == root_->getChild(curFolderIndex_)->getChildCount())
+            {
+                // Update the status of the folder and continue to the next folder.
+                FileDependencyItem* folderItem = root_->getChild(curFolderIndex_);
+                folderItem->updateStatus();
+
+                emit dataChanged(getItemIndex(folderItem, 0), getItemIndex(folderItem, 
+                    FileDependencyColumns::DEPENDENCIES));
+
+                curFolderIndex_++;
+                curFileIndex_ = 0;
+
+                if (curFolderIndex_ == root_->getChildCount() ||
+                    root_->getChild(curFolderIndex_)->getType() != FileDependencyItem::ITEM_TYPE_FOLDER)
+                {
+                    break;
+                }
             }
         }
     }
@@ -561,9 +569,10 @@ int FileDependencyModel::getTotalStepCount() const
 
     for (int i = 0; i < root_->getChildCount(); ++i)
     {
-        if (root_->getChild(i)->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
+        if (auto childDependencyItem = root_->getChild(i);
+            childDependencyItem->getType() == FileDependencyItem::ITEM_TYPE_FOLDER)
         {
-            count += root_->getChild(i)->getChildCount();
+            count += childDependencyItem->getChildCount();
         }
     }
 
@@ -767,6 +776,15 @@ void FileDependencyModel::analyze(FileDependencyItem* fileItem)
                     dependency->setStatus(FileDependency::STATUS_REMOVED);
                     dependenciesChanged = true;
                     emit dependencyChanged(dependency);
+                }
+                
+                // Remove old dependencies
+                for (auto const& dep : dependencies_)
+                {
+                    if (dep.data() == dependency)
+                    {
+                        removeDependency(dependency);
+                    }
                 }
             }
         }

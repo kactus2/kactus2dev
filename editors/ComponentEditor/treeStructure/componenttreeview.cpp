@@ -188,10 +188,7 @@ void ComponentTreeView::contextMenuEvent( QContextMenuEvent* event )
 
     if (ComponentEditorItem* item = getPressedItem(); item)
     {
-        if (item->canBeOpened())
-        {
-            menu.addActions(item->actions());
-        }
+         menu.addActions(item->actions());
 
         if (item->hasChildren())
         {

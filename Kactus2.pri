@@ -898,7 +898,10 @@ HEADERS += ./common/NameGenerationPolicy.h \
     ./PythonAPI/FileChannel.h \
     ./PythonAPI/PythonInterpreter.h \
     ./PythonAPI/StdInputListener.h \
-    ./PythonAPI/extensions/IOCatcher.h
+    ./PythonAPI/extensions/IOCatcher.h \
+    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h \
+    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.h \
+    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.h
 SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp \
     ./common/GenericEditProvider.cpp \
     ./common/NameGenerationPolicy.cpp \
@@ -1690,5 +1693,8 @@ SOURCES += ./editors/ComponentEditor/busInterfaces/general/MasterModeEditor.cpp 
     ./PythonAPI/FileChannel.cpp \
     ./PythonAPI/PythonInterpreter.cpp \
     ./PythonAPI/StdInputListener.cpp \
-    ./PythonAPI/extensions/IOCatcher.cpp
+    ./PythonAPI/extensions/IOCatcher.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/StyleGroupBoxWithAlertSign.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/StyleOptionGroupBoxWithAlertSign.cpp \
+    ./common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.cpp
 RESOURCES += kactus.qrc

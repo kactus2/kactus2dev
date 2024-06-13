@@ -191,7 +191,7 @@ public:
         QSharedPointer<ListParameterFinder> designParameterFinder,
         DesignWidget* parent = 0);
 
-	/*!
+	/*! 
      *  The destructor.
      */
 	~HWDesignDiagram() final = default;
@@ -582,10 +582,11 @@ private:
     /*!
      *  Adds a new interface to the given diagram column.
      *
-     *      @param [in] column The column where to add the interface.
-     *      @param [in] pos    The interface position.
+     *      @param [in] column      The column where to add the interface.
+     *      @param [in] pos         The interface position.
+     *      @param [in] isDraft     Determines if Bus Interface is draft or not.
      */
-    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos);
+    virtual void addTopLevelInterface(GraphicsColumn* column, QPointF const& pos, bool isDraft);
 
     /*!
      *  Handler for draft tool clicks. Creates a draft component instance or a draft interface according to the

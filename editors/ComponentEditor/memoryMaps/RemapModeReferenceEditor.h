@@ -13,13 +13,15 @@
 #define REMAPMODEREFERENCEEDITOR_H
 
 #include <KactusAPI/include/MemoryMapInterface.h>
+#include <common/widgets/GroupBoxWithAlertSign/GroupBoxWithAlertSign.h>
 
 #include <QGroupBox>
 
 class ModeReferenceEditor;
 class MemoryRemapModeReferenceModel;
 
-class RemapModeReferenceEditor : public QGroupBox
+
+class RemapModeReferenceEditor : public GroupBoxWithAlertSign
 {
     Q_OBJECT
 
@@ -31,7 +33,7 @@ public:
      *      @param [in] modeRefInterface    The mode reference interface to use.
      *      @param [in] parent              The parent widget.
      */
-    RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent);
+    RemapModeReferenceEditor(ModeReferenceInterface* modeRefInterface, QWidget* parent, bool isRemap);
 
     virtual ~RemapModeReferenceEditor() = default;
 
@@ -45,12 +47,20 @@ signals:
      *	Emitted whenever a mode reference has been edited.
      */
     void contentChanged();
+private slots:
+
+    /*!
+     *	Checks if it is needed to display alert sign in GroupBoxWithAlertSign
+     */
+    void checkForAlert();
 
 private:
 
     //! The mode reference table editor.
     ModeReferenceEditor* modeReferencesEditor_;
 
+    //! The mode reference interface.
+    ModeReferenceInterface* modeRefInterface_;
 };
 
 #endif // REMAPMODEREFERENCEEDITOR_H

@@ -17,12 +17,17 @@
 
 #include <QSharedPointer>
 
+#include <IPXACTmodels/Component/BusInterface.h>
+
+
 class BusInterface;
 class BusInterfaceValidator;
 class ExpressionParser;
 class PortMapInterface;
 class BusInterfaceInterface;
 class PortMapInterface;
+
+
 
 //-----------------------------------------------------------------------------
 //! The item for single bus interface in the component editor's navigation tree.
@@ -33,7 +38,7 @@ class ComponentEditorBusInterfaceItem : public ParameterizableItem
 
 public:
 
-    /*!
+	/*!
 	 *  The constructor.
 	 *
 	 *      @param [in] busif                   The bus interface being edited.
@@ -44,29 +49,29 @@ public:
 	 *      @param [in] parameterFinder         The parameter finder.
 	 *      @param [in] expressionFormatter     The expression formatter.
 	 *      @param [in] expressionParser        The expression parser.
-     *      @param [in] validator               The validator for bus interfaces.
-     *      @param [in] busInterface            Interface for accessing bus interfaces.
-     *      @param [in] portMapInterface        Interface for accessing port maps.
+	 *      @param [in] validator               The validator for bus interfaces.
+	 *      @param [in] busInterface            Interface for accessing bus interfaces.
+	 *      @param [in] portMapInterface        Interface for accessing port maps.
 	 *      @param [in] parent                  The owner of this item.
 	 *      @param [in] parentWnd               The parent window.
 	 */
-    ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
-        ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
+	ComponentEditorBusInterfaceItem(QSharedPointer<BusInterface> busif,
+		ComponentEditorTreeModel* model,
+		LibraryInterface* libHandler,
+		QSharedPointer<Component> component,
+		QSharedPointer<ReferenceCounter> referenceCounter,
 		ExpressionSet expressions,
-        QSharedPointer<BusInterfaceValidator> validator,
-        BusInterfaceInterface* busInterface,
-        PortMapInterface* portMapInterface,
-        ComponentEditorItem* parent,
-        QWidget* parentWnd);
+		QSharedPointer<BusInterfaceValidator> validator,
+		BusInterfaceInterface* busInterface,
+		PortMapInterface* portMapInterface,
+		ComponentEditorItem* parent,
+		QWidget* parentWnd);
 
 	//! The destructor
 	virtual ~ComponentEditorBusInterfaceItem();
 
 	/*! Get the tool tip for the item.
-	 * 
+	 *
 	 *      @return The text for the tool tip to print to user.
 	*/
 	virtual QString getTooltip() const;
@@ -89,25 +94,28 @@ public:
 	*/
 	virtual ItemEditor* editor();
 
-	/*! Tells if the item can be opened or not.
-	 * 
-	 * If the bus interface contains valid bus definition reference is can be opened.
-	*/
-	virtual bool canBeOpened() const;
-
-    /*!
-     *  Returns the possible actions for opening the item.
-     *
-     *      @return The actions to open the item.
-     */
-    virtual QList<QAction*> actions() const;
+	/*!
+	 *  Returns the possible actions for opening the item.
+	 *
+	 *      @return The actions to open the item.
+	 */
+	virtual QList<QAction*> actions();
 
 public slots:
-	
-	/*! Open the bus definition/abstraction definition in a bus editor.
+
+	/*! Opens the abstraction definition; can be called from the drop down menu
+	 * and from openItem(), where it can open either the only abstraction deffinition in editor,
+	 * or open the dialog with a combo box of bus definition and the list of all abstraction definitions.
 	 * 
-	*/
-	virtual void openItem();
+	 * @return bool True if there are no need to open Bus Deffinition, overwise bool False
+	 */
+	virtual bool openAbsDefSlot();
+
+	/*! 
+	 *  Opens and the Bus Definition by emmitting the signal openBus.	
+	 */
+	virtual void openBusSlot();
+
 
 private:
 	//! No copying
@@ -116,26 +124,33 @@ private:
 	//! No assignment
 	ComponentEditorBusInterfaceItem& operator=(const ComponentEditorBusInterfaceItem& other);
 
+	/*! 
+	 *  Sets the actions to Abstract Definitions in context menu.
+	 * 
+	 *		@param [in] actionList               The list of actions to be filled
+	 */
+	void setAbstractionDefinitionActions(QList<QAction*>& actionList);
+
 	//! The bus interface being edited.
-	QSharedPointer<BusInterface> busif_;
+	QSharedPointer<BusInterface> busIf_;
 
 	//! The parent window.
 	QWidget* parentWnd_;
 
-    //! Action to open the bus interface for editing.
-    QAction* editAction_;
+	//! Action to open the bus interface for editing.
+	QAction* editBusDefAction_;
 
 	//! Expression handling tools.
 	ExpressionSet expressions_;
 
-    //! Validator for bus interfaces.
-    QSharedPointer<BusInterfaceValidator> validator_;
+	//! Validator for bus interfaces.
+	QSharedPointer<BusInterfaceValidator> validator_;
 
-    //! Interface for accessing bus interfaces.
-    BusInterfaceInterface* busInterface_;
+	//! Interface for accessing bus interfaces.
+	BusInterfaceInterface* busInterface_;
 
-    //! Interface for accessing port maps.
-    PortMapInterface* portMapInterface_;
+	//! Interface for accessing port maps.
+	PortMapInterface* portMapInterface_;
 };
 
 #endif // COMPONENTEDITORBUSINTERFACEITEM_H

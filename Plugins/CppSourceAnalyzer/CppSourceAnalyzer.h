@@ -131,8 +131,6 @@ public:
 	 //! Returns the external program requirements of the plugin.
 	 virtual QList<IPlugin::ExternalProgramRequirement> getProgramRequirements() override final;
 
-private:
-
     /*!
      *
      * Reads source file data from given file. Used by calulateHash and getFileDependencies.
@@ -142,6 +140,9 @@ private:
      *      @return The meaningful source data of the file, with comments and empty lines removed.
      */
     QString getSourceData(QFile& file);
+
+private:
+
 
     /*!
      *

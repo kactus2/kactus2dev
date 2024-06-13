@@ -15,6 +15,7 @@
 #include <QLineEdit>
 
 #include <QRegularExpressionValidator>
+#include<QAbstractItemView>
 
 //-----------------------------------------------------------------------------
 // Function: ModeReferenceDelegate::ModeReferenceDelegate()
@@ -62,9 +63,14 @@ void ModeReferenceDelegate::setEditorData(QWidget* editor, const QModelIndex& in
     {
         if (auto comboBox = qobject_cast<QComboBox*>(editor))
         {
-            comboBox->setCurrentText(index.data(Qt::DisplayRole).toString());
-            comboBox->addItems(index.data(Qt::UserRole).toStringList());
+            QString text = index.data(Qt::DisplayRole).toString();
+            comboBox->setCurrentText(text);
+            comboBox->addItems(index.data(Qt::UserRole).toStringList());            
             comboBox->addItem(QString());
+
+            //setting up curently selected mode to the comboBox
+            int index = comboBox->findText(text, Qt::MatchFixedString);
+            comboBox->setCurrentIndex(index);
         }
     }
 }
