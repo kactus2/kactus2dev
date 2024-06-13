@@ -38,7 +38,7 @@ ConnectionDeleteCommand::ConnectionDeleteCommand(DesignDiagram* diagram, HWConne
       diagram_(diagram),
       del_(true)
 {
-    foreach(Association* association, connection_->getAssociations())
+    for (Association* association : connection_->getAssociations())
     {
         new AssociationRemoveCommand(association, diagram_, this);
     }

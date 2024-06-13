@@ -33,7 +33,7 @@ adHocConnection_(adHocConnection),
 diagram_(diagram),
 del_(true)
 {
-    foreach(Association* association, adHocConnection_->getAssociations())
+    for (Association* association : adHocConnection_->getAssociations())
     {
         new AssociationRemoveCommand(association, diagram_, this);
     }

@@ -36,7 +36,7 @@ removedElement_(getRemovedConfigurableElement(elementID))
 QSharedPointer<ConfigurableElementValue> ConfigurableElementRemoveCommand::getRemovedConfigurableElement(
     QString const& elementID)
 {
-    foreach (QSharedPointer<ConfigurableElementValue> element, *configurableElements_)
+    for (auto const& element : *configurableElements_)
     {
         if (element->getReferenceId() == elementID)
         {

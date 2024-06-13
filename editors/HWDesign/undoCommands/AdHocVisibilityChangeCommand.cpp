@@ -43,12 +43,12 @@ adhocPort_()
         {
             pos_ = port->scenePos();
 
-            foreach (GraphicsConnection* connection, adhocPort_->getConnections())
+            for (GraphicsConnection* connection : adhocPort_->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }
 
-            foreach (GraphicsConnection* connection, adhocPort_->getOffPageConnector()->getConnections())
+            for (GraphicsConnection* connection : adhocPort_->getOffPageConnector()->getConnections())
             {
                 createConnectionDeleteCommand(connection);
             }

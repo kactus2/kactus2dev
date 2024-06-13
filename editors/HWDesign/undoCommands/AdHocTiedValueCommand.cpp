@@ -102,7 +102,7 @@ QSharedPointer<AdHocConnection> AdHocTiedValueCommand::getTiedValueConnection() 
 //-----------------------------------------------------------------------------
 void AdHocTiedValueCommand::setupReferencedPort(QString const& portName)
 {
-    foreach (QSharedPointer<PortReference> externalPort, *tiedValueConnection_->getExternalPortReferences())
+    for (auto const& externalPort : *tiedValueConnection_->getExternalPortReferences())
     {
         if (externalPort->getPortRef().compare(portName) == 0)
         {
@@ -111,7 +111,7 @@ void AdHocTiedValueCommand::setupReferencedPort(QString const& portName)
         }
     }
 
-    foreach (QSharedPointer<PortReference> internalPort, *tiedValueConnection_->getInternalPortReferences())
+    for (auto const& internalPort : *tiedValueConnection_->getInternalPortReferences())
     {
         if (internalPort->getPortRef().compare(portName) == 0)
         {
