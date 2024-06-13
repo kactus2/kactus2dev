@@ -101,6 +101,8 @@ private:
     VLNV busDefVLNV_;
     VLNV rstVLNV_;
     VLNV clkVLNV_;
+    QString clkPort_;
+    QString rstPort_;
 
 };
 

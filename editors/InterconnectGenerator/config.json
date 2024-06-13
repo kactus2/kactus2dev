@@ -4,20 +4,20 @@
   "bus": "tuni.fi:interface:AXI4LITE:1.0",
   "clk": "tuni.fi:interface:clock:1.0",
   "rst": "tuni.fi:interface:reset:1.0",
-  "Bus type": "AXI4",
+  "Bus type": "AXI4LITE",
   "Address width": 32,
   "ID width": 8,
   "User width": 1,
   "Initiators": [
   	{"Index": 0,
-  	"Name": "initComp1",
+  	"Name": "i_SysCtrl_peripherals",
   	"Data width": 32},
   	{"Index": 1,
   	"Name": "initComp2",
   	"Data width": 32}],
   "Targets":[
 	{"Index": 0,
-	"Name": "targComp1",
+	"Name": "core_imem_bridge",
 	"Data width": 32,
 	"Address regions":[
 		{"Start": "0x00000000",
@@ -25,7 +25,7 @@
 		{"Start": "0x00010000",
 		"End": "0x0001ffff"}]},
 	{"Index": 1,
-	"Name": "targComp2",
+	"Name": "jtag_dbg_wrapper",
 	"Data width": 32,
 	"Address regions":[
 		{"Start": "0x00020000",

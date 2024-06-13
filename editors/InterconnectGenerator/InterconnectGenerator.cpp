@@ -36,7 +36,8 @@ VLNV InterconnectGenerator::generate()
     messager_->showMessage(QString("Writing component %1 to file").arg(interconComponent_->getVlnv().toString()));
     library_->writeModelToFile(directory_,interconComponent_);
 
-    InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_, config_);
+    InterconnectRTLWriter writer(interconComponent_, library_, messager_, directory_,
+                                 config_, clkPort_, rstPort_);
     writer.generateRTL();
 
     return interconVLNV;
@@ -118,9 +119,7 @@ void InterconnectGenerator::findUnconnectedInterfaces()
                         General::InterfaceMode newMode = General::getCompatibleInterfaceMode(busInf->getInterfaceMode());
                         std::string modeString = General::interfaceMode2Str(newMode).toStdString();
 
-                        std::string newBusName = prefix_ + busName.toStdString();
-
-                        createBusInterface(busName.toStdString(), modeString, index);
+                        createBusInterface(busName.toUpper().toStdString(), modeString, index);
 
                         createPortMaps(modeString, busInf);
 
@@ -153,7 +152,7 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
         busDef = clkVLNV_;
     }
 
-    std::string newBusName = prefix_ + busName;
+    std::string newBusName = prefix_ + config_->BusType.toStdString();
 
     messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(newBusName)));
     busInfInterface_->addBusInterface(index, newBusName);
@@ -260,6 +259,7 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 
     std::string modeString = General::interfaceMode2Str(mode).toStdString();
 
+    prefix_ = busName + "_";
     createBusInterface(busName, modeString, index);
 
     absTypeInf_->setupAbstractionTypeForPortMapInterface(0);
@@ -271,6 +271,11 @@ void InterconnectGenerator::createRstorClkInterface(std::string busName, int ind
 
     for (std::string portName : portAbsInf->getItemNamesWithModeAndGroup(modeString,""))
     {
+        if(busName == "clk") {
+            clkPort_ = QString::fromStdString(portName);
+        } else if(busName == "rst") {
+            rstPort_ = QString::fromStdString(portName);
+        }
         int portIndex = portAbsInf->getItemIndex(portName);
 
         portInf->addWirePort(portName);

@@ -4,13 +4,16 @@
 #include <IPXACTmodels/Design/Design.h>
 
 InterconnectRTLWriter::InterconnectRTLWriter(QSharedPointer<Component> component, LibraryInterface* library,
-                                             MessageMediator* messager, QString directory, ConfigJsonParser::ConfigStruct* config)
+                                             MessageMediator* messager, QString directory, ConfigJsonParser::ConfigStruct* config,
+                                             QString clk, QString rst)
 {
     component_ = component;
     library_ = library;
     messager_ = messager;
     directory_ = directory;
     config_ = config;
+    clkPort_ = clk;
+    rstPort_ = rst;
 }
 
 void InterconnectRTLWriter::generateRTL()
@@ -62,6 +65,8 @@ void InterconnectRTLWriter::generateRTL()
         writeAddrMap(verilogRTL);
         writeXbarCfg(verilogRTL);
         writeXbar(verilogRTL);
+        writeTargetAssign(verilogRTL);
+        writeInitAssign(verilogRTL);
         verilogRTL << "endmodule" << Qt::endl;
     }
     verilogFile.close();
@@ -83,10 +88,13 @@ void InterconnectRTLWriter::writeBus(QTextStream &stream, QString type)
     }
     stream << "    .AXI_ADDR_WIDTH(" << config_->AddressWidth << ")," << Qt::endl;
     stream << "    .AXI_DATA_WIDTH(" << config_->TargetList[0].DataWidth << ")" << Qt::endl;
-    stream << "  ) " << config_->BusType.toLower() << "_" << type.toLower();
     if(type=="target"){
+        axiTargetBus_ = config_->BusType.toLower() + axiTargetBus_;
+        stream << "  ) " << axiTargetBus_;
         stream << " [" << axiTargetParam_ << "-1:0]();\n" << Qt::endl;
     } else {
+        axiInitBus_ = config_->BusType.toLower() + axiInitBus_;
+        stream << "  ) " << axiInitBus_;
         stream << " [" << axiInitParam_ << "-1:0]();\n" << Qt::endl;
     }
 }
@@ -159,12 +167,52 @@ void InterconnectRTLWriter::writeXbar(QTextStream &stream) {
     stream << "    .rule_t(" << ruleType_ << ")" << Qt::endl;
 
     stream << "  ) " << axiXbar_ << "(" << Qt::endl;
-    stream << "    .clk_i(" << Qt::endl;
-    stream << "    .rst_ni(" << Qt::endl;
-    stream << "    .test_i(1'b0)" << Qt::endl;
-    stream << "    .slv_ports(" << Qt::endl;
-    stream << "    .mst_ports(" << Qt::endl;
-    stream << "    .addr_map_i(" << Qt::endl;
-    stream << "    .en_default_mst_port_i('0)" << Qt::endl;
+    stream << "    .clk_i(" << clkPort_ << ")," << Qt::endl; //fix
+    stream << "    .rst_ni(" << rstPort_ << ")," << Qt::endl; //fix
+    stream << "    .test_i(1'b0)," << Qt::endl;
+    stream << "    .slv_ports(" << axiInitBus_ << ")," << Qt::endl;
+    stream << "    .mst_ports(" << axiTargetBus_ << ")," << Qt::endl;
+    stream << "    .addr_map_i(" << addrMapXBAR_ << ")," << Qt::endl;
+    stream << "    .en_default_mst_port_i('0)," << Qt::endl;
     stream << "    .default_mst_port_i('0)" << Qt::endl;
+    stream << "  );\n" << Qt::endl;
+}
+
+void InterconnectRTLWriter::writeAssign(QTextStream &stream, QString busName, int index) {
+    QStringList ports;
+    for(QSharedPointer<Port> compPort : component_->getPortsMappedInInterface(busName)) {
+        if(config_->BusType == "AXI4") {
+            ports = axiPorts_;
+        } else {
+            ports = axiLitePorts_;
+        }
+        for(QString port : ports) {
+            if(compPort->name().contains("_" + port)){
+                if(compPort->getDirection() == DirectionTypes::IN){
+                    stream << "  assign " << axiTargetBus_ << "[" << index << "]." << port;
+                    stream << " = " << compPort->name() << Qt::endl;
+                }
+                else {
+                    stream << "  assign " << compPort->name();
+                    stream << " = " << axiTargetBus_ << "[" << index << "]." << port << Qt::endl;
+                }
+            }
+        }
+    }
+}
+
+void InterconnectRTLWriter::writeTargetAssign(QTextStream &stream) {
+    for(ConfigJsonParser::TargetStruct target : config_->TargetList){
+        QString busName = target.Name + "_" + config_->BusType;
+        writeAssign(stream, busName, target.Index);
+        stream << Qt::endl;
+    }
+}
+
+void InterconnectRTLWriter::writeInitAssign(QTextStream &stream) {
+    for(ConfigJsonParser::InitStruct init : config_->InitList){
+        QString busName = init.Name + "_" + config_->BusType;
+        writeAssign(stream, busName, init.Index);
+        stream << Qt::endl;
+    }
 }
