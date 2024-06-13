@@ -41,7 +41,8 @@ PortmapDialog::PortmapDialog(LibraryInterface* library, QSharedPointer<Component
     QSharedPointer<BusInterface> busIf, QSharedPointer<BusInterface> otherBusIf, QWidget* parent) :
 QDialog(parent),
 busIf_(busIf),
-otherBusIf_(otherBusIf)
+otherBusIf_(otherBusIf),
+designComponent_(component)
 {
     Q_ASSERT(library != 0);
     Q_ASSERT(component != 0);
@@ -57,6 +58,9 @@ otherBusIf_(otherBusIf)
 
     BusInterfaceInterface* busInterface = BusInterfaceInterfaceFactory::createBusInterface(
         parameterFinder, expressionFormatter, expressionParser, component, library);
+
+    // Temporarily add businterface to design component
+    component->getBusInterfaces()->append(busIf);
 
     AbstractionTypeInterface* absTypeInterface = busInterface->getAbstractionTypeInterface();
     PortMapInterface* portMapInterface = absTypeInterface->getPortMapInterface();
@@ -105,5 +109,27 @@ PortmapDialog::~PortmapDialog()
 //-----------------------------------------------------------------------------
 void PortmapDialog::accept()
 {
+    // Remove temporary bus interface. Results in duplicate component when saved if not deleted
+    designComponent_->getBusInterfaces()->removeOne(busIf_);
     QDialog::accept();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortmapDialog::reject()
+//-----------------------------------------------------------------------------
+void PortmapDialog::reject()
+{
+    // Remove added temporary interface, if operation is cancelled.
+    auto componentBuses = designComponent_->getBusInterfaces();
+    for (auto const& bus : *componentBuses)
+    {
+        if (bus->name() == busIf_->name())
+        {
+            bus->clearAllPortMaps();
+            componentBuses->removeOne(bus);
+            break;
+        }
+    }
+
+    QDialog::reject();
 }

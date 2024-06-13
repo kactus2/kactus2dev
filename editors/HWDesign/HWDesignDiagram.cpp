@@ -1682,7 +1682,7 @@ void HWDesignDiagram::copyPortMapsAndPhysicalPorts(QSharedPointer<Component> sou
         }
     }
 
-    QUndoCommand* portMapCreationCommand = new EndPointPortMapCommand(target, newPortMaps, copyCommand);
+    QUndoCommand* portMapCreationCommand = new EndPointPortMapCommand(target, newPortMaps, getEditedComponent(), copyCommand);
     portMapCreationCommand->redo();
 }
 
@@ -1728,14 +1728,16 @@ bool HWDesignDiagram::createPortMapsManually(ConnectionEndpoint* sourcePoint, Co
     PortmapDialog dialog(getLibraryInterface(), targetPoint->getOwnerComponent(), 
         targetPoint->getBusInterface(), sourcePoint->getBusInterface(), getParent());
 
-    int accepted = dialog.exec() == QDialog::Accepted;
+    if (dialog.exec() != QDialog::Accepted)
+    {
+        return false;
+    }
 
     QList<QSharedPointer<PortMap> > newMaps = *targetPoint->getBusInterface()->getAllPortMaps();
-    sourcePoint->getBusInterface()->clearAllPortMaps();
+    targetPoint->getBusInterface()->clearAllPortMaps(); // clear temprorary portmaps so that undo works
 
-    new EndPointPortMapCommand(targetPoint, newMaps, parentCommand);
-
-    return accepted;
+    new EndPointPortMapCommand(targetPoint, newMaps, getEditedComponent(), parentCommand);
+    return true;
 }
 
 //-----------------------------------------------------------------------------

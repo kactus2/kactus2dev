@@ -58,6 +58,8 @@ public:
 public slots:
     void accept();
 
+    void reject();
+
 private:
     // Disable copying.
     PortmapDialog(PortmapDialog const& rhs);
@@ -75,6 +77,9 @@ private:
 
     //! The bus interface in the other end of the connection (for validity checks).
     QSharedPointer<BusInterface> otherBusIf_;
+
+    //! The component whose design is being edited.
+    QSharedPointer<Component> designComponent_;
 };
 
 //-----------------------------------------------------------------------------

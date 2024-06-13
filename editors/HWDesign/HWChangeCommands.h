@@ -43,6 +43,7 @@ class GraphicsConnection;
 class HWComponentItem;
 class HWConnection;
 class HWConnectionEndpoint;
+class Component;
 
 class AdHocConnection;
 class ComponentInstance;
@@ -763,10 +764,12 @@ public:
      *
      *      @param [in] endpoint          The diagram connection end point.
      *      @param [in] newPortMaps       The new port maps for the end point.
+     *      @param [in] component         The component whose design is being edited.
      *      @param [in] parent            The parent command.
      */
     EndPointPortMapCommand(ConnectionEndpoint* endpoint,
                            QList< QSharedPointer<PortMap> > newPortMaps,
+                           QSharedPointer<Component> component,
                            QUndoCommand* parent = 0);
 
     /*!
@@ -804,6 +807,9 @@ private:
 
     //! The end point's new port maps.
     QList< QSharedPointer<PortMap> > newPortMaps_;
+
+    //! The component whose design is being edited.
+    QSharedPointer<Component> component_;
 };
 
 //-----------------------------------------------------------------------------

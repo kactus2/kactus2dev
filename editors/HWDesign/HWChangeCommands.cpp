@@ -739,12 +739,14 @@ void EndPointTypesCommand::setTypes(VLNV const& busType, VLNV const& absType)
 // Function: EndPointPortMapCommand::EndPointPortMapCommand()
 //-----------------------------------------------------------------------------
 EndPointPortMapCommand::EndPointPortMapCommand(ConnectionEndpoint* endpoint,
-    QList< QSharedPointer<PortMap> > newPortMaps, QUndoCommand* parent) :
+    QList< QSharedPointer<PortMap> > newPortMaps, QSharedPointer<Component> component,
+    QUndoCommand* parent) :
 QUndoCommand(parent),
 endpoint_(endpoint),
 abstraction_(),
 oldPortMaps_(),
-newPortMaps_(newPortMaps)
+newPortMaps_(newPortMaps),
+component_(component)
 {
     QSharedPointer<BusInterface> endPointBus = endpoint->getBusInterface();
     if (endPointBus && endPointBus->getAbstractionTypes() && endPointBus->getAbstractionTypes()->size() > 0)
@@ -775,6 +777,7 @@ void EndPointPortMapCommand::undo()
 {
     if (endpoint_->isBus())
     {
+        component_->getBusInterfaces()->removeOne(endpoint_->getBusInterface());
         abstraction_->getPortMaps()->clear();
         foreach (QSharedPointer<PortMap> oldMap, oldPortMaps_)
         {
@@ -792,6 +795,11 @@ void EndPointPortMapCommand::redo()
 {
     if (endpoint_->isBus())
     {
+        if (!component_->getBusInterfaces()->contains(endpoint_->getBusInterface()))
+        {
+            component_->getBusInterfaces()->append(endpoint_->getBusInterface());
+        }
+
         abstraction_->getPortMaps()->clear();
         foreach (QSharedPointer<PortMap> newMap, newPortMaps_)
         {
