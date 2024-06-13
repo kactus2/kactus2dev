@@ -726,7 +726,7 @@ private:
      *
      *      @param [in] presence    The selected presence.
      */
-    void createPortMapsWithPresence(PresenceTypes::Presence presence);
+    void createPortMapsWithPresence(int presence);
 
     /*!
      *  Check if a port map exists for the selected signal.

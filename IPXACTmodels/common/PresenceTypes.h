@@ -24,11 +24,11 @@ namespace PresenceTypes
     */
 	enum Presence
 	{
-		ILLEGAL = 0,
-		OPTIONAL,
-		REQUIRED,
-		UNKNOWN,
-        ALL
+		ILLEGAL = 1,
+		OPTIONAL = 2,
+		REQUIRED = 4,
+		UNKNOWN = 8,
+        ALL = 16
     };
 
     /*! Convert the value of the QString into enum Presence
