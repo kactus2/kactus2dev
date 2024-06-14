@@ -242,6 +242,8 @@ public:
      */
     bool isApi() const noexcept override;
 
+    virtual ConnectionEndpoint* getParentConnector() const;
+
 protected:
 
     /*!

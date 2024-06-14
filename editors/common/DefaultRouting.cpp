@@ -17,6 +17,10 @@
 QList<QPointF> DefaultRouting::createRoute(QPointF const& p1, QPointF const& p2, 
     QVector2D const& dir1, QVector2D const& dir2)
 {
+    // If any of directions has x,y = (0,0), then the function 
+    // will stuck in the while loop (which means freeze and subsequent crash of the program.
+    Q_ASSERT(!dir1.isNull() || !dir2.isNull());
+
     // Add the start position to the list of path points.
     QList<QPointF> points;
     points.append(p1);

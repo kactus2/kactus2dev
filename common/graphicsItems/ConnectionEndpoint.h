@@ -181,7 +181,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	QVector2D getDirection() const;
+	virtual QVector2D getDirection() const;
 
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
@@ -264,7 +264,9 @@ public:
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
      */
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector() const;
+
+    virtual ConnectionEndpoint* getParentConnector() const;
 
     /*!
      *  Returns true if the endpoint represents a hierarchical connection.

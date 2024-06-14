@@ -22,6 +22,7 @@
 
 #include <QGraphicsScene>
 #include <QPen>
+#include "editors/HWDesign/OffPageConnectorItem.h"
 
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::ConnectionEndpoint()
@@ -170,7 +171,10 @@ bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
         return false;
     }
 
-    return isConnectionValid(other);
+    // ConnectionEndpoint:: is crucial, becuse omitting it leads to isConnectionValid using wrong "this" value;
+    // as an example, if ConnectionEndpoint is of type OffPageConnectorItem, the isConnectionValid will be called on
+    // parent connector, so not off page connection will be checked, but its parent connector.
+    return ConnectionEndpoint::isConnectionValid(other);
 }
 
 //-----------------------------------------------------------------------------
@@ -306,7 +310,12 @@ ConnectionEndpoint::EndpointType ConnectionEndpoint::getType() const noexcept
 //-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getOffPageConnector()
 //-----------------------------------------------------------------------------
-ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector()
+ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector() const
+{
+    return nullptr;
+}
+
+ConnectionEndpoint* ConnectionEndpoint::getParentConnector() const
 {
     return nullptr;
 }
@@ -369,6 +378,94 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
         {
             return connection->endpoint1() == this || connection->endpoint2() == this;
         });
+    //auto s = other->name();
+    //auto k = name();
+    //if (this->getOffPageConnector()) {
+    //    Q_ASSERT(true);
+    //}
+    //if (this->getParentConnector()) {
+    //    Q_ASSERT(true);
+    //}
+    //for (int i = 0; i < connections_.size(); i++)
+    //{
+    //    if (connections_.at(i)->endpoint1() == this)
+    //    {
+    //        if (connections_.at(i)->endpoint2()==other|| 
+    //            connections_.at(i)->endpoint2() == other->getOffPageConnector()||
+    //            connections_.at(i)->endpoint2() == other->getParentConnector())
+    //        {
+    //            return false;
+    //        }
+    //    }
+    //    if (connections_.at(i)->endpoint2() == this)
+    //    {
+    //        if (connections_.at(i)->endpoint1() == other ||
+    //            connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
+    //            connections_.at(i)->endpoint1() == other->getParentConnector())
+    //        {
+    //            return false;
+    //        }
+    //    }
+    //    else 
+    //    {
+    //        Q_ASSERT(true);
+    //    }
+    //}
+    //if (this->getOffPageConnector()) {
+    //    for (int i = 0; i < this->getOffPageConnector()->connections_.size(); i++)
+    //    {
+    //        if (this->getOffPageConnector()->connections_.at(i)->endpoint1() == this)
+    //        {
+    //            if (this->getOffPageConnector()->connections_.at(i)->endpoint2() == other ||
+    //                this->getOffPageConnector()->connections_.at(i)->endpoint2() == other->getOffPageConnector() ||
+    //                this->getOffPageConnector()->connections_.at(i)->endpoint2() == other->getParentConnector())
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        if (this->getOffPageConnector()->connections_.at(i)->endpoint2() == this)
+    //        {
+    //            if (this->getOffPageConnector()->connections_.at(i)->endpoint1() == other ||
+    //                this->getOffPageConnector()->connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
+    //                this->getOffPageConnector()->connections_.at(i)->endpoint1() == other->getParentConnector())
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Q_ASSERT(true);
+    //        }
+    //    }
+    //}
+    //if (this->getParentConnector()) {
+    //    for (int i = 0; i < this->getParentConnector()->connections_.size(); i++)
+    //    {
+    //        if (this->getParentConnector()->connections_.at(i)->endpoint1() == this)
+    //        {
+    //            if (this->getParentConnector()->connections_.at(i)->endpoint2() == other ||
+    //                this->getParentConnector()->connections_.at(i)->endpoint2() == other->getOffPageConnector() ||
+    //                this->getParentConnector()->connections_.at(i)->endpoint2() == other->getParentConnector())
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        if (this->getParentConnector()->connections_.at(i)->endpoint2() == this)
+    //        {
+    //            if (this->getParentConnector()->connections_.at(i)->endpoint1() == other ||
+    //                this->getParentConnector()->connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
+    //                this->getParentConnector()->connections_.at(i)->endpoint1() == other->getParentConnector())
+    //            {
+    //                return false;
+    //            }
+    //        }
+    //        else
+    //        {
+    //            Q_ASSERT(true);
+    //        }
+    //    }
+    //}
+    return true;
 }
 
 //-----------------------------------------------------------------------------

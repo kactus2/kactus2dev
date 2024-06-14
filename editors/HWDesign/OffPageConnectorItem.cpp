@@ -306,3 +306,8 @@ bool OffPageConnectorItem::isApi() const noexcept
 {
     return parent_->isApi();
 }
+
+ConnectionEndpoint* OffPageConnectorItem::getParentConnector() const
+{
+    return parent_;
+}

@@ -1054,6 +1054,7 @@ void ComponentDesignDiagram::highlightConnectableEndpoints()
             endpoint->setHighlight(ConnectionEndpoint::HIGHLIGHT_ALLOWED);
             tempPotentialEndingEndPoints_.append(endpoint);
         }
+
     }
 }
 
@@ -1061,10 +1062,69 @@ void ComponentDesignDiagram::highlightConnectableEndpoints()
 // Function: ComponentDesignDiagram::isPossibleEndpointForCurrentConnection()
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::isPossibleEndpointForCurrentConnection(ConnectionEndpoint* endpoint) const
-{
+{  
+    if (endpoint == connectionStartPoint_)
+    {
+        Q_ASSERT(true);
+    }
+    if (endpoint->getOffPageConnector() == connectionStartPoint_)
+    {
+        Q_ASSERT(true);
+    }
+
+
+    if (!(endpoint != nullptr && endpoint->isVisible() && endpoint != connectionStartPoint_ &&
+        endpoint->getOffPageConnector() != connectionStartPoint_))
+    {
+        return false;
+    }
+    if (!(endpoint->canConnect(connectionStartPoint_) && connectionStartPoint_->canConnect(endpoint)))
+    {
+        return false;
+    }
+    /*ConnectionEndpoint* startPointOffPage = connectionStartPoint_->getOffPageConnector();
+    ConnectionEndpoint* endPointOffPage = endpoint->getOffPageConnector();
+    ConnectionEndpoint* startPointParent = connectionStartPoint_->getParentConnector();
+    ConnectionEndpoint* endPointParent = endpoint->getParentConnector();
+    if (startPointOffPage&&!endPointOffPage)
+    {
+        return  true;
+    }
+    if (startPointParent&&)
+    {
+    }
+    if (!startPointOffPage && endPointOffPage)
+    {
+        return connectionStartPoint_->canConnect(endPointOffPage) && endPointOffPage->canConnect(connectionStartPoint_);
+    }
     return endpoint != nullptr && endpoint->isVisible() && endpoint != connectionStartPoint_ &&
         endpoint->getOffPageConnector() != connectionStartPoint_ &&
-        endpoint->canConnect(connectionStartPoint_) && connectionStartPoint_->canConnect(endpoint);
+        endpoint->canConnect(connectionStartPoint_) && connectionStartPoint_->canConnect(endpoint) 
+        &&
+        (
+            (!(endPointOffPage && !startPointParent && startPointOffPage) ||
+            (
+                startPointOffPage->canConnect(endPointOffPage)&& endPointOffPage->canConnect(startPointOffPage)
+            ))
+            &&
+            (!(startPointParent && !endPointParent) ||
+            (
+                startPointParent->canConnect(endpoint) && endpoint->canConnect(startPointParent)
+            ))
+        ) 
+        &&
+        (
+            (!endpoint->getParentConnector() ||
+            (
+                endpoint->getParentConnector()->canConnect(connectionStartPoint_) && connectionStartPoint_->canConnect(endpoint->getParentConnector())
+            ))
+            &&
+            (!connectionStartPoint_->getParentConnector() ||
+            (
+                connectionStartPoint_->getParentConnector()->canConnect(endpoint) && endpoint->canConnect(connectionStartPoint_->getParentConnector())
+            ))
+        );*/
+    return true;
 }
 
 //-----------------------------------------------------------------------------
