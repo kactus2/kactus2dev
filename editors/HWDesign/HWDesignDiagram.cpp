@@ -1439,6 +1439,9 @@ QUndoCommand* HWDesignDiagram::createAddCommandForConnection(GraphicsConnection*
                 connectionCommand->undo();
                 return nullptr;
             }
+
+            // Set correct name for interconnection, replacing old draft interface name
+            hwConnection->getInterconnection()->setName(hwConnection->createDefaultName());
         }
                         
         return connectionCommand;
