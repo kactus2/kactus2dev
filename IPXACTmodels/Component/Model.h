@@ -210,6 +210,20 @@ public:
      */
     bool hasPort(QString const& name) const;
 
+    /*!
+     *  Check if the model has wire ports.
+     *
+     *      @return True, if wire ports are found, false otherwise.
+     */
+    bool hasWires() const;
+    
+    /*!
+     *  Check if the model has transactional ports.
+     *
+     *      @return True, if transactional ports are found, false otherwise.
+     */
+    bool hasTransactionals() const;
+
 	/*!
      *  Get names of the ports in this model.
 	 *

@@ -103,6 +103,16 @@ ItemEditor* WirePortsItem::editor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: WirePortsItem::getFont()
+//-----------------------------------------------------------------------------
+QFont WirePortsItem::getFont() const
+{
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(component_->hasWires());
+    return font;
+}
+
+//-----------------------------------------------------------------------------
 // Function: WirePortsItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString WirePortsItem::getTooltip() const

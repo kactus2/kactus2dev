@@ -855,6 +855,20 @@ public:
 	 *      @return bool True if ports exist.
 	 */
 	bool hasPorts() const;
+	
+	/*!
+	 *	Checks if the component has wire ports.
+	 *  
+	 * 	    @return True if wire ports exist.
+	 */
+	bool hasWires() const;
+
+	/*!
+	 *	Checks if the component has transactional ports.
+	 *  
+	 * 	    @return True if transactional ports exist.
+	 */
+	bool hasTransactionals() const;
 
 	/*!
      *  Get the names of the address spaces stored in this component.

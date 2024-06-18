@@ -294,6 +294,28 @@ bool Model::hasPort(QString const& name) const
 }
 
 //-----------------------------------------------------------------------------
+// Function: Model::hasWires()
+//-----------------------------------------------------------------------------
+bool Model::hasWires() const
+{
+    return std::any_of(ports_->cbegin(), ports_->cend(), [](QSharedPointer<Port> port)
+        {
+            return port->getWire();
+        });
+}
+
+//-----------------------------------------------------------------------------
+// Function: Model::hasTransactionals()
+//-----------------------------------------------------------------------------
+bool Model::hasTransactionals() const
+{
+    return std::any_of(ports_->cbegin(), ports_->cend(), [](QSharedPointer<Port> port)
+        {
+            return port->getTransactional();
+        });
+}
+
+//-----------------------------------------------------------------------------
 // Function: Model::getPortNames()
 //-----------------------------------------------------------------------------
 QStringList Model::getPortNames() const

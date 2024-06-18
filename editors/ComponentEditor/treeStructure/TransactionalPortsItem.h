@@ -84,6 +84,14 @@ public:
 	 *      @return The editor to use for this item.
 	 */
 	ItemEditor* editor() final;
+   
+	/*! 
+	 *  Get the font to be used for text of this item.
+	 *	The font is bold, if transactional ports exist, otherwise regular.
+	 *
+	 *      @return QFont instance that defines the font to be used.
+	 */
+	QFont getFont() const final;
 
 signals:
 

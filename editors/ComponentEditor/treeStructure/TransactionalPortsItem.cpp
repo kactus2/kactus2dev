@@ -104,6 +104,16 @@ ItemEditor* TransactionalPortsItem::editor()
 }
 
 //-----------------------------------------------------------------------------
+// Function: TransactionalPortsItem::getFont()
+//-----------------------------------------------------------------------------
+QFont TransactionalPortsItem::getFont() const
+{
+    QFont font(ComponentEditorItem::getFont());
+    font.setBold(component_->hasTransactionals());
+    return font;
+}
+
+//-----------------------------------------------------------------------------
 // Function: TransactionalPortsItem::getTooltip()
 //-----------------------------------------------------------------------------
 QString TransactionalPortsItem::getTooltip() const
