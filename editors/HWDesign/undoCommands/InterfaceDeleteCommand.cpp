@@ -93,12 +93,16 @@ void InterfaceDeleteCommand::undo()
     del_ = false;
 
     // Redefine the interface.
-    if (busIf_ != 0)
+    if (busIf_ != nullptr && !interface_->getOwnerComponent()->hasInterface(busIf_->name()))
     {
         interface_->getOwnerComponent()->getBusInterfaces()->append(busIf_);
         interface_->setBusInterface(busIf_);
         interface_->updateInterface();
 
+        diagram_->getDesign()->getVendorExtensions()->append(interface_->getDataExtension());
+    }
+    else if (interface_->getOwnerComponent()->hasInterface(busIf_->name()))
+    {
         diagram_->getDesign()->getVendorExtensions()->append(interface_->getDataExtension());
     }
 
