@@ -884,6 +884,137 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
 }
 
 //-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadChangesFromSibling()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadChangesFromRelatedTab()
+{
+    // Load updated component from disk
+    if (auto libraryComponent = getLibraryInterface()->getModelReadOnly<Component>(getEditedComponent()->getVlnv()))
+    {
+        loadBusInterfaceChanges(libraryComponent);
+        loadPortChanges(libraryComponent);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadBusInterfaceChanges()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadBusInterfaceChanges(QSharedPointer<Component const> libraryComponent)
+{
+    auto design = getDiagram()->getDesign();
+    auto designComponentInterfaces = QList<QSharedPointer<BusInterface> >(*getEditedComponent()->getBusInterfaces());
+    auto libraryComponentInterfaces = QList<QSharedPointer<BusInterface> >(*libraryComponent->getBusInterfaces());
+
+    // First check for added interfaces
+    for (auto const& compBusif : libraryComponentInterfaces)
+    {
+        // Replace if found with same name
+        if (auto foundInterface = Search::findByName(compBusif->name(), designComponentInterfaces))
+        {
+            designComponentInterfaces.removeOne(foundInterface);
+        }
+
+        designComponentInterfaces.append(compBusif);
+    }
+
+    // Remove deleted interfaces (aka if interface exists in design component but not in component loaded from disk)
+    for (auto designComponentInterfaceIt = designComponentInterfaces.begin(); designComponentInterfaceIt != designComponentInterfaces.end();)
+    {
+        if (auto foundInterface = Search::findByName((*designComponentInterfaceIt)->name(), libraryComponentInterfaces);
+            foundInterface == nullptr)
+        {
+            // Remove connections and routes from design, if interface had no connections
+            auto hwDiagram = static_cast<HWDesignDiagram*>(getDiagram());
+            if (auto endpointItem = hwDiagram->getHierarchicalInterface((*designComponentInterfaceIt)->name()))
+            {
+                auto busItem = static_cast<HierarchicalBusInterfaceItem*>(endpointItem);
+
+                if (auto const& connections = busItem->getConnections(); connections.isEmpty())
+                {
+                    design->removeInterfaceGraphicsData((*designComponentInterfaceIt)->name());
+                    for (auto const& connection : busItem->getConnections())
+                    {
+                        auto interconnectionItem = static_cast<HWConnection*>(connection);
+                        design->removeRoute(interconnectionItem->getRouteExtension());
+                        design->getInterconnections()->removeOne(interconnectionItem->getInterconnection());
+                    }
+                }
+            }
+
+            designComponentInterfaceIt = designComponentInterfaces.erase(designComponentInterfaceIt);
+        }
+        else
+        {
+            ++designComponentInterfaceIt;
+        }
+    }
+
+    QSharedPointer<QList<QSharedPointer<BusInterface> > >newBuses(new QList(designComponentInterfaces));
+    getEditedComponent()->setBusInterfaces(newBuses);
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignWidget::loadPortChanges()
+//-----------------------------------------------------------------------------
+void HWDesignWidget::loadPortChanges(QSharedPointer<Component const> libraryComponent)
+{
+    auto design = getDiagram()->getDesign();
+    auto designComponentPorts = QList<QSharedPointer<Port> >(*getEditedComponent()->getPorts());
+    auto libraryComponentPorts = QList<QSharedPointer<Port> >(*libraryComponent->getPorts());
+
+    // First check for added ports
+    for (auto const& compPort : libraryComponentPorts)
+    {
+        // Replace if found with same name
+        if (auto foundPort = Search::findByName(compPort->name(), designComponentPorts))
+        {
+            designComponentPorts.removeOne(foundPort);
+        }
+
+        designComponentPorts.append(compPort);
+    }
+
+    // Remove deleted ports (aka if port exists in deisgn component but not in component loaded from disk)
+    for (auto designComponentPortIt = designComponentPorts.begin(); designComponentPortIt != designComponentPorts.end();)
+    {
+        if (auto foundPort = Search::findByName((*designComponentPortIt)->name(), libraryComponentPorts);
+            foundPort == nullptr)
+        {
+            // Remove from design
+            auto adHocVisibilities = getDiagram()->getDesign()->getAdHocPortPositions().dynamicCast<Kactus2Group>();
+            for (auto const& adHocVisibility : adHocVisibilities->getByType("kactus2:adHocVisible"))
+            {
+                if (adHocVisibility.dynamicCast<Kactus2Placeholder>()->getAttributeValue("portName") == (*designComponentPortIt)->name())
+                {
+                    adHocVisibilities->removeFromGroup(adHocVisibility);
+                    break;
+                }
+            }
+
+            // Remove connections and routes
+            if (auto portItem = getDiagram()->getDiagramAdHocPort((*designComponentPortIt)->name()))
+            {
+                for (auto const& connection : portItem->getConnections())
+                {
+                    auto adHocConnection = static_cast<AdHocConnectionItem*>(connection);
+                    getDiagram()->getDesign()->removeRoute(adHocConnection->getRouteExtension());
+                    getDiagram()->getDesign()->getAdHocConnections()->removeOne(adHocConnection->getInterconnection());
+                }
+            }
+
+            designComponentPortIt = designComponentPorts.erase(designComponentPortIt);
+        }
+        else
+        {
+            ++designComponentPortIt;
+        }
+    }
+
+    QSharedPointer<QList<QSharedPointer<Port> > >newPortsQ(new QList(designComponentPorts));
+    getEditedComponent()->setPorts(newPortsQ);
+}
+
+//-----------------------------------------------------------------------------
 // Function: HWDesignWidget::addColumn()
 //-----------------------------------------------------------------------------
 void HWDesignWidget::addColumn()

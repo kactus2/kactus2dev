@@ -269,6 +269,14 @@ bool TabDocument::askSaveFile() const {
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::loadChangesFromSibling()
+//-----------------------------------------------------------------------------
+void TabDocument::loadChangesFromRelatedTab()
+{
+    // Implementation left for derived classes, if needed
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::updateTabTitle()
 //-----------------------------------------------------------------------------
 void TabDocument::updateTabTitle()
@@ -454,6 +462,7 @@ void TabDocument::handleRefreshRequest()
 
         if (msgBox.exec() == QMessageBox::Yes)
         {
+            loadChangesFromRelatedTab();
             save();
             refresh();
         }

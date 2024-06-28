@@ -246,10 +246,12 @@ void HWDesignDiagram::updateHierComponent()
     for (QGraphicsItem *item : items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
-        auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item);
-        if (diagIf != nullptr && diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
+        if (auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item))
         {
-			busIfs.append(diagIf->getBusInterface());
+            if (diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
+            {
+			    busIfs.append(diagIf->getBusInterface());
+            }
         }
     }
 
@@ -258,19 +260,36 @@ void HWDesignDiagram::updateHierComponent()
     // Add any new interfaces in the component.
     for (auto diagramInterface : busIfs)
     {
-        if (componentInterfaces->contains(diagramInterface) == false)
+        bool busExists = std::find_if(componentInterfaces->cbegin(), componentInterfaces->cend(), [&diagramInterface](auto componentBusIf)
+            {
+                return componentBusIf->name() == diagramInterface->name();
+            }) != componentInterfaces->cend();
+
+        if (!busExists)
         {
             componentInterfaces->append(diagramInterface);
         }
     }
 
+    QList<QSharedPointer<BusInterface> > toRemove;
+
     // Remove interfaces deleted in the design from the component.
     for (auto componentInterface : *componentInterfaces)
     {
-        if (busIfs.contains(componentInterface) == false)
+        bool busExists = std::find_if(busIfs.cbegin(), busIfs.cend(), [&componentInterface](auto diagramInterface)
+            {
+                return componentInterface->name() == diagramInterface->name();
+            }) != busIfs.cend();
+
+        if (!busExists)
         {
-            componentInterfaces->removeAll(componentInterface);
+            toRemove.append(componentInterface);
         }
+    }
+
+    for (auto interfaceToRemove : toRemove)
+    {
+        componentInterfaces->removeAll(interfaceToRemove);
     }
 }
 
@@ -366,6 +385,23 @@ HWConnectionEndpoint* HWDesignDiagram::getDiagramAdHocPort(QString const& portNa
     {
         if (item->type() == HierarchicalPortItem::Type &&
             static_cast<HierarchicalPortItem*>(item)->name().compare(portName) == 0)
+        {
+            return static_cast<HWConnectionEndpoint*>(item);
+        }
+    }
+
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getHierarchicalInterface()
+//-----------------------------------------------------------------------------
+HWConnectionEndpoint* HWDesignDiagram::getHierarchicalInterface(QString const& busRef) const
+{
+    for (QGraphicsItem* item : items())
+    {
+        if (item->type() == HierarchicalBusInterfaceItem::Type &&
+            static_cast<HierarchicalBusInterfaceItem*>(item)->name().compare(busRef) == 0)
         {
             return static_cast<HWConnectionEndpoint*>(item);
         }
@@ -2308,8 +2344,24 @@ ConnectionEndpoint* HWDesignDiagram::findOrCreateHierarchicalInterface(QString c
         busIf = QSharedPointer<BusInterface>(new BusInterface());
         busIf->setName(busRef);
 
-        QSharedPointer<InterfaceGraphicsData> dataGroup(new InterfaceGraphicsData(busIf->name()));
-        getDesign()->getVendorExtensions()->append(dataGroup);
+        // Check if there already is data for interface with this name (interface was deleted or renamed)
+        auto designInterfaceGraphicsData = getDesign()->getInterfaceGraphicsData();
+        auto interfaceGraphicsDataIter = std::find_if(designInterfaceGraphicsData.cbegin(), designInterfaceGraphicsData.cend(),
+            [&busIf](QSharedPointer<InterfaceGraphicsData> graphicsData)
+            {
+                return graphicsData->getName() == busIf->name();
+            });
+
+        QSharedPointer<InterfaceGraphicsData> dataGroup;
+        if (interfaceGraphicsDataIter != designInterfaceGraphicsData.cend())
+        {
+            dataGroup = *interfaceGraphicsDataIter;
+        }
+        else
+        {
+            dataGroup = QSharedPointer<InterfaceGraphicsData>(new InterfaceGraphicsData(busIf->name()));
+            getDesign()->getVendorExtensions()->append(dataGroup);
+        }
 
         auto hierarchicalInterface = new HierarchicalBusInterfaceItem(getEditedComponent(), busIf, dataGroup, nullptr);
         hierarchicalInterface->setTemporary(true);

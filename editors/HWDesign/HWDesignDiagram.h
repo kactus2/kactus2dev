@@ -238,6 +238,16 @@ public:
      */
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
+    /*!
+     *	Returns the bus interface item of the corresponding design component bus interface with the given name 
+     *  or nullptr if not found.
+     *  
+     *      @param [in] busRef     The interface name.
+     *	    
+     * 	    @return The hierarchical bus interface item found or null.
+     */
+    HWConnectionEndpoint* getHierarchicalInterface(QString const& busRef) const;
+
 public slots:
 
 	/*!

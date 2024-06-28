@@ -205,6 +205,25 @@ private:
     void updateFiles(QSharedPointer<Component> topComponent, QString const& sourcePath,
         QString const& targetPath) const;
 
+    /*!
+     *	Load changes made in component editor to be applied to design before refresh and save.
+     */
+    void loadChangesFromRelatedTab() override;
+
+    /*!
+     *	Load bus interface changes made in the component editor. Checks for removed and added bus interfaces.
+     *  
+     *      @param [in] libraryComponent     The component loaded from disk.
+     */
+    void loadBusInterfaceChanges(QSharedPointer<Component const> libraryComponent);
+
+    /*!
+     *	Load adhoc port changes made in the component editor. Checks for removed and added ports.
+     *
+     *      @param [in] libraryComponent     The component loaded from disk.
+     */
+    void loadPortChanges(QSharedPointer<Component const> libraryComponent);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------

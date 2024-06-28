@@ -375,6 +375,12 @@ private:
     TabDocument& operator=(TabDocument const& rhs);
 
     /*!
+     *	Load changes made in related tabs. Reimplement to load editor/tab-specific changes. 
+     *  Reimplementations should only load changes that can't cause conflicts.
+     */
+    virtual void loadChangesFromRelatedTab();
+
+    /*!
      *  Updates the tab title.
      */
     void updateTabTitle();

@@ -117,6 +117,8 @@ public:
      */
     QSharedPointer<Port> getPort() const override;
 
+    void setPort(QSharedPointer<Port> newPort);
+
     /*!
      *  Check if the end point is an ad hoc port.
      *
