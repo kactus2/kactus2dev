@@ -769,35 +769,43 @@ void EditableTableView::onCSVImport(const QString& filePath)
 	Q_ASSERT(targetModel);
 
 	int columnCount = targetModel->columnCount(QModelIndex());
+    QList<QStringList> rowsToBeAdded;
 
-	while (!stream.atEnd())
+    // Validate csv first
+    while (!stream.atEnd())
     {
-		QString line = stream.readLine();
-        while (line.count(QLatin1Char(';')) < columnCount && !stream.atEnd())
+        QString line = stream.readLine();
+        QStringList items = line.split(";");
+
+        if (items.size() != columnCount)
         {
-            line.append(QStringLiteral("\n"));
-            line.append(stream.readLine());
+            QMessageBox::critical(this, tr("Error importing file"), tr("Could not import '%1': invalid formatting").arg(target));
+            file.close();
+            QApplication::restoreOverrideCursor();
+            return;
         }
 
-		QStringList items = line.split(";");
+        rowsToBeAdded.append(items);
+    }
+    
+    // Add data if csv was valid
+    for (auto const& row : rowsToBeAdded)
+    {
+        emit addItem(QModelIndex());
+        int rowCount = targetModel->rowCount(QModelIndex());
 
-        // add a new empty row
-        // data is always added to the last row
-		emit addItem(QModelIndex());
-		int rowCount = targetModel->rowCount(QModelIndex());
-
-		for (int column = 0; column < columnCount && column < items.size(); ++column)
+        for (int column = 0; column < columnCount; ++column)
         {
-            QString item = items.at(column);
+            QString item = row.at(column);
             if (item.startsWith(QLatin1Char('"')) && item.endsWith(QLatin1Char('"')))
             {
                 item = item.mid(1, item.length() - 2);
             }
 
-			QModelIndex index = targetModel->index(rowCount - 1, column, QModelIndex());
-			targetModel->setData(index, item, Qt::EditRole);
-		}
-	}
+            QModelIndex index = targetModel->index(rowCount - 1, column, QModelIndex());
+            targetModel->setData(index, item, Qt::EditRole);
+        }
+    }
 
 	file.close();
 
