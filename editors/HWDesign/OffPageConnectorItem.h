@@ -242,6 +242,11 @@ public:
      */
     bool isApi() const noexcept override;
 
+    /*!
+     *  Returns the corresponding parent connector.
+     *
+     *      @return     The parent connector.
+     */
     virtual ConnectionEndpoint* getParentConnector() const;
 
 protected:

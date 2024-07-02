@@ -315,6 +315,9 @@ ConnectionEndpoint* ConnectionEndpoint::getOffPageConnector() const
     return nullptr;
 }
 
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::getParentConnector()
+//-----------------------------------------------------------------------------
 ConnectionEndpoint* ConnectionEndpoint::getParentConnector() const
 {
     return nullptr;
@@ -373,99 +376,38 @@ bool ConnectionEndpoint::isConnectionValid(ConnectionEndpoint const* other) cons
     }
 
     // Prevent double connections
-    return std::none_of(other->getConnections().cbegin(), other->getConnections().cend(),
-        [this](GraphicsConnection const* connection)
+    ConnectionEndpoint* thisOffPage = this->getOffPageConnector();
+    ConnectionEndpoint* otherOffPage = other->getOffPageConnector();
+    ConnectionEndpoint* thisParent = this->getParentConnector();
+    ConnectionEndpoint* otherParent = other->getParentConnector();
+
+    // All possible combinations are handled below.
+    if (!other->isOffPage())
+    {
+        if (!this->isOffPage())
         {
-            return connection->endpoint1() == this || connection->endpoint2() == this;
-        });
-    //auto s = other->name();
-    //auto k = name();
-    //if (this->getOffPageConnector()) {
-    //    Q_ASSERT(true);
-    //}
-    //if (this->getParentConnector()) {
-    //    Q_ASSERT(true);
-    //}
-    //for (int i = 0; i < connections_.size(); i++)
-    //{
-    //    if (connections_.at(i)->endpoint1() == this)
-    //    {
-    //        if (connections_.at(i)->endpoint2()==other|| 
-    //            connections_.at(i)->endpoint2() == other->getOffPageConnector()||
-    //            connections_.at(i)->endpoint2() == other->getParentConnector())
-    //        {
-    //            return false;
-    //        }
-    //    }
-    //    if (connections_.at(i)->endpoint2() == this)
-    //    {
-    //        if (connections_.at(i)->endpoint1() == other ||
-    //            connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
-    //            connections_.at(i)->endpoint1() == other->getParentConnector())
-    //        {
-    //            return false;
-    //        }
-    //    }
-    //    else 
-    //    {
-    //        Q_ASSERT(true);
-    //    }
-    //}
-    //if (this->getOffPageConnector()) {
-    //    for (int i = 0; i < this->getOffPageConnector()->connections_.size(); i++)
-    //    {
-    //        if (this->getOffPageConnector()->connections_.at(i)->endpoint1() == this)
-    //        {
-    //            if (this->getOffPageConnector()->connections_.at(i)->endpoint2() == other ||
-    //                this->getOffPageConnector()->connections_.at(i)->endpoint2() == other->getOffPageConnector() ||
-    //                this->getOffPageConnector()->connections_.at(i)->endpoint2() == other->getParentConnector())
-    //            {
-    //                return false;
-    //            }
-    //        }
-    //        if (this->getOffPageConnector()->connections_.at(i)->endpoint2() == this)
-    //        {
-    //            if (this->getOffPageConnector()->connections_.at(i)->endpoint1() == other ||
-    //                this->getOffPageConnector()->connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
-    //                this->getOffPageConnector()->connections_.at(i)->endpoint1() == other->getParentConnector())
-    //            {
-    //                return false;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Q_ASSERT(true);
-    //        }
-    //    }
-    //}
-    //if (this->getParentConnector()) {
-    //    for (int i = 0; i < this->getParentConnector()->connections_.size(); i++)
-    //    {
-    //        if (this->getParentConnector()->connections_.at(i)->endpoint1() == this)
-    //        {
-    //            if (this->getParentConnector()->connections_.at(i)->endpoint2() == other ||
-    //                this->getParentConnector()->connections_.at(i)->endpoint2() == other->getOffPageConnector() ||
-    //                this->getParentConnector()->connections_.at(i)->endpoint2() == other->getParentConnector())
-    //            {
-    //                return false;
-    //            }
-    //        }
-    //        if (this->getParentConnector()->connections_.at(i)->endpoint2() == this)
-    //        {
-    //            if (this->getParentConnector()->connections_.at(i)->endpoint1() == other ||
-    //                this->getParentConnector()->connections_.at(i)->endpoint1() == other->getOffPageConnector() ||
-    //                this->getParentConnector()->connections_.at(i)->endpoint1() == other->getParentConnector())
-    //            {
-    //                return false;
-    //            }
-    //        }
-    //        else
-    //        {
-    //            Q_ASSERT(true);
-    //        }
-    //    }
-    //}
-    return true;
+            return !(isConnectionBetweenPointsExist(other)||
+                (thisOffPage && otherOffPage && thisOffPage->isConnectionBetweenPointsExist(otherOffPage)));
+        }
+        else 
+        {
+            return !((otherOffPage && isConnectionBetweenPointsExist(otherOffPage) ||
+                thisParent->isConnectionBetweenPointsExist(other)));
+        }
+    }
+    else 
+    {
+        if (!this->isOffPage())
+        {
+            return !(isConnectionBetweenPointsExist(otherParent) ||
+                (thisOffPage && thisOffPage->isConnectionBetweenPointsExist(other)));
+        }
+        else
+        {
+            return !(isConnectionBetweenPointsExist(other) ||
+                (thisParent->isConnectionBetweenPointsExist(otherParent)));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -525,6 +467,18 @@ void ConnectionEndpoint::endUpdateConnectionNames()
 }
 
 //-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isConnectionBetweenPointsExist()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const
+{
+    return std::any_of(other->getConnections().cbegin(), other->getConnections().cend(),
+        [this](GraphicsConnection const* connection)
+        {
+            return connection->endpoint1() == this || connection->endpoint2() == this;
+        });
+}
+
+//-----------------------------------------------------------------------------
 // Function: ConnectionEndpoint::getInterfaceMode()
 //-----------------------------------------------------------------------------
 General::InterfaceMode ConnectionEndpoint::getInterfaceMode() const
@@ -546,4 +500,12 @@ qreal ConnectionEndpoint::getNameLength()
 void ConnectionEndpoint::shortenNameLabel( qreal /*width */)
 {
     // Intentionally empty.
+}
+
+//-----------------------------------------------------------------------------
+// Function: ConnectionEndpoint::isOffPage()
+//-----------------------------------------------------------------------------
+bool ConnectionEndpoint::isOffPage() const
+{
+    return type() == OffPageConnectorItem::Type;
 }
