@@ -709,11 +709,10 @@ void DockWidgetHandler::updateWindowAndControlVisibility(QWidget* currentTabWidg
 
     bool allowedToShow = isSupportedWindowType(currentTabWidget, windowType);
     bool wantedToShow = visibilities_.value(windowType);
-    bool selected = showAction->isChecked();
 
     visibilityControls_[windowType]->setVisible(allowedToShow);
     showAction->setVisible(allowedToShow && wantedToShow);
-    showAction->setChecked(selected && allowedToShow && wantedToShow);
+    showAction->setChecked(allowedToShow && wantedToShow);
 }
 
 //-----------------------------------------------------------------------------
