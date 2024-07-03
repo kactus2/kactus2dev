@@ -1100,8 +1100,8 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
 
             discardConnection();
 
-            GraphicsConnection* newTempConnection = createConnection(connectionStartPoint_, endpoint);
-
+            GraphicsConnection* newTempConnection = createConnection(connectionStartPoint_, endpoint, true);
+            
             addItem(newTempConnection);
             tempConnection_ = newTempConnection;
         }

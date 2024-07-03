@@ -453,10 +453,11 @@ private:
      *
      *      @param [in] startPoint  The starting connection end point.
      *      @param [in] endPoint    The ending connection end point.
+     *      @param [in] isOffPage   Doesn't do anything in SystemDesignDiagram and is present because of inheritance
      *
      *      @return The created connection.
      */
-    virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+    virtual  GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint, bool isOffPage = false);
 
     /*!
      *  Create an interface for an end point.

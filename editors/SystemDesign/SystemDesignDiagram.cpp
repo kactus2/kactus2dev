@@ -2034,7 +2034,7 @@ void SystemDesignDiagram::importDesign(QSharedPointer<Design> design, IGraphicsI
 // Function: SystemDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
 GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* startPoint, 
-    ConnectionEndpoint* endPoint)
+    ConnectionEndpoint* endPoint, bool /*isOffPage*/)
 {
     QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
 
