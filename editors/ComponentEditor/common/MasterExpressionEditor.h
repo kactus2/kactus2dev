@@ -418,9 +418,11 @@ private:
     bool keyMovesCursor(QKeyEvent* keyEvent) const;
 
     /*!
-     *  Removes the current selection in the underlying expression.
+     *  Replaces the current selection in the underlying expression with whatever was typed.
+     *      
+     *      @param [in] keyEvent    The event to check.
      */
-    void removeSelectionInExpression();
+    void replaceSelectionInExpression(QKeyEvent* keyEvent);
 
     /*!
      *  Replaces the references in the underlying expression with the referenced names.
