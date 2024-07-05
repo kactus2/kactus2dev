@@ -40,7 +40,7 @@ absDefGroup_(revision, absDef, libHandler, createPortAbstractionInterface(), cre
 expressionParser_(new SystemVerilogExpressionParser()),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
-    setDocumentType(tr("Abstration Definition"));
+    setDocumentType(DocumentType(DocumentTypes::ABSTRACTION_DEFINITION));
 
     if (absDef_)
     {

@@ -94,7 +94,7 @@ public slots:
      *      @param [in] vlnv           The VLNV of the top-level component.
      *      @param [in] viewName       The name of the view to open.
      */
-    void openDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString());
+    void openHWDesign(VLNV const& vlnv = VLNV(), QString const& viewName = QString());
 
     /*!
      *  Opens the memory design of the current HW design.
@@ -628,7 +628,7 @@ private:
 	 * 
 	 *      @return True if the document was already open.
 	 */
-	bool isOpen(const VLNV& vlnv) const;
+	bool isOpen(const VLNV& vlnv, TabDocument::DocumentType const& type) const;
 
 	/*!
 	 *  Update the windows menu to contain the supported windows and visibility of the windows.

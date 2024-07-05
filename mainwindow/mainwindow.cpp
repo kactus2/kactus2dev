@@ -790,7 +790,7 @@ void MainWindow::connectDockHandler()
 void MainWindow::setupAndConnectLibraryHandler()
 {
     connect(libraryHandler_, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)));
+        this, SLOT(openHWDesign(const VLNV&, const QString&)));
     connect(libraryHandler_, SIGNAL(openMemoryDesign(const VLNV&, const QString&)),
         this, SLOT(openMemoryDesign(const VLNV&, const QString&)));
 
@@ -1501,7 +1501,7 @@ void MainWindow::createDesign(KactusAttribute::ProductHierarchy prodHier, Kactus
     if (success)
     {
         // Open the design.
-        openDesign(vlnv, viewNames.first());
+        openHWDesign(vlnv, viewNames.first());
 
         unlockNewlyCreatedDocument(vlnv);
     }
@@ -1616,7 +1616,7 @@ void MainWindow::createDesignForExistingComponent(VLNV const& vlnv)
     if (success)
     {
         // Open the design.
-        openDesign(vlnv, view->name());
+        openHWDesign(vlnv, view->name());
 
         unlockNewlyCreatedDocument(vlnv);
 
@@ -2299,21 +2299,9 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, Document::Revision revisi
 //-----------------------------------------------------------------------------
 void MainWindow::openBus(const VLNV& busDefVLNV)
 {
-    if (isOpen(busDefVLNV) || !busDefVLNV.isValid())
+    if (isOpen(busDefVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::BUS_DEFINITION)) || !busDefVLNV.isValid())
     {
         return;
-    }
-
-    // Check if the bus editor is already open and activate it.
-    for (int i = 0; i < designTabs_->count(); i++)
-    {
-        TabDocument* editor = dynamic_cast<TabDocument*>(designTabs_->widget(i));
-
-        if (editor && editor->getDocumentVLNV() == busDefVLNV)
-        {
-            designTabs_->setCurrentIndex(i);
-            return;
-        }
     }
 
     // Editor for given vlnv was not yet open so create one for it
@@ -2341,7 +2329,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 {
-    if (isOpen(absDefVLNV) || !absDefVLNV.isValid())
+    if (isOpen(absDefVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::ABSTRACTION_DEFINITION)) || !absDefVLNV.isValid())
     {
         return;
     }
@@ -2386,7 +2374,7 @@ void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openCatalog(const VLNV& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::CATALOG)))
     {
         return;
     }
@@ -2424,7 +2412,7 @@ void MainWindow::openCatalog(const VLNV& vlnv)
 //-----------------------------------------------------------------------------
 // Function: openDesign()
 //-----------------------------------------------------------------------------
-void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
+void MainWindow::openHWDesign(VLNV const& vlnv, QString const& viewName)
 {
     // The vlnv must always be for a component.
     Q_ASSERT(libraryHandler_->getDocumentType(vlnv) == VLNV::COMPONENT);
@@ -2434,7 +2422,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     // Check if the design is already open.
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV) || hasInvalidReferences(comp->getHierRefs(), vlnv))
+    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::HW_DESIGN)) || hasInvalidReferences(comp->getHierRefs(), vlnv))
     {
         return;
     }
@@ -2463,7 +2451,7 @@ void MainWindow::openDesign(VLNV const& vlnv, QString const& viewName)
     connect(designWidget, SIGNAL(destroyed(QObject*)), this, SLOT(onClearItemSelection()), Qt::UniqueConnection);
 
     connect(designWidget, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)));
+        this, SLOT(openHWDesign(const VLNV&, const QString&)));
     connect(designWidget, SIGNAL(openComponent(const VLNV&)),
         this, SLOT(openComponent(const VLNV&)), Qt::UniqueConnection);
     connect(designWidget, SIGNAL(openBus(VLNV const&)),
@@ -2512,16 +2500,7 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
     QSharedPointer<Component> comp = libraryHandler_->getModel(vlnv).staticCast<Component>();
 
     // check if the design is already open
-    VLNV refVLNV = comp->getHierRef(viewName);
-    VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-
-    QString memoryDesignName = designVLNV.getName();
-
-    int extensionBegin = memoryDesignName.size() - 7;
-    memoryDesignName.replace(extensionBegin, 7, ".memoryDesign");
-    designVLNV.setName(memoryDesignName);
-
-    if (isOpen(designVLNV))
+    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::MEMORY_DESIGN)))
     {
         return;
     }
@@ -2598,7 +2577,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV))
+    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::SW_DESIGN)))
     {
         return;
     }
@@ -2661,7 +2640,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierSystemRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV))
+    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::SYSTEM_DESIGN)))
     {
         return;
     }
@@ -2724,10 +2703,6 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
 //-----------------------------------------------------------------------------
 void MainWindow::openComponent(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
-    {
-        return;
-    }
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
@@ -2753,10 +2728,16 @@ void MainWindow::openComponent(VLNV const& vlnv)
 
     ComponentEditor* editor = new ComponentEditor(libraryHandler_, component, this);
 
+    if (isOpen(vlnv, editor->getDocType()))
+    {
+        QApplication::restoreOverrideCursor();
+        return;
+    }
+
     connect(editor, SIGNAL(openCSource(QString const&, QSharedPointer<Component>)),
             this , SLOT(openCSource(QString const&, QSharedPointer<Component>)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openDesign(const VLNV&, const QString&)),
-        this, SLOT(openDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
+        this, SLOT(openHWDesign(const VLNV&, const QString&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openBus(const VLNV&)),
         this, SLOT(openBus(const VLNV&)), Qt::UniqueConnection);
     connect(editor, SIGNAL(openAbsDef(const VLNV&)),
@@ -2778,7 +2759,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openComDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::COM_DEFINITION)))
     {
         return;
     }
@@ -2813,7 +2794,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openApiDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv))
+    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::API_DEFINITION)))
     {
         return;
     }
@@ -2845,7 +2826,7 @@ void MainWindow::openApiDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 // Function: MainWindow::isOpen()
 //-----------------------------------------------------------------------------
-bool MainWindow::isOpen(VLNV const& vlnv) const
+bool MainWindow::isOpen(VLNV const& vlnv, TabDocument::DocumentType const& type) const
 {
     if (!vlnv.isValid())
     {
@@ -2857,7 +2838,7 @@ bool MainWindow::isOpen(VLNV const& vlnv) const
         TabDocument* document = dynamic_cast<TabDocument*>(designTabs_->widget(i));
 
         // if the document is already open is some tab
-        if (document && document->getIdentifyingVLNV() == vlnv)
+        if (document && document->getIdentifyingVLNV() == vlnv && document->getDocType() == type)
         {
             designTabs_->setCurrentIndex(i);
             return true;

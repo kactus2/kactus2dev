@@ -105,11 +105,11 @@ bool SystemDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
     if (onlySW_)
     {
-        setDocumentType("SW Design");
+        setDocumentType(DocumentType(DocumentTypes::SW_DESIGN));
     }
     else
     {
-        setDocumentType("System Design");
+        setDocumentType(DocumentType(DocumentTypes::SYSTEM_DESIGN));
     }
 
     // Open in unlocked mode by default only if the version is draft.

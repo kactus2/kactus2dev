@@ -47,7 +47,7 @@ TabDocument(parent, DOC_PROTECTION_SUPPORT),
     // Set the document name and type.
     VLNV vlnv = catalog_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-    setDocumentType(tr("Catalog"));
+    setDocumentType(DocumentType(DocumentTypes::CATALOG));
 
     documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
     documentNameGroupEditor_->setTitle(tr("Catalog"));

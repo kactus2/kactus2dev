@@ -41,7 +41,7 @@ busDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_))
 {
-    setDocumentType(tr("Bus Definition"));
+    setDocumentType(DocumentType(DocumentTypes::BUS_DEFINITION));
 
     if (busDef_)
     {

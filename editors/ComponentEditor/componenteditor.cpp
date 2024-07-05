@@ -122,15 +122,15 @@ validator_(expressionParser_, libHandler_, component->getRevision())
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    setDocumentType(tr("HW Component"));
+        setDocumentType(DocumentType(DocumentTypes::HW_COMPONENT));
     }
     else if (component_->getImplementation() == KactusAttribute::SW)
     {
-        setDocumentType(tr("SW Component"));
+        setDocumentType(DocumentType(DocumentTypes::SW_COMPONENT));
     }
     else if (component_->getImplementation() == KactusAttribute::SYSTEM)
     {
-        setDocumentType(tr("Unmapped System"));
+        setDocumentType(DocumentType(DocumentTypes::UNMAPPED_SYSTEM));
     }
 
     addRelatedVLNV(component_->getVlnv());

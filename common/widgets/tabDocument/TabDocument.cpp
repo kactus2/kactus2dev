@@ -33,7 +33,8 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, 
     docName_(""),
     previouslyUnlocked_(false),
     relatedVLNVs_(),
-    refreshRequested_(false)
+    refreshRequested_(false),
+    docType_(DocumentTypes::EMPTY)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -68,17 +69,9 @@ void TabDocument::setDocumentName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: TabDocument::setDocumentType()
 //-----------------------------------------------------------------------------
-void TabDocument::setDocumentType(QString const& type)
+void TabDocument::setDocumentType(DocumentType const& type)
 {
-    if (type.isEmpty())
-    {
-        docType_ = "";
-    }
-    else
-    {
-        docType_ = " [" + type + "]";
-    }
-
+    docType_ = type;
     updateTabTitle();
 }
 
@@ -134,16 +127,9 @@ void TabDocument::setModified(bool modified)
 		return;
     }
 
-    if (modified)
-    {
-        setTabTitle(docName_ + docType_ + "*");
-    }
-    else
-    {
-        setTabTitle(docName_ + docType_);
-    }
-
     modified_ = modified;
+    updateTabTitle();
+
 	emit modifiedChanged(modified_);
 }
 
@@ -273,14 +259,27 @@ bool TabDocument::askSaveFile() const {
 //-----------------------------------------------------------------------------
 void TabDocument::updateTabTitle()
 {
-    // Update also the title.
     if (isModified())
     {
-        setTabTitle(docName_ + docType_ + "*");
+        if (docType_!=DocumentTypes::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + docType_.ToString() + "]" + "*");
+        }
+        else 
+        {
+            setTabTitle(docName_ + "*");
+        }
     }
     else
     {
-        setTabTitle(docName_ + docType_);
+        if (docType_ != DocumentTypes::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + docType_.ToString() + "]");
+        }
+        else
+        {
+            setTabTitle(docName_);
+        }        
     }
 }
 
@@ -366,6 +365,14 @@ void TabDocument::addVisibilityControl(QString const& name, bool state)
 QMap<QString, bool> const& TabDocument::getVisibilityControls() const
 {
     return visibilityControls_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::getDocType()
+//-----------------------------------------------------------------------------
+TabDocument::DocumentType TabDocument::getDocType() const
+{
+    return docType_;
 }
 
 //-----------------------------------------------------------------------------
