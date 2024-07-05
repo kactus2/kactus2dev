@@ -44,6 +44,14 @@ signals:
      */
     void recalculateReferenceToIndexes(QModelIndexList selectedIndexes);
 
+    /*!
+     *  Open the reference tree of the selected parameter.
+     *
+     *      @param [in] id      The ID of the selected parameter.
+     *      @param [in] name    Name of the selected parameter.
+     */
+    void openReferenceTree(QString const& id, QString const& name);
+
 protected:
 
 	/*!
@@ -63,6 +71,10 @@ private slots:
      */
     void onRecalculateReferencesAction();
 
+    /*!
+     *  Handles the action for opening the reference tree of the selected parameter.
+     */
+    void onOpenReferenceTreeAction();
 private:
 
 	//! No copying. No assignment.
@@ -76,12 +88,22 @@ private:
      */
     void addRecalculateReferencesActionForContextMenu(QMenu& menu);
 
+    /*!
+     *  Add the open reference tree to the context menu.
+     *
+     *      @param [in] menu    The context menu for the actions.
+     */
+    void addOpenReferenceTreeActionForContextMenu(QMenu& menu);
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
 
     //! Action for recalculating references made to the selected parameter.
     QAction recalculateReferencesAction_;
+
+    //! Action for opening the reference tree of the selected parameter.
+    QAction openReferenceTreeAction_;
 };
 
 #endif // PARAMETERSVIEW_H
