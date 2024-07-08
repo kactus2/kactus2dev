@@ -46,7 +46,8 @@ QUndoCommand(parent),
 
     if (port_->getBusInterface()->getAllPortMaps())
     {
-        for (auto const& portMap : *port_->getBusInterface()->getAllPortMaps())
+        auto const& allPortMaps = port_->getBusInterface()->getAllPortMaps();
+        for (auto const& portMap : *allPortMaps)
         {
             new DeletePhysicalPortCommand(componentItem_->componentModel(),
                 componentItem_->componentModel()->getPort(portMap->getPhysicalPort()->name_),
