@@ -1330,7 +1330,7 @@ void HWDesignDiagram::onSelected(QGraphicsItem* newSelection)
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::createConnection()
 //-----------------------------------------------------------------------------
-GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint)
+GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint, bool isOffPage)
 {    
     QSharedPointer<ConnectionRoute> route(new ConnectionRoute(""));
     
@@ -1409,7 +1409,11 @@ GraphicsConnection* HWDesignDiagram::createConnection(ConnectionEndpoint* startP
         auto connectionName = connection->createDefaultName();
         connection->setName(connectionName);
     }
-    
+
+    // The code below ensures that the connection will be displayed 
+    // with an off-page style after reloading the design
+    connection->getRouteExtension()->setOffpage(isOffPage);
+
     return connection;
 }
 

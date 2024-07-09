@@ -452,10 +452,11 @@ private:
      *
      *      @param [in] startPoint  The starting connection end point.
      *      @param [in] endPoint    The ending connection end point.
+     *      @param [in] isOffPage   Determines if connection to be created is off-page or not.
      *
      *      @return The created connection.
      */
-    virtual GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint);
+    virtual GraphicsConnection* createConnection(ConnectionEndpoint* startPoint, ConnectionEndpoint* endPoint, bool isOffPage = false);
 
     /*!
      *  Creates a connection between the given endpoint and a coordinate point.

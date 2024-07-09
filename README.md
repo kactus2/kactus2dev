@@ -72,7 +72,7 @@ break the compatibility with earlier versions.
 ## Contributors
 Antti Kamppi, Joni-Matti Määttä, Lauri Matilainen, Timo D. Hämäläinen,
 Mikko Teuho, Juho Järvinen, Esko Pekkarinen, Janne Virtanen,
-Anton Hagqvist
+Anton Hagqvist, Vasilii Feshchenko
 
 Kactus2 uses [Icons8](https://icons8.com/) provided by Icons8 LLC.
 

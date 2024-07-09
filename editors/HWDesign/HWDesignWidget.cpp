@@ -143,8 +143,8 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	connect(getDiagram(), SIGNAL(modeChanged(DrawMode)), this, SIGNAL(modeChanged(DrawMode)), Qt::UniqueConnection);
 
 	setModified(false);
-	
-	setDocumentType(QStringLiteral("HW Design"));
+
+    setDocumentType(DocumentType(DocumentTypes::HW_DESIGN));
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();

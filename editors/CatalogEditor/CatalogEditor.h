@@ -40,7 +40,7 @@ public:
      *      @param [in] catalog     The catalog to edit.
      *      @param [in] parent      The parent widget.
 	 */
-	CatalogEditor(LibraryInterface* library, QSharedPointer<Catalog> catalog, QWidget* parent);
+	CatalogEditor(LibraryInterface* libHandler, QSharedPointer<Catalog> catalog, QWidget* parent);
 	
 	/*!
      *  Destructor.
@@ -115,9 +115,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! The instance that handles the library.
-	LibraryInterface* library_;
 
     //! The catalog being edited.
     QSharedPointer<Catalog> catalog_;

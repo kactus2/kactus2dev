@@ -41,7 +41,7 @@ public:
     /*!
      *  Constructor.
      */
-    DesignWidget(LibraryInterface* lh, QWidget* parent = nullptr);
+    DesignWidget(LibraryInterface* libHandler, QWidget* parent = nullptr);
 
     /*!
      *  Destructor.
@@ -260,7 +260,7 @@ private:
     //-----------------------------------------------------------------------------
 
     //! The library interface.
-    LibraryInterface* library_;
+    LibraryInterface* libHandler_;
 
     //! The graphics view for showing the diagram.
     QGraphicsView* view_ = new QGraphicsView(this);

@@ -81,8 +81,7 @@
 // Function: ComponentEditor::ComponentEditor()
 //-----------------------------------------------------------------------------
 ComponentEditor::ComponentEditor(LibraryInterface* libHandler, QSharedPointer<Component> component, QWidget* parent) :
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-libHandler_(libHandler),
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 component_(component),
 navigationSplitter_(Qt::Horizontal, this),
 editorVisualizerSplitter_(Qt::Horizontal, &navigationSplitter_),
@@ -98,7 +97,7 @@ referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new Compone
     fullParameterFinder_, component))),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(expressionParser_, libHandler_, component->getRevision())
+validator_(expressionParser_, getLibHandler(), component->getRevision())
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =
@@ -115,22 +114,22 @@ validator_(expressionParser_, libHandler_, component->getRevision())
 	visualizerSlot_.setObjectName(tr("VisualizerSlot"));
 
 	Q_ASSERT(component_);
-	Q_ASSERT(libHandler_);
+	Q_ASSERT(getLibHandler());
 
 	// set the name and type for the tab
     setDocumentName(QString("%1 (%2)").arg(component_->getVlnv().getName(), component_->getVlnv().getVersion()));
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-	    setDocumentType(tr("HW Component"));
+        setDocumentType(DocumentType(DocumentTypes::HW_COMPONENT));
     }
     else if (component_->getImplementation() == KactusAttribute::SW)
     {
-        setDocumentType(tr("SW Component"));
+        setDocumentType(DocumentType(DocumentTypes::SW_COMPONENT));
     }
     else if (component_->getImplementation() == KactusAttribute::SYSTEM)
     {
-        setDocumentType(tr("Unmapped System"));
+        setDocumentType(DocumentType(DocumentTypes::UNMAPPED_SYSTEM));
     }
 
     addRelatedVLNV(component_->getVlnv());
@@ -234,9 +233,15 @@ void ComponentEditor::refresh()
 	VLNV compVLNV = component_->getVlnv();
 
 	// get the original model of the component
-	QSharedPointer<Component> comp = libHandler_->getModel<Component>(compVLNV);
-	Q_ASSERT(comp.isNull() == false);
+	QSharedPointer<Component> comp = getLibHandler()->getModel<Component>(compVLNV);
+	//Q_ASSERT(comp.isNull() == false);
 
+    if (comp.isNull())
+    {
+        delete this;
+        QApplication::restoreOverrideCursor();
+        return;
+    }
 	// rebuild the navigation tree
 	component_ = comp;
 	navigationModel_.setRootItem(createNavigationRootForComponent());
@@ -317,7 +322,7 @@ bool ComponentEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool ComponentEditor::save()
 {
-	if (libHandler_->writeModelToFile(component_))
+	if (getLibHandler()->writeModelToFile(component_))
     {
         navigationModel_.clearItemsModified();
 		return TabDocument::save();
@@ -345,14 +350,14 @@ bool ComponentEditor::saveAs()
     if (component_->getImplementation() == KactusAttribute::HW)
     {
 	    if (!NewObjectDialog::saveAsDialog(
-            parentWidget(), libHandler_, component_->getVlnv(), prodHier, firmness, tags, vlnv, directory))
+            parentWidget(), getLibHandler(), component_->getVlnv(), prodHier, firmness, tags, vlnv, directory))
         {
 		    return false;
 	    }
     }
     else
     {
-        if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, component_->getVlnv(), vlnv, directory))
+        if (!NewObjectDialog::saveAsDialog(parentWidget(), getLibHandler(), component_->getVlnv(), vlnv, directory))
         {
             return false;
         }
@@ -374,14 +379,14 @@ bool ComponentEditor::saveAs()
     component_->setFirmness(firmness);
 
 	// get the paths to the original xml file
-	QFileInfo sourceInfo(libHandler_->getPath(oldComponent->getVlnv()));
+	QFileInfo sourceInfo(getLibHandler()->getPath(oldComponent->getVlnv()));
 	QString sourcePath = sourceInfo.absolutePath();
 
 	// update the file paths and copy necessary files
     updateComponentFiles(component_, oldComponent, sourcePath, directory);
 
 	// Write the component to a file.
-	if (libHandler_->writeModelToFile(directory, component_))
+	if (getLibHandler()->writeModelToFile(directory, component_))
     {
 		setDocumentName(compVLNV.getName() + " (" + compVLNV.getVersion() + ")");
         navigationModel_.clearItemsModified();
@@ -562,7 +567,7 @@ QSharedPointer<ComponentEditorRootItem> ComponentEditor::createNavigationRootFor
 {
     ExpressionSet expressionsSupport({ parameterFinder_, expressionParser_, expressionFormatter_});
 
-    auto root = new ComponentEditorRootItem(libHandler_, component_, &navigationModel_);
+    auto root = new ComponentEditorRootItem(getLibHandler(), component_, &navigationModel_);
 
     if (component_->getImplementation() == KactusAttribute::SW)
     {
@@ -585,7 +590,7 @@ void ComponentEditor::addSWItems(ComponentEditorRootItem* root)
     root->addChildItem(createGeneralItem(root));
 
     root->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(new ComponentEditorFileSetsItem(
-        &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_,
+        &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_,
         expressionParser_, expressionFormatter_, root)));
 
     root->addChildItem(createInstantiationsItem(root));
@@ -593,13 +598,13 @@ void ComponentEditor::addSWItems(ComponentEditorRootItem* root)
     root->addChildItem(createViewsItem(root));
 
     root->addChildItem(QSharedPointer<ComponentEditorAPIInterfacesItem>(
-        new ComponentEditorAPIInterfacesItem(&navigationModel_, libHandler_, component_, root)));
+        new ComponentEditorAPIInterfacesItem(&navigationModel_, getLibHandler(), component_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
-        new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component_, root)));
+        new ComponentEditorComInterfacesItem(&navigationModel_, getLibHandler(), component_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorSWPropertiesItem>(
-        new ComponentEditorSWPropertiesItem(&navigationModel_, libHandler_, component_, root)));
+        new ComponentEditorSWPropertiesItem(&navigationModel_, getLibHandler(), component_, root)));
 }
 
 //-----------------------------------------------------------------------------
@@ -611,7 +616,7 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     root->addChildItem(createGeneralItem(root));
 
     root->addChildItem(QSharedPointer<ComponentEditorChoicesItem>(
-        new ComponentEditorChoicesItem(&navigationModel_, libHandler_, component_, expressionParser_, root)));
+        new ComponentEditorChoicesItem(&navigationModel_, getLibHandler(), component_, expressionParser_, root)));
 
     root->addChildItem(createParametersItem(root));
 
@@ -620,19 +625,19 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     if (docRevision == Document::Revision::Std22)
     {
         root->addChildItem(QSharedPointer<TypeDefinitionsItem>(new TypeDefinitionsItem(&navigationModel_,
-            libHandler_, component_, root)));
+            getLibHandler(), component_, root)));
     }
 
     root->addChildItem(QSharedPointer<ComponentEditorFileSetsItem>(new ComponentEditorFileSetsItem(
-        &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_,
+        &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_,
         expressionParser_, expressionFormatter_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorMemMapsItem>(new ComponentEditorMemMapsItem(
-        &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+        &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_, expressionFormatter_,
         expressionParser_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorAddrSpacesItem>(new ComponentEditorAddrSpacesItem(
-        &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionFormatter_,
+        &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_, expressionFormatter_,
         expressionParser_, root)));
 
     root->addChildItem(createInstantiationsItem(root));
@@ -641,11 +646,11 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
 
 
     root->addChildItem(QSharedPointer<ComponentEditorSystemViewsItem>(new ComponentEditorSystemViewsItem(
-        &navigationModel_, libHandler_, component_, parameterFinder_, expressionParser_, expressionFormatter_,
+        &navigationModel_, getLibHandler(), component_, parameterFinder_, expressionParser_, expressionFormatter_,
         root)));
 
     auto busInterface = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_, expressionFormatter_,
-        expressionParser_, component_, libHandler_);
+        expressionParser_, component_, getLibHandler());
 
     auto absTypeInterface = busInterface->getAbstractionTypeInterface();
     Q_ASSERT(absTypeInterface);
@@ -660,43 +665,43 @@ void ComponentEditor::addHWItems(ComponentEditorRootItem* root,
     root->addChildItem(createIndirectInterfacesItem(root, busInterface));
 
     root->addChildItem(QSharedPointer<ComponentEditorChannelsItem>(
-        new ComponentEditorChannelsItem(&navigationModel_, libHandler_, component_, expressionParser_, root)));
+        new ComponentEditorChannelsItem(&navigationModel_, getLibHandler(), component_, expressionParser_, root)));
 
     if (docRevision == Document::Revision::Std14)
     {
         root->addChildItem(QSharedPointer<RemapStatesItem>(
-            new RemapStatesItem(&navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_,
+            new RemapStatesItem(&navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_,
                 expressionFormatter_, expressionParser_, root)));
     }
     else if (docRevision == Document::Revision::Std22)
     {
         root->addChildItem(QSharedPointer<ModesItem>(
-            new ModesItem(&navigationModel_, libHandler_, component_, referenceCounter_, expressionsSupport, root)));
+            new ModesItem(&navigationModel_, getLibHandler(), component_, referenceCounter_, expressionsSupport, root)));
     }
 
     root->addChildItem(QSharedPointer<ComponentEditorCpusItem>(
-        new ComponentEditorCpusItem(&navigationModel_, libHandler_, component_, referenceCounter_,
+        new ComponentEditorCpusItem(&navigationModel_, getLibHandler(), component_, referenceCounter_,
             expressionsSupport, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorOtherClocksItem>(
-        new ComponentEditorOtherClocksItem(&navigationModel_, libHandler_, component_, expressionParser_, root)));
+        new ComponentEditorOtherClocksItem(&navigationModel_, getLibHandler(), component_, expressionParser_, root)));
 
     if (docRevision == Document::Revision::Std22)
     {
         root->addChildItem(QSharedPointer<PowerDomainsItem>(
-            new PowerDomainsItem(&navigationModel_, libHandler_, component_, referenceCounter_,
+            new PowerDomainsItem(&navigationModel_, getLibHandler(), component_, referenceCounter_,
                 expressionsSupport, root)));
     }
 
     root->addChildItem(QSharedPointer<ResetTypesItem>(
-        new ResetTypesItem(&navigationModel_, libHandler_, component_, validator_, root)));
+        new ResetTypesItem(&navigationModel_, getLibHandler(), component_, validator_, root)));
 
 
     root->addChildItem(QSharedPointer<ComponentEditorComInterfacesItem>(
-        new ComponentEditorComInterfacesItem(&navigationModel_, libHandler_, component_, root)));
+        new ComponentEditorComInterfacesItem(&navigationModel_, getLibHandler(), component_, root)));
 
     root->addChildItem(QSharedPointer<ComponentEditorSWPropertiesItem>(
-        new ComponentEditorSWPropertiesItem(&navigationModel_, libHandler_, component_, root)));
+        new ComponentEditorSWPropertiesItem(&navigationModel_, getLibHandler(), component_, root)));
 }
 
 //-----------------------------------------------------------------------------
@@ -706,7 +711,7 @@ QSharedPointer<ComponentEditorGeneralItem> ComponentEditor::createGeneralItem(
     ComponentEditorRootItem* root)
 {
     QSharedPointer<ComponentEditorGeneralItem> generalItem(new ComponentEditorGeneralItem(&navigationModel_,
-        libHandler_, component_, root));
+        getLibHandler(), component_, root));
 
     connect(generalItem.data(), SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)),
         this, SIGNAL(changeVendorExtensions(QString const&, QSharedPointer<Extendable>)), Qt::UniqueConnection);
@@ -725,7 +730,7 @@ QSharedPointer<ComponentEditorParametersItem> ComponentEditor::createParametersI
 {
 
     QSharedPointer<ComponentEditorParametersItem> parametersItem(new ComponentEditorParametersItem(
-        &navigationModel_, libHandler_, component_, referenceCounter_, parameterFinder_, expressionParser_,
+        &navigationModel_, getLibHandler(), component_, referenceCounter_, parameterFinder_, expressionParser_,
         expressionFormatter_, root));
 
     connect(parametersItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -741,7 +746,7 @@ QSharedPointer<ComponentEditorParametersItem> ComponentEditor::createParametersI
 QSharedPointer<InstantiationsItem> ComponentEditor::createInstantiationsItem(
     ComponentEditorRootItem* root)
 {
-    QSharedPointer<InstantiationsItem> instantiationsItem(new InstantiationsItem(&navigationModel_, libHandler_,
+    QSharedPointer<InstantiationsItem> instantiationsItem(new InstantiationsItem(&navigationModel_, getLibHandler(),
         component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
 
     connect(instantiationsItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -756,7 +761,7 @@ QSharedPointer<InstantiationsItem> ComponentEditor::createInstantiationsItem(
 QSharedPointer<ComponentEditorViewsItem> ComponentEditor::createViewsItem(
     ComponentEditorRootItem* root)
 {
-    QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, libHandler_,
+    QSharedPointer<ComponentEditorViewsItem> viewsItem(new ComponentEditorViewsItem(&navigationModel_, getLibHandler(),
         component_, referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_, root));
 
     connect(viewsItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
@@ -773,7 +778,7 @@ QSharedPointer<ComponentEditorPortsItem> ComponentEditor::createPortsItem(
     ExpressionSet const& expressionSupport)
 {
     QSharedPointer<ComponentEditorPortsItem> portsItem(new ComponentEditorPortsItem(&navigationModel_,
-        libHandler_, component_, referenceCounter_, expressionSupport, busInterface, root));
+        getLibHandler(), component_, referenceCounter_, expressionSupport, busInterface, root));
 
     connect(portsItem.data(), SIGNAL(createInterface()), root, SLOT(onInterfaceAdded()), Qt::UniqueConnection);
 
@@ -793,7 +798,7 @@ QSharedPointer<ComponentEditorBusInterfacesItem> ComponentEditor::createBusInter
 {
     QSharedPointer<ComponentEditorBusInterfacesItem> busInterfaceItem(
         new ComponentEditorBusInterfacesItem(busInterface, portMapInterface, &navigationModel_,
-            libHandler_, component_, referenceCounter_,
+            getLibHandler(), component_, referenceCounter_,
             ExpressionSet({ parameterFinder_, expressionParser_, expressionFormatter_ }),
             root, parentWidget()));
 
@@ -811,7 +816,7 @@ QSharedPointer<ComponentEditorIndirectInterfacesItem> ComponentEditor::createInd
     ComponentEditorRootItem* root, BusInterfaceInterface* busInterface)
 {
     QSharedPointer<ComponentEditorIndirectInterfacesItem> indirectInterfacesItem(
-        new ComponentEditorIndirectInterfacesItem(&navigationModel_, libHandler_, component_,
+        new ComponentEditorIndirectInterfacesItem(&navigationModel_, getLibHandler(), component_,
             referenceCounter_, parameterFinder_, expressionFormatter_, expressionParser_,
             busInterface, root, parentWidget()));
 

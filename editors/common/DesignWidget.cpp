@@ -35,10 +35,9 @@
 //-----------------------------------------------------------------------------
 // Function: DesignWidget::DesignWidget()
 //-----------------------------------------------------------------------------
-DesignWidget::DesignWidget(LibraryInterface* lh, QWidget* parent):
-TabDocument(parent, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT | DOC_PROTECTION_SUPPORT |
-    DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300),
-library_(lh)
+DesignWidget::DesignWidget(LibraryInterface* libHandler, QWidget* parent):
+TabDocument(parent, libHandler, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_PRINT_SUPPORT | DOC_PROTECTION_SUPPORT |
+    DOC_EDIT_SUPPORT | DOC_VISIBILITY_CONTROL_SUPPORT, 30, 300)
 {
     supportedWindows_ |= TabDocument::VENDOREXTENSIONWINDOW;
 
@@ -183,7 +182,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<Component> comp = library_->getModel(editedComponent_->getVlnv()).staticCast<Component>();
+    QSharedPointer<Component> comp = libHandler_->getModel(editedComponent_->getVlnv()).staticCast<Component>();
 
     setDesign(comp, viewName_);
     setModified(false);
@@ -236,27 +235,27 @@ bool DesignWidget::save()
         return false;
     }
 
-    library_->beginSave();
+    libHandler_->beginSave();
 
     bool writeSucceeded = true;
 
     // Write the files.
-    if (designConf && !library_->writeModelToFile(designConf))
+    if (designConf && !libHandler_->writeModelToFile(designConf))
     {
         writeSucceeded = false;
     }
 
-    if (!library_->writeModelToFile(design))
+    if (!libHandler_->writeModelToFile(design))
     {
         writeSucceeded = false;
     }
 
-    if (!library_->writeModelToFile(editedComponent_))
+    if (!libHandler_->writeModelToFile(editedComponent_))
     {
         writeSucceeded = false;
     }
 
-    library_->endSave();
+    libHandler_->endSave();
 
     if (writeSucceeded)
     {
@@ -355,7 +354,7 @@ void DesignWidget::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 LibraryInterface* DesignWidget::getLibraryInterface()
 {
-    return library_;
+    return libHandler_;
 }
 
 //-----------------------------------------------------------------------------
@@ -423,7 +422,7 @@ void DesignWidget::print()
 bool DesignWidget::exportImage()
 {
     VLNV designVLNV = getIdentifyingVLNV();
-    QString libraryPath = library_->getDirectoryPath(designVLNV);
+    QString libraryPath = libHandler_->getDirectoryPath(designVLNV);
     return ImageExporter::exportImage(libraryPath, designVLNV, diagram_, this);
 }
 

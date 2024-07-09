@@ -33,14 +33,13 @@
 // Function: AbstractionDefinitionEditor::AbstractionDefinitionEditor()
 //-----------------------------------------------------------------------------
 AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef, Document::Revision revision):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-libHandler_(libHandler),
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 absDef_(absDef),
 absDefGroup_(revision, absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
 {
-    setDocumentType(tr("Abstration Definition"));
+    setDocumentType(DocumentType(DocumentTypes::ABSTRACTION_DEFINITION));
 
     if (absDef_)
     {
@@ -86,7 +85,7 @@ void AbstractionDefinitionEditor::refresh()
 
     if (absDef_)
     {
-        absDef_ = libHandler_->getModel(absDef_->getVlnv()).dynamicCast<AbstractionDefinition>();
+        absDef_ = getLibHandler()->getModel(absDef_->getVlnv()).dynamicCast<AbstractionDefinition>();
         absDefGroup_.setAbsDef(absDef_);
     }
 
@@ -155,7 +154,7 @@ bool AbstractionDefinitionEditor::validate(QVector<QString>& errorList)
 bool AbstractionDefinitionEditor::save()
 {  
     absDefGroup_.save();
-    libHandler_->writeModelToFile(absDef_);
+    getLibHandler()->writeModelToFile(absDef_);
 
 	return TabDocument::save();
 }
@@ -171,7 +170,7 @@ bool AbstractionDefinitionEditor::saveAs()
     VLNV absDefVLNV;
     QString absDirectory;
 
-    if (!NewObjectDialog::saveAsDialog(this, libHandler_, absDef_->getVlnv(), vlnv, absDirectory))
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), absDef_->getVlnv(), vlnv, absDirectory))
     {
         return false;
     }
@@ -183,7 +182,7 @@ bool AbstractionDefinitionEditor::saveAs()
 
     absDefGroup_.save();
   
-    libHandler_->writeModelToFile(absDirectory, absDef_);
+    getLibHandler()->writeModelToFile(absDirectory, absDef_);
 
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     return TabDocument::saveAs();

@@ -118,9 +118,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! Pointer to the instance that handles the library.
-	LibraryInterface* libHandler_;
-
     DocumentNameGroupEditor nameGroup_;
 
 	//! The API definition being edited.

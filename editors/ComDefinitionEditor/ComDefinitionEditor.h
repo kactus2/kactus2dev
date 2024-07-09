@@ -114,9 +114,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The instance that handles the library.
-	LibraryInterface* libHandler_;
-
 	//! The COM definition being edited.
 	QSharedPointer<ComDefinition> comDef_;
 

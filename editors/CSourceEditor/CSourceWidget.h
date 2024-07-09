@@ -45,7 +45,7 @@ public:
      */
     CSourceWidget(QString const& sourceFile,
                   QSharedPointer<Component> ownerComponent,
-                  LibraryInterface* libInterface,
+                  LibraryInterface* libHandler,
                   QWidget* mainWnd, QWidget* parent = 0);
 
     /*!

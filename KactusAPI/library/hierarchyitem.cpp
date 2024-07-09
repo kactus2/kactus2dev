@@ -48,7 +48,7 @@ QObject(parent),
     connect(this, SIGNAL(noticeMessage(QString const&)),
         parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
-    Q_ASSERT(handler->contains(vlnv));
+    //Q_ASSERT(handler->contains(vlnv));
 
     VLNV::IPXactType documentType = library_->getDocumentType(vlnv);
     if (documentType == VLNV::COMPONENT)

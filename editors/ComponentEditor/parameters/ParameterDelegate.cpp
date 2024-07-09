@@ -498,6 +498,7 @@ QWidget* ParameterDelegate::createResolveSelector(QWidget* parent) const
     combo->addItem(QString("immediate"));
     combo->addItem(QString("user"));
     combo->addItem(QString("generated"));
+    combo->addItem(QString());
     return combo;
 }
 

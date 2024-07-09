@@ -148,9 +148,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-	//! The instance that handles the library
-	LibraryInterface* libHandler_;
-
 	//! The original bus definition to use when saving.
 	QSharedPointer<BusDefinition> busDef_;
 
