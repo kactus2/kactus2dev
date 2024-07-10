@@ -157,10 +157,14 @@ public:
     /*!
      *  Returns true if a connection is valid between the two endpoints.
      *
-     *      @param [in] other The other endpoint.
+     *      @param      [in]    other The other endpoint.
      *
-     *      @remarks Does not take existing connections into account but simply validates whether a 
-     *               connection between the endpoints would be valid in a general case.
+     *      @remarks            The function checks all possible connections between
+     *                          two endpoint, including there off-page connectors
+     *                          and parent connectors. Does not take into account 
+     *                          if endpoint is exclusive. 
+     * 
+     *      @return             Boolean true if two endpoints can be connected, otherwise false.
      */
     virtual bool isConnectionValid(ConnectionEndpoint const* other) const;
 
@@ -181,7 +185,7 @@ public:
     /*!
 	 *	Returns the draw direction of the endpoint.
 	 */
-	QVector2D getDirection() const;
+	virtual QVector2D getDirection() const;
 
     /*!
      *  Returns true if the draw direction is fixed and thus, cannot be changed.
@@ -264,7 +268,12 @@ public:
     /*!
      *  Returns the corresponding off-page connector or a null pointer if the endpoint does not have one.
      */
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector() const;
+
+    /*!
+     *  Returns the corresponding parent connector or a null pointer if the endpoint is not off-page.
+     */
+    virtual ConnectionEndpoint* getParentConnector() const;
 
     /*!
      *  Returns true if the endpoint represents a hierarchical connection.
@@ -345,6 +354,13 @@ public:
 	 */
 	virtual void shortenNameLabel( qreal width );
 
+    /*!
+     *  Checks if the endpoint is off-page.
+     *
+     *      @return     Boolean true if endpoint is off-page, otherwise false.
+     */
+    bool isOffPage() const;
+
 signals:
     //! Signals that the contents of the interface have been changed.
     void contentChanged();
@@ -367,6 +383,18 @@ protected:
     void endUpdateConnectionNames();
 
 private:
+
+    /*!
+     *  Checks if points are connected
+     *
+     *      @param [in] other The other endpoint.
+     * 
+     *      @return     Boolean true is the points are connected, otherwise false.
+     *
+     *      @remarks    Does  not take into account weather points are off-page
+                        or not, thus checking two points directly.
+     */
+    bool isConnectionBetweenPointsExist(ConnectionEndpoint const* other) const;
 
     //-----------------------------------------------------------------------------
     // Data.

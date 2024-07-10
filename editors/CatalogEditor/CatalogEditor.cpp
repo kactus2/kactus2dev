@@ -36,27 +36,26 @@
 //-----------------------------------------------------------------------------
 // Function: CatalogEditor::CatalogEditor()
 //-----------------------------------------------------------------------------
-CatalogEditor::CatalogEditor(LibraryInterface* library, QSharedPointer<Catalog> catalog, QWidget* parent):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-    library_(library),
+CatalogEditor::CatalogEditor(LibraryInterface* libHandler, QSharedPointer<Catalog> catalog, QWidget* parent):
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
     catalog_(catalog),
     documentNameGroupEditor_(new DocumentNameGroupEditor(this)),
-    fileModel_(new CatalogFileModel(library, this)),
+    fileModel_(new CatalogFileModel(libHandler, this)),
     fileView_(new CatalogFileView(this))
 {
     // Set the document name and type.
     VLNV vlnv = catalog_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-    setDocumentType(tr("Catalog"));
+    setDocumentType(DocumentType(DocumentTypes::CATALOG));
 
-    documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
+    documentNameGroupEditor_->setDocumentNameGroup(catalog_, libHandler->getPath(vlnv));
     documentNameGroupEditor_->setTitle(tr("Catalog"));
    
     CatalogFileFilter* proxy = new CatalogFileFilter(catalog_->getRevision(), this);
     proxy->setSourceModel(fileModel_);
 
     fileView_->setModel(proxy);
-    fileView_->setItemDelegate(new CatalogFileDelegate(library_, this));
+    fileView_->setItemDelegate(new CatalogFileDelegate(libHandler, this));
     
     refresh();
 
@@ -133,10 +132,10 @@ void CatalogEditor::setProtection(bool locked)
 void CatalogEditor::refresh()
 {
     VLNV vlnv = catalog_->getVlnv();
-    catalog_ = library_->getModel(vlnv).staticCast<Catalog>();
+    catalog_ = getLibHandler()->getModel(vlnv).staticCast<Catalog>();
 
     // Update the editors.
-    documentNameGroupEditor_->setDocumentNameGroup(catalog_, library_->getPath(vlnv));
+    documentNameGroupEditor_->setDocumentNameGroup(catalog_, getLibHandler()->getPath(vlnv));
     fileModel_->refresh(catalog_);
 
     for (int row = 0; row <= CatalogFileColumns::CATEGORY_COUNT; row++)
@@ -171,7 +170,7 @@ bool CatalogEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool CatalogEditor::save()
 {
-    library_->writeModelToFile(catalog_);
+    getLibHandler()->writeModelToFile(catalog_);
 
     return TabDocument::save();
 }
@@ -185,7 +184,7 @@ bool CatalogEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), library_, catalog_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), getLibHandler(), catalog_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -196,7 +195,7 @@ bool CatalogEditor::saveAs()
     vlnv.setType(VLNV::CATALOG);
     catalog_->setVlnv(vlnv);
 
-    if (library_->writeModelToFile(directory, catalog_))
+    if (getLibHandler()->writeModelToFile(directory, catalog_))
     {
         setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
         return TabDocument::saveAs();

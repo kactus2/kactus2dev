@@ -25,6 +25,7 @@
 #include <QMap>
 
 class Extendable;
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 //! TabDocument class.
@@ -62,15 +63,110 @@ public:
         VENDOREXTENSIONWINDOW   = 0x2000
 	};
 
+    //-----------------------------------------------------------------------------
+    //! DocumentTypes enumeration.
+    //-----------------------------------------------------------------------------
+    enum DocumentTypes {
+        ABSTRACTION_DEFINITION,
+        API_DEFINITION,
+        BUS_DEFINITION,
+        CATALOG,
+        COM_DEFINITION,
+        HW_COMPONENT,
+        SW_COMPONENT,
+        UNMAPPED_SYSTEM,
+        CODE,
+        HW_DESIGN,
+        MEMORY_DESIGN,
+        SW_DESIGN,
+        SYSTEM_DESIGN,
+        EMPTY
+    };
+
+    //-----------------------------------------------------------------------------
+    //! DocumentType struct.
+    //-----------------------------------------------------------------------------
+    struct DocumentType
+    {
+        /*!
+         *  Constructor.
+         *
+         *      @param [in] type        Type of the document.
+         */
+        DocumentType(DocumentTypes type) {
+            this->type = type;
+        }
+
+        DocumentTypes type; //! Type of the document.
+
+        /*
+         *  Comparison operator for DocumentType.
+         */
+        bool operator==(const DocumentType& other) const 
+        {
+            return this->type == other.type;
+        }
+
+        /*
+         *  Inequality operator for DocumentType.
+         */
+        bool operator!=(const DocumentType& other) const 
+        {
+            return this->type != other.type;
+        }
+
+        /*!
+         *  Returns a string representation of the DocumentType.
+         */
+        QString ToString()
+        {
+            switch (type)
+            {
+            case ABSTRACTION_DEFINITION:
+                return QStringLiteral("Abstraction Definition");
+            case API_DEFINITION:
+                return QStringLiteral("API Definition");
+            case BUS_DEFINITION:
+                return QStringLiteral("Bus Definition");
+            case CATALOG:
+                return QStringLiteral("Catalog");
+            case COM_DEFINITION:
+                return QStringLiteral("COM Definition");
+            case HW_COMPONENT:
+                return QStringLiteral("HW Component");
+            case SW_COMPONENT:
+                return QStringLiteral("SW Component");
+            case UNMAPPED_SYSTEM:
+                return QStringLiteral("Unmapped System");
+            case CODE:
+                return QStringLiteral("Code");
+            case HW_DESIGN:
+                return QStringLiteral("HW Design");
+            case MEMORY_DESIGN:
+                return QStringLiteral("Memory Design");
+            case SW_DESIGN:
+                return QStringLiteral("SW Design");
+            case SYSTEM_DESIGN:
+                return QStringLiteral("System Design");
+            case EMPTY:
+                return QStringLiteral("");
+            default:
+                Q_ASSERT(false); //please handle ToString conversion for every new document type you add.
+                return QStringLiteral("");
+            }
+        }
+    };
+
     /*!
      *  Constructor.
      *
      *      @param [in] parent        The parent widget.
+     *      @param [in] libHandler    The instance that handles the library.
      *      @param [in] flags         The document support flags.
      *      @param [in] minZoomLevel  The minimum zoom level.
 	 *      @param [in] maxZoomLevel  The maximum zoom level.
 	 */
-	TabDocument(QWidget* parent, unsigned int flags = 0,
+	TabDocument(QWidget* parent, LibraryInterface* libHandler = nullptr, unsigned int flags = 0,
 		        int minZoomLevel = 100, int maxZoomLevel = 100);
 
 	/*!
@@ -244,6 +340,18 @@ public:
      */
     QMap<QString, bool> const& getVisibilityControls() const;
 
+    /*!
+     *  Returns the docType_.
+     */
+    DocumentType getDocType() const;
+
+    /*!
+     *  Validates that the file being edited in the tab exists.
+     *
+     *      @return True if libHandler is present and the file exists, otherwise false.
+     */
+    bool fileExists();
+
 public slots:
 
     /*!
@@ -343,9 +451,9 @@ protected:
     /*!
      *  Sets the type of the document. If not empty, the name of the tab will be shown as: DocName [DocType]
      *
-     *      @param [in] type The type name.
+     *      @param [in] type The type of the document.
      */
-    void setDocumentType(QString const& type);
+    void setDocumentType(DocumentType const& type);
 
     /*!
      *  Adds a new visibility control to the document.
@@ -363,6 +471,10 @@ protected:
 	//! \brief Contains the bit fields that define which windows are supported for this tab.
 	unsigned int supportedWindows_;
 
+    /*!
+     *  Returns instance that handles the library.
+     */
+    LibraryInterface* getLibHandler() const;
 
 private slots:
 
@@ -420,8 +532,8 @@ private:
     //! The name of the document.
     QString docName_;
 
-    //! The document type name.
-    QString docType_;
+    //! The document type.
+    DocumentType docType_;
 
     //! If true, the document has been previously unlocked.
     bool previouslyUnlocked_;
@@ -434,6 +546,9 @@ private:
 
     //! If true, the document must be refreshed when shown the next time.
     bool refreshRequested_;
+
+    //! The instance that handles the library.
+    LibraryInterface* libHandler_;
 };
 
 //-----------------------------------------------------------------------------

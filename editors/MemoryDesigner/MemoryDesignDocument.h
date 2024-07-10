@@ -39,7 +39,7 @@ public:
      *      @param [in] library     The library interface.
      *      @param [in] parent      The parent.
      */
-    MemoryDesignDocument(LibraryInterface* library, QWidget* parent = 0);
+    MemoryDesignDocument(LibraryInterface* libHandler, QWidget* parent = 0);
 
     /*!
      *  The destructor.
@@ -281,9 +281,6 @@ private:
 
     //! The memory design diagram.
     MemoryDesignerDiagram* diagram_;
-
-    //! The used library interface.
-    LibraryInterface* libraryHandler_;
 
     //! VLNV identifying the design.
     VLNV identifyingVLNV_;

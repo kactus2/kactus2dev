@@ -175,6 +175,23 @@ void DrawingBoard::refreshCurrentDocument()
         return;
     }
 
+    if (!doc->fileExists())
+    {
+        QString warningText = tr("The document has been deleted.");
+
+        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(), warningText,
+            QMessageBox::Close, this);
+
+        if (msgBox.exec() == QMessageBox::Yes)
+        {
+            doc->save();
+        }
+
+        delete doc;
+
+        return;
+    }
+
     if (doc->isModified())
     {
         QVector<QString> errorList;

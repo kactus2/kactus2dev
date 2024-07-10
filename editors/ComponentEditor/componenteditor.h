@@ -360,9 +360,6 @@ private:
     // Data.
     //-----------------------------------------------------------------------------
 
-    //! Pointer to the instance that manages the library.
-	LibraryInterface* libHandler_;
-
 	//! The component being edited.
 	QSharedPointer<Component> component_;
 

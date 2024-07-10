@@ -21,7 +21,8 @@
 //-----------------------------------------------------------------------------
 ParametersView::ParametersView(QWidget* parent):
 EditableTableView(parent),
-recalculateReferencesAction_(tr("Recalculate references"), this)
+recalculateReferencesAction_(tr("Recalculate references"), this),
+openReferenceTreeAction_(tr("Open reference tree"), this)
 {
     setupActions();
 }
@@ -48,6 +49,7 @@ void ParametersView::contextMenuEvent(QContextMenuEvent* event)
     addBasicActionsForContextMenu(menu, index);
     addElementCopyActionForContextMenu(menu, index);
     addRecalculateReferencesActionForContextMenu(menu);
+    addOpenReferenceTreeActionForContextMenu(menu);
     addImportExportActionsForContextMenu(menu);
 
 	menu.exec(event->globalPos());
@@ -74,6 +76,24 @@ void ParametersView::addRecalculateReferencesActionForContextMenu(QMenu& menu)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ParametersView::addOpenReferenceTreeActionForContextMenu()
+//-----------------------------------------------------------------------------
+void ParametersView::addOpenReferenceTreeActionForContextMenu(QMenu& menu)
+{
+    QModelIndexList indexList = selectedIndexes();
+    foreach(QModelIndex currentIndex, indexList)
+    {
+        if (!currentIndex.isValid() || currentIndex.column() != ParameterColumns::NAME)
+        {
+            return;
+        }
+    }
+
+    menu.addSeparator();
+    menu.addAction(&openReferenceTreeAction_);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ParametersView::setupActions()
 //-----------------------------------------------------------------------------
 void ParametersView::setupActions()
@@ -85,6 +105,13 @@ void ParametersView::setupActions()
     recalculateReferencesAction_.setStatusTip(tr("Recalculate the references made to the parameter"));
     connect(&recalculateReferencesAction_, SIGNAL(triggered()),
         this, SLOT(onRecalculateReferencesAction()), Qt::UniqueConnection);
+
+    addAction(&openReferenceTreeAction_);
+    openReferenceTreeAction_.setToolTip(tr("Recalculate the references made to the parameter"));
+    openReferenceTreeAction_.setStatusTip(tr("Recalculate the references made to the parameter"));
+    connect(&openReferenceTreeAction_, SIGNAL(triggered()),
+        this, SLOT(onOpenReferenceTreeAction()), Qt::UniqueConnection);
+
 }
 
 //-----------------------------------------------------------------------------
@@ -103,4 +130,18 @@ void ParametersView::onRecalculateReferencesAction()
     }
 
     emit(recalculateReferenceToIndexes(sortedIndexes));
+}
+
+//-----------------------------------------------------------------------------
+// Function: ParametersView::onOpenReferenceTreeAction()
+//-----------------------------------------------------------------------------
+void ParametersView::onOpenReferenceTreeAction()
+{
+    QModelIndex index = currentIndex();
+    QModelIndex valueIdIndex = index.sibling(index.row(), ParameterColumns::ID);
+    QModelIndex nameIndex = index.sibling(index.row(), ParameterColumns::NAME);
+    QString targetId = valueIdIndex.data(Qt::DisplayRole).toString();
+    QString parameterName = nameIndex.data(Qt::DisplayRole).toString();
+
+    emit(openReferenceTree(targetId, parameterName));
 }

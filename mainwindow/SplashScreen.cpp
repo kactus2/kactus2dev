@@ -56,7 +56,7 @@ void SplashScreen::drawContents(QPainter *painter)
                             "Kactus2 is available for dual licensing.\n"
                             "This software is licensed under the General Public License Version 2.\n"
                             "Contributors: Antti Kamppi, Esko Pekkarinen, Janne Virtanen, Joni-Matti Maatta, \n"
-                            "Juho Järvinen, Lauri Matilainen, Mikko Teuho, Timo D. Hämäläinen, Anton Hagqvist"));
+                            "Juho Järvinen, Lauri Matilainen, Mikko Teuho, Timo D. Hämäläinen, Anton Hagqvist, Vasilii Feshchenko"));
 }
 
 //-----------------------------------------------------------------------------

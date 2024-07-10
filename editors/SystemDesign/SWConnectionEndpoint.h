@@ -101,7 +101,7 @@ public:
 
     ConnectionEndpoint::EndpointType getType() const noexcept override;
 
-    virtual ConnectionEndpoint* getOffPageConnector();
+    virtual ConnectionEndpoint* getOffPageConnector() const;
     
     /*! 
      *  Returns the encompassing component.

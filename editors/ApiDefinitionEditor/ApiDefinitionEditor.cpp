@@ -24,8 +24,7 @@
 //-----------------------------------------------------------------------------
 ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
     QSharedPointer<ApiDefinition> apiDef) :
-    TabDocument(parent, DOC_PROTECTION_SUPPORT),
-    libHandler_(libHandler),
+    TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
     nameGroup_(this),
     apiDef_(apiDef),
     comDefVLNVEdit_(VLNV::COMDEFINITION, libHandler, parent, this),
@@ -34,7 +33,7 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
 {
     // Initialize the editors.
     nameGroup_.setTitle(tr("API definition"));
-    nameGroup_.setDocumentNameGroup(apiDef_, libHandler_->getPath(apiDef_->getVlnv()));
+    nameGroup_.setDocumentNameGroup(apiDef_, getLibHandler()->getPath(apiDef_->getVlnv()));
     nameGroup_.setFlat(true);
     dataTypeList_.initialize(*apiDef->getDataTypes());
 
@@ -71,7 +70,7 @@ ApiDefinitionEditor::ApiDefinitionEditor(QWidget *parent, LibraryInterface* libH
     // Set the document name and type.
     VLNV vlnv = apiDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
-    setDocumentType(tr("API Definition"));
+    setDocumentType(DocumentType(DocumentTypes::API_DEFINITION));
 
     // Open in unlocked mode by default only if the version is draft.
     setProtection(vlnv.getVersion() != "draft");
@@ -92,11 +91,11 @@ void ApiDefinitionEditor::setProtection(bool locked)
 //-----------------------------------------------------------------------------
 void ApiDefinitionEditor::refresh()
 {
-    QSharedPointer<Document> libComp = libHandler_->getModel(apiDef_->getVlnv());
+    QSharedPointer<Document> libComp = getLibHandler()->getModel(apiDef_->getVlnv());
     apiDef_ = libComp.staticCast<ApiDefinition>();
 
     // Update the editors.
-    nameGroup_.setDocumentNameGroup(apiDef_, libHandler_->getPath(apiDef_->getVlnv()));
+    nameGroup_.setDocumentNameGroup(apiDef_, getLibHandler()->getPath(apiDef_->getVlnv()));
     comDefVLNVEdit_.setVLNV(apiDef_->getComDefinitionRef());
     dataTypeList_.initialize(*apiDef_->getDataTypes());
     functionEditor_.restore(*apiDef_);
@@ -132,7 +131,7 @@ bool ApiDefinitionEditor::validate(QVector<QString>& errorList)
 bool ApiDefinitionEditor::save()
 {
     applyChanges();
-    libHandler_->writeModelToFile(apiDef_);
+    getLibHandler()->writeModelToFile(apiDef_);
 
     return TabDocument::save();
 }
@@ -146,7 +145,7 @@ bool ApiDefinitionEditor::saveAs()
     VLNV vlnv;
     QString directory;
 
-    if (!NewObjectDialog::saveAsDialog(parentWidget(), libHandler_, apiDef_->getVlnv(), vlnv, directory))
+    if (!NewObjectDialog::saveAsDialog(parentWidget(), getLibHandler(), apiDef_->getVlnv(), vlnv, directory))
     {
         return false;
     }
@@ -160,7 +159,7 @@ bool ApiDefinitionEditor::saveAs()
     // Apply changes to the copy.
     applyChanges();
 
-    if (libHandler_->writeModelToFile(directory, apiDef_))
+    if (getLibHandler()->writeModelToFile(directory, apiDef_))
     {
         setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
         return TabDocument::saveAs();
@@ -199,7 +198,7 @@ void ApiDefinitionEditor::updateComDefinition()
     // Retrieve the new COM definition if the VLNV is valid.
     if (vlnv.isValid())
     {
-        QSharedPointer<Document const> libComp = libHandler_->getModelReadOnly(vlnv);
+        QSharedPointer<Document const> libComp = getLibHandler()->getModelReadOnly(vlnv);
         QSharedPointer<ComDefinition const> comDef = libComp.dynamicCast<ComDefinition const>();
         functionEditor_.setComDefinition(comDef);
     }

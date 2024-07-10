@@ -44,8 +44,8 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::ComponentDesignDiagram()
 //-----------------------------------------------------------------------------
-ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider, 
-    DesignWidget* parent):
+ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider,
+    DesignWidget* parent) :
     DesignDiagram(lh, editProvider, parent),
     tempConnection_(0),
     connectionStartPoint_(0),
@@ -68,7 +68,7 @@ ComponentDesignDiagram::ComponentDesignDiagram(LibraryInterface* lh, QSharedPoin
     connect(this, SIGNAL(selectionChanged()), this, SLOT(onSelectionChanged()));
     connect(editProvider.data(), SIGNAL(modified()), this, SIGNAL(contentChanged()));
 
-	setupActions();
+    setupActions();
 }
 
 //-----------------------------------------------------------------------------
@@ -124,7 +124,7 @@ bool ComponentDesignDiagram::singleSelection() const
 // Function: onSelectionChanged()
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::onSelectionChanged()
-{   
+{
     ensureOneTypeSelected(previouslySelectedItems_);
     raiseSelectedConnectionToFront();
 
@@ -139,13 +139,13 @@ void ComponentDesignDiagram::onSelectionChanged()
 
     // If the old selection was an off-page connector, hide its connections.
     // Also hide the previously selected connection if it was an off-page connection.
-    foreach (QGraphicsItem* oldSelection, previouslySelectedItems_)
+    foreach(QGraphicsItem * oldSelection, previouslySelectedItems_)
     {
         if (oldSelection->type() == offpageConnectorType())
         {
             ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(oldSelection);
 
-            foreach (GraphicsConnection* connection, connector->getConnections())
+            foreach(GraphicsConnection * connection, connector->getConnections())
             {
                 if (connection != selectedItem)
                 {
@@ -176,7 +176,7 @@ void ComponentDesignDiagram::onSelectionChanged()
     {
         ConnectionEndpoint* connector = dynamic_cast<ConnectionEndpoint*>(selectedItem);
 
-        foreach (GraphicsConnection* connection, connector->getConnections())
+        foreach(GraphicsConnection * connection, connector->getConnections())
         {
             connection->show();
         }
@@ -184,7 +184,7 @@ void ComponentDesignDiagram::onSelectionChanged()
 
     // Save the current selection as the old selection.
     previouslySelectedItems_ = nowSelectedItems;
-    
+
     onSelected(selectedItem);
     prepareContextMenuActions();
 }
@@ -211,7 +211,7 @@ void ComponentDesignDiagram::onOpenComponentAction()
 {
     if (singleSelection())
     {
-        ComponentItem* component = dynamic_cast<ComponentItem *>(selectedItems().first());
+        ComponentItem* component = dynamic_cast<ComponentItem*>(selectedItems().first());
         if (component)
         {
             openInComponentEditor(component);
@@ -226,7 +226,7 @@ void ComponentDesignDiagram::onOpenDesignAction(QAction* selectedAction)
 {
     if (singleSelection())
     {
-        ComponentItem* component = dynamic_cast<ComponentItem *>(selectedItems().first());
+        ComponentItem* component = dynamic_cast<ComponentItem*>(selectedItems().first());
         if (component)
         {
             QString viewName = selectedAction->data().toString();
@@ -246,16 +246,16 @@ void ComponentDesignDiagram::onOpenAutoConnector()
     {
         return;
     }
-    
+
     auto currentlyConnectedItems = autoConnector->getConnectedItems();
-    
+
     if (autoConnector->exec() == QDialog::Accepted)
     {
         QList<QPair<AutoConnectorItem*, AutoConnectorItem*> > updatedConnections =
             autoConnector->getConnectedItems();
 
         removeUnchangedConnectionEditorConnections(currentlyConnectedItems, updatedConnections);
-            
+
         // Now currentlyConnectedItems contain connections that have been removed, and updatedConnections
         // contains new connections.
 
@@ -307,13 +307,13 @@ QString ComponentDesignDiagram::getVisibleNameForComponentItem(ComponentItem* it
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::mousePressEvent()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
     lastMousePress_ = mouseEvent->button();
     lastHoveredEndpoint_ = nullptr; // Prevent invalid recoloring of last hovered endpoint.
 
     // if other than left button was pressed return the mode back to select
-	if (mouseEvent->button() != Qt::LeftButton)
+    if (mouseEvent->button() != Qt::LeftButton)
     {
         endInteraction();
         if (getMode() == MODE_SELECT && mouseEvent->button() == Qt::RightButton)
@@ -321,9 +321,9 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
             setInteractionMode(CONTEXT_MENU);
         }
 
-        setMode(MODE_SELECT);		
+        setMode(MODE_SELECT);
         return;
-	}
+    }
 
     if (getMode() == MODE_SELECT)
     {
@@ -364,7 +364,7 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
         {
             setInteractionMode(NORMAL);
         }
-               
+
         connectAt(mouseEvent->scenePos());
     }
     else if (getMode() == MODE_INTERFACE && !isProtected())
@@ -379,9 +379,9 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent *mouseEven
     {
         toggleOffPageAt(mouseEvent->scenePos());
     }
-    else if(getMode() == MODE_LABEL && !isProtected())
+    else if (getMode() == MODE_LABEL && !isProtected())
     {
-         createNoteAt(mouseEvent->scenePos());
+        createNoteAt(mouseEvent->scenePos());
     }
 }
 
@@ -546,14 +546,14 @@ void ComponentDesignDiagram::createRemoveCommandsForGivenConnections(QList<QPair
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::mouseReleaseEvent()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent* mouseEvent)
 {
     // Check if we're replacing a component.
     if (inReplaceMode())
     {
-        endComponentReplaceDrag(mouseEvent->scenePos());        
+        endComponentReplaceDrag(mouseEvent->scenePos());
     }
-    
+
     else if (canEndAssociation())
     {
         endAssociation(mouseEvent->scenePos());
@@ -561,7 +561,7 @@ void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
     }
 
     // process the normal mouse release event
-	QGraphicsScene::mouseReleaseEvent(mouseEvent);
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
 
     lastMousePress_ = Qt::NoButton;
     lastSelectedItemIsAtRightEdge_ = false;
@@ -570,13 +570,13 @@ void ComponentDesignDiagram::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEv
 //-----------------------------------------------------------------------------
 // Function: keyReleaseEvent()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::keyReleaseEvent(QKeyEvent *event)
+void ComponentDesignDiagram::keyReleaseEvent(QKeyEvent* event)
 {
     // Check if the user ended the off-page connection mode.
     if ((event->key() == Qt::Key_Shift) && inOffPageMode())
     {
-        if (hasConnectionStartingPoint() && 
-            connectionStartPoint_->getConnections().isEmpty() && 
+        if (hasConnectionStartingPoint() &&
+            connectionStartPoint_->getConnections().isEmpty() &&
             connectionStartPoint_->type() == offpageConnectorType())
         {
             connectionStartPoint_->hide();
@@ -604,7 +604,7 @@ void ComponentDesignDiagram::endConnect()
 //-----------------------------------------------------------------------------
 // Function: dragMoveEvent()
 //-----------------------------------------------------------------------------
-void ComponentDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent * event)
+void ComponentDesignDiagram::dragMoveEvent(QGraphicsSceneDragDropEvent* event)
 {
     updateDropAction(event);
 }
@@ -623,13 +623,13 @@ QMenu* ComponentDesignDiagram::createContextMenu(QPointF const& pos)
         if (!selectedItems().contains(item))
         {
             clearSelection();
-            
+
             if (item)
             {
                 item->setSelected(true);
             }
         }
-        
+
         prepareContextMenuActions();
 
         menu = new QMenu(getParent());
@@ -740,7 +740,7 @@ void ComponentDesignDiagram::prepareContextMenuActions()
     addAction_.setEnabled(addToLibraryActionEnabled());
     openComponentAction_.setEnabled(openComponentActionEnabled());
 
-    openDesignMenu_.clear();    
+    openDesignMenu_.clear();
     openDesignMenu_.setEnabled(openDesignEnabled());
     openAutoConnector_.setEnabled(autoConnectorEnabled());
     copyAction_.setEnabled(copyActionEnabled());
@@ -779,7 +779,7 @@ bool ComponentDesignDiagram::autoConnectorEnabled() const
 {
     int itemCount = selectedItems().count();
 
-    return !isProtected() && (itemCount == 1 || itemCount == 2 ) &&
+    return !isProtected() && (itemCount == 1 || itemCount == 2) &&
         selectedItems().first()->type() == componentType() && selectedItems().last()->type() == componentType();
 }
 
@@ -788,7 +788,7 @@ bool ComponentDesignDiagram::autoConnectorEnabled() const
 //-----------------------------------------------------------------------------
 bool ComponentDesignDiagram::draftSelected() const
 {
-    return !selectedItems().empty() && 
+    return !selectedItems().empty() &&
         selectedItems().first()->type() == componentType() &&
         !dynamic_cast<ComponentItem*>(selectedItems().first())->componentModel()->getVlnv().isValid();
 }
@@ -801,8 +801,8 @@ void ComponentDesignDiagram::openComponentItem(ComponentItem* comp)
     QStringList hierViews = hierarchicalViewsOf(comp);
 
     // if configuration is used and it contains an active view for the instance
- 
-    if (!getActiveViewOf(comp).isEmpty()) 
+
+    if (!getActiveViewOf(comp).isEmpty())
     {
         openComponentByActiveView(comp);
     }
@@ -893,17 +893,17 @@ void ComponentDesignDiagram::setupActions()
     getParent()->addAction(&selectAllAction_);
     selectAllAction_.setShortcut(QKeySequence::SelectAll);
     selectAllAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    connect(&selectAllAction_, SIGNAL(triggered()),this, SLOT(selectAll()), Qt::UniqueConnection);
+    connect(&selectAllAction_, SIGNAL(triggered()), this, SLOT(selectAll()), Qt::UniqueConnection);
 
     getParent()->addAction(&copyAction_);
     copyAction_.setShortcut(QKeySequence::Copy);
     copyAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    connect(&copyAction_, SIGNAL(triggered()),this, SLOT(onCopyAction()), Qt::UniqueConnection);
+    connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 
     getParent()->addAction(&pasteAction_);
     pasteAction_.setShortcut(QKeySequence::Paste);
     pasteAction_.setShortcutContext(Qt::WidgetWithChildrenShortcut);
-    connect(&pasteAction_, SIGNAL(triggered()),this, SLOT(onPasteAction()), Qt::UniqueConnection);	
+    connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 
     getParent()->addAction(&addAction_);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddToLibraryAction()), Qt::UniqueConnection);
@@ -937,7 +937,7 @@ void ComponentDesignDiagram::destroyConnections()
         }
     }
 
-    for (GraphicsConnection * graphicsConnection : connectionList)
+    for (GraphicsConnection* graphicsConnection : connectionList)
     {
         removeItem(graphicsConnection);
         delete graphicsConnection;
@@ -1076,7 +1076,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
     clearPotentialEndpoints();
 
     ConnectionEndpoint* endpoint = DiagramUtil::snapToItem<ConnectionEndpoint>(point, this, GridSize);
-    
+
     // Check if there is an end point close enough to the cursor and the
     // end points can be connected together.
     if (isPossibleEndpointForCurrentConnection(endpoint))
@@ -1100,8 +1100,8 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
 
             discardConnection();
 
-            GraphicsConnection* newTempConnection = createConnection(connectionStartPoint_, endpoint);
-
+            GraphicsConnection* newTempConnection = createConnection(connectionStartPoint_, endpoint, true);
+            
             addItem(newTempConnection);
             tempConnection_ = newTempConnection;
         }
@@ -1122,7 +1122,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
             tempConnection_->fixOverlap();
             if (tempConnection_->endpoint1() && tempConnection_->endpoint2())
             {
-                getEditProvider()->addCommand(cmd); 
+                getEditProvider()->addCommand(cmd);
             }
             else
             {
@@ -1145,7 +1145,7 @@ void ComponentDesignDiagram::endConnectionTo(QPointF const& point)
     }
     // Delete the temporary connection.
     else
-    {        
+    {
         discardConnection();
     }
 }
@@ -1204,7 +1204,7 @@ void ComponentDesignDiagram::discardConnection()
         removeItem(tempConnection_);
         delete tempConnection_;
         tempConnection_ = nullptr;
-    }    
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -1401,7 +1401,7 @@ void ComponentDesignDiagram::endComponentReplaceDrag(QPointF const& endpoint)
 {
     setInteractionMode(NORMAL);
     QApplication::restoreOverrideCursor();
-    
+
     if (componentItemIsAllowedInColumnAtPosition(endpoint))
     {
         ComponentItem* destinationComponent = getTopmostComponent(endpoint);

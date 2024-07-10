@@ -92,7 +92,7 @@ public:
      *
      *      @return the off page connector item.
      */
-    ConnectionEndpoint* getOffPageConnector() override;
+    virtual ConnectionEndpoint* getOffPageConnector() const;
 
     /*!
      *  Check if the scene is locked.

@@ -34,14 +34,13 @@
 //-----------------------------------------------------------------------------
 BusDefinitionEditor::BusDefinitionEditor(QWidget *parent, LibraryInterface* libHandler,
     QSharedPointer<BusDefinition> busDef):
-TabDocument(parent, DOC_PROTECTION_SUPPORT),
-libHandler_(libHandler),
+TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 busDef_(busDef),
 busDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_))
 {
-    setDocumentType(tr("Bus Definition"));
+    setDocumentType(DocumentType(DocumentTypes::BUS_DEFINITION));
 
     if (busDef_)
     {
@@ -80,7 +79,7 @@ void BusDefinitionEditor::refresh()
 
     if (busDef_)
     {
-        busDef_ = libHandler_->getModel(busDef_->getVlnv()).dynamicCast<BusDefinition>();
+        busDef_ = getLibHandler()->getModel(busDef_->getVlnv()).dynamicCast<BusDefinition>();
         busDefGroup_.setBusDef(busDef_);
     } 
 
@@ -153,7 +152,7 @@ bool BusDefinitionEditor::validate(QVector<QString>& errorList)
 //-----------------------------------------------------------------------------
 bool BusDefinitionEditor::save()
 {
-    libHandler_->writeModelToFile(busDef_);
+    getLibHandler()->writeModelToFile(busDef_);
 
     return TabDocument::save();
 }
@@ -172,7 +171,7 @@ bool BusDefinitionEditor::saveAs()
     VLNV absDefVLNV;
     QString absDirectory;
 
-    if (!NewObjectDialog::saveAsDialog(this, libHandler_, busDef_->getVlnv(), vlnv, busDirectory))
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), busDef_->getVlnv(), vlnv, busDirectory))
     {
         return false;
     }
@@ -181,7 +180,7 @@ bool BusDefinitionEditor::saveAs()
     busDefVLNV.setType(VLNV::BUSDEFINITION);
     busDef_->setVlnv(busDefVLNV);
     
-    libHandler_->writeModelToFile(busDirectory, busDef_);
+    getLibHandler()->writeModelToFile(busDirectory, busDef_);
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
     return TabDocument::saveAs();
 }

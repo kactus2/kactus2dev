@@ -44,7 +44,7 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] parent      The parent widget.
+     *      @param [in] parent      The parent widget.
 	 *      @param [in] libHandler  The library interface.
      *      @param [in] apiDef      The API definition.
 	 */
@@ -117,9 +117,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-	//! Pointer to the instance that handles the library.
-	LibraryInterface* libHandler_;
 
     DocumentNameGroupEditor nameGroup_;
 

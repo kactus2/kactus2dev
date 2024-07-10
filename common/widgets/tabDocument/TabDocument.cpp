@@ -12,15 +12,20 @@
 #include "TabDocument.h"
 
 #include <QApplication>
-#include <QMessageBox>
 #include <QCoreApplication>
-#include <QTimer>
+#include <QMessageBox>
 #include <QPushButton>
+#include <QTimer>
+
+#include <KactusAPI/include/LibraryInterface.h>
+#include "IPXACTmodels/common/Document.h"
+
+class LibraryInterface;
 
 //-----------------------------------------------------------------------------
 // Function: TabDocument::TabDocument()
 //-----------------------------------------------------------------------------
-TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, int maxZoomLevel) : 
+TabDocument::TabDocument(QWidget* parent, LibraryInterface* libHandler, unsigned int flags, int minZoomLevel, int maxZoomLevel) :
     QWidget(parent),
     supportedWindows_(OUTPUTWINDOW | LIBRARYWINDOW | CONTEXT_HELP_WINDOW ),
     flags_(flags),
@@ -33,7 +38,9 @@ TabDocument::TabDocument(QWidget* parent, unsigned int flags, int minZoomLevel, 
     docName_(""),
     previouslyUnlocked_(false),
     relatedVLNVs_(),
-    refreshRequested_(false)
+    refreshRequested_(false),
+    docType_(DocumentTypes::EMPTY),
+    libHandler_(libHandler)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
 }
@@ -68,17 +75,9 @@ void TabDocument::setDocumentName(QString const& name)
 //-----------------------------------------------------------------------------
 // Function: TabDocument::setDocumentType()
 //-----------------------------------------------------------------------------
-void TabDocument::setDocumentType(QString const& type)
+void TabDocument::setDocumentType(DocumentType const& type)
 {
-    if (type.isEmpty())
-    {
-        docType_ = "";
-    }
-    else
-    {
-        docType_ = " [" + type + "]";
-    }
-
+    docType_ = type;
     updateTabTitle();
 }
 
@@ -134,16 +133,9 @@ void TabDocument::setModified(bool modified)
 		return;
     }
 
-    if (modified)
-    {
-        setTabTitle(docName_ + docType_ + "*");
-    }
-    else
-    {
-        setTabTitle(docName_ + docType_);
-    }
-
     modified_ = modified;
+    updateTabTitle();
+
 	emit modifiedChanged(modified_);
 }
 
@@ -281,14 +273,27 @@ void TabDocument::loadChangesFromRelatedTab()
 //-----------------------------------------------------------------------------
 void TabDocument::updateTabTitle()
 {
-    // Update also the title.
     if (isModified())
     {
-        setTabTitle(docName_ + docType_ + "*");
+        if (docType_!=DocumentTypes::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + docType_.ToString() + "]" + "*");
+        }
+        else 
+        {
+            setTabTitle(docName_ + "*");
+        }
     }
     else
     {
-        setTabTitle(docName_ + docType_);
+        if (docType_ != DocumentTypes::EMPTY)
+        {
+            setTabTitle(docName_ + " [" + docType_.ToString() + "]");
+        }
+        else
+        {
+            setTabTitle(docName_);
+        }        
     }
 }
 
@@ -377,6 +382,27 @@ QMap<QString, bool> const& TabDocument::getVisibilityControls() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: TabDocument::getDocType()
+//-----------------------------------------------------------------------------
+TabDocument::DocumentType TabDocument::getDocType() const
+{
+    return docType_;
+}
+
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::fileExists()
+//-----------------------------------------------------------------------------
+bool TabDocument::fileExists()
+{
+    if (!libHandler_)
+    {
+        return false;
+    }
+    return libHandler_->getModel<Document>(getIdentifyingVLNV())!=nullptr;
+}
+
+//-----------------------------------------------------------------------------
 // Function: TabDocument::addRelatedVLNV()
 //-----------------------------------------------------------------------------
 void TabDocument::addRelatedVLNV(VLNV const& vlnv)
@@ -438,6 +464,11 @@ void TabDocument::showEvent(QShowEvent* event)
         refreshRequested_ = false;
         QTimer::singleShot(20, this, SLOT(handleRefreshRequest()));
     }
+}
+
+LibraryInterface* TabDocument::getLibHandler() const
+{
+    return libHandler_;
 }
 
 //-----------------------------------------------------------------------------
