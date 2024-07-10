@@ -96,7 +96,7 @@ bool MemoryDesignDocument::setDesign(VLNV const& componentVLNV, QString const& v
             arg(getIdentifyingVLNV().getVersion()));
         setDocumentType(DocumentType(DocumentTypes::MEMORY_DESIGN));
 
-        QSharedPointer<const Document> libraryDocument = libHandler_->getModelReadOnly(componentVLNV);
+        QSharedPointer<const Document> libraryDocument = getLibHandler()->getModelReadOnly(componentVLNV);
         QSharedPointer<const Component> component = libraryDocument.dynamicCast<const Component>();
         if (component)
         {
@@ -365,6 +365,6 @@ void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
 //-----------------------------------------------------------------------------
 bool MemoryDesignDocument::exportImage()
 {
-    QString libraryPath = libHandler_->getDirectoryPath(identifyingVLNV_);
+    QString libraryPath = getLibHandler()->getDirectoryPath(identifyingVLNV_);
     return ImageExporter::exportImage(libraryPath, identifyingVLNV_, diagram_, this);
 }

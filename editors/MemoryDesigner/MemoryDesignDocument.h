@@ -282,9 +282,6 @@ private:
     //! The memory design diagram.
     MemoryDesignerDiagram* diagram_;
 
-    //! The used library interface.
-    LibraryInterface* libHandler_;
-
     //! VLNV identifying the design.
     VLNV identifyingVLNV_;
 

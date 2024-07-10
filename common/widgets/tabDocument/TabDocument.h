@@ -161,6 +161,7 @@ public:
      *  Constructor.
      *
      *      @param [in] parent        The parent widget.
+     *      @param [in] libHandler    The instance that handles the library.
      *      @param [in] flags         The document support flags.
      *      @param [in] minZoomLevel  The minimum zoom level.
 	 *      @param [in] maxZoomLevel  The maximum zoom level.
@@ -470,9 +471,8 @@ protected:
 	//! \brief Contains the bit fields that define which windows are supported for this tab.
 	unsigned int supportedWindows_;
 
-
     /*!
-     *  Returns libHandler_.
+     *  Returns instance that handles the library.
      */
     LibraryInterface* getLibHandler() const;
 
@@ -547,7 +547,7 @@ private:
     //! If true, the document must be refreshed when shown the next time.
     bool refreshRequested_;
 
-    //! The instance that handles the library
+    //! The instance that handles the library.
     LibraryInterface* libHandler_;
 };
 

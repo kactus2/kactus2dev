@@ -106,7 +106,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 		if (vlnv.isValid() && vlnv.getType() == VLNV::COMPONENT) {
 
 			// create model 
-			QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
+			QSharedPointer<Component> comp = getLibHandler()->getModel<Component>(vlnv);
 
 			if (comp == nullptr|| !setDesign(comp, viewName))
             {
@@ -117,13 +117,13 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 	// if vlnv was writeSucceeded but view is empty then should create a new design for the component
 	else if (vlnv.isValid() && viewName.isEmpty())
     {
-		Q_ASSERT(getLibraryInterface()->contains(vlnv));
-		Q_ASSERT(getLibraryInterface()->getDocumentType(vlnv) == VLNV::COMPONENT);
+		Q_ASSERT(getLibHandler()->contains(vlnv));
+		Q_ASSERT(getLibHandler()->getDocumentType(vlnv) == VLNV::COMPONENT);
 
-		QSharedPointer<Component> comp = getLibraryInterface()->getModel<Component>(vlnv);
+		QSharedPointer<Component> comp = getLibHandler()->getModel<Component>(vlnv);
 
 		// get the directory path where the component's xml file is located
-		const QString xmlPath = getLibraryInterface()->getPath(vlnv);
+		const QString xmlPath = getLibHandler()->getPath(vlnv);
 		QFileInfo xmlInfo(xmlPath);
 		const QString dirPath = xmlInfo.absolutePath();
 
@@ -180,10 +180,10 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
             }
         }
 
-        designConfiguration = getLibraryInterface()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();       
+        designConfiguration = getLibHandler()->getModel(configurationVLNV).dynamicCast<DesignConfiguration>();       
         if (designConfiguration)
         {
-            design = getLibraryInterface()->getModel(designConfiguration->getDesignRef()).dynamicCast<Design>();
+            design = getLibHandler()->getModel(designConfiguration->getDesignRef()).dynamicCast<Design>();
         }
 
         if (!design)
@@ -204,7 +204,7 @@ bool HWDesignWidget::setDesign(QSharedPointer<Component> component, QString cons
             }
         }
 
-        design = getLibraryInterface()->getModel(designVLNV).dynamicCast<Design>();
+        design = getLibHandler()->getModel(designVLNV).dynamicCast<Design>();
         if (!design)
         {
             emit errorMessage(tr("VLNV %1 was not found in library.").arg(designVLNV.toString()));
@@ -238,7 +238,7 @@ bool HWDesignWidget::saveAs()
     VLNV vlnv;
 
     QString directory;
-    if (!NewObjectDialog::saveAsDialog(this, getLibraryInterface(), oldVLNV, prodHier, firmness, tags, vlnv,
+    if (!NewObjectDialog::saveAsDialog(this, getLibHandler(), oldVLNV, prodHier, firmness, tags, vlnv,
         directory))
     {
         return false;
@@ -312,7 +312,7 @@ bool HWDesignWidget::saveAs()
 	getDiagram()->updateHierComponent();
 
 	// get the paths to the original xml file
-	QFileInfo sourceInfo(getLibraryInterface()->getPath(oldComponent->getVlnv()));
+	QFileInfo sourceInfo(getLibHandler()->getPath(oldComponent->getVlnv()));
 	QString sourcePath = sourceInfo.absolutePath();
 
 	// update the file paths and copy necessary files
@@ -322,25 +322,25 @@ bool HWDesignWidget::saveAs()
 
 	bool writeSucceeded = true;
 
-	getLibraryInterface()->beginSave();
+	getLibHandler()->beginSave();
 
 	// if design configuration is used then write it.
-	if (designConf && !getLibraryInterface()->writeModelToFile(directory, designConf))
+	if (designConf && !getLibHandler()->writeModelToFile(directory, designConf))
     {
 	    writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, design))
+	if (!getLibHandler()->writeModelToFile(directory, design))
     {
 		writeSucceeded = false;
 	}
 
-	if (!getLibraryInterface()->writeModelToFile(directory, topComponent))
+	if (!getLibHandler()->writeModelToFile(directory, topComponent))
     {
 		writeSucceeded = false;
 	}
 
-	getLibraryInterface()->endSave();
+	getLibHandler()->endSave();
 
 	if (writeSucceeded)
     {
@@ -734,17 +734,17 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 	VLNV vlnv;
 	QString path;
 
-	if (prevlnv.isValid() && getLibraryInterface()->contains(prevlnv)) 
+	if (prevlnv.isValid() && getLibHandler()->contains(prevlnv)) 
     {
 		vlnv = prevlnv;
-		path = getLibraryInterface()->getPath(prevlnv);
+		path = getLibHandler()->getPath(prevlnv);
 
 		QFileInfo info(path);
 		path = info.absolutePath();
 	}
 	else
     {
-        NewObjectDialog newDesignDialog(getLibraryInterface(), VLNV::COMPONENT, true, parentWidget());
+        NewObjectDialog newDesignDialog(getLibHandler(), VLNV::COMPONENT, true, parentWidget());
 		newDesignDialog.setVLNV(prevlnv);
 		newDesignDialog.exec();
 
@@ -759,10 +759,10 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 
 	QSharedPointer<Component> newComponent;
 	
-	if (getLibraryInterface()->contains(prevlnv))
+	if (getLibHandler()->contains(prevlnv))
     {
 		// find the component
-		QSharedPointer<Document> libComp = getLibraryInterface()->getModel(prevlnv);
+		QSharedPointer<Document> libComp = getLibHandler()->getModel(prevlnv);
 		newComponent = libComp.staticCast<Component>();
 
 		Q_ASSERT_X(newComponent, "HWDesignWidget::createEmptyDesign",
@@ -774,7 +774,7 @@ QSharedPointer<Component> HWDesignWidget::createEmptyDesign(VLNV const& prevlnv)
 		newComponent = QSharedPointer<Component>(new Component(vlnv, getEditedComponent()->getRevision()));
 	}
 
-    getLibraryInterface()->writeModelToFile(path, newComponent);
+    getLibHandler()->writeModelToFile(path, newComponent);
 
 	createDesignForComponent(newComponent, path);
 
@@ -796,7 +796,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	QString version = designVLNV.getVersion();
 
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(designVLNV))
+	while (getLibHandler()->contains(designVLNV))
     {
 		++runningNumber;
 		designVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
@@ -810,7 +810,7 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 	version = desConfVLNV.getVersion();
 
 	// if vlnv is reserved then add "(<number>)" to end of version field
-	while (getLibraryInterface()->contains(desConfVLNV))
+	while (getLibHandler()->contains(desConfVLNV))
     {
 		++runningNumber;
 		desConfVLNV.setVersion(version + "(" + QString::number(runningNumber) + ")");
@@ -840,9 +840,9 @@ void HWDesignWidget::createDesignForComponent(QSharedPointer<Component> componen
 
 	auto newDesign = QSharedPointer<Design>(new Design(designVLNV, component->getRevision()));
 
-	getLibraryInterface()->writeModelToFile(dirPath, newDesign);
-	getLibraryInterface()->writeModelToFile(dirPath, designConf);
-    getLibraryInterface()->writeModelToFile(component);
+	getLibHandler()->writeModelToFile(dirPath, newDesign);
+	getLibHandler()->writeModelToFile(dirPath, designConf);
+    getLibHandler()->writeModelToFile(component);
 
 	setDesign(component, viewName);
 }
@@ -889,7 +889,7 @@ void HWDesignWidget::updateFiles(QSharedPointer<Component> topComponent, QString
 void HWDesignWidget::loadChangesFromRelatedTab()
 {
     // Load updated component from disk
-    if (auto libraryComponent = getLibraryInterface()->getModelReadOnly<Component>(getEditedComponent()->getVlnv()))
+    if (auto libraryComponent = getLibHandler()->getModelReadOnly<Component>(getEditedComponent()->getVlnv()))
     {
         loadBusInterfaceChanges(libraryComponent);
         loadPortChanges(libraryComponent);

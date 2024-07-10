@@ -44,7 +44,7 @@ public:
 	/*!
      *  Constructor.
 	 *
-	 *      @param [in] parent      The parent widget.
+     *      @param [in] parent      The parent widget.
 	 *      @param [in] libHandler  The library interface.
      *      @param [in] apiDef      The API definition.
 	 */

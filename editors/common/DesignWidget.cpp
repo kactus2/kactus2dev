@@ -182,7 +182,7 @@ void DesignWidget::refresh()
 {
 	QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QSharedPointer<Component> comp = libHandler_->getModel(editedComponent_->getVlnv()).staticCast<Component>();
+    QSharedPointer<Component> comp = getLibHandler()->getModel(editedComponent_->getVlnv()).staticCast<Component>();
 
     setDesign(comp, viewName_);
     setModified(false);
@@ -235,27 +235,27 @@ bool DesignWidget::save()
         return false;
     }
 
-    libHandler_->beginSave();
+    getLibHandler()->beginSave();
 
     bool writeSucceeded = true;
 
     // Write the files.
-    if (designConf && !libHandler_->writeModelToFile(designConf))
+    if (designConf && !getLibHandler()->writeModelToFile(designConf))
     {
         writeSucceeded = false;
     }
 
-    if (!libHandler_->writeModelToFile(design))
+    if (!getLibHandler()->writeModelToFile(design))
     {
         writeSucceeded = false;
     }
 
-    if (!libHandler_->writeModelToFile(editedComponent_))
+    if (!getLibHandler()->writeModelToFile(editedComponent_))
     {
         writeSucceeded = false;
     }
 
-    libHandler_->endSave();
+    getLibHandler()->endSave();
 
     if (writeSucceeded)
     {
@@ -350,14 +350,6 @@ void DesignWidget::centerViewTo(QPointF const& centerPoint)
 }
 
 //-----------------------------------------------------------------------------
-// Function: DesignWidget::getLibraryInterface()
-//-----------------------------------------------------------------------------
-LibraryInterface* DesignWidget::getLibraryInterface()
-{
-    return libHandler_;
-}
-
-//-----------------------------------------------------------------------------
 // Function: DesignWidget::getOpenViewName()
 //-----------------------------------------------------------------------------
 QString DesignWidget::getOpenViewName() const
@@ -422,7 +414,7 @@ void DesignWidget::print()
 bool DesignWidget::exportImage()
 {
     VLNV designVLNV = getIdentifyingVLNV();
-    QString libraryPath = libHandler_->getDirectoryPath(designVLNV);
+    QString libraryPath = getLibHandler()->getDirectoryPath(designVLNV);
     return ImageExporter::exportImage(libraryPath, designVLNV, diagram_, this);
 }
 

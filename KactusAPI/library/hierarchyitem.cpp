@@ -48,6 +48,10 @@ QObject(parent),
     connect(this, SIGNAL(noticeMessage(QString const&)),
         parent, SIGNAL(noticeMessage(QString const&)), Qt::UniqueConnection);
 
+    // The line of code below prevents the project form loading if there are any files
+    // that are not presented in the library. However, all the conditions should be 
+    // tested (including, for example, opening of deleted files) and thats why it is
+    // better to stay commented.
     //Q_ASSERT(handler->contains(vlnv));
 
     VLNV::IPXactType documentType = library_->getDocumentType(vlnv);

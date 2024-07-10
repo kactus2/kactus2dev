@@ -232,11 +232,6 @@ signals:
 protected:
     void showEvent(QShowEvent* event);
 
-    /*!
-     *  Returns the library interface.
-     */
-    LibraryInterface* getLibraryInterface();
-
     virtual bool setDesign(QSharedPointer<Component> component, const QString& viewName);
 
     //! Removes all selected sticky notes.
@@ -258,9 +253,6 @@ private:
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
-
-    //! The library interface.
-    LibraryInterface* libHandler_;
 
     //! The graphics view for showing the diagram.
     QGraphicsView* view_ = new QGraphicsView(this);
