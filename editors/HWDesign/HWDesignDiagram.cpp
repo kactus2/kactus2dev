@@ -243,14 +243,14 @@ void HWDesignDiagram::updateHierComponent()
     QList<QSharedPointer<BusInterface> > busIfs;
 
     // Search all graphics items in the scene.
-    for (QGraphicsItem *item : items())
+    for (QGraphicsItem* item : items())
     {
         // Check if the item is a diagram interface and its bus interface is defined.
         if (auto diagIf = dynamic_cast<HierarchicalBusInterfaceItem*>(item))
         {
             if (diagIf->getBusInterface() != nullptr && !diagIf->isInvalid())
             {
-			    busIfs.append(diagIf->getBusInterface());
+                busIfs.append(diagIf->getBusInterface());
             }
         }
     }
@@ -271,26 +271,30 @@ void HWDesignDiagram::updateHierComponent()
         }
     }
 
-    QList<QSharedPointer<BusInterface> > toRemove;
-
-    // Remove interfaces deleted in the design from the component.
-    for (auto componentInterface : *componentInterfaces)
+    if (manuallyDeletedInterfaces_)
     {
-        bool busExists = std::find_if(busIfs.cbegin(), busIfs.cend(), [&componentInterface](auto diagramInterface)
-            {
-                return componentInterface->name() == diagramInterface->name();
-            }) != busIfs.cend();
-
-        if (!busExists)
+        QList<QSharedPointer<BusInterface> > toRemove;
+        // Remove interfaces deleted in the design from the component.
+        for (auto componentInterface : *componentInterfaces)
         {
-            toRemove.append(componentInterface);
+            bool busExists = std::find_if(busIfs.cbegin(), busIfs.cend(), [&componentInterface](auto diagramInterface)
+                {
+                    return componentInterface->name() == diagramInterface->name();
+                }) != busIfs.cend();
+
+            if (!busExists)
+            {
+                toRemove.append(componentInterface);
+            }
+        }
+
+        for (auto interfaceToRemove : toRemove)
+        {
+            componentInterfaces->removeAll(interfaceToRemove);
         }
     }
 
-    for (auto interfaceToRemove : toRemove)
-    {
-        componentInterfaces->removeAll(interfaceToRemove);
-    }
+    manuallyDeletedInterfaces_ = false;
 }
 
 //-----------------------------------------------------------------------------
@@ -408,6 +412,14 @@ HWConnectionEndpoint* HWDesignDiagram::getHierarchicalInterface(QString const& b
     }
 
     return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: HWDesignDiagram::getInterfacesToDelete()
+//-----------------------------------------------------------------------------
+void HWDesignDiagram::setInterfacesHaveBeenDeleted(bool haveBeenDeleted)
+{
+    manuallyDeletedInterfaces_ = true;
 }
 
 //-----------------------------------------------------------------------------

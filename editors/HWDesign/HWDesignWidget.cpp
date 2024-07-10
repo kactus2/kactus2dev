@@ -514,6 +514,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
             new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
         connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
 
+        static_cast<HWDesignDiagram*>(getDiagram())->setInterfacesHaveBeenDeleted(true);
         childCmd->redo();
     }
 
@@ -917,14 +918,15 @@ void HWDesignWidget::loadBusInterfaceChanges(QSharedPointer<Component const> lib
         designComponentInterfaces.append(compBusif);
     }
 
-    // Remove deleted interfaces (aka if interface exists in design component but not in component loaded from disk)
+    auto hwDiagram = static_cast<HWDesignDiagram*>(getDiagram());
+   
+    // Remove deleted interfaces (aka if interface exists in design component but not in component loaded from disk).
     for (auto designComponentInterfaceIt = designComponentInterfaces.begin(); designComponentInterfaceIt != designComponentInterfaces.end();)
     {
         if (auto foundInterface = Search::findByName((*designComponentInterfaceIt)->name(), libraryComponentInterfaces);
             foundInterface == nullptr)
         {
             // Remove connections and routes from design, if interface had no connections
-            auto hwDiagram = static_cast<HWDesignDiagram*>(getDiagram());
             if (auto endpointItem = hwDiagram->getHierarchicalInterface((*designComponentInterfaceIt)->name()))
             {
                 auto busItem = static_cast<HierarchicalBusInterfaceItem*>(endpointItem);
@@ -939,6 +941,8 @@ void HWDesignWidget::loadBusInterfaceChanges(QSharedPointer<Component const> lib
                         design->getInterconnections()->removeOne(interconnectionItem->getInterconnection());
                     }
                 }
+
+                hwDiagram->removeItem(busItem);
             }
 
             designComponentInterfaceIt = designComponentInterfaces.erase(designComponentInterfaceIt);

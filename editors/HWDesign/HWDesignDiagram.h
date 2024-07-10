@@ -117,7 +117,7 @@ public:
     {
         QSharedPointer<Component> component;            //!< The referenced component.
         QSharedPointer<ComponentInstance> instance;
-       
+
         ComponentInstanceCopyData()
             : component(),
             instance()
@@ -155,8 +155,8 @@ public:
          */
         ColumnCopyData()
             : desc(),
-              components(),
-              interfaces()
+            components(),
+            interfaces()
         {
         }
     };
@@ -176,7 +176,7 @@ public:
         {
         }
     };
-    
+
     /*!
      *  The constructor.
      *
@@ -186,15 +186,15 @@ public:
      *      @param [in] designParameterFinder               Parameter finder for design parameters.
      *      @param [in] parent                              Owner of this diagram.
      */
-    HWDesignDiagram(LibraryInterface *lh, QSharedPointer<IEditProvider> editProvider,
+    HWDesignDiagram(LibraryInterface* lh, QSharedPointer<IEditProvider> editProvider,
         QSharedPointer<MultipleParameterFinder> designAndInstancesParameterFinder,
         QSharedPointer<ListParameterFinder> designParameterFinder,
         DesignWidget* parent = 0);
 
-	/*! 
+    /*!
      *  The destructor.
      */
-	~HWDesignDiagram() final = default;
+    ~HWDesignDiagram() final = default;
 
     /*!
      *  Set the IP-XACT document that is viewed in HWDesignDiagram.
@@ -206,7 +206,7 @@ public:
      */
     HWComponentItem* getComponentItem(QString const& instanceName);
 
-	/*!
+    /*!
      *  Reflects the changes in the design to the top-level component.
      */
     virtual void updateHierComponent();
@@ -239,14 +239,21 @@ public:
     virtual HWConnectionEndpoint* getDiagramAdHocPort(QString const& portName);
 
     /*!
-     *	Returns the bus interface item of the corresponding design component bus interface with the given name 
+     *	Returns the bus interface item of the corresponding design component bus interface with the given name
      *  or nullptr if not found.
-     *  
+     *
      *      @param [in] busRef     The interface name.
-     *	    
+     *
      * 	    @return The hierarchical bus interface item found or null.
      */
     HWConnectionEndpoint* getHierarchicalInterface(QString const& busRef) const;
+
+    /*!
+     *	Sets the value of the flag indicating if interfaces have been deleted in the design diagram.
+     *  
+     *      @param [in] haveBeenDeleted     Flag value to set.
+     */
+    void setInterfacesHaveBeenDeleted(bool haveBeenDeleted);
 
 public slots:
 
@@ -926,6 +933,9 @@ private:
 
     //! Parameter finder for design parameter reference tree
     QSharedPointer<MultipleParameterFinder> designAndInstancesParameterFinder_;
+
+    //! Flag indicating if interfaces have been deleted from the design diagram.
+    bool manuallyDeletedInterfaces_ = false;
 };
 
 #endif // HWDESIGNDIAGRAM_H

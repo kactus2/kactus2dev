@@ -227,6 +227,8 @@ QSharedPointer<IEditProvider> DesignWidget::getEditProvider() const
 //-----------------------------------------------------------------------------
 bool DesignWidget::save()
 {
+    getDiagram()->updateHierComponent();
+
     // Create the design.
     QSharedPointer<Design> design = getDiagram()->getDesign();
     QSharedPointer<DesignConfiguration> designConf = getDiagram()->getDesignConfiguration();
