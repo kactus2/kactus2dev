@@ -291,7 +291,7 @@ bool VhdlGenerator2::addRTLView(QString const& fileSetName, const QString& vhdlF
 	}
     
 	// get the relative path to add to file set
-	QString relativePath = General::getRelativePath(ipDir, vhdlFileName);
+	QString relativePath = General::getRelativeSavePath(ipDir, vhdlFileName);
 	if (relativePath.isEmpty())
     {
 		emit errorMessage(tr("Could not create relative path to vhdl file."));
@@ -329,13 +329,15 @@ bool VhdlGenerator2::addRTLView(QString const& fileSetName, const QString& vhdlF
     
 	// create a new file
 	QSharedPointer<File> topVhdlFile = topFileSet->addFile(relativePath, settings);
+	FileType vhdlFileType(QStringLiteral("vhdlSource"));
 	topVhdlFile->setIncludeFile(true);
 	topVhdlFile->setLogicalName("work");
 	topVhdlFile->setCommand(QString("vcom"));
 	topVhdlFile->setBuildFlags("-quiet -check_synthesis -work work", "true");
+	topVhdlFile->getFileTypes()->append(vhdlFileType);
 
     if (!component_->hasView(viewName_))
-    {       
+    {
         QSharedPointer<View> targetView(new View(viewName_));
         QSharedPointer<View::EnvironmentIdentifier> envId( new View::EnvironmentIdentifier );
         envId->language = "vhdl";
