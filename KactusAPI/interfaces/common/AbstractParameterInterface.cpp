@@ -339,7 +339,10 @@ std::string AbstractParameterInterface::getValue(std::string const& parameterNam
         }
         else
         {
-            return parseExpressionToBaseNumber(parameter->getValue(), baseNumber).toStdString();
+            bool expressionIsValid = false;
+            auto value = parseExpressionToBaseNumber(parameter->getValue(), baseNumber, &expressionIsValid).toStdString();
+            
+            return expressionIsValid ? value : std::string("x");
         }
     }
 

@@ -39,15 +39,15 @@ QString ParameterizableInterface::formattedValueFor(QString const& expression) c
 //-----------------------------------------------------------------------------
 // Function: ParameterizableInterface::parseExpressionToDecimal()
 //-----------------------------------------------------------------------------
-QString ParameterizableInterface::parseExpressionToDecimal(QString const& expression) const
+QString ParameterizableInterface::parseExpressionToDecimal(QString const& expression, bool* expressionIsValid /*= nullptr*/) const
 {
-    return expressionParser_->parseExpression(expression);
+    return expressionParser_->parseExpression(expression, expressionIsValid);
 }
 
 //-----------------------------------------------------------------------------
 // Function: ParameterizableInterface::parseExpressionToBaseNumber()
 //-----------------------------------------------------------------------------
-QString ParameterizableInterface::parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber) const
+QString ParameterizableInterface::parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber, bool* expressionIsValid /*= nullptr*/) const
 {
-    return valueFormatter_->format(parseExpressionToDecimal(expression), baseNumber);
+    return valueFormatter_->format(parseExpressionToDecimal(expression, expressionIsValid), baseNumber);
 }

@@ -32,7 +32,7 @@ namespace
     const QRegularExpression BINARY_OPERATOR(QStringLiteral("[/%^+-]|<<|>>|<=?|>=?|!==?|===?|[&|*]{1,2}|[$]pow"));
 
     const QRegularExpression UNARY_OPERATOR(QStringLiteral(
-        "[$]clog2|[$]exp|[$]sqrt|[$]ipxact_mode_condition|[$]ipxact_port_value|[$]ipxact_field_value|~"));
+        "[$]clog2|[$]exp|[$]sqrt|[$]ipxact_mode_condition|[$]ipxact_port_value|[$]ipxact_field_value|~|`"));
 
     const QRegularExpression TERNARY_OPERATOR(QStringLiteral("[?:]"));
 
@@ -64,7 +64,9 @@ namespace
 //-----------------------------------------------------------------------------
 QString SystemVerilogExpressionParser::parseExpression(QStringView expression, bool* validExpression) const
 {
-    return solveRPN(convertToRPN(expression), validExpression);
+    // Copy of expression needs to be created for replacing unary minuses with special character.
+    QString expressionCopy = expression.toString();
+    return solveRPN(convertToRPN(expressionCopy), validExpression);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,8 +91,8 @@ bool SystemVerilogExpressionParser::isPlainValue(QStringView expression) const
 int SystemVerilogExpressionParser::baseForExpression(QStringView expression) const
 {
     int greatestBase = 0;
-
-    for (auto const& token : convertToRPN(expression))
+    QString asStr = expression.toString();
+    for (auto const& token : convertToRPN(asStr))
     {
         if (isLiteral(token))
         {
@@ -108,7 +110,7 @@ int SystemVerilogExpressionParser::baseForExpression(QStringView expression) con
 //-----------------------------------------------------------------------------
 // Function: SystemVerilogExpressionParser::convertToRPN()
 //-----------------------------------------------------------------------------
-QVector<QStringView> SystemVerilogExpressionParser::convertToRPN(QStringView expression)
+QVector<QStringView> SystemVerilogExpressionParser::convertToRPN(QString& expression)
 {
     // Convert expression to Reverse Polish Notation (RPN) using the Shunting Yard algorithm.
     QVector<QStringView> output;
@@ -117,7 +119,28 @@ QVector<QStringView> SystemVerilogExpressionParser::convertToRPN(QStringView exp
     int openParenthesis = 0;
     bool nextMayBeLiteral = true;
 
+    qsizetype previousIndex = -1;
     const auto SIZE = expression.size();
+
+    // Convert unary minuses to backticks. Needs to be done before main loop, otherwise string views will be invalidated.
+    // SolveRPN knows to treat backticks as unary minus.
+    for (qsizetype index = 0; index < SIZE; ++index)
+    {
+        const QChar current = expression.at(index);
+        if (current.isSpace())
+        {
+            continue;
+        }
+
+        // Minus == unary minus if preceded by opening parenthesis or if first token
+        if (current == QLatin1Char('-') && (previousIndex == -1 || expression.at(previousIndex) == OPEN_PARENTHESIS_STRING))
+        {
+            expression[index] = QLatin1Char('`');
+        }
+
+        previousIndex = index;
+    }
+
     for (qsizetype index = 0; index < SIZE; /*index incremented inside loop*/)
     {
         const QChar current = expression.at(index);
@@ -215,7 +238,8 @@ QVector<QStringView> SystemVerilogExpressionParser::convertToRPN(QStringView exp
         else
         {
             static const QRegularExpression separator(ANY_OPERATOR.pattern() % QStringLiteral("|[(){},]"));
-            const auto unknown = expression.mid(index, separator.match(expression, index).capturedStart() - index);
+            auto unknown = QStringView(expression);
+            unknown = unknown.mid(index, separator.match(expression, index).capturedStart() - index);
 
             output.append(unknown.trimmed());
 
@@ -589,6 +613,10 @@ QString SystemVerilogExpressionParser::solveUnary(QStringView operation, QString
     {
         return QString::number(~term.toLongLong());
     }
+    else if (operation.compare(QLatin1String("`")) == 0)
+    {
+        return QString::number(~term.toLongLong() + 1);
+    }
 
     return QStringLiteral("x");
 }
@@ -710,6 +738,7 @@ unsigned int SystemVerilogExpressionParser::operatorPrecedence(QStringView oper)
         {QStringLiteral("*")      , 12},
         {QStringLiteral("/")      , 12},
         {QStringLiteral("**")     , 13},
+        {QStringLiteral("`")      , 13}, // unary minus
         {QStringLiteral("~")      , 14},
         {QStringLiteral("$clog2") , 14},
         {QStringLiteral("$pow")   , 14},
