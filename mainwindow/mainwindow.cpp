@@ -392,22 +392,26 @@ void MainWindow::setupActions()
 
     // Initialize the action to set draw mode to connection mode.
     actToolConnect_ = new QAction(QIcon(":/icons/common/graphics/tool-interconnection.png"),
-        tr("Interconnection Tool"), this);
+        tr("Interconnection Tool (Ctrl + Space)"), this);
     actToolConnect_->setCheckable(true);
+    actToolConnect_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Space));
 
     // Initialize the action to set draw mode to interface mode.
     actToolInterface_ = new QAction(QIcon(":/icons/common/graphics/tool-interface.png"), tr("Interface Tool"), this);
     actToolInterface_->setCheckable(true);
 
-    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), tr("Drafting Tool"), this);
+    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), tr("Drafting Tool (Ctrl + D)"), this);
     actToolDraft_->setCheckable(true);
+    actToolDraft_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
 
     actToolToggleOffPage_ = new QAction(QIcon(":/icons/common/graphics/tool-toggle_offpage.png"),
-        tr("Toggle Off-Page Tool"), this);
+        tr("Toggle Off-Page Tool (Ctrl + E)"), this);
     actToolToggleOffPage_->setCheckable(true);
+    actToolToggleOffPage_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
 
-    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), tr("Sticky Note Tool"), this);
+    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), tr("Sticky Note Tool  (Ctrl + Q)"), this);
     actToolLabel_->setCheckable(true);
+    actToolLabel_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
 
     modeActionGroup_ = new QActionGroup(this);
     modeActionGroup_->setExclusive(true);
