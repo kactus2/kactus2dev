@@ -389,61 +389,69 @@ void PythonSourceEditor::setupToolbar(bool enableRun)
     toolBar_.setOrientation(Qt::Horizontal);
     toolBar_.setIconSize(QSize(20, 20));
 
-    QAction* newAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-new.png"), QString(),
-        this, SLOT(onNewAction()));
-    newAction->setToolTip(tr("New script (Ctrl+N)"));
+    QAction* newAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-new.png"), QString(), this, SLOT(onNewAction()));
     newAction->setShortcut(QKeySequence::New);
     newAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipNew = tr("New script (Shortcut: %1)").arg(newAction->shortcut().toString(QKeySequence::NativeText));
+    newAction->setToolTip(tooltipNew);
+    newAction->setStatusTip(tooltipNew);
     addAction(newAction);
 
-    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/opened-folder.png"), QString(),
-        this, SLOT(onOpenAction()));
-    openAction->setToolTip(tr("Open script from file... (Ctrl+O)"));
+    QAction* openAction = toolBar_.addAction(QIcon(":/icons/common/graphics/opened-folder.png"), QString(), this, SLOT(onOpenAction()));
     openAction->setShortcut(QKeySequence::Open);
     openAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipOpen = tr("Open script from file... (Shortcut: %1)").arg(openAction->shortcut().toString(QKeySequence::NativeText));
+    openAction->setToolTip(tooltipOpen);
+    openAction->setStatusTip(tooltipOpen);
     addAction(openAction);
 
-    QAction* saveAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(),
-        this, SLOT(onSaveAction()));
-    saveAction->setToolTip(tr("Save script (Ctrl+S"));
+    QAction* saveAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save.png"), QString(), this, SLOT(onSaveAction()));
     saveAction->setShortcut(QKeySequence::Save);
     saveAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipSave = tr("Save script (Shortcut: %1)").arg(saveAction->shortcut().toString(QKeySequence::NativeText));
+    saveAction->setToolTip(tooltipSave);
+    saveAction->setStatusTip(tooltipSave);
     addAction(saveAction);
 
-    QAction* saveAsAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(),
-        this, SLOT(onSaveAsAction()));
+    QAction* saveAsAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-save-as.png"), QString(), this, SLOT(onSaveAsAction()));
     saveAsAction->setToolTip(tr("Save script as..."));
     addAction(saveAsAction);
 
     toolBar_.addSeparator();
 
     undoAction_ = toolBar_.addAction(QIcon(":/icons/common/graphics/edit-undo.png"), QString());
-    undoAction_->setToolTip(tr("Undo (Ctrl+Z)"));
     undoAction_->setShortcut(QKeySequence::Undo);
     undoAction_->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipUndo = tr("Undo (Shortcut: %1)").arg(undoAction_->shortcut().toString(QKeySequence::NativeText));
+    undoAction_->setToolTip(tooltipUndo);
+    undoAction_->setStatusTip(tooltipUndo);
     addAction(undoAction_);
 
     redoAction_ = toolBar_.addAction(QIcon(":/icons/common/graphics/edit-redo.png"), QString());
-    redoAction_->setToolTip(tr("Redo (Ctrl+Y)"));
     redoAction_->setShortcut(QKeySequence::Redo);
     redoAction_->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipRedo = tr("Redo (Shortcut: %1)").arg(redoAction_->shortcut().toString(QKeySequence::NativeText));
+    redoAction_->setToolTip(tooltipRedo);
+    redoAction_->setStatusTip(tooltipRedo);
     addAction(redoAction_);
 
     toolBar_.addSeparator();
 
-    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), QString(),
-        this, SLOT(onRunAction()));
-    runAction->setToolTip(tr("Run selected line(s) (Ctrl+R)"));
+    QAction* runAction = toolBar_.addAction(QIcon(":/icons/common/graphics/control-play.png"), QString(), this, SLOT(onRunAction()));
     runAction->setShortcut(QKeySequence(Qt::CTRL | Qt::Key_R));
     runAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipRun = tr("Run selected line(s) (Shortcut: %1)").arg(runAction->shortcut().toString(QKeySequence::NativeText));
+    runAction->setToolTip(tooltipRun);
+    runAction->setStatusTip(tooltipRun);
     runAction->setEnabled(enableRun);
     addAction(runAction);
 
-    QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(),
-        this, SLOT(onRunAllAction()));
-    runAllAction->setToolTip(tr("Run all (Ctrl+Shift+R)"));
+    QAction* runAllAction = toolBar_.addAction(QIcon(":/icons/common/graphics/script-run-all.png"), QString(), this, SLOT(onRunAllAction()));
     runAllAction->setShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_R));
     runAllAction->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+    QString tooltipRunAll = tr("Run all (Shortcut: %1)").arg(runAllAction->shortcut().toString(QKeySequence::NativeText));
+    runAllAction->setToolTip(tooltipRunAll);
+    runAllAction->setStatusTip(tooltipRunAll);
     runAllAction->setEnabled(enableRun);
     addAction(runAllAction);
 

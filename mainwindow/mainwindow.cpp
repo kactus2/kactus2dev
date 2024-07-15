@@ -299,26 +299,37 @@ void MainWindow::loadWorkspace(QString const& workspaceName)
 void MainWindow::setupActions()
 {
     // the action to create a new hierarchical component
-    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), tr("New"), this);
+    actNew_ = new QAction(QIcon(":/icons/common/graphics/file-new.png"), QString(), this);
     actNew_->setShortcut(QKeySequence::New);
+    QString tooltipNew = tr("New (Shortcut: %1)").arg(actNew_->shortcut().toString(QKeySequence::NativeText));
+    actNew_->setToolTip(tooltipNew);
+    actNew_->setStatusTip(tooltipNew);
     connect(actNew_, SIGNAL(triggered()), this, SLOT(createNew()));
 
-    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), tr("Save"), this);
+    actSave_ = new QAction(QIcon(":/icons/common/graphics/file-save.png"), QString(), this);
     actSave_->setShortcut(QKeySequence::Save);
+    QString tooltipSave = tr("Save (Shortcut: %1)").arg(actSave_->shortcut().toString(QKeySequence::NativeText));
+    actSave_->setToolTip(tooltipSave);
+    actSave_->setStatusTip(tooltipSave);
     actSave_->setEnabled(false);
     connect(actSave_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocument()));
     connect(designTabs_, SIGNAL(documentModifiedChanged(bool)),
         actSave_, SLOT(setEnabled(bool)), Qt::UniqueConnection);
 
-
-    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), tr("Save As"), this);
+    actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
+    QString tooltipSaveAs = tr("Save As (Shortcut: %1)").arg(actSaveAs_->shortcut().toString(QKeySequence::NativeText));
+    actSaveAs_->setToolTip(tooltipSaveAs);
+    actSaveAs_->setStatusTip(tooltipSaveAs);
     actSaveAs_->setEnabled(false);
     connect(actSaveAs_, SIGNAL(triggered()), designTabs_, SLOT(saveCurrentDocumentAs()));
 
     actSaveAll_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
-        tr("Save All"), this);
+        QString(), this);
     actSaveAll_->setShortcut(QKeySequence("Ctrl+Shift+S"));
+    QString tooltipSaveAll = tr("Save All (Shortcut: %1)").arg(actSaveAll_->shortcut().toString(QKeySequence::NativeText));
+    actSaveAll_->setToolTip(tooltipSaveAll);
+    actSaveAll_->setStatusTip(tooltipSaveAll);
     connect(actSaveAll_, SIGNAL(triggered()), this, SLOT(saveAll()));
 
     actSaveHierarchy_ = new QAction(QIcon(":/icons/common/graphics/file-save_all.png"),
@@ -331,8 +342,11 @@ void MainWindow::setupActions()
     saveMenu->addAction(actSaveHierarchy_);
     actSaveAs_->setMenu(saveMenu);
 
-    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), tr("Print"), this);
+    actPrint_ = new QAction(QIcon(":/icons/common/graphics/file-print.png"), QString(), this);
     actPrint_->setShortcut(QKeySequence::Print);
+    QString tooltipPrint = tr("Print (Shortcut: %1)").arg(actPrint_->shortcut().toString(QKeySequence::NativeText));
+    actPrint_->setToolTip(tooltipPrint);
+    actPrint_->setStatusTip(tooltipPrint);
     actPrint_->setEnabled(false);
     connect(actPrint_, SIGNAL(triggered()), designTabs_, SLOT(printCurrentDocument()));
 
@@ -340,13 +354,19 @@ void MainWindow::setupActions()
     actImageExport_->setEnabled(false);
     connect(actImageExport_, SIGNAL(triggered()), designTabs_, SLOT(exportCurrentDocumentAsImage()));
 
-    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), tr("Undo"), this);
+    actUndo_ = new QAction(QIcon(":/icons/common/graphics/edit-undo.png"), QString(), this);
     actUndo_->setShortcut(QKeySequence::Undo);
+    QString tooltipUndo = tr("Undo (Shortcut: %1)").arg(actUndo_->shortcut().toString(QKeySequence::NativeText));
+    actUndo_->setToolTip(tooltipUndo);
+    actUndo_->setStatusTip(tooltipUndo);
     connect(actUndo_, SIGNAL(triggered()), this, SLOT(undo()));
 
     actRedo_ = new QAction(QIcon(":/icons/common/graphics/edit-redo.png"),
-        tr("Redo"), this);
+        QString(), this);
     actRedo_->setShortcut(QKeySequence::Redo);
+    QString tooltipRedo = tr("Redo (Shortcut: %1)").arg(actRedo_->shortcut().toString(QKeySequence::NativeText));
+    actRedo_->setToolTip(tooltipRedo);
+    actRedo_->setStatusTip(tooltipRedo);
     connect(actRedo_, SIGNAL(triggered()), this, SLOT(redo()));
 
     actLibraryLocations_ = new QAction(QIcon(":/icons/common/graphics/library-config.png"),
@@ -392,26 +412,38 @@ void MainWindow::setupActions()
 
     // Initialize the action to set draw mode to connection mode.
     actToolConnect_ = new QAction(QIcon(":/icons/common/graphics/tool-interconnection.png"),
-        tr("Interconnection Tool (Ctrl + Space)"), this);
+        QString(), this);
     actToolConnect_->setCheckable(true);
     actToolConnect_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Space));
+    QString tooltipToolConnect = tr("Interconnection Tool (Shortcut: %1)").arg(actToolConnect_->shortcut().toString(QKeySequence::NativeText));
+    actToolConnect_->setToolTip(tooltipToolConnect);
+    actToolConnect_->setStatusTip(tooltipToolConnect);
 
     // Initialize the action to set draw mode to interface mode.
     actToolInterface_ = new QAction(QIcon(":/icons/common/graphics/tool-interface.png"), tr("Interface Tool"), this);
     actToolInterface_->setCheckable(true);
 
-    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), tr("Drafting Tool (Ctrl + D)"), this);
+    actToolDraft_ = new QAction(QIcon(":/icons/common/graphics/tool-drafting.png"), QString(), this);
     actToolDraft_->setCheckable(true);
     actToolDraft_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_D));
+    QString tooltipToolDraft = tr("Drafting Tool (Shortcut: %1)").arg(actToolDraft_->shortcut().toString(QKeySequence::NativeText));
+    actToolDraft_->setToolTip(tooltipToolDraft);
+    actToolDraft_->setStatusTip(tooltipToolDraft);
 
     actToolToggleOffPage_ = new QAction(QIcon(":/icons/common/graphics/tool-toggle_offpage.png"),
-        tr("Toggle Off-Page Tool (Ctrl + E)"), this);
+        QString(), this);
     actToolToggleOffPage_->setCheckable(true);
     actToolToggleOffPage_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_E));
+    QString tooltipToolToggleOffPage = tr("Toggle Off-Page Tool (Shortcut: %1)").arg(actToolToggleOffPage_->shortcut().toString(QKeySequence::NativeText));
+    actToolToggleOffPage_->setToolTip(tooltipToolToggleOffPage);
+    actToolToggleOffPage_->setStatusTip(tooltipToolToggleOffPage);
 
-    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), tr("Sticky Note Tool  (Ctrl + Q)"), this);
+    actToolLabel_ = new QAction(QIcon(":/icons/common/graphics/balloon.png"), QString(), this);
     actToolLabel_->setCheckable(true);
     actToolLabel_->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
+    QString tooltipToolLabel = tr("Sticky Note Tool (Shortcut: %1)").arg(actToolLabel_->shortcut().toString(QKeySequence::NativeText));
+    actToolLabel_->setToolTip(tooltipToolLabel);
+    actToolLabel_->setStatusTip(tooltipToolLabel);
 
     modeActionGroup_ = new QActionGroup(this);
     modeActionGroup_->setExclusive(true);
@@ -536,14 +568,20 @@ void MainWindow::setupActions()
     connect(actWorkspaces_, SIGNAL(triggered()), this, SLOT(openWorkspaceMenu()), Qt::UniqueConnection);
     actWorkspaces_->setMenu(&workspaceMenu_);
 
-    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), tr("Refresh"), this);
+    actRefresh_ = new QAction(QIcon(":/icons/common/graphics/refresh.png"), QString(), this);
     actRefresh_->setShortcut(QKeySequence("F5"));
+    QString tooltipRefresh = tr("Refresh (Shortcut: %1)").arg(actRefresh_->shortcut().toString(QKeySequence::NativeText));
+    actRefresh_->setToolTip(tooltipRefresh);
+    actRefresh_->setStatusTip(tooltipRefresh);
     connect(actRefresh_, SIGNAL(triggered(bool)), designTabs_, SLOT(refreshCurrentDocument()));
 
-    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), tr("Unlocked"), this);
+    actProtect_ = new QAction(QIcon(":/icons/common/graphics/protection-unlocked.png"), QString(), this);
     actProtect_->setCheckable(true);
     actProtect_->setEnabled(false);
     actProtect_->setShortcut(QKeySequence("Ctrl+L"));
+    QString tooltipProtect = tr("Unlocked (Shortcut: %1)").arg(actProtect_->shortcut().toString(QKeySequence::NativeText));
+    actProtect_->setToolTip(tooltipProtect);
+    actProtect_->setStatusTip(tooltipProtect);
     connect(actProtect_, SIGNAL(triggered(bool)), this, SLOT(changeProtection(bool)));
 
     // Initialize the action to open Kactus2 settings.
@@ -551,12 +589,15 @@ void MainWindow::setupActions()
     connect(actSettings_, SIGNAL(triggered()), this, SLOT(openSettings()));
 
     // Initialize the action to open the about box.
-    actAbout_= new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
+    actAbout_ = new QAction(QIcon(":/icons/common/graphics/system-about.png"), tr("About"), this);
     connect(actAbout_, SIGNAL(triggered()), this, SLOT(showAbout()), Qt::UniqueConnection);
 
     // Initialize the action to open the help window.
-    actHelp_= new QAction(QIcon(":/icons/common/graphics/system-help.png"), tr("Help"), this);
+    actHelp_ = new QAction(QIcon(":/icons/common/graphics/system-help.png"), QString(), this);
     actHelp_->setShortcut(QKeySequence::HelpContents);
+    QString tooltipHelp = tr("Help (Shortcut: %1)").arg(actHelp_->shortcut().toString(QKeySequence::NativeText));
+    actHelp_->setToolTip(tooltipHelp);
+    actHelp_->setStatusTip(tooltipHelp);
     connect(actHelp_, SIGNAL(triggered()), dockHandler_, SLOT(showHelp()), Qt::UniqueConnection);
 
     // Initialize the action to exit the program.

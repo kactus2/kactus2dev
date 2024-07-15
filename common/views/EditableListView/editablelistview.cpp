@@ -177,19 +177,21 @@ void EditableListView::setupActions()
 {
     addAction(&addAction_);
     addAction_.setEnabled(true);
-	addAction_.setToolTip(tr("Add a new item to list"));
-	addAction_.setStatusTip(tr("Add a new item to list"));
-	addAction_.setShortcut(QKeySequence::InsertLineSeparator);
+    addAction_.setShortcut(QKeySequence::InsertLineSeparator);
     addAction_.setShortcutContext(Qt::WidgetShortcut);
-	connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
+    QString tooltipAdd = tr("Add a new item to list (Shortcut: %1)").arg(addAction_.shortcut().toString(QKeySequence::NativeText));
+    addAction_.setToolTip(tooltipAdd);
+    addAction_.setStatusTip(tooltipAdd);
+    connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 
     addAction(&removeAction_);
     removeAction_.setEnabled(true);
-	removeAction_.setToolTip(tr("Remove an item from the list"));
-	removeAction_.setStatusTip(tr("Remove an item from the list"));
     removeAction_.setShortcut(QKeySequence::Delete);
     removeAction_.setShortcutContext(Qt::WidgetShortcut);
-	connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
+    QString tooltipRemove = tr("Remove an item from the list (Shortcut: %1)").arg(removeAction_.shortcut().toString(QKeySequence::NativeText));
+    removeAction_.setToolTip(tooltipRemove);
+    removeAction_.setStatusTip(tooltipRemove);
+    connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------

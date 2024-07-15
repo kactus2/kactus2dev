@@ -66,24 +66,31 @@ void AutoConnectorConnectionTable::setupActions()
     addRowShortcuts << QKeySequence::InsertLineSeparator << QKeySequence(Qt::SHIFT | Qt::Key_Return);
 
     addAction(addRowAction_);
-    addRowAction_->setToolTip(tr("Add a new row to table"));
-    addRowAction_->setStatusTip(tr("Add a new row to table"));
     addRowAction_->setShortcuts(addRowShortcuts);
     addRowAction_->setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipAddRow = tr("Add a new row to table (Shortcuts: %1, %2)")
+        .arg(addRowAction_->shortcuts().at(0).toString(QKeySequence::NativeText))
+        .arg(addRowAction_->shortcuts().at(1).toString(QKeySequence::NativeText));
+    addRowAction_->setToolTip(tooltipAddRow);
+    addRowAction_->setStatusTip(tooltipAddRow);
     connect(addRowAction_, SIGNAL(triggered()), this, SLOT(onAddRow()), Qt::UniqueConnection);
 
     addAction(removeRowAction_);
-    removeRowAction_->setToolTip(tr("Remove a connection from the table"));
-    removeRowAction_->setStatusTip(tr("Remove a connection from the table"));
     removeRowAction_->setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeRowAction_->setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipRemoveRow = tr("Remove a connection from the table (Shortcut: %1)")
+        .arg(removeRowAction_->shortcut().toString(QKeySequence::NativeText));
+    removeRowAction_->setToolTip(tooltipRemoveRow);
+    removeRowAction_->setStatusTip(tooltipRemoveRow);
     connect(removeRowAction_, SIGNAL(triggered()), this, SLOT(onRemoveRow()), Qt::UniqueConnection);
 
     addAction(clearAction_);
-    clearAction_->setToolTip(tr("Clear the contents of a cell"));
-    clearAction_->setStatusTip(tr("Clear the contents of a cell"));
     clearAction_->setShortcut(QKeySequence::Delete);
     clearAction_->setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)")
+        .arg(clearAction_->shortcut().toString(QKeySequence::NativeText));
+    clearAction_->setToolTip(tooltipClear);
+    clearAction_->setStatusTip(tooltipClear);
     connect(clearAction_, SIGNAL(triggered()), this, SLOT(onClearCells()), Qt::UniqueConnection);
 }
 

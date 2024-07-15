@@ -865,52 +865,65 @@ void EditableTableView::setModel(QAbstractItemModel* model)
 //-----------------------------------------------------------------------------
 void EditableTableView::setupActions()
 {
-    QList<QKeySequence> addRowShortcuts{ 
-        QKeySequence::InsertLineSeparator,
-        QKeySequence(Qt::SHIFT | Qt::Key_Return) 
+    QList<QKeySequence> addRowShortcuts{
+    QKeySequence::InsertLineSeparator,
+    QKeySequence(Qt::SHIFT | Qt::Key_Return)
     };
 
     addAction(&addAction_);
-    addAction_.setToolTip(tr("Add a new row to table"));
-    addAction_.setStatusTip(tr("Add a new row to table"));
     addAction_.setShortcuts(addRowShortcuts);
     addAction_.setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipAddRow = tr("Add a new row to table (Shortcuts: %1, %2)")
+        .arg(addAction_.shortcuts().at(0).toString(QKeySequence::NativeText))
+        .arg(addAction_.shortcuts().at(1).toString(QKeySequence::NativeText));
+    addAction_.setToolTip(tooltipAddRow);
+    addAction_.setStatusTip(tooltipAddRow);
     connect(&addAction_, SIGNAL(triggered()), this, SLOT(onAddAction()), Qt::UniqueConnection);
 
     addAction(&removeAction_);
-    removeAction_.setToolTip(tr("Remove a row from the table"));
-    removeAction_.setStatusTip(tr("Remove a row from the table"));    
     removeAction_.setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeAction_.setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipRemoveRow = tr("Remove a row from the table (Shortcut: %1)")
+        .arg(removeAction_.shortcut().toString(QKeySequence::NativeText));
+    removeAction_.setToolTip(tooltipRemoveRow);
+    removeAction_.setStatusTip(tooltipRemoveRow);
     connect(&removeAction_, SIGNAL(triggered()), this, SLOT(onRemoveAction()), Qt::UniqueConnection);
 
     addAction(&cutAction_);
-    cutAction_.setToolTip(tr("Cut the contents of a cell from the table"));
-    cutAction_.setStatusTip(tr("Cut the contents of a cell from the table"));
     cutAction_.setShortcut(QKeySequence::Cut);
     cutAction_.setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipCut = tr("Cut the contents of a cell from the table (Shortcut: %1)")
+        .arg(cutAction_.shortcut().toString(QKeySequence::NativeText));
+    cutAction_.setToolTip(tooltipCut);
+    cutAction_.setStatusTip(tooltipCut);
     connect(&cutAction_, SIGNAL(triggered()), this, SLOT(onCutAction()), Qt::UniqueConnection);
 
     addAction(&copyAction_);
-    copyAction_.setToolTip(tr("Copy the contents of a cell from the table"));
-    copyAction_.setStatusTip(tr("Copy the contents of a cell from the table"));
     copyAction_.setShortcut(QKeySequence::Copy);
     copyAction_.setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipCopy = tr("Copy the contents of a cell from the table (Shortcut: %1)")
+        .arg(copyAction_.shortcut().toString(QKeySequence::NativeText));
+    copyAction_.setToolTip(tooltipCopy);
+    copyAction_.setStatusTip(tooltipCopy);
     connect(&copyAction_, SIGNAL(triggered()), this, SLOT(onCopyAction()), Qt::UniqueConnection);
 
     addAction(&pasteAction_);
-    pasteAction_.setToolTip(tr("Paste the contents of a cell to the table"));
-    pasteAction_.setStatusTip(tr("Paste the contents of a cell to the table"));
     pasteAction_.setShortcut(QKeySequence::Paste);
     pasteAction_.setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipPaste = tr("Paste the contents of a cell to the table (Shortcut: %1)")
+        .arg(pasteAction_.shortcut().toString(QKeySequence::NativeText));
+    pasteAction_.setToolTip(tooltipPaste);
+    pasteAction_.setStatusTip(tooltipPaste);
     connect(&pasteAction_, SIGNAL(triggered()), this, SLOT(onPasteAction()), Qt::UniqueConnection);
 
     addAction(&clearAction_);
-    clearAction_.setToolTip(tr("Clear the contents of a cell"));
-    clearAction_.setStatusTip(tr("Clear the contents of a cell"));
     clearAction_.setShortcut(QKeySequence::Delete);
     clearAction_.setShortcutContext(Qt::WidgetShortcut);
-    connect(&clearAction_, SIGNAL(triggered()),	this, SLOT(onClearAction()), Qt::UniqueConnection);
+    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)")
+        .arg(clearAction_.shortcut().toString(QKeySequence::NativeText));
+    clearAction_.setToolTip(tooltipClear);
+    clearAction_.setStatusTip(tooltipClear);
+    connect(&clearAction_, SIGNAL(triggered()), this, SLOT(onClearAction()), Qt::UniqueConnection);
 
     addAction(&importAction_);
     importAction_.setToolTip(tr("Import a csv-file to table"));

@@ -55,8 +55,6 @@ void EditableTreeView::setupActions(QString const& addItemText, QString const& a
     removeAction_->setStatusTip(removeItemText);
     removeAllSubItemsAction_->setToolTip(removeSubItemsText);
     removeAllSubItemsAction_->setStatusTip(removeSubItemsText);
-    clearAction_->setToolTip(tr("Clear the contents of a cell."));
-    clearAction_->setStatusTip(tr("Clear the contents of a cell."));
 
     expandAllItemsAction_->setToolTip(tr("Expand all port maps."));
     expandAllItemsAction_->setStatusTip(tr("Expand all port maps."));
@@ -66,6 +64,9 @@ void EditableTreeView::setupActions(QString const& addItemText, QString const& a
     addAction(clearAction_);
     clearAction_->setShortcut(QKeySequence::Delete);
     clearAction_->setShortcutContext(Qt::WidgetShortcut);
+    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)").arg(clearAction_->shortcut().toString(QKeySequence::NativeText));
+    clearAction_->setToolTip(tooltipClear);
+    clearAction_->setStatusTip(tooltipClear);
 
     connectActions();
 }
