@@ -647,6 +647,8 @@ void tst_SystemVerilogExpressionParser::testParseMultipleOperations_data()
     QTest::newRow("clog2() precedes power operation") << "2**$clog2(4) + 1" << "5";
 
     QTest::newRow("Value of clog2() preceds other operations") << "(2 + 2)*3*$clog2(4*2*2) + 2" << "50";
+
+    QTest::newRow("Unary minus in expression") << "-$clog2(32)-($sqrt(25)-(-$pow(2,2)))" << "-14";
 }
 
 //-----------------------------------------------------------------------------
