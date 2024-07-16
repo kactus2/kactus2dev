@@ -615,7 +615,12 @@ QString SystemVerilogExpressionParser::solveUnary(QStringView operation, QString
     }
     else if (operation.compare(QLatin1String("`")) == 0)
     {
-        return QString::number(~term.toLongLong() + 1);
+        if (!term.contains(QLatin1Char('.')))
+        {
+            return QString::number(-term.toLongLong());
+        }
+        
+        return QString::number(-term.toDouble(), 'f', precisionOf(term));
     }
 
     return QStringLiteral("x");
