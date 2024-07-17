@@ -5835,8 +5835,6 @@
     <None Include="common\graphicsItems\ConnectionItem.inl">
       <Filter>Source Files\common\graphicsItems</Filter>
     </None>
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram21.cd" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="appicon.ico" />

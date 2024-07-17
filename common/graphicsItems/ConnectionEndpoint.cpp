@@ -171,10 +171,7 @@ bool ConnectionEndpoint::canConnect(ConnectionEndpoint const* other) const
         return false;
     }
 
-    // ConnectionEndpoint:: is crucial, becuse omitting it leads to isConnectionValid using wrong "this" value;
-    // as an example, if ConnectionEndpoint is of type OffPageConnectorItem, the isConnectionValid will be called on
-    // parent connector, so not off page connection will be checked, but its parent connector.
-    return ConnectionEndpoint::isConnectionValid(other);
+    return isConnectionValid(other);
 }
 
 //-----------------------------------------------------------------------------

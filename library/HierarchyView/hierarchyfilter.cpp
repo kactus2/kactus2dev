@@ -55,7 +55,7 @@ bool HierarchyFilter::filterAcceptsRow(int sourceRow, QModelIndex const& sourceP
     }
     
     if (auto document = getLibraryInterface()->getModelReadOnly(item->getVLNV()); 
-        checkRevision(document->getRevision()) == false || checkTags(document) == false)
+        !document || checkRevision(document->getRevision()) == false || checkTags(document) == false)
     {
         return false;
     }

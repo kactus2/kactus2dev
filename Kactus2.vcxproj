@@ -2914,8 +2914,6 @@ CreateHelp
     </QtMoc>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram2.cd" />
-    <None Include="ClassDiagram21.cd" />
     <None Include="common\graphicsItems\ConnectionItem.inl" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
