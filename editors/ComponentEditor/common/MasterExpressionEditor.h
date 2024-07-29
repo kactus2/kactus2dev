@@ -275,6 +275,13 @@ private:
     virtual int getSelectionLastWord() const = 0;
 
     /*!
+     *	Get the start index of the selection.
+     *
+     * 	    @return The start index of the current selection.
+     */
+    virtual int getSelectionStartIndex() const = 0;
+
+    /*!
      *  Checks if the editing would change text in the middle of a referencing term.
      *
      *      @return True, if the edit position is in the middle of a referencing term, otherwise false.
