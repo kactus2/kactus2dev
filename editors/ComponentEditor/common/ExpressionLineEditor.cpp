@@ -240,3 +240,11 @@ int ExpressionLineEditor::getSelectionLastWord() const
 {
     return text().left(selectionEnd()).count(WORD_DELIMITER);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionLineEditor::getSelectionStartIndex()
+//-----------------------------------------------------------------------------
+int ExpressionLineEditor::getSelectionStartIndex() const
+{
+    return selectionStart();
+}

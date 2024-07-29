@@ -224,6 +224,13 @@ private:
      *      @return Length of the last word in the selection.
      */
     int getSelectionLastWord() const final;
+
+    /*!
+     *	Get the start index of the selection.
+     *
+     * 	    @return The start index of the current selection.
+     */
+    int getSelectionStartIndex() const final;
 };
 
 #endif // EXPRESSIONLINEEDITOR_H

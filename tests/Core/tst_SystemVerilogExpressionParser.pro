@@ -16,17 +16,19 @@ TARGET = tst_SystemVerilogExpressionParser
 QT += core xml gui testlib
 CONFIG += c++11 testcase console
 
-LIBS += -L$$PWD/../../executable/ -lKactusAPI
 	
 win32:CONFIG(release, debug|release) {
+    LIBS += -L$$PWD/../../executable/ -lKactusAPI
     DESTDIR = ./release
 }
 else:win32:CONFIG(debug, debug|release) {
+    LIBS += -L$$PWD/../../executable/ -lKactusAPId
     DESTDIR = ./debug
 }
 else:unix {
+    LIBS += -L$$PWD/../../executable/ -lKactusAPI
     DESTDIR = ./release
-	}
+}
 
 INCLUDEPATH += $$DESTDIR
 INCLUDEPATH += ../../
