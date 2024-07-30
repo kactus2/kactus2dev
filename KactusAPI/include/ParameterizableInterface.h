@@ -73,7 +73,7 @@ protected:
      *
      *      @return The value of the expression in decimal form.
      */
-    QString parseExpressionToDecimal(QString const& expression) const;
+    QString parseExpressionToDecimal(QString const& expression, bool* expressionIsValid = nullptr) const;
 
     /*!
      *  Parse the selected expression to the selected base number.
@@ -83,7 +83,7 @@ protected:
      *
      *      @return The value of the expression in the base number form.
      */
-    QString parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber) const;
+    QString parseExpressionToBaseNumber(QString const& expression, unsigned int baseNumber, bool* expressionIsValid = nullptr) const;
 
 private:
 

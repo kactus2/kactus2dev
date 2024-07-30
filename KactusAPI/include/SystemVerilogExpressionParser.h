@@ -149,7 +149,7 @@ private:
      *
      *      @return The conversion result.
      */
-    static QVector<QStringView> convertToRPN(QStringView expression);
+    static QVector<QStringView> convertToRPN(QString& expression);
 
     /*!
      *  Solves the given RPN expression.

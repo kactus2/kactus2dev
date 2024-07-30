@@ -309,3 +309,11 @@ int ExpressionEditor::getSelectionLastWord() const
 {
     return toPlainText().left(textCursor().selectionEnd()).count(WORD_DELIMITER);
 }
+
+//-----------------------------------------------------------------------------
+// Function: ExpressionEditor::getSelectionStartIndex()
+//-----------------------------------------------------------------------------
+int ExpressionEditor::getSelectionStartIndex() const
+{
+    return textCursor().selectionStart();
+}
