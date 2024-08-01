@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\ItemNamesGetterInterface.h" />
     <ClInclude Include="include\AbstractionTypeInterface.h" />
     <ClInclude Include="include\AbstractParameterInterface.h" />
     <ClInclude Include="include\AccessPolicyInterface.h" />
@@ -104,6 +105,7 @@
     <ClInclude Include="KactusAPIGlobal.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp" />
     <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp" />

@@ -10,6 +10,9 @@
 
 #include <QLabel>
 #include <QGridLayout>
+#include <CommonInterface.h>
+#include "QMessageBox"
+#include "QCoreApplication"
 
 //-----------------------------------------------------------------------------
 // Function: NameGroupEditor::NameGroupEditor()
@@ -30,15 +33,20 @@ QGroupBox(title, parent),
     shortDescriptionEdit_.setVisible(docRevision == Document::Revision::Std22);
     setupLayout(docRevision);
 
-    connect(&nameEdit_, SIGNAL(textEdited(QString const&)),
-        this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
-    connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
+    connect(&nameEdit_, SIGNAL(editingFinished()),
+        this, SLOT(onNameEditingFinished()), Qt::UniqueConnection);
+    //connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
     connect(&displayNameEdit_, SIGNAL(textEdited(QString const&)),
         this, SLOT(onDisplayNameChanged(QString const&)), Qt::UniqueConnection);
     connect(&shortDescriptionEdit_, SIGNAL(textEdited(QString const&)),
             this, SLOT(onShortDescriptionChanged(QString const&)), Qt::UniqueConnection);
     connect(&descriptionEdit_, SIGNAL(textChanged()),
         this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+}
+
+NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, Document::Revision docRevision, QWidget* parent, QSharedPointer <CommonInterface> interface, QString const& title) : NameGroupEditor(nameGroup,docRevision,parent,title)
+{
+    interface_ = interface;
 }
 
 //-----------------------------------------------------------------------------
@@ -133,6 +141,34 @@ void NameGroupEditor::refresh()
 	disconnect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()));
 	descriptionEdit_.setPlainText(nameGroup_->description());
 	connect(&descriptionEdit_, SIGNAL(textChanged()), this, SLOT(onDescriptionChanged()), Qt::UniqueConnection);
+}
+
+void NameGroupEditor::onNameEditingFinished()
+{
+    QString newName = nameEdit_.text();
+    if (interface_)
+    {
+        std::string currentName = name().toStdString();
+        if (interface_->isNameUnique(newName.toStdString(), &currentName))
+        {
+            nameGroup_->setName(newName);
+            emit contentChanged();
+            emit nameChanged();
+        }
+        else
+        {
+            QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
+                tr("The name %1 is not unique. Do you want to continue editing?").arg(newName), QMessageBox::Ok, this);
+            msgBox.exec();
+            nameEdit_.setFocus();
+        }
+    }
+    else 
+    {
+        nameGroup_->setName(newName);
+        emit contentChanged();
+        emit nameChanged();
+    }
 }
 
 //-----------------------------------------------------------------------------

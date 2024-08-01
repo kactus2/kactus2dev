@@ -291,6 +291,15 @@
     <ClInclude Include="include\ModeReferenceInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\LibraryLoader.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NullChannel.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ItemNamesGetterInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -503,6 +512,12 @@
     <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp">
       <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\NullChannel.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp">
+      <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -535,9 +550,6 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\LibraryLoader.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\ComponentInstanceParameterFinder.h">

@@ -30,7 +30,7 @@ public:
      */
     CommonInterface() = default;
 
-	/*!
+    /*!
      *  The destructor.
      */
     virtual ~CommonInterface() = default;
@@ -60,6 +60,8 @@ public:
     CommonInterface(const CommonInterface& other) = delete;
     CommonInterface& operator=(const CommonInterface& other) = delete;
 
+    bool isNameUnique(std::string newName, std::string* previousName = nullptr) const;
+
 protected:
 
     /*!
@@ -86,11 +88,12 @@ private:
     /*!
      *  Check if the selected name is unique.
      *
-     *      @param [in] portName    The selected name.
+     *      @param [in] name            The selected name.
+     *      @param [in] reservedNames   Names that are already in use
      *
      *      @return True, if the selected name is unique, false otherwise.
      */
-    bool nameIsUnique(std::string_view name, std::vector<std::string> const& reservedNamed) const;
+    bool isNameUniqueInCollection(std::string_view name, std::vector<std::string> const& reservedNames) const;
 };
 
 #endif // COMMONINTERFACE_H

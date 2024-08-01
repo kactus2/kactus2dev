@@ -15,6 +15,7 @@
 #include <QLineEdit>
 #include <QPlainTextEdit>
 #include <QString>
+#include <CommonInterface.h>
 
 /*! Editor to edit the details of a NameGroup-struct.
  *
@@ -31,6 +32,12 @@ public:
 		Document::Revision docRevision,
         QWidget *parent,
         QString const& title = QString("Names"));
+
+	NameGroupEditor(QSharedPointer<NameGroup> nameGroup,
+		Document::Revision docRevision,
+		QWidget* parent, 
+		QSharedPointer <CommonInterface> interface_,
+		QString const& title = QString("Names"));
 
 	//! The destructor
 	virtual ~NameGroupEditor();
@@ -107,6 +114,8 @@ private slots:
 	*/
 	void onDescriptionChanged();
 
+	void onNameEditingFinished();
+
 private:
 	//! Setup the widget layout.
     void setupLayout(Document::Revision docRevision);
@@ -125,6 +134,9 @@ private:
 
 	//! Editor to write the description.
 	QPlainTextEdit descriptionEdit_;
+
+	QSharedPointer<CommonInterface> interface_;
+
 };
 
 #endif // NAMEGROUPEDITOR_H

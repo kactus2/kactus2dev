@@ -11,6 +11,20 @@
 
 #include "CommonInterface.h"
 
+bool CommonInterface::isNameUnique(std::string name, std::string* previousName) const
+{
+    auto items = getItemNames();
+    if (previousName) 
+    {
+        auto it = std::find(items.begin(), items.end(), *previousName);
+        if (it != items.end())
+        {
+            items.erase(it);
+        }
+    }
+    return isNameUniqueInCollection(name.c_str(), items);
+}
+
 //-----------------------------------------------------------------------------
 // Function: CommonInterface::getUniqueName()
 //-----------------------------------------------------------------------------
@@ -25,7 +39,7 @@ QString CommonInterface::getUniqueName(std::string const& newName, std::string c
     std::string name = referenceName;
     int runningNumber = 0;
     auto const items = getItemNames();
-    while (!nameIsUnique(name, items))
+    while (!isNameUniqueInCollection(name, items))
     {
         name = referenceName + "_" + std::to_string(runningNumber);
         runningNumber++;
@@ -43,9 +57,9 @@ bool CommonInterface::nameHasChanged(std::string const& newName, std::string con
 }
 
 //-----------------------------------------------------------------------------
-// Function: CommonInterface::nameIsUnique()
+// Function: CommonInterface::isNameUniqueInCollection()
 //-----------------------------------------------------------------------------
-bool CommonInterface::nameIsUnique(std::string_view name, std::vector<std::string> const& reservedNamed) const
+bool CommonInterface::isNameUniqueInCollection(std::string_view name, std::vector<std::string> const& reservedNames) const
 {
-    return std::find(reservedNamed.cbegin(), reservedNamed.cend(), name) == reservedNamed.cend();
+    return std::find(reservedNames.cbegin(), reservedNames.cend(), name) == reservedNames.cend();
 }
