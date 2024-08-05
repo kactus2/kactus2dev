@@ -36,6 +36,7 @@
 #include <IPXACTmodels/common/validators/ChoiceValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
@@ -348,23 +349,8 @@ bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 {
     changeComponent(component);
 
-    if (!component->getMemoryMaps()->isEmpty())
-    {
-        QVector<QString> mapNames;
-        for (QSharedPointer<MemoryMap> memoryMap : *component->getMemoryMaps())
-        {
-            if (mapNames.contains(memoryMap->name()) || !memoryMapValidator_->validate(memoryMap))
-            {
-                return false;
-            }
-            else
-            {
-                mapNames.append(memoryMap->name());
-            }
-        }
-    }
-
-    return true;
+    MemoryMapsValidator validator(memoryMapValidator_);
+    return validator.validate(component->getMemoryMaps());
 }
 
 //-----------------------------------------------------------------------------

@@ -35,7 +35,7 @@ public:
      *      @param [in] parent      The parent item.
      */
     ResetTypesItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
-        QSharedPointer<Component> component, ComponentValidator& validator, ComponentEditorItem* parent);
+        QSharedPointer<Component> component, QSharedPointer<ComponentValidator> validator, ComponentEditorItem* parent);
 
 	/*!
      *  The destructor.
@@ -83,7 +83,7 @@ private:
     ResetTypesItem& operator=(const ResetTypesItem& other);
 
     //! Validator for component items.
-    ComponentValidator& componentValidator_;
+	QSharedPointer<ComponentValidator> componentValidator_;
 };
 
 #endif // RESETTYPESITEM_H

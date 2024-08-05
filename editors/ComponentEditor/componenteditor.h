@@ -400,7 +400,7 @@ private:
     QSharedPointer<ExpressionParser> expressionParser_;
 
     //! The used component validator.
-    ComponentValidator validator_;
+    QSharedPointer<ComponentValidator> validator_;
 
     //! Parameter reference tree.
     ComponentParameterReferenceTree* parameterReferenceTree_ = nullptr;

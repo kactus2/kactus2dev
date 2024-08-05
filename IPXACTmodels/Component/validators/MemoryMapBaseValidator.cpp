@@ -23,6 +23,7 @@
 
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <QRegularExpression>
 
@@ -33,6 +34,7 @@ MemoryMapBaseValidator::MemoryMapBaseValidator(QSharedPointer<ExpressionParser> 
     QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QSharedPointer<SubspaceMapValidator> subspaceValidator,
     Document::Revision docRevision):
+HierarchicalValidator(),
 docRevision_(docRevision),
 expressionParser_(expressionParser),
 addressBlockValidator_(addressBlockValidator),
@@ -82,10 +84,163 @@ QSharedPointer<SubspaceMapValidator> MemoryMapBaseValidator::getSubspaceValidato
 // Function: MemoryMapBaseValidator::validate()
 //-----------------------------------------------------------------------------
 bool MemoryMapBaseValidator::validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits)
-    const
 {
-    return hasValidName(memoryMapBase) && hasValidIsPresent(memoryMapBase) &&
-        hasValidMemoryBlocks(memoryMapBase, addressUnitBits);
+    return validComparedToSiblings(memoryMapBase) && hasValidName(memoryMapBase) && 
+        hasValidIsPresent(memoryMapBase) && hasValidMemoryBlocks(memoryMapBase, addressUnitBits);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::checkChildren()
+//-----------------------------------------------------------------------------
+bool MemoryMapBaseValidator::checkChildren(QSharedPointer<ValidationData> validationData)
+{
+    auto dataAsMemoryMapBaseData = validationData.staticCast<MemoryMapBaseValidationData>();
+    auto childBlocks = dataAsMemoryMapBaseData->children_;
+    auto const& addressUnitBits = dataAsMemoryMapBaseData->addressUnitBits_;
+    auto memMapToValidate = dataAsMemoryMapBaseData->memoryMapBase_;
+
+    bool errorFound = false;
+
+    // Address block and subspace map names should be unique, subspace can't have the same name as an address block.
+    QMultiHash<QString, QSharedPointer<NameGroup> > foundMemoryBlockNames;
+
+    // Sort blocks by base address to make checking for overlaps easier.
+    auto sortByBaseAddr = [this](QSharedPointer<NameGroup> memoryBlockA, QSharedPointer<NameGroup> memoryBlockB)
+        {
+            auto aAsBlock = memoryBlockA.staticCast<MemoryBlockBase>();
+            auto bAsBlock = memoryBlockB.staticCast<MemoryBlockBase>();
+            return expressionParser_->parseExpression(aAsBlock->getBaseAddress()).toLongLong() <
+                expressionParser_->parseExpression(bAsBlock->getBaseAddress()).toLongLong();
+        };
+
+    std::sort(childBlocks->begin(), childBlocks->end(), sortByBaseAddr);
+
+    quint64 lastEnd = 0;
+    bool lastBlockWasAddressBlock = false;
+
+    // Validate blocks together
+    for (int blockIndex = 0; blockIndex < childBlocks->size(); ++blockIndex)
+    {
+        auto child = childBlocks->at(blockIndex).staticCast<MemoryBlockBase>();
+        bool currentIsAddressBlock = false;
+
+        // First check names, but don't set invalidity yet.
+        if (auto addressBlock = child.dynamicCast<AddressBlock>())
+        {
+            if (!foundMemoryBlockNames.contains(addressBlock->name()))
+            {
+                addressBlockValidator_->setChildItemValidity(addressBlock, true);
+            }
+
+            foundMemoryBlockNames.insert(addressBlock->name(), addressBlock);
+            currentIsAddressBlock = true;
+        }
+        else if (auto subspaceMap = child.dynamicCast<SubSpaceMap>())
+        {
+            if (!foundMemoryBlockNames.contains(subspaceMap->name()))
+            {
+                subspaceValidator_->setChildItemValidity(subspaceMap, true);
+            }
+
+            foundMemoryBlockNames.insert(subspaceMap->name(), subspaceMap);
+        }
+
+        // Check overlaps of the sorted blocks comparing the start of the current block to the end of 
+        // the current rightmost point, last block or not.
+        bool childPresent = child->getIsPresent().isEmpty() ||
+            expressionParser_->parseExpression(child->getIsPresent()).toInt();
+
+        if (blockIndex == 0 && childPresent)
+        {
+            quint64 blockBegin = expressionParser_->parseExpression(child->getBaseAddress()).toULongLong();
+            lastEnd = blockBegin + getBlockRange(child) - 1;
+        }
+        else if (childPresent)
+        {
+            quint64 blockBegin = expressionParser_->parseExpression(child->getBaseAddress()).toULongLong();
+            quint64 blockEnd = blockBegin + getBlockRange(child) - 1;
+
+            // Mark this and the last block as invalid, if overlap.
+            if (blockBegin <= lastEnd)
+            {
+                lastBlockWasAddressBlock
+                    ? addressBlockValidator_->setChildItemValidity(childBlocks->at(blockIndex - 1), false)
+                    : subspaceValidator_->setChildItemValidity(childBlocks->at(blockIndex - 1), false);
+
+                currentIsAddressBlock
+                    ? addressBlockValidator_->setChildItemValidity(child, false)
+                    : subspaceValidator_->setChildItemValidity(child, false);
+                errorFound = true;
+            }
+
+            if (blockEnd > lastEnd)
+            {
+                lastEnd = blockEnd;
+            }
+        }
+
+        lastBlockWasAddressBlock = currentIsAddressBlock;
+    }
+
+    // Mark all blocks with duplicate names invalid.
+    if (markBlocksWithDuplicateNames(foundMemoryBlockNames))
+    {
+        errorFound = true;
+    }
+
+    // No need to check child blocks if they are erroneous together.
+    if (errorFound)
+    {
+        return false;
+    }
+
+    // Validate blocks separately
+    for (auto const& child : *childBlocks)
+    {
+        if (QSharedPointer<AddressBlock> addressBlock = child.dynamicCast<AddressBlock>();
+            addressBlock && !addressBlockValidator_->validate(addressBlock, addressUnitBits))
+        {
+            return false;
+        }
+        else if (QSharedPointer<SubSpaceMap> subspace = child.dynamicCast<SubSpaceMap>();
+            subspace && !subspaceValidator_->validate(subspace))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryMapBaseValidator::markBlocksWithDuplicateNames()
+//-----------------------------------------------------------------------------
+bool MemoryMapBaseValidator::markBlocksWithDuplicateNames(QMultiHash<QString, QSharedPointer<NameGroup>> const& foundNames)
+{
+    bool errorFound = false;
+    for (auto const& name : foundNames.keys())
+    {
+        if (auto const& duplicateNames = foundNames.values(name);
+            duplicateNames.count() > 1)
+        {
+            std::for_each(duplicateNames.begin(), duplicateNames.end(),
+                [this](QSharedPointer<NameGroup> memoryBlock)
+                {
+                    if (auto asAddressBlock = memoryBlock.dynamicCast<AddressBlock>())
+                    {
+                        addressBlockValidator_->setChildItemValidity(asAddressBlock, false);
+                    }
+                    else if (auto asSubspace = memoryBlock.dynamicCast<SubSpaceMap>())
+                    {
+                        subspaceValidator_->setChildItemValidity(asSubspace, false);
+                    }
+                });
+
+            errorFound = true;
+        }
+    }
+
+    return errorFound;
 }
 
 //-----------------------------------------------------------------------------
@@ -130,80 +285,39 @@ bool MemoryMapBaseValidator::hasValidIsPresent(QSharedPointer<MemoryMapBase> mem
 // Function: MemoryMapBaseValidator::hasValidMemoryBlocks()
 //-----------------------------------------------------------------------------
 bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase,
-    QString const& addressUnitBits) const
+    QString const& addressUnitBits)
 {
-    if (!memoryMapBase->getMemoryBlocks()->isEmpty())
+    if (memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        QStringList memoryBlockNames;
-        for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
-        {
-            QSharedPointer<MemoryBlockBase> blockData = memoryMapBase->getMemoryBlocks()->at(blockIndex);
-            if (memoryBlockNames.contains(blockData->name()))
-            {
-                return false;
-            }
-
-            memoryBlockNames.append(blockData->name());
-
-            QSharedPointer<AddressBlock> addressBlock = blockData.dynamicCast<AddressBlock>();
-            if (addressBlock &&
-                (!addressBlockValidator_->validate(addressBlock, addressUnitBits) ||
-                    !addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock)))
-            {
-                return false;
-            }
-            else
-            {
-                QSharedPointer<SubSpaceMap> subspace = blockData.dynamicCast<SubSpaceMap>();
-                if (subspace && !subspaceValidator_->validate(subspace))
-                {
-                    return false;
-                }
-            }
-
-            if (memoryBlockOverlaps(blockData, memoryMapBase, blockIndex))
-            {
-                return false;
-            }
-        }
+        return true;
     }
 
-    return true;
+    QSharedPointer<MemoryMapBaseValidationData> validationData(new MemoryMapBaseValidationData());
+    validationData->children_ = CollectionValidators::itemListToNameGroupList(memoryMapBase->getMemoryBlocks());
+    validationData->addressUnitBits_ = addressUnitBits;
+    validationData->memoryMapBase_ = memoryMapBase;
+    return checkChildren(validationData);
 }
 
 //-----------------------------------------------------------------------------
-// Function: MemoryMapBaseValidator::addressUnitBitsIsValidForMemoryBlocks()
+// Function: MemoryMapBaseValidator::addressBlockWidthIsMultipleOfAUB()
 //-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::addressBlockWidthIsMultiplicationOfAUB(QString const& addressUnitBits,
+bool MemoryMapBaseValidator::addressBlockWidthIsMultipleOfAUB(QString const& addressUnitBits,
     QSharedPointer<AddressBlock> addressBlock) const
 {
     bool aubToIntOk = true;
     bool widthToIntOk = true;
 
     int addressUnitBitsInt = expressionParser_->parseExpression(addressUnitBits).toInt(&aubToIntOk);
-
     int addressBlockWidth = expressionParser_->parseExpression(addressBlock->getWidth()).toInt(&widthToIntOk);
 
-    return aubToIntOk && widthToIntOk && addressUnitBitsInt != 0 && addressBlockWidth % addressUnitBitsInt == 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: MemoryMapBaseValidator::addressBlockOverlap()
-//-----------------------------------------------------------------------------
-bool MemoryMapBaseValidator::memoryBlockOverlaps(QSharedPointer<MemoryBlockBase> memoryBlock,
-    QSharedPointer<MemoryMapBase> memoryMapBase, int memoryBlockIndex) const
-{
-    for (int blockIndex = memoryBlockIndex + 1; blockIndex < memoryMapBase->getMemoryBlocks()->size();
-        ++blockIndex)
+    bool isValid = aubToIntOk && widthToIntOk && addressUnitBitsInt != 0 && addressBlockWidth % addressUnitBitsInt == 0;
+    if (!isValid)
     {
-        QSharedPointer<MemoryBlockBase> comparisonBlock = memoryMapBase->getMemoryBlocks()->at(blockIndex);
-        if (twoMemoryBlocksOverlap(memoryBlock, comparisonBlock))
-        {
-            return true;
-        }
+        addressBlockValidator_->setChildItemValidity(addressBlock, false);
     }
 
-    return false;
+    return isValid;
 }
 
 //-----------------------------------------------------------------------------
@@ -317,7 +431,7 @@ QSharedPointer<Segment> MemoryMapBaseValidator::getReferencedSegment(QSharedPoin
 // Function: MemoryMapBaseValidator::findErrorsIn()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-    QString const& addressUnitBits, QString const& context) const
+    QString const& addressUnitBits, QString const& context)
 {
     QString memoryMapContext = memoryMapBase->elementName();
     memoryMapContext.append(QLatin1Char(' '));
@@ -358,46 +472,48 @@ void MemoryMapBaseValidator::findErrorsInIsPresent(QVector<QString>& errors,
 // Function: MemoryMapBaseValidator::findErrorsInAddressBlocks()
 //-----------------------------------------------------------------------------
 void MemoryMapBaseValidator::findErrorsInAddressBlocks(QVector<QString>& errors,
-    QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits, QString const& context) const
+    QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits, QString const& context)
 {
-    if (!memoryMapBase->getMemoryBlocks()->isEmpty())
+    if (memoryMapBase->getMemoryBlocks()->isEmpty())
     {
-        QStringList memoryBlockNames;
-        for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
+        return;
+    }
+    
+    // Keep track of found names, and if an error has been issued for duplicate names.
+    QHash<QString, bool> memoryBlockNames; 
+
+    for (int blockIndex = 0; blockIndex < memoryMapBase->getMemoryBlocks()->size(); ++blockIndex)
+    {
+        QSharedPointer<MemoryBlockBase> memoryBlock = memoryMapBase->getMemoryBlocks()->at(blockIndex);
+        if (memoryBlockNames.contains(memoryBlock->name()) && memoryBlockNames[memoryBlock->name()] == false)
         {
-            QSharedPointer<MemoryBlockBase> memoryBlock = memoryMapBase->getMemoryBlocks()->at(blockIndex);
-            if (memoryBlockNames.contains(memoryBlock->name()))
+            errors.append(QObject::tr("Name %1 of memory blocks in %2 is not unique")
+                .arg(memoryBlock->name()).arg(context));
+            memoryBlockNames[memoryBlock->name()] = true;
+        }
+        else
+        {
+            memoryBlockNames.insert(memoryBlock->name(), false);
+        }
+
+        if (QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>())
+        {
+            addressBlockValidator_->findErrorsIn(errors, addressBlock, addressUnitBits, context);
+            if (!addressBlockWidthIsMultipleOfAUB(addressUnitBits, addressBlock))
             {
-                errors.append(QObject::tr("Name %1 of memory blocks in %2 is not unique")
-                    .arg(memoryBlock->name()).arg(context));
-            }
-
-            memoryBlockNames.append(memoryBlock->name());
-
-            QSharedPointer<AddressBlock> addressBlock = memoryBlock.dynamicCast<AddressBlock>();
-            QSharedPointer<SubSpaceMap> subspace = memoryBlock.dynamicCast<SubSpaceMap>();
-            if (addressBlock || subspace)
-            {
-                if (addressBlock)
-                {
-                    addressBlockValidator_->findErrorsIn(errors, addressBlock, addressUnitBits, context);
-                    if (!addressBlockWidthIsMultiplicationOfAUB(addressUnitBits, addressBlock))
-                    {
-                        errors.append(QObject::tr(
-                            "Width of address block %1 is not a multiple of the address unit bits of %2 %3")
-                            .arg(addressBlock->name())
-                            .arg(memoryMapBase->elementName())
-                            .arg(memoryMapBase->name()));
-                    }
-                }
-                else if (subspace)
-                {
-                    subspaceValidator_->findErrorsIn(errors, subspace, context);
-                }
-
-                findErrorsInOverlappingBlocks(errors, memoryMapBase, memoryBlock, blockIndex, context);
+                errors.append(QObject::tr(
+                    "Width of address block %1 is not a multiple of the address unit bits of %2 %3")
+                    .arg(addressBlock->name())
+                    .arg(memoryMapBase->elementName())
+                    .arg(memoryMapBase->name()));
             }
         }
+        else if (QSharedPointer<SubSpaceMap> subspace = memoryBlock.dynamicCast<SubSpaceMap>())
+        {
+            subspaceValidator_->findErrorsIn(errors, subspace, context);
+        }
+
+        findErrorsInOverlappingBlocks(errors, memoryMapBase, memoryBlock, blockIndex, context);
     }
 }
 

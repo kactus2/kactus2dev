@@ -97,7 +97,7 @@ referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new Compone
     fullParameterFinder_, component))),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(expressionParser_, getLibHandler(), component->getRevision())
+validator_(new ComponentValidator(expressionParser_, getLibHandler(), component->getRevision()))
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =
@@ -309,9 +309,9 @@ QStringList ComponentEditor::getSwItemNames()
 //-----------------------------------------------------------------------------
 bool ComponentEditor::validate(QVector<QString>& errorList)
 {
-    if (validator_.validate(component_) == false)
+    if (validator_->validate(component_) == false)
     {
-        validator_.findErrorsIn(errorList, component_);
+        validator_->findErrorsIn(errorList, component_);
         return false;
     }
 

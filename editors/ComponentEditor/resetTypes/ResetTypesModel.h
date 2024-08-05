@@ -36,7 +36,7 @@ public:
      *      @param [in] validator   The validator for cpus.
 	 *      @param [in] parent      The owner of this model.
 	 */
-	ResetTypesModel(QSharedPointer<Component> component, ComponentValidator& validator, QObject* parent);
+	ResetTypesModel(QSharedPointer<Component> component, QSharedPointer<ComponentValidator> validator, QObject* parent);
 	
 	/*!
      *  The destructor.
@@ -138,7 +138,7 @@ private:
     QSharedPointer<QList<QSharedPointer<ResetType> > > resetTypes_;
 
     //! Validator for component items.
-    ComponentValidator& validator_;
+    QSharedPointer<ComponentValidator> validator_;
 };
 
 #endif // RESETTYPESMODEL_H
