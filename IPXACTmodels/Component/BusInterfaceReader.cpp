@@ -230,10 +230,15 @@ void BusinterfaceReader::Details::parsePortMaps(QDomElement const& portMapsEleme
 
         portMap->setLogicalTieOff(logicalTieOffElement.firstChild().nodeValue());
 
-
-        QDomElement isInformativeElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isInformative"));
-
-        portMap->setIsInformative(isInformativeElement.firstChild().nodeValue() == QLatin1String("true"));
+        if (QDomElement isInformativeElement = portMapElement.firstChildElement(QStringLiteral("ipxact:isInformative"));
+            isInformativeElement.firstChild().nodeValue().isEmpty())
+        {
+            portMap->clearIsInformative(); // Set unspecified value if value doesn't exist.
+        }
+        else
+        {
+            portMap->setIsInformative(isInformativeElement.firstChild().nodeValue() == QLatin1String("true"));
+        }
 
         if (docRevision == Document::Revision::Std22)
         {
