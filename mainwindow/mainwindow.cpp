@@ -624,7 +624,6 @@ void MainWindow::onAdjustVisibilityInWindow(TabDocument::SupportedWindows type, 
     if (tabCount > 0)
     {
         currentWidget = designTabs_->currentWidget();
-        designTabs_->close();
     }
 
     dockHandler_->setWindowVisibilityForSupportedWindow(currentWidget, type, show);
