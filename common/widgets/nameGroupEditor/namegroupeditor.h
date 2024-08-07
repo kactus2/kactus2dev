@@ -39,6 +39,8 @@ public:
 		QSharedPointer <CommonInterface> interface_,
 		QString const& title = QString("Names"));
 
+	NameGroupEditor(QSharedPointer<NameGroup> nameGroup, Document::Revision docRevision, QWidget* parent, CommonInterface* interface, QString const& title = QString("Names"));
+
 	//! The destructor
 	virtual ~NameGroupEditor();
 
@@ -135,7 +137,7 @@ private:
 	//! Editor to write the description.
 	QPlainTextEdit descriptionEdit_;
 
-	QSharedPointer<CommonInterface> interface_;
+	CommonInterface* interface_;
 
 };
 

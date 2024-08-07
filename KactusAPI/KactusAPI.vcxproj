@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\AddressSpaceInterface.h" />
     <ClInclude Include="include\ItemNamesGetterInterface.h" />
     <ClInclude Include="include\AbstractionTypeInterface.h" />
     <ClInclude Include="include\AbstractParameterInterface.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="interfaces\common\ParametersInterface.cpp" />
     <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp" />
     <ClCompile Include="interfaces\component\AddressBlockInterface.cpp" />
+    <ClCompile Include="interfaces\component\AddressSpaceInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterface.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceInterfaceFactory.cpp" />
     <ClCompile Include="interfaces\component\BusInterfaceUtilities.cpp" />

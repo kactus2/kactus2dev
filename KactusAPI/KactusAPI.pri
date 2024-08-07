@@ -9,6 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./KactusAPI.h \
     ./KactusAPIGlobal.h \
+    ./include/ItemNamesGetterInterface.h \
     ./include/AbstractionTypeInterface.h \
     ./include/AbstractParameterInterface.h \
     ./include/AccessPolicyInterface.h \
@@ -96,7 +97,7 @@ HEADERS += ./KactusAPI.h \
     ./include/LibraryItem.h \
     ./include/LibraryTreeModel.h \
     ./include/ParameterCache.h \
-    ../../temp/31.07.24/ItemNamesGetterInterface.h
+    ./include/AddressSpaceInterface.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -142,6 +143,7 @@ SOURCES += ./KactusAPI.cpp \
     ./interfaces/component/ResetInterface.cpp \
     ./interfaces/component/SubspaceMapInterface.cpp \
     ./interfaces/component/TransparentBridgeInterface.cpp \
+    ./interfaces/common/ItemNamesGetterInterface.cpp \
     ./interfaces/common/AbstractParameterInterface.cpp \
     ./interfaces/common/CommonInterface.cpp \
     ./interfaces/common/NameGroupInterface.cpp \
@@ -167,4 +169,4 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
     ./library/TagManager.cpp \
-    ../../temp/31.07.24/ItemNamesGetterInterface.cpp
+    ./interfaces/component/AddressSpaceInterface.cpp

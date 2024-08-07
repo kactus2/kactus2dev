@@ -19,6 +19,7 @@
 #include <IPXACTmodels/Component/MemoryRemap.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
 #include <IPXACTmodels/Component/ModeReference.h>
+#include <ItemNamesGetterInterface.h>
 
 #include <QMimeData>
 #include <QApplication>
@@ -41,8 +42,8 @@ namespace
 MemoryMapInterface::MemoryMapInterface(QSharedPointer<MemoryMapValidator> mapValidator,
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<ExpressionFormatter> expressionFormatter):
 ParameterizableInterface(expressionParser, expressionFormatter),
+ItemNamesGetterInterface<MemoryMap>(),
 component_(),
-mapData_(),
 validator_(mapValidator),
 addressBlockInterface_(0),
 subspaceInterface_(0)
@@ -72,7 +73,7 @@ void MemoryMapInterface::setSubspaceMapInterface(SubspaceMapInterface* submapInt
 void MemoryMapInterface::setMemoryMaps(QSharedPointer<Component> component)
 {
     component_ = component;
-    mapData_ = component->getMemoryMaps();
+    existingItems_ = component->getMemoryMaps();
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +83,7 @@ QSharedPointer<MemoryMap> MemoryMapInterface::getMemoryMap(std::string const& it
 {
     QString itemNameQ = QString::fromStdString(itemName);
 
-    for (auto currentMap : *mapData_)
+    for (auto currentMap : *existingItems_)
     {
         if (currentMap->name() == itemNameQ)
         {
@@ -121,9 +122,9 @@ QSharedPointer<MemoryRemap> MemoryMapInterface::getMemoryRemap(std::string const
 //-----------------------------------------------------------------------------
 int MemoryMapInterface::getItemIndex(std::string const& itemName) const
 {
-    for (int i = 0; i < mapData_->size(); ++i)
+    for (int i = 0; i < existingItems_->size(); ++i)
     {
-        if (mapData_->at(i)->name().toStdString() == itemName)
+        if (existingItems_->at(i)->name().toStdString() == itemName)
         {
             return i;
         }
@@ -159,9 +160,9 @@ int MemoryMapInterface::getMemoryRemapIndex(std::string const& mapName, std::str
 std::string MemoryMapInterface::getIndexedItemName(int itemIndex) const
 {
     std::string blockName = "";
-    if (itemIndex >= 0 && itemIndex < mapData_->size())
+    if (itemIndex >= 0 && itemIndex < existingItems_->size())
     {
-        blockName = mapData_->at(itemIndex)->name().toStdString();
+        blockName = existingItems_->at(itemIndex)->name().toStdString();
     }
 
     return blockName;
@@ -192,7 +193,7 @@ std::string MemoryMapInterface::getIndexedRemapName(std::string mapName, int con
 //-----------------------------------------------------------------------------
 int MemoryMapInterface::itemCount() const
 {
-    return mapData_->count();
+    return existingItems_->count();
 }
 
 //-----------------------------------------------------------------------------
@@ -211,19 +212,20 @@ int MemoryMapInterface::remapCount(std::string const& mapName) const
     return -1;
 }
 
-//-----------------------------------------------------------------------------
-// Function: MemoryMapInterface::getItemNames()
-//-----------------------------------------------------------------------------
-std::vector<std::string> MemoryMapInterface::getItemNames() const
-{
-    std::vector<std::string> names;
-    for (auto map : *mapData_)
-    {
-        names.push_back(map->name().toStdString());
-    }
-
-    return names;
-}
+////-----------------------------------------------------------------------------
+//// Function: MemoryMapInterface::getItemNames()
+////-----------------------------------------------------------------------------
+//std::vector<std::string> MemoryMapInterface::getItemNames() const
+//{
+//
+//    std::vector<std::string> names;
+//    for (auto map : *existingItems_)
+//    {
+//        names.push_back(map->name().toStdString());
+//    }
+//
+//    return names;
+//}
 
 //-----------------------------------------------------------------------------
 // Function: MemoryMapInterface::getRemapNames()
@@ -606,7 +608,7 @@ int MemoryMapInterface::getAllReferencesToIdInRemapItem(std::string const& mapNa
 //-----------------------------------------------------------------------------
 bool MemoryMapInterface::validateItems() const
 {
-    for (auto currentItem : *mapData_)
+    for (auto currentItem : *existingItems_)
     {
         if (!validator_->validate(currentItem))
         {
@@ -704,7 +706,7 @@ void MemoryMapInterface::addMemoryMap(int const& row, std::string const& newMapN
     QSharedPointer<MemoryMap> newMap(new MemoryMap());
     newMap->setName(getUniqueName(newMapName, MEMORYMAP_TYPE));
 
-    mapData_->insert(row, newMap);
+    existingItems_->insert(row, newMap);
 }
 
 //-----------------------------------------------------------------------------
@@ -741,7 +743,7 @@ bool MemoryMapInterface::removeMap(std::string const& mapName)
         return false;
     }
 
-    return mapData_->removeOne(removedItem);
+    return existingItems_->removeOne(removedItem);
 }
 
 //-----------------------------------------------------------------------------
@@ -887,7 +889,7 @@ QString MemoryMapInterface::pasteMemoryMap(QSharedPointer<MemoryMap> mapCopy)
 {
     QSharedPointer<MemoryMap> newMap(new MemoryMap(*mapCopy.data()));
     newMap->setName(getUniqueName(newMap->name().toStdString(), MEMORYMAP_TYPE));
-    mapData_->append(newMap);
+    existingItems_->append(newMap);
     
     return newMap->name();
 }

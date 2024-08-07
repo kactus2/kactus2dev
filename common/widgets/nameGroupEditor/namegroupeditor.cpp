@@ -35,6 +35,8 @@ QGroupBox(title, parent),
 
     connect(&nameEdit_, SIGNAL(editingFinished()),
         this, SLOT(onNameEditingFinished()), Qt::UniqueConnection);
+    //connect(&nameEdit_, SIGNAL(textEdited(QString const&)),
+    //    this, SLOT(onNameChanged(QString const&)), Qt::UniqueConnection);
     //connect(&nameEdit_, SIGNAL(editingFinished()), this, SIGNAL(nameChanged()), Qt::UniqueConnection);
     connect(&displayNameEdit_, SIGNAL(textEdited(QString const&)),
         this, SLOT(onDisplayNameChanged(QString const&)), Qt::UniqueConnection);
@@ -45,6 +47,11 @@ QGroupBox(title, parent),
 }
 
 NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, Document::Revision docRevision, QWidget* parent, QSharedPointer <CommonInterface> interface, QString const& title) : NameGroupEditor(nameGroup,docRevision,parent,title)
+{
+    /*interface_ = interface;*/
+}
+
+NameGroupEditor::NameGroupEditor(QSharedPointer<NameGroup> nameGroup, Document::Revision docRevision, QWidget* parent, CommonInterface* interface, QString const& title) : NameGroupEditor(nameGroup, docRevision, parent, title)
 {
     interface_ = interface;
 }
@@ -149,7 +156,7 @@ void NameGroupEditor::onNameEditingFinished()
     if (interface_)
     {
         std::string currentName = name().toStdString();
-        if (interface_->isNameUnique(newName.toStdString(), &currentName))
+        if (interface_->isNameUnique(newName.toStdString(), &currentName)||newName.isEmpty())
         {
             nameGroup_->setName(newName);
             emit contentChanged();
@@ -158,7 +165,7 @@ void NameGroupEditor::onNameEditingFinished()
         else
         {
             QMessageBox msgBox(QMessageBox::Critical, QCoreApplication::applicationName(),
-                tr("The name %1 is not unique. Do you want to continue editing?").arg(newName), QMessageBox::Ok, this);
+                tr("The name %1 is not unique.").arg(newName), QMessageBox::Ok, this);
             msgBox.exec();
             nameEdit_.setFocus();
         }

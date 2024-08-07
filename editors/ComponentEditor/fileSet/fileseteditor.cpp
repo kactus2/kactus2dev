@@ -31,7 +31,7 @@ FileSetEditor::FileSetEditor(LibraryInterface* handler, QSharedPointer<Component
     FileSetInterface* fileSetInterface, QWidget *parent):
 ItemEditor(component, handler, parent),
 baseLocation_(handler->getPath(component->getVlnv())),
-nameEditor_(fileSet, component->getRevision(), this),
+nameEditor_(fileSet, component->getRevision(), this/*, QSharedPointer<FileSetInterface>(fileSetInterface)*/, fileSetInterface),
 groupsEditor_(tr("Group identifiers"), this),
 fileBuilderEditor_(fileSetInterface->getFileBuilderInterface(), parameterFinder, expressionParser,
     expressionFormatter, fileSet->getDefaultFileBuilders(), this),

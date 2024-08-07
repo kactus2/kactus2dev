@@ -16,6 +16,7 @@
 
 #include <ParameterizableInterface.h>
 #include <NameGroupInterface.h>
+#include <ItemNamesGetterInterface.h>
 
 class Component;
 class MemoryMap;
@@ -30,11 +31,11 @@ class ModeReference;
 //-----------------------------------------------------------------------------
 //! Interface for editing memory maps and remaps.
 //-----------------------------------------------------------------------------
-class KACTUS2_API MemoryMapInterface : public ParameterizableInterface, public NameGroupInterface
+
+class KACTUS2_API MemoryMapInterface : public ParameterizableInterface, public ItemNamesGetterInterface<MemoryMap>
 {
 
 public:
-
     /*!
      *  The constructor.
      *
@@ -126,12 +127,12 @@ public:
      */
     int remapCount(std::string const& mapName) const;
 
-    /*!
-     *  Get the names of the available items.
-     *
-     *      @return Names of the available items.
-     */
-    virtual std::vector<std::string> getItemNames() const override final;
+    ///*!
+    // *  Get the names of the available items.
+    // *
+    // *      @return Names of the available items.
+    // */
+    //virtual std::vector<std::string> getItemNames() const override final;
 
     /*!
      *  Get the names of available memory remaps in the selected memory map.
@@ -652,8 +653,8 @@ private:
     //! Component containing the memory maps.
     QSharedPointer<Component> component_;
 
-    //! List of the contained memory maps.
-    QSharedPointer<QList<QSharedPointer<MemoryMap> > > mapData_;
+    ////! List of the contained memory maps.
+    //QSharedPointer<QList<QSharedPointer<MemoryMap> > > mapData_;
 
     //! Validator for memory maps.
     QSharedPointer<MemoryMapValidator> validator_;
@@ -666,6 +667,8 @@ private:
 
     //! Interface for accessing remap mode references.
     ModeReferenceInterface* modeReferenceInterface_;
+
+    
 };
 
 #endif // MEMORYMAPINTERFACE_H

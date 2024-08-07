@@ -318,7 +318,10 @@ void MainWindow::setupActions()
 
     actSaveAs_ = new QAction(QIcon(":/icons/common/graphics/file-save-as.png"), QString(), this);
     actSaveAs_->setShortcut(QKeySequence::SaveAs);
+    auto s = actSaveAs_->shortcut();
+    auto d = s.toString();
     QString tooltipSaveAs = tr("Save As (Shortcut: %1)").arg(actSaveAs_->shortcut().toString(QKeySequence::NativeText));
+    //actSaveAs_->setText();
     actSaveAs_->setToolTip(tooltipSaveAs);
     actSaveAs_->setStatusTip(tooltipSaveAs);
     actSaveAs_->setEnabled(false);

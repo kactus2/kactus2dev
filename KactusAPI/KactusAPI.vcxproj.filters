@@ -300,6 +300,9 @@
     <ClInclude Include="include\ItemNamesGetterInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\AddressSpaceInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -517,6 +520,9 @@
     </ClCompile>
     <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp">
       <Filter>Source Files\interfaces\common</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\AddressSpaceInterface.cpp">
+      <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
