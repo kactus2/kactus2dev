@@ -17,6 +17,7 @@
 #include <IPXACTmodels/common/Document.h>
 
 #include <IPXACTmodels/Component/validators/MemoryArrayValidator.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -36,7 +37,7 @@ class Mode;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Register.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT RegisterBaseValidator
+class IPXACTMODELS_EXPORT RegisterBaseValidator : public HierarchicalValidator
 {
 public:
 

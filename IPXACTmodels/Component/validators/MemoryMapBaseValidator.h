@@ -33,6 +33,9 @@ class BusInterface;
 class AddressSpace;
 class Segment;
 
+/*
+ *  Data needed for validating memory blocks of a memory map.
+ */
 struct IPXACTMODELS_EXPORT MemoryMapBaseValidationData : public ValidationData
 {
     QString addressUnitBits_;

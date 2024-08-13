@@ -23,6 +23,7 @@
 class ExpressionParser;
 class AddressBlock;
 class Register;
+class RegisterBase;
 class RegisterFile;
 class ResetType;
 class Component;
@@ -30,6 +31,16 @@ class RegisterValidator;
 class RegisterFileValidator;
 class ParameterValidator;
 class Mode;
+
+/*
+ *  Data needed for validating register data of an address block.
+ */
+struct IPXACTMODELS_EXPORT RegistersValidationData : public ValidationData
+{
+    QString addressUnitBits_;
+
+    QSharedPointer<AddressBlock> addressBlock_;
+};
 
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:addressBlock.
@@ -87,7 +98,39 @@ public:
      *
      *      @return True, if the address block is valid IP-XACT, otherwise false.
      */
-    bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
+    bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits);
+
+    /*!
+     *	Check the validity of the child items of the address block, i.e. the register data. Marks invalid children.
+     *  
+     *      @param [in] validationData     Data necessary for validating register data of an address block.
+     *	    
+     * 	    @return True, if the register data are valid, otherwise false.
+     */
+    bool checkChildren(QSharedPointer<ValidationData> validationData) override;
+
+    /*!
+     *	Mark overlapping registers as invalid.
+     *  
+     *      @param [in] regIter             Iterator pointing to current register(file).
+     *      @param [in] lastEndAddress      Currently biggest register end address found.
+     *      @param [in] addressBlockRange   The address block range.
+     *      @param [in] addressUnitBits     The memory map address unit bits.
+     *      @param [in] targetIsRegister    Flag indicating if regIter points to register or register file.
+     *      @param [in] lastWasRegister     Flag indicating if the previous item was a register or register file.
+     *	    
+     * 	    @return True, if overlapping registers and/or register files were found, otherwise false.
+     */
+    bool markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress, qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister);
+
+    /*!
+     *	Mark registers with duplicate names as invalid.
+     *
+     *      @param [in] foundNames     The registers and register files to check.
+     *	    
+     * 	    @return True, if duplicate names were found, otherwise false.
+     */
+    bool markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>>& foundNames);
 
     /*!
      *  Check if the address block contains a valid range.
@@ -115,7 +158,7 @@ public:
      *
      *      @return True, if the register data is valid, otherwise false.
      */
-    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
+    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits);
 
     /*!
      *  Check if the register size is not within address block width.

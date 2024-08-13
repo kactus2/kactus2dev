@@ -26,6 +26,7 @@
 MemoryBlockValidator::MemoryBlockValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterValidator> parameterValidator,
     Document::Revision docRevision) :
+HierarchicalValidator(),
 docRevision_(docRevision),
 expressionParser_(expressionParser),
 parameterValidator_(parameterValidator)
@@ -46,7 +47,8 @@ QSharedPointer<ExpressionParser> MemoryBlockValidator::getExpressionParser() con
 //-----------------------------------------------------------------------------
 bool MemoryBlockValidator::validate(QSharedPointer<MemoryBlockBase> memoryBlock) const
 {
-    return  hasValidName(memoryBlock) &&
+    return validComparedToSiblings(memoryBlock) && 
+        hasValidName(memoryBlock) &&
         hasValidIsPresent(memoryBlock) &&
         hasValidBaseAddress(memoryBlock) &&
         hasValidParameters(memoryBlock);
