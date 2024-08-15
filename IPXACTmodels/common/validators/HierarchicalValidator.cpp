@@ -18,9 +18,9 @@
 //-----------------------------------------------------------------------------
 // Function: HierarchicalValidator::checkChildren()
 //-----------------------------------------------------------------------------
-bool HierarchicalValidator::checkChildren(QSharedPointer<ValidationData> validationData)
+bool HierarchicalValidator::childrenHaveUniqueNames(QSharedPointer<QList<QSharedPointer<NameGroup> > > children)
 {
-    if (validationData->children_->isEmpty() || !childValidator_)
+    if (children->isEmpty() || !childValidator_)
     {
         return true;
     }
@@ -28,7 +28,7 @@ bool HierarchicalValidator::checkChildren(QSharedPointer<ValidationData> validat
     bool childrenAreValid = true;
 
     QMultiHash<QString, QSharedPointer<NameGroup> > found;
-    for (auto child : *validationData->children_)
+    for (auto child : *children)
     {
         if (found.contains(child->name()))
         {

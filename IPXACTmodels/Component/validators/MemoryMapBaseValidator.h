@@ -33,16 +33,6 @@ class BusInterface;
 class AddressSpace;
 class Segment;
 
-/*
- *  Data needed for validating memory blocks of a memory map.
- */
-struct IPXACTMODELS_EXPORT MemoryMapBaseValidationData : public ValidationData
-{
-    QString addressUnitBits_;
-
-    QSharedPointer<MemoryMapBase> memoryMapBase_;
-};
-
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
 //-----------------------------------------------------------------------------
@@ -103,24 +93,6 @@ public:
     virtual bool validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits);
 
     /*!
-     *	Check the validity of the child items of the memory map, i.e. the address blocks and subspace maps.
-     *  
-     *      @param [in] validationData     Struct containing necessary data for validation.
-     *	    
-     * 	    @return True, if the children are valid, otherwise false.
-     */
-    bool checkChildren(QSharedPointer<ValidationData> validationData) override;
-
-    /*!
-     *	Mark address blocks and subspace maps as invalid if they have duplicate names.
-     *  
-     *      @param [in] foundNames     The found names and associated memory blocks.
-     *	    
-     * 	    @return True, if duplicate names were found, otherwise false.
-     */
-    bool markBlocksWithDuplicateNames(QMultiHash<QString, QSharedPointer<NameGroup>> const& foundNames);
-
-    /*!
      *  Check if the memory map base contains a valid name.
      *
      *      @param [in] memoryMapBase   The selected memory map base.
@@ -173,17 +145,15 @@ protected:
 
 private:
 
+
     /*!
-     *  Check if the memory block overlaps with another memory block.
+     *	Mark address blocks and subspace maps as invalid if they have duplicate names.
      *
-     *      @param [in] memoryBlock         The selected memory block.
-     *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] memoryBlockIndex    The index of the memory block.
+     *      @param [in] foundNames     The found names and associated memory blocks.
      *
-     *      @return True, if the memory blocks overlap, otherwise false.
+     * 	    @return True, if duplicate names were found, otherwise false.
      */
-     /*bool memoryBlockOverlaps(QSharedPointer<MemoryBlockBase> memoryBlock,
-         QSharedPointer<MemoryMapBase> memoryMapBase, int memoryBlockIndex);*/
+    bool markBlocksWithDuplicateNames(QMultiHash<QString, QSharedPointer<NameGroup>> const& foundNames);
 
     /*!
      *  Check if two memory blocks overlap.

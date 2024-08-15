@@ -190,9 +190,7 @@ void ComponentEditorMemMapsItem::addressUnitBitsChangedOnMemoryMap(int memoryMap
 bool ComponentEditorMemMapsItem::isValid() const
 {
     auto memoryMapsAsNameGroup = CollectionValidators::itemListToNameGroupList(memoryMaps_);
-    QSharedPointer<ValidationData> memoryMapsValidationData(new ValidationData());
-    memoryMapsValidationData->children_ = memoryMapsAsNameGroup;
-    memoryMapsValidator_->checkChildren(memoryMapsValidationData);
+    memoryMapsValidator_->childrenHaveUniqueNames(memoryMapsAsNameGroup);
 
     return ComponentEditorItem::isValid();
 }

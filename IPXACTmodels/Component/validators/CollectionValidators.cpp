@@ -27,12 +27,11 @@ MemoryMapsValidator::MemoryMapsValidator(QSharedPointer<MemoryMapValidator> mapV
 //-----------------------------------------------------------------------------
 bool MemoryMapsValidator::validate(MapList memoryMaps)
 {
-    //checkChildren(CollectionValidators::itemListToNameGroupList(memoryMaps));
-
-    auto memoryMapsAsNameGroup = CollectionValidators::itemListToNameGroupList(memoryMaps);
-    QSharedPointer<ValidationData> memoryMapsValidationData(new ValidationData());
-    memoryMapsValidationData->children_ = memoryMapsAsNameGroup;
-    checkChildren(memoryMapsValidationData);
+    if (auto memoryMapsAsNameGroup = CollectionValidators::itemListToNameGroupList(memoryMaps); 
+        !childrenHaveUniqueNames(memoryMapsAsNameGroup))
+    {
+        return false;
+    }
 
     for (auto const& child : *memoryMaps)
     {

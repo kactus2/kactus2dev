@@ -120,13 +120,37 @@ bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, 
 }
 
 //-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::checkChildren()
+// Function: AddressBlockValidator::hasValidRange()
 //-----------------------------------------------------------------------------
-bool AddressBlockValidator::checkChildren(QSharedPointer<ValidationData> validationData)
+bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBlock) const
 {
-    auto validationDataAsRegisterData = validationData.staticCast<RegistersValidationData>();
-    auto addressUnitBits = validationDataAsRegisterData->addressUnitBits_;
-    auto addressBlock = validationDataAsRegisterData->addressBlock_;
+    bool toIntOk = true;
+    quint64 range = getExpressionParser()->parseExpression(addressBlock->getRange()).toULongLong(&toIntOk);
+
+    return toIntOk && range > 0;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidWidth()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const
+{
+    bool toIntOk = true;
+    getExpressionParser()->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
+
+    return toIntOk;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidRegisterData()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock,
+    QString const& addressUnitBits)
+{
+    if (addressBlock->getRegisterData()->isEmpty())
+    {
+        return true;
+    }
 
     QMultiHash<QString, QSharedPointer<RegisterBase> > foundNames;
 
@@ -170,6 +194,7 @@ bool AddressBlockValidator::checkChildren(QSharedPointer<ValidationData> validat
                 !hasValidVolatileForRegister(addressBlock, targetRegister) ||
                 !hasValidAccessWithRegister(addressBlock, targetRegister))
             {
+                registerValidator_->setChildItemValidity(targetRegister, false);
                 errorFound = true;
             }
 
@@ -202,7 +227,7 @@ bool AddressBlockValidator::checkChildren(QSharedPointer<ValidationData> validat
 
             foundNames.insert(targetRegisterFile->name(), targetRegisterFile);
 
-            if (aubChangeOk && aubInt != 0 && 
+            if (aubChangeOk && aubInt != 0 &&
                 markRegisterOverlap(regIter, lastEndAddress, addressBlockRange, aubInt, false, lastWasRegister))
             {
                 errorFound = true;
@@ -237,9 +262,86 @@ bool AddressBlockValidator::checkChildren(QSharedPointer<ValidationData> validat
 }
 
 //-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::registerIsNotContainedWithinBlock()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::registerSizeIsNotWithinBlockWidth(QSharedPointer<Register> targetRegister,
+    QSharedPointer<AddressBlock> addressBlock) const
+{
+    int registerSize = getExpressionParser()->parseExpression(targetRegister->getSize()).toInt();
+    int addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth()).toInt();
+
+    return registerSize > addressBlockWidth;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasInvalidVolatileForRegister()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidVolatileForRegister(QSharedPointer<AddressBlock> addressBlock,
+    QSharedPointer<Register> targetRegister) const
+{
+    if (targetRegister->getVolatile() == QLatin1String("true") &&
+        addressBlock->getVolatile() == QLatin1String("false"))
+    {
+        return false;
+    }
+
+    for (QSharedPointer<Field> const& field : *targetRegister->getFields())
+    {
+        if (field->getVolatile().toBool() == true && addressBlock->getVolatile() == QLatin1String("false"))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasValidAccessWithRegister()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasValidAccessWithRegister(QSharedPointer<AddressBlock> addressBlock,
+    QSharedPointer<Register> targetRegister) const
+{
+    AccessTypes::Access blockAccess = addressBlock->getAccess();
+    AccessTypes::Access registerAccess = targetRegister->getAccess();
+    if ((blockAccess == AccessTypes::READ_ONLY && registerAccess != AccessTypes::READ_ONLY) ||
+        (blockAccess == AccessTypes::WRITE_ONLY && (registerAccess != AccessTypes::WRITE_ONLY &&
+            registerAccess != AccessTypes::WRITEONCE)) ||
+        (blockAccess == AccessTypes::READ_WRITEONCE && (registerAccess != AccessTypes::READ_ONLY &&
+            registerAccess != AccessTypes::READ_WRITEONCE && registerAccess != AccessTypes::WRITEONCE)) ||
+        (blockAccess == AccessTypes::WRITEONCE && registerAccess != AccessTypes::WRITEONCE))
+    {
+        return false;
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasAddressBlockDefinitionGroupDefined()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasAddressBlockDefinitionGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return !addressBlock->getTypeIdentifier().isEmpty() || !addressBlock->getRange().isEmpty() ||
+        !addressBlock->getWidth().isEmpty() || hasMemoryBlockDataGroupDefined(addressBlock) ||
+        !addressBlock->getRegisterData()->isEmpty();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AddressBlockValidator::hasMemoryBlockDataGroupDefined()
+//-----------------------------------------------------------------------------
+bool AddressBlockValidator::hasMemoryBlockDataGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
+{
+    return addressBlock->getUsage() != General::USAGE_COUNT || !addressBlock->getVolatile().isEmpty() ||
+        !addressBlock->getAccessPolicies()->isEmpty() || !addressBlock->getParameters()->isEmpty();
+}
+
+
+//-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::markRegisterOverlap()
 //-----------------------------------------------------------------------------
-bool AddressBlockValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress, qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister)
+bool AddressBlockValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress,
+    qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister)
 {
     auto targetRegisterBase = *regIter;
 
@@ -306,7 +408,7 @@ bool AddressBlockValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBas
 //-----------------------------------------------------------------------------
 // Function: AddressBlockValidator::markDuplicateNames()
 //-----------------------------------------------------------------------------
-bool AddressBlockValidator::markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>>& foundNames)
+bool AddressBlockValidator::markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>> const& foundNames)
 {
     bool errorFound = false;
 
@@ -333,129 +435,6 @@ bool AddressBlockValidator::markDuplicateNames(QMultiHash<QString, QSharedPointe
     }
 
     return errorFound;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidRange()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidRange(QSharedPointer<AddressBlock> addressBlock) const
-{
-    bool toIntOk = true;
-    quint64 range = getExpressionParser()->parseExpression(addressBlock->getRange()).toULongLong(&toIntOk);
-
-    return toIntOk && range > 0;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidWidth()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidWidth(QSharedPointer<AddressBlock> addressBlock) const
-{
-    bool toIntOk = true;
-    getExpressionParser()->parseExpression(addressBlock->getWidth()).toULongLong(&toIntOk);
-
-    return toIntOk;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidRegisterData()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock,
-    QString const& addressUnitBits)
-{
-    if (addressBlock->getRegisterData()->isEmpty())
-    {
-        return true;
-    }
-
-    QSharedPointer<RegistersValidationData> registersValidationData(new RegistersValidationData());
-    registersValidationData->addressUnitBits_ = addressUnitBits;
-    registersValidationData->addressBlock_ = addressBlock;
-    registersValidationData->children_ = CollectionValidators::itemListToNameGroupList(addressBlock->getRegisterData());
-
-    return checkChildren(registersValidationData);
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::registerIsNotContainedWithinBlock()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::registerSizeIsNotWithinBlockWidth(QSharedPointer<Register> targetRegister,
-    QSharedPointer<AddressBlock> addressBlock) const
-{
-    int registerSize = getExpressionParser()->parseExpression(targetRegister->getSize()).toInt();
-    int addressBlockWidth = getExpressionParser()->parseExpression(addressBlock->getWidth()).toInt();
-
-    bool sizeNotWithinBlock = registerSize > addressBlockWidth;
-
-    if (sizeNotWithinBlock)
-    {
-        registerValidator_->setChildItemValidity(targetRegister, false);
-    }
-
-    return sizeNotWithinBlock;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasInvalidVolatileForRegister()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidVolatileForRegister(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<Register> targetRegister) const
-{
-    if (targetRegister->getVolatile() == QLatin1String("true") &&
-        addressBlock->getVolatile() == QLatin1String("false"))
-    {
-        return false;
-    }
-
-    for (QSharedPointer<Field> const& field : *targetRegister->getFields())
-    {
-        if (field->getVolatile().toBool() == true && addressBlock->getVolatile() == QLatin1String("false"))
-        {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasValidAccessWithRegister()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasValidAccessWithRegister(QSharedPointer<AddressBlock> addressBlock,
-    QSharedPointer<Register> targetRegister) const
-{
-    AccessTypes::Access blockAccess = addressBlock->getAccess();
-    AccessTypes::Access registerAccess = targetRegister->getAccess();
-    if ((blockAccess == AccessTypes::READ_ONLY && registerAccess != AccessTypes::READ_ONLY) ||
-        (blockAccess == AccessTypes::WRITE_ONLY && (registerAccess != AccessTypes::WRITE_ONLY &&
-            registerAccess != AccessTypes::WRITEONCE)) ||
-        (blockAccess == AccessTypes::READ_WRITEONCE && (registerAccess != AccessTypes::READ_ONLY &&
-            registerAccess != AccessTypes::READ_WRITEONCE && registerAccess != AccessTypes::WRITEONCE)) ||
-        (blockAccess == AccessTypes::WRITEONCE && registerAccess != AccessTypes::WRITEONCE))
-    {
-        return false;
-    }
-
-    return true;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasAddressBlockDefinitionGroupDefined()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasAddressBlockDefinitionGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
-{
-    return !addressBlock->getTypeIdentifier().isEmpty() || !addressBlock->getRange().isEmpty() ||
-        !addressBlock->getWidth().isEmpty() || hasMemoryBlockDataGroupDefined(addressBlock) ||
-        !addressBlock->getRegisterData()->isEmpty();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AddressBlockValidator::hasMemoryBlockDataGroupDefined()
-//-----------------------------------------------------------------------------
-bool AddressBlockValidator::hasMemoryBlockDataGroupDefined(QSharedPointer<AddressBlock> addressBlock) const
-{
-    return addressBlock->getUsage() != General::USAGE_COUNT || !addressBlock->getVolatile().isEmpty() ||
-        !addressBlock->getAccessPolicies()->isEmpty() || !addressBlock->getParameters()->isEmpty();
 }
 
 //-----------------------------------------------------------------------------
