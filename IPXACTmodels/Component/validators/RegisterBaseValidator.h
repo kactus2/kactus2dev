@@ -58,8 +58,6 @@ public:
     RegisterBaseValidator(RegisterBaseValidator const& rhs) = delete;
     RegisterBaseValidator& operator=(RegisterBaseValidator const& rhs) = delete;
 
-    QSharedPointer<FieldValidator> getFieldValidator() const;
-
     /*!
      *  Validates the given register.
      *

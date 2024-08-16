@@ -160,7 +160,7 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
     qint64 aubInt = getExpressionParser()->parseExpression(addressUnitBits).toLongLong(&aubChangeOk);
     qint64 addressBlockRange = getExpressionParser()->parseExpression(addressBlock->getRange()).toLongLong();
 
-    auto registerData = addressBlock->getRegisterData();
+    auto registerDataCopy = QSharedPointer<QList<QSharedPointer<RegisterBase> > >(new QList(*addressBlock->getRegisterData()));
 
     bool errorFound = false;
 
@@ -171,13 +171,13 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
                 getExpressionParser()->parseExpression(registerBaseB->getAddressOffset()).toLongLong();
         };
 
-    std::sort(registerData->begin(), registerData->end(), sortByAddressOffset);
+    std::sort(registerDataCopy->begin(), registerDataCopy->end(), sortByAddressOffset);
     qint64 lastEndAddress = -1;
 
     bool lastWasRegister = true;
 
     // Register and register file validity together must be checked before separately
-    for (auto regIter = registerData->begin(); regIter != registerData->end(); ++regIter)
+    for (auto regIter = registerDataCopy->begin(); regIter != registerDataCopy->end(); ++regIter)
     {
         QSharedPointer<Register> targetRegister = (*regIter).dynamicCast<Register>();
         if (targetRegister)
@@ -244,7 +244,7 @@ bool AddressBlockValidator::hasValidRegisterData(QSharedPointer<AddressBlock> ad
     }
 
     // Validate registers and register files separately
-    for (auto const& registerBase : *registerData)
+    for (auto const& registerBase : *registerDataCopy)
     {
         if (QSharedPointer<Register> asRegister = registerBase.dynamicCast<Register>();
             asRegister && !registerValidator_->validate(asRegister))
@@ -399,6 +399,9 @@ bool AddressBlockValidator::markRegisterOverlap(QList<QSharedPointer<RegisterBas
 
     if (registerBaseBegin < 0 || registerBaseBegin + registerBaseRangeInt > addressBlockRange)
     {
+        targetIsRegister
+            ? registerValidator_->setChildItemValidity(targetRegisterBase, false)
+            : registerFileValidator_->setChildItemValidity(targetRegisterBase, false);
         errorFound = true;
     }
 

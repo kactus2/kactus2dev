@@ -174,7 +174,7 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
     // Address block and subspace map names should be unique, subspace can't have the same name as an address block.
     QMultiHash<QString, QSharedPointer<NameGroup> > foundMemoryBlockNames;
 
-    auto childBlocks = memoryMapBase->getMemoryBlocks();
+    auto childBlocksCopy = QSharedPointer<QList<QSharedPointer<MemoryBlockBase> > >(new QList(*memoryMapBase->getMemoryBlocks()));
 
     // Sort blocks by base address to make checking for overlaps easier.
     auto sortByBaseAddr = [this](QSharedPointer<MemoryBlockBase> memoryBlockA, QSharedPointer<MemoryBlockBase> memoryBlockB)
@@ -183,15 +183,15 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
                 expressionParser_->parseExpression(memoryBlockB->getBaseAddress()).toLongLong();
         };
 
-    std::sort(childBlocks->begin(), childBlocks->end(), sortByBaseAddr);
+    std::sort(childBlocksCopy->begin(), childBlocksCopy->end(), sortByBaseAddr);
 
     quint64 lastEnd = 0;
     bool lastBlockWasAddressBlock = false;
 
     // Validate blocks together
-    for (int blockIndex = 0; blockIndex < childBlocks->size(); ++blockIndex)
+    for (int blockIndex = 0; blockIndex < childBlocksCopy->size(); ++blockIndex)
     {
-        auto child = childBlocks->at(blockIndex).staticCast<MemoryBlockBase>();
+        auto child = childBlocksCopy->at(blockIndex).staticCast<MemoryBlockBase>();
         bool currentIsAddressBlock = false;
 
         // First check names, but don't set invalidity yet.
@@ -234,8 +234,8 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
             if (blockBegin <= lastEnd)
             {
                 lastBlockWasAddressBlock
-                    ? addressBlockValidator_->setChildItemValidity(childBlocks->at(blockIndex - 1), false)
-                    : subspaceValidator_->setChildItemValidity(childBlocks->at(blockIndex - 1), false);
+                    ? addressBlockValidator_->setChildItemValidity(childBlocksCopy->at(blockIndex - 1), false)
+                    : subspaceValidator_->setChildItemValidity(childBlocksCopy->at(blockIndex - 1), false);
 
                 currentIsAddressBlock
                     ? addressBlockValidator_->setChildItemValidity(child, false)
@@ -265,10 +265,11 @@ bool MemoryMapBaseValidator::hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> 
     }
 
     // Validate blocks separately
-    for (auto const& child : *childBlocks)
+    for (auto const& child : *childBlocksCopy)
     {
         if (QSharedPointer<AddressBlock> addressBlock = child.dynamicCast<AddressBlock>();
-            addressBlock && !addressBlockValidator_->validate(addressBlock, addressUnitBits))
+            addressBlock && (!addressBlockValidator_->validate(addressBlock, addressUnitBits)
+            || !addressBlockWidthIsMultipleOfAUB(addressUnitBits, addressBlock)))
         {
             return false;
         }

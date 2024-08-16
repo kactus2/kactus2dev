@@ -18,6 +18,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -33,7 +35,7 @@ class Mode;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Field.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT FieldValidator
+class IPXACTMODELS_EXPORT FieldValidator : public HierarchicalValidator
 {
 public:
 
