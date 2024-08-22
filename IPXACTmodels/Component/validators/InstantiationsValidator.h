@@ -15,6 +15,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -35,7 +37,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Instantiations.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT InstantiationsValidator
+class IPXACTMODELS_EXPORT InstantiationsValidator : public HierarchicalValidator
 {
 public:
 
@@ -191,6 +193,10 @@ public:
      *      @return The assigned parameter validator.
      */
     QSharedPointer<ParameterValidator> getParameterValidator() const;
+
+    void setParameterValidator(QSharedPointer<ParameterValidator> newParameterValidator);
+
+    void setExpressionParser(QSharedPointer<ExpressionParser> newExpressionParser);
 
 private:
 

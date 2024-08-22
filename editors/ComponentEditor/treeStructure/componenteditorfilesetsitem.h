@@ -22,6 +22,7 @@ class FileSet;
 class File;
 class FileValidator;
 class FileSetValidator;
+class FileSetsValidator;
 class ParameterFinder;
 class ReferenceCounter;
 class ExpressionParser;
@@ -95,6 +96,8 @@ public:
 	 */
 	virtual void createChild(int index);
 
+    bool isValid() const override;
+
 signals:
 
     //! Emitted when the dependency model should be refreshed.
@@ -142,6 +145,9 @@ private:
 
     //! Validator for file set items.
     QSharedPointer<FileSetValidator> fileSetValidator_;
+
+    //! Validator for all filesets of the component.
+    QSharedPointer<FileSetsValidator> fileSetsValidator_;
 
     //! Interface for accessing file sets.
     FileSetInterface* fileSetInterface_;

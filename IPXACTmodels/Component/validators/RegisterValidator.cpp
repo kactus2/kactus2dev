@@ -69,10 +69,10 @@ QSharedPointer<FieldValidator> RegisterValidator::getFieldValidator() const
 //-----------------------------------------------------------------------------
 bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) const
 {
-    return RegisterBaseValidator::validate(selectedRegister) &&
-           hasValidSize(selectedRegister) &&
+    return hasValidSize(selectedRegister) &&
            hasValidFields(selectedRegister, selectedRegister->getSize()) &&
            hasValidAlternateRegisters(selectedRegister) &&
+            RegisterBaseValidator::validate(selectedRegister) &&
            hasValidStructure(selectedRegister);
 }
 

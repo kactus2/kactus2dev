@@ -20,6 +20,7 @@ class ExpressionParser;
 class Component;
 class AddressSpace;
 class AddressSpaceValidator;
+class AddressSpacesValidator;
 class AddressBlockInterface;
 class BusInterfaceInterface;
 class ParameterValidator;
@@ -92,6 +93,8 @@ public:
 	 */
 	virtual void createChild(int index);
 
+	bool isValid() const override;
+
 private slots:
 
     /*!
@@ -138,6 +141,9 @@ private:
 
     //! The current address space validator.
     QSharedPointer<AddressSpaceValidator> spaceValidator_;
+
+	//! The validator validating all address spaces.
+	QSharedPointer<AddressSpacesValidator> addressSpacesValidator_;
 
     //! Interface for address blocks.
     AddressBlockInterface* blockInterface_;

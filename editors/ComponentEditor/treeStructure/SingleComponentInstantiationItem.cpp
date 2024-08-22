@@ -15,6 +15,7 @@
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentInstantiationsItem::ComponentInstantiationsItem()
@@ -28,6 +29,7 @@ SingleComponentInstantiationItem::SingleComponentInstantiationItem(ComponentEdit
 ParameterizableItem(model, libHandler, component, parent),
 instantiation_(instantiation),
 validator_(validator),
+parameterValidator_(new ParameterValidator(expressionParser, component_->getChoices(), component_->getRevision())),
 expressionParser_(expressionParser),
 instantiationInterface_(instantiationInterface)
 {
@@ -67,7 +69,11 @@ QString SingleComponentInstantiationItem::text() const
 // Function: SingleComponentInstantiationItem::isValid()
 //-----------------------------------------------------------------------------
 bool SingleComponentInstantiationItem::isValid() const
-{
+{    
+    // Component instantiation validation requires tailored parameter validator and expression parser.
+    validator_->setExpressionParser(expressionParser_);
+    validator_->setParameterValidator(parameterValidator_);
+
     return validator_->validateComponentInstantiation(instantiation_, component_->getRevision());
 }
 

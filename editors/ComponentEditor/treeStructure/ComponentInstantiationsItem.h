@@ -24,6 +24,7 @@ class ParametersInterface;
 class SingleComponentInstantiationItem;
 class FileBuilderInterface;
 class ComponentInstantiationInterface;
+class AllInstantiationsValidator;
 
 //-----------------------------------------------------------------------------
 //! The component instantiations-item in the component editor's navigation tree.
@@ -37,26 +38,26 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-	 *      @param [in] model                   The model that owns the items.
-	 *      @param [in] libHandler              The instance that manages the library.
-	 *      @param [in] component               The component being edited.
-	 *      @param [in] referenceCounter        The reference counter.
-	 *      @param [in] parameterFinder         The parameter finder.
-	 *      @param [in] expressionFormatter     The expression formatter.
-     *      @param [in] expressionParser        The used expression parser.
-     *      @param [in] instantiationInterface  Interface for accessing component instantiations.
-	 *      @param [in] parent                  The parent item.
+	 *      @param [in] model						The model that owns the items.
+	 *      @param [in] libHandler					The instance that manages the library.
+	 *      @param [in] validator					The single instantiation validator.
+	 *      @param [in] allInstantiationsValidator  The validator validating all instantiations together.
+	 *      @param [in] component					The component being edited.
+	 *      @param [in] referenceCounter			The reference counter.
+	 *      @param [in] parameterFinder				The parameter finder.
+	 *      @param [in] expressionFormatter			The expression formatter.
+     *      @param [in] expressionParser			The used expression parser.
+     *      @param [in] instantiationInterface		Interface for accessing component instantiations.
+	 *      @param [in] parent						The parent item.
 	 */
-	ComponentInstantiationsItem(ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<InstantiationsValidator> validator,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        QSharedPointer<ParameterFinder> parameterFinder,
-        QSharedPointer<ExpressionFormatter> expressionFormatter,
-        QSharedPointer<ExpressionParser> expressionParser,
-        ComponentInstantiationInterface* instantiationInterface,
-        ComponentEditorItem* parent);
+	ComponentInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
+		QSharedPointer<Component> component, QSharedPointer<InstantiationsValidator> validator,
+		QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator,
+		QSharedPointer<ReferenceCounter> referenceCounter, QSharedPointer<ParameterFinder> parameterFinder,
+		QSharedPointer<ExpressionFormatter> expressionFormatter,
+		QSharedPointer<ExpressionParser> expressionParser,
+		ComponentInstantiationInterface* instantiationInterface,
+		ComponentEditorItem* parent);
 
 	//! The destructor.
 	virtual ~ComponentInstantiationsItem();
@@ -89,6 +90,8 @@ public:
 	 */
 	virtual void createChild(int index);
 
+	bool isValid() const override;
+
 private:
 
 	//! No copying.
@@ -99,8 +102,11 @@ private:
     QSharedPointer<SingleComponentInstantiationItem> createChildItem(
         QSharedPointer<ComponentInstantiation> instantiation);
 
-    //! Validator for component instantiations.
+    //! Validator for child component instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
+    
+	//! Validator for all instantiations together.
+	QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

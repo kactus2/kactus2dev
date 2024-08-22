@@ -15,25 +15,33 @@
 
 #include <editors/ComponentEditor/instantiations/DesignInstantiationsEditor.h>
 #include <IPXACTmodels/Component/Component.h>
+#include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: DesignInstantiationsItem::DesignInstantiationsItem()
 //-----------------------------------------------------------------------------
 DesignInstantiationsItem::DesignInstantiationsItem(ComponentEditorTreeModel* model, LibraryInterface* libHandler,
     QSharedPointer<Component> component, QSharedPointer<InstantiationsValidator> validator,
+    QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator,
+    QSharedPointer<ParameterValidator> parameterValidator, QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterFinder> componentParameterFinder, QSharedPointer<ReferenceCounter> referenceCounter,
     ComponentEditorItem* parent):
 ComponentEditorItem(model, libHandler, component, parent),
 validator_(validator),
-componentParameterFinder_(componentParameterFinder)
+parameterValidator_(parameterValidator),
+expressionParser_(expressionParser),
+componentParameterFinder_(componentParameterFinder),
+allInstantiationsValidator_(allInstantiationsValidator)
 {
     setObjectName(tr("DesignInstantiationsItem"));
     setReferenceCounter(referenceCounter);
 
-    foreach(QSharedPointer<DesignInstantiation> instantiation, *component->getDesignInstantiations())
+    for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
     {
         childItems_.append(QSharedPointer<SingleDesignInstantiationItem>(new SingleDesignInstantiationItem(model,
-            libHandler, component, instantiation, validator, componentParameterFinder, referenceCounter, this)));
+            libHandler, component, instantiation, validator, parameterValidator, expressionParser, 
+            componentParameterFinder, referenceCounter, this)));
     }
 }
 
@@ -87,8 +95,8 @@ void DesignInstantiationsItem::createChild(int index)
     QSharedPointer<DesignInstantiation> instantiation = component_->getDesignInstantiations()->at(index);
 
     QSharedPointer<SingleDesignInstantiationItem> child(QSharedPointer<SingleDesignInstantiationItem>(
-        new SingleDesignInstantiationItem(model_, libHandler_, component_, instantiation, validator_,
-        componentParameterFinder_, referenceCounter_, this)));
+        new SingleDesignInstantiationItem(model_, libHandler_, component_, instantiation, validator_, 
+            parameterValidator_, expressionParser_, componentParameterFinder_, referenceCounter_, this)));
     child->setLocked(locked_);
 
     childItems_.insert(index, child);

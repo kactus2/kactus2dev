@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -156,6 +158,8 @@ public:
      *      @return True, if the views are valid, otherwise false.
      */
     bool hasValidViews(QSharedPointer<Component> component);
+
+    bool hasValidInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained component instantiations are valid.
@@ -578,6 +582,20 @@ private:
 
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;
+
+    //! Top-level validators
+    
+    //! The memory maps validator.
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator_;
+
+    //! The file sets validator.
+    QSharedPointer<FileSetsValidator> fileSetsValidator_;
+
+    //! THe address spaces validator.
+    QSharedPointer<AddressSpacesValidator> addressSpacesValidator_;
+
+    //! Validator for validating all instantiations together.
+    QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
 };
 
 #endif // COMPONENTVALIDATOR_H

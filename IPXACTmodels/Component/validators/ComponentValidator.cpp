@@ -36,7 +36,6 @@
 #include <IPXACTmodels/common/validators/ChoiceValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
 
-#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
@@ -159,6 +158,14 @@ assertionValidator_()
         parser, parameterValidator_));
 
     assertionValidator_ = QSharedPointer<AssertionValidator>(new AssertionValidator(parser));
+
+    memoryMapsValidator_ = QSharedPointer<MemoryMapsValidator>(new MemoryMapsValidator(memoryMapValidator_));
+
+    fileSetsValidator_ = QSharedPointer<FileSetsValidator>(new FileSetsValidator(fileSetValidator_));
+
+    addressSpacesValidator_ = QSharedPointer<AddressSpacesValidator>(new AddressSpacesValidator(addressSpaceValidator_));
+
+    allInstantiationsValidator_ = QSharedPointer<AllInstantiationsValidator>(new AllInstantiationsValidator(instantiationsValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -172,8 +179,7 @@ bool ComponentValidator::validate(QSharedPointer<Component> component)
         hasValidIndirectInterfaces(component) && hasValidChannels(component) &&
         hasValidRemapStates(component) && hasValidModes(component) &&
         hasValidAddressSpaces(component) && hasValidMemoryMaps(component) &&
-        hasValidViews(component) && hasValidComponentInstantiations(component) &&
-        hasValidDesignInstantiations(component) && hasValidDesignConfigurationInstantiations(component) &&
+        hasValidViews(component) && hasValidInstantiations(component) &&
         hasValidPorts(component) && hasValidComponentGenerators(component) && hasValidChoices(component) &&
         hasValidFileSets(component) && hasValidCPUs(component) && hasValidOtherClockDrivers(component) &&
         hasValidPowerDomains(component) &&
@@ -322,24 +328,7 @@ bool ComponentValidator::hasValidModes(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getAddressSpaces()->isEmpty())
-    {
-        QVector<QString> spaceNames;
-        for (QSharedPointer<AddressSpace> space : *component->getAddressSpaces())
-        {
-            if (spaceNames.contains(space->name()) || !addressSpaceValidator_->validate(space))
-            {
-                return false;
-            }
-            else
-            {
-                spaceNames.append(space->name());
-            }
-        }
-    }
-
-    return true;
+    return addressSpacesValidator_->validate(component->getAddressSpaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -348,9 +337,7 @@ bool ComponentValidator::hasValidAddressSpaces(QSharedPointer<Component> compone
 bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    MemoryMapsValidator validator(memoryMapValidator_);
-    return validator.validate(component->getMemoryMaps());
+    return memoryMapsValidator_->validate(component->getMemoryMaps());
 }
 
 //-----------------------------------------------------------------------------
@@ -380,30 +367,21 @@ bool ComponentValidator::hasValidViews(QSharedPointer<Component> component)
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentValidator::hasValidInstantiations()
+//-----------------------------------------------------------------------------
+bool ComponentValidator::hasValidInstantiations(QSharedPointer<Component> component)
+{
+    changeComponent(component);
+    return allInstantiationsValidator_->validate(component);
+}
+
+//-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidComponentInstantiations()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getComponentInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<ComponentInstantiation> instantiation : *component->getComponentInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateComponentInstantiation(instantiation, component->getRevision()))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
+    return allInstantiationsValidator_->hasValidComponentInstantiations(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -412,25 +390,7 @@ bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Componen
 bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getDesignInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<DesignInstantiation> instantiation : *component->getDesignInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateDesignInstantiation(instantiation))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
+    return allInstantiationsValidator_->hasValidDesignInstantiations(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -439,26 +399,7 @@ bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> 
 bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getDesignConfigurationInstantiations()->isEmpty())
-    {
-        QVector<QString> instantiationNames;
-        for (QSharedPointer<DesignConfigurationInstantiation> instantiation :
-            *component->getDesignConfigurationInstantiations())
-        {
-            if (instantiationNames.contains(instantiation->name()) ||
-                !instantiationsValidator_->validateDesignConfigurationInstantiation(instantiation))
-            {
-                return false;
-            }
-            else
-            {
-                instantiationNames.append(instantiation->name());
-            }
-        }
-    }
-
-    return true;
+    return allInstantiationsValidator_->hasValidDesignConfigurationInstantiations(component);
 }
 
 //-----------------------------------------------------------------------------
@@ -544,23 +485,7 @@ bool ComponentValidator::hasValidChoices(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getFileSets()->isEmpty())
-    {
-        QVector<QString> fileSetNames;
-        for (QSharedPointer<FileSet> fileSet : *component->getFileSets())
-        {
-            if (fileSetNames.contains(fileSet->name()) || !fileSetValidator_->validate(fileSet))
-            {
-                return false;
-            }
-            else
-            {
-                fileSetNames.append(fileSet->name());
-            }
-        }
-    }
-    return true;
+    return fileSetsValidator_->validate(component->getFileSets());
 }
 
 //-----------------------------------------------------------------------------

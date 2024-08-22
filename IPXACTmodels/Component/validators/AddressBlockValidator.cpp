@@ -94,11 +94,11 @@ bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, 
 
     if (docRevision_ == Document::Revision::Std14)
     {
-        return validAmongSiblings && MemoryBlockValidator::validate(addressBlock) &&
+        return MemoryBlockValidator::validate(addressBlock) &&
             hasValidRange(addressBlock) &&
             hasValidWidth(addressBlock) &&
             hasValidRegisterData(addressBlock, addressUnitBits) &&
-            hasValidUsage(addressBlock);
+            hasValidUsage(addressBlock) && validAmongSiblings;
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
@@ -113,7 +113,7 @@ bool AddressBlockValidator::validate(QSharedPointer<AddressBlock> addressBlock, 
             hasValidRegisterAlignment(addressBlock) && hasValidMemoryArray(addressBlock) &&
             hasValidUsage(addressBlock) && hasValidAccessPolicies(addressBlock) &&
             hasValidRegisterData(addressBlock, addressUnitBits) &&
-            hasValidStructure(addressBlock);
+            hasValidStructure(addressBlock) && validAmongSiblings;
     }
 
     return false;

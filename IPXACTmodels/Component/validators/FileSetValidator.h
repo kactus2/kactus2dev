@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/Component/FileSet.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <QString>
 #include <QVector>
@@ -26,7 +27,7 @@ class FileBuilder;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:FileSet.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT FileSetValidator
+class IPXACTMODELS_EXPORT FileSetValidator : public HierarchicalValidator
 {
 public:
 

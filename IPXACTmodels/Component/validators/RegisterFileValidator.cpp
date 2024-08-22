@@ -64,16 +64,16 @@ bool RegisterFileValidator::validate(QSharedPointer<RegisterFile> selectedRegist
 {
     if (docRevision_ == Document::Revision::Std14)
     {
-        return RegisterBaseValidator::validate(selectedRegisterFile) &&
-            hasValidRange(selectedRegisterFile) &&
-            hasValidRegisterData(selectedRegisterFile, addressUnitBits, addressBlockWidth);
+        return hasValidRange(selectedRegisterFile) &&
+            hasValidRegisterData(selectedRegisterFile, addressUnitBits, addressBlockWidth) &&
+            RegisterBaseValidator::validate(selectedRegisterFile);
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
-        return RegisterBaseValidator::validate(selectedRegisterFile) &&
-            hasValidRange(selectedRegisterFile) &&
+        return hasValidRange(selectedRegisterFile) &&
             hasValidRegisterData(selectedRegisterFile, addressUnitBits, addressBlockWidth) &&
             hasValidAccessPolicies(selectedRegisterFile) &&
+            RegisterBaseValidator::validate(selectedRegisterFile) &&
             hasValidStructure(selectedRegisterFile);
     }
 

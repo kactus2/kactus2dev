@@ -45,21 +45,21 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
 {
     if (docRevision_ == Document::Revision::Std14)
     {
-        return validComparedToSiblings(selectedRegisterBase) &&
-            hasValidName(selectedRegisterBase) &&
+        return hasValidName(selectedRegisterBase) &&
             hasValidIsPresent(selectedRegisterBase) &&
             hasValidDimensions(selectedRegisterBase) &&
             hasValidAddressOffset(selectedRegisterBase) &&
-            hasValidParameters(selectedRegisterBase);
+            hasValidParameters(selectedRegisterBase) &&
+            validComparedToSiblings(selectedRegisterBase);
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
-        return validComparedToSiblings(selectedRegisterBase) && 
-            hasValidName(selectedRegisterBase) &&
+        return hasValidName(selectedRegisterBase) &&
             hasValidAddressOffset(selectedRegisterBase) &&
             hasValidMemoryArray(selectedRegisterBase) &&
             hasValidAccessPolicies(selectedRegisterBase) &&
-            hasValidParameters(selectedRegisterBase);
+            hasValidParameters(selectedRegisterBase) &&
+            validComparedToSiblings(selectedRegisterBase);
     }
 
     return false;

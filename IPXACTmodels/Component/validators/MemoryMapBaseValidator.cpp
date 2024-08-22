@@ -85,8 +85,8 @@ QSharedPointer<SubspaceMapValidator> MemoryMapBaseValidator::getSubspaceValidato
 //-----------------------------------------------------------------------------
 bool MemoryMapBaseValidator::validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits)
 {
-    return validComparedToSiblings(memoryMapBase) && hasValidName(memoryMapBase) && 
-        hasValidIsPresent(memoryMapBase) && hasValidMemoryBlocks(memoryMapBase, addressUnitBits);
+    return hasValidName(memoryMapBase) && hasValidIsPresent(memoryMapBase) && 
+        hasValidMemoryBlocks(memoryMapBase, addressUnitBits) && validComparedToSiblings(memoryMapBase);
 }
 
 //-----------------------------------------------------------------------------
