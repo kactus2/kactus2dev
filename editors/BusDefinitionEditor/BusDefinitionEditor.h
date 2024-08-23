@@ -18,12 +18,18 @@
 
 #include <KactusAPI/include/LibraryInterface.h>
 
+#include <editors/ComponentEditor/referenceCounter/ParameterReferenceCounter.h>
+
 #include "busdefgroup.h"
 
 #include <QSharedPointer>
 
 class BusDefinitionValidator;
 class ExpressionParser;
+class ExpressionFormatter;
+class BusDefinitionParameterReferenceTree;
+class ParameterReferenceTreeWindow;
+class BusDefinitionParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
@@ -140,9 +146,6 @@ private:
 	//! The original bus definition to use when saving.
 	QSharedPointer<BusDefinition> busDef_ = nullptr;
 
-	//! Group containing elements to edit bus definition
-	BusDefGroup busDefGroup_;
-
     //! Parser for expressions in definitions.
     QSharedPointer<ExpressionParser> expressionParser_ = nullptr;
 
@@ -151,6 +154,24 @@ private:
 
     //! Flag for save status on bus definition.
     bool busDefinitionSaved_= false;
+
+    //! Parameter finder for bus definitions.
+    QSharedPointer<BusDefinitionParameterFinder> busDefParameterFinder_;
+    
+    //! Expression formatter to use.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
+    //! Reference counter for the bus definition parameter references.
+    QSharedPointer<ParameterReferenceCounter> referenceCounter_;
+    
+    //! The parameter reference tree to use.
+    BusDefinitionParameterReferenceTree* parameterReferenceTree_;
+
+    //! The parameter reference window.
+    ParameterReferenceTreeWindow* referenceTreeWindow_;
+
+    //! Group containing elements to edit bus definition
+	BusDefGroup busDefGroup_;
 };
 
 #endif // BUSDEFINITIONEDITOR_H

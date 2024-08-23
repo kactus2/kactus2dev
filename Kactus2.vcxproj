@@ -363,6 +363,7 @@ CreateHelp
     <ClCompile Include="editors\ApiDefinitionEditor\ApiFunctionParameterModel.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\busdefgroup.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionEditor.cpp" />
+    <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.cpp" />
     <ClCompile Include="editors\BusDefinitionEditor\SystemGroupListEditor.cpp" />
     <ClCompile Include="editors\CatalogEditor\CatalogEditor.cpp" />
     <ClCompile Include="editors\CatalogEditor\CatalogFileDelegate.cpp" />
@@ -1314,6 +1315,7 @@ CreateHelp
     </QtMoc>
     <QtMoc Include="editors\BusDefinitionEditor\BusDefinitionEditor.h">
     </QtMoc>
+    <QtMoc Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.h" />
     <ClInclude Include="editors\BusDefinitionEditor\LogicalPortColumns.h" />
     <QtMoc Include="editors\CatalogEditor\CatalogEditor.h">
     </QtMoc>

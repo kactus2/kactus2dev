@@ -30,6 +30,10 @@
 class VLNVDisplayer;
 class VLNVEditor;
 class LibraryInterface;
+class ParameterGroupBox;
+class ExpressionFormatter;
+class ParameterFinder;
+class AbstractParameterInterface;
 
 //-----------------------------------------------------------------------------
 //! BusDefGroup contains elements to set the properties of a Bus Definition.
@@ -43,10 +47,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] libraryHandler  Interface to the library.
-     *      @param [in] parent          The owner of this widget.
+     *      @param [in] libraryHandler          Interface to the library.
+     *      @param [in] expressionFormatter     The expression formatter to use.
+     *      @param [in] parameterFinder         The parameter finder to use.
+     *      @param [in] parent                  The owner of this widget.
      */
-    BusDefGroup(LibraryInterface* libraryHandler, QWidget *parent);
+    BusDefGroup(LibraryInterface* libraryHandler, QSharedPointer<ExpressionFormatter> expressionFormatter,
+        QSharedPointer<ParameterFinder> parameterFinder, QWidget *parent);
 
     /*!
      *  The destructor.
@@ -66,6 +73,37 @@ signals:
      *  Emitted when user changes the state of one of the elements.
      */
     void contentChanged();
+
+    /*!
+     *  Increase the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to the parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
+
+    /*!
+     *  Recalculate references made to the selected parameters.
+     *
+     *      @param [in] parameterList       The selected parameters.
+     *      @param [in] parameterInterface  Interface for accessing parameters.
+     */
+    void recalculateReferencesToParameters(QStringList const& parameterList,
+        AbstractParameterInterface* parameterInterface);
+
+    /*!
+     *  Open the reference tree of the parameter with the id.
+     *
+     *      @param [in] id              The id of the parameter.
+     *      @param [in] parameterName   Name of the selected parameter.
+     */
+    void openReferenceTree(QString const& id, QString const& parameterName);
 
 private slots:
 
@@ -178,6 +216,9 @@ private:
 
     //! Editor for the bus definition extension.
     VLNVEditor* extendEditor_;
+
+    //! The bus definition parameters editor.
+    ParameterGroupBox* parameterEditor_;
 };
 
 #endif // BUSDEFGROUP_H

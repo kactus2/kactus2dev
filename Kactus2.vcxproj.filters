@@ -3382,6 +3382,9 @@
     <ClCompile Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.cpp">
       <Filter>Source Files\common\widgets\GroupBoxWithAlertSign</Filter>
     </ClCompile>
+    <ClCompile Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.cpp">
+      <Filter>Source Files\editors\BusDefinitionEditor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="common\layouts\HCollisionLayout.inl">
@@ -6106,6 +6109,9 @@
     </QtMoc>
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\GroupBoxWithAlertSign.h">
       <Filter>Header Files\common\widgets\GroupBoxWithAlertSign</Filter>
+    </QtMoc>
+    <QtMoc Include="editors\BusDefinitionEditor\BusDefinitionParameterReferenceTree.h">
+      <Filter>Header Files\editors\BusDefinitionEditor</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
