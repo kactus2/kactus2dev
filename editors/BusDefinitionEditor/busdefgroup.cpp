@@ -124,7 +124,7 @@ void BusDefGroup::setBusDef( QSharedPointer<BusDefinition> busDef )
 
     systemGroupEditor_.setItems(busDef_);
 
-    parameterEditor_->setNewParameters(busDef->getParameters(), busDef->getRevision());
+    parameterEditor_->setNewParameters(busDef->getParameters(), busDef->getChoices(), busDef->getRevision());
 }
 
 //-----------------------------------------------------------------------------

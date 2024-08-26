@@ -152,9 +152,10 @@ void ParameterGroupBox::refresh()
 // Function: parametergroupbox::setNewParameters()
 //-----------------------------------------------------------------------------
 void ParameterGroupBox::setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, 
-    Document::Revision docRevision)
+    QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision)
 {
     parameterInterface_->setParameters(newParameters);
+    parameterInterface_->setChoices(newChoices);
     model_->resetModelItems();
     delegate_->setStdRevision(docRevision);
     parameterValidator_->setStdRevision(docRevision);

@@ -24,7 +24,7 @@
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
-#include <KactusAPI/include/BusDefinitionParameterFinder.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QApplication>
 #include <QFile>
@@ -43,7 +43,7 @@ TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 busDef_(busDef),
 expressionParser_(new SystemVerilogExpressionParser()),
 busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
-busDefParameterFinder_(new BusDefinitionParameterFinder(busDef)),
+busDefParameterFinder_(new ListParameterFinder()),
 expressionFormatter_(new ExpressionFormatter(busDefParameterFinder_)),
 referenceCounter_(new ParameterReferenceCounter(busDefParameterFinder_)),
 parameterReferenceTree_(new BusDefinitionParameterReferenceTree(busDef, expressionFormatter_, referenceCounter_, this)),
@@ -66,6 +66,8 @@ busDefGroup_(libHandler, expressionFormatter_, busDefParameterFinder_, this)
     {
         setProtection(true);
     }    
+
+    busDefParameterFinder_->setParameterList(busDef_->getParameters());
 
     setupLayout();
 
@@ -148,6 +150,7 @@ void BusDefinitionEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 
     busDefGroup_.setBusDef(busDef_);
     busDefGroup_.setDisabled(false);
+    busDefParameterFinder_->setParameterList(busDef->getParameters());
 
     VLNV vlnv = busDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");

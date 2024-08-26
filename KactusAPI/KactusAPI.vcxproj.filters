@@ -297,9 +297,6 @@
     <ClInclude Include="include\NullChannel.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\BusDefinitionParameterFinder.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -514,9 +511,6 @@
     </ClCompile>
     <ClCompile Include="utilities\NullChannel.cpp">
       <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="include\BusDefinitionParameterFinder.cpp">
-      <Filter>Source Files\expressions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

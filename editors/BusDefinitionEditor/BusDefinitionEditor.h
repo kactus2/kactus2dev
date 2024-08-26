@@ -29,7 +29,7 @@ class ExpressionParser;
 class ExpressionFormatter;
 class BusDefinitionParameterReferenceTree;
 class ParameterReferenceTreeWindow;
-class BusDefinitionParameterFinder;
+class ListParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Bus- and Abstraction definition.
@@ -156,7 +156,7 @@ private:
     bool busDefinitionSaved_= false;
 
     //! Parameter finder for bus definitions.
-    QSharedPointer<BusDefinitionParameterFinder> busDefParameterFinder_;
+    QSharedPointer<ListParameterFinder> busDefParameterFinder_;
     
     //! Expression formatter to use.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;

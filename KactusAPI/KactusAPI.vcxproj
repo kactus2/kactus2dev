@@ -18,7 +18,6 @@
     <ClInclude Include="include\AddressBlockInterface.h" />
     <ClInclude Include="include\AddressSpaceExpressionsGatherer.h" />
     <ClInclude Include="include\AdHocConnectionInterface.h" />
-    <ClInclude Include="include\BusDefinitionParameterFinder.h" />
     <ClInclude Include="include\BusInterfaceInterface.h" />
     <ClInclude Include="include\BusInterfaceInterfaceFactory.h" />
     <ClInclude Include="include\BusInterfaceUtilities.h" />
@@ -126,7 +125,6 @@
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="include\BusDefinitionParameterFinder.cpp" />
     <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />

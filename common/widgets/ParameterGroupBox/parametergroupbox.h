@@ -69,7 +69,8 @@ public:
      *
      *      @param [in] newParameters   New parameter list.
      */
-    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, Document::Revision docRevision);
+    void setNewParameters(QSharedPointer<QList<QSharedPointer<Parameter> > > newParameters, 
+        QSharedPointer<QList<QSharedPointer<Choice> > > newChoices, Document::Revision docRevision);
 
 signals:
 
