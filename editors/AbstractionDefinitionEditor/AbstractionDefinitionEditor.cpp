@@ -20,6 +20,12 @@
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+
+#include "AbsDefParameterReferenceCounter.h"
+#include "AbsDefParameterReferenceTree.h"
+
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
 
 #include <QApplication>
 #include <QFile>
@@ -35,9 +41,14 @@
 AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, LibraryInterface* libHandler, QSharedPointer<AbstractionDefinition> absDef, Document::Revision revision):
 TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 absDef_(absDef),
-absDefGroup_(revision, absDef, libHandler, createPortAbstractionInterface(), createPortAbstractionInterface(), this),
+expressionFormatter_(new ExpressionFormatter(absDefParameterFinder_)),
+absDefGroup_(revision, absDef, expressionFormatter_, absDefParameterFinder_, libHandler, 
+    createPortAbstractionInterface(), createPortAbstractionInterface(), this),
 expressionParser_(new SystemVerilogExpressionParser()),
-absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_))
+absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_)),
+referenceCounter_(new AbsDefParameterReferenceCounter(absDefParameterFinder_, absDef)),
+parameterReferenceTree_(new AbsDefParameterReferenceTree(absDef, referenceCounter_, expressionFormatter_)),
+referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_))
 {
     setDocumentType(DocumentType(DocumentTypes::ABSTRACTION_DEFINITION));
 
@@ -66,6 +77,18 @@ absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressio
         this, SIGNAL(noticeMessage(const QString&)), Qt::UniqueConnection);
     connect(&absDefGroup_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), 
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(increaseReferences(QString)),
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        referenceTreeWindow_, SLOT(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&absDefGroup_, SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        referenceCounter_.data(), SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -87,6 +110,8 @@ void AbstractionDefinitionEditor::refresh()
     {
         absDef_ = getLibHandler()->getModel(absDef_->getVlnv()).dynamicCast<AbstractionDefinition>();
         absDefGroup_.setAbsDef(absDef_);
+        referenceCounter_->setAbstractionDefinition(absDef_);
+        parameterReferenceTree_->setAbsDef(absDef_);
     }
 
     // The document is no longer modified.
@@ -131,6 +156,8 @@ void AbstractionDefinitionEditor::setAbsDef(QSharedPointer<AbstractionDefinition
     if (absDef_) 
     {
         absDefGroup_.setAbsDef(absDef_);
+        referenceCounter_->setAbstractionDefinition(absDef_);
+        parameterReferenceTree_->setAbsDef(absDef_);
     }
 
     absDefGroup_.setDisabled(!absDef_);

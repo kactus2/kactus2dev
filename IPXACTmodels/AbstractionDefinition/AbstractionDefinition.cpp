@@ -306,6 +306,38 @@ QSharedPointer<QList<QSharedPointer<PortAbstraction> > > AbstractionDefinition::
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPortsWithWire()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<PortAbstraction> > AbstractionDefinition::getPortsWithWire() const
+{
+    QList<QSharedPointer<PortAbstraction> > wirePorts;
+    std::for_each(logicalPorts_->cbegin(), logicalPorts_->cend(), [&wirePorts](QSharedPointer<PortAbstraction> portAbstraction)
+        {
+            if (portAbstraction->hasWire())
+            {
+                wirePorts.append(portAbstraction);
+            }
+        });
+    return wirePorts;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionDefinition::getPortsWithTransactional()
+//-----------------------------------------------------------------------------
+QList<QSharedPointer<PortAbstraction> > AbstractionDefinition::getPortsWithTransactional() const
+{
+    QList<QSharedPointer<PortAbstraction> > transPorts;
+    std::for_each(logicalPorts_->cbegin(), logicalPorts_->cend(), [&transPorts](QSharedPointer<PortAbstraction> portAbstraction)
+        {
+            if (portAbstraction->hasTransactional())
+            {
+                transPorts.append(portAbstraction);
+            }
+        });
+    return transPorts;
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinition::setChoices()
 //-----------------------------------------------------------------------------
 void AbstractionDefinition::setChoices(QSharedPointer<QList<QSharedPointer<Choice> > > choices)

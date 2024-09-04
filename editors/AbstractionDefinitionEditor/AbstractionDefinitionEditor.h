@@ -18,6 +18,7 @@
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include "absdefgroup.h"
 
@@ -27,6 +28,10 @@ class AbstractionDefinitionValidator;
 class BusDefinitionValidator;
 class ExpressionParser;
 class PortAbstractionInterface;
+class ExpressionFormatter;
+class AbsDefParameterReferenceCounter;
+class AbsDefParameterReferenceTree;
+class ParameterReferenceTreeWindow;
 
 //-----------------------------------------------------------------------------
 //! Bus Editor is editor for Abstraction definition.
@@ -154,6 +159,13 @@ private:
 	//! The original abstraction definition to use when saving.
 	QSharedPointer<AbstractionDefinition> absDef_;
 
+    //! The parameter finder to use in reference counting.
+    QSharedPointer<ListParameterFinder> absDefParameterFinder_ = 
+        QSharedPointer<ListParameterFinder>(new ListParameterFinder());
+
+    //! The expression formatter to use in the parameter reference tree.
+    QSharedPointer<ExpressionFormatter> expressionFormatter_;
+
 	//! Group containing elements to edit abstraction definition.
 	AbsDefGroup absDefGroup_;
 
@@ -163,6 +175,14 @@ private:
     //! Validator for abstraction definition.
     QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;
 
+    //! Reference counter for the bus definition parameter references.
+    QSharedPointer<AbsDefParameterReferenceCounter> referenceCounter_;
+
+    //! The parameter reference tree to use.
+    AbsDefParameterReferenceTree* parameterReferenceTree_;
+
+    //! The parameter reference window.
+    ParameterReferenceTreeWindow* referenceTreeWindow_;
 };
 
 #endif // ABSTRACTIONDEFINITIONEDITOR_H

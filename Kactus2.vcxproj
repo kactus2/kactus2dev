@@ -344,6 +344,8 @@ CreateHelp
     <ClCompile Include="common\views\EditableTableView\editabletableview.cpp" />
     <ClCompile Include="common\views\EditableListView\editablelistview.cpp" />
     <ClCompile Include="editors\AbstractionDefinitionEditor\absdefgroup.cpp" />
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.cpp" />
+    <ClCompile Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.cpp" />
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionEditor.cpp" />
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.cpp" />
     <ClCompile Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.cpp" />
@@ -1297,6 +1299,8 @@ CreateHelp
     <QtMoc Include="common\widgets\GroupBoxWithAlertSign\StyleGroupBoxWithAlertSign.h" />
     <ClInclude Include="common\widgets\GroupBoxWithAlertSign\StyleOptionGroupBoxWithAlertSign.h" />
     <ClInclude Include="common\widgets\TreeItemSelector\TreeItem.h" />
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceCounter.h" />
+    <QtMoc Include="editors\AbstractionDefinitionEditor\AbsDefParameterReferenceTree.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionPortsSortFilter.h" />
     <ClInclude Include="editors\AbstractionDefinitionEditor\AbstractionDefinitionSignalRow.h" />
     <QtMoc Include="editors\AbstractionDefinitionEditor\AbstractionPortsDelegate.h" />

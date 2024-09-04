@@ -153,6 +153,10 @@ public:
      */
     QSharedPointer<QList<QSharedPointer<PortAbstraction> > > getLogicalPorts() const;
 
+    QList<QSharedPointer<PortAbstraction> > getPortsWithWire() const;
+
+    QList<QSharedPointer<PortAbstraction> > getPortsWithTransactional() const;
+
     /*!
      *	Sets the choices of the abstraction definition.
      *  
