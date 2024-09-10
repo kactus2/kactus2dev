@@ -193,6 +193,7 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
     std::string const& outputDirectory) const
 {
     VLNV componentVLNV(VLNV::COMPONENT, QString::fromStdString(vlnv));
+    KactusAttribute::Implementation implementation = KactusAttribute::HW;
 
     QString fileFormat = QString::fromStdString(format).toLower();
 
@@ -216,7 +217,7 @@ void PythonAPI::generate(std::string const& format, std::string const& vlnv, std
     if (generator != nullptr)
     {
         KactusAPI::runGenerator(generator, componentVLNV, QString::fromStdString(viewName),
-            QString::fromStdString(outputDirectory), nullptr);
+            QString::fromStdString(outputDirectory), implementation, nullptr);
     }
     else
     {

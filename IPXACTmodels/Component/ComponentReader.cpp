@@ -645,7 +645,7 @@ void ComponentReader::parseSystemViews(QDomNode const& viewsNode, QSharedPointer
         QDomElement hierarchyElement = singleSystemElement.firstChildElement(QStringLiteral("kactus2:hierarchyRef"));
         if (!hierarchyElement.isNull())
         {
-            VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGN);
+            VLNV hierarhcyReference = parseVLNVAttributes(hierarchyElement, VLNV::DESIGNCONFIGURATION);
             newSystemView->setHierarchyRef(hierarhcyReference);
         }
 

@@ -201,8 +201,8 @@ int KactusAPI::importFile(QString const& filePath, VLNV const& targetVLNV, bool 
 // Function: KactusAPI::runGenerator()
 //-----------------------------------------------------------------------------
 void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
-    QString const& outputDirectory, QWidget* parentWidget)
-{    
+    QString const& outputDirectory, KactusAttribute::Implementation implementation, QWidget* parentWidget)
+{
     QSharedPointer<Component> component = library_->getModel<Component>(componentVLNV);
     if (component == nullptr)
     {
@@ -212,9 +212,17 @@ void KactusAPI::runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV
     VLNV designVLNV; 
     QSharedPointer<Design> design;
     
-    VLNV configVLNV = component->getHierRef(viewName);
-    QSharedPointer<DesignConfiguration> designConfiguration;    
+    VLNV configVLNV;
+    if (implementation == KactusAttribute::SYSTEM)
+    {
+        configVLNV = component->getHierSystemRef(viewName);
+    }
+    else
+    {
+        configVLNV = component->getHierRef(viewName);
+    }
 
+    QSharedPointer<DesignConfiguration> designConfiguration;
     if (configVLNV.getType() == VLNV::DESIGNCONFIGURATION)
     {        
         designConfiguration = library_->getModel<DesignConfiguration>(configVLNV);

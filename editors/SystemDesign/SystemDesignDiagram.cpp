@@ -2144,7 +2144,7 @@ GraphicsConnection* SystemDesignDiagram::createConnection(ConnectionEndpoint* st
 //-----------------------------------------------------------------------------
 // Function: SystemDesignDiagram::createAddCommandForConnection()
 //-----------------------------------------------------------------------------
-QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* parentCommand /*= nullptr*/)
+QUndoCommand* SystemDesignDiagram::createAddCommandForConnection(GraphicsConnection* connection, QUndoCommand* /*parentCommand*/)
 {
     ApiGraphicsConnection* apiConnection = dynamic_cast<ApiGraphicsConnection*>(connection);
     if (apiConnection)

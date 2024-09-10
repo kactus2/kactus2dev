@@ -116,14 +116,15 @@ public:
     /*!
      * Run a generation plugin for a component.
      *
-     *     @param [in] plugin           The plugin to run.
-     *     @param [in] componentVLNV    The component to run the generation for.
-     *     @param [in] viewName         The component view to run the generation for.
-     *     @param [in] outputDirectory  The target directory for generated output files.
-     *     @param [in] parentWidget     The parent widget for dialogs if GUI is used.
+     *      @param [in] plugin              The plugin to run.
+     *      @param [in] componentVLNV       The component to run the generation for.
+     *      @param [in] viewName            The component view to run the generation for.
+     *      @param [in] outputDirectory     The target directory for generated output files.
+     *      @param [in] implementation      The implementation type for which the generator is run.
+     *      @param [in] parentWidget        The parent widget for dialogs if GUI is used.
      */
-     static void runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
-        QString const& outputDirectory, QWidget* parentWidget = nullptr);
+    static void runGenerator(IGeneratorPlugin* plugin, VLNV const& componentVLNV, QString const& viewName,
+        QString const& outputDirectory, KactusAttribute::Implementation implementation, QWidget* parentWidget = nullptr);
 
     /*!
      * Get the list of available plugins.     

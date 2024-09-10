@@ -56,7 +56,7 @@ void GraphicsItemLabel::updateLabelGeometry()
 //-----------------------------------------------------------------------------
 // Function: GraphicsItemLabel::hoverMoveEvent()
 //-----------------------------------------------------------------------------
-void GraphicsItemLabel::hoverMoveEvent(QGraphicsSceneHoverEvent* event)
+void GraphicsItemLabel::hoverMoveEvent(QGraphicsSceneHoverEvent* /*event*/)
 {
     QGraphicsItem* tooltip_parent = parentItem();
     while (tooltip_parent != nullptr)

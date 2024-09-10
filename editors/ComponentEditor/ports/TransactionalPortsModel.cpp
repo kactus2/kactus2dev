@@ -437,7 +437,7 @@ bool TransactionalPortsModel::indexedItemIsLocked(QModelIndex const& index) cons
 //-----------------------------------------------------------------------------
 // Function: WirePortsModel::getLockedPortIndexes()
 //-----------------------------------------------------------------------------
-QModelIndexList TransactionalPortsModel::getLockedPortIndexes(QModelIndex const& portIndex) const
+QModelIndexList TransactionalPortsModel::getLockedPortIndexes(QModelIndex const& /*portIndex*/) const
 {
     return QModelIndexList();
 }

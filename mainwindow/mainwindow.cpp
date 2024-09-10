@@ -1085,6 +1085,7 @@ void MainWindow::runGeneratorPlugin(QAction* action)
     QString viewName;
 
     // if the design is supported by the document type
+    KactusAttribute::Implementation implementation = KactusAttribute::HW;
     DesignWidget* desWidget = qobject_cast<DesignWidget*>(doc);
     if (desWidget)
     {
@@ -1093,13 +1094,14 @@ void MainWindow::runGeneratorPlugin(QAction* action)
 
         // find the design config is one exists
         viewName = desWidget->getOpenViewName();
+        implementation = desWidget->getImplementation();
     }
 
     // Retrieve the plugin pointer from the action.
     IGeneratorPlugin* plugin = reinterpret_cast<IGeneratorPlugin*>(action->data().value<void*>());
     Q_ASSERT(plugin != 0);
 
-    KactusAPI::runGenerator(plugin, compVLNV, viewName, QString(), this);
+    KactusAPI::runGenerator(plugin, compVLNV, viewName, QString(), implementation, this);
 
     // Refresh the document.
     doc->refresh();
