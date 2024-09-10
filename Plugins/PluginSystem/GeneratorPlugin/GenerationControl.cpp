@@ -422,28 +422,28 @@ QSharedPointer<QList<QSharedPointer<View> > > GenerationControl::findPossibleVie
     for (QSharedPointer<View> view : *input.component->getViews())
     {
         // Find the design instantiation of the view.
-        QSharedPointer<DesignInstantiation> dis = input.component->getModel()->
+        QSharedPointer<DesignInstantiation> viewDesignInstantiation = input.component->getModel()->
             findDesignInstantiation(view->getDesignInstantiationRef());
 
         // If it exists it must refer to the input design.
-        if (dis && *dis->getDesignReference() != input.design->getVlnv())
+        if (viewDesignInstantiation && *viewDesignInstantiation->getDesignReference() != input.design->getVlnv())
         {
             continue;
         }
 
         // Find the design configuration instantiation of the view.
-        QSharedPointer<DesignConfigurationInstantiation> disg = input.component->getModel()->
+        QSharedPointer<DesignConfigurationInstantiation> viewDesignConfigInstantiation = input.component->getModel()->
             findDesignConfigurationInstantiation(view->getDesignConfigurationInstantiationRef());
 
         // If input has no design configuration, the instantiation must not exist.
-        if (!input.designConfiguration && disg)
+        if (!input.designConfiguration && viewDesignConfigInstantiation)
         {
             continue;
         }
 
         // If it does, the instantiation must exist and VLNVs must match.
-        if ((input.designConfiguration && !disg) ||
-            *disg->getDesignConfigurationReference() != input.designConfiguration->getVlnv())
+        if ((input.designConfiguration && !viewDesignConfigInstantiation) ||
+            (viewDesignConfigInstantiation && *viewDesignConfigInstantiation->getDesignConfigurationReference() != input.designConfiguration->getVlnv()))
         {
             continue;
         }
