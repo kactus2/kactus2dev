@@ -308,7 +308,8 @@ HEADERS += ./generaldeclarations.h \
     ./DesignConfiguration/ViewConfiguration.h \
     ./DesignConfiguration/validators/DesignConfigurationValidator.h \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.h \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.h
+    ./DesignConfiguration/validators/ViewConfigurationValidator.h \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.h
 SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./generaldeclarations.cpp \
     ./kactusExtensions/ApiDefinition.cpp \
@@ -610,4 +611,5 @@ SOURCES += ./Component/validators/CollectionValidators.cpp \
     ./DesignConfiguration/ViewConfiguration.cpp \
     ./DesignConfiguration/validators/DesignConfigurationValidator.cpp \
     ./DesignConfiguration/validators/InterconnectionConfigurationValidator.cpp \
-    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp
+    ./DesignConfiguration/validators/ViewConfigurationValidator.cpp \
+    ./AbstractionDefinition/validators/PortAbstractionValidator.cpp

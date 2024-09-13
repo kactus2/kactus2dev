@@ -1037,6 +1037,9 @@
     <ClCompile Include="common\validators\HierarchicalValidator.cpp">
       <Filter>Source Files\Component\validators</Filter>
     </ClCompile>
+    <ClCompile Include="AbstractionDefinition\validators\PortAbstractionValidator.cpp">
+      <Filter>Source Files\AbstractionDefinition\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1797,6 +1800,9 @@
     </ClInclude>
     <ClInclude Include="Component\validators\CollectionValidators.h">
       <Filter>Header Files\Component\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="AbstractionDefinition\validators\PortAbstractionValidator.h">
+      <Filter>Header Files\AbstractionDefinition\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
