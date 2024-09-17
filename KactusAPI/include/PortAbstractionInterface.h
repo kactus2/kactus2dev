@@ -13,6 +13,7 @@
 #define PORTABSTRACTIONINTERFACE_H
 
 #include <MasterPortInterface.h>
+#include <KactusAPI/include/ParameterizableInterface.h>
 
 #include "KactusAPI/KactusAPIGlobal.h"
 
@@ -29,18 +30,25 @@ class TransactionalPort;
 class WirePort;
 class Protocol;
 class AbstractionDefinition;
+class PortAbstractionValidator;
+class ExpressionParser;
+class ExpressionFormatter;
 
 //-----------------------------------------------------------------------------
 //! Interface for editing abstraction definition port abstractions.
 //-----------------------------------------------------------------------------
-class KACTUS2_API PortAbstractionInterface : public MasterPortInterface
+class KACTUS2_API PortAbstractionInterface : public MasterPortInterface, public ParameterizableInterface
 {
 public:
 
     /*!
-     *  The constructor.
+     *	The constructor.
+     *  
+     *      @param [in] expressionParser        The expression parser to use.
+     *      @param [in] expressionFormatter     The expression formatter to use.
      */
-    PortAbstractionInterface();
+    PortAbstractionInterface(QSharedPointer<ExpressionParser> expressionParser, 
+        QSharedPointer<ExpressionFormatter> expressionFormatter);
 
     /*!
      *  The destructor.
@@ -53,6 +61,13 @@ public:
      *      @param [in] absDef  Abstraction definition containing the port abstractions.
      */
     void setAbsDef(QSharedPointer<AbstractionDefinition const> absDef);
+
+    /*!
+     *	Set the validator to use.
+     *  
+     *      @param [in] validator     The validator to use.
+     */
+    void setPortAbstractionValidator(QSharedPointer<PortAbstractionValidator> validator);
 
     /*!
      *  Get index of the first signal containing the selected port abstraction.
@@ -119,14 +134,14 @@ public:
      *
      *      @return True, if successful, false otherwise.
      */
-    virtual bool setName(std::string const& currentName, std::string const& newName) override final;
+    bool setName(std::string const& currentName, std::string const& newName) final;
 
     /*!
      *  Validates the contained port abstractions.
      *
      *      @return True, if all the port abstractions are valid, false otherwise.
      */
-    virtual bool validateItems() const override final;
+    bool validateItems() const final;
 
     /*!
      *  Check if the selected port abstraction has a valid name.
@@ -135,7 +150,25 @@ public:
      *
      *      @return True, if the name is valid, false otherwise.
      */
-    virtual bool itemHasValidName(std::string const& itemName) const override final;
+    bool itemHasValidName(std::string const& itemName) const final;
+
+    /*!
+     *	Check if the width of the wire port is valid.
+     *  
+     *      @param [in] portIndex     The index of the selected signal.
+     *	    
+     * 	    @return True, if the widht is valid, otherwise false.
+     */
+    bool wireHasValidWidth(int portIndex) const;
+
+    /*!
+     *	Check if the default value of the wire port is valid.
+     *  
+     *      @param [in] portIndex     The index of the selected signal.
+     *	    
+     * 	    @return True, if the default value is valid, otherwise false.
+     */
+    bool wireHasValidDefaultValue(int portIndex) const;
 
     /*!
      *	Get the match status of the selected signal.
@@ -161,7 +194,7 @@ public:
      *
      *      @return Names of the available ports abstractions.
      */
-    virtual std::vector<std::string> getItemNames() const override final;
+    std::vector<std::string> getItemNames() const final;
 
     /*!
      *  Get the list of logical ports with the selected bus interface mode and system group.
@@ -343,16 +376,16 @@ public:
     bool setDirection(int const& portIndex, std::string const& newDirection);
 
     /*!
-     *  Get the width of the selected signal.
+     *  Get the width expression of the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.
      *
      *      @return Width of the selected signal.
      */
-    std::string getWidth(int const& portIndex) const;
+    std::string getWidthExpression(int const& portIndex) const;
 
     /*!
-     *  Get the width of the selected signal.
+     *  Get the width expression of the selected signal.
      *
      *      @param [in] portName        Name of the selected port.
      *      @param [in] interfaceMode   The selected bus interface mode in string form.
@@ -360,11 +393,11 @@ public:
      *
      *      @return Width of the selected signal.
      */
-    std::string getWidth(std::string const& portName, std::string const& interfaceMode,
+    std::string getWidthExpression(std::string const& portName, std::string const& interfaceMode,
         std::string const& systemGroup) const;
 
     /*!
-     *  Get the width of the selected signal.
+     *  Get the width expression of the selected signal.
      *
      *      @param [in] portName        Name of the selected port.
      *      @param [in] interfaceMode   The selected bus interface mode.
@@ -372,9 +405,39 @@ public:
      *
      *      @return Width of the selected signal.
      */
-    std::string getWidth(std::string const& portName, General::InterfaceMode interfaceMode,
+    std::string getWidthExpression(std::string const& portName, General::InterfaceMode interfaceMode,
         std::string const& systemGroup) const;
 
+    /*!
+     *	Get the formatted expression for the width of the selected wire port.
+     *  
+     *      @param [in] portIndex     Index of the selected signal.
+     *	    
+     * 	    @return The formatted expression of the width.
+     */
+    std::string getWidthFormattedExpression(int portIndex) const;
+
+    /*!
+     *	Get the width value of the selected signal.
+     *  
+     *      @param [in] portIndex      Index of the selected signal.
+     *      @param [in] baseNumber     Base number to format the value to.
+     *	    
+     * 	    @return The evaluated value of the wire width.
+     */
+    std::string getWidthValue(int portIndex, int baseNumber = 0) const;
+
+    /*!
+     *	Get the width value of the selected signal.
+     *  
+     *      @param [in] portName          Name of the selected port.
+     *      @param [in] interfaceMode     The interface mode of the port.
+     *      @param [in] systemGroup       The port system group.
+     *	    
+     * 	    @return The evaluated value of the wire width.
+     */
+    std::string getWidthValue(std::string const& portName, General::InterfaceMode interfaceMode, std::string const& systemGroup) const;
+    
     /*!
      *  Set a new width for the selected signal.
      *
@@ -438,14 +501,33 @@ public:
     bool setPresence(int const& portIndex, std::string const& newPresence);
 
     /*!
-     *  Get the default value of the selected signal.
+     *  Get the default value expression of the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.
      *
      *      @return Default value of the selected signal.
      */
-    std::string getDefaultValue(int const& portIndex) const;
+    std::string getDefaultValueExpression(int const& portIndex) const;
     
+    /*!
+     *  Get the formatted expression default value of the selected signal.
+     *
+     *      @param [in] portIndex   Index of the selected signal.
+     *
+     *      @return Default value of the selected signal.
+     */
+    std::string getDefaultValueFormattedExpression(int const& portIndex) const;
+
+    /*!
+     *  Get the evaluated default value of the selected signal.
+     *
+     *      @param [in] portIndex   Index of the selected signal.
+     *      @param [in] baseNumber  The base to format the value to.
+     *
+     *      @return Default value of the selected signal.
+     */
+    std::string getDefaultValueValue(int const& portIndex, int baseNumber = 0) const;
+
     /*!
      *  Set a new default value for the selected signal.
      *
@@ -476,16 +558,16 @@ public:
     bool setDriverType(int const& portIndex, std::string const& newDriver);
 
     /*!
-     *  Get the bus width of the selected signal.
+     *  Get the bus width expression of the selected signal.
      *
      *      @param [in] portIndex   Index of the selected signal.
      *
      *      @return Bus width of the selected signal.
      */
-    std::string getBusWidthValue(int const& portIndex) const;
+    std::string getBusWidthExpression(int const& portIndex) const;
 
     /*!
-     *  Get the bus width of the selected signal.
+     *  Get the bus width expression of the selected signal.
      *
      *      @param [in] portName        Name of the selected port.
      *      @param [in] interfaceMode   The selected bus interface mode.
@@ -493,8 +575,27 @@ public:
      *
      *      @return Bus width of the selected signal.
      */
-    std::string getBusWidthValue(std::string const& portName, std::string const& interfaceMode,
+    std::string getBusWidthExpression(std::string const& portName, std::string const& interfaceMode,
         std::string const& systemGroup) const;
+
+    /*!
+     *  Get the formatted expression of the bus width of the selected signal.
+     *
+     *      @param [in] portIndex   Index of the selected signal.
+     *
+     *      @return Bus width of the selected signal.
+     */
+    std::string getBusWidthFormattedExpression(int signalIndex) const;
+    
+    /*!
+     *  Get the evaluated value of the bus width of the selected signal.
+     *
+     *      @param [in] portIndex   Index of the selected signal.
+     *      @param [in] baseNumber  The base to format the value to.
+     *
+     *      @return Bus width of the selected signal.
+     */
+    std::string getBusWidthValue(int portIndex, int baseNumber = 0) const;
 
     /*!
      *  Set a new bus width for the selected signal.
@@ -505,6 +606,8 @@ public:
      *      @return True, if successful, false otherwise.
      */
     bool setBusWidth(int const& portIndex, std::string const& newBusWidth);
+
+    bool transactionalHasValidBusWidth(int portIndex) const;
 
     /*!
      *  Get the initiative of the selected signal.
@@ -646,14 +749,14 @@ public:
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addWirePort(std::string const& newPortName = std::string("")) override final;
+    void addWirePort(std::string const& newPortName = std::string("")) final;
 
     /*!
      *  Add a port abstraction containing transactional.
      *
      *      @param [in] newPortName     Name of the new port.
      */
-    virtual void addTransactionalPort(std::string const& newPortName = std::string("")) override final;
+    void addTransactionalPort(std::string const& newPortName = std::string("")) final;
 
     /*!
      *  Add a wire signal with the selected interface mode to the selected port abstraction.
@@ -703,7 +806,7 @@ public:
      *
      *      @return True, if the selected port abstraction contains a wire, false otherwise.
      */
-    virtual bool portIsWire(std::string const& portName) const override final;
+    bool portIsWire(std::string const& portName) const final;
     
     /*!
      *  Check if the selected port abstraction contains a transactional.
@@ -712,7 +815,7 @@ public:
      *
      *      @return True, if the selected port abstraction contains a transactional, false otherwise.
      */
-    virtual bool portIsTransactional(std::string const& portName) const override final;
+    bool portIsTransactional(std::string const& portName) const final;
     
     /*!
      *  Get the icon path of the selected signal.
@@ -768,6 +871,17 @@ public:
      * 		@return The standard revision used.
      */
     Document::Revision getRevision() const;
+
+    
+    /*!
+     *	Get the number of references made to itemID on a given signal row.
+     *  
+     *      @param [in] signalIndex     The index of the signal row.
+     *      @param [in] itemID          The parameter itemID to look for.
+     *	    
+     * 	    @return Return the number of references made to itemID.
+     */
+    int getAllReferencesToIdInRow(int signalIndex, std::string const& itemID) const;
 
     //! No copying. No assignment.
     PortAbstractionInterface(const PortAbstractionInterface& other) = delete;
@@ -954,6 +1068,17 @@ private:
      */
     Qualifier::Attribute getQualifierAttributeType(std::string const& attributeName) const;
 
+    /*!
+     *  Calculate all the references to the selected ID in the selected item. Does nothing useful in this interface.
+     *  Replaced by getAllReferencesToIdInRow().
+     *
+     *      @param [in] itemName    Name of the selected item.
+     *      @param [in] valueID     The selected ID.
+     *
+     *      @return Number of references to the selected ID in the selected item.
+     */
+    int getAllReferencesToIdInItem(const std::string& itemName, std::string const& valueID) const final;
+
     //-----------------------------------------------------------------------------
     // Data.
     //-----------------------------------------------------------------------------
@@ -966,6 +1091,9 @@ private:
 
     //! The standard revision of the abstraction definition.
     Document::Revision abstractionStandardRevision_ = Document::Revision::Unknown;
+
+    //! The port valudator to use.
+    QSharedPointer<PortAbstractionValidator> portValidator_ = nullptr;
 };
 
 #endif // PORTABSTRACTIONINTERFACE_H

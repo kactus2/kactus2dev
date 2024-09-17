@@ -16,6 +16,7 @@
 
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/BusDefinition/BusDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/validators/PortAbstractionValidator.h>
 
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ListParameterFinder.h>
@@ -26,7 +27,7 @@
 
 class AbstractionDefinitionValidator;
 class BusDefinitionValidator;
-class ExpressionParser;
+class IPXactSystemVerilogParser;
 class PortAbstractionInterface;
 class ExpressionFormatter;
 class AbsDefParameterReferenceCounter;
@@ -135,6 +136,10 @@ protected:
      */
     virtual void showEvent(QShowEvent* event);
 
+private slots:
+
+    void onOpenReferenceTree(QString const& parameterID, QString const& parameterName);
+
 private:
 
 	/*!
@@ -166,11 +171,14 @@ private:
     //! The expression formatter to use in the parameter reference tree.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
+    //! Parser for expressions in definitions.
+    QSharedPointer<IPXactSystemVerilogParser> expressionParser_;
+
+    //! Validator for port abstractions.
+    QSharedPointer<PortAbstractionValidator> portValidator_;
+
 	//! Group containing elements to edit abstraction definition.
 	AbsDefGroup absDefGroup_;
-
-    //! Parser for expressions in definitions.
-    QSharedPointer<ExpressionParser> expressionParser_;
 
     //! Validator for abstraction definition.
     QSharedPointer<AbstractionDefinitionValidator> absDefinitionValidator_;

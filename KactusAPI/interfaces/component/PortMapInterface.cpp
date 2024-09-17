@@ -1158,7 +1158,8 @@ bool PortMapInterface::connectPorts(std::string const& logicalPortName, std::str
     QSharedPointer<PortMap::LogicalPort> newMappedLogical = newPortMap->getLogicalPort();
 
     QString logicalWireWidth(QString::fromStdString(
-        logicalPortInterface_->getWidth(logicalPortName, interfaceMode, systemGroup)));
+        logicalPortInterface_->getWidthValue(logicalPortName, General::str2Interfacemode(QString::fromStdString(interfaceMode), 
+            General::InterfaceMode::INTERFACE_MODE_COUNT), systemGroup)));
     if (!logicalWireWidth.isEmpty())
     {
         qint64 logicalSize = parseExpressionToDecimal(logicalWireWidth).toInt();

@@ -32,6 +32,7 @@
 
 #include <QStringList>
 #include <QIcon>
+#include <QRegularExpression>
 
 namespace {
 
@@ -54,17 +55,20 @@ namespace {
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsModel::AbstractionPortsModel()
 //-----------------------------------------------------------------------------
-AbstractionPortsModel::AbstractionPortsModel(LibraryInterface* libraryAccess,
+AbstractionPortsModel::AbstractionPortsModel(QSharedPointer<ParameterFinder> parameterFinder,
+    QSharedPointer<ExpressionParser> expressionParser,
+    LibraryInterface* libraryAccess,
     PortAbstractionInterface* portInterface, 
     PortAbstractionInterface* extendInterface,
-    QObject *parent):
-QAbstractTableModel(parent),
+    QObject *parent) :
+ReferencingTableModel(parameterFinder, parent),
+ParameterizableTable(parameterFinder),
 busDefinition_(),
 libraryAccess_(libraryAccess),
 portInterface_(portInterface),
 extendInterface_(extendInterface)
 {
-
+    setExpressionParser(expressionParser);
 }
 
 //-----------------------------------------------------------------------------
@@ -144,7 +148,7 @@ QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientat
     }
     else if (section == LogicalPortColumns::WIDTH)
     {
-        return tr("Width");
+        return tr("Width") + getExpressionSymbol();
     }
     else if (section == LogicalPortColumns::DIRECTION)
     {
@@ -164,7 +168,7 @@ QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientat
     }
     else if (section == LogicalPortColumns::DEFAULT_VALUE)
     {
-        return tr("Default value");
+        return tr("Default value") + getExpressionSymbol();
     }
     else if (section == LogicalPortColumns::DRIVER)
     {
@@ -184,7 +188,7 @@ QVariant AbstractionPortsModel::headerData(int section, Qt::Orientation orientat
     }
     else if (section == LogicalPortColumns::BUSWIDTH)
     {
-        return tr("Bus width");
+        return tr("Bus width") + getExpressionSymbol();
     }
     else if (section == LogicalPortColumns::PROTOCOLTYPE)
     {
@@ -215,133 +219,68 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
 {
     if (!index.isValid() || index.row() < 0 || index.row() >= portInterface_->itemCount())
     {
-		return QVariant();
+        return QVariant();
     }
-            
-	if (role == Qt::DisplayRole || role == Qt::ToolTipRole)
+
+    if (role == Qt::DisplayRole)
     {
-        if (index.column() == LogicalPortColumns::NAME) 
+        if (isValidExpressionColumn(index))
         {
-            QString logicalName = QString::fromStdString(portInterface_->getIndexedItemName(index.row()));
-            if (logicalName.isEmpty())
-            {
-                return "unnamed";
-            }
-            else
-            {
-                return logicalName;
-            }
+            return formattedExpressionForIndex(index);
         }
-        else if (index.column() == LogicalPortColumns::QUALIFIER)
+        else if (index.column() == LogicalPortColumns::DESCRIPTION)
+        {
+            return valueForIndex(index).toString().replace(QRegularExpression("\n.*$",
+                QRegularExpression::DotMatchesEverythingOption), "...");
+        }
+        else
+        {
+            return valueForIndex(index);
+        }
+    }
+
+    else if (role == Qt::EditRole)
+    {
+        if (index.column() == LogicalPortColumns::QUALIFIER)
         {
             QStringList qualifierList;
-            for (auto qualifier : portInterface_->getQualifierStringList(index.row()))
+            for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
             {
                 qualifierList.append(QString::fromStdString(qualifier));
             }
 
-            return qualifierList.join(", ");
-        }
-        else if (index.column() == LogicalPortColumns::MATCH)
-        {
-            return General::bool2Str(portInterface_->getMatch(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::WIDTH)
-        {
-            return QString::fromStdString(portInterface_->getWidth(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::DIRECTION)
-        {
-            return QString::fromStdString(portInterface_->getDirectionString(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::MODE)
-        {
-            return QString::fromStdString(portInterface_->getModeString(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
-        {
-            return QString::fromStdString(portInterface_->getSystemGroup(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::PRESENCE)
-        {
-            return QString::fromStdString(portInterface_->getPresenceString(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::KIND)
-        {
-            return QString::fromStdString(portInterface_->getKind(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::INITIATIVE)
-        {
-            return QString::fromStdString(portInterface_->getInitiative(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::BUSWIDTH)
-        {
-            return QString::fromStdString(portInterface_->getBusWidthValue(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::DEFAULT_VALUE)
-        {
-            return QString::fromStdString(portInterface_->getDefaultValue(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::DRIVER)
-        {
-            return QString::fromStdString(portInterface_->getDriverString(index.row()));
-        }
-        else if (index.column() == LogicalPortColumns::DESCRIPTION)
-        {
-            std::string portName = portInterface_->getIndexedItemName(index.row());
-            return QString::fromStdString(portInterface_->getDescription(portName));
-        }
-        else if ((index.column() == LogicalPortColumns::PROTOCOLTYPE ||
-            index.column() == LogicalPortColumns::PAYLOADNAME ||
-            index.column() == LogicalPortColumns::PAYLOADTYPE ||
-            index.column() == LogicalPortColumns::PAYLOADEXTENSION) &&
-            portInterface_->hasProtocol(index.row()))
-        {
-            if (index.column() == LogicalPortColumns::PROTOCOLTYPE)
+            std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
+            QMap<QString, QString> attributes;
+
+            for (size_t i = 0; i + 1 < attributesList.size(); i += 2)
             {
-                return QString::fromStdString(portInterface_->getProtocolType(index.row()));
+                auto const& name = QString::fromStdString(attributesList.at(i));
+                auto const& value = QString::fromStdString(attributesList.at(i + 1));
+
+                attributes.insert(name, value);
             }
-            else if (index.column() == LogicalPortColumns::PAYLOADNAME)
-            {
-                return QString::fromStdString(portInterface_->getPayloadName(index.row()));
-            }
-            else if (index.column() == LogicalPortColumns::PAYLOADTYPE)
-            {
-                return QString::fromStdString(portInterface_->getPayloadType(index.row()));
-            }
-            else if (index.column() == LogicalPortColumns::PAYLOADEXTENSION)
-            {
-                return QString::fromStdString(portInterface_->getPayloadExtension(index.row()));
-            }
+
+            return QVariant::fromValue(QualifierData{ qualifierList, attributes });
         }
+
+        return expressionOrValueForIndex(index);
     }
+
+    else if (role == Qt::ToolTipRole)
+    {
+        return valueForIndex(index);
+    }
+
     else if (role == Qt::ForegroundRole)
     {
-        std::string portName = portInterface_->getIndexedItemName(index.row());
-        General::InterfaceMode portMode = portInterface_->getMode(index.row());
-        std::string portModeString = portInterface_->getModeString(index.row());
-
-        if ((index.column() == LogicalPortColumns::NAME && QString::fromStdString(portName).isEmpty()) ||
-            (index.column() == LogicalPortColumns::MODE &&
-            (portMode == General::INTERFACE_MODE_COUNT ||
-                portInterface_->portHasMultiplesOfMasterOrSlave(portName, portModeString))))
-        {
-            return  KactusColors::ERROR;
-        }
-        else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
-        {
-            QString systemGroup = QString::fromStdString(portInterface_->getSystemGroup(index.row()));
-            if (!busDefinition_ || (portMode == General::SYSTEM &&
-                !BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_).contains(systemGroup)))
-            {
-                return  KactusColors::ERROR;
-            }
-        }
-        else if (isLocked(index))
-        {
-            return  KactusColors::DISABLED_TEXT;
-        }
+        return blackForValidOrRedForInvalidIndex(index);
     }
+
+    else if (role == Qt::FontRole)
+    {
+        return italicForEvaluatedValue(index);
+    }
+
     else if (role == Qt::DecorationRole && (index.column() == LogicalPortColumns::DIRECTION || index.column() == LogicalPortColumns::INITIATIVE))
     {
         std::string iconPath = portInterface_->getIconPathForSignal(index.row());
@@ -350,29 +289,6 @@ QVariant AbstractionPortsModel::data(QModelIndex const& index, int role) const
             return QIcon(QString::fromStdString(iconPath));
         }
     }
-
-    else if (role == Qt::UserRole && index.column() == LogicalPortColumns::QUALIFIER)
-    {
-        QStringList qualifierList;
-        for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
-        {
-            qualifierList.append(QString::fromStdString(qualifier));
-        }
-
-        std::vector<std::string> attributesList = portInterface_->getQualifierAttributes(index.row());
-        QMap<QString, QString> attributes;
-
-        for (size_t i = 0; i + 1 < attributesList.size(); i += 2)
-        {
-            auto const& name = QString::fromStdString(attributesList.at(i));
-            auto const& value = QString::fromStdString(attributesList.at(i + 1));
-
-            attributes.insert(name, value);
-        }
-
-        return QVariant::fromValue(QualifierData{ qualifierList, attributes });
-    }
-
 
     return QVariant();
 }
@@ -407,10 +323,22 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::WIDTH)
     {
+        if (!value.isValid())
+        {
+            removeReferencesFromSingleExpression(
+                QString::fromStdString(portInterface_->getWidthExpression(index.row())));
+        }
+
         portInterface_->setWidth(index.row(), value.toString().toStdString());
     }
     else if (index.column() == LogicalPortColumns::DEFAULT_VALUE)
     {
+        if (!value.isValid())
+        {
+            removeReferencesFromSingleExpression(
+                QString::fromStdString(portInterface_->getDefaultValueExpression(index.row())));
+        }
+
         portInterface_->setDefaultValue(index.row(), value.toString().toStdString());
     }
     else if (index.column() == LogicalPortColumns::MODE)
@@ -427,6 +355,12 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
     }
     else if (index.column() == LogicalPortColumns::BUSWIDTH)
     {
+        if (!value.isValid())
+        {
+            removeReferencesFromSingleExpression(
+                QString::fromStdString(portInterface_->getBusWidthExpression(index.row())));
+        }
+
         portInterface_->setBusWidth(index.row(), value.toString().toStdString());
     }
     else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
@@ -500,38 +434,29 @@ bool AbstractionPortsModel::setData(QModelIndex const& index, QVariant const& va
 //-----------------------------------------------------------------------------
 void AbstractionPortsModel::setQualifierData(QModelIndex const& index, QVariant const& value)
 {
+    QualifierData qualifierData = value.value<QualifierData>();
+    auto const& setQualifiers = qualifierData.activeQualifiers_;
+    auto const& setAttributes = qualifierData.attributes_;
+
+    std::vector<std::string> qualifierList;
+    std::vector<std::string> attributeList;
+
+    for (auto const& qualifier : setQualifiers)
+    {
+        qualifierList.push_back(qualifier.toStdString());
+    }
+
+    portInterface_->setQualifierStringList(index.row(), qualifierList);
+
     if (portInterface_->getRevision() == Document::Revision::Std22)
     {
-        QualifierData qualifierData = value.value<QualifierData>();
-        auto const& setQualifiers = qualifierData.activeQualifiers_;
-        auto const& setAttributes = qualifierData.attributes_;
-
-        std::vector<std::string> qualifierList;
-        std::vector<std::string> attributeList;
-
-        for (auto const& qualifier : setQualifiers)
-        {
-            qualifierList.push_back(qualifier.toStdString());
-        }
-
         for (auto const& attributeName : setAttributes.keys())
         {
             attributeList.push_back(attributeName.toStdString());
             attributeList.push_back(setAttributes[attributeName].toStdString());
         }
 
-        portInterface_->setQualifierStringList(index.row(), qualifierList);
         portInterface_->setQualifierAttributes(index.row(), attributeList);
-    }
-    else
-    {
-        std::vector<std::string> qualifiersList;
-        for (auto const& item : value.toStringList())
-        {
-            qualifiersList.push_back(item.toStdString());
-        }
-
-        portInterface_->setQualifierStringList(index.row(), qualifiersList);
     }
 }
 
@@ -797,13 +722,223 @@ QStringList AbstractionPortsModel::getMissingSystemGroupsForSignal(int const& si
         missingSystemGroups = BusDefinitionUtils::getSystemGroups(busDefinition_, libraryAccess_);
     }
 
-    for (auto currentSystem :
+    for (auto const& currentSystem :
         portInterface_->getSystemGroupsForPort(portInterface_->getIndexedItemName(signalIndex)))
     {
         missingSystemGroups.removeAll(QString::fromStdString(currentSystem));
     }
 
     return missingSystemGroups;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::isValidExpressionColumn()
+//-----------------------------------------------------------------------------
+bool AbstractionPortsModel::isValidExpressionColumn(QModelIndex const& index) const
+{
+    auto col = index.column();
+    return col == LogicalPortColumns::BUSWIDTH || col == LogicalPortColumns::WIDTH ||
+        col == LogicalPortColumns::DEFAULT_VALUE;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::expressionOrValueForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractionPortsModel::expressionOrValueForIndex(QModelIndex const& index) const
+{
+    if (isValidExpressionColumn(index))
+    {
+        return expressionForIndex(index);
+    }
+    else
+    {
+        return valueForIndex(index);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::expressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractionPortsModel::expressionForIndex(QModelIndex const& index) const
+{
+    if (auto column = index.column(); column == LogicalPortColumns::BUSWIDTH)
+    {
+        return QString::fromStdString(portInterface_->getBusWidthExpression(index.row()));
+    }
+    else if (column == LogicalPortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(portInterface_->getDefaultValueExpression(index.row()));
+    }
+    else if (column == LogicalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(portInterface_->getWidthExpression(index.row()));
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::validateIndex()
+//-----------------------------------------------------------------------------
+bool AbstractionPortsModel::validateIndex(QModelIndex const& index) const
+{
+    auto column = index.column();
+
+    auto portName = portInterface_->getIndexedItemName(index.row());
+
+    if (column == LogicalPortColumns::NAME)
+    {
+        return portInterface_->itemHasValidName(portName);
+    }
+    else if (column == LogicalPortColumns::BUSWIDTH)
+    {
+        return portInterface_->transactionalHasValidBusWidth(index.row());
+    }
+    else if (column == LogicalPortColumns::DEFAULT_VALUE)
+    {
+        return portInterface_->wireHasValidDefaultValue(index.row());
+    }
+    else if (column == LogicalPortColumns::WIDTH)
+    {
+        return portInterface_->wireHasValidWidth(index.row());
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::getAllReferencesToIdInItemOnRow()
+//-----------------------------------------------------------------------------
+int AbstractionPortsModel::getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const
+{
+    return portInterface_->getAllReferencesToIdInRow(row, valueID.toStdString());
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::valueForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractionPortsModel::valueForIndex(const QModelIndex& index) const
+{
+    if (index.column() == LogicalPortColumns::NAME)
+    {
+        QString logicalName = QString::fromStdString(portInterface_->getIndexedItemName(index.row()));
+        if (logicalName.isEmpty())
+        {
+            return "unnamed";
+        }
+        else
+        {
+            return logicalName;
+        }
+    }
+    else if (index.column() == LogicalPortColumns::QUALIFIER)
+    {
+        QStringList qualifierList;
+        for (auto const& qualifier : portInterface_->getQualifierStringList(index.row()))
+        {
+            qualifierList.append(QString::fromStdString(qualifier));
+        }
+
+        return qualifierList.join(", ");
+    }
+    else if (index.column() == LogicalPortColumns::MATCH)
+    {
+        return General::bool2Str(portInterface_->getMatch(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(portInterface_->getWidthValue(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::DIRECTION)
+    {
+        return QString::fromStdString(portInterface_->getDirectionString(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::MODE)
+    {
+        return QString::fromStdString(portInterface_->getModeString(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::SYSTEM_GROUP)
+    {
+        return QString::fromStdString(portInterface_->getSystemGroup(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::PRESENCE)
+    {
+        return QString::fromStdString(portInterface_->getPresenceString(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::KIND)
+    {
+        return QString::fromStdString(portInterface_->getKind(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::INITIATIVE)
+    {
+        return QString::fromStdString(portInterface_->getInitiative(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::BUSWIDTH)
+    {
+        return QString::fromStdString(portInterface_->getBusWidthValue(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(portInterface_->getDefaultValueValue(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::DRIVER)
+    {
+        return QString::fromStdString(portInterface_->getDriverString(index.row()));
+    }
+    else if (index.column() == LogicalPortColumns::DESCRIPTION)
+    {
+        std::string portName = portInterface_->getIndexedItemName(index.row());
+        return QString::fromStdString(portInterface_->getDescription(portName));
+    }
+    else if ((index.column() == LogicalPortColumns::PROTOCOLTYPE ||
+        index.column() == LogicalPortColumns::PAYLOADNAME ||
+        index.column() == LogicalPortColumns::PAYLOADTYPE ||
+        index.column() == LogicalPortColumns::PAYLOADEXTENSION) &&
+        portInterface_->hasProtocol(index.row()))
+    {
+        if (index.column() == LogicalPortColumns::PROTOCOLTYPE)
+        {
+            return QString::fromStdString(portInterface_->getProtocolType(index.row()));
+        }
+        else if (index.column() == LogicalPortColumns::PAYLOADNAME)
+        {
+            return QString::fromStdString(portInterface_->getPayloadName(index.row()));
+        }
+        else if (index.column() == LogicalPortColumns::PAYLOADTYPE)
+        {
+            return QString::fromStdString(portInterface_->getPayloadType(index.row()));
+        }
+        else if (index.column() == LogicalPortColumns::PAYLOADEXTENSION)
+        {
+            return QString::fromStdString(portInterface_->getPayloadExtension(index.row()));
+        }
+    }
+
+    return QVariant();
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsModel::formattedExpressionForIndex()
+//-----------------------------------------------------------------------------
+QVariant AbstractionPortsModel::formattedExpressionForIndex(QModelIndex const& index) const
+{
+    int column = index.column();
+    int row = index.row();
+
+    if (column == LogicalPortColumns::WIDTH)
+    {
+        return QString::fromStdString(portInterface_->getWidthFormattedExpression(row));
+    }
+    else if (column == LogicalPortColumns::BUSWIDTH)
+    {
+        return QString::fromStdString(portInterface_->getBusWidthFormattedExpression(row));
+    }
+    else if (column == LogicalPortColumns::DEFAULT_VALUE)
+    {
+        return QString::fromStdString(portInterface_->getDefaultValueFormattedExpression(row));
+    }
+    
+    return QVariant();
 }
 
 //-----------------------------------------------------------------------------
@@ -913,7 +1048,7 @@ void AbstractionPortsModel::extendTransactionalMode(std::string const& port, Gen
         portInterface_->setQualifierAttributes(index, extendInterface_->getQualifierAttributes(extendIndex));
         portInterface_->setInitiative(index, extendInterface_->getInitiative(extendIndex));
         portInterface_->setKind(index, extendInterface_->getKind(extendIndex));
-        portInterface_->setBusWidth(index, extendInterface_->getBusWidthValue(extendIndex));
+        portInterface_->setBusWidth(index, extendInterface_->getBusWidthExpression(extendIndex));
         portInterface_->setMatch(index, extendInterface_->getMatch(extendIndex));
 
         portInterface_->setProtocolType(index, extendInterface_->getProtocolType(extendIndex));

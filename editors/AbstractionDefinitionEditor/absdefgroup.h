@@ -32,8 +32,10 @@ class PortAbstractionInterface;
 class DocumentNameGroupEditor;
 class ParameterGroupBox;
 class ExpressionFormatter;
+class ExpressionParser;
 class ParameterFinder;
 class AbstractParameterInterface;
+class ComponentParameterModel;
 
 //-----------------------------------------------------------------------------
 //! Editor for the logical ports of an abstraction definition.
@@ -50,15 +52,17 @@ public:
      *      @param [in] revision            Currently active IP-XACT revision.
      *      @param [in] absDef              The abstraction definition.
      *      @param [in] expressionFormatter The expression formatter to use.
+     *      @param [in] expressionParser    The expression parser to use.
      *      @param [in] parameterFinder     The parameter finder to use.
      *      @param [in] libraryHandler      Allows access to the library.
      *      @param [in] portInterface       Interface for accssing port abstractions.
+     *      @param [in] extendInterface     Interface for accssing extend port abstractions.
 	 *      @param [in] parent              The owner of the editor.
 	 */
     AbsDefGroup(Document::Revision revision, QSharedPointer<AbstractionDefinition> absDef,
-        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ParameterFinder> parameterFinder,
-        LibraryInterface* libraryHandler, PortAbstractionInterface* portInterface,
-        PortAbstractionInterface* extendInterface, QWidget* parent);
+        QSharedPointer<ExpressionFormatter> expressionFormatter, QSharedPointer<ExpressionParser> expressionParser, 
+        QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* libraryHandler, 
+        PortAbstractionInterface* portInterface, PortAbstractionInterface* extendInterface, QWidget* parent);
 
 	/*!
      *  The destructor.
@@ -205,9 +209,15 @@ private:
     //! Interface for accessing extened port abstractions.
     PortAbstractionInterface* extendInterface_;
 
+    //! The abstraction definition parameters editor.
+    ParameterGroupBox* parameterEditor_;
+
+    //! The parameter completer model to use.
+    ComponentParameterModel* parameterCompleter_;
+
     //! The abstraction definition ports model.
     AbstractionPortsModel* portModel_;
-
+ 
     //! Editor for wire ports.
     AbstractionPortsEditor* wirePortsEditor_;
 
@@ -219,9 +229,6 @@ private:
 
     //! The library interface.
     LibraryInterface* libraryHandler_;
- 
-    //! The abstraction definition parameters editor.
-    ParameterGroupBox* parameterEditor_;
 };
 
 #endif // ABSDEFGROUP_H

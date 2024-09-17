@@ -30,15 +30,14 @@
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::AbstractionPortsDelegate()
 //-----------------------------------------------------------------------------
-AbstractionPortsDelegate::AbstractionPortsDelegate(LibraryInterface* libraryAcces, 
-    Document::Revision stdRevision, QObject *parent):
-EnumerationEditorConstructorDelegate(parent),
+AbstractionPortsDelegate::AbstractionPortsDelegate(QAbstractItemModel* parametersModel,
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* libraryAcces, 
+    Document::Revision stdRevision, QObject* parent) :
+ExpressionDelegate(parametersModel, parameterFinder, parent),
 stdRevision_(stdRevision),
 libraryAccess_(libraryAcces),
 busDefinition_(0)
 {
-    setHideCheckAll(true);
-
     setModeOptions();
 }
 
@@ -48,13 +47,7 @@ busDefinition_(0)
 QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionViewItem const& option,
     const QModelIndex& index ) const
 {
-    if (index.column() == LogicalPortColumns::BUSWIDTH)
-    {
-        QLineEdit* line = new QLineEdit(parent);
-        connect(line, SIGNAL(editingFinished()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
-        return line;
-    }
-    else if (index.column() == LogicalPortColumns::MODE)
+    if (index.column() == LogicalPortColumns::MODE)
     {
         QComboBox* box = new QComboBox(parent);
 
@@ -97,16 +90,17 @@ QWidget* AbstractionPortsDelegate::createEditor(QWidget* parent, QStyleOptionVie
         connect(box, SIGNAL(destroyed()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         return box;
     }
-    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
-        QualifierEditor* qualifierEditor = new QualifierEditor(parent);
+        QualifierEditor* qualifierEditor = new QualifierEditor(stdRevision_, parent);
+        qualifierEditor->setupEditor(getQualifierList());
         connect(qualifierEditor, SIGNAL(finishEditing()), this, SLOT(commitAndCloseEditor()), Qt::UniqueConnection);
         connect(qualifierEditor, SIGNAL(cancelEditing()), this, SLOT(onEditingCanceled()), Qt::UniqueConnection);
         return qualifierEditor;
     }
     else
     {
-        return EnumerationEditorConstructorDelegate::createEditor(parent, option, index);
+        return ExpressionDelegate::createEditor(parent, option, index);
     }
 }
 
@@ -144,21 +138,21 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
             box->setCurrentText(text);
         }
     }
-    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
         Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setEditorData",
             "Type conversion failed for QualifierEditor");
 
-        auto allQualifiers = getAvailableItems();
-        auto setQualifier = index.data(Qt::UserRole).value<QualifierData>();
-
-        qualifierEditor->setupEditor(allQualifiers, setQualifier.activeQualifiers_, setQualifier.attributes_);
+        auto setQualifiers = index.data(Qt::EditRole).value<QualifierData>();
+        
+        // Hide all attributes before showing only set attributes. Done here to make editor the right width.
+        qualifierEditor->hideAllAttributes();
+        qualifierEditor->setupEditorData(setQualifiers.activeQualifiers_, setQualifiers.attributes_);
     }
-
     else
     {
-        EnumerationEditorConstructorDelegate::setEditorData(editor, index);
+        ExpressionDelegate::setEditorData(editor, index);
     }
 }
 
@@ -167,8 +161,7 @@ void AbstractionPortsDelegate::setEditorData(QWidget* editor, QModelIndex const&
 //-----------------------------------------------------------------------------
 bool AbstractionPortsDelegate::editorIsLineEditor(int indexColumn) const
 {
-    return indexColumn == LogicalPortColumns::NAME || indexColumn == LogicalPortColumns::WIDTH ||
-        indexColumn == LogicalPortColumns::BUSWIDTH || indexColumn == LogicalPortColumns::DESCRIPTION ||
+    return indexColumn == LogicalPortColumns::NAME ||
         indexColumn == LogicalPortColumns::PAYLOADNAME || indexColumn == LogicalPortColumns::PAYLOADEXTENSION;
 }
 
@@ -202,7 +195,7 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
 
         model->setData(index, selector->currentText(), Qt::EditRole);
     }
-    else if (index.column() == LogicalPortColumns::QUALIFIER && stdRevision_ == Document::Revision::Std22)
+    else if (index.column() == LogicalPortColumns::QUALIFIER)
     {
         QualifierEditor* qualifierEditor = qobject_cast<QualifierEditor*>(editor);
         Q_ASSERT_X(qualifierEditor, "AbstractionPortsDelegate::setModelData", "Type conversion failed for qualifier editor");
@@ -211,7 +204,7 @@ void AbstractionPortsDelegate::setModelData(QWidget* editor, QAbstractItemModel*
     }
     else
     {
-        EnumerationEditorConstructorDelegate::setModelData(editor, model, index);
+        ExpressionDelegate::setModelData(editor, model, index);
     }
 }
 
@@ -254,12 +247,12 @@ void AbstractionPortsDelegate::setBusDef(QSharedPointer<const BusDefinition> bus
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
 {
-    if (stdRevision_ != Document::Revision::Std22 || index.column() != LogicalPortColumns::QUALIFIER)
+    if (index.column() != LogicalPortColumns::QUALIFIER)
     {
-        return EnumerationEditorConstructorDelegate::updateEditorGeometry(editor, option, index);
+        return ExpressionDelegate::updateEditorGeometry(editor, option, index);
     }
 
-    int enumerationCount = getAvailableItems().count();
+    int enumerationCount = getQualifierList().count();
     int editorMinimumHeight = 25 * (enumerationCount + 2);
 
     int editorWidth = editor->sizeHint().width();
@@ -330,43 +323,6 @@ QStringList AbstractionPortsDelegate::getQualifierList() const
 }
 
 //-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::isEnumerationEditorColumn()
-//-----------------------------------------------------------------------------
-bool AbstractionPortsDelegate::isEnumerationEditorColumn(QModelIndex const& index) const
-{
-    if (index.column() == LogicalPortColumns::QUALIFIER)
-    {
-        return true;
-    }
-
-    return false;
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::getCurrentSelection()
-//-----------------------------------------------------------------------------
-QStringList AbstractionPortsDelegate::getCurrentSelection(QModelIndex const& index) const
-{
-    return index.data().toString().split(" ");
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::getAvailableItems()
-//-----------------------------------------------------------------------------
-QStringList AbstractionPortsDelegate::getAvailableItems() const
-{
-    return getQualifierList();
-}
-
-//-----------------------------------------------------------------------------
-// Function: AbstractionPortsDelegate::setEnumerationDataToModel()
-//-----------------------------------------------------------------------------
-void AbstractionPortsDelegate::setEnumerationDataToModel(QModelIndex const& index, QAbstractItemModel* model, QStringList const& selectedItems) const
-{
-    model->setData(index, selectedItems);
-}
-
-//-----------------------------------------------------------------------------
 // Function: AbstractionPortsDelegate::setModeOptions()
 //-----------------------------------------------------------------------------
 void AbstractionPortsDelegate::setModeOptions()
@@ -379,4 +335,12 @@ void AbstractionPortsDelegate::setModeOptions()
     {
         modeOptions_ = { "master", "slave", "system" };
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: AbstractionPortsDelegate::descriptionColumn()
+//-----------------------------------------------------------------------------
+int AbstractionPortsDelegate::descriptionColumn() const
+{
+    return LogicalPortColumns::DESCRIPTION;
 }

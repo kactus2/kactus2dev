@@ -36,8 +36,8 @@ public:
 
     virtual ~AbsDefParameterReferenceTree() = default;
 
-    AbsDefParameterReferenceTree(AbsDefParameterReferenceTree& other) = delete;
-    AbsDefParameterReferenceTree& operator=(AbsDefParameterReferenceTree& other) = delete;
+    AbsDefParameterReferenceTree(AbsDefParameterReferenceTree const& other) = delete;
+    AbsDefParameterReferenceTree& operator=(AbsDefParameterReferenceTree const& other) = delete;
 
     /*!
      *	Set a new abstraction definition.

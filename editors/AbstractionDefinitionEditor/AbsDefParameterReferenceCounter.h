@@ -35,8 +35,8 @@ public:
      */
     AbsDefParameterReferenceCounter(QSharedPointer<ParameterFinder> parameterFinder, QSharedPointer<AbstractionDefinition> absDef);
     
-    AbsDefParameterReferenceCounter(AbsDefParameterReferenceCounter& other) = delete;
-    AbsDefParameterReferenceCounter& operator=(AbsDefParameterReferenceCounter& other) = delete;
+    AbsDefParameterReferenceCounter(AbsDefParameterReferenceCounter const& other) = delete;
+    AbsDefParameterReferenceCounter& operator=(AbsDefParameterReferenceCounter const& other) = delete;
     
     virtual ~AbsDefParameterReferenceCounter() = default;
 

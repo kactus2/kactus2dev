@@ -21,13 +21,16 @@
 #include "AbstractionTransactionalPortsDelegate.h"
 #include "LogicalPortColumns.h"
 
+#include <KactusAPI/include/ParameterFinder.h>
+
 #include <QHeaderView>
 #include <QVBoxLayout>
 
 //-----------------------------------------------------------------------------
 // Function: AbstractionPortsEditor::AbstractionPortsEditor()
 //-----------------------------------------------------------------------------
-AbstractionPortsEditor::AbstractionPortsEditor(LibraryInterface* libraryAccess,
+AbstractionPortsEditor::AbstractionPortsEditor(QAbstractItemModel* parametersModel,
+    QSharedPointer<ParameterFinder> parameterFinder, LibraryInterface* libraryAccess,
     PortAbstractionInterface* portInterface, Document::Revision stdRevision, AbstractionPortsModel* portModel,
     LogicalPortColumns::AbstractionType type, QWidget* parent):
 QWidget(parent),
@@ -39,12 +42,12 @@ portDelegate_(nullptr)
     if (type == LogicalPortColumns::AbstractionType::WIRE)
     {
         portProxy_ = new AbstractionWirePortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionWirePortsDelegate(libraryAccess, stdRevision, this);
+        portDelegate_ = new AbstractionWirePortsDelegate(parametersModel, parameterFinder, libraryAccess, stdRevision, this);
     }
     else
     {
         portProxy_ = new AbstractionTransactionalPortsSortFilter(portInterface, this);
-        portDelegate_ = new AbstractionTransactionalPortsDelegate(libraryAccess, stdRevision, this);
+        portDelegate_ = new AbstractionTransactionalPortsDelegate(parametersModel, parameterFinder, libraryAccess, stdRevision, this);
     }
 
     portProxy_->setSourceModel(portModel_);
@@ -83,6 +86,12 @@ portDelegate_(nullptr)
         this, SIGNAL(errorMessage(const QString&)), Qt::UniqueConnection);
     connect(portModel_, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)),
         this, SIGNAL(portRemoved(const QString&, const General::InterfaceMode)), Qt::UniqueConnection);
+
+    connect(portModel_, SIGNAL(increaseReferences(QString const&)), this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(portModel_, SIGNAL(decreaseReferences(QString const&)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
+
+    connect(portDelegate_, SIGNAL(increaseReferences(QString)), this, SIGNAL(increaseReferences(QString)), Qt::UniqueConnection);
+    connect(portDelegate_, SIGNAL(decreaseReferences(QString)), this, SIGNAL(decreaseReferences(QString)), Qt::UniqueConnection);
 
     if (type == LogicalPortColumns::AbstractionType::WIRE)
     {

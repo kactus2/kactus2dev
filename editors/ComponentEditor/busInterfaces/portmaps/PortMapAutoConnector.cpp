@@ -154,7 +154,7 @@ QMultiMap<double, QString> PortMapAutoConnector::getWeightedPhysicalPorts(std::s
 
         bool isValidWidth = false;
         QString logicalWidth =
-            QString::fromStdString(logicalInterface->getWidth(logicalPort, busMode, systemGroup));
+            QString::fromStdString(logicalInterface->getWidthValue(logicalPort, busMode, systemGroup));
 
         int logicalWidthInt = logicalWidth.toInt(&isValidWidth);
 

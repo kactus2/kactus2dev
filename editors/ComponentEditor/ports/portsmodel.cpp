@@ -773,7 +773,7 @@ void PortsModel::onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDe
                 quint64 leftBound = 0;
                 bool signalIntegerOk = false;
                 quint64 signalWidth =
-                    QString::fromStdString(signalInterface_->getWidth(signalIndex)).toULongLong(&signalIntegerOk);
+                    QString::fromStdString(signalInterface_->getWidthValue(signalIndex)).toULongLong(&signalIntegerOk);
                 if (signalIntegerOk == true && signalWidth > 0)
                 {
                     leftBound = signalWidth - 1;
@@ -782,7 +782,7 @@ void PortsModel::onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDe
                 portsInterface_->setLeftBound(portName, QString::number(leftBound).toStdString());
                 portsInterface_->setRightBound(portName, "0");
 
-                portsInterface_->setDefaultValue(portName, signalInterface_->getDefaultValue(signalIndex));
+                portsInterface_->setDefaultValue(portName, signalInterface_->getDefaultValueExpression(signalIndex));
             }
             else if (signalInterface_->portIsTransactional(portName))
             {
@@ -794,7 +794,7 @@ void PortsModel::onCreatePortsFromAbstraction(QSharedPointer<const AbstractionDe
                 portsInterface_->setInitiative(portName, getInitiativeFromSignal(busInterfaceMode,
                     QString::fromStdString(signalInterface_->getInitiative(signalIndex))).toStdString());
                 portsInterface_->setKind(portName, signalInterface_->getKind(signalIndex));
-                portsInterface_->setBusWidth(portName, signalInterface_->getBusWidthValue(signalIndex));
+                portsInterface_->setBusWidth(portName, signalInterface_->getBusWidthExpression(signalIndex));
             }
 
             portsInterface_->setDescription(portName, signalInterface_->getDescription(portName));

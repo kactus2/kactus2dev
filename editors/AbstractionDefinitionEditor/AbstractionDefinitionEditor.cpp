@@ -18,7 +18,7 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
-#include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
 #include <KactusAPI/include/ExpressionFormatter.h>
 
@@ -42,9 +42,10 @@ AbstractionDefinitionEditor::AbstractionDefinitionEditor(QWidget *parent, Librar
 TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 absDef_(absDef),
 expressionFormatter_(new ExpressionFormatter(absDefParameterFinder_)),
-absDefGroup_(revision, absDef, expressionFormatter_, absDefParameterFinder_, libHandler, 
+expressionParser_(new IPXactSystemVerilogParser(absDefParameterFinder_)),
+portValidator_(new PortAbstractionValidator(libHandler, expressionParser_)),
+absDefGroup_(revision, absDef, expressionFormatter_, expressionParser_, absDefParameterFinder_, libHandler,
     createPortAbstractionInterface(), createPortAbstractionInterface(), this),
-expressionParser_(new SystemVerilogExpressionParser()),
 absDefinitionValidator_(new AbstractionDefinitionValidator(libHandler, expressionParser_)),
 referenceCounter_(new AbsDefParameterReferenceCounter(absDefParameterFinder_, absDef)),
 parameterReferenceTree_(new AbsDefParameterReferenceTree(absDef, referenceCounter_, expressionFormatter_)),
@@ -85,7 +86,7 @@ referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_))
         referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
 
     connect(&absDefGroup_, SIGNAL(openReferenceTree(QString const&, QString const&)),
-        referenceTreeWindow_, SLOT(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+        this, SLOT(onOpenReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
     connect(&absDefGroup_, SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
         referenceCounter_.data(), SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)), Qt::UniqueConnection);
@@ -233,6 +234,16 @@ void AbstractionDefinitionEditor::showEvent(QShowEvent* event)
 }
 
 //-----------------------------------------------------------------------------
+// Function: AbstractionDefinitionEditor::onOpenReferenceTree()
+//-----------------------------------------------------------------------------
+void AbstractionDefinitionEditor::onOpenReferenceTree(QString const& parameterID, QString const& parameterName)
+{
+    // Refresh references before opening window.
+    parameterReferenceTree_->setAbsDef(absDef_);
+    referenceTreeWindow_->openReferenceTree(parameterID, parameterName);
+}
+
+//-----------------------------------------------------------------------------
 // Function: AbstractionDefinitionEditor::setupLayout()
 //-----------------------------------------------------------------------------
 void AbstractionDefinitionEditor::setupLayout()
@@ -252,6 +263,7 @@ void AbstractionDefinitionEditor::setupLayout()
 //-----------------------------------------------------------------------------
 PortAbstractionInterface* AbstractionDefinitionEditor::createPortAbstractionInterface()
 {
-    PortAbstractionInterface* portInterface(new PortAbstractionInterface());
+    PortAbstractionInterface* portInterface(new PortAbstractionInterface(expressionParser_, expressionFormatter_));
+    portInterface->setPortAbstractionValidator(portValidator_);
     return portInterface;
 }

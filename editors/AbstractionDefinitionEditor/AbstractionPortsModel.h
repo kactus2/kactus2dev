@@ -12,6 +12,9 @@
 #ifndef ABSTRACTIONPORTSMODEL_H
 #define ABSTRACTIONPORTSMODEL_H
 
+#include <editors/ComponentEditor/common/ReferencingTableModel.h>
+#include <editors/ComponentEditor/common/ParameterizableTable.h>
+
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 #include <IPXACTmodels/AbstractionDefinition/PortAbstraction.h>
 
@@ -36,7 +39,7 @@ class WirePort;
 //-----------------------------------------------------------------------------
 //! Data model for the signals within abstraction definition.
 //-----------------------------------------------------------------------------
-class AbstractionPortsModel : public QAbstractTableModel
+class AbstractionPortsModel : public ReferencingTableModel, public ParameterizableTable
 {
 	Q_OBJECT
 
@@ -54,12 +57,16 @@ public:
 	/*!
 	 *  The constructor.
 	 *
-     *      @param [in] libraryAccess   Interface to the library.
-     *      @param [in] parent          Pointer to the owner of this model.
+     *      @param [in] parameterFinder     The parameter finder to use.
+     *      @param [in] expressionParser    The expression parser to use.
+     *      @param [in] libraryAccess       Interface to the library.
+     *      @param [in] portInterface       The port abstraction interface to use.
+     *      @param [in] extendInterface     The port abstraction interface to use for extended abstractions.
+     *      @param [in] parent              Pointer to the owner of this model.
 	 */
-    AbstractionPortsModel(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface, 
-        PortAbstractionInterface* extendInterface,
-        QObject *parent);
+    AbstractionPortsModel(QSharedPointer<ParameterFinder> parameterFinder,
+        QSharedPointer<ExpressionParser> expressionParser, LibraryInterface* libraryAccess,
+        PortAbstractionInterface* portInterface, PortAbstractionInterface* extendInterface, QObject *parent);
 
 	/*!
 	 *  The destructor.
@@ -307,6 +314,67 @@ private:
 
     QStringList getMissingSystemGroupsForSignal(int const& signalIndex) const;
 
+    /*!
+     *  Check if the column index is valid for containing expressions.
+     *
+     *      @param [in] index   The index being evaluated.
+     *
+     *      @return     True, if column can have expressions, false otherwise.
+     */
+    bool isValidExpressionColumn(QModelIndex const& index) const final;
+
+    /*!
+     *  Gets the expression for the given index or the plain value if expression is not available.
+     *
+     *      @param [in] index   The index whose expression to get.
+     *
+     *      @return The expression for the index if available, otherwise the value for the given index.
+     */
+    QVariant expressionOrValueForIndex(QModelIndex const& index) const final;
+
+    /*!
+     *	Get the unformatted expression for a selected index.
+     *  
+     *      @param [in] index     Index to get the expression of.
+     *	    
+     * 	    @return The unformatted expression.
+     */
+    QVariant expressionForIndex(QModelIndex const& index) const;
+
+    /*!
+     *  Validates the data in an index.
+     *
+     *      @param [in] index   The index whose data to validate
+     *
+     *      @return True, if the data in the index is valid, otherwise false.
+     */
+    bool validateIndex(QModelIndex const& index) const final;
+
+    /*!
+     *  Gets the number of all the references made to a selected id on the selected row.
+     *
+     *      @param [in] row         The row of the selected item.
+     *      @param [in] valueID     The id of the referenced parameter.
+     *
+     *      @return The amount of references made to the selected id on the selected row.
+     */
+    int getAllReferencesToIdInItemOnRow(const int& row, QString const& valueID) const final;
+
+    /*!
+     *  Get the value for the corresponding index.
+     *
+     *      @param [in] index   The index whose value is being searched for.
+     */
+    QVariant valueForIndex(const QModelIndex& index) const;
+
+    /*!
+     *  Get the formatted value of an expression in the selected index.
+     *
+     *      @param [in] index   The selected index.
+     *
+     *      @return The formatted value of an expression in the selected index.
+     */
+    QVariant formattedExpressionForIndex(QModelIndex const& index) const;
 
     //-----------------------------------------------------------------------------
     // Data.

@@ -86,32 +86,48 @@ void AbsDefParameterReferenceTree::setupTree()
             for (auto const& portWithWire : absDef_->getPortsWithWire())
             {
                 auto wireAbstraction = portWithWire->getWire();
-                
-                auto singleWirePortItem = createMiddleItem(portWithWire->name(), wirePortsItem);
+                QTreeWidgetItem* singleWirePortItem = nullptr;
 
                 if (portWithWire->getDefaultValue().contains(targetId))
                 {
+                    // Create wire port item only if necessary
+                    singleWirePortItem = createMiddleItem(portWithWire->name(), wirePortsItem);
                     createItem(QStringLiteral("Default value"), portWithWire->getDefaultValue(), singleWirePortItem);
                 }
 
                 if (wireAbstraction->hasMode(initiatorMode, QString()) && 
                     wireAbstraction->getInitiatorPort()->getWidth().contains(targetId))
                 {
+                    if (!singleWirePortItem)
+                    {
+                        singleWirePortItem = createMiddleItem(portWithWire->name(), wirePortsItem);
+                    }
+
                     auto initiatorItem = createMiddleItem(QStringLiteral("Initiator"), singleWirePortItem);
-                    createItem(QStringLiteral("Width"), targetId, initiatorItem);
+                    createItem(QStringLiteral("Width"), wireAbstraction->getInitiatorPort()->getWidth(), initiatorItem);
                 }
 
                 if (wireAbstraction->hasMode(targetMode, QString()) &&
                     wireAbstraction->getTargetPort()->getWidth().contains(targetId))
                 {
+                    if (!singleWirePortItem)
+                    {
+                        singleWirePortItem = createMiddleItem(portWithWire->name(), wirePortsItem);
+                    }
+
                     auto targetItem = createMiddleItem(QStringLiteral("Target"), singleWirePortItem);
-                    createItem(QStringLiteral("Width"), targetId, targetItem);
+                    createItem(QStringLiteral("Width"), wireAbstraction->getTargetPort()->getWidth(), targetItem);
                 }
 
                 for (auto const& systemPort : *wireAbstraction->getSystemPorts())
                 {
                     if (systemPort->getWidth().contains(targetId))
                     {
+                        if (!singleWirePortItem)
+                        {
+                            singleWirePortItem = createMiddleItem(portWithWire->name(), wirePortsItem);
+                        }
+
                         auto systemItem = createMiddleItem(tr("System (%1)").arg(systemPort->getSystemGroup()), singleWirePortItem);
                         createItem(QStringLiteral("Width"), systemPort->getWidth(), systemItem);
                     }
@@ -127,26 +143,39 @@ void AbsDefParameterReferenceTree::setupTree()
             {
                 auto transactionalAbstraction = portWithTransactional->getTransactional();
                 
-                auto singleTransactionalPortItem = createMiddleItem(portWithTransactional->name(), transactionalPortsItem);
+                QTreeWidgetItem* singleTransactionalPortItem = nullptr;
 
                 if (transactionalAbstraction->hasMode(initiatorMode, QString()) &&
                     transactionalAbstraction->getInitiatorPort()->getBusWidth().contains(targetId))
                 {
+                    singleTransactionalPortItem = createMiddleItem(portWithTransactional->name(), transactionalPortsItem);
+
                     auto initiatorItem = createMiddleItem(QStringLiteral("Initiator"), singleTransactionalPortItem);
-                    createItem(QStringLiteral("Bus width"), targetId, initiatorItem);
+                    createItem(QStringLiteral("Bus width"),
+                        transactionalAbstraction->getInitiatorPort()->getBusWidth(), initiatorItem);
                 }
 
                 if (transactionalAbstraction->hasMode(targetMode, QString()) &&
                     transactionalAbstraction->getTargetPort()->getBusWidth().contains(targetId))
                 {
+                    if (!singleTransactionalPortItem)
+                    {
+                        singleTransactionalPortItem = createMiddleItem(portWithTransactional->name(), transactionalPortsItem);
+                    }
+
                     auto targetItem = createMiddleItem(QStringLiteral("Target"), singleTransactionalPortItem);
-                    createItem(QStringLiteral("Bus width"), targetId, targetItem);
+                    createItem(QStringLiteral("Bus width"), transactionalAbstraction->getTargetPort()->getBusWidth(), targetItem);
                 }
 
                 for (auto const& systemPort : *transactionalAbstraction->getSystemPorts())
                 {
                     if (systemPort->getBusWidth().contains(targetId))
                     {
+                        if (!singleTransactionalPortItem)
+                        {
+                            singleTransactionalPortItem = createMiddleItem(portWithTransactional->name(), transactionalPortsItem);
+                        }
+
                         auto systemItem = createMiddleItem(tr("System (%1)").arg(systemPort->getSystemGroup()), singleTransactionalPortItem);
                         createItem(QStringLiteral("Bus width"), systemPort->getBusWidth(), systemItem);
                     }
