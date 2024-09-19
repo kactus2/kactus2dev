@@ -20,6 +20,11 @@ namespace ListHelper
     template <typename T>
     std::vector<std::string> listNames(QSharedPointer<QList<QSharedPointer<T> > > container)
     {
+        if (!container)
+        {
+            return std::vector<std::string>();
+        }
+
         std::vector<std::string> names;
         std::for_each(container->cbegin(), container->cend(), [&names](auto const& item)
             {

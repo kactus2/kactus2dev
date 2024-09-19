@@ -12,7 +12,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\AddressSpaceInterface.h" />
-    <ClInclude Include="include\ItemNamesGetterInterface.h" />
     <ClInclude Include="include\AbstractionTypeInterface.h" />
     <ClInclude Include="include\AbstractParameterInterface.h" />
     <ClInclude Include="include\AccessPolicyInterface.h" />
@@ -60,6 +59,7 @@
     <ClInclude Include="include\IPluginUtility.h" />
     <ClInclude Include="include\IPXactSystemVerilogParser.h" />
     <QtMoc Include="include\LibraryHandler.h" />
+    <ClInclude Include="include\ItemNamesGetterInterface.h" />
     <ClInclude Include="include\LibraryInterface.h" />
     <QtMoc Include="include\LibraryItem.h" />
     <ClInclude Include="include\LibraryLoader.h" />
@@ -68,9 +68,11 @@
     <ClInclude Include="include\ListParameterFinder.h" />
     <ClInclude Include="include\MasterPortInterface.h" />
     <ClInclude Include="include\MemoryBlockInterface.h" />
+    <ClInclude Include="include\MemoryMapBaseInterface.h" />
     <ClInclude Include="include\MemoryMapExpressionsGatherer.h" />
     <ClInclude Include="include\MemoryMapInterface.h" />
     <ClInclude Include="include\MemoryRemapExpressionGatherer.h" />
+    <ClInclude Include="include\MemoryRemapInterface.h" />
     <ClInclude Include="include\MessageMediator.h" />
     <ClInclude Include="include\ModeConditionParser.h" />
     <ClInclude Include="include\ModelParameterSource.h" />
@@ -106,7 +108,6 @@
     <ClInclude Include="KactusAPIGlobal.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp" />
     <ClCompile Include="expressions\AddressBlockExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\AddressSpaceExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\ComponentAndInstantiationsParameterFinder.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />
     <ClCompile Include="interfaces\common\CommonInterface.cpp" />
+    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp" />
     <ClCompile Include="interfaces\common\NameGroupInterface.cpp" />
     <ClCompile Include="interfaces\common\ParameterizableInterface.cpp" />
     <ClCompile Include="interfaces\common\ParametersInterface.cpp" />
@@ -148,7 +150,9 @@
     <ClCompile Include="interfaces\component\FileSetInterface.cpp" />
     <ClCompile Include="interfaces\component\MasterPortInterface.cpp" />
     <ClCompile Include="interfaces\component\MemoryBlockInterface.cpp" />
+    <ClCompile Include="interfaces\component\MemoryMapBaseInterface.cpp" />
     <ClCompile Include="interfaces\component\MemoryMapInterface.cpp" />
+    <ClCompile Include="interfaces\component\MemoryRemapInterface.cpp" />
     <ClCompile Include="interfaces\component\ModeReferenceInterface.cpp" />
     <ClCompile Include="interfaces\component\ModuleParameterInterface.cpp" />
     <ClCompile Include="interfaces\component\PortMapInterface.cpp" />

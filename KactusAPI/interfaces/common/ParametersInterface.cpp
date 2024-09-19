@@ -78,12 +78,7 @@ int ParametersInterface::itemCount() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> ParametersInterface::getItemNames() const
 {
-    if (parameters_)
-    {
-        return ListHelper::listNames(parameters_);
-    }
-
-    return std::vector<std::string>();
+    return ListHelper::listNames(parameters_);
 }
 
 //-----------------------------------------------------------------------------

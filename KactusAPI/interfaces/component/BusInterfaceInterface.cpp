@@ -27,6 +27,7 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
+#include "ListHelper.h"
 
 namespace
 {
@@ -397,22 +398,7 @@ int BusInterfaceInterface::itemCount() const
 //-----------------------------------------------------------------------------
 std::vector<std::string> BusInterfaceInterface::getItemNames() const
 {
-    QVector<QString> busNamesQ;
-    for (auto bus : *busInterfaces_)
-    {
-        if (!busNamesQ.contains(bus->name()))
-        {
-            busNamesQ.append(bus->name());
-        }
-    }
-
-    std::vector<std::string> busNames;
-    for (auto busName : busNamesQ)
-    {
-        busNames.push_back(busName.toStdString());
-    }
-
-    return busNames;
+    return ListHelper::listNames(busInterfaces_);
 }
 
 //-----------------------------------------------------------------------------

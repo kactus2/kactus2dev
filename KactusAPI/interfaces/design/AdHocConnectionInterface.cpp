@@ -16,6 +16,7 @@
 #include <IPXACTmodels/Design/PortReference.h>
 
 #include <IPXACTmodels/utilities/Search.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -191,8 +192,8 @@ std::vector<std::string> AdHocConnectionInterface::getItemNames() const
     {
         connectionNames.push_back(connection->name().toStdString());
     }
-
-    return connectionNames;
+    return ListHelper::listNames(connections_);
+    //return connectionNames;
 }
 
 //-----------------------------------------------------------------------------

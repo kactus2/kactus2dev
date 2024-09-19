@@ -24,6 +24,7 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
+#include "ListHelper.h"
 
 using namespace std;
 
@@ -139,8 +140,8 @@ vector<string> RegisterInterface::getItemNames() const
     {
         names.push_back(baseRegister->name().toStdString());
     }
-
-    return names;
+    return ListHelper::listNames(registerData_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

@@ -44,7 +44,7 @@ SingleAddressBlockEditor::SingleAddressBlockEditor(AddressBlockInterface* blockI
     QSharedPointer<ExpressionParser> expressionParser, QSharedPointer<AddressBlockValidator> addressBlockValidator,
     QWidget* parent):
 ItemEditor(component, handler, parent),
-nameEditor_(addressBlock, component->getRevision(), this, tr("Address block name and description")),
+nameEditor_(addressBlock, component->getRevision(), this,blockInterface, tr("Address block name and description")),
 usageEditor_(),
 baseAddressEditor_(new ExpressionEditor(parameterFinder, this)),
 rangeEditor_(new ExpressionEditor(parameterFinder, this)),

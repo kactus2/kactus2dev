@@ -143,7 +143,6 @@ public:
      *
      *      @param [in] currentName     Name of the selected bus interface.
      *      @param [in] newName         New name for the bus interface.
-     *
      *      @return True, if successful, false otherwise.
      */
     virtual bool setName(std::string const& currentName, std::string const& newName) override final;

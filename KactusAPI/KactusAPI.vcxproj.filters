@@ -297,11 +297,17 @@
     <ClInclude Include="include\NullChannel.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ItemNamesGetterInterface.h">
-      <Filter>Header Files\include</Filter>
-    </ClInclude>
     <ClInclude Include="include\AddressSpaceInterface.h">
       <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ItemNamesGetterInterface.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryMapBaseInterface.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MemoryRemapInterface.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -518,11 +524,17 @@
     <ClCompile Include="utilities\NullChannel.cpp">
       <Filter>Generated Files</Filter>
     </ClCompile>
-    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp">
-      <Filter>Source Files\interfaces\common</Filter>
-    </ClCompile>
     <ClCompile Include="interfaces\component\AddressSpaceInterface.cpp">
       <Filter>Source Files\interfaces\component</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\common\ItemNamesGetterInterface.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\MemoryMapBaseInterface.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="interfaces\component\MemoryRemapInterface.cpp">
+      <Filter>Generated Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

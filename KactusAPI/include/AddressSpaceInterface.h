@@ -21,14 +21,14 @@ class BusInterfaceInterface;
 #include <ItemNamesGetterInterface.h>
 
 template <typename T>
-class KACTUS2_API AddressSpaceInterface : public ItemNamesGetterInterface<T>
+class KACTUS2_API AddressSpaceInterface : public NameGroupInterface
 {
-
-public:
-    AddressSpaceInterface();
-    using ItemNamesGetterInterface<T>::ItemNamesGetterInterface;
-
-    virtual int getItemIndex(std::string const& itemName) const override final;
+//
+//public:
+//    AddressSpaceInterface();
+//    using ItemNamesGetterInterface<T>::ItemNamesGetterInterface;
+//
+//    virtual int getItemIndex(std::string const& itemName) const override final;
 
 };
 

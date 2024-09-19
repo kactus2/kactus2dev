@@ -13,6 +13,7 @@
 
 #include <IPXACTmodels/Component/File.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -99,8 +100,9 @@ std::vector<std::string> FileInterface::getItemNames() const
             names.push_back(file->name().toStdString());
         }
     }
+    return ListHelper::listNames(files_);
 
-    return names;
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

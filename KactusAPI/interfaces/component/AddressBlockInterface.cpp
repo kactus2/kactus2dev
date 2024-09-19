@@ -379,7 +379,7 @@ bool AddressBlockInterface::validateItems() const
             }
         }
     }
-
+    
     return true;
 }
 

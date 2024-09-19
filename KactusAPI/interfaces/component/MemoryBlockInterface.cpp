@@ -25,6 +25,7 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
+#include <ListHelper.h>
 
 //-----------------------------------------------------------------------------
 // Function: MemoryBlockInterface::MemoryBlockInterface()
@@ -145,8 +146,8 @@ std::vector<std::string> MemoryBlockInterface::getItemNames() const
     {
         names.push_back(block->name().toStdString());
     }
-
-    return names;
+    return ListHelper::listNames(blockData_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

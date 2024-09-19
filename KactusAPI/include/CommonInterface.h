@@ -62,6 +62,16 @@ public:
 
     bool isNameUnique(std::string newName, std::string* previousName = nullptr) const;
 
+    /*!
+     *  Check if the new name is different from the current name.
+     *
+     *      @param [in] newName     The new name.
+     *      @param [in] oldName     The current name.
+     *
+     *      @return True, if the new name is different, false otherwise.
+     */
+    bool nameHasChanged(std::string const& newName, std::string const& oldName) const;
+
 protected:
 
     /*!
@@ -72,16 +82,6 @@ protected:
      *      @return A unique name derived from the selected name.
      */
     QString getUniqueName(std::string const& newName, std::string const& itemTypeName) const;
-
-    /*!
-     *  Check if the new name is different from the current name.
-     *
-     *      @param [in] newName     The new name.
-     *      @param [in] oldName     The current name.
-     *
-     *      @return True, if the new name is different, false otherwise.
-     */
-    bool nameHasChanged(std::string const& newName, std::string const& oldName) const;
 
 private:
 

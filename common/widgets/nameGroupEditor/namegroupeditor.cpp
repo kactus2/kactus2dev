@@ -158,9 +158,12 @@ void NameGroupEditor::onNameEditingFinished()
         std::string currentName = name().toStdString();
         if (interface_->isNameUnique(newName.toStdString(), &currentName)||newName.isEmpty())
         {
-            nameGroup_->setName(newName);
-            emit contentChanged();
-            emit nameChanged();
+            if (interface_->nameHasChanged(newName.toStdString(),currentName))
+            {
+                nameGroup_->setName(newName);
+                emit contentChanged();
+                emit nameChanged();
+            }
         }
         else
         {

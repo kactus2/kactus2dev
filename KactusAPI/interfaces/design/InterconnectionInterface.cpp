@@ -17,6 +17,7 @@
 #include <IPXACTmodels/Design/HierInterface.h>
 
 #include <IPXACTmodels/utilities/Search.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -184,8 +185,8 @@ std::vector<std::string> InterconnectionInterface::getItemNames() const
     {
         connectionNames.push_back(connection->name().toStdString());
     }
-
-    return connectionNames;
+    return ListHelper::listNames(interconnections_);
+    //return connectionNames;
 }
 
 //-----------------------------------------------------------------------------

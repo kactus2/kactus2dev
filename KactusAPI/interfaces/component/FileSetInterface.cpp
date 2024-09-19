@@ -16,6 +16,7 @@
 
 #include <FileBuilderInterface.h>
 #include <FileInterface.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -106,7 +107,8 @@ std::vector<std::string> FileSetInterface::getItemNames() const
         }
     }
 
-    return names;
+    return ListHelper::listNames(fileSets_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

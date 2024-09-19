@@ -17,6 +17,7 @@
 #include <ParametersInterface.h>
 #include <ModuleParameterInterface.h>
 #include <FileBuilderInterface.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -99,8 +100,8 @@ std::vector<std::string> ComponentInstantiationInterface::getItemNames() const
     {
         names.push_back(instantiation->name().toStdString());
     }
-
-    return names;
+    return ListHelper::listNames(instantiations_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

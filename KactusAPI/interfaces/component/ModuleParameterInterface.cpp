@@ -15,6 +15,7 @@
 #include <IPXACTmodels/Component/ComponentInstantiation.h>
 
 #include "ComponentInstantiationParameterFinder.h"
+#include "ListHelper.h"
 
 //-----------------------------------------------------------------------------
 // Function: ModuleParameterInterface::ModuleParameterInterface()
@@ -98,8 +99,8 @@ std::vector<std::string> ModuleParameterInterface::getItemNames() const
             names.push_back(parameter->name().toStdString());
         }
     }
-
-    return names;
+    return ListHelper::listNames(moduleParameters_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------

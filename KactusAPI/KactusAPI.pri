@@ -9,7 +9,7 @@ message("You are running qmake on a generated .pro file. This may not work!")
 
 HEADERS += ./KactusAPI.h \
     ./KactusAPIGlobal.h \
-    ./include/ItemNamesGetterInterface.h \
+    ./include/AddressSpaceInterface.h \
     ./include/AbstractionTypeInterface.h \
     ./include/AbstractParameterInterface.h \
     ./include/AccessPolicyInterface.h \
@@ -96,8 +96,7 @@ HEADERS += ./KactusAPI.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h \
-    ./include/AddressSpaceInterface.h
+    ./include/ParameterCache.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -124,6 +123,7 @@ SOURCES += ./KactusAPI.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
     ./interfaces/component/AccessPolicyInterface.cpp \
     ./interfaces/component/AddressBlockInterface.cpp \
+    ./interfaces/component/AddressSpaceInterface.cpp \
     ./interfaces/component/BusInterfaceInterface.cpp \
     ./interfaces/component/BusInterfaceInterfaceFactory.cpp \
     ./interfaces/component/BusInterfaceUtilities.cpp \
@@ -143,7 +143,6 @@ SOURCES += ./KactusAPI.cpp \
     ./interfaces/component/ResetInterface.cpp \
     ./interfaces/component/SubspaceMapInterface.cpp \
     ./interfaces/component/TransparentBridgeInterface.cpp \
-    ./interfaces/common/ItemNamesGetterInterface.cpp \
     ./interfaces/common/AbstractParameterInterface.cpp \
     ./interfaces/common/CommonInterface.cpp \
     ./interfaces/common/NameGroupInterface.cpp \
@@ -168,5 +167,4 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp \
-    ./interfaces/component/AddressSpaceInterface.cpp
+    ./library/TagManager.cpp

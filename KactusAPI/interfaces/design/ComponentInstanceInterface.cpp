@@ -20,6 +20,7 @@
 
 #include <InterconnectionInterface.h>
 #include <AdHocConnectionInterface.h>
+#include "ListHelper.h"
 
 namespace
 {
@@ -115,8 +116,8 @@ std::vector<std::string> ComponentInstanceInterface::getItemNames() const
     {
         instanceNames.push_back(instance->getInstanceName().toStdString());
     }
-
-    return instanceNames;
+    return ListHelper::listNames(componentInstances_);
+    //return instanceNames;
 }
 
 //-----------------------------------------------------------------------------

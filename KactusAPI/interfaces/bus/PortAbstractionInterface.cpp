@@ -19,6 +19,7 @@
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
 
 #include <IPXACTmodels/common/Protocol.h>
+#include <ListHelper.h>
 
 namespace
 {
@@ -355,8 +356,8 @@ std::vector<std::string> PortAbstractionInterface::getItemNames() const
             }
         }
     }
-
-    return portNames;
+    return ListHelper::listNames(ports_);
+    //return portNames;
 }
 
 //-----------------------------------------------------------------------------

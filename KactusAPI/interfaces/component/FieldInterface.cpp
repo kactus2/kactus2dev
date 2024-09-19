@@ -24,6 +24,7 @@
 #include <QMimeData>
 #include <QApplication>
 #include <QClipboard>
+#include "ListHelper.h"
 
 namespace
 {
@@ -115,7 +116,8 @@ std::vector<std::string> FieldInterface::getItemNames() const
         }
     }
 
-    return names;
+    return ListHelper::listNames(fields_);
+    //return names;
 }
 
 //-----------------------------------------------------------------------------
