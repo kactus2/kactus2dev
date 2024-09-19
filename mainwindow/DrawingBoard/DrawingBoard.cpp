@@ -22,6 +22,19 @@
 #include <QMenu>
 #include <QTabBar>
 #include <QSettings>
+#include <QDialog>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QTextEdit>
+#include <QDialogButtonBox>
+#include <QPushButton>
+#include <QCoreApplication>
+#include <QSizePolicy>
+#include <QString>
+#include <QVector>
+#include <QStringList>
+
+
 
 //-----------------------------------------------------------------------------
 // Function: DrawingBoard::DrawingBoard()
@@ -37,9 +50,9 @@ DrawingBoard::DrawingBoard(QWidget* parent) : QTabWidget(parent)
 // Function: DrawingBoard::addAndOpenDocument()
 //-----------------------------------------------------------------------------
 void DrawingBoard::addAndOpenDocument(TabDocument* doc)
-{    
+{
     // Open in unlocked mode by default if locking isn't enabled in settings.
-    QSettings settings; 
+    QSettings settings;
     doc->setProtection(settings.value("General/EnableLocking").toBool());
 
     connect(doc, SIGNAL(errorMessage(QString const&)),
@@ -207,7 +220,7 @@ void DrawingBoard::refreshCurrentDocument()
 
         QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(), warningText,
             QMessageBox::Yes | QMessageBox::No, this);
-        
+
         if (!documentIsValid)
         {
             QString errorText = "* " + QStringList(errorList.toList()).join("\n* ");
@@ -227,7 +240,7 @@ void DrawingBoard::refreshCurrentDocument()
 // Function: DrawingBoard::closeAndRemoveDocument()
 //-----------------------------------------------------------------------------
 void DrawingBoard::closeAndRemoveDocument(int index)
-{	
+{
     Q_ASSERT(widget(index) != 0);
     TabDocument* document = static_cast<TabDocument*>(widget(index));
 
@@ -328,7 +341,7 @@ bool DrawingBoard::eventFilter(QObject* target, QEvent* event)
     if (target == tabBar() && event->type() == QEvent::ContextMenu)
     {
         QContextMenuEvent* menuEvent = static_cast<QContextMenuEvent*>(event);
-        
+
         QMenu contextMenu;
         contextMenu.addAction(tr("Close All Tabs"), this, SLOT(closeAll()));
         contextMenu.exec(menuEvent->globalPos());
@@ -358,7 +371,7 @@ void DrawingBoard::onDocumentSaved(TabDocument* doc)
 {
     VLNV savedVLNV = doc->getDocumentVLNV();
 
-    int documentCount =  count();
+    int documentCount = count();
     for (int i = 0; i < documentCount; i++)
     {
         TabDocument* otherDoc = static_cast<TabDocument*>(widget(i));
@@ -380,17 +393,40 @@ bool DrawingBoard::shouldSave(TabDocument* doc)
 
     if (!doc->validate(errorList))
     {
-        // If the document contained errors, inform the user and give options to save or cancel.
-        QMessageBox msgBox(QMessageBox::Warning, QCoreApplication::applicationName(),
-            tr("Document %1 contained %2 error(s). The document can be saved but "
-            "may not be opened with other IP-XACT tools. Continue save?").arg(doc->getDocumentName(), 
-            QString::number(errorList.size())), QMessageBox::Yes | QMessageBox::No, this);
+        
+        QDialog dialog(this);
+        dialog.setWindowTitle(QCoreApplication::applicationName());
+        dialog.setSizeGripEnabled(true);  
+        dialog.setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);// Allow resizing
 
-        msgBox.setDetailedText("The document contained the following error(s):\n* " +
+        QVBoxLayout* layout = new QVBoxLayout(&dialog);
+
+        
+        QLabel* label = new QLabel(tr("Document %1 contained %2 error(s). "
+            "The document can be saved but may not be opened with other IP-XACT tools. Continue save?")
+            .arg(doc->getDocumentName())
+            .arg(QString::number(errorList.size())), &dialog);
+        layout->addWidget(label);
+
+        
+        QTextEdit* detailedText = new QTextEdit(&dialog);
+        detailedText->setText("The document contained the following error(s):\n* " +
             QStringList(errorList.toList()).join("\n* "));
+        detailedText->setReadOnly(true);
+        detailedText->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding); 
+        layout->addWidget(detailedText);
 
-        save = (msgBox.exec() == QMessageBox::Yes);
+        
+        QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Yes | QDialogButtonBox::No, &dialog);
+        layout->addWidget(buttonBox);
+
+        
+        connect(buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+        connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+
+        save = (dialog.exec() == QDialog::Accepted);
     }
 
     return save;
 }
+
