@@ -141,5 +141,27 @@ private:
     QSharedPointer<InstantiationsValidator> singleInstantiationValidator_;
 };
 
+class View;
+class ViewValidator;
+/*
+ *  Validator for views.
+ */
+class IPXACTMODELS_EXPORT ViewsValidator : public HierarchicalValidator
+{
+public:
+
+    explicit ViewsValidator(QSharedPointer<ViewValidator> viewValidator);
+    virtual ~ViewsValidator() = default;
+
+    ViewsValidator(ViewsValidator& other) = delete;
+    ViewsValidator& operator=(ViewsValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<View> > > views);
+
+private:
+
+    QSharedPointer<ViewValidator> viewValidator_;
+};
+
 
 #endif // COLLECTIONVALIDATORS_H

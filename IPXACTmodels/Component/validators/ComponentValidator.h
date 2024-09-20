@@ -596,6 +596,9 @@ private:
 
     //! Validator for validating all instantiations together.
     QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
+
+    //! Validator for validating all component views together.
+    QSharedPointer<ViewsValidator> viewsValidator_;
 };
 
 #endif // COMPONENTVALIDATOR_H

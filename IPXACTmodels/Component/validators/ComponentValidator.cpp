@@ -166,6 +166,8 @@ assertionValidator_()
     addressSpacesValidator_ = QSharedPointer<AddressSpacesValidator>(new AddressSpacesValidator(addressSpaceValidator_));
 
     allInstantiationsValidator_ = QSharedPointer<AllInstantiationsValidator>(new AllInstantiationsValidator(instantiationsValidator_));
+
+    viewsValidator_ = QSharedPointer<ViewsValidator>(new ViewsValidator(viewValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -346,24 +348,7 @@ bool ComponentValidator::hasValidMemoryMaps(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidViews(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getViews()->isEmpty())
-    {
-        QVector<QString> viewNames;
-        for (QSharedPointer<View> view : *component->getViews())
-        {
-            if (viewNames.contains(view->name()) || !viewValidator_->validate(view))
-            {
-                return false;
-            }
-            else
-            {
-                viewNames.append(view->name());
-            }
-        }
-    }
-
-    return true;
+    return viewsValidator_->validate(component->getViews());
 }
 
 //-----------------------------------------------------------------------------

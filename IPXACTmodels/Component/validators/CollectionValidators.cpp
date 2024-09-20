@@ -20,6 +20,9 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
 
+#include <IPXACTmodels/Component/View.h>
+#include <IPXACTmodels/Component/validators/ViewValidator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
@@ -191,6 +194,37 @@ bool AllInstantiationsValidator::hasValidDesignInstantiations(QSharedPointer<Com
     for (auto const& designInstantiation : *component->getDesignInstantiations())
     {
         if (!singleInstantiationValidator_->validateDesignInstantiation(designInstantiation))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewsValidator::ViewsValidator()
+//-----------------------------------------------------------------------------
+ViewsValidator::ViewsValidator(QSharedPointer<ViewValidator> viewValidator) : 
+    viewValidator_(viewValidator)
+{
+    setChildValidator(viewValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ViewsValidator::validate()
+//-----------------------------------------------------------------------------
+bool ViewsValidator::validate(QSharedPointer<QList<QSharedPointer<View> > > views)
+{
+    if (auto viewsAsNameGroup = CollectionValidators::itemListToNameGroupList(views);
+        !childrenHaveUniqueNames(viewsAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *views)
+    {
+        if (!viewValidator_->validate(child))
         {
             return false;
         }
