@@ -31,6 +31,7 @@
 #include <QRegularExpression>
 #include <QSizePolicy>
 #include <QLabel>
+#include <QSplitter>
 
 //-----------------------------------------------------------------------------
 // Function: BusDefGroup::BusDefGroup()
@@ -256,7 +257,10 @@ void BusDefGroup::setupLayout()
     QVBoxLayout* systemGroupLayout = new QVBoxLayout(systemGroupBox);
     systemGroupLayout->addWidget(&systemGroupEditor_);
 
-    QGridLayout* topLayout = new QGridLayout(this);
+    QVBoxLayout* rootLayout = new QVBoxLayout(this);
+    
+    QWidget* topHalfWidget = new QWidget();
+    QHBoxLayout* topHalfLayout = new QHBoxLayout(topHalfWidget);
 
     QWidget* rightSideContainer = new QWidget(this);
     QVBoxLayout* containerLayout = new QVBoxLayout();
@@ -265,13 +269,31 @@ void BusDefGroup::setupLayout()
     containerLayout->addWidget(selectionGroup);
     containerLayout->addWidget(systemGroupBox);
     rightSideContainer->setLayout(containerLayout);
+    
+    topHalfLayout->addWidget(&documentNameGroupEditor_);
+    topHalfLayout->addWidget(rightSideContainer);
 
-    topLayout->addWidget(&documentNameGroupEditor_, 0, 0, 1, 1);
-    topLayout->addWidget(rightSideContainer, 0, 1, 1, 1);
-    topLayout->addWidget(parameterEditor_, 1, 0, 1, 2);
+    QSplitter* splitter = new QSplitter(Qt::Vertical);
+    splitter->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    splitter->addWidget(topHalfWidget);
+    splitter->addWidget(parameterEditor_);
 
-    topLayout->setColumnStretch(0, 1);
-    topLayout->setColumnStretch(1, 1);
+    QSplitterHandle* handle = splitter->handle(1);
+    QVBoxLayout* handleLayout = new QVBoxLayout(handle);
+    handleLayout->setSpacing(0);
+    handleLayout->setContentsMargins(0, 0, 0, 0);
+
+    QFrame* line = new QFrame(handle);
+    line->setLineWidth(2);
+    line->setMidLineWidth(2);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    handleLayout->addWidget(line);
+
+    splitter->setStyleSheet(QStringLiteral("QSplitter::handle { background: white }"));
+    splitter->setHandleWidth(18);
+
+    rootLayout->addWidget(splitter);
 
     maxInitiatorsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     maxTargetsEditor_.setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
