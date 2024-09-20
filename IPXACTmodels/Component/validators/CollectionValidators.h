@@ -29,7 +29,7 @@ namespace CollectionValidators
         QSharedPointer<QList<QSharedPointer<NameGroup> > >listWithNameGroups(new QList<QSharedPointer<NameGroup> >);
         std::transform(items->begin(), items->end(), std::back_inserter(*listWithNameGroups), [](QSharedPointer<T> item)
             {
-                return item.staticCast<NameGroup>();
+                return qSharedPointerCast<NameGroup>(item);
             });
         return listWithNameGroups;
     }
