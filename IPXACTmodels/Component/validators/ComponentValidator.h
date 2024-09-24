@@ -159,34 +159,14 @@ public:
      */
     bool hasValidViews(QSharedPointer<Component> component);
 
+    /*!
+     *  Check if the contained instantiations are valid.
+     *
+     *      @param [in] component   The selected component.
+     *
+     *      @return True, if the instantiations of the selected component are valid, otherwise false.
+     */
     bool hasValidInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained component instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the component instantiations are valid, otherwise false.
-     */
-    bool hasValidComponentInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design configuration instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design configuration instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained ports are valid.

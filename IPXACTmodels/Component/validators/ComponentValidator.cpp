@@ -361,33 +361,6 @@ bool ComponentValidator::hasValidInstantiations(QSharedPointer<Component> compon
 }
 
 //-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidComponentInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidComponentInstantiations(QSharedPointer<Component> component)
-{
-    changeComponent(component);
-    return allInstantiationsValidator_->hasValidComponentInstantiations(component);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidDesignInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignInstantiations(QSharedPointer<Component> component)
-{
-    changeComponent(component);
-    return allInstantiationsValidator_->hasValidDesignInstantiations(component);
-}
-
-//-----------------------------------------------------------------------------
-// Function: ComponentValidator::hasValidDesignConfigurationInstantiations()
-//-----------------------------------------------------------------------------
-bool ComponentValidator::hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component)
-{
-    changeComponent(component);
-    return allInstantiationsValidator_->hasValidDesignConfigurationInstantiations(component);
-}
-
-//-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidPorts()
 //-----------------------------------------------------------------------------
 bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component)
