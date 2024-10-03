@@ -16,3 +16,6 @@ GeneratedFiles/
 .vs
 x64/Debug
 PythonAPI/x64/Debug
+
+*.obj
+*.tlog

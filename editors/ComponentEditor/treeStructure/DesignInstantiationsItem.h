@@ -99,6 +99,7 @@ private:
     //! The finder for component parameters.
     QSharedPointer<ParameterFinder> componentParameterFinder_;
 
+    //! Validator used to validate all instantiations together.
 	QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
 };
 

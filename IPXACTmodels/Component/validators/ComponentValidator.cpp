@@ -12,6 +12,7 @@
 #include "ComponentValidator.h"
 
 #include <KactusAPI/include/ExpressionParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
 
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/BusInterface.h>
@@ -67,7 +68,9 @@
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::ComponentValidator()
 //-----------------------------------------------------------------------------
-ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision) :
+ComponentValidator::ComponentValidator(QSharedPointer<ExpressionParser> parser,
+    QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
+    LibraryInterface* library, Document::Revision docRevision) :
 component_(),
 busInterfaceValidator_(),
 indirectInterfaceValidator_(),
@@ -85,7 +88,8 @@ fileSetValidator_(),
 cpuValidator_(),
 otherClockDriverValidator_(),
 parameterValidator_(),
-assertionValidator_()
+assertionValidator_(),
+modeConditionParserInterface_(modeConditionParserInterface)
 {
     parameterValidator_ = QSharedPointer<ParameterValidator>(new ParameterValidator(parser,
         QSharedPointer<QList<QSharedPointer<Choice> > > (), docRevision));
@@ -112,7 +116,8 @@ assertionValidator_()
     remapStateValidator_ = QSharedPointer<RemapStateValidator>(
         new RemapStateValidator(parser, QSharedPointer<QList<QSharedPointer<Port> > > ()));
   
-    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(component_, parser));
+    modeConditionParser_ = modeConditionParserInterface_->createParser();
+    modeValidator_ = QSharedPointer<ModeValidator>(new ModeValidator(component_, modeConditionParser_));
 
     QSharedPointer<EnumeratedValueValidator> enumValidator (new EnumeratedValueValidator(parser));
     QSharedPointer<FieldValidator> fieldValidator (new FieldValidator(parser, enumValidator, parameterValidator_, docRevision));
@@ -215,7 +220,6 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
     return busIfsValidator_->validate(component->getBusInterfaces(), component->getRevision());
 }
 
-
 //-----------------------------------------------------------------------------
 // Function: ComponentValidator::hasValidIndirectInterfaces()
 //-----------------------------------------------------------------------------
@@ -294,15 +298,20 @@ bool ComponentValidator::hasValidModes(QSharedPointer<Component> component)
 {
     changeComponent(component);
 
-    QVector<QString> modeNames;
+    modeConditionParserInterface_->setModes(modeConditionParser_, component->getModes());
+
+    QSet<QString> modeNames;
     for (QSharedPointer<Mode> mode : *component->getModes())
     {
+        modeConditionParserInterface_->setFieldSlices(modeConditionParser_, mode->getFieldSlices());
+        modeConditionParserInterface_->setPortSlices(modeConditionParser_, mode->getPortSlices());
+
         if (modeNames.contains(mode->name()) || !modeValidator_->validate(mode))
         {
             return false;
         }
 
-        modeNames.append(mode->name());
+        modeNames.insert(mode->name());
     }
 
     return true;
@@ -710,8 +719,13 @@ void ComponentValidator::findErrorsInModes(QVector<QString>& errors, QSharedPoin
 {
     QStringList modeNames;
     QStringList duplicateNames;
+    modeConditionParserInterface_->setModes(modeConditionParser_, component->getModes());
+
     for (auto const& mode : *component->getModes())
     {
+        modeConditionParserInterface_->setFieldSlices(modeConditionParser_, mode->getFieldSlices());
+        modeConditionParserInterface_->setPortSlices(modeConditionParser_, mode->getPortSlices());
+
         if (modeNames.contains(mode->name()) && !duplicateNames.contains(mode->name()))
         {
             errors.append(QObject::tr("Mode name %1 within %2 is not unique.")

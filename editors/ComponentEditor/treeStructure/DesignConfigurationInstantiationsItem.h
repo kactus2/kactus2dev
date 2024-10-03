@@ -101,6 +101,7 @@ private:
 	//! Expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+	//! Validator used to validate all instantiations together.
 	QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
 
 };

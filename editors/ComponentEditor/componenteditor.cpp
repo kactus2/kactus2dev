@@ -53,6 +53,7 @@
 #include <KactusAPI/include/ParameterCache.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
 
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/dialogs/comboSelector/comboselector.h>
@@ -97,7 +98,8 @@ referenceCounter_(QSharedPointer<ComponentParameterReferenceCounter>(new Compone
     fullParameterFinder_, component))),
 expressionFormatter_(new ExpressionFormatter(parameterFinder_)),
 expressionParser_(new IPXactSystemVerilogParser(parameterFinder_)),
-validator_(new ComponentValidator(expressionParser_, getLibHandler(), component->getRevision()))
+modeConditionParserInterface_(new ModeConditionParserInterface(parameterFinder_)),
+validator_(new ComponentValidator(expressionParser_, modeConditionParserInterface_, getLibHandler(), component->getRevision()))
 {
     QSharedPointer<ExpressionFormatter> fullFormatter(new ExpressionFormatter(fullParameterFinder_));
     parameterReferenceTree_ =

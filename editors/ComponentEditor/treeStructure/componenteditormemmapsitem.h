@@ -151,10 +151,12 @@ private:
 	//! No assignment.
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
-
-    // TEST
+    /*!
+     *  Check the validity of this item.
+     *
+     *      @return bool True if item is in valid state.
+     */
     virtual bool isValid() const override;
-
 
     /*!
      *  Create the necessary validators for memory maps.

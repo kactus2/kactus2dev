@@ -22,14 +22,14 @@
 //-----------------------------------------------------------------------------
 SingleModeItem::SingleModeItem(QSharedPointer<Mode> mode, ComponentEditorTreeModel* model,
     LibraryInterface* libHandler, QSharedPointer<Component> component,
-    QSharedPointer<ReferenceCounter> referenceCounter, 
-    ExpressionSet expressions,
-    QSharedPointer<ModeValidator> validator,
+    QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions,
+    QSharedPointer<ModeValidator> validator, QSharedPointer<ExpressionParser> modeConditionParser,
     ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
-    mode_(mode),
-    validator_(validator),
-    expressions_(expressions)
+mode_(mode),
+validator_(validator),
+expressions_(expressions),
+modeConditionParser_(modeConditionParser)
 {
     setParameterFinder(expressions_.finder);
     setExpressionFormatter(expressions_.formatter);
@@ -57,6 +57,7 @@ QString SingleModeItem::text() const
 //-----------------------------------------------------------------------------
 bool SingleModeItem::isValid() const
 {
+    validator_->setConditionParser(modeConditionParser_); // Each mode item has its own condition parser.
     return validator_->validate(mode_);
 }
 
@@ -79,5 +80,6 @@ ItemEditor* SingleModeItem::editor()
         connectItemEditorToReferenceCounter();
     }
 
+    validator_->setConditionParser(modeConditionParser_); // Update validator parser, every mode has own parser
     return editor_;
 }

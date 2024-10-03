@@ -46,6 +46,7 @@ HEADERS += ./KactusAPI.h \
     ./include/IPluginUtility.h \
     ./include/IPXactSystemVerilogParser.h \
     ./include/LibraryInterface.h \
+    ./include/LibraryLoader.h \
     ./include/ListHelper.h \
     ./include/ListParameterFinder.h \
     ./include/MasterPortInterface.h \
@@ -55,12 +56,15 @@ HEADERS += ./KactusAPI.h \
     ./include/MemoryRemapExpressionGatherer.h \
     ./include/MessageMediator.h \
     ./include/ModeConditionParser.h \
+    ./include/ExpressionParserInterface.h \
+    ./include/ModeConditionParserInterface.h \
     ./include/ModelParameterSource.h \
     ./include/ModelParameterVisualizer.h \
     ./include/ModeReferenceInterface.h \
     ./include/ModuleParameterInterface.h \
     ./include/MultipleParameterFinder.h \
     ./include/NameGroupInterface.h \
+    ./include/NullChannel.h \
     ./include/NullParser.h \
     ./include/ParameterFinder.h \
     ./include/ParameterizableInterface.h \
@@ -89,10 +93,8 @@ HEADERS += ./KactusAPI.h \
     ./include/ImportRunner.h \
     ./include/LibraryHandler.h \
     ./include/LibraryItem.h \
-    ./include/LibraryLoader.h \
     ./include/LibraryTreeModel.h \
-    ./include/ParameterCache.h \
-    ./include/NullChannel.h
+    ./include/ParameterCache.h
 SOURCES += ./KactusAPI.cpp \
     ./expressions/AddressBlockExpressionsGatherer.cpp \
     ./expressions/AddressSpaceExpressionsGatherer.cpp \
@@ -115,6 +117,7 @@ SOURCES += ./KactusAPI.cpp \
     ./expressions/RegisterExpressionsGatherer.cpp \
     ./expressions/RegisterFileExpressionsGatherer.cpp \
     ./expressions/SystemVerilogExpressionParser.cpp \
+    ./include/ModeConditionParserInterface.cpp \
     ./interfaces/bus/AbstractionTypeInterface.cpp \
     ./interfaces/bus/PortAbstractionInterface.cpp \
     ./interfaces/component/AccessPolicyInterface.cpp \
@@ -152,6 +155,7 @@ SOURCES += ./KactusAPI.cpp \
     ./plugins/PluginUtilityAdapter.cpp \
     ./utilities/ConsoleMediator.cpp \
     ./utilities/FileHandler.cpp \
+    ./utilities/NullChannel.cpp \
     ./utilities/utils.cpp \
     ./utilities/VersionHelper.cpp \
     ./library/DocumentFileAccess.cpp \
@@ -162,5 +166,4 @@ SOURCES += ./KactusAPI.cpp \
     ./library/LibraryItem.cpp \
     ./library/LibraryLoader.cpp \
     ./library/LibraryTreeModel.cpp \
-    ./library/TagManager.cpp \
-    ./utilities/NullChannel.cpp
+    ./library/TagManager.cpp

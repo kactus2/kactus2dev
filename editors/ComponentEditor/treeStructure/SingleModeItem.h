@@ -18,6 +18,7 @@
 
 class Mode;
 class ModeValidator;
+class ModeConditionParser;
 
 //-----------------------------------------------------------------------------
 //! The single Mode item used in the component editor navigation tree.
@@ -37,15 +38,13 @@ public:
      *      @param [in] component               The component being edited.
      *      @param [in] referenceCounter        The counter for parameter references.
      *      @param [in] expressions				The collection of objects for expression handling.
+     *      @param [in] modeConditionParser     The mode condition parser to use.
      *      @param [in] parent                  The parent item.
      */
-    SingleModeItem(QSharedPointer<Mode> mode,
-        ComponentEditorTreeModel* model,
-        LibraryInterface* libHandler,
-        QSharedPointer<Component> component,
-        QSharedPointer<ReferenceCounter> referenceCounter,
-        ExpressionSet expressions,
-        QSharedPointer<ModeValidator> validator,
+    SingleModeItem(QSharedPointer<Mode> mode, ComponentEditorTreeModel* model, 
+        LibraryInterface* libHandler, QSharedPointer<Component> component, 
+        QSharedPointer<ReferenceCounter> referenceCounter, ExpressionSet expressions, 
+        QSharedPointer<ModeValidator> validator, QSharedPointer<ExpressionParser> modeConditionParser, 
         ComponentEditorItem* parent);
 
     /*!
@@ -89,14 +88,15 @@ public:
 
 private:
 
-    QSharedPointer<ExpressionParser> expressionParser_;
-
     //! Pointer to the currently selected remap state.
     QSharedPointer<Mode> mode_;
 
     QSharedPointer<ModeValidator> validator_;
 
     ExpressionSet expressions_;
+
+    //! The mode condition parser to use.
+    QSharedPointer<ExpressionParser> modeConditionParser_;
 
 };
 

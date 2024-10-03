@@ -10,6 +10,8 @@
 //-----------------------------------------------------------------------------
 
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
+#include <KactusAPI/include/ModeConditionParserInterface.h>
+#include <KactusAPI/include/ComponentParameterFinder.h>
 
 #include <IPXACTmodels/Component/validators/ComponentValidator.h>
 #include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
@@ -1636,7 +1638,12 @@ bool tst_ComponentValidator::errorIsNotFoundInErrorList(QString const& expectedE
 QSharedPointer<ComponentValidator> tst_ComponentValidator::createComponentValidator(LibraryMock* mockLibrary)
 {
     QSharedPointer<ExpressionParser> parser (new SystemVerilogExpressionParser());
-    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, mockLibrary, Document::Revision::Std14));
+
+    QSharedPointer<ComponentParameterFinder> componentParameterFinder(new ComponentParameterFinder(nullptr));
+
+    QSharedPointer<ModeConditionParserInterface> modeConditionParserIf(new ModeConditionParserInterface(componentParameterFinder));
+
+    QSharedPointer<ComponentValidator> componentValidator (new ComponentValidator(parser, modeConditionParserIf, mockLibrary, Document::Revision::Std14));
 
     return componentValidator;
 }

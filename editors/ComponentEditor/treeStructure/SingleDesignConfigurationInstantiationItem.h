@@ -113,6 +113,7 @@ private:
     //! Expression formatter, formats the referencing expressions.
     QSharedPointer<ExpressionFormatter> expressionFormatter_;
 
+	//! Expression parser to use.
 	QSharedPointer<ExpressionParser> expressionParser_;
 
 };

@@ -33,6 +33,7 @@ class Component;
 class LibraryInterface;
 class Document;
 class KactusAttributeEditor;
+class ModeConditionParserInterface;
 
 
 //-----------------------------------------------------------------------------
@@ -146,6 +147,9 @@ private:
 
     //! Expression parser for validator.
     QSharedPointer<ExpressionParser> parser_;
+
+    //! The mode condition parser factory to use in the component validator.
+    QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface_;
 
     //! Validator for checking the component compliance.
     QSharedPointer<ComponentValidator> validator_;

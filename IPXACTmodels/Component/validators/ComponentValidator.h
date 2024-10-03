@@ -46,6 +46,7 @@ class AssertionValidator;
 
 class ExpressionParser;
 class LibraryInterface;
+class ModeConditionParserBaseInterface;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:component.
@@ -57,10 +58,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *      @param [in] parser                       The used expression parser.
+     *      @param [in] modeConditionParserInterface The interface used to create and manage the mode condition parser.
+     *      @param [in] library                      The used library interface.
      */
-    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision);
+    ComponentValidator(QSharedPointer<ExpressionParser> parser, 
+        QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
+        LibraryInterface* library, Document::Revision docRevision);
 
 	//! The destructor.
 	~ComponentValidator() = default;
@@ -588,6 +592,12 @@ private:
 
     //! Validator for validating all indirect interfaces together.
     QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
+
+    //! Interface for creating and managing mode condition parser.
+    QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface_;
+
+    //! The mode condition parser to use.
+    QSharedPointer<ExpressionParser> modeConditionParser_;
 
     //! Validator for validating all cpus together.
     QSharedPointer<CPUsValidator> cpusValidator_;

@@ -43,6 +43,27 @@ public:
     ModeConditionParser(ModeConditionParser const& rhs) = delete;
     ModeConditionParser& operator=(ModeConditionParser const& rhs) = delete;
 
+    /*!
+     *	Set the mode-specific field slices to use while parsing expressions.
+     *
+     *      @param [in] fieldSlices             The field slices to set.
+     */
+    void setFieldSlices(FieldSlice::List fieldSlices);
+
+    /*!
+     *	Set the mode-specific port slices to use while parsing expressions.
+     *
+     *      @param [in] portSlices             The port slices to set.
+     */
+    void setPortSlices(PortSlice::List portSlices);
+
+    /*!
+     *	Set the available modes to use while parsing expressions.
+     *
+     *      @param [in] modes                   The modes to set.
+     */
+    void setModes(Mode::List modes);
+
 protected:
 
     /*!
