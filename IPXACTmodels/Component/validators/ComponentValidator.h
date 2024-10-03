@@ -579,6 +579,21 @@ private:
 
     //! Validator for validating all component views together.
     QSharedPointer<ViewsValidator> viewsValidator_;
+
+    //! Validator for validating all ports together.
+    QSharedPointer<PortsValidator> portsValidator_;
+
+    //! Validator for validating all bus interfaces together.
+    QSharedPointer<BusInterfacesValidator> busIfsValidator_;
+
+    //! Validator for validating all indirect interfaces together.
+    QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
+
+    //! Validator for validating all cpus together.
+    QSharedPointer<CPUsValidator> cpusValidator_;
+
+    //! Validator for validating all power domains together.
+    QSharedPointer<PowerDomainsValidator> powerDomainsValidator_;
 };
 
 #endif // COMPONENTVALIDATOR_H

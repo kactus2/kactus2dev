@@ -57,6 +57,7 @@ BusInterfaceValidator::BusInterfaceValidator(QSharedPointer<ExpressionParser> ex
     QSharedPointer<PortMapValidator> portMapValidator,
     QSharedPointer<ParameterValidator> parameterValidator,
     LibraryInterface* libraryHandler):
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 availableChoices_(choices),
 availableViews_(views),
@@ -124,7 +125,8 @@ bool BusInterfaceValidator::validate(QSharedPointer<BusInterface> busInterface,
     return hasValidName(busInterface) && hasValidIsPresent(busInterface->getIsPresent()) &&
         hasValidBusType(busInterface) && hasValidAbstractionTypes(busInterface) &&
         hasValidInterfaceMode(busInterface) && hasValidBitsInLAU(busInterface) &&
-        hasValidBitSteering(busInterface, docRevision) && hasValidParameters(busInterface);
+        hasValidBitSteering(busInterface, docRevision) && hasValidParameters(busInterface) &&
+        validComparedToSiblings(busInterface);
 }
 
 //-----------------------------------------------------------------------------

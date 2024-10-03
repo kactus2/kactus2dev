@@ -253,7 +253,7 @@ public:
      *  
      *      @param [in] haveBeenDeleted     Flag value to set.
      */
-    void setInterfacesHaveBeenDeleted(bool haveBeenDeleted);
+    void setInterfacesHaveBeenDeleted();
 
 public slots:
 

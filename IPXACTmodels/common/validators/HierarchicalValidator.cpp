@@ -76,14 +76,6 @@ void HierarchicalValidator::setChildItemValidity(QSharedPointer<NameGroup> child
 }
 
 //-----------------------------------------------------------------------------
-// Function: HierarchicalValidator::childItemChecked()
-//-----------------------------------------------------------------------------
-bool HierarchicalValidator::childItemIsValid(QSharedPointer<NameGroup> childItem) const
-{
-    return childItemValidities_.value(childItem, true);
-}
-
-//-----------------------------------------------------------------------------
 // Function: HierarchicalValidator::clearChildItemValidities()
 //-----------------------------------------------------------------------------
 void HierarchicalValidator::clearChildItemValidities()

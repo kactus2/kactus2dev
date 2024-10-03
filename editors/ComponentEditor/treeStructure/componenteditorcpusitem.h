@@ -20,6 +20,7 @@
 
 class Cpu;
 class CPUValidator;
+class CPUsValidator;
 class ExpressionParser;
 
 //-----------------------------------------------------------------------------
@@ -97,7 +98,10 @@ private:
 	QSharedPointer<QList<QSharedPointer<Cpu> > > cpus_;
 
     //! Validator for cpu elements.
-    QSharedPointer<CPUValidator> validator_;
+    QSharedPointer<CPUValidator> singleCpuValidator_;
+
+	//! Validator for validating cpus together.
+    QSharedPointer<CPUsValidator> cpusValidator_;
 
 	ExpressionSet expressions_;
 };

@@ -22,6 +22,7 @@
 #include <IPXACTmodels/Component/Mode.h>
 
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -46,7 +47,7 @@ class PortMapValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:busInterface.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT BusInterfaceValidator
+class IPXACTMODELS_EXPORT BusInterfaceValidator : public HierarchicalValidator
 {
 public:
 

@@ -18,6 +18,7 @@
 
 class BusInterface;
 class BusInterfaceValidator;
+class BusInterfacesValidator;
 class ExpressionParser;
 class PortMapInterface;
 class BusInterfaceInterface;
@@ -103,6 +104,8 @@ public:
 	*/
 	QSharedPointer<ComponentEditorItem> getBusInterfaceItem(const QString& interfaceName) const;
 
+	bool isValid() const override;
+
 signals:
 	void openAbsDef(VLNV const& absDefVLNV);
 
@@ -132,7 +135,10 @@ private:
 	ExpressionSet expressions_;
 
     //! Validator for bus interfaces.
-    QSharedPointer<BusInterfaceValidator> validator_;
+    QSharedPointer<BusInterfaceValidator> busInterfaceValidator_;
+
+	//! Validator for bus interfaces together.
+    QSharedPointer<BusInterfacesValidator> busInterfacesValidator_;
 
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInterface_;

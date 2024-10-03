@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
@@ -29,7 +31,7 @@ class PortTypeValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:Port.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT PortValidator
+class IPXACTMODELS_EXPORT PortValidator : public HierarchicalValidator
 {
 public:
 

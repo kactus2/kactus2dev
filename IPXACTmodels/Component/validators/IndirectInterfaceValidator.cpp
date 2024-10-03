@@ -34,8 +34,9 @@
 //-----------------------------------------------------------------------------
 IndirectInterfaceValidator::IndirectInterfaceValidator(QSharedPointer<Component> component,
     QSharedPointer<ExpressionParser> parser, QSharedPointer<ParameterValidator> parameterValidator): 
+HierarchicalValidator(),
 component_(component), expressionParser_(parser),
-    parameterValidator_(parameterValidator)
+parameterValidator_(parameterValidator)
 {
 
 }
@@ -61,7 +62,8 @@ bool IndirectInterfaceValidator::validate(QSharedPointer<IndirectInterface> indi
         hasValidTransparentBridges(indirectInterface->getTransparentBridges()) &&
         hasValidBitsInLau(indirectInterface) &&
         hasValidEndianness(indirectInterface) &&
-        hasValidParameters(indirectInterface);
+        hasValidParameters(indirectInterface) &&
+        validComparedToSiblings(indirectInterface);
 }
 
 //-----------------------------------------------------------------------------

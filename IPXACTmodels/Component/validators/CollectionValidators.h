@@ -16,6 +16,9 @@
 #include <QSharedPointer>
 
 #include <IPXACTmodels/ipxactmodels_global.h>
+
+#include <IPXACTmodels/common/Document.h>
+
 #include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 namespace CollectionValidators
@@ -163,5 +166,116 @@ private:
     QSharedPointer<ViewValidator> viewValidator_;
 };
 
+class Port;
+class PortValidator;
+/*
+ *  Validator for ports.
+ */
+class IPXACTMODELS_EXPORT PortsValidator: public HierarchicalValidator
+{
+public:
+
+    explicit PortsValidator(QSharedPointer<PortValidator> portValidator);
+    virtual ~PortsValidator() = default;
+
+    PortsValidator(PortsValidator& other) = delete;
+    PortsValidator& operator=(PortsValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<Port> > > ports);
+
+private:
+
+    QSharedPointer<PortValidator> portValidator_;
+};
+
+class BusInterface;
+class BusInterfaceValidator;
+/*
+ *  Validator for bus interfaces.
+ */
+class IPXACTMODELS_EXPORT BusInterfacesValidator : public HierarchicalValidator
+{
+public:
+
+    explicit BusInterfacesValidator(QSharedPointer<BusInterfaceValidator> busInterfaceValidator);
+    virtual ~BusInterfacesValidator() = default;
+
+    BusInterfacesValidator(BusInterfacesValidator& other) = delete;
+    BusInterfacesValidator& operator=(BusInterfacesValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<BusInterface> > > interfaces, Document::Revision docRevision);
+
+private:
+
+    QSharedPointer<BusInterfaceValidator> busInterfaceValidator_;
+};
+
+class IndirectInterface;
+class IndirectInterfaceValidator;
+/*
+ *  Validator for indirect interfaces.
+ */
+class IPXACTMODELS_EXPORT IndirectInterfacesValidator : public HierarchicalValidator
+{
+public:
+
+    explicit IndirectInterfacesValidator(QSharedPointer<IndirectInterfaceValidator> indirectInterfaceValidator);
+    virtual ~IndirectInterfacesValidator() = default;
+
+    IndirectInterfacesValidator(IndirectInterfacesValidator& other) = delete;
+    IndirectInterfacesValidator& operator=(IndirectInterfacesValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces);
+
+private:
+
+    QSharedPointer<IndirectInterfaceValidator> indirectInterfaceValidator_;
+};
+
+
+class Cpu;
+class CPUValidator;
+/*
+ *  Validator for modes.
+ */
+class IPXACTMODELS_EXPORT CPUsValidator: public HierarchicalValidator
+{
+public:
+
+    explicit CPUsValidator(QSharedPointer<CPUValidator> cpuValidator);
+    virtual ~CPUsValidator() = default;
+
+    CPUsValidator(CPUsValidator& other) = delete;
+    CPUsValidator& operator=(CPUsValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<Cpu> > > cpus);
+
+private:
+
+    QSharedPointer<CPUValidator> cpuValidator_;
+};
+
+
+class PowerDomain;
+class PowerDomainValidator;
+/*
+ *  Validator for modes.
+ */
+class IPXACTMODELS_EXPORT PowerDomainsValidator : public HierarchicalValidator
+{
+public:
+
+    explicit PowerDomainsValidator(QSharedPointer<PowerDomainValidator> powerDomainValidator);
+    virtual ~PowerDomainsValidator() = default;
+
+    PowerDomainsValidator(PowerDomainsValidator& other) = delete;
+    PowerDomainsValidator& operator=(PowerDomainsValidator& other) = delete;
+
+    bool validate(QSharedPointer<QList<QSharedPointer<PowerDomain> > > powerDomains);
+
+private:
+
+    QSharedPointer<PowerDomainValidator> powerDomainValidator_;
+};
 
 #endif // COLLECTIONVALIDATORS_H

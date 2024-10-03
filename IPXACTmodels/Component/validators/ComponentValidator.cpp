@@ -168,6 +168,16 @@ assertionValidator_()
     allInstantiationsValidator_ = QSharedPointer<AllInstantiationsValidator>(new AllInstantiationsValidator(instantiationsValidator_));
 
     viewsValidator_ = QSharedPointer<ViewsValidator>(new ViewsValidator(viewValidator_));
+
+    portsValidator_ = QSharedPointer<PortsValidator>(new PortsValidator(portValidator_));
+
+    busIfsValidator_ = QSharedPointer<BusInterfacesValidator>(new BusInterfacesValidator(busInterfaceValidator_));
+
+    indirectInterfacesValidator_ = QSharedPointer<IndirectInterfacesValidator>(new IndirectInterfacesValidator(indirectInterfaceValidator_));
+
+    cpusValidator_ = QSharedPointer<CPUsValidator>(new CPUsValidator(cpuValidator_));
+
+    powerDomainsValidator_ = QSharedPointer<PowerDomainsValidator>(new PowerDomainsValidator(powerDomainValidator_));
 }
 
 //-----------------------------------------------------------------------------
@@ -202,20 +212,7 @@ bool ComponentValidator::hasValidVLNV(QSharedPointer<Component> component) const
 bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> busInterfaceNames;
-    for (QSharedPointer<BusInterface> bus : *component->getBusInterfaces())
-    {
-        if (busInterfaceNames.contains(bus->name()) || 
-            busInterfaceValidator_->validate(bus, component->getRevision()) == false)
-        {
-            return false;
-        }
-        
-        busInterfaceNames.append(bus->name());
-    }
-
-    return true;
+    return busIfsValidator_->validate(component->getBusInterfaces(), component->getRevision());
 }
 
 
@@ -225,20 +222,7 @@ bool ComponentValidator::hasValidBusInterfaces(QSharedPointer<Component> compone
 bool ComponentValidator::hasValidIndirectInterfaces(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> interfaceNames;
-    for (QSharedPointer<IndirectInterface> indirectInterface : *component->getIndirectInterfaces())
-    {
-        if (interfaceNames.contains(indirectInterface->name()) || 
-            !indirectInterfaceValidator_->validate(indirectInterface))
-        {
-            return false;
-        }
-
-        interfaceNames.append(indirectInterface->name());
-    }
-
-    return true;
+    return indirectInterfacesValidator_->validate(component->getIndirectInterfaces());
 }
 
 //-----------------------------------------------------------------------------
@@ -366,24 +350,7 @@ bool ComponentValidator::hasValidInstantiations(QSharedPointer<Component> compon
 bool ComponentValidator::hasValidPorts(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getPorts()->isEmpty())
-    {
-        QVector<QString> portNames;
-        for (QSharedPointer<Port> port : *component->getPorts())
-        {
-            if (portNames.contains(port->name()) || !portValidator_->validate(port))
-            {
-                return false;
-            }
-            else
-            {
-                portNames.append(port->name());
-            }
-        }
-    }
-
-    return true;
+    return portsValidator_->validate(component->getPorts());
 }
 
 //-----------------------------------------------------------------------------
@@ -452,23 +419,7 @@ bool ComponentValidator::hasValidFileSets(QSharedPointer<Component> component)
 bool ComponentValidator::hasValidCPUs(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    if (!component->getCpus()->isEmpty())
-    {
-        QVector<QString> cpuNames;
-        for (QSharedPointer<Cpu> cpu : *component->getCpus())
-        {
-            if (cpuNames.contains(cpu->name()) || !cpuValidator_->validate(cpu))
-            {
-                return false;
-            }
-            else
-            {
-                cpuNames.append(cpu->name());
-            }
-        }
-    }
-    return true;
+    return cpusValidator_->validate(component->getCpus());
 }
 
 //-----------------------------------------------------------------------------
@@ -503,22 +454,7 @@ bool ComponentValidator::hasValidOtherClockDrivers(QSharedPointer<Component> com
 bool ComponentValidator::hasValidPowerDomains(QSharedPointer<Component> component)
 {
     changeComponent(component);
-
-    QVector<QString> domainNames;
-    for (QSharedPointer<PowerDomain> domain : *component->getPowerDomains())
-    {
-        if (domainNames.contains(domain->name()) ||
-            !powerDomainValidator_->validate(domain))
-        {
-            return false;
-        }
-        else
-        {
-            domainNames.append(domain->name());
-        }
-    }
-
-    return true;
+    return powerDomainsValidator_->validate(component->getPowerDomains());
 }
 
 //-----------------------------------------------------------------------------

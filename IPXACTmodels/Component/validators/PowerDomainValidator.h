@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -28,7 +30,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:PowerDomain.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT PowerDomainValidator
+class IPXACTMODELS_EXPORT PowerDomainValidator : public HierarchicalValidator
 {
 public:
 

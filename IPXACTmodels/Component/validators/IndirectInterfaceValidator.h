@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QList>
 #include <QSharedPointer>
 #include <QString>
@@ -29,7 +31,7 @@ class TransparentBridge;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:indirectInterface.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT IndirectInterfaceValidator
+class IPXACTMODELS_EXPORT IndirectInterfaceValidator : public HierarchicalValidator
 {
 public:
 

@@ -23,6 +23,21 @@
 #include <IPXACTmodels/Component/View.h>
 #include <IPXACTmodels/Component/validators/ViewValidator.h>
 
+#include <IPXACTmodels/Component/Port.h>
+#include <IPXACTmodels/Component/validators/PortValidator.h>
+
+#include <IPXACTmodels/Component/BusInterface.h>
+#include <IPXACTmodels/Component/validators/BusInterfaceValidator.h>
+
+#include <IPXACTmodels/Component/IndirectInterface.h>
+#include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
+
+#include <IPXACTmodels/Component/Cpu.h>
+#include <IPXACTmodels/Component/validators/CPUValidator.h>
+
+#include <IPXACTmodels/Component/PowerDomain.h>
+#include <IPXACTmodels/Component/validators/PowerDomainValidator.h>
+
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 
@@ -206,6 +221,7 @@ bool AllInstantiationsValidator::hasValidDesignInstantiations(QSharedPointer<Com
 // Function: ViewsValidator::ViewsValidator()
 //-----------------------------------------------------------------------------
 ViewsValidator::ViewsValidator(QSharedPointer<ViewValidator> viewValidator) : 
+    HierarchicalValidator(),
     viewValidator_(viewValidator)
 {
     setChildValidator(viewValidator);
@@ -225,6 +241,166 @@ bool ViewsValidator::validate(QSharedPointer<QList<QSharedPointer<View> > > view
     for (auto const& child : *views)
     {
         if (!viewValidator_->validate(child))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsValidator::PortsValidator()
+//-----------------------------------------------------------------------------
+PortsValidator::PortsValidator(QSharedPointer<PortValidator> portValidator):
+    HierarchicalValidator(),
+    portValidator_(portValidator)
+{
+    setChildValidator(portValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortsValidator::validate()
+//-----------------------------------------------------------------------------
+bool PortsValidator::validate(QSharedPointer<QList<QSharedPointer<Port> > > ports)
+{
+    if (auto portsAsNameGroup = CollectionValidators::itemListToNameGroupList(ports);
+        !childrenHaveUniqueNames(portsAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *ports)
+    {
+        if (!portValidator_->validate(child))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesValidator::BusInterfacesValidator()
+//-----------------------------------------------------------------------------
+BusInterfacesValidator::BusInterfacesValidator(QSharedPointer<BusInterfaceValidator> busInterfaceValidator) :
+    HierarchicalValidator(),
+    busInterfaceValidator_(busInterfaceValidator)
+{
+    setChildValidator(busInterfaceValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: BusInterfacesValidator::validate()
+//-----------------------------------------------------------------------------
+bool BusInterfacesValidator::validate(QSharedPointer<QList<QSharedPointer<BusInterface> > > interfaces,
+    Document::Revision docRevision)
+{
+    if (auto busInterfacesAsNameGroup = CollectionValidators::itemListToNameGroupList(interfaces);
+        !childrenHaveUniqueNames(busInterfacesAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *interfaces)
+    {
+        if (!busInterfaceValidator_->validate(child, docRevision))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: IndirectInterfacesValidator::IndirectInterfacesValidator()
+//-----------------------------------------------------------------------------
+IndirectInterfacesValidator::IndirectInterfacesValidator(QSharedPointer<IndirectInterfaceValidator> indirectInterfaceValidator) :
+    HierarchicalValidator(),
+    indirectInterfaceValidator_(indirectInterfaceValidator)
+{
+    setChildValidator(indirectInterfaceValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: IndirectInterfacesValidator::validate()
+//-----------------------------------------------------------------------------
+bool IndirectInterfacesValidator::validate(QSharedPointer<QList<QSharedPointer<IndirectInterface> > > indirectInterfaces)
+{
+    if (auto indirectInterfacesAsNameGroup = CollectionValidators::itemListToNameGroupList(indirectInterfaces);
+        !childrenHaveUniqueNames(indirectInterfacesAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *indirectInterfaces)
+    {
+        if (!indirectInterfaceValidator_->validate(child))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUsValidator::CPUsValidator()
+//-----------------------------------------------------------------------------
+CPUsValidator::CPUsValidator(QSharedPointer<CPUValidator> cpuValidator):
+    cpuValidator_(cpuValidator)
+{
+    setChildValidator(cpuValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: CPUsValidator::validate()
+//-----------------------------------------------------------------------------
+bool CPUsValidator::validate(QSharedPointer<QList<QSharedPointer<Cpu> > > cpus)
+{
+    if (auto cpusAsNameGroup = CollectionValidators::itemListToNameGroupList(cpus);
+        !childrenHaveUniqueNames(cpusAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *cpus)
+    {
+        if (!cpuValidator_->validate(child))
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PowerDomainsValidator::PowerDomainsValidator()
+//-----------------------------------------------------------------------------
+PowerDomainsValidator::PowerDomainsValidator(QSharedPointer<PowerDomainValidator> powerDomainValidator):
+    HierarchicalValidator(),
+    powerDomainValidator_(powerDomainValidator)
+{
+    setChildValidator(powerDomainValidator);
+}
+
+//-----------------------------------------------------------------------------
+// Function: PowerDomainsValidator::validate()
+//-----------------------------------------------------------------------------
+bool PowerDomainsValidator::validate(QSharedPointer<QList<QSharedPointer<PowerDomain> > > powerDomains)
+{
+    if (auto powerDomainsAsNameGroup = CollectionValidators::itemListToNameGroupList(powerDomains);
+        !childrenHaveUniqueNames(powerDomainsAsNameGroup))
+    {
+        return false;
+    }
+
+    for (auto const& child : *powerDomains)
+    {
+        if (!powerDomainValidator_->validate(child))
         {
             return false;
         }

@@ -20,6 +20,7 @@
 class Port;
 class ExpressionParser;
 class PortValidator;
+class PortsValidator;
 class PortsInterface;
 class BusInterfaceInterface;
 
@@ -109,6 +110,9 @@ private:
 
     //! The used port validator.
     QSharedPointer<PortValidator> portValidator_;
+
+	//! The validator used to validate ports together.
+	QSharedPointer<PortsValidator> portsValidator_;
 
 	//! Interface for accessing ports.
 	QSharedPointer<PortsInterface> portsInterface_;

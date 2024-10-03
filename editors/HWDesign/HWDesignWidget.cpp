@@ -514,7 +514,7 @@ void HWDesignWidget::deleteSelectedBusInterfaceItems(QList<QGraphicsItem*> selec
             new InterfaceDeleteCommand(getDiagram(), diagIf, removePorts, cmd.data());
         connect(childCmd, SIGNAL(interfaceDeleted()), this, SIGNAL(clearItemSelection()), Qt::UniqueConnection);            
 
-        static_cast<HWDesignDiagram*>(getDiagram())->setInterfacesHaveBeenDeleted(true);
+        static_cast<HWDesignDiagram*>(getDiagram())->setInterfacesHaveBeenDeleted();
         childCmd->redo();
     }
 
