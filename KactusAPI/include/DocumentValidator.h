@@ -118,6 +118,9 @@ private:
      //! The parameter finder used in the component validator.
      QSharedPointer<ComponentParameterFinder> componentValidatorFinder_{ new ParameterCache(QSharedPointer<Component>()) };
 
+     //! The parameter finder used in the abstraction definition validator.
+     QSharedPointer<ListParameterFinder> absDefParameterFinder_{ new ListParameterFinder() };
+
      //! The used abstraction definition validator.
      AbstractionDefinitionValidator abstractionValidator_;
 

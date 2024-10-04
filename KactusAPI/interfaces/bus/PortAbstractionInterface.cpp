@@ -17,6 +17,7 @@
 #include <IPXACTmodels/AbstractionDefinition/WirePort.h>
 #include <IPXACTmodels/AbstractionDefinition/TransactionalPort.h>
 #include <IPXACTmodels/AbstractionDefinition/AbstractionDefinition.h>
+#include <IPXACTmodels/AbstractionDefinition/validators/PortAbstractionValidator.h>
 
 #include <IPXACTmodels/common/Protocol.h>
 
@@ -28,8 +29,10 @@ namespace
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::PortAbstractionInterface()
 //-----------------------------------------------------------------------------
-PortAbstractionInterface::PortAbstractionInterface() :
+PortAbstractionInterface::PortAbstractionInterface(QSharedPointer<ExpressionParser> expressionParser,
+    QSharedPointer<ExpressionFormatter> expressionFormatter) :
 MasterPortInterface(),
+ParameterizableInterface(expressionParser, expressionFormatter),
 ports_(0),
 signals_()
 {
@@ -118,6 +121,14 @@ void PortAbstractionInterface::setAbsDef(QSharedPointer<AbstractionDefinition co
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::setPortAbstractionValidator()
+//-----------------------------------------------------------------------------
+void PortAbstractionInterface::setPortAbstractionValidator(QSharedPointer<PortAbstractionValidator> validator)
+{
+    portValidator_ = validator;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::createWireSignal()
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::createWireSignal(QSharedPointer<PortAbstraction> portAbs,
@@ -170,6 +181,28 @@ QSharedPointer<PortAbstraction> PortAbstractionInterface::getPort(std::string co
 Document::Revision PortAbstractionInterface::getRevision() const
 {
     return abstractionStandardRevision_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getAllReferencesToIdInRow()
+//-----------------------------------------------------------------------------
+int PortAbstractionInterface::getAllReferencesToIdInRow(int signalIndex, std::string const& itemID) const
+{
+    int referenceCount = 0;
+    if (auto signal = getSignal(signalIndex))
+    {
+        if (signal->wire_)
+        {
+            referenceCount += signal->wire_->getWidth().count(QString::fromStdString(itemID));
+            referenceCount += signal->abstraction_->getDefaultValue().count(QString::fromStdString(itemID));
+        }
+        else if (signal->transactional_)
+        {
+            referenceCount += signal->transactional_->getBusWidth().count(QString::fromStdString(itemID));
+        }
+    }
+
+    return referenceCount;
 }
 
 //-----------------------------------------------------------------------------
@@ -442,7 +475,38 @@ bool PortAbstractionInterface::validateItems() const
 //-----------------------------------------------------------------------------
 bool PortAbstractionInterface::itemHasValidName(std::string const& itemName) const
 {
-    return !itemName.empty();
+    if (auto port = getPort(itemName); portValidator_ && port)
+    {
+        return portValidator_->hasValidName(port);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::wireHasValidWidth()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::wireHasValidWidth(int portIndex) const
+{
+    if (auto signal = getSignal(portIndex); portValidator_ && signal)
+    {
+        return portValidator_->wireHasValidWidth(signal->wire_);
+    }
+
+    return false;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::wireHasValidDefaultValue()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::wireHasValidDefaultValue(int portIndex) const
+{
+    if (auto signal = getSignal(portIndex); portValidator_ && signal)
+    {
+        return portValidator_->wireHasValidDefaultValue(signal->abstraction_->getWire());
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -875,7 +939,7 @@ bool PortAbstractionInterface::setDirection(int const& portIndex, std::string co
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getWidth()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getWidth(int const& portIndex) const
+std::string PortAbstractionInterface::getWidthExpression(int const& portIndex) const
 {
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal && selectedSignal->wire_)
@@ -889,7 +953,7 @@ std::string PortAbstractionInterface::getWidth(int const& portIndex) const
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getWidth()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getWidth(std::string const& portName, std::string const& interfaceMode,
+std::string PortAbstractionInterface::getWidthExpression(std::string const& portName, std::string const& interfaceMode,
     std::string const& systemGroup) const
 {
     QString signalWidth("");
@@ -908,7 +972,7 @@ std::string PortAbstractionInterface::getWidth(std::string const& portName, std:
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getWidth()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getWidth(std::string const& portName, General::InterfaceMode interfaceMode,
+std::string PortAbstractionInterface::getWidthExpression(std::string const& portName, General::InterfaceMode interfaceMode,
     std::string const& systemGroup) const
 {
     QString signalWidth("");
@@ -920,6 +984,66 @@ std::string PortAbstractionInterface::getWidth(std::string const& portName, Gene
     }
 
     return signalWidth.toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getWidthFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getWidthFormattedExpression(int portIndex) const
+{
+    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
+    if (!selectedSignal || !selectedSignal->wire_)
+    {
+        return std::string();
+    }
+
+    auto widthExpression = selectedSignal->wire_->getWidth();
+
+    if (widthExpression.isEmpty())
+    {
+        return widthExpression.toStdString();
+    }
+
+    return formattedValueFor(widthExpression).toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getWidthValue()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getWidthValue(int portIndex, int baseNumber /*= 0*/) const
+{
+    if (auto selectedSignal = getSignal(portIndex); selectedSignal && selectedSignal->wire_)
+    {
+        bool expressionIsValid = false;
+        auto value = parseExpressionToBaseNumber(
+            selectedSignal->wire_->getWidth(), baseNumber, &expressionIsValid).toStdString();
+
+        return expressionIsValid ? value : std::string("x");
+    }
+
+    return std::string("x");
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getWidthValue()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getWidthValue(std::string const& portName,
+    General::InterfaceMode interfaceMode, std::string const& systemGroup) const
+{
+    QSharedPointer<PortAbstraction> port = getPort(portName);
+    if (port && port->getWire() && interfaceMode != General::INTERFACE_MODE_COUNT)
+    {
+        auto width = port->getWire()->getWidth(interfaceMode, QString::fromStdString(systemGroup));
+        bool expressionOk = false;
+        auto widthAsValue = parseExpressionToBaseNumber(width, 0, &expressionOk);
+
+        if (expressionOk)
+        {
+            return widthAsValue.toStdString();
+        }
+    }
+
+    return std::string();
 }
 
 //-----------------------------------------------------------------------------
@@ -1044,7 +1168,7 @@ bool PortAbstractionInterface::setPresence(int const& portIndex, std::string con
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getDefaultValue()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getDefaultValue(int const& portIndex) const
+std::string PortAbstractionInterface::getDefaultValueExpression(int const& portIndex) const
 {
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal && selectedSignal->abstraction_ && selectedSignal->abstraction_->hasWire())
@@ -1053,6 +1177,44 @@ std::string PortAbstractionInterface::getDefaultValue(int const& portIndex) cons
     }
 
     return std::string("");
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getDefaultValueFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getDefaultValueFormattedExpression(int const& portIndex) const
+{
+    QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
+    if (!selectedSignal || !selectedSignal->wire_)
+    {
+        return std::string();
+    }
+
+    auto defaultValueExpression = selectedSignal->abstraction_->getDefaultValue();
+
+    if (defaultValueExpression.isEmpty())
+    {
+        return defaultValueExpression.toStdString();
+    }
+
+    return formattedValueFor(defaultValueExpression).toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getDefaultValueValue()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getDefaultValueValue(int const& portIndex, int baseNumber /*= 0*/) const
+{
+    if (auto selectedSignal = getSignal(portIndex); selectedSignal && selectedSignal->wire_)
+    {
+        bool expressionIsValid = false;
+        auto value = parseExpressionToBaseNumber(
+            selectedSignal->abstraction_->getDefaultValue(), baseNumber, &expressionIsValid).toStdString();
+
+        return expressionIsValid ? value : std::string("x");
+    }
+
+    return std::string("x");
 }
 
 //-----------------------------------------------------------------------------
@@ -1103,7 +1265,7 @@ bool PortAbstractionInterface::setDriverType(int const& portIndex, std::string c
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getBusWidthValue(int const& portIndex) const
+std::string PortAbstractionInterface::getBusWidthExpression(int const& portIndex) const
 {
     QSharedPointer<SignalRow> selectedSignal = getSignal(portIndex);
     if (selectedSignal && selectedSignal->transactional_)
@@ -1117,7 +1279,7 @@ std::string PortAbstractionInterface::getBusWidthValue(int const& portIndex) con
 //-----------------------------------------------------------------------------
 // Function: PortAbstractionInterface::getBusWidthValue()
 //-----------------------------------------------------------------------------
-std::string PortAbstractionInterface::getBusWidthValue(std::string const& portName,
+std::string PortAbstractionInterface::getBusWidthExpression(std::string const& portName,
     std::string const& interfaceMode, std::string const& systemGroup) const
 {
     QString signalWidth("");
@@ -1131,6 +1293,44 @@ std::string PortAbstractionInterface::getBusWidthValue(std::string const& portNa
     }
 
     return signalWidth.toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getBusWidthFormattedExpression()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getBusWidthFormattedExpression(int signalIndex) const
+{
+    QSharedPointer<SignalRow> selectedSignal = getSignal(signalIndex);
+    if (!selectedSignal || !selectedSignal->transactional_)
+    {
+        return std::string();
+    }
+
+    auto busWidthExpression = selectedSignal->transactional_->getBusWidth();
+
+    if (busWidthExpression.isEmpty())
+    {
+        return busWidthExpression.toStdString();
+    }
+
+    return formattedValueFor(busWidthExpression).toStdString();
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getBusWidthValue()
+//-----------------------------------------------------------------------------
+std::string PortAbstractionInterface::getBusWidthValue(int portIndex, int baseNumber /*= 0*/) const
+{
+    if (auto selectedSignal = getSignal(portIndex); selectedSignal && selectedSignal->transactional_)
+    {
+        bool expressionIsValid = false;
+        auto value = parseExpressionToBaseNumber(
+            selectedSignal->transactional_->getBusWidth(), baseNumber, &expressionIsValid).toStdString();
+
+        return expressionIsValid ? value : std::string("x");
+    }
+
+    return std::string("x");
 }
 
 //-----------------------------------------------------------------------------
@@ -1148,6 +1348,19 @@ bool PortAbstractionInterface::setBusWidth(int const& portIndex, std::string con
     selectedSignal->transactional_->setBusWidth(busWidthQ);
 
     return true;
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::transactionalHasValidBusWidth()
+//-----------------------------------------------------------------------------
+bool PortAbstractionInterface::transactionalHasValidBusWidth(int portIndex) const
+{
+    if (auto signal = getSignal(portIndex); portValidator_ && signal)
+    {
+        return portValidator_->transactionalHasValidBusWidth(signal->transactional_);
+    }
+
+    return false;
 }
 
 //-----------------------------------------------------------------------------
@@ -1464,7 +1677,7 @@ bool PortAbstractionInterface::setPayloadExtension(int const& portIndex, std::st
 }
 
 //-----------------------------------------------------------------------------
-// Function: PortAbstractionInterface::addWirePort()
+// Function: PortAbstractionInterface:: WirePort()
 //-----------------------------------------------------------------------------
 void PortAbstractionInterface::addWirePort(std::string const& newPortName)
 {
@@ -1735,6 +1948,14 @@ Qualifier::Attribute PortAbstractionInterface::getQualifierAttributeType(std::st
     {
         return Qualifier::Attribute::UserDefined;
     }
+}
+
+//-----------------------------------------------------------------------------
+// Function: PortAbstractionInterface::getAllReferencesToIdInItem()
+//-----------------------------------------------------------------------------
+int PortAbstractionInterface::getAllReferencesToIdInItem(const std::string&, std::string const&) const
+{
+    return 0; /* AbstractionPortsModel uses getAllReferencesToIdInRow() instead */
 }
 
 //-----------------------------------------------------------------------------

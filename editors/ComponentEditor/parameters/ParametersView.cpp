@@ -63,9 +63,9 @@ void ParametersView::contextMenuEvent(QContextMenuEvent* event)
 void ParametersView::addRecalculateReferencesActionForContextMenu(QMenu& menu)
 {
     QModelIndexList indexList = selectedIndexes();
-    foreach (QModelIndex currentIndex, indexList)
+    for (QModelIndex const& currentIndex : indexList)
     {
-        if (!currentIndex.isValid() || currentIndex.column() != ParameterColumns::USAGE_COUNT)
+        if (!currentIndex.isValid())
         {
             return;
         }
@@ -81,9 +81,16 @@ void ParametersView::addRecalculateReferencesActionForContextMenu(QMenu& menu)
 void ParametersView::addOpenReferenceTreeActionForContextMenu(QMenu& menu)
 {
     QModelIndexList indexList = selectedIndexes();
-    foreach(QModelIndex currentIndex, indexList)
+
+    // Context menu action should be shown only when at least one index is selected.
+    if (indexList.isEmpty())
     {
-        if (!currentIndex.isValid() || currentIndex.column() != ParameterColumns::NAME)
+        return;
+    }
+
+    for (QModelIndex const& currentIndex : indexList)
+    {
+        if (!currentIndex.isValid())
         {
             return;
         }
@@ -107,8 +114,8 @@ void ParametersView::setupActions()
         this, SLOT(onRecalculateReferencesAction()), Qt::UniqueConnection);
 
     addAction(&openReferenceTreeAction_);
-    openReferenceTreeAction_.setToolTip(tr("Recalculate the references made to the parameter"));
-    openReferenceTreeAction_.setStatusTip(tr("Recalculate the references made to the parameter"));
+    openReferenceTreeAction_.setToolTip(tr("Display references to selected parameters"));
+    openReferenceTreeAction_.setStatusTip(tr("Display references to selected parameters"));
     connect(&openReferenceTreeAction_, SIGNAL(triggered()),
         this, SLOT(onOpenReferenceTreeAction()), Qt::UniqueConnection);
 
@@ -127,6 +134,16 @@ void ParametersView::onRecalculateReferencesAction()
     {
         QModelIndex newIndex = sortProxy->mapToSource(indexes.at(i));
         sortedIndexes.append(newIndex);
+    }
+    
+    // Do recalculation for all parameters, if none were selected.
+    if (sortedIndexes.isEmpty())
+    {
+        for (int i = 0; i < model()->rowCount(); ++i)
+        {
+            QModelIndex currentIndex = model()->index(i, ParameterColumns::USAGE_COUNT);
+            sortedIndexes.append(currentIndex);
+        }
     }
 
     emit(recalculateReferenceToIndexes(sortedIndexes));

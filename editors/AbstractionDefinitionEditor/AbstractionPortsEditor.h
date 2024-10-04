@@ -29,6 +29,8 @@ class AbstractionPortsDelegate;
 class BusDefinition;
 class PortAbstractionInterface;
 class LibraryInterface;
+class QAbstractItemModel;
+class ParameterFinder;
 
 //-----------------------------------------------------------------------------
 //! Editor for the ports of an abstraction definition.
@@ -42,6 +44,8 @@ public:
     /*!
      *  The constructor.
      *     
+     *      @param [in] parametersModel The parameter completer model to use.
+     *      @param [in] parameterFinder The parameter finder to use.
      *      @param [in] libraryAccess   Interface to the library.
      *      @param [in] portInterface   Interface for accessing port abstractions.
      *      @param [in] stdRevision     The revision of the standard used by the abstraction definition.
@@ -49,7 +53,8 @@ public:
      *      @param [in] type            The type of ports the editor is targeted for: wire or transactional.
      *      @param [in] parent          The owner of the editor.
      */
-    AbstractionPortsEditor(LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface, 
+    AbstractionPortsEditor(QAbstractItemModel* parametersModel, QSharedPointer<ParameterFinder> parameterFinder,
+        LibraryInterface* libraryAccess, PortAbstractionInterface* portInterface,
         Document::Revision stdRevision, AbstractionPortsModel* portModel,
         LogicalPortColumns::AbstractionType type, QWidget* parent);
 
@@ -101,6 +106,20 @@ signals:
      *      @param [in] mode        Mode of the removed port abstraction.
      */
     void portRemoved(QString const& portName, General::InterfaceMode const mode);
+
+    /*!
+     *  Increase the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void increaseReferences(QString id);
+
+    /*!
+     *  Decrease the amount of references to a parameter corresponding to the id.
+     *
+     *      @param [in] id      The id of the parameter being searched for.
+     */
+    void decreaseReferences(QString id);
 
 private slots:
 

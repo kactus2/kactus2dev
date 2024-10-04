@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 DocumentValidator::DocumentValidator(LibraryInterface* library) :
     library_(library),
-    abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
+    abstractionValidator_(library_, QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(absDefParameterFinder_))),
     busValidator_(library_, QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser())),
     designValidator_(QSharedPointer<ExpressionParser>(new IPXactSystemVerilogParser(designValidatorFinder_)), library_),
     designConfigurationValidator_(QSharedPointer<ExpressionParser>(new SystemVerilogExpressionParser()), library_),
@@ -46,7 +46,8 @@ bool DocumentValidator::validate(QSharedPointer<Document> document)
 {
     VLNV::IPXactType documentType = document->getVlnv().getType();
     if (documentType == VLNV::ABSTRACTIONDEFINITION)
-    {        
+    {
+        absDefParameterFinder_->setParameterList(document->getParameters());
         return abstractionValidator_.validate(document.dynamicCast<AbstractionDefinition>());
     }
     else if (documentType == VLNV::BUSDEFINITION)

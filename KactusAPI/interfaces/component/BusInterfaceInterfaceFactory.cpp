@@ -201,7 +201,7 @@ PortMapInterface* BusInterfaceInterfaceFactory::Details::createPortMapInterface(
     PortsInterface* physicalPortInterface(new PortsInterface(portValidator, expressionParser, expressionFormatter));
     physicalPortInterface->setPorts(component->getPorts());
 
-    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface());
+    PortAbstractionInterface* logicalPortInterface(new PortAbstractionInterface(expressionParser, expressionFormatter));
     PortMapInterface* portMapInterface(new PortMapInterface(
         portMapValidator, expressionParser, expressionFormatter, physicalPortInterface, logicalPortInterface));
 

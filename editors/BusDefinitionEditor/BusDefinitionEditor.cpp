@@ -18,8 +18,13 @@
 #include <common/dialogs/newObjectDialog/newobjectdialog.h>
 #include <common/widgets/summaryLabel/summarylabel.h>
 
+#include <editors/ComponentEditor/parameterReferenceTree/ParameterReferenceTreeWindow.h>
+#include <editors/BusDefinitionEditor/BusDefinitionParameterReferenceTree.h>
+
 #include <KactusAPI/include/SystemVerilogExpressionParser.h>
 #include <KactusAPI/include/PortAbstractionInterface.h>
+#include <KactusAPI/include/ExpressionFormatter.h>
+#include <KactusAPI/include/ListParameterFinder.h>
 
 #include <QApplication>
 #include <QFile>
@@ -36,9 +41,14 @@ BusDefinitionEditor::BusDefinitionEditor(QWidget *parent, LibraryInterface* libH
     QSharedPointer<BusDefinition> busDef):
 TabDocument(parent, libHandler, DOC_PROTECTION_SUPPORT),
 busDef_(busDef),
-busDefGroup_(libHandler, this),
 expressionParser_(new SystemVerilogExpressionParser()),
-busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_))
+busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_)),
+busDefParameterFinder_(new ListParameterFinder()),
+expressionFormatter_(new ExpressionFormatter(busDefParameterFinder_)),
+referenceCounter_(new ParameterReferenceCounter(busDefParameterFinder_)),
+parameterReferenceTree_(new BusDefinitionParameterReferenceTree(busDef, expressionFormatter_, referenceCounter_, this)),
+referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this)),
+busDefGroup_(libHandler, expressionFormatter_, busDefParameterFinder_, this)
 {
     setDocumentType(DocumentType(DocumentTypes::BUS_DEFINITION));
 
@@ -57,9 +67,23 @@ busDefinitionValidator_(new BusDefinitionValidator(libHandler, expressionParser_
         setProtection(true);
     }    
 
+    busDefParameterFinder_->setParameterList(busDef_->getParameters());
+
     setupLayout();
 
     connect(&busDefGroup_, SIGNAL(contentChanged()), this, SIGNAL(contentChanged()), Qt::UniqueConnection);
+
+    connect(&busDefGroup_, SIGNAL(increaseReferences(QString)),
+        referenceCounter_.data(), SLOT(increaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&busDefGroup_, SIGNAL(decreaseReferences(QString)),
+        referenceCounter_.data(), SLOT(decreaseReferenceCount(QString)), Qt::UniqueConnection);
+
+    connect(&busDefGroup_, SIGNAL(openReferenceTree(QString const&, QString const&)),
+        referenceTreeWindow_, SLOT(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
+
+    connect(&busDefGroup_, SIGNAL(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)),
+        referenceCounter_.data(), SLOT(recalculateReferencesToParameters(QVector<QString> const&, AbstractParameterInterface*)), Qt::UniqueConnection);
 }
 
 //-----------------------------------------------------------------------------
@@ -126,6 +150,7 @@ void BusDefinitionEditor::setBusDef(QSharedPointer<BusDefinition> busDef)
 
     busDefGroup_.setBusDef(busDef_);
     busDefGroup_.setDisabled(false);
+    busDefParameterFinder_->setParameterList(busDef->getParameters());
 
     VLNV vlnv = busDef_->getVlnv();
     setDocumentName(vlnv.getName() + " (" + vlnv.getVersion() + ")");
