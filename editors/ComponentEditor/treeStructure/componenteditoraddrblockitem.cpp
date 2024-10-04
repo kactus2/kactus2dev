@@ -171,6 +171,7 @@ void ComponentEditorAddrBlockItem::createChild( int index )
             expressionParser_, addressBlockValidator_->getRegisterFileValidator(),
             blockInterface_->getSubInterface(), addrBlock_, this));
         regFileItem->setLocked(locked_);
+        regFileItem->addressUnitBitsChanged(addressUnitBits_);
 
         if (visualizer_)
         {

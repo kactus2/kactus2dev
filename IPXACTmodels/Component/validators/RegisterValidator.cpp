@@ -69,10 +69,10 @@ QSharedPointer<FieldValidator> RegisterValidator::getFieldValidator() const
 //-----------------------------------------------------------------------------
 bool RegisterValidator::validate(QSharedPointer<Register> selectedRegister) const
 {
-    return RegisterBaseValidator::validate(selectedRegister) &&
-           hasValidSize(selectedRegister) &&
+    return hasValidSize(selectedRegister) &&
            hasValidFields(selectedRegister, selectedRegister->getSize()) &&
            hasValidAlternateRegisters(selectedRegister) &&
+            RegisterBaseValidator::validate(selectedRegister) &&
            hasValidStructure(selectedRegister);
 }
 
@@ -103,64 +103,122 @@ bool RegisterValidator::hasValidFields(QSharedPointer<RegisterDefinition> select
 
     qint64 registerSizeInt = expressionParser_->parseExpression(registerSize).toLongLong();
 
-    MemoryReserve reservedArea;
-
     QVector<QString> fieldNames;
     QVector<QString> fieldTypeIdentifiers;
-    for (int fieldIndex = 0; fieldIndex < selectedRegister->getFields()->size(); ++fieldIndex)
+
+    QMultiHash<QString, QSharedPointer<Field> > foundFieldNames;
+
+    bool fieldsAreValid = true;
+    
+    auto fieldsCopy = QSharedPointer<QList<QSharedPointer<Field> > >(new QList(*selectedRegister->getFields()));
+
+    // Sort fields by offset for checking overlap.
+    auto sortFieldsByOffset = [&](QSharedPointer<Field> fieldA, QSharedPointer<Field> fieldB)
+        {
+            return expressionParser_->parseExpression(fieldA->getBitOffset()).toLongLong() < 
+                expressionParser_->parseExpression(fieldB->getBitOffset()).toLongLong();
+        };
+
+    std::sort(fieldsCopy->begin(), fieldsCopy->end(), sortFieldsByOffset);
+
+    qint64 lastFieldEnd = 0;
+
+    for (int fieldIndex = 0; fieldIndex < fieldsCopy->size(); ++fieldIndex)
     {
-        QSharedPointer<Field> field = selectedRegister->getFields()->at(fieldIndex);
-        if (!fieldValidator_->validate(field) || fieldNames.contains(field->name()))
+        QSharedPointer<Field> field = fieldsCopy->at(fieldIndex);
+
+        quint64 bitWidth = getTrueFieldBitWidth(field);
+        qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
+        qint64 rangeEnd = rangeBegin + bitWidth - 1;
+        qint64 fieldEndPosition = registerSizeInt - bitWidth;
+
+        if (!fieldNames.contains(field->name()))
         {
-            return false;
+            fieldValidator_->setChildItemValidity(field, true);
         }
-        else
+
+        foundFieldNames.insert(field->name(), field);
+        
+        if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
         {
-            quint64 bitWidth = getTrueFieldBitWidth(field);
+            fieldValidator_->setChildItemValidity(field, false);
+            fieldsAreValid = false;
+        }
 
-            qint64 rangeBegin = expressionParser_->parseExpression(field->getBitOffset()).toLongLong();
-            qint64 rangeEnd = rangeBegin + bitWidth - 1;
+        if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
+        {
+            int typeIdIndex = fieldTypeIdentifiers.indexOf(field->getTypeIdentifier());
 
-            qint64 fieldEndPosition = registerSizeInt - bitWidth;
-
-            if (rangeBegin < 0 || rangeBegin > fieldEndPosition)
+            QSharedPointer<Field> comparedField = fieldsCopy->at(typeIdIndex);
+            if (!fieldsHaveSimilarDefinitionGroups(field, comparedField))
             {
-                return false;
+                fieldValidator_->setChildItemValidity(field, false);
+                fieldValidator_->setChildItemValidity(comparedField, false);
+                fieldsAreValid = false;
+            }
+        }
+
+        fieldTypeIdentifiers.append(field->getTypeIdentifier());
+
+        if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
+        {
+            fieldValidator_->setChildItemValidity(field, false);
+            fieldsAreValid = false;
+        }
+
+        if (docRevision_ == Document::Revision::Std14 && !fieldHasValidAccess(selectedRegister, field))
+        {
+            fieldValidator_->setChildItemValidity(field, false);
+            fieldsAreValid = false;
+        }
+
+        if (field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
+        {
+            if (fieldIndex != 0 && rangeBegin <= lastFieldEnd)
+            {
+                fieldValidator_->setChildItemValidity(field, false);
+                fieldValidator_->setChildItemValidity(fieldsCopy->at(fieldIndex - 1), false);
+                fieldsAreValid = false;
             }
 
-
-            if(field->getIsPresent().isEmpty() || expressionParser_->parseExpression(field->getIsPresent()).toInt())
+            if (rangeEnd > lastFieldEnd)
             {
-              reservedArea.addArea(field->name(), rangeBegin, rangeEnd);
-            }
-
-            if (!field->getTypeIdentifier().isEmpty() && fieldTypeIdentifiers.contains(field->getTypeIdentifier()))
-            {
-                int typeIdIndex = fieldTypeIdentifiers.indexOf(field->getTypeIdentifier());
-
-                QSharedPointer<Field> comparedField = selectedRegister->getFields()->at(typeIdIndex);
-                if (!fieldsHaveSimilarDefinitionGroups(field, comparedField))
-                {
-                    return false;
-                }
-            }
-
-            fieldNames.append(field->name());
-            fieldTypeIdentifiers.append(field->getTypeIdentifier());
-
-            if (field->getVolatile().toBool() == true && selectedRegister->getVolatile() == QLatin1String("false"))
-            {
-                return false;
-            }
-
-            if (docRevision_ == Document::Revision::Std14 && !fieldHasValidAccess(selectedRegister, field))
-            {
-                return false;
+                lastFieldEnd = rangeEnd;
             }
         }
     }
+    
+    // Mark fields with duplicate names as invalid.
+    for (auto const& name : foundFieldNames.keys())
+    {
+        if (auto const& duplicateNames = foundFieldNames.values(name);
+            duplicateNames.count() > 1)
+        {
+            std::for_each(duplicateNames.begin(), duplicateNames.end(),
+                [this](QSharedPointer<Field> field)
+                {
+                    fieldValidator_->setChildItemValidity(field, false);
+                });
 
-    return !reservedArea.hasOverlap();
+            fieldsAreValid = false;
+        }
+    }
+
+    if (!fieldsAreValid)
+    {
+        return false;
+    }
+
+    // Validate fields separately.
+    for (auto const& field : *fieldsCopy)
+    {
+        if (!fieldValidator_->validate(field))
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 //-----------------------------------------------------------------------------

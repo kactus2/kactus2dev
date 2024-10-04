@@ -31,6 +31,7 @@
 #include <IPXACTmodels/Component/validators/PortMapValidator.h>
 #include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
 #include <IPXACTmodels/Component/validators/MemoryMapValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterValidator.h>
 #include <IPXACTmodels/Component/validators/RegisterFileValidator.h>
@@ -50,10 +51,11 @@ ComponentEditorItem(model, libHandler, component, parent),
     memoryMaps_(component->getMemoryMaps()),
     visualizer_(nullptr),
     expressionParser_(expressionParser),
+    memoryMapsValidator_(),
     memoryMapValidator_(),
     mapInterface_()
 {
-    createMemoryMapValidator();
+    createValidators();
 
     setReferenceCounter(referenceCounter);
     setParameterFinder(parameterFinder);
@@ -183,9 +185,20 @@ void ComponentEditorMemMapsItem::addressUnitBitsChangedOnMemoryMap(int memoryMap
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorMemMapsItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorMemMapsItem::isValid() const
+{
+    auto memoryMapsAsNameGroup = CollectionValidators::itemListToNameGroupList(memoryMaps_);
+    memoryMapsValidator_->childrenHaveUniqueNames(memoryMapsAsNameGroup);
+
+    return ComponentEditorItem::isValid();
+}
+
+//-----------------------------------------------------------------------------
 // Function: componenteditormemmapsitem::createMemoryMapValidator()
 //-----------------------------------------------------------------------------
-void ComponentEditorMemMapsItem::createMemoryMapValidator()
+void ComponentEditorMemMapsItem::createValidators()
 {
     QSharedPointer<ParameterValidator> parameterValidator (
         new ParameterValidator(expressionParser_, component_->getChoices(), component_->getRevision()));
@@ -207,7 +220,11 @@ void ComponentEditorMemMapsItem::createMemoryMapValidator()
     QSharedPointer<MemoryMapValidator> memoryMapValidator(new MemoryMapValidator(
         expressionParser_, addressBlockValidator, subspaceValidator, component_));
 
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator(new MemoryMapsValidator(memoryMapValidator));
+
     memoryMapValidator_ = memoryMapValidator;
+
+    memoryMapsValidator_ = memoryMapsValidator;
 
     memoryMapValidator_->componentChange(component_);
 }

@@ -32,12 +32,13 @@ CPUValidator::CPUValidator(QSharedPointer<ParameterValidator> parameterValidator
     QSharedPointer<QList<QSharedPointer<AddressSpace> > > addressSpaces, 
     QSharedPointer<QList<QSharedPointer<MemoryMap> > > memoryMaps,
     Document::Revision revision) :
-    parameterValidator_(parameterValidator),
-    regionValidator_(new RegionValidator(expressionParser)),
-    expressionParser_(expressionParser),
-    addressSpaces_(addressSpaces),
-    memoryMaps_(memoryMaps),
-    revision_(revision)
+HierarchicalValidator(),
+parameterValidator_(parameterValidator),
+regionValidator_(new RegionValidator(expressionParser)),
+expressionParser_(expressionParser),
+addressSpaces_(addressSpaces),
+memoryMaps_(memoryMaps),
+revision_(revision)
 {
 
 }
@@ -95,7 +96,7 @@ bool CPUValidator::validate(QSharedPointer<Cpu> cpu) const
 		}
 	}
 
-	return true;
+	return validComparedToSiblings(cpu);
 }
 
 //-----------------------------------------------------------------------------

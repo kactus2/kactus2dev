@@ -64,7 +64,7 @@ public:
     *
     *      @return True, if the register file is valid IP-XACT, otherwise false.
     */
-    bool validate(QSharedPointer<RegisterFile> selectedRegisterFile, QString const& addressUnitBits, QString const& addressBlockWidth) const;
+    bool validate(QSharedPointer<RegisterFile> selectedRegisterFile, QString const& addressUnitBits, QString const& addressBlockWidth);
 
     /*!
     *  Check if the register file has a valid range.
@@ -85,7 +85,7 @@ public:
     *      @return True, if the register data is valid, otherwise false.
     */
     bool hasValidRegisterData(QSharedPointer<RegisterFile> selectedRegisterFile, QString const& addressUnitBits, 
-        QString const& addressBlockWidth) const;
+        QString const& addressBlockWidth);
 
     /*!
      *	Check if the register file has a valid structure (choice of elements).
@@ -158,38 +158,6 @@ private:
     qint64 getRegisterSizeInLAU(QSharedPointer<Register> targetRegister, qint64 addressUnitBits) const;
 
     /*!
-     *	Check the validity of a given child register of the register file being checked.
-     *  
-     *      @param [in] childRegister       The child register to check.
-     *      @param [in] addressUnitBits     The number of bits in an address unit.
-     *      @param [in] addressBlockWidth   The width of the enclosing address block.
-     *      @param [in] registerFileRange   The range of the parent register file.
-     *      @param [in/out] reservedArea    The currently reserved memory areas.
-     *      @param [in/out] registerNames   List of checked register names.
-     *
-     * 	    @return True, if the child register is valid, otherwise false.
-     */
-    bool childRegisterIsValid(QSharedPointer<Register> childRegister, QString const& addressUnitBits, 
-        QString const& addressBlockWidth, QString const& registerFileRange, MemoryReserve& reservedArea, 
-        QStringList& registerNames) const;
-
-    /*!
-     *	Check the validity of a given child register of the register file being checked.
-     *
-     *      @param [in] childRegisterFile   The child register file to check.
-     *      @param [in] addressUnitBits     The number of bits in an address unit.
-     *      @param [in] addressBlockWidth   The width of the enclosing address block.
-     *      @param [in] registerFileRange   The range of the parent register file.
-     *      @param [in/out] reservedArea        The currently reserved memory areas.
-     *      @param [in/out] registerFileNames           List of checked register file names.
-     *
-     * 	    @return True, if the child register is valid, otherwise false.
-     */
-    bool childRegisterFileIsValid(QSharedPointer<RegisterFile> childRegisterFile, QString const& addressUnitBits,
-        QString const& addressBlockWidth, QString const& registerFileRange, MemoryReserve& reservedArea, 
-        QStringList& registerFileNames) const;
-
-    /*!
      *	Find errors in a given child register of the register file being checked.
      * 
      *      @param [in/out] errors                      List of found errors.
@@ -204,8 +172,8 @@ private:
      *                                                  duplicate errors.
      */
     void findErrorsInChildRegister(QStringList& errors, QSharedPointer<Register> childRegister,
-        QString const& context, QString const& addressUnitBits, QString const& parentRegisterFileRange, 
-        QString const& addressBlockWidth, MemoryReserve& reservedArea, QStringList& registerNames, 
+        QString const& context, qint64 addressUnitBits, qint64 parentRegisterFileRange, 
+        qint64 addressBlockWidth, MemoryReserve& reservedArea, QStringList& registerNames, 
         QStringList& duplicateRegisterNames) const;
 
     /*!
@@ -223,9 +191,33 @@ private:
      *                                                  duplicate errors.
      */
     void findErrorsInChildRegisterFile(QStringList& errors, QSharedPointer<RegisterFile> childRegisterFile, 
-        QString const& context, QString const& addressUnitBits, QString const& parentRegisterFileRange, 
+        QString const& context, QString const& addressUnitBits, qint64 parentRegisterFileRange, 
         QString const& addressBlockWidth, MemoryReserve& reservedArea, QStringList& registerFileNames,
         QStringList& duplicateRegisterFileNames) const;
+
+    /*!
+     *	Mark overlapping registers and register files as invalid.
+     *
+     *      @param [in] regIter             Iterator pointing to current register(file).
+     *      @param [in] lastEndAddress      Currently biggest register end address found.
+     *      @param [in] registerFileRange   The address block range.
+     *      @param [in] addressUnitBits     The memory map address unit bits.
+     *      @param [in] targetIsRegister    Flag indicating if regIter points to register or register file.
+     *      @param [in] lastWasRegister     Flag indicating if the previous item was a register or register file.
+     *
+     * 	    @return True, if overlapping registers and/or register files were found, otherwise false.
+     */
+    bool markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress,
+        qint64 registerFileRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister);
+
+    /*!
+     *	Get register file range (size in AUB) taking dimensions into account.
+     *
+     *      @param [in] targetRegisterFile     The register file to get range of.
+     *
+     * 	    @return The true register file range.
+     */
+    qint64 getTrueRegisterFileRange(QSharedPointer<RegisterFile> targetRegisterFile) const;
 
     //-----------------------------------------------------------------------------
     // Data.

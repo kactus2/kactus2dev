@@ -16,6 +16,7 @@
 
 class IndirectInterface;
 class IndirectInterfaceValidator;
+class IndirectInterfacesValidator;
 class ExpressionParser;
 class BusInterfaceInterface;
 
@@ -92,6 +93,13 @@ public:
 	*/
 	virtual void createChild(int index) override;
 
+	/*!
+	 *  Check the validity of this item.
+	 *
+	 *      @return bool True if item is in valid state.
+	 */
+	bool isValid() const override;
+
 private:
 
     //-----------------------------------------------------------------------------
@@ -104,8 +112,11 @@ private:
     //! The expression parser used to define the results of expressions.
     QSharedPointer<ExpressionParser> expressionParser_;
 
-    //! Validator for bus interfaces.
-    QSharedPointer<IndirectInterfaceValidator> validator_;
+    //! Validator for indirect interfaces.
+    QSharedPointer<IndirectInterfaceValidator> singleIndirectInterfaceValidator_;
+
+    //! Validator for validating indirect interfaces together.
+    QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
 
     //! The parent window.
     QWidget* parentWnd_;

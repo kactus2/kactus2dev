@@ -291,6 +291,18 @@
     <ClInclude Include="include\ModeReferenceInterface.h">
       <Filter>Header Files\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\LibraryLoader.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\NullChannel.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ExpressionParserInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ModeConditionParserInterface.h">
+      <Filter>Header Files\include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utilities\ConsoleMediator.cpp">
@@ -503,6 +515,12 @@
     <ClCompile Include="interfaces\component\AccessPolicyInterface.cpp">
       <Filter>Source Files\interfaces\component</Filter>
     </ClCompile>
+    <ClCompile Include="utilities\NullChannel.cpp">
+      <Filter>Source Files\utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="include\ModeConditionParserInterface.cpp">
+      <Filter>Source Files\expressions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentInstanceInterface.h">
@@ -535,9 +553,6 @@
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\LibraryItem.h">
-      <Filter>Header Files\include</Filter>
-    </QtMoc>
-    <QtMoc Include="include\LibraryLoader.h">
       <Filter>Header Files\include</Filter>
     </QtMoc>
     <QtMoc Include="include\ComponentInstanceParameterFinder.h">

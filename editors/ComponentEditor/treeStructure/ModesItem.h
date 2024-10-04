@@ -19,6 +19,7 @@
 class ExpressionParser;
 class Mode;
 class ModeValidator;
+class HierarchicalValidator;
 
 //-----------------------------------------------------------------------------
 //! The Modes-item used in the component editor navigation tree.
@@ -88,6 +89,13 @@ public:
      */
     virtual void createChild(int index);
 
+    /*!
+     *  Check the validity of this item.
+     *
+     *      @return bool True if item is in valid state.
+     */
+    bool isValid() const override;
+
 private:
 	//! No copying
     ModesItem(const ModesItem& other);
@@ -99,6 +107,12 @@ private:
     QSharedPointer<QList<QSharedPointer<Mode> > > modes_;
 
     ExpressionSet expressions_;
+
+    //! The mode validator to use.
+    QSharedPointer<ModeValidator> modeValidator_;
+
+    //! The validator to validate modes together.
+    QSharedPointer<HierarchicalValidator> modesValidator_;
 
 };
 

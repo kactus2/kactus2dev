@@ -29,6 +29,7 @@
 #include <IPXACTmodels/Component/AddressSpace.h>
 
 #include <IPXACTmodels/Component/validators/AddressSpaceValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 #include <IPXACTmodels/Component/validators/MemoryMapBaseValidator.h>
 #include <IPXACTmodels/Component/validators/AddressBlockValidator.h>
 #include <IPXACTmodels/Component/validators/SubspaceMapValidator.h>
@@ -62,7 +63,7 @@ blockInterface_()
 
     createAddressBlockInterface();
 
-	foreach (QSharedPointer<AddressSpace> addrSpace, *addressSpaces_)
+	for (QSharedPointer<AddressSpace> addrSpace : *addressSpaces_)
     {
 		QSharedPointer<ComponentEditorAddrSpaceItem> addrItem(
 			new ComponentEditorAddrSpaceItem(addrSpace, model, libHandler, component, referenceCounter_,
@@ -144,6 +145,16 @@ void ComponentEditorAddrSpacesItem::createChild( int index )
 }
 
 //-----------------------------------------------------------------------------
+// Function: ComponentEditorAddrSpacesItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorAddrSpacesItem::isValid() const
+{
+    auto addressSpacesAsNameGroups = CollectionValidators::itemListToNameGroupList(addressSpaces_);
+    addressSpacesValidator_->childrenHaveUniqueNames(addressSpacesAsNameGroups);
+    return ComponentEditorItem::isValid();
+}
+
+//-----------------------------------------------------------------------------
 // Function: componenteditoraddrspacesitem::createAddressSpaceValidator()
 //-----------------------------------------------------------------------------
 void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
@@ -175,6 +186,8 @@ void ComponentEditorAddrSpacesItem::createAddressSpaceValidator()
         new AddressSpaceValidator(expressionParser_, localMapValidator, parameterValidator));
 
     spaceValidator_ = addressSpaceValidator;
+
+    addressSpacesValidator_ = QSharedPointer<AddressSpacesValidator>(new AddressSpacesValidator(addressSpaceValidator));
 }
 
 //-----------------------------------------------------------------------------

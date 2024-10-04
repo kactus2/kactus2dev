@@ -31,6 +31,7 @@
 //-----------------------------------------------------------------------------
 PortValidator::PortValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<QList<QSharedPointer<View> > > views):
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 typeValidator_(new PortTypeValidator(views))
 {
@@ -68,7 +69,7 @@ bool PortValidator::validate(QSharedPointer<Port> port) const
 {
     return hasValidName(port->name()) && hasValidIsPresent(port) && hasValidArrays(port) &&
         (port->getTransactional() || port->getWire()) && hasValidWire(port) &&
-        hasValidTransactionalPort(port) ;
+        hasValidTransactionalPort(port) && validComparedToSiblings(port);
 }
 
 //-----------------------------------------------------------------------------

@@ -31,6 +31,7 @@
 #include <IPXACTmodels/Component/validators/InstantiationsValidator.h>
 #include <IPXACTmodels/Component/validators/FileValidator.h>
 #include <IPXACTmodels/Component/validators/FileSetValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: InstantiationsItem::InstantiationsItem()
@@ -41,15 +42,16 @@ InstantiationsItem::InstantiationsItem(ComponentEditorTreeModel* model, LibraryI
     QSharedPointer<ExpressionParser> expressionParser, ComponentEditorItem* parent) :
 ComponentEditorItem(model, libHandler, component, parent),
 expressionParser_(expressionParser),
-validator_(new InstantiationsValidator(expressionParser, component->getFileSets(),
-    QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices(),
-        component->getRevision())), libHandler)),
+parameterValidator_(new ParameterValidator(expressionParser, component->getChoices(),
+    component->getRevision())),
+validator_(new InstantiationsValidator(expressionParser, component->getFileSets(), parameterValidator_, libHandler)),
+allInstantiationsValidator_(new AllInstantiationsValidator(validator_)),
 componentInstantiationsItem_(0),
 designConfigurationInstantiationsItem_(
-    new DesignConfigurationInstantiationsItem(model, libHandler, component, validator_, referenceCounter,
+    new DesignConfigurationInstantiationsItem(model, libHandler, component, allInstantiationsValidator_, validator_, parameterValidator_, referenceCounter,
         parameterFinder, expressionFormatter, expressionParser, this)),
-designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, component, validator_, parameterFinder,
-    referenceCounter, this)),
+designInstantiationsItem_(new DesignInstantiationsItem(model, libHandler, component, validator_, 
+    allInstantiationsValidator_, parameterValidator_, expressionParser_, parameterFinder, referenceCounter, this)),
 componentInstantiationInterface_()
 {
     setParameterFinder(parameterFinder);
@@ -62,8 +64,8 @@ componentInstantiationInterface_()
     constructInterfaces();
 
     componentInstantiationsItem_ = QSharedPointer<ComponentInstantiationsItem>(new ComponentInstantiationsItem(
-        model, libHandler, component, validator_, referenceCounter, parameterFinder, expressionFormatter,
-        expressionParser, componentInstantiationInterface_, this));
+        model, libHandler, component, validator_, allInstantiationsValidator_, referenceCounter, parameterFinder,
+        expressionFormatter, expressionParser, componentInstantiationInterface_, this));
 
     connect(componentInstantiationsItem_.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);

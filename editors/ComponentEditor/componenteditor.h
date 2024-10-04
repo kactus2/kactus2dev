@@ -71,6 +71,7 @@ class PortMapInterface;
 class TransparentBridgeInterface;
 class PortMapValidator;
 class BusInterfaceInterface;
+class ModeConditionParserInterface;
 
 //-----------------------------------------------------------------------------
 //! The editor to edit/packet IP-Xact components.
@@ -399,8 +400,11 @@ private:
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+	//! The mode condition parser interface to use in the component validator.
+	QSharedPointer<ModeConditionParserInterface> modeConditionParserInterface_;
+
     //! The used component validator.
-    ComponentValidator validator_;
+    QSharedPointer<ComponentValidator> validator_;
 
     //! Parameter reference tree.
     ComponentParameterReferenceTree* parameterReferenceTree_ = nullptr;

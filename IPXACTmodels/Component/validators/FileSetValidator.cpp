@@ -24,7 +24,8 @@
 // Function: SystemVerilogValidator::SystemVerilogValidator()
 //-----------------------------------------------------------------------------
 FileSetValidator::FileSetValidator(QSharedPointer<FileValidator> fileValidator,
-    QSharedPointer<ExpressionParser> expressionParser):
+	QSharedPointer<ExpressionParser> expressionParser) :
+HierarchicalValidator(),
 fileValidator_(fileValidator),
 expressionParser_(expressionParser)
 {
@@ -58,7 +59,7 @@ bool FileSetValidator::validate(QSharedPointer<FileSet> fileSet) const
 		}
 	}
 
-	return true;
+	return validComparedToSiblings(fileSet);
 }
 
 //-----------------------------------------------------------------------------

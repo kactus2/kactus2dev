@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -26,7 +27,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for memory block.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryBlockValidator
+class IPXACTMODELS_EXPORT MemoryBlockValidator : public HierarchicalValidator
 {
 public:
 

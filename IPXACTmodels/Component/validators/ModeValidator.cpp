@@ -25,9 +25,10 @@
 ModeValidator::ModeValidator(
 	QSharedPointer<Component> component, 
 	QSharedPointer<ExpressionParser> expressionParser):
-	portValidator_(new PortSliceValidator(component, expressionParser)),
-	fieldValidator_(new FieldSliceValidator(component, expressionParser)),
-	component_(component),
+HierarchicalValidator(),
+portValidator_(new PortSliceValidator(component, expressionParser)),
+fieldValidator_(new FieldSliceValidator(component, expressionParser)),
+component_(component),
 expressionParser_(expressionParser)
 {
 
@@ -62,6 +63,11 @@ bool ModeValidator::validate(QSharedPointer<Mode> mode) const
 	}
 
 	if (hasValidFieldSlices(mode) == false)
+	{
+		return false;
+	}
+
+	if (validComparedToSiblings(mode) == false)
 	{
 		return false;
 	}
@@ -215,4 +221,22 @@ QSharedPointer<PortSliceValidator> ModeValidator::getPortSliceValidator() const
 QSharedPointer<FieldSliceValidator> ModeValidator::getFieldSliceValidator() const
 {
     return fieldValidator_;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::setConditionParser()
+//-----------------------------------------------------------------------------
+void ModeValidator::setConditionParser(QSharedPointer<ExpressionParser> expressionParser)
+{
+    expressionParser_ = expressionParser;
+    portValidator_->setExpressionParser(expressionParser);
+    fieldValidator_->setExpressionParser(expressionParser);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ModeValidator::getConditionParser()
+//-----------------------------------------------------------------------------
+QSharedPointer<ExpressionParser> ModeValidator::getConditionParser() const
+{
+    return expressionParser_;
 }

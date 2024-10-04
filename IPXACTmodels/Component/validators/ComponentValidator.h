@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
+
 #include <QSharedPointer>
 #include <QString>
 #include <QVector>
@@ -44,6 +46,7 @@ class AssertionValidator;
 
 class ExpressionParser;
 class LibraryInterface;
+class ModeConditionParserBaseInterface;
 
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:component.
@@ -55,10 +58,13 @@ public:
     /*!
      *  The constructor.
      *
-     *      @param [in] parser      The used expression parser.
-     *      @param [in] library     The used library interface.
+     *      @param [in] parser                       The used expression parser.
+     *      @param [in] modeConditionParserInterface The interface used to create and manage the mode condition parser.
+     *      @param [in] library                      The used library interface.
      */
-    ComponentValidator(QSharedPointer<ExpressionParser> parser, LibraryInterface* library, Document::Revision docRevision);
+    ComponentValidator(QSharedPointer<ExpressionParser> parser, 
+        QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface,
+        LibraryInterface* library, Document::Revision docRevision);
 
 	//! The destructor.
 	~ComponentValidator() = default;
@@ -158,31 +164,13 @@ public:
     bool hasValidViews(QSharedPointer<Component> component);
 
     /*!
-     *  Check if the contained component instantiations are valid.
+     *  Check if the contained instantiations are valid.
      *
      *      @param [in] component   The selected component.
      *
-     *      @return True, if the component instantiations are valid, otherwise false.
+     *      @return True, if the instantiations of the selected component are valid, otherwise false.
      */
-    bool hasValidComponentInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignInstantiations(QSharedPointer<Component> component);
-
-    /*!
-     *  Check if the contained design configuration instantiations are valid.
-     *
-     *      @param [in] component   The selected component.
-     *
-     *      @return True, if the design configuration instantiations are valid, otherwise false.
-     */
-    bool hasValidDesignConfigurationInstantiations(QSharedPointer<Component> component);
+    bool hasValidInstantiations(QSharedPointer<Component> component);
 
     /*!
      *  Check if the contained ports are valid.
@@ -578,6 +566,44 @@ private:
 
     //! The used assertion validator.
     QSharedPointer<AssertionValidator> assertionValidator_;
+
+    //! Top-level validators
+    
+    //! The memory maps validator.
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator_;
+
+    //! The file sets validator.
+    QSharedPointer<FileSetsValidator> fileSetsValidator_;
+
+    //! THe address spaces validator.
+    QSharedPointer<AddressSpacesValidator> addressSpacesValidator_;
+
+    //! Validator for validating all instantiations together.
+    QSharedPointer<AllInstantiationsValidator> allInstantiationsValidator_;
+
+    //! Validator for validating all component views together.
+    QSharedPointer<ViewsValidator> viewsValidator_;
+
+    //! Validator for validating all ports together.
+    QSharedPointer<PortsValidator> portsValidator_;
+
+    //! Validator for validating all bus interfaces together.
+    QSharedPointer<BusInterfacesValidator> busIfsValidator_;
+
+    //! Validator for validating all indirect interfaces together.
+    QSharedPointer<IndirectInterfacesValidator> indirectInterfacesValidator_;
+
+    //! Interface for creating and managing mode condition parser.
+    QSharedPointer<ModeConditionParserBaseInterface> modeConditionParserInterface_;
+
+    //! The mode condition parser to use.
+    QSharedPointer<ExpressionParser> modeConditionParser_;
+
+    //! Validator for validating all cpus together.
+    QSharedPointer<CPUsValidator> cpusValidator_;
+
+    //! Validator for validating all power domains together.
+    QSharedPointer<PowerDomainsValidator> powerDomainsValidator_;
 };
 
 #endif // COMPONENTVALIDATOR_H

@@ -24,6 +24,7 @@ class MemoryMapValidator;
 class MemoryMapInterface;
 class BusInterfaceInterface;
 class ParameterValidator;
+class MemoryMapsValidator;
 
 //-----------------------------------------------------------------------------
 //! The Memory maps-item in the component navigation tree.
@@ -151,9 +152,16 @@ private:
 	ComponentEditorMemMapsItem& operator=(const ComponentEditorMemMapsItem& other);
 
     /*!
+     *  Check the validity of this item.
+     *
+     *      @return bool True if item is in valid state.
+     */
+    virtual bool isValid() const override;
+
+    /*!
      *  Create the necessary validators for memory maps.
      */
-    void createMemoryMapValidator();
+    void createValidators();
 
     /*!
      *  Create the interfaces for memory maps.
@@ -182,6 +190,9 @@ private:
     //! The expression parser to use.
     QSharedPointer<ExpressionParser> expressionParser_;
 
+    //! The current memory maps validator
+    QSharedPointer<MemoryMapsValidator> memoryMapsValidator_;
+    
     //! The current memory map validator.
     QSharedPointer<MemoryMapValidator> memoryMapValidator_;
 

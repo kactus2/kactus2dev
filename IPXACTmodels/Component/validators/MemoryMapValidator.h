@@ -68,7 +68,7 @@ public:
      *
      *      @return True, if the memory map is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<MemoryMap> memoryMap) const;
+    virtual bool validate(QSharedPointer<MemoryMap> memoryMap);
 
     /*!
      *  Check if the memory map contains valid address unit bits.
@@ -86,7 +86,7 @@ public:
      *
      *      @return True, if the memory remaps are valid, otherwise false.
      */
-    bool hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMap) const;
+    bool hasValidMemoryRemaps(QSharedPointer<MemoryMap> memoryMap);
 
     /*!
      *  Check if the memory remap remap state is valid.
@@ -127,7 +127,7 @@ public:
      *      @param [in] context     Context to help locate the error.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMap> memoryMap,
-        QString const& context) const;
+        QString const& context);
 
 private:
     
@@ -178,7 +178,7 @@ private:
      *      @param [in] context     Context to help locate the error.
      */
     void findErrorsInMemoryRemaps(QVector<QString>& errors, QSharedPointer<MemoryMap> memoryMap,
-        QString const& context) const;
+        QString const& context);
 
     /*!
      *	Find errors in the structure of a memory remap.

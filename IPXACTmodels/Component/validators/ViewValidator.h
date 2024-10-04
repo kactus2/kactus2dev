@@ -15,6 +15,8 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 #include <IPXACTmodels/Component/View.h>
 
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
+
 #include <QString>
 #include <QVector>
 #include <QSharedPointer>
@@ -28,7 +30,7 @@ class DesignConfigurationInstantiation;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:View.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ViewValidator
+class IPXACTMODELS_EXPORT ViewValidator : public HierarchicalValidator
 {
 public:
 

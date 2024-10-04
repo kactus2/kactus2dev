@@ -194,6 +194,7 @@
     <ClCompile Include="common\validators\CellSpecificationValidator.cpp" />
     <ClCompile Include="common\validators\ChoiceValidator.cpp" />
     <ClCompile Include="common\validators\CommonItemsValidator.cpp" />
+    <ClCompile Include="common\validators\HierarchicalValidator.cpp" />
     <ClCompile Include="common\validators\namevalidator.cpp" />
     <ClCompile Include="common\validators\NMTokenValidator.cpp" />
     <ClCompile Include="common\validators\ParameterValidator.cpp" />
@@ -319,6 +320,7 @@
     <ClCompile Include="Component\validators\AddressSpaceValidator.cpp" />
     <ClCompile Include="Component\validators\BusInterfaceValidator.cpp" />
     <ClCompile Include="Component\validators\ChannelValidator.cpp" />
+    <ClCompile Include="Component\validators\CollectionValidators.cpp" />
     <ClCompile Include="Component\validators\ComponentGeneratorValidator.cpp" />
     <ClCompile Include="Component\validators\ComponentValidator.cpp" />
     <ClCompile Include="Component\validators\CPUValidator.cpp" />
@@ -434,6 +436,7 @@
     <ClInclude Include="common\TagData.h" />
     <ClInclude Include="common\validators\ChoiceValidator.h" />
     <ClInclude Include="common\validators\CommonItemsValidator.h" />
+    <ClInclude Include="common\validators\HierarchicalValidator.h" />
     <ClInclude Include="common\validators\QualifierValidator.h" />
     <ClInclude Include="Component\AccessPolicy.h" />
     <ClInclude Include="Component\AccessPolicyReader.h" />
@@ -471,6 +474,7 @@
     <ClInclude Include="Component\SubSpaceMap.h" />
     <ClInclude Include="Component\SubspaceMapReader.h" />
     <ClInclude Include="Component\SubSpaceMapWriter.h" />
+    <ClInclude Include="Component\validators\CollectionValidators.h" />
     <ClInclude Include="Component\validators\FieldAccessPolicyValidator.h" />
     <ClInclude Include="Component\validators\FieldReferenceValidator.h" />
     <ClInclude Include="Component\validators\FieldSliceValidator.h" />

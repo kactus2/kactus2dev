@@ -19,6 +19,7 @@
 
 #include <IPXACTmodels/Component/validators/PortSliceValidator.h>
 #include <IPXACTmodels/Component/validators/FieldSliceValidator.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -30,7 +31,7 @@ class BuildCommand;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:File.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT ModeValidator
+class IPXACTMODELS_EXPORT ModeValidator : public HierarchicalValidator
 {
 public:
 
@@ -102,6 +103,15 @@ public:
 
     //! Get the field slice validator.
     QSharedPointer<FieldSliceValidator> getFieldSliceValidator() const;
+
+    /*!
+     *	Set the mode condition expression parser.
+     *  
+     *      @param [in] expressionParser     The parser to set.
+     */
+    void setConditionParser(QSharedPointer<ExpressionParser> expressionParser);
+
+    QSharedPointer<ExpressionParser> getConditionParser() const;
 
 private:
     

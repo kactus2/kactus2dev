@@ -17,6 +17,8 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Component/validators/IndirectInterfaceValidator.h>
 #include <IPXACTmodels/common/validators/ParameterValidator.h>
+#include <IPXACTmodels/Component/IndirectInterface.h>
+#include <IPXACTmodels/Component/validators/CollectionValidators.h>
 
 //-----------------------------------------------------------------------------
 // Function: componenteditorIndirectInterfacesitem::ComponentEditorIndirectInterfacesItem()
@@ -29,9 +31,10 @@ ComponentEditorIndirectInterfacesItem::ComponentEditorIndirectInterfacesItem(Com
 ComponentEditorItem(model, libHandler, component, parent),
 indirectInterfaces_(component->getIndirectInterfaces()),
 expressionParser_(expressionParser),
-validator_(new IndirectInterfaceValidator(component, expressionParser,
+singleIndirectInterfaceValidator_(new IndirectInterfaceValidator(component, expressionParser,
     QSharedPointer<ParameterValidator>(new ParameterValidator(expressionParser, component->getChoices(), 
         component_->getRevision())))),
+indirectInterfacesValidator_(new IndirectInterfacesValidator(singleIndirectInterfaceValidator_)),
 parentWnd_(parentWnd),
 busInterface_(busInterface)
 {
@@ -43,7 +46,7 @@ busInterface_(busInterface)
     {
 		QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(new SingleIndirectInterfaceItem(
             indirectInterface, model, libHandler, component, referenceCounter_, parameterFinder_,
-            expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd));
+            expressionFormatter_, expressionParser_, singleIndirectInterfaceValidator_, busInterface_, this, parentWnd));
 
         connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
             this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
@@ -77,7 +80,7 @@ ItemEditor* ComponentEditorIndirectInterfacesItem::editor()
 {
 	if (!editor_)
     {
-		editor_ = new IndirectInterfacesEditor(libHandler_, component_, validator_);
+		editor_ = new IndirectInterfacesEditor(libHandler_, component_, singleIndirectInterfaceValidator_);
 		editor_->setProtection(locked_);
 		connect(editor_, SIGNAL(contentChanged()), this, SLOT(onEditorChanged()), Qt::UniqueConnection);
 		connect(editor_, SIGNAL(childAdded(int)), this, SLOT(onAddChild(int)), Qt::UniqueConnection);
@@ -105,11 +108,21 @@ void ComponentEditorIndirectInterfacesItem::createChild(int index)
 {
 	QSharedPointer<SingleIndirectInterfaceItem> interfaceItem(new SingleIndirectInterfaceItem(
         indirectInterfaces_->at(index), model_, libHandler_, component_, referenceCounter_, parameterFinder_,
-        expressionFormatter_, expressionParser_, validator_, busInterface_, this, parentWnd_));
+        expressionFormatter_, expressionParser_, singleIndirectInterfaceValidator_, busInterface_, this, parentWnd_));
 	interfaceItem->setLocked(locked_);
 
     connect(interfaceItem.data(), SIGNAL(openReferenceTree(QString const&, QString const&)),
         this, SIGNAL(openReferenceTree(QString const&, QString const&)), Qt::UniqueConnection);
 
 	childItems_.insert(index, interfaceItem);
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentEditorIndirectInterfacesItem::isValid()
+//-----------------------------------------------------------------------------
+bool ComponentEditorIndirectInterfacesItem::isValid() const
+{
+    auto indirectInterfacesAsNameGroup = CollectionValidators::itemListToNameGroupList(indirectInterfaces_);
+    indirectInterfacesValidator_->childrenHaveUniqueNames(indirectInterfacesAsNameGroup);
+    return ComponentEditorItem::isValid();
 }

@@ -189,6 +189,14 @@ void PortSliceValidator::componentChange(QSharedPointer<Component> newComponent)
 }
 
 //-----------------------------------------------------------------------------
+// Function: PortSliceValidator::setExpressionParser()
+//-----------------------------------------------------------------------------
+void PortSliceValidator::setExpressionParser(QSharedPointer<ExpressionParser> expressionParser)
+{
+    expressionParser_ = expressionParser;
+}
+
+//-----------------------------------------------------------------------------
 // Function: PortSliceValidator::isInValidRange()
 //-----------------------------------------------------------------------------
 bool PortSliceValidator::isInValidRange(QString const& value, int leftBound, int rightBound) const

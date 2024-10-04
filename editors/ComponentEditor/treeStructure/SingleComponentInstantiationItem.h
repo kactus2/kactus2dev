@@ -21,6 +21,7 @@ class ComponentInstantiation;
 class ExpressionParser;
 class InstantiationsValidator;
 class ComponentInstantiationInterface;
+class ParameterValidator;
 
 //-----------------------------------------------------------------------------
 //! The item for one component instantiation in the component editor's navigation tree.
@@ -94,6 +95,9 @@ private:
 
     //! Validator for component instantiations.
     QSharedPointer<InstantiationsValidator> validator_;
+
+	//! Parameter validator to be used by instantiation validator.
+	QSharedPointer<ParameterValidator> parameterValidator_;
 
     //! The used expression parser.
     QSharedPointer<ExpressionParser> expressionParser_;

@@ -21,6 +21,7 @@ class View;
 
 class ExpressionParser;
 class ViewValidator;
+class ViewsValidator;
 class InstantiationsValidator;
 class ModuleParameterInterface;
 
@@ -94,6 +95,13 @@ public:
 	 */
 	virtual void createChild(int index);
 
+	/*!
+	 *  Check the validity of this item and sub items.
+	 *
+	 *      @return bool True if item is in valid state.
+	 */
+	bool isValid() const override;
+
 private:
 
 	//! No copying.
@@ -119,6 +127,9 @@ private:
 
     //! The validator used for views.
     QSharedPointer<ViewValidator> viewValidator_;
+
+	//! The validator used for validating views together.
+	QSharedPointer<ViewsValidator> viewsValidator_;
 
     //! Interface for accessing module parameters.
     ModuleParameterInterface* moduleParameterInterface_;

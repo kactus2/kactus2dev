@@ -43,7 +43,7 @@ bool ViewValidator::validate(QSharedPointer<View> view) const
 {
     return hasValidName(view->name()) && hasValidIsPresent(view) && hasValidEnvironmentIdentifiers(view) &&
         hasValidComponentInstantiationReference(view) && hasValidDesignInstantiationReference(view) &&
-        hasValidDesignConfigurationInstantiationReference(view);
+        hasValidDesignConfigurationInstantiationReference(view) && validComparedToSiblings(view);
 }
 
 //-----------------------------------------------------------------------------

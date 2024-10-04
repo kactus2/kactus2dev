@@ -110,6 +110,13 @@ public:
      */
     void componentChange(QSharedPointer<Component> newComponent);
 
+    /*!
+     *	Set the expression parser to be used.
+     *
+     *      @param [in] expressionParser     The expression parser to set.
+     */
+    void setExpressionParser(QSharedPointer<ExpressionParser> expressionParser);
+
 private:
 
     /* Check if the given value is in the given range.

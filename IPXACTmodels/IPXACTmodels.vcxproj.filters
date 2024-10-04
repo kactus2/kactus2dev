@@ -1031,6 +1031,12 @@
     <ClCompile Include="common\DocumentUtils.cpp">
       <Filter>Source Files\common</Filter>
     </ClCompile>
+    <ClCompile Include="Component\validators\CollectionValidators.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="common\validators\HierarchicalValidator.cpp">
+      <Filter>Source Files\Component\validators</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BusDefinition\BusDefinition.h">
@@ -1785,6 +1791,12 @@
     </ClInclude>
     <ClInclude Include="common\DocumentUtils.h">
       <Filter>Header Files\common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\validators\HierarchicalValidator.h">
+      <Filter>Header Files\common\validators</Filter>
+    </ClInclude>
+    <ClInclude Include="Component\validators\CollectionValidators.h">
+      <Filter>Header Files\Component\validators</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,7 @@
 class ExpressionParser;
 class AddressBlock;
 class Register;
+class RegisterBase;
 class RegisterFile;
 class ResetType;
 class Component;
@@ -87,7 +88,7 @@ public:
      *
      *      @return True, if the address block is valid IP-XACT, otherwise false.
      */
-    bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
+    bool validate(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits);
 
     /*!
      *  Check if the address block contains a valid range.
@@ -115,7 +116,7 @@ public:
      *
      *      @return True, if the register data is valid, otherwise false.
      */
-    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits) const;
+    bool hasValidRegisterData(QSharedPointer<AddressBlock> addressBlock, QString const& addressUnitBits);
 
     /*!
      *  Check if the register size is not within address block width.
@@ -196,6 +197,29 @@ public:
         QString const& addressUnitBits, QString const& context) const;
 
 private:
+
+    /*!
+     *	Mark overlapping registers as invalid.
+     *
+     *      @param [in] regIter             Iterator pointing to current register(file).
+     *      @param [in] lastEndAddress      Currently biggest register end address found.
+     *      @param [in] addressBlockRange   The address block range.
+     *      @param [in] addressUnitBits     The memory map address unit bits.
+     *      @param [in] targetIsRegister    Flag indicating if regIter points to register or register file.
+     *      @param [in] lastWasRegister     Flag indicating if the previous item was a register or register file.
+     *
+     * 	    @return True, if overlapping registers and/or register files were found, otherwise false.
+     */
+    bool markRegisterOverlap(QList<QSharedPointer<RegisterBase> >::iterator regIter, qint64& lastEndAddress, qint64 addressBlockRange, qint64 addressUnitBits, bool targetIsRegister, bool lastWasRegister);
+
+    /*!
+     *	Mark registers with duplicate names as invalid.
+     *
+     *      @param [in] foundNames     The registers and register files to check.
+     *
+     * 	    @return True, if duplicate names were found, otherwise false.
+     */
+    bool markDuplicateNames(QMultiHash<QString, QSharedPointer<RegisterBase>> const& foundNames);
 
     /*!
      *  Get the type of the memory block.

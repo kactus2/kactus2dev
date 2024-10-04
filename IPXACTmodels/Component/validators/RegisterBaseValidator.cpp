@@ -29,6 +29,7 @@
 RegisterBaseValidator::RegisterBaseValidator(QSharedPointer<ExpressionParser> expressionParser,
     QSharedPointer<ParameterValidator> parameterValidator,
     Document::Revision docRevision) :
+HierarchicalValidator(),
 expressionParser_(expressionParser),
 parameterValidator_(parameterValidator),
 docRevision_(docRevision),
@@ -45,10 +46,11 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
     if (docRevision_ == Document::Revision::Std14)
     {
         return hasValidName(selectedRegisterBase) &&
-               hasValidIsPresent(selectedRegisterBase) &&
-               hasValidDimensions(selectedRegisterBase) &&
-               hasValidAddressOffset(selectedRegisterBase) &&
-               hasValidParameters(selectedRegisterBase);
+            hasValidIsPresent(selectedRegisterBase) &&
+            hasValidDimensions(selectedRegisterBase) &&
+            hasValidAddressOffset(selectedRegisterBase) &&
+            hasValidParameters(selectedRegisterBase) &&
+            validComparedToSiblings(selectedRegisterBase);
     }
     else if (docRevision_ == Document::Revision::Std22)
     {
@@ -56,7 +58,8 @@ bool RegisterBaseValidator::validate(QSharedPointer<RegisterBase> selectedRegist
             hasValidAddressOffset(selectedRegisterBase) &&
             hasValidMemoryArray(selectedRegisterBase) &&
             hasValidAccessPolicies(selectedRegisterBase) &&
-            hasValidParameters(selectedRegisterBase);
+            hasValidParameters(selectedRegisterBase) &&
+            validComparedToSiblings(selectedRegisterBase);
     }
 
     return false;

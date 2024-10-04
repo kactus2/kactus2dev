@@ -15,6 +15,7 @@
 #include <IPXACTmodels/ipxactmodels_global.h>
 
 #include <IPXACTmodels/common/Document.h>
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
 
 #include <QSharedPointer>
 #include <QString>
@@ -35,9 +36,10 @@ class Segment;
 //-----------------------------------------------------------------------------
 //! Validator for the base ipxact:memoryMap.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT MemoryMapBaseValidator
+class IPXACTMODELS_EXPORT MemoryMapBaseValidator : public HierarchicalValidator
 {
 public:
+
 
 	/*!
 	 *  The constructor.
@@ -88,7 +90,7 @@ public:
      *
      *      @return True, if the memory map base is valid IP-XACT, otherwise false.
      */
-    virtual bool validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits) const;
+    virtual bool validate(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits);
 
     /*!
      *  Check if the memory map base contains a valid name.
@@ -116,7 +118,7 @@ public:
      *
      *      @return True, if the memory blocks are valid, otherwise false.
      */
-    bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits) const;
+    bool hasValidMemoryBlocks(QSharedPointer<MemoryMapBase> memoryMapBase, QString const& addressUnitBits);
 
     /*!
      *  Locate errors within a memory map base.
@@ -127,7 +129,7 @@ public:
      *      @param [in] context             Context to help locate the error.
      */
     virtual void findErrorsIn(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-        QString const& addressUnitBits, QString const& context) const;
+        QString const& addressUnitBits, QString const& context);
 
 protected:
 
@@ -143,17 +145,15 @@ protected:
 
 private:
 
+
     /*!
-     *  Check if the memory block overlaps with another memory block.
+     *	Mark address blocks and subspace maps as invalid if they have duplicate names.
      *
-     *      @param [in] memoryBlock         The selected memory block.
-     *      @param [in] memoryMapBase       The selected memory map base.
-     *      @param [in] memoryBlockIndex    The index of the memory block.
+     *      @param [in] foundNames     The found names and associated memory blocks.
      *
-     *      @return True, if the memory blocks overlap, otherwise false.
+     * 	    @return True, if duplicate names were found, otherwise false.
      */
-    bool memoryBlockOverlaps(QSharedPointer<MemoryBlockBase> memoryBlock,
-        QSharedPointer<MemoryMapBase> memoryMapBase, int memoryBlockIndex) const;
+    bool markBlocksWithDuplicateNames(QMultiHash<QString, QSharedPointer<NameGroup>> const& foundNames);
 
     /*!
      *  Check if two memory blocks overlap.
@@ -194,14 +194,14 @@ private:
         QSharedPointer<AddressSpace> containingSpace) const;
 
     /*!
-     *  Check if the address block width is a multiplication of address unit bits.
+     *  Check if the address block width is a multiple of address unit bits.
      *
      *      @param [in] addressUnitBits     The address unit bits.
      *      @param [in] addressBlock        The selected address block.
      *
-     *      @return True, if the address block width is a multiplication of address unit bits, otherwise false.
+     *      @return True, if the address block width is a multiple of address unit bits, otherwise false.
      */
-    bool addressBlockWidthIsMultiplicationOfAUB(QString const& addressUnitBits,
+    bool addressBlockWidthIsMultipleOfAUB(QString const& addressUnitBits,
         QSharedPointer<AddressBlock> addressBlock) const;
     
     /*!
@@ -233,7 +233,7 @@ private:
      *      @param [in] context             Context to help locate the error.
      */
     void findErrorsInAddressBlocks(QVector<QString>& errors, QSharedPointer<MemoryMapBase> memoryMapBase,
-        QString const& addressUnitBits, QString const& context) const;
+        QString const& addressUnitBits, QString const& context);
 
     /*!
      *  Find errors within overlapping memory blocks.

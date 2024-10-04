@@ -16,6 +16,8 @@
 
 #include <IPXACTmodels/common/Document.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include "RegionValidator.h"
 
 #include <QList>
@@ -32,7 +34,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for ipxact:CPU.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT CPUValidator
+class IPXACTMODELS_EXPORT CPUValidator : public HierarchicalValidator
 {
 public:
 

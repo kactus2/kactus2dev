@@ -14,6 +14,8 @@
 
 #include <IPXACTmodels/ipxactmodels_global.h>
 
+#include <IPXACTmodels/common/validators/HierarchicalValidator.h>
+
 #include <QSharedPointer>
 #include <QString>
 
@@ -30,7 +32,7 @@ class ParameterValidator;
 //-----------------------------------------------------------------------------
 //! Validator for the ipxact:addressSpace.
 //-----------------------------------------------------------------------------
-class IPXACTMODELS_EXPORT AddressSpaceValidator
+class IPXACTMODELS_EXPORT AddressSpaceValidator : public HierarchicalValidator
 {
 public:
 

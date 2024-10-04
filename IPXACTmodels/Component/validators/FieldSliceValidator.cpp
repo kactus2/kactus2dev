@@ -169,6 +169,14 @@ void FieldSliceValidator::componentChange(QSharedPointer<Component> newComponent
 }
 
 //-----------------------------------------------------------------------------
+// Function: FieldSliceValidator::setExpressionParser()
+//-----------------------------------------------------------------------------
+void FieldSliceValidator::setExpressionParser(QSharedPointer<ExpressionParser> expressionParser)
+{
+    expressionParser_ = expressionParser;
+}
+
+//-----------------------------------------------------------------------------
 // Function: FieldSliceValidator::isInValidRange()
 //-----------------------------------------------------------------------------
 bool FieldSliceValidator::isInValidRange(QString const& value, int leftBound, int rightBound) const

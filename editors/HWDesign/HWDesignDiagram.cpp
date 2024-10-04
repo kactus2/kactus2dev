@@ -417,7 +417,7 @@ HWConnectionEndpoint* HWDesignDiagram::getHierarchicalInterface(QString const& b
 //-----------------------------------------------------------------------------
 // Function: HWDesignDiagram::getInterfacesToDelete()
 //-----------------------------------------------------------------------------
-void HWDesignDiagram::setInterfacesHaveBeenDeleted(bool /*haveBeenDeleted*/)
+void HWDesignDiagram::setInterfacesHaveBeenDeleted()
 {
     manuallyDeletedInterfaces_ = true;
 }
