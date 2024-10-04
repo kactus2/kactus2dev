@@ -50,7 +50,7 @@ parameterReferenceTree_(new BusDefinitionParameterReferenceTree(busDef, expressi
 referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_, this)),
 busDefGroup_(libHandler, expressionFormatter_, busDefParameterFinder_, this)
 {
-    setDocumentType(DocumentType(DocumentTypes::BUS_DEFINITION));
+    setDocumentType(DocumentType::BUS_DEFINITION);
 
     if (busDef_)
     {

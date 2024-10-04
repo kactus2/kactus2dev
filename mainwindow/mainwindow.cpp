@@ -2342,7 +2342,7 @@ void MainWindow::createApiDefinition(VLNV const& vlnv, Document::Revision revisi
 //-----------------------------------------------------------------------------
 void MainWindow::openBus(const VLNV& busDefVLNV)
 {
-    if (isOpen(busDefVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::BUS_DEFINITION)) || !busDefVLNV.isValid())
+    if (isOpen(busDefVLNV, TabDocument::DocumentType::BUS_DEFINITION) || !busDefVLNV.isValid())
     {
         return;
     }
@@ -2372,7 +2372,7 @@ void MainWindow::openBus(const VLNV& busDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 {
-    if (isOpen(absDefVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::ABSTRACTION_DEFINITION)) || !absDefVLNV.isValid())
+    if (isOpen(absDefVLNV, TabDocument::DocumentType::ABSTRACTION_DEFINITION) || !absDefVLNV.isValid())
     {
         return;
     }
@@ -2417,7 +2417,7 @@ void MainWindow::openAbsDef(const VLNV& absDefVLNV)
 //-----------------------------------------------------------------------------
 void MainWindow::openCatalog(const VLNV& vlnv)
 {
-    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::CATALOG)))
+    if (isOpen(vlnv, TabDocument::DocumentType::CATALOG))
     {
         return;
     }
@@ -2465,7 +2465,7 @@ void MainWindow::openHWDesign(VLNV const& vlnv, QString const& viewName)
     // Check if the design is already open.
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::HW_DESIGN)) || hasInvalidReferences(comp->getHierRefs(), vlnv))
+    if (isOpen(designVLNV, TabDocument::DocumentType::HW_DESIGN) || hasInvalidReferences(comp->getHierRefs(), vlnv))
     {
         return;
     }
@@ -2543,7 +2543,7 @@ void MainWindow::openMemoryDesign(VLNV const& vlnv, QString const& viewName)
     QSharedPointer<Component> comp = libraryHandler_->getModel(vlnv).staticCast<Component>();
 
     // check if the design is already open
-    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::MEMORY_DESIGN)))
+    if (isOpen(vlnv, TabDocument::DocumentType::MEMORY_DESIGN))
     {
         return;
     }
@@ -2620,7 +2620,7 @@ void MainWindow::openSWDesign(const VLNV& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::SW_DESIGN)))
+    if (isOpen(designVLNV, TabDocument::DocumentType::SW_DESIGN))
     {
         return;
     }
@@ -2683,7 +2683,7 @@ void MainWindow::openSystemDesign(VLNV const& vlnv, QString const& viewName)
     // check if the design is already open
     VLNV refVLNV = comp->getHierSystemRef(viewName);
     VLNV designVLNV = libraryHandler_->getDesignVLNV(refVLNV);
-    if (isOpen(designVLNV, TabDocument::DocumentType(TabDocument::DocumentTypes::SYSTEM_DESIGN)))
+    if (isOpen(designVLNV, TabDocument::DocumentType::SYSTEM_DESIGN))
     {
         return;
     }
@@ -2802,7 +2802,7 @@ void MainWindow::openComponent(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openComDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::COM_DEFINITION)))
+    if (isOpen(vlnv, TabDocument::DocumentType::COM_DEFINITION))
     {
         return;
     }
@@ -2837,7 +2837,7 @@ void MainWindow::openComDefinition(VLNV const& vlnv)
 //-----------------------------------------------------------------------------
 void MainWindow::openApiDefinition(VLNV const& vlnv)
 {
-    if (isOpen(vlnv, TabDocument::DocumentType(TabDocument::DocumentTypes::API_DEFINITION)))
+    if (isOpen(vlnv, TabDocument::DocumentType::API_DEFINITION))
     {
         return;
     }

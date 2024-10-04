@@ -39,7 +39,7 @@ TabDocument::TabDocument(QWidget* parent, LibraryInterface* libHandler, unsigned
     previouslyUnlocked_(false),
     relatedVLNVs_(),
     refreshRequested_(false),
-    docType_(DocumentTypes::EMPTY),
+    docType_(DocumentType::EMPTY),
     libHandler_(libHandler)
 {
     connect(this, SIGNAL(contentChanged()), this, SLOT(setModified()));
@@ -275,9 +275,9 @@ void TabDocument::updateTabTitle()
 {
     if (isModified())
     {
-        if (docType_!=DocumentTypes::EMPTY)
+        if (docType_!=DocumentType::EMPTY)
         {
-            setTabTitle(docName_ + " [" + docType_.ToString() + "]" + "*");
+            setTabTitle(docName_ + " [" + documentTypetoString(docType_) + "]" + "*");
         }
         else 
         {
@@ -286,9 +286,9 @@ void TabDocument::updateTabTitle()
     }
     else
     {
-        if (docType_ != DocumentTypes::EMPTY)
+        if (docType_ != DocumentType::EMPTY)
         {
-            setTabTitle(docName_ + " [" + docType_.ToString() + "]");
+            setTabTitle(docName_ + " [" + documentTypetoString(docType_) + "]");
         }
         else
         {
@@ -400,6 +400,47 @@ bool TabDocument::fileExists()
         return false;
     }
     return libHandler_->getModel<Document>(getIdentifyingVLNV())!=nullptr;
+}
+
+//-----------------------------------------------------------------------------
+// Function: TabDocument::documentTypetoString()
+//-----------------------------------------------------------------------------
+QString TabDocument::documentTypetoString(DocumentType documentType)
+{
+    switch (documentType)
+    {
+    case DocumentType::ABSTRACTION_DEFINITION:
+        return QStringLiteral("Abstraction Definition");
+    case DocumentType::API_DEFINITION:
+        return QStringLiteral("API Definition");
+    case DocumentType::BUS_DEFINITION:
+        return QStringLiteral("Bus Definition");
+    case DocumentType::CATALOG:
+        return QStringLiteral("Catalog");
+    case DocumentType::COM_DEFINITION:
+        return QStringLiteral("COM Definition");
+    case DocumentType::HW_COMPONENT:
+        return QStringLiteral("HW Component");
+    case DocumentType::SW_COMPONENT:
+        return QStringLiteral("SW Component");
+    case DocumentType::UNMAPPED_SYSTEM:
+        return QStringLiteral("Unmapped System");
+    case DocumentType::CODE:
+        return QStringLiteral("Code");
+    case DocumentType::HW_DESIGN:
+        return QStringLiteral("HW Design");
+    case DocumentType::MEMORY_DESIGN:
+        return QStringLiteral("Memory Design");
+    case DocumentType::SW_DESIGN:
+        return QStringLiteral("SW Design");
+    case DocumentType::SYSTEM_DESIGN:
+        return QStringLiteral("System Design");
+    case DocumentType::EMPTY:
+        return QStringLiteral("");
+    default:
+        Q_ASSERT(false); //please handle ToString conversion for every new document type you add.
+        return QStringLiteral("");
+    }
 }
 
 //-----------------------------------------------------------------------------

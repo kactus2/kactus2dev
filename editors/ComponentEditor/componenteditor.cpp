@@ -123,15 +123,15 @@ validator_(new ComponentValidator(expressionParser_, modeConditionParserInterfac
 
     if (component_->getImplementation() == KactusAttribute::HW)
     {
-        setDocumentType(DocumentType(DocumentTypes::HW_COMPONENT));
+        setDocumentType(DocumentType::HW_COMPONENT);
     }
     else if (component_->getImplementation() == KactusAttribute::SW)
     {
-        setDocumentType(DocumentType(DocumentTypes::SW_COMPONENT));
+        setDocumentType(DocumentType::SW_COMPONENT);
     }
     else if (component_->getImplementation() == KactusAttribute::SYSTEM)
     {
-        setDocumentType(DocumentType(DocumentTypes::UNMAPPED_SYSTEM));
+        setDocumentType(DocumentType::UNMAPPED_SYSTEM);
     }
 
     addRelatedVLNV(component_->getVlnv());

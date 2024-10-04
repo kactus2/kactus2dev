@@ -64,9 +64,9 @@ public:
 	};
 
     //-----------------------------------------------------------------------------
-    //! DocumentTypes enumeration.
+    //! DocumentType enumeration.
     //-----------------------------------------------------------------------------
-    enum DocumentTypes {
+    enum class DocumentType {
         ABSTRACTION_DEFINITION,
         API_DEFINITION,
         BUS_DEFINITION,
@@ -81,80 +81,6 @@ public:
         SW_DESIGN,
         SYSTEM_DESIGN,
         EMPTY
-    };
-
-    //-----------------------------------------------------------------------------
-    //! DocumentType struct.
-    //-----------------------------------------------------------------------------
-    struct DocumentType
-    {
-        /*!
-         *  Constructor.
-         *
-         *      @param [in] type        Type of the document.
-         */
-        DocumentType(DocumentTypes type) {
-            this->type = type;
-        }
-
-        DocumentTypes type; //! Type of the document.
-
-        /*
-         *  Comparison operator for DocumentType.
-         */
-        bool operator==(const DocumentType& other) const 
-        {
-            return this->type == other.type;
-        }
-
-        /*
-         *  Inequality operator for DocumentType.
-         */
-        bool operator!=(const DocumentType& other) const 
-        {
-            return this->type != other.type;
-        }
-
-        /*!
-         *  Returns a string representation of the DocumentType.
-         */
-        QString ToString()
-        {
-            switch (type)
-            {
-            case ABSTRACTION_DEFINITION:
-                return QStringLiteral("Abstraction Definition");
-            case API_DEFINITION:
-                return QStringLiteral("API Definition");
-            case BUS_DEFINITION:
-                return QStringLiteral("Bus Definition");
-            case CATALOG:
-                return QStringLiteral("Catalog");
-            case COM_DEFINITION:
-                return QStringLiteral("COM Definition");
-            case HW_COMPONENT:
-                return QStringLiteral("HW Component");
-            case SW_COMPONENT:
-                return QStringLiteral("SW Component");
-            case UNMAPPED_SYSTEM:
-                return QStringLiteral("Unmapped System");
-            case CODE:
-                return QStringLiteral("Code");
-            case HW_DESIGN:
-                return QStringLiteral("HW Design");
-            case MEMORY_DESIGN:
-                return QStringLiteral("Memory Design");
-            case SW_DESIGN:
-                return QStringLiteral("SW Design");
-            case SYSTEM_DESIGN:
-                return QStringLiteral("System Design");
-            case EMPTY:
-                return QStringLiteral("");
-            default:
-                Q_ASSERT(false); //please handle ToString conversion for every new document type you add.
-                return QStringLiteral("");
-            }
-        }
     };
 
     /*!
@@ -351,6 +277,11 @@ public:
      *      @return True if libHandler is present and the file exists, otherwise false.
      */
     bool fileExists();
+
+    /*!
+     *  Returns a string representation of the DocumentType.
+     */
+    static QString documentTypetoString(DocumentType documentType);
 
 public slots:
 

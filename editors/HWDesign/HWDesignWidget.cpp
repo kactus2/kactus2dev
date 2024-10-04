@@ -144,7 +144,7 @@ bool HWDesignWidget::setDesign(VLNV const& vlnv, QString const& viewName)
 
 	setModified(false);
 
-    setDocumentType(DocumentType(DocumentTypes::HW_DESIGN));
+    setDocumentType(DocumentType::HW_DESIGN);
 	setDocumentName(QString("%1 (%2)").arg(getIdentifyingVLNV().getName()).arg(getIdentifyingVLNV().getVersion()));
 
 	emit clearItemSelection();

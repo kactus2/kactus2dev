@@ -94,7 +94,7 @@ bool MemoryDesignDocument::setDesign(VLNV const& componentVLNV, QString const& v
         setDocumentName(QString("%1 (%2)").
             arg(getIdentifyingVLNV().getName()).
             arg(getIdentifyingVLNV().getVersion()));
-        setDocumentType(DocumentType(DocumentTypes::MEMORY_DESIGN));
+        setDocumentType(DocumentType::MEMORY_DESIGN);
 
         QSharedPointer<const Document> libraryDocument = getLibHandler()->getModelReadOnly(componentVLNV);
         QSharedPointer<const Component> component = libraryDocument.dynamicCast<const Component>();

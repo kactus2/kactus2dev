@@ -83,7 +83,7 @@ TabDocument(parent, libHandler, DOC_PRINT_SUPPORT | DOC_EDIT_SUPPORT),
     readFileContentFromDisk();
 
     setDocumentName(QFileInfo(sourceFile).fileName());
-    setDocumentType(DocumentType(DocumentTypes::CODE));
+    setDocumentType(DocumentType::CODE);
 
     connect(textEdit_->document(), SIGNAL(contentsChanged()),
             this, SIGNAL(contentChanged()), Qt::UniqueConnection);

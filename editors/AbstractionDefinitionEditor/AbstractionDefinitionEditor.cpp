@@ -51,7 +51,7 @@ referenceCounter_(new AbsDefParameterReferenceCounter(absDefParameterFinder_, ab
 parameterReferenceTree_(new AbsDefParameterReferenceTree(absDef, referenceCounter_, expressionFormatter_)),
 referenceTreeWindow_(new ParameterReferenceTreeWindow(parameterReferenceTree_))
 {
-    setDocumentType(DocumentType(DocumentTypes::ABSTRACTION_DEFINITION));
+    setDocumentType(DocumentType::ABSTRACTION_DEFINITION);
 
     if (absDef_)
     {
