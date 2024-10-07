@@ -518,7 +518,7 @@
     <ClCompile Include="utilities\NullChannel.cpp">
       <Filter>Source Files\utilities</Filter>
     </ClCompile>
-    <ClCompile Include="include\ModeConditionParserInterface.cpp">
+    <ClCompile Include="expressions\ModeConditionParserInterface.cpp">
       <Filter>Source Files\expressions</Filter>
     </ClCompile>
   </ItemGroup>

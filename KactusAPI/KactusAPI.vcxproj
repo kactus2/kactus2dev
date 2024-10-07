@@ -121,13 +121,13 @@
     <ClCompile Include="expressions\MemoryMapExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\MemoryRemapExpressionGatherer.cpp" />
     <ClCompile Include="expressions\ModeConditionParser.cpp" />
+    <ClCompile Include="expressions\ModeConditionParserInterface.cpp" />
     <ClCompile Include="expressions\MultipleParameterFinder.cpp" />
     <ClCompile Include="expressions\NullParser.cpp" />
     <ClCompile Include="expressions\ParameterCache.cpp" />
     <ClCompile Include="expressions\RegisterExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\RegisterFileExpressionsGatherer.cpp" />
     <ClCompile Include="expressions\SystemVerilogExpressionParser.cpp" />
-    <ClCompile Include="include\ModeConditionParserInterface.cpp" />
     <ClCompile Include="interfaces\bus\AbstractionTypeInterface.cpp" />
     <ClCompile Include="interfaces\bus\PortAbstractionInterface.cpp" />
     <ClCompile Include="interfaces\common\AbstractParameterInterface.cpp" />

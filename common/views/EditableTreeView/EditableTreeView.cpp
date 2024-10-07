@@ -64,7 +64,7 @@ void EditableTreeView::setupActions(QString const& addItemText, QString const& a
     addAction(clearAction_);
     clearAction_->setShortcut(QKeySequence::Delete);
     clearAction_->setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)").arg(clearAction_->shortcut().toString(QKeySequence::NativeText));
+    QString tooltipClear = tr("Clear the contents of a cell (%1)").arg(clearAction_->shortcut().toString(QKeySequence::NativeText));
     clearAction_->setToolTip(tooltipClear);
     clearAction_->setStatusTip(tooltipClear);
 

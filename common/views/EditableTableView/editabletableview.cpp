@@ -883,7 +883,7 @@ void EditableTableView::setupActions()
     addAction(&removeAction_);
     removeAction_.setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeAction_.setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipRemoveRow = tr("Remove a row from the table (Shortcut: %1)")
+    QString tooltipRemoveRow = tr("Remove a row from the table (%1)")
         .arg(removeAction_.shortcut().toString(QKeySequence::NativeText));
     removeAction_.setToolTip(tooltipRemoveRow);
     removeAction_.setStatusTip(tooltipRemoveRow);
@@ -892,7 +892,7 @@ void EditableTableView::setupActions()
     addAction(&cutAction_);
     cutAction_.setShortcut(QKeySequence::Cut);
     cutAction_.setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipCut = tr("Cut the contents of a cell from the table (Shortcut: %1)")
+    QString tooltipCut = tr("Cut the contents of a cell from the table (%1)")
         .arg(cutAction_.shortcut().toString(QKeySequence::NativeText));
     cutAction_.setToolTip(tooltipCut);
     cutAction_.setStatusTip(tooltipCut);
@@ -901,7 +901,7 @@ void EditableTableView::setupActions()
     addAction(&copyAction_);
     copyAction_.setShortcut(QKeySequence::Copy);
     copyAction_.setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipCopy = tr("Copy the contents of a cell from the table (Shortcut: %1)")
+    QString tooltipCopy = tr("Copy the contents of a cell from the table (%1)")
         .arg(copyAction_.shortcut().toString(QKeySequence::NativeText));
     copyAction_.setToolTip(tooltipCopy);
     copyAction_.setStatusTip(tooltipCopy);
@@ -910,7 +910,7 @@ void EditableTableView::setupActions()
     addAction(&pasteAction_);
     pasteAction_.setShortcut(QKeySequence::Paste);
     pasteAction_.setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipPaste = tr("Paste the contents of a cell to the table (Shortcut: %1)")
+    QString tooltipPaste = tr("Paste the contents of a cell to the table (%1)")
         .arg(pasteAction_.shortcut().toString(QKeySequence::NativeText));
     pasteAction_.setToolTip(tooltipPaste);
     pasteAction_.setStatusTip(tooltipPaste);
@@ -919,7 +919,7 @@ void EditableTableView::setupActions()
     addAction(&clearAction_);
     clearAction_.setShortcut(QKeySequence::Delete);
     clearAction_.setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)")
+    QString tooltipClear = tr("Clear the contents of a cell (%1)")
         .arg(clearAction_.shortcut().toString(QKeySequence::NativeText));
     clearAction_.setToolTip(tooltipClear);
     clearAction_.setStatusTip(tooltipClear);

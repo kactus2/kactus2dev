@@ -68,7 +68,7 @@ void AutoConnectorConnectionTable::setupActions()
     addAction(addRowAction_);
     addRowAction_->setShortcuts(addRowShortcuts);
     addRowAction_->setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipAddRow = tr("Add a new row to table (Shortcuts: %1, %2)")
+    QString tooltipAddRow = tr("Add a new row to table (%1, %2)")
         .arg(addRowAction_->shortcuts().at(0).toString(QKeySequence::NativeText))
         .arg(addRowAction_->shortcuts().at(1).toString(QKeySequence::NativeText));
     addRowAction_->setToolTip(tooltipAddRow);
@@ -78,7 +78,7 @@ void AutoConnectorConnectionTable::setupActions()
     addAction(removeRowAction_);
     removeRowAction_->setShortcut(Qt::SHIFT | Qt::Key_Delete);
     removeRowAction_->setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipRemoveRow = tr("Remove a connection from the table (Shortcut: %1)")
+    QString tooltipRemoveRow = tr("Remove a connection from the table (%1)")
         .arg(removeRowAction_->shortcut().toString(QKeySequence::NativeText));
     removeRowAction_->setToolTip(tooltipRemoveRow);
     removeRowAction_->setStatusTip(tooltipRemoveRow);
@@ -87,7 +87,7 @@ void AutoConnectorConnectionTable::setupActions()
     addAction(clearAction_);
     clearAction_->setShortcut(QKeySequence::Delete);
     clearAction_->setShortcutContext(Qt::WidgetShortcut);
-    QString tooltipClear = tr("Clear the contents of a cell (Shortcut: %1)")
+    QString tooltipClear = tr("Clear the contents of a cell (%1)")
         .arg(clearAction_->shortcut().toString(QKeySequence::NativeText));
     clearAction_->setToolTip(tooltipClear);
     clearAction_->setStatusTip(tooltipClear);
