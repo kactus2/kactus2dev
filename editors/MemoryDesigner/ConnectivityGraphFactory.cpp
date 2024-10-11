@@ -755,7 +755,7 @@ QSharedPointer<ConnectivityInterface> ConnectivityGraphFactory::createInterfaceD
     {
         memoryReference = busInterface->getMemoryMapRef();
     }
-    else if (busMode == General::MIRRORED_SLAVE && !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
+    else if ((busMode == General::MIRRORED_SLAVE || busMode == General::MIRRORED_TARGET) && !busInterface->getMirroredSlave()->getRemapAddresses()->isEmpty())
     {
         interfaceNode->setRemapAddress(expressionParser_->parseExpression(
             busInterface->getMirroredSlave()->getRemapAddresses()->first()->remapAddress_));
