@@ -211,7 +211,8 @@ CreateHelp
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
     <PostBuildEvent>
-      <Command>CreateHelp</Command>
+      <Command>RunDeploy
+</Command>
     </PostBuildEvent>
     <QtMoc>
       <ExecutionDescription>Moc'ing %(Identity)...</ExecutionDescription>
