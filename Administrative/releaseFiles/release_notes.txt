@@ -8,6 +8,22 @@
               * Changed or Information
 ===============================================================================
 
+14/10/2024 3.13.3
+----------------------------------------------------
+* Document lock made optional. Can be changed in settings, locking is disabled by default.
++ Added parameter editors to abstraction definition editor and bus definition editor, added expression support to port abstractions
++ Added HW Designer tool shortcuts
++ Added ability to open referenced bus and abstraction definitions in bus interfaces by right-clicking in the component editor tree
++ Improved validation in the component editor
++ Improved windows installer
+- Fixed launching Kactus2 in CLI mode on Windows
+- Fixed design parameter dock window disappearing when switching tabs
+- Fixed changes made in component editor not reflecting in edited design (bus interfaces, ports)
+- Fixed issue with expression editors scrambling expression when overwriting current expression or a section of it
+- Fixed parsing unary minuses in systemverilog expressions
+- Fixed component mode condition validation
+- Fixed various bugs leading to crashes
+
 23/04/2024 3.13.2
 ----------------------------------------------------
 + HW Design improvements

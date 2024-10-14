@@ -206,7 +206,7 @@ CreateHelp
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <ProgramDatabaseFile>
       </ProgramDatabaseFile>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
@@ -2280,6 +2280,7 @@ CreateHelp
       <Command Condition="'$(Configuration)|$(Platform)'=='Template|x64'">
       </Command>
     </CustomBuild>
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="settings\FileTypeColumns.h" />
     <QtMoc Include="settings\NewPluginsDialog.h">
     </QtMoc>
@@ -2923,6 +2924,9 @@ CreateHelp
     <None Include="common\graphicsItems\ConnectionItem.inl" />
     <None Include="wizards\common\IPXactElementComparator.inl" />
     <None Include="wizards\common\ListComparator.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Kactus21.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="appicon.ico" />
