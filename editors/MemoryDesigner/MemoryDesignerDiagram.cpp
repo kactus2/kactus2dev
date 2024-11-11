@@ -187,9 +187,7 @@ bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Compo
 {
     clearScene();
 
-    QSharedPointer<ConnectivityGraph> connectionGraph =
-        graphFactory_.createConnectivityGraph(component, viewName);
-    if (connectionGraph)
+    if (auto connectionGraph = graphFactory_.createConnectivityGraph(component, viewName))
     {
         bool constructionIsSuccess = memoryConstructor_->constructMemoryDesignItems(connectionGraph);
         if (constructionIsSuccess)

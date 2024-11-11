@@ -81,7 +81,7 @@ QMultiMap<qreal, MainMemoryGraphicsItem*> MemoryColumn::getGraphicsItemInOrder()
 {
     QMultiMap<qreal, MainMemoryGraphicsItem*> orderedGraphicsItems;
 
-    foreach (QGraphicsItem* graphicsItem, getItems())
+    for (QGraphicsItem* graphicsItem : getItems())
     {
         auto memoryItem = dynamic_cast<MainMemoryGraphicsItem*>(graphicsItem);
         if (memoryItem)
@@ -254,7 +254,7 @@ bool MemoryColumn::itemOverlapsAnotherPlacedColumnItem(MainMemoryGraphicsItem co
     int lineWidth,
     QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedItems) const
 {
-    foreach(MainMemoryGraphicsItem * comparisonItem, getGraphicsItemInOrder())
+    for (MainMemoryGraphicsItem * comparisonItem : getGraphicsItemInOrder())
     {
         if (placedItems->contains(comparisonItem) && comparisonItem != memoryItem)
         {

@@ -42,7 +42,7 @@ MemoryConnectionAddressCalculator::ConnectionPathVariables MemoryConnectionAddre
 
     newPathVariables.spaceChain_.append(newChainedSpace);
 
-    foreach(QSharedPointer<ConnectivityInterface const> pathInterface, connectionPath)
+    for (QSharedPointer<ConnectivityInterface const> pathInterface : connectionPath)
     {
         if (pathInterface != startInterface && pathInterface != endInterface)
         {

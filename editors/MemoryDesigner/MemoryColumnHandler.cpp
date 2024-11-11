@@ -146,14 +146,16 @@ MemoryColumn* MemoryColumnHandler::createAddressSpaceColumn()
 {
     QString spaceName = MemoryDesignerConstants::ADDRESSSPACECOLUMN_NAME;
 
-    QPointF columnPosition (0,0);
-
     int spaceCounter = 0;
-    foreach (GraphicsColumn* column, layout_->getColumns())
+    int lastSpaceColumnIndex = 0;
+    for (int i = 0; i < layout_->getColumns().size(); ++i)
     {
+        auto column = layout_->getColumns().at(i);
+
         if (column->name().contains(spaceName, Qt::CaseInsensitive))
         {
             spaceCounter += 1;
+            lastSpaceColumnIndex = i;
         }
     }
     if (spaceCounter != 0)
@@ -169,7 +171,10 @@ MemoryColumn* MemoryColumnHandler::createAddressSpaceColumn()
     MemoryColumn* spaceColumn(new MemoryColumn(addressSpaceColumnDescription, layout_.data(), 0));
     layout_->addColumn(spaceColumn);
 
-    spaceColumn->setPos(columnPosition);
+    auto lastColumnPos = layout_->getColumns().at(lastSpaceColumnIndex)->pos();
+    auto lastColumnRightSideX = layout_->getColumns().at(lastSpaceColumnIndex)->rect().width() + lastColumnPos.x();
+    
+    spaceColumn->setPos(QPointF(lastColumnRightSideX + 1, 0));
 
     layout_->onMoveColumn(spaceColumn);
     layout_->onReleaseColumn(spaceColumn);
