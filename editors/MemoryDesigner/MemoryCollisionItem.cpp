@@ -58,43 +58,9 @@ MemoryCollisionItem::~MemoryCollisionItem()
 //-----------------------------------------------------------------------------
 void MemoryCollisionItem::setCollisionBrush()
 {
-    qreal mainCollisionOpacity = 0.4;
-
-    QVector<MemoryCollisionItem*> collidingCollisionItems;
-    foreach (QGraphicsItem* collidingItem, collidingItems())
-    {
-        MemoryCollisionItem* memoryCollisionItem = dynamic_cast<MemoryCollisionItem*>(collidingItem);
-        if (memoryCollisionItem && memoryCollisionItem != this)
-        {
-            collidingCollisionItems.append(memoryCollisionItem);
-        }
-    }
-
-    if (!collidingCollisionItems.isEmpty())
-    {
-        collidingCollisionItems.removeFirst();
-
-        mainCollisionOpacity = 0.3;
-        qreal collisionOpacity = mainCollisionOpacity;
-
-        int collisionMarker = collidingCollisionItems.size();
-        for (int collisionIndex = collidingCollisionItems.size() - 1; collisionIndex >= 0; --collisionIndex)
-        {
-            MemoryCollisionItem* collidingItem = collidingCollisionItems.at(collisionIndex);
-
-            if (collidingItem->boundingRect().top() == boundingRect().top() &&
-                collidingItem->boundingRect().bottom() == boundingRect().bottom())
-            {
-                collisionMarker = collisionMarker - 1;
-                collisionOpacity = collisionOpacity / (collidingCollisionItems.size() - collisionMarker);
-                collidingItem->setOpacity(collisionOpacity);
-            }
-        }
-    }
-
     QBrush collisionBrush(KactusColors::MISSING_COMPONENT);
     setBrush(collisionBrush);
-    setOpacity(mainCollisionOpacity);
+    setOpacity(0.2);
 }
 
 //-----------------------------------------------------------------------------
@@ -151,7 +117,7 @@ void MemoryCollisionItem::setLabels()
 
     QVector<MemoryColumn*> collidingColumns;
 
-    foreach (QGraphicsItem* collidingItem, collidingItems())
+    for (QGraphicsItem* collidingItem : collidingItems())
     {
         MemoryMapGraphicsItem* mapGraphicsItem = dynamic_cast<MemoryMapGraphicsItem*>(collidingItem);
         QGraphicsRectItem* extensionItem = dynamic_cast<QGraphicsRectItem*>(collidingItem);
@@ -207,7 +173,7 @@ void MemoryCollisionItem::reDrawCollision()
 
     setLabels();
 }
-
+#include <QPainter>
 //-----------------------------------------------------------------------------
 // Function: MemoryCollisionItem::setRectangle()
 //-----------------------------------------------------------------------------
@@ -227,6 +193,6 @@ void MemoryCollisionItem::setRectangle()
     qreal itemHeight = endY - startY;
 
     QPointF spaceItemStartPoint (startX, startY);
-
+    
     setRect(spaceItemStartPoint.x(), spaceItemStartPoint.y(), itemWidth, itemHeight - 1);
 }

@@ -251,7 +251,10 @@ QVector<MemoryConnectionItem*> MemoryConnectionHandler::createConnectionSet(QSha
     highestItemInSet = getHighestPlacedItemInSet(highestItemInSet, placedMapItems);
 
     auto yMovement = spaceYPlacement - highestItemInSet->scenePos().y();
-    highestItemInSet->moveItemAndConnectedItems(yMovement);
+    
+    // Move entire group of connections to sensible vertical position.
+    // Round movement up to integer, but std::ceil instead of qCeil to preserve type.
+    highestItemInSet->moveItemAndConnectedItems(std::ceil(yMovement));
 
     auto connections = compressConnectedMemoryItems(placedSpaceItems, placedMapItems);
 
@@ -301,6 +304,12 @@ void MemoryConnectionHandler::createConnectionFromSet(Path const& connectionPath
     if (placedSpaceItems->contains(connectionStartItem) == false)
     {
         placedSpaceItems->prepend(connectionStartItem);
+    }
+
+    // If end item has already been placed -> shared endpoint with other path -> set position of start item accordingly
+    if (placedMapItems->contains(connectionEndItem))
+    {
+        positionSpaceItem(connectionStartItem, connectionEndItem->scenePos().y() - yTransfer);
     }
 
     if (!filterAddressSpaceChains_)
@@ -475,11 +484,7 @@ qreal MemoryConnectionHandler::getConnectionInitialTransferY(quint64 baseAddress
         yTransfer += memoryMapBaseAddress;
     }
 
-    if (filterAddressSpaceChains_)
-    {
-        yTransfer += spaceChainConnectionBaseAddress;
-    }
-
+    yTransfer += spaceChainConnectionBaseAddress;
     yTransfer = yTransfer * MemoryDesignerConstants::RANGEINTERVAL;
 
     return yTransfer;

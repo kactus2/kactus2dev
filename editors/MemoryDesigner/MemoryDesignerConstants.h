@@ -70,7 +70,7 @@ namespace MemoryDesignerConstants
      *      @param [in] secondRectangle     The bounding rectangle of the comparison item.
      *      @param [in] secondLineWidth     Line width of the comparison item.
      */
-    bool itemOverlapsAnotherItem(QRectF firstRectangle, int firstLineWidth, QRectF secondRectangle,
+    bool itemOverlapsAnotherItem(QRectF const& firstRectangle, int firstLineWidth, QRectF const& secondRectangle,
         int secondLineWidth);
 
     /*!

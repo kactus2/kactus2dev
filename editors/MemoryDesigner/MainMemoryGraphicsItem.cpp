@@ -240,34 +240,32 @@ bool MainMemoryGraphicsItem::labelCollidesWithRangeLabels(QGraphicsTextItem* lab
 //-----------------------------------------------------------------------------
 void MainMemoryGraphicsItem::createOverlappingConnectionMarkers()
 {
-    if (getMemoryConnections().size() > 1)
+    auto memConnections = getMemoryConnections();
+
+    if (memConnections.size() < 2)
+        return;
+
+    for (auto const& selectedItem : memConnections)
     {
-        QMultiMapIterator<quint64, MemoryConnectionItem*> connectionIterator(getMemoryConnections());
-        while (connectionIterator.hasNext())
+        for (auto const& comparisonItem : memConnections)
         {
-            connectionIterator.next();
-
-            QMultiMapIterator<quint64, MemoryConnectionItem*> comparisonIterator(connectionIterator);
-            while (comparisonIterator.hasNext())
+            if (!selectedItem || !comparisonItem || selectedItem == comparisonItem)
             {
-                comparisonIterator.next();
+                continue;
+            }
 
-                MemoryConnectionItem* selectedItem = connectionIterator.value();
-                MemoryConnectionItem* comparisonItem = comparisonIterator.value();
+            QRectF connectionRect = selectedItem->sceneBoundingRect();
+            QRectF comparisonRect = comparisonItem->sceneBoundingRect();
 
-                QRectF connectionRect = selectedItem->sceneBoundingRect();
-                QRectF comparisonRect = comparisonItem->sceneBoundingRect();
-
-                if (selectedItem && comparisonItem && selectedItem != comparisonItem &&
-                    selectedItem->getConnectionStartItem() == this &&
-                    comparisonItem->getConnectionStartItem() == this &&
-                    MemoryDesignerConstants::itemOverlapsAnotherItem(connectionRect,
-                    selectedItem->pen().width(), comparisonRect, comparisonItem->pen().width()))
-                {
-                    MemoryCollisionItem* newCollisionItem =
-                        new MemoryCollisionItem(selectedItem, comparisonItem, scene());
-                    memoryCollisions_.append(newCollisionItem);
-                }
+            if (selectedItem->getConnectionStartItem() == this &&
+                comparisonItem->getConnectionStartItem() == this &&
+                MemoryDesignerConstants::itemOverlapsAnotherItem(connectionRect,
+                    selectedItem->pen().width(), comparisonRect, comparisonItem->pen().width()) &&
+                connectionRect.width() < comparisonRect.width())
+            {
+                MemoryCollisionItem* newCollisionItem =
+                    new MemoryCollisionItem(selectedItem, comparisonItem, scene());
+                memoryCollisions_.append(newCollisionItem);
             }
         }
     }
@@ -574,8 +572,8 @@ void MainMemoryGraphicsItem::extendMemoryItem()
         if (connectionsAreBeyond)
         {
             qreal positionX = itemTopLeft.x() + lineWidth;
-            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - lineWidth;
-            qreal positionY = extensionTop;
+            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - 2*lineWidth;
+            qreal positionY = extensionTop - lineWidth;
             qreal extensionHeight = extensionLow - extensionTop;
 
             auto extensionItem = new MemoryExtensionGraphicsItem(positionX, positionY, extensionWidth, extensionHeight, getContainingInstance(), this);
