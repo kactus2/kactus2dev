@@ -40,6 +40,7 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QMenu>
+#include <QScrollBar>
 
 //-----------------------------------------------------------------------------
 // Function: ComponentDesignDiagram::ComponentDesignDiagram()
@@ -334,6 +335,8 @@ void ComponentDesignDiagram::mousePressEvent(QGraphicsSceneMouseEvent* mouseEven
         }
         else
         {
+            calculatePositionVisibilityModifiers();
+
             // Handle the mouse press and bring the new selection to front.
             QGraphicsScene::mousePressEvent(mouseEvent);
 
@@ -428,40 +431,122 @@ void ComponentDesignDiagram::mouseMoveEvent(QGraphicsSceneMouseEvent* mouseEvent
 //-----------------------------------------------------------------------------
 void ComponentDesignDiagram::ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent)
 {
-    auto const selectedItem = selectedItems().first();
     auto const firstView = views().first();
-    if (selectedItem && firstView)
+    if (firstView)
     {
-        QRectF itemRectangle = selectedItem->sceneBoundingRect();
-        QRectF viewScene = firstView->mapToScene(firstView->rect()).boundingRect();
-        if (itemRectangle.height() > viewScene.height())
+        int viewWidth = firstView->width();
+        int viewHeight = firstView->height();
+
+        QScrollBar* horizontalScroll = firstView->horizontalScrollBar();
+        QScrollBar* verticalScroll = firstView->verticalScrollBar();
+
+        auto globalMappedPosition = getParent()->mapFromGlobal(clickedPosition_);
+        qreal marginX = getMarginForVisibility(horizontalScroll, globalMappedPosition.x(), viewWidth);
+        qreal marginY = getMarginForVisibility(verticalScroll, globalMappedPosition.y(), viewHeight);
+
+        auto cursorPosition = mouseEvent->scenePos();
+        cursorPosition.setX(floor((cursorPosition.x() + visibleModifierX_ + VISIBLEMULTIPLIER_ / 2) / VISIBLEMULTIPLIER_) * VISIBLEMULTIPLIER_);
+        cursorPosition.setY(floor((cursorPosition.y() + visibleModifierY_ / 2) / VISIBLEMULTIPLIER_) * VISIBLEMULTIPLIER_);
+
+        QRectF cursorRectangle(cursorPosition.x() - VISIBLERECTANGLEWIDTH_ / 2, cursorPosition.y() - VISIBLEWRECTANGLEHEIGHT_ / 2, VISIBLERECTANGLEWIDTH_, VISIBLEWRECTANGLEHEIGHT_);
+
+        firstView->ensureVisible(cursorRectangle, marginX, marginY);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getMarginForVisibility()
+//-----------------------------------------------------------------------------
+qreal ComponentDesignDiagram::getMarginForVisibility(QScrollBar const* scrollBar, int const& position, qreal const& availableArea) const
+{
+    qreal marginValue = availableArea / 10;
+    qreal marginModifier = getMarginModifierForVisibility(scrollBar, position, availableArea);
+
+    marginValue = marginValue * marginModifier;
+    return marginValue;
+
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getMarginModifierForVisibility()
+//-----------------------------------------------------------------------------
+qreal ComponentDesignDiagram::getMarginModifierForVisibility(QScrollBar const* scrollBar, int const& position, qreal const& availableArea) const
+{
+    qreal marginModifier = 1;
+
+    if (scrollBar && scrollBar->maximum() > 0)
+    {
+        qreal scrollBarValue = scrollBar->value();
+        qreal scrollBarMaximum = scrollBar->maximum();
+        marginModifier = scrollBarValue / scrollBarMaximum;
+
+        if (position > availableArea / 2)
         {
-            QPointF mousePosition = mouseEvent->scenePos();
-            qreal newY = mousePosition.y();
-            qreal newHeight = viewScene.height() / 2;
+            marginModifier = 1 - marginModifier;
+        }
+    }
 
-            qreal availableAbove = mousePosition.y() - itemRectangle.y();
-            if (availableAbove >= newHeight / 2)
-            {
-                newY = newY - newHeight / 2;
-            }
-            else
-            {
-                newY = newY - availableAbove;
-            }
+    return marginModifier;
+}
 
-            itemRectangle.setY(newY);
-            itemRectangle.setHeight(newHeight);
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::getPositionModifierForVisibility()
+//-----------------------------------------------------------------------------
+qreal ComponentDesignDiagram::getPositionModifierForVisibility(qreal const& clickStartPosition, int const& followWidth, int const& availableWidth, qreal const& margin, qreal const& marginMultiplier) const
+{
+    qreal modifier = 0;
+    if (clickStartPosition <= margin)
+    {
+        modifier = marginMultiplier * margin + followWidth;
+    }
+    else if (clickStartPosition >= availableWidth - margin)
+    {
+        modifier = - marginMultiplier * margin - followWidth;
+    }
+
+    return modifier;
+}
+
+//-----------------------------------------------------------------------------
+// Function: ComponentDesignDiagram::calculateFollowModifiers()
+//-----------------------------------------------------------------------------
+void ComponentDesignDiagram::calculatePositionVisibilityModifiers()
+{
+    visibleModifierX_ = 0;
+    visibleModifierY_ = 0;
+
+    auto const firstView = views().first();
+    if (firstView)
+    {
+        auto movementStartPosition = firstView->mapFromGlobal(QCursor::pos());
+
+        int positionMultiplier = 20;
+        movementStartPosition.setX(floor((movementStartPosition.x() + positionMultiplier / 2) / positionMultiplier) * positionMultiplier);
+        movementStartPosition.setY(floor((movementStartPosition.y() + positionMultiplier / 2) / positionMultiplier) * positionMultiplier);
+
+        qreal viewWidth = firstView->width();
+        qreal viewHeight = firstView->height();
+
+        QScrollBar* horizontalScroll = firstView->horizontalScrollBar();
+        QScrollBar* verticalScroll = firstView->verticalScrollBar();
+
+        auto marginX = getMarginForVisibility(horizontalScroll, movementStartPosition.x(), viewWidth);
+        auto marginY = getMarginForVisibility(verticalScroll, movementStartPosition.y(), viewHeight);
+
+        qreal horizontalMultiplier = 1;
+        qreal verticalMultiplier = 1;
+
+        if (viewWidth > viewHeight)
+        {
+            verticalMultiplier = viewWidth / viewHeight;
+        }
+        else
+        {
+            horizontalMultiplier = viewHeight / viewWidth;
         }
 
-        int sideMargin = 50;
-
-        if (lastSelectedItemIsAtRightEdge_)
-        {
-            sideMargin = -50;
-        }
-
-        firstView->ensureVisible(itemRectangle, sideMargin);
+        visibleModifierX_ = getPositionModifierForVisibility(movementStartPosition.x(), VISIBLERECTANGLEWIDTH_, viewWidth, marginX, horizontalMultiplier);
+        visibleModifierY_ = getPositionModifierForVisibility(movementStartPosition.y(), VISIBLEWRECTANGLEHEIGHT_, viewHeight, marginY, verticalMultiplier);
     }
 }
 

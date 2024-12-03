@@ -49,7 +49,7 @@ TabDocument(parent, libHandler, DOC_ZOOM_SUPPORT | DOC_DRAW_MODE_SUPPORT | DOC_P
     layout->addWidget(view_);
 
     view_->verticalScrollBar()->setTracking(true);
-    connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
+//     connect(view_->verticalScrollBar(), SIGNAL(valueChanged(int)), this, SLOT(onVerticalScroll(int)));
 
 	addVisibilityControl(tr("Sticky Notes"), true);
 }

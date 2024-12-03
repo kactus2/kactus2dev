@@ -17,6 +17,7 @@
 #include <QVector>
 #include <QSharedPointer>
 #include <QUndoCommand>
+#include <QScrollBar>
 
 class ComponentItem;
 class ConnectionEndpoint;
@@ -608,6 +609,46 @@ private:
     void ensureMovedItemVisibility(QGraphicsSceneMouseEvent* mouseEvent);
 
     /*!
+     *  Get the margin for keeping selection in view.
+     *	
+     *      @param [in] scrollBar       Scrollbar for margin calculations.
+     *      @param [in] position        Current position on the same axis as the scrollbar.
+     *      @param [in] availableArea   The maximum coordinates of the area.
+     *
+     *      @return Current margin for the current selection.
+     */
+    qreal getMarginForVisibility(QScrollBar const* scrollBar, int const& position, qreal const& availableArea) const;
+
+    /*!
+     *  Get the margin modifier for the current margin.
+     *	
+     *      @param [in] scrollBar       Scrollbar for margin calculations.
+     *      @param [in] position        Current position on the same axis as the scrollbar.
+     *      @param [in] availableArea   The maximum coordinates of the area.
+     *
+     *      @return Modifier for the margin, between 0 and 1.
+     */
+    qreal getMarginModifierForVisibility(QScrollBar const* scrollBar, int const& position, qreal const& availableArea) const;
+
+    /*!
+     *  Get the clicked position modifier for visibility calculation. 
+     *	
+     *      @param [in] clickStartPosition  Coordinates of the clicked position.
+     *      @param [in] followWidth         Width of the area to be visible.
+     *      @param [in] availableWidth      Available width of the area.
+     *      @param [in] margin              The margin for visibility check.
+     *      @param [in] marginMultiplier    Multiplier for margin.
+     *
+     *      @return Modifier for visibility coordinates according to the position of the click.
+     */
+    qreal getPositionModifierForVisibility(qreal const& clickStartPosition, int const& followWidth, int const& availableWidth, qreal const& margin, qreal const& marginMultiplier) const;
+
+    /*!
+     *  Calculate coordinate modifiers for both x and y axis.
+     */
+    void calculatePositionVisibilityModifiers();
+
+    /*!
      *	Removes pre-existing connections from list returned by connection editor.
      *  
      *      @param [in/out] originalConnections     List containing the original connections. 
@@ -682,6 +723,21 @@ private:
 
     //! Cursor position where the user right-presses to open the context menu.
     QPoint clickedPosition_;
+
+    //! Modifier for the x-axis in item visibility.
+    qreal visibleModifierX_ = 0;
+
+    //! Modifier for the y-axis in item visibility.
+    qreal visibleModifierY_ = 0;
+
+    //! Width of the visible rectangle in mouse position.
+    int const VISIBLERECTANGLEWIDTH_ = 100;
+
+    //! Height of the visible rectangle in mouse position.
+    int const VISIBLEWRECTANGLEHEIGHT_ = 100;
+
+    //! Multiplier for calculating the position of the mouse.
+    int const VISIBLEMULTIPLIER_ = 20;
 
     //! The component item that was selected as the origin point of the context menu event.
     ComponentItem* contextMenuItem_;
