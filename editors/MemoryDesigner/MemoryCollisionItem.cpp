@@ -173,7 +173,7 @@ void MemoryCollisionItem::reDrawCollision()
 
     setLabels();
 }
-#include <QPainter>
+
 //-----------------------------------------------------------------------------
 // Function: MemoryCollisionItem::setRectangle()
 //-----------------------------------------------------------------------------
