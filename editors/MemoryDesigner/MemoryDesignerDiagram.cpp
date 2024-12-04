@@ -180,6 +180,22 @@ bool MemoryDesignerDiagram::unconnectedMemoryItemsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignerDiagram::filterMemoryOverlapItems(bool filterOverlap)
+{
+    memoryConstructor_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignerDiagram::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignerDiagram::memoryOverlapItemsAreFiltered() const
+{
+    return memoryConstructor_->memoryOverlapItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignerDiagram::loadDesign()
 //-----------------------------------------------------------------------------
 bool MemoryDesignerDiagram::loadDesignFromCurrentView(QSharedPointer<const Component> component,

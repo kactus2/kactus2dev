@@ -155,6 +155,20 @@ public:
     bool unconnectedMemoryItemsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the memory overlap items.
+     *
+     *      @param [in] filterOverlap       Value for filtering memory overlap.
+     */
+    void filterMemoryOverlapItems(bool filterOverlap);
+
+    /*!
+     *  Check if the memory overlap items are filtered.
+     *
+     *      @return True, if the memory overlap items are filtered, false otherwise.
+     */
+    bool memoryOverlapItemsAreFiltered() const;
+
+    /*!
      *  Construct memory design items from the selected connection graph.
      *
      *      @param [in] connectionGraph     Connection graph containing connection routes.

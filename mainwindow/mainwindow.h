@@ -520,6 +520,13 @@ private slots:
     void onFilterUnconnectedMemoryItems(bool filterUnconnected);
 
     /*!
+     *  Set the filtering of the memory overlap items within a memory design.
+     *
+     *      @param [in] filterOverlap   Value for the filter.
+     */
+    void onFilterMemoryOverlapItems(bool filterOverlap);
+
+    /*!
      *  Open the document containing the selected component and select the identified component item editor.
      *
      *      @param [in] componentVLNV       VLNV of the selected component.
@@ -873,6 +880,9 @@ private:
 
     //! The action to filter unconnected memory items in a memory design.
     QAction* actionFilterUnconnectedMemoryItems_;
+
+    //! Action to toggle visibility of memory overlap items in memory designer.
+    QAction* actionFilterMemoryOverlap_ = nullptr;
 
     QMenu* generationMenu_ = nullptr;
 

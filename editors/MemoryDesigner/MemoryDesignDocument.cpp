@@ -361,6 +361,22 @@ void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterMemoryOverlapItems(bool filterOverlap)
+{
+    diagram_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::memoryOverlapItemsAreFiltered() const
+{
+    return diagram_->memoryOverlapItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignDocument::exportImage()
 //-----------------------------------------------------------------------------
 bool MemoryDesignDocument::exportImage()

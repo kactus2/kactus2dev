@@ -509,6 +509,13 @@ void MainWindow::setupActions()
     connect(actionFilterUnconnectedMemoryItems_, SIGNAL(triggered(bool)),
         this, SLOT(onFilterUnconnectedMemoryItems(bool)), Qt::UniqueConnection);
 
+    //! Initialize the action to filter memory overlap items.
+    actionFilterMemoryOverlap_ = new QAction(QIcon(":icons/common/graphics/filterMemoryOverlap.png"),
+        tr("Filter memory overlap markers"), this);
+    actionFilterMemoryOverlap_->setCheckable(true);
+    connect(actionFilterMemoryOverlap_, SIGNAL(triggered(bool)), 
+        this, SLOT(onFilterMemoryOverlapItems(bool)), Qt::UniqueConnection);
+
     // Initialize the action to zoom in.
     actZoomIn_ = new QAction(QIcon(":/icons/common/graphics/view-zoom_in.png"), tr("Zoom In"), this);
     actZoomIn_->setEnabled(false);
@@ -704,6 +711,7 @@ void MainWindow::setupMenus()
     filteringGroup_->addAction(actionCondenseMemoryItems_);
     filteringGroup_->addAction(actionCondenseFieldItems_);
     filteringGroup_->addAction(actionExtendFieldItems_);
+    filteringGroup_->addAction(actionFilterMemoryOverlap_);
 
     filteringAction_ = ribbon_->addGroup(filteringGroup_);
     filteringAction_->setVisible(false);
@@ -1028,6 +1036,7 @@ void MainWindow::updateMenuStrip()
         actionFilterRegisters_->setChecked(memoryDocument->addressBlockRegistersAreFiltered());
         actionFilterFields_->setChecked(memoryDocument->fieldsAreFiltered());
         actionFilterUnconnectedMemoryItems_->setChecked(memoryDocument->unconnectedMemoryItemsAreFiltered());
+        actionFilterMemoryOverlap_->setChecked(memoryDocument->memoryOverlapItemsAreFiltered());
     }
 
     filteringAction_->setVisible(isMemoryDesign);
@@ -3847,5 +3856,17 @@ void MainWindow::onFilterUnconnectedMemoryItems(bool filterUnconnected)
     if (memoryDocument && !memoryDocument->isProtected())
     {
         memoryDocument->filterUnconnectedMemoryItems(filterUnconnected);
+    }
+}
+
+//-----------------------------------------------------------------------------
+// Function: MainWindow::onFilterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MainWindow::onFilterMemoryOverlapItems(bool filterOverlap)
+{
+    MemoryDesignDocument* memoryDocument = dynamic_cast<MemoryDesignDocument*>(designTabs_->currentWidget());
+    if (memoryDocument && !memoryDocument->isProtected())
+    {
+        memoryDocument->filterMemoryOverlapItems(filterOverlap);
     }
 }

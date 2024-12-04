@@ -196,6 +196,22 @@ bool MemoryDesignConstructor::unconnectedMemoryItemsAreFiltered() const
 }
 
 //-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignConstructor::filterMemoryOverlapItems(bool filterOverlap)
+{
+    itemHandler_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignConstructor::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignConstructor::memoryOverlapItemsAreFiltered() const
+{
+    return itemHandler_->memoryOverlapItemsAreFiltered();
+}
+
+//-----------------------------------------------------------------------------
 // Function: MemoryDesignConstructor::constructMemoryDesignItems()
 //-----------------------------------------------------------------------------
 bool MemoryDesignConstructor::constructMemoryDesignItems(QSharedPointer<ConnectivityGraph> connectionGraph)

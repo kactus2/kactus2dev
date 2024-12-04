@@ -196,6 +196,20 @@ public:
      */
     void filterUnconnectedMemoryItems(bool filterUnconnected);
 
+    /*!
+     *  Filter the memory overlap items.
+     *
+     *      @param [in] filterOverlap   Value for filtering.
+     */
+    void filterMemoryOverlapItems(bool filterOverlap);
+
+    /*!
+     *  Check if the memory overlap items are filtered.
+     *
+     *      @return True, if the memory overlap items are filtered, false otherwise.
+     */
+    bool memoryOverlapItemsAreFiltered() const;
+
 public slots:
 
     /*!
