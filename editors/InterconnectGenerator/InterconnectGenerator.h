@@ -48,6 +48,8 @@ public:
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
+    void createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
+
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
     void createPhysPorts(QSharedPointer<Component> comp, QString busName);
@@ -59,6 +61,8 @@ public:
     InterconnectGenerator& operator=(const InterconnectGenerator& other) = delete;
 
 private:
+
+    std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
 
     //! Message handler.
     MessageMediator* messager_{ nullptr };

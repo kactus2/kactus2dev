@@ -607,6 +607,7 @@ void InterconnectGeneratorDialog::accept()
 
     QString interconVLNV = vlnvEditor_->getVLNV().toString();
     QString busVLNV = absRef->toString();
+    QString busType = absRef->getName();
     QString clkVLNV = clockCheckBox_->isChecked() ? clkRef->toString() : "";
     QString rstVLNV = resetCheckBox_->isChecked() ? rstRef->toString() : "";
     /*
@@ -627,11 +628,11 @@ void InterconnectGeneratorDialog::accept()
         "Bus type" : "AXI4LITE",
     ¨*/
     config->DesignVLNV = designVLNV_;
-    config->InterconVLNV = "test:gen:intercon:1.0";
-    config->BusVLNV = "tuni.fi:interface:AXI4LITE:1.0";
+    config->InterconVLNV = interconVLNV;
+    config->BusVLNV = busVLNV;
     config->ClkVLNV = "tuni.fi:interface:clock:1.0";
     config->RstVLNV = "tuni.fi:interface:reset:1.0";
-    config->BusType = "AXI4LITE";
+    config->BusType = busType.split(".abs")[0];
     config->AddressWidth = 32;
     config->IDWidth = 8;
     config->UserWidth = 1;
