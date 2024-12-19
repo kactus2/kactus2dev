@@ -251,19 +251,19 @@ std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface>
 
     if (rev == Document::Revision::Std14)
     {
-        if (isTarget)
+        if (!isTarget)
             return isChannel ? "mirroredSlave" : "slave";
         else
             return isChannel ? "mirroredMaster" : "master";
     }
     else if (rev == Document::Revision::Std22)
     {
-        if (isTarget)
+        if (!isTarget)
             return isChannel ? "mirroredTarget" : "target";
         else
             return isChannel ? "mirroredInitiator" : "initiator";
     }
-    return isTarget ? "target" : "initiator";
+    return !isTarget ? "target" : "initiator";
 }
 
 void InterconnectGenerator::createBusInterface(std::string busName, std::string modeString, int index)
