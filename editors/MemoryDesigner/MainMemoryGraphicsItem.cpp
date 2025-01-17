@@ -572,7 +572,7 @@ void MainMemoryGraphicsItem::extendMemoryItem()
         if (connectionsAreBeyond)
         {
             qreal positionX = itemTopLeft.x() + lineWidth;
-            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - 2*lineWidth;
+            qreal extensionWidth = itemLowRight.x() - itemTopLeft.x() - lineWidth;
             qreal positionY = extensionTop - lineWidth;
             qreal extensionHeight = extensionLow - extensionTop;
 

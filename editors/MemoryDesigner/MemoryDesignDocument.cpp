@@ -203,9 +203,9 @@ void MemoryDesignDocument::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::onVerticalScroll(int y)
 {
-    QPointF pt(0.0, y);
-    QTransform mat = view_->transform().inverted();
-    diagram_->onVerticalScroll(mat.map(pt).y());
+//     QPointF pt(0.0, y);
+//     QTransform mat = view_->transform().inverted();
+//     diagram_->onVerticalScroll(mat.map(pt).y());
 }
 
 //-----------------------------------------------------------------------------

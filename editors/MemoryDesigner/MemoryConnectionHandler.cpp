@@ -644,8 +644,6 @@ MainMemoryGraphicsItem* MemoryConnectionHandler::getHighestPlacedItemInSet(MainM
 //-----------------------------------------------------------------------------
 QVector<MemoryConnectionItem*> MemoryConnectionHandler::compressConnectedMemoryItems(QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedSpaceItems, QSharedPointer<QVector<MainMemoryGraphicsItem*>> placedMapItems) const
 {
-    const qreal CUTMODIFIER = 3 * MemoryDesignerConstants::RANGEINTERVAL;
-
     MainMemoryGraphicsItem* masterItem = placedSpaceItems->first();
     masterItem = getHighestPlacedItemInSet(masterItem, placedSpaceItems);
     masterItem = getHighestPlacedItemInSet(masterItem, placedMapItems);
@@ -658,10 +656,10 @@ QVector<MemoryConnectionItem*> MemoryConnectionHandler::compressConnectedMemoryI
     visitedItems.clear();
     for (auto connectionItem : visitedConnections)
     {
-        connectionItem->compressToUnCutCoordinates(visitedItems, uncutCoordinates, CUTMODIFIER, condenseMemoryItems_);
+        connectionItem->compressToUnCutCoordinates(visitedItems, uncutCoordinates, MemoryDesignerConstants::CUTMODIFIER, condenseMemoryItems_);
     }
 
-    QMap<qreal, qreal> areaMovements = calculateAreaMovements(uncutCoordinates, CUTMODIFIER);
+    QMap<qreal, qreal> areaMovements = calculateAreaMovements(uncutCoordinates, MemoryDesignerConstants::CUTMODIFIER);
     for (auto memoryItem : visitedItems)
     {
         qreal movementY = -areaMovements.value(memoryItem->sceneBoundingRect().top());

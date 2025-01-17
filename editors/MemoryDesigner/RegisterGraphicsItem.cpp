@@ -117,7 +117,14 @@ void RegisterGraphicsItem::setupFields(QSharedPointer<MemoryItem const> register
     qreal fieldsStartPosition = boundingRect().left() + subItemPosition;
 
     QFont fieldFont = getNameLabel()->font();
-    fieldFont.setPointSizeF(fieldFont.pointSizeF() - 1.6);
+    if (registerEnd == 1)
+    {
+        fieldFont.setPointSizeF(fieldFont.pointSizeF() - 1.6);
+    }
+    else
+    {
+        fieldFont.setPointSizeF(fieldFont.pointSizeF() - 1);
+    }
 
     QMultiMap<quint64, RegisterGraphicsItem::FieldMemoryItem> subItems = getFieldItemsInLastBitOrder(registerItem);
     QMultiMapIterator<quint64, RegisterGraphicsItem::FieldMemoryItem> subItemIterator(subItems);
