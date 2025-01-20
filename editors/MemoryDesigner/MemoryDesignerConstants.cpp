@@ -18,8 +18,8 @@
 //-----------------------------------------------------------------------------
 // Function: MemoryDesignerConstants::itemOverlapsAnotherItem()
 //-----------------------------------------------------------------------------
-bool MemoryDesignerConstants::itemOverlapsAnotherItem(QRectF firstRectangle, int firstLineWidth,
-    QRectF secondRectangle, int secondLineWidth)
+bool MemoryDesignerConstants::itemOverlapsAnotherItem(QRectF const& firstRectangle, int firstLineWidth,
+    QRectF const& secondRectangle, int secondLineWidth)
 {
     qreal firstItemTop = firstRectangle.topLeft().y() + firstLineWidth;
     qreal firstItemLow = firstRectangle.bottomLeft().y() - firstLineWidth;

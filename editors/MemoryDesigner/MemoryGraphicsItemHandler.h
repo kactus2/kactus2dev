@@ -116,6 +116,20 @@ public:
     bool unconnectedMemoryItemsAreFiltered() const;
 
     /*!
+     *  Set a new value for filtering the memory overlap items.
+     *
+     *      @param [in] filterOverlap       Value for filtering memory overlap.
+     */
+    void filterMemoryOverlapItems(bool filterOverlap);
+
+    /*!
+     *  Check if the memory overlap items are filtered.
+     *
+     *      @return True, if the memory overlap items are filtered, false otherwise.
+     */
+    bool memoryOverlapItemsAreFiltered() const;
+
+    /*!
      *  Create the memory items found in the design.
      *
      *      @param [in] connectionGraph     Graph containing the connection paths.
@@ -188,19 +202,22 @@ private:
     //-----------------------------------------------------------------------------
 
     //! Value for filtering address space segments.
-    bool filterAddressSpaceSegments_;
+    bool filterAddressSpaceSegments_ = true;
 
     //! Value for filtering memory map address blocks.
-    bool filterAddressBlocks_;
+    bool filterAddressBlocks_ = true;
 
     //! Value for filtering address block registers.
-    bool filterRegisters_;
+    bool filterRegisters_ = true;
 
     //! Value for filtering register fields.
-    bool filterFields_;
+    bool filterFields_ = true;
 
     //! Value for filtering unconnected memory items.
-    bool filterUnconnectedMemoryItems_;
+    bool filterUnconnectedMemoryItems_ = true;
+
+    //! Value for filtering memory overlap items.
+    bool filterMemoryOverlapItems_ = false;
 
     //! List of all the created memory map graphics items.
     QVector<MemoryMapGraphicsItem*> memoryMapItems_;

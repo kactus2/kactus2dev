@@ -155,6 +155,20 @@ public:
      *      @return True, if the unconnected memory items are filtered, false otherwise.
      */
     bool unconnectedMemoryItemsAreFiltered() const;
+    
+    /*!
+     *  Set a new value for filtering the memory overlap items.
+     *
+     *      @param [in] filterOverlap       Value for filtering memory overlap.
+     */
+    void filterMemoryOverlapItems(bool filterOverlap);
+
+    /*!
+     *  Check if the memory overlap items are filtered.
+     *
+     *      @return True, if the memory overlap items are filtered, false otherwise.
+     */
+    bool memoryOverlapItemsAreFiltered() const;
 
     /*!
      *  Load a design using the selected view.

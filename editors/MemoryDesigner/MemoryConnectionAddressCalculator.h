@@ -63,10 +63,10 @@ namespace MemoryConnectionAddressCalculator
         //! Last address of the connected memory map interface.
         quint64 endAddressNumber_;
 
-        //! The remapped base address.
+        //! The remapped base address. (where the mapped memory map starts in the initiator address space)
         quint64 remappedAddress_;
 
-        //! The remapped end address.
+        //! The remapped end address. (where the mapped memory map ends in the initiator address space)
         quint64 remappedEndAddress_;
     };
 

@@ -203,9 +203,9 @@ void MemoryDesignDocument::centerViewTo(QPointF const& centerPoint)
 //-----------------------------------------------------------------------------
 void MemoryDesignDocument::onVerticalScroll(int y)
 {
-    QPointF pt(0.0, y);
-    QTransform mat = view_->transform().inverted();
-    diagram_->onVerticalScroll(mat.map(pt).y());
+//     QPointF pt(0.0, y);
+//     QTransform mat = view_->transform().inverted();
+//     diagram_->onVerticalScroll(mat.map(pt).y());
 }
 
 //-----------------------------------------------------------------------------
@@ -358,6 +358,22 @@ bool MemoryDesignDocument::unconnectedMemoryItemsAreFiltered() const
 void MemoryDesignDocument::filterUnconnectedMemoryItems(bool filterUnconnected)
 {
     diagram_->filterUnconnectedMemoryItems(filterUnconnected);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::filterMemoryOverlapItems()
+//-----------------------------------------------------------------------------
+void MemoryDesignDocument::filterMemoryOverlapItems(bool filterOverlap)
+{
+    diagram_->filterMemoryOverlapItems(filterOverlap);
+}
+
+//-----------------------------------------------------------------------------
+// Function: MemoryDesignDocument::memoryOverlapItemsAreFiltered()
+//-----------------------------------------------------------------------------
+bool MemoryDesignDocument::memoryOverlapItemsAreFiltered() const
+{
+    return diagram_->memoryOverlapItemsAreFiltered();
 }
 
 //-----------------------------------------------------------------------------

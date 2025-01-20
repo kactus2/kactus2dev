@@ -178,7 +178,8 @@ private:
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedMapItems,
         MemoryColumn* memoryMapColumn,
         QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* spaceColumn);
+        MemoryColumn* spaceColumn,
+        qreal initialPlacementOffset);
 
     /*!
      *  Get the main graphics item corresponding to the selected connection interface.
@@ -281,11 +282,7 @@ private:
      *      @param [in] targetItem              End item of the connection.
      *      @param [in] connectionBaseAddress   Base address of the connection.
      */
-    void positionSpaceItem(MainMemoryGraphicsItem* spaceItem,
-        QSharedPointer<QVector<MainMemoryGraphicsItem*> > placedSpaceItems,
-        MemoryColumn* originalColumn,
-        MainMemoryGraphicsItem const* targetItem,
-        quint64 connectionBaseAddress);
+    void positionSpaceItem(MainMemoryGraphicsItem* spaceItem, qreal ypos);
 
     /*!
      *  Place the address space item to a column.

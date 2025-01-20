@@ -26,12 +26,18 @@ class MemoryItem;
 // Common declarations for memory designer.
 namespace MemoryDesignerConstants
 {
+    const int ITEMWIDTH = 260;
+    const int MEMORYMAPFULLWIDTH = 1280;
+
+    const int COLUMNMARGIN = 110;
+
     //! Starting widths of the memory columns.
-    const int SPACECOLUMNWIDTH = 519;
-    const int MEMORYMAPCOLUMNWIDTH = 1569;
+    const int SPACECOLUMNWIDTH = ITEMWIDTH + 2 * COLUMNMARGIN + 9;
+    const int MEMORYMAPCOLUMNWIDTH = MEMORYMAPFULLWIDTH + 2 * COLUMNMARGIN + 9;
 
     //! Interval of one bit in a memory address.
-    const qreal RANGEINTERVAL = 15;
+    const qreal RANGEINTERVAL = 25;
+    const qreal CUTMODIFIER = 2 * RANGEINTERVAL;
 
     //! Minimum interval of address space graphics items.
     const qreal SPACEITEMINTERVAL = GraphicsColumnConstants::MIN_Y_PLACEMENT;
@@ -41,7 +47,7 @@ namespace MemoryDesignerConstants
     const unsigned int UNCONNECTED_ITEM_INTERVAL = RANGEINTERVAL;
 
     //! X-position of the memory map graphics item sub items.
-    const qreal MAPSUBITEMPOSITIONX = RANGEINTERVAL * 4.5;
+    const qreal MAPSUBITEMPOSITIONX = ITEMWIDTH / 4;
 
     const QString RESERVED_NAME = QLatin1String("Reserved");
     const QString HARD_RESET_TYPE = QLatin1String("HARD");
@@ -70,7 +76,7 @@ namespace MemoryDesignerConstants
      *      @param [in] secondRectangle     The bounding rectangle of the comparison item.
      *      @param [in] secondLineWidth     Line width of the comparison item.
      */
-    bool itemOverlapsAnotherItem(QRectF firstRectangle, int firstLineWidth, QRectF secondRectangle,
+    bool itemOverlapsAnotherItem(QRectF const& firstRectangle, int firstLineWidth, QRectF const& secondRectangle,
         int secondLineWidth);
 
     /*!

@@ -142,10 +142,10 @@ void SubMemoryLayout::createAndPositionNewEmptySubItem(quint64 subItemBaseAddres
 //-----------------------------------------------------------------------------
 // Function: SubMemoryLayout::positionNewSubItem()
 //-----------------------------------------------------------------------------
-void SubMemoryLayout::positionNewSubItem(qreal subItemXPosition, quint64 mainItemBaseAddress,
-    quint64 subItemOffset, MemoryDesignerChildGraphicsItem* newSubItem)
+void SubMemoryLayout::positionNewSubItem(qreal const& subItemXPosition, quint64 const& mainItemBaseAddress,
+    quint64 const& subItemOffset, MemoryDesignerChildGraphicsItem* newSubItem)
 {
-    qreal segmentTransferY = (subItemOffset - mainItemBaseAddress) * MemoryDesignerConstants::RANGEINTERVAL;
+    quint64 segmentTransferY = (subItemOffset - mainItemBaseAddress) * MemoryDesignerConstants::RANGEINTERVAL;
     newSubItem->setPos(subItemXPosition, segmentTransferY);
 
     subMemoryItems_.insert(subItemOffset, newSubItem);

@@ -56,14 +56,14 @@ filteredBlocks_()
     setBrush(memoryMapBrush);
 
     quint64 memoryHeight = (lastAddress - baseAddress + 1);
-    int memoryWidth = 1280;
+    int memoryWidth = MemoryDesignerConstants::MEMORYMAPFULLWIDTH;
     if (filterRegisters_ || (filterAddressBlocks_ && filterFields_))
     {
-        memoryWidth = 250;
+        memoryWidth = MemoryDesignerConstants::ITEMWIDTH;
     }
     else if (filterFields_)
     {
-        memoryWidth = MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 6;
+        memoryWidth = MemoryDesignerConstants::ITEMWIDTH + MemoryDesignerConstants::MAPSUBITEMPOSITIONX * 2;
     }
     else if (filterAddressBlocks_)
     {

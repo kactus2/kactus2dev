@@ -224,7 +224,7 @@ private:
      *      @param [in] subItemOffset           Offset of the sub memory item.
      *      @param [in] newSubItem              The selected sub memory item.
      */
-    void positionNewSubItem(qreal subItemXPosition, quint64 mainItemBaseAddress, quint64 subItemOffset,
+    void positionNewSubItem(qreal const& subItemXPosition, quint64 const& mainItemBaseAddress, quint64 const& subItemOffset,
         MemoryDesignerChildGraphicsItem* newSubItem);
 
     /*!
