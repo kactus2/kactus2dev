@@ -51,7 +51,7 @@ public:
 
     void createBusInterface(std::string busName, std::string modeString, int index);
 
-    void createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
+    std::string createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index);
 
     void createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf);
 
@@ -66,6 +66,8 @@ public:
 private:
 
     std::string getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool useChannel);
+
+    std::string getUniqueBusName(std::string newBusName);
 
     //! Message handler.
     MessageMediator* messager_{ nullptr };

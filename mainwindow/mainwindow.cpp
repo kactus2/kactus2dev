@@ -2625,9 +2625,7 @@ void MainWindow::onInterconnectGenerate()
         LibraryInterface* lib = KactusAPI::getLibrary();
         InterconnectGenerator interconGen = InterconnectGenerator(lib, messageChannel_);
         interconGen.generate(config, initiators, targets);
-    }
-    else {
-        return;
+        doc->refresh();
     }
 >>>>>>> 86e3e5e65 (first iteration completed)
 }

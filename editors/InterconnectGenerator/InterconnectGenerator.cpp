@@ -176,7 +176,6 @@ void InterconnectGenerator::findUnconnectedInterfaces()
             }
         }
     }
-
     createRstorClkInterface("rst", index);
     createRstorClkInterface("clk", index+1);
 }
@@ -203,7 +202,11 @@ void InterconnectGenerator::processInitiatorsAndTargets(
             prefix_ = busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, true, false);
 
-            createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            connectionInterface_->addInterconnection(
+                instanceName.toStdString(), busName.toStdString(), 
+                interconComponent_->getVlnv().getName().toStdString(), newBusName);
+
             createPortMaps(modeString, busInterface);
             createPhysPorts(comp, busName);
 
@@ -218,7 +221,6 @@ void InterconnectGenerator::processInitiatorsAndTargets(
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
         const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
-        initiators_ = busInterfaces;
         
         for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
             QString busName = busInterface->name();
@@ -227,15 +229,23 @@ void InterconnectGenerator::processInitiatorsAndTargets(
             prefix_ = busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, false, false);
 
-            createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            std::string newBusName = createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            connectionInterface_->addInterconnection(
+                instanceName.toStdString(), busName.toStdString(),
+                interconComponent_->getVlnv().getName().toStdString(), newBusName);
+
             createPortMaps(modeString, busInterface);
             createPhysPorts(comp, busName);
 
             index++;
         }
     }
-    createRstorClkInterface("rst", index);
-    createRstorClkInterface("clk", index + 1);
+    if (config_->RstVLNV != "") {
+        createRstorClkInterface("rst", index);
+    }
+    if (config_->ClkVLNV != "") {
+        createRstorClkInterface("clk", index + 1);
+    }
 }
 
 std::string InterconnectGenerator::getInterfaceMode(QSharedPointer<BusInterface> bus, bool isTarget, bool isChannel)
@@ -287,11 +297,11 @@ void InterconnectGenerator::createBusInterface(std::string busName, std::string 
     messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
 }
 
-void InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index)
+std::string InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName, std::string modeString, int index)
 {
     VLNV busDef = busDefVLNV_;
 
-    std::string newBusName = prefix_ + config_->BusType.toStdString();
+    std::string newBusName = getUniqueBusName(prefix_ + config_->BusType.toStdString());
 
     messager_->showMessage(QString("Creating %1 interface").arg(QString::fromStdString(newBusName)));
     busInfInterface_->addBusInterface(index, newBusName);
@@ -303,26 +313,38 @@ void InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName
     busInfInterface_->addAbstractionType(newBusName, busDef.getVendor().toStdString(), busDef.getLibrary().toStdString(),
         busDef.getName().toStdString(), busDef.getVersion().toStdString());
 
-    messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
-
     if (modeString == "slave" || modeString == "target") {
         busInfInterface_->setupSubInterfaces(newBusName);
         TransparentBridgeInterface* bridgeInterface = busInfInterface_->getBridgeInterface();
         if (!bridgeInterface) {
-            return;
+            return "";
         }
         int index = bridgeInterface->itemCount();
-        messager_->showMessage(QString("Item count: %1").arg(index));
         for (std::string name : busInfInterface_->getItemNames()) {
             std::string mode = busInfInterface_->getModeString(name);
             if (mode != "master" && mode != "initiator") {
                 continue;
             }
-            messager_->showMessage(QString("master ref: %1").arg(QString::fromStdString(name)));
             bridgeInterface->addBridge(index, name);
             index++;
         }
     }
+    messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
+
+    return newBusName;
+}
+
+std::string InterconnectGenerator::getUniqueBusName(std::string newBusName)
+{
+    int appendix = 0;
+    std::vector<std::string> names = busInfInterface_->getItemNames();
+    std::string uniqueName = newBusName;
+
+    while (std::find(names.begin(), names.end(), uniqueName) != names.end()) {
+        appendix++;
+        uniqueName = newBusName + "_" + std::to_string(appendix);
+    }
+    return uniqueName;
 }
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
@@ -373,7 +395,6 @@ void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointe
         }
     }
     messager_->showMessage("All port maps created");
-
 }
 
 void InterconnectGenerator::createPhysPorts(QSharedPointer<Component> comp, QString busName)

@@ -21,3 +21,4 @@ PythonAPI/x64/Debug
 *.obj
 *.tlog
 *.tlog"**/x64/Release/" 
+*.tlog

@@ -27,7 +27,7 @@ InterconnectGeneratorDialog::InterconnectGeneratorDialog(QSharedPointer<Componen
     targetsContainerLayout_(new QVBoxLayout())
 {
     setMinimumWidth(900);
-    setMinimumHeight(600);
+    setMinimumHeight(900);
 
     QString designVLNV = selectedComponent->getVlnv().toString(":");
     designVLNV_ = designVLNV;
@@ -440,10 +440,17 @@ void InterconnectGeneratorDialog::setUpLayout(QString designVLNV)
     configGroup->setLayout(formLayout);
 
     // Initiators section
-    QCheckBox* clockCheckbox = new QCheckBox(tr("Enable Clock"), this);
-    QCheckBox* resetCheckbox = new QCheckBox(tr("Enable Reset"), this);
-    clockCheckbox->setChecked(true);
-    resetCheckbox->setChecked(true);
+    busInterfaceCombo_ = new InstanceComboBox(this);
+
+    clockCombo_ = new InstanceComboBox(this);
+    resetCombo_ = new InstanceComboBox(this);
+    clockCombo_->setEnabled(false);
+    resetCombo_->setEnabled(false);
+
+    clockCheckBox_ = new QCheckBox(tr("Enable Clock"), this);
+    resetCheckBox_ = new QCheckBox(tr("Enable Reset"), this);
+    clockCheckBox_->setChecked(false);
+    resetCheckBox_->setChecked(false);
 
     for (QSharedPointer<ConfigurableVLNVReference> ref : absRefs_) {
         QString name = ref->getName();
@@ -610,28 +617,13 @@ void InterconnectGeneratorDialog::accept()
     QString busType = absRef->getName();
     QString clkVLNV = clockCheckBox_->isChecked() ? clkRef->toString() : "";
     QString rstVLNV = resetCheckBox_->isChecked() ? rstRef->toString() : "";
-    /*
+    
     config->DesignVLNV = designVLNV_;
     config->InterconVLNV = interconVLNV;
     config->BusVLNV = busVLNV;
     config->ClkVLNV = clkVLNV;
     config->RstVLNV = rstVLNV;
-    config->BusType = busTypeCombo_->currentText();
     config->AddressWidth = 32;
-    config->IDWidth = 8;
-    
-    "intercon": "test:gen:intercon:1.0",
-        "top" : "tuni.fi:subsystem:SysCtrl_SS:1.0",
-        "bus" : "tuni.fi:interface:AXI4LITE:1.0",
-        "clk" : "tuni.fi:interface:clock:1.0",
-        "rst" : "tuni.fi:interface:reset:1.0",
-        "Bus type" : "AXI4LITE",
-    ¨*/
-    config->DesignVLNV = designVLNV_;
-    config->InterconVLNV = interconVLNV;
-    config->BusVLNV = busVLNV;
-    config->ClkVLNV = "tuni.fi:interface:clock:1.0";
-    config->RstVLNV = "tuni.fi:interface:reset:1.0";
     config->BusType = busType.split(".abs")[0];
     config->AddressWidth = 32;
     config->IDWidth = 8;
