@@ -9,8 +9,11 @@
 #include <IPXACTmodels/Component/Component.h>
 #include <IPXACTmodels/Design/Design.h>
 #include <IPXACTmodels/DesignConfiguration/DesignConfiguration.h>
+#include <IPXACTmodels/Component/TransparentBridge.h>
 
+#include <KactusAPI/include/BusInterfaceInterfaceFactory.h>
 #include <KactusAPI/include/BusInterfaceInterface.h>
+#include <KactusAPI/include/TransparentBridgeInterface.h>
 #include <KactusAPI/include/LibraryInterface.h>
 #include <KactusAPI/include/ComponentAndInstantiationsParameterFinder.h>
 #include <KactusAPI/include/IPXactSystemVerilogParser.h>
@@ -86,6 +89,8 @@ private:
     //! Interface for accessing bus interfaces.
     BusInterfaceInterface* busInfInterface_{ nullptr };
 
+    //TransparentBridgeInterface* bridgeInterface_{ nullptr };
+
     //! Validator for ports.
     QSharedPointer<PortValidator> portValidator_{ new PortValidator(expressionParser_,
         QSharedPointer<QList<QSharedPointer<View> > >()) };
@@ -106,6 +111,10 @@ private:
     AbstractionTypeInterface* absTypeInf_{ nullptr };
 
     ConfigStruct* config_;
+
+    QList<QSharedPointer<BusInterface>> initiators_;
+
+    QList<QSharedPointer<BusInterface>> targets_;
 
     QString directory_;
 

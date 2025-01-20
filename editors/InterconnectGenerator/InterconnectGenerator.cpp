@@ -46,6 +46,7 @@ VLNV InterconnectGenerator::generate(ConfigStruct* config, const QHash<QString, 
 {
     config_ = config;
 
+
     VLNV designVLNV(VLNV::COMPONENT, config_->DesignVLNV);
     VLNV interconVLNV(VLNV::COMPONENT, config_->InterconVLNV);
 
@@ -122,7 +123,7 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
 
     busInfInterface_ = BusInterfaceInterfaceFactory::createBusInterface(parameterFinder_,
             expressionFormatter_, expressionParser_, interconComponent_, library_);
-
+  
     busInfInterface_->setBusInterfaces(interconComponent_);
     absTypeInf_ = busInfInterface_->getAbstractionTypeInterface();
 
@@ -130,14 +131,6 @@ void InterconnectGenerator::createInterconComponent(VLNV VLNV)
     instanceInterface_->setComponentReference("interconnect", VLNV.getVendor().toStdString(), VLNV.getLibrary().toStdString(),
                                               VLNV.getName().toStdString(), VLNV.getVersion().toStdString());
 
-    auto componentInstances = design_->getComponentInstances();
-    if (componentInstances) { // Ensure the QSharedPointer is valid
-        for (const auto& comp : *componentInstances) { // Dereference the QList inside the QSharedPointer
-            if (comp) { // Ensure the individual component is valid
-                messager_->showMessage(QString("Instance name: %1").arg(comp->name()));
-            }
-        }
-    }
     messager_->showMessage("Component created and linked");
 }
 
@@ -195,33 +188,9 @@ void InterconnectGenerator::processInitiatorsAndTargets(
     messager_->showMessage("Processing initiators and targets...");
     int index = 0;
 
-    for (auto it = initiators.constBegin(); it != initiators.constEnd(); ++it) {
-        QString instanceName = it.key();
-        messager_->showMessage(QString("Instance name: %1").arg(instanceName));
-        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
-        QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
-        QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
-        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
-        
-        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
-            QString busName = busInterface->name();
-            VLNV busVLNV = busInterface->getBusType();
-
-            prefix_ = busName.toStdString() + "_";
-            std::string modeString = getInterfaceMode(busInterface, false, false);
-
-            createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
-            createPortMaps(modeString, busInterface);
-            createPhysPorts(comp, busName);
-
-            index++;
-        }
-    }
-
     for (auto it = targets.constBegin(); it != targets.constEnd(); ++it) {
         QString instanceName = it.key();
-        messager_->showMessage(QString("Target name: %1").arg(instanceName));
-        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());                                                                                                                                                                 
+        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
         QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
         QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
 
@@ -233,6 +202,30 @@ void InterconnectGenerator::processInitiatorsAndTargets(
 
             prefix_ = busName.toStdString() + "_";
             std::string modeString = getInterfaceMode(busInterface, true, false);
+
+            createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
+            createPortMaps(modeString, busInterface);
+            createPhysPorts(comp, busName);
+
+            index++;
+        }
+    }
+
+    for (auto it = initiators.constBegin(); it != initiators.constEnd(); ++it) {
+        QString instanceName = it.key();
+        auto compVLNV = instanceInterface_->getComponentReference(instanceName.toStdString());
+        QSharedPointer<Document> compDocument = library_->getModel(*compVLNV.dynamicCast<VLNV>());
+        QSharedPointer<Component> comp = compDocument.dynamicCast<Component>();
+
+        const QList<QSharedPointer<BusInterface>>& busInterfaces = it.value();
+        initiators_ = busInterfaces;
+        
+        for (const QSharedPointer<BusInterface>& busInterface : busInterfaces) {
+            QString busName = busInterface->name();
+            VLNV busVLNV = busInterface->getBusType();
+
+            prefix_ = busName.toStdString() + "_";
+            std::string modeString = getInterfaceMode(busInterface, false, false);
 
             createBusInterface(busVLNV, busName.toUpper().toStdString(), modeString, index);
             createPortMaps(modeString, busInterface);
@@ -311,6 +304,25 @@ void InterconnectGenerator::createBusInterface(VLNV busVLNV, std::string busName
         busDef.getName().toStdString(), busDef.getVersion().toStdString());
 
     messager_->showMessage(QString("%1 interface created").arg(QString::fromStdString(newBusName)));
+
+    if (modeString == "slave" || modeString == "target") {
+        busInfInterface_->setupSubInterfaces(newBusName);
+        TransparentBridgeInterface* bridgeInterface = busInfInterface_->getBridgeInterface();
+        if (!bridgeInterface) {
+            return;
+        }
+        int index = bridgeInterface->itemCount();
+        messager_->showMessage(QString("Item count: %1").arg(index));
+        for (std::string name : busInfInterface_->getItemNames()) {
+            std::string mode = busInfInterface_->getModeString(name);
+            if (mode != "master" && mode != "initiator") {
+                continue;
+            }
+            messager_->showMessage(QString("master ref: %1").arg(QString::fromStdString(name)));
+            bridgeInterface->addBridge(index, name);
+            index++;
+        }
+    }
 }
 
 void InterconnectGenerator::createPortMaps(std::string modeString, QSharedPointer<BusInterface> busInf)
